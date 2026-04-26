@@ -427,7 +427,11 @@ Extraction rules (follow strictly)
 
 4.  Return at most 2 best-matching canonical values per key.
 
-5.  Final output MUST be a single valid JSON object — nothing else.
+5.  If a tool returns NO matching values (empty result), do NOT guess or
+    fabricate a value.  Drop that key from the output entirely.
+    Only include keys where the tool returned at least one valid match.
+
+6.  Final output MUST be a single valid JSON object — nothing else.
     • Keys   : "Label.property" format (e.g. {key_note})
     • Values : always a JSON array, even for a single result
     • No code fences, no markdown, no explanation, no extra text.
@@ -508,7 +512,10 @@ Rules
 ─────
 1.  Ground all answers strictly in the "Relevant Data" provided.
     Never use internal knowledge to add, correct, or contradict the data.
-2.  If Relevant Data is empty or irrelevant, say so clearly.
+2.  If Relevant Data is empty, contains no rows, or is irrelevant to the
+    question, say explicitly: "The database returned no results for this
+    query."  Do NOT fabricate, guess, or infer an answer from your own
+    knowledge.
 3.  Be concise, accurate, and use natural language.
 4.  When the question asks for a list, provide it in bullet-point or table form.
 5.  When the question asks for a count or aggregate, state the number directly.
@@ -538,6 +545,10 @@ Node "X" has the following properties:
 |----------|--------|
 | status   | active |
 | region   | west   |
+
+Q: Who directed "Nonexistent Movie"?
+Relevant Data: []
+A: The database returned no results for this query.  There is no record matching "Nonexistent Movie" in the graph.
 
 Now answer the following:
 
@@ -681,13 +692,15 @@ _RUNTIME_CONSTANTS = """\
 # Runtime constants
 # ──────────────────────────────────────────────────────────────────────────────
 
-MAX_THREAD          = 5    # parallel tool calls in the NER agent
-DEFAULT_TOP_K       = 5    # FAISS tool-selection top-k
-TOOL_TOP_K          = 10   # fulltext search top-k per tool call
-N_CLUSTERS          = 50   # k-means clusters for semantic sampling
-SAMPLES_PER_CLUSTER = 4    # samples drawn per cluster
-FULL_DATA_THRESHOLD = 200  # rows — below this, return all data
-SAMPLING_THRESHOLD  = 5000 # rows — above this, switch to cluster sampling
+MAX_THREAD            = 5    # parallel tool calls in the NER agent
+DEFAULT_TOP_K         = 5    # FAISS tool-selection top-k
+TOOL_TOP_K            = 10   # fulltext search top-k per tool call
+STABILITY_K           = 3    # consecutive stable validation rounds before stopping
+MAX_VALIDATION_ROUNDS = 20   # hard cap on validation rounds per property pair
+N_CLUSTERS            = 50   # k-means clusters for semantic sampling
+SAMPLES_PER_CLUSTER   = 4    # samples drawn per cluster
+FULL_DATA_THRESHOLD   = 200  # rows — below this, return all data
+SAMPLING_THRESHOLD    = 5000 # rows — above this, switch to cluster sampling
 """
 
 
