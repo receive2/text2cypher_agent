@@ -54,17 +54,17 @@ Extraction rules (follow strictly)
 
 Examples
 ────────
-Q: Find the movie named "As Good as It Gets".
-A: {"Movie.title": ["As Good as It Gets"]}
+Q: Find the movie named "Stand By Me".
+A: {"Movie.title": ["Stand By Me"]}
 
-Q: How many movies have released before 1999?
-A: {"Movie.released": [1999]}
+Q: How many movies have released before 1996?
+A: {"Movie.released": [1996]}
 
-Q: Which movie has tagline containing "The hottest data on earth. In "?
-A: {"Movie.tagline": ["The hottest data on earth. In "]}
+Q: Which movie has tagline containing "In every life there comes a ti"?
+A: {"Movie.tagline": ["In every life there comes a ti"]}
 
-Q: Which person has acted_in roles "['Kit Keller']"?
-A: {"ACTED_IN.roles": ["['Kit Keller']"]}
+Q: Which person has acted_in roles "['Ryan Maslow']"?
+A: {"ACTED_IN.roles": ["['Ryan Maslow']"]}
 
 Q: List all items in the database.
 A: {}

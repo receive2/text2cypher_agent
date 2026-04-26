@@ -6,14 +6,18 @@ Auto-generate and iteratively validate tool descriptions for (node_type, propert
 from a Neo4j database, store results in CSV, and index all descriptions into a FAISS vector DB
 using OpenAI Ada embeddings.
 
+Validation uses a stability-based stopping criterion: the loop runs until the
+tool description is unchanged for STABILITY_K consecutive rounds, or until
+MAX_VALIDATION_ROUNDS total rounds are reached (both imported from config.py).
+
 Usage example:
-  python generate_tools.py --t 20 --k 8 --output_csv tools.csv --faiss_dir faiss_tools --resume
+  python tool_gen_node_rd.py --t 20 --output_csv tools.csv --faiss_dir faiss_tools --resume
 
 Environment variables required:
   NEO4J_URI
   NEO4J_USERNAME
   NEO4J_PASSWORD
-  (optional) NEO4J_DATABASE (default: peoplekg)
+  (optional) NEO4J_DATABASE (default: neo4j)
 
 OpenAI / LangChain env vars:
   OPENAI_API_KEY
@@ -30,6 +34,7 @@ import csv
 import datetime as dt
 import json
 import os
+import random
 import re
 import sys
 import time
@@ -229,6 +234,9 @@ def list_node_type_property_pairs(driver, database: str) -> List[Pair]:
         return deduped2
 
 
+CAP_MULTIPLIER = 5  # scan cap = t * CAP_MULTIPLIER (cheap over-fetch for random sampling)
+
+
 def sample_property_values(
     session,
     node_type: str,
@@ -236,25 +244,29 @@ def sample_property_values(
     t: int,
 ) -> List[Any]:
     """
-    Randomly sample up to t values from nodes of the given node_type for the given property_name.
+    Sample up to *t* property values using a cheap capped scan + Python ``random.sample()``.
 
-    Note:
-      ORDER BY rand() can be expensive for huge graphs. If performance is an issue,
-      consider APOC random sampling or a precomputed sampling strategy.
+    Instead of the expensive ``ORDER BY rand()`` (which forces a full-graph sort),
+    we over-fetch ``t * CAP_MULTIPLIER`` rows with a plain ``LIMIT`` and then
+    randomly down-sample in Python.  This keeps the Neo4j query O(cap) rather
+    than O(N log N).
     """
     label_pattern = node_type_to_match_pattern(node_type)
+    cap = t * CAP_MULTIPLIER
 
     cypher = f"""
     MATCH (n{label_pattern})
     WHERE n[$prop] IS NOT NULL
     RETURN n[$prop] AS value
-    ORDER BY rand()
-    LIMIT $t
+    LIMIT $cap
     """
     values = []
-    for r in session.run(cypher, prop=property_name, t=t):
+    for r in session.run(cypher, prop=property_name, cap=cap):
         values.append(r.get("value"))
-    return values
+
+    if len(values) <= t:
+        return values
+    return random.sample(values, t)
 
 
 # -----------------------------
@@ -534,7 +546,6 @@ def build_faiss_from_csv(csv_path: str, faiss_dir: str, embeddings) -> None:
 # -----------------------------
 def run_pipeline(
     t: int,
-    k: int,
     output_csv: str,
     faiss_dir: str,
     resume: bool,
@@ -545,14 +556,19 @@ def run_pipeline(
     """
     End-to-end pipeline:
       1) scan pairs
-      2) generate + validate descriptions
+      2) generate + validate descriptions (stability-based stopping)
       3) write CSV incrementally
       4) build FAISS at the end
+
+    Validation uses ``STABILITY_K`` (consecutive stable rounds to stop) and
+    ``MAX_VALIDATION_ROUNDS`` (hard cap) from ``config.py``.
     """
+    from config import MAX_VALIDATION_ROUNDS, STABILITY_K
+
     neo4j_uri = _require_env("NEO4J_URI")
     neo4j_user = _require_env("NEO4J_USERNAME")
     neo4j_pass = _require_env("NEO4J_PASSWORD")
-    neo4j_db = os.getenv("NEO4J_DATABASE", "peoplekg")
+    neo4j_db = os.getenv("NEO4J_DATABASE", "neo4j")
 
     llm = build_llm(temperature=temperature)
 
@@ -589,8 +605,10 @@ def run_pipeline(
                 revisions = 0
                 validations_run = 0
 
-                # 2) Iterative validation up to k rounds
-                for round_i in range(1, k + 1):
+                # 2) Iterative validation: stop after STABILITY_K consecutive
+                #    stable rounds OR after MAX_VALIDATION_ROUNDS total.
+                consecutive_stable = 0
+                for round_i in range(1, MAX_VALIDATION_ROUNDS + 1):
                     new_values = sample_property_values(session, pair.node_type, pair.property_name, t=t)
                     if not new_values:
                         # If we cannot sample new values, stop early.
@@ -608,6 +626,12 @@ def run_pipeline(
                     if not is_ok and revised is not None:
                         tool_desc = revised
                         revisions += 1
+                        consecutive_stable = 0  # reset on revision
+                    else:
+                        consecutive_stable += 1
+
+                    if consecutive_stable >= STABILITY_K:
+                        break
 
                     if sleep_seconds > 0:
                         time.sleep(sleep_seconds)
@@ -627,7 +651,8 @@ def run_pipeline(
                 # Simple progress log to stderr (so it won't pollute CSV piping if needed).
                 print(
                     f"[{idx}/{len(pairs)}] Saved: ({pair.node_type}, {pair.property_name}) "
-                    f"revisions={revisions}, validations={validations_run}",
+                    f"revisions={revisions}, validations={validations_run}, "
+                    f"stable={consecutive_stable}",
                     file=sys.stderr,
                 )
 
@@ -647,7 +672,6 @@ def run_pipeline(
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Generate tool descriptions from Neo4j and index into FAISS.")
     parser.add_argument("--t", type=int, default=int(os.getenv("SAMPLE_T", "20")), help="Sample size t per round.")
-    parser.add_argument("--k", type=int, default=int(os.getenv("MAX_K", "2")), help="Max validation rounds k.")
     parser.add_argument("--output_csv", type=str, default="tool_descriptions.csv", help="Output CSV path.")
     parser.add_argument("--faiss_dir", type=str, default="faiss_tools", help="Output FAISS directory.")
     parser.add_argument("--resume", action="store_true", help="Skip pairs already present in output CSV.")
@@ -671,12 +695,9 @@ def main() -> None:
     args = parse_args()
     if args.t <= 0:
         raise ValueError("--t must be > 0")
-    if args.k < 0:
-        raise ValueError("--k must be >= 0")
 
     run_pipeline(
         t=args.t,
-        k=args.k,
         output_csv=args.output_csv,
         faiss_dir=args.faiss_dir,
         resume=args.resume,
