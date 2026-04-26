@@ -94,25 +94,25 @@ AZURE_OPENAI_API_VERSION=2024-05-01-preview
 python setup_project.py
 ```
 
-That's it. The script runs all 7 setup steps automatically and prints the status of each one:
+That's it. The script runs all 8 setup steps automatically and prints the status of each one:
 
 ```
 ══════════════════ Text-to-Cypher Project Setup ══════════════════
 
 ──────────────────────────────────────────────────────────────────
-  Step 1 / 7 — Checking environment variables
+  Step 1 / 8 — Checking environment variables
 ──────────────────────────────────────────────────────────────────
   ✓  NEO4J_URI = bolt://...
-  ✓  NEO4J_DATABASE = 'movies'
+  ✓  NEO4J_DATABASE = 'neo4j'
   ✓  LLM credentials found (OpenAI / Azure OpenAI)
 
 ──────────────────────────────────────────────────────────────────
-  Step 2 / 7 — Testing Neo4j connection
+  Step 2 / 8 — Testing Neo4j connection
 ──────────────────────────────────────────────────────────────────
-  ✓  Connected to database 'movies'
+  ✓  Connected to database 'neo4j'
   ✓  Node labels found: ['Movie', 'Person']
 
-  ... (steps 3–7) ...
+  ... (steps 3–8) ...
 
 ══════════════════════ Setup Complete ════════════════════════════
 
@@ -128,16 +128,19 @@ That's it. The script runs all 7 setup steps automatically and prints the status
 | 1 | *(env check)* | Validates all required `.env` vars |
 | 2 | *(Neo4j driver)* | Confirms connection + lists node labels |
 | 3 | `gen_schema_csv` | `schema_nodes.csv`, `schema_relations.csv` |
-| 4 | `neo4j_search` | Creates all fulltext indexes in Neo4j |
-| 5 | `gen_tools` | `generated_node_tools.py`, `generated_rel_tools.py` |
-| 6 | `gen_system_prompt` | Fresh `config.py` (system prompts + schema constants) |
-| 7 | `ner_agent_auto` | `faiss_tools_auto/` vector index |
+| 4 | `gen_schema_meta` | `schema_meta.json` (LLM-inferred `id_property`, topics, descriptions) |
+| 5 | `neo4j_search` | Creates all fulltext indexes in Neo4j |
+| 6 | `gen_tools` | `generated_node_tools.py`, `generated_rel_tools.py` |
+| 7 | `gen_system_prompt` | Fresh `config.py` (system prompts + schema constants) |
+| 8 | `ner_agent_auto` | `faiss_tools_auto/` vector index |
+
+> **Step 4** is what makes the pipeline domain-agnostic. It uses the LLM to analyze the schema CSVs and infer which property identifies each node label (e.g. `title` for Movie, `name` for Person), plus short topic phrases used for NER extraction. This metadata flows into Step 6 so generated tools have accurate descriptions for any database.
 
 **Optional flags:**
 
 ```bash
 python setup_project.py --database my_db    # target a specific database
-python setup_project.py --skip-faiss        # skip step 7 (no OpenAI key yet)
+python setup_project.py --skip-faiss        # skip step 8 (no OpenAI key yet)
 python setup_project.py --verbose           # show full tracebacks on errors
 ```
 
@@ -167,6 +170,48 @@ print(result["context"])  # raw rows returned by Neo4j
 
 ---
 
+## Testing
+
+### Fulltext search deduplication test
+
+`test_neo4j_search.py` verifies that the fulltext search functions return **unique property values** (no duplicates), ranked by the best matching score.
+
+```bash
+python test_neo4j_search.py
+```
+
+The script runs 5 test cases:
+
+| # | Test | What it checks |
+|---|---|---|
+| 1 | `top_similar_values` — Movie.title | No duplicate values, descending scores, no nulls, k limit |
+| 2 | `top_similar_values` — Person.name | Same checks on a different node label |
+| 3 | `search_tool` — Movie.title | Returns `list[str]` with no duplicates |
+| 4 | `top_similar_rel_values` — ACTED_IN.roles | No duplicate values, descending scores, no nulls, k limit |
+| 5 | `search_rel_tool` — REVIEWED.summary | Returns `list[str]` with no duplicates |
+
+Example output:
+
+```
+─── Test: top_similar_values (Movie.title) ───
+  Query: 'The Matrix' | Label: Movie | Property: title | k=10
+     1. The Matrix  (score=2.5390)
+     2. The Matrix Reloaded  (score=1.4138)
+     3. The Matrix Revolutions  (score=1.4138)
+  [PASS] No duplicate values  (3 results)
+  [PASS] Scores in descending order
+  [PASS] No None values
+  [PASS] Result count (3) <= k (10)
+
+==================================================
+Results: 5 passed, 0 failed, 5 total
+==================================================
+```
+
+> **Note:** Requires a running Neo4j instance with the movies dataset loaded and `.env` configured.
+
+---
+
 ## Re-running after a schema change
 
 If your Neo4j database schema changes (new labels, properties, or relationships added), just re-run the setup script:
@@ -178,6 +223,8 @@ python setup_project.py
 Or run only the affected steps manually:
 
 ```bash
+python gen_schema_csv.py                        # re-export schema CSVs
+python gen_schema_meta.py                       # re-infer schema metadata (LLM)
 python gen_tools.py                             # regenerate @tool functions
 python gen_system_prompt.py                     # regenerate config.py
 python ner_agent_auto.py --rebuild "test"       # rebuild the FAISS index
@@ -193,10 +240,11 @@ If you prefer to run each step individually or need to debug a specific stage:
 |---|---|---|
 | 1 | `python neo4j_diag.py` | Verify connection and list node labels |
 | 2 | `python gen_schema_csv.py --print-summary` | Export schema to CSV and print a summary |
-| 3 | `python neo4j_search.py` | Create all Neo4j fulltext indexes |
-| 4 | `python gen_tools.py` | Generate `@tool` functions from the live schema |
-| 5 | `python gen_system_prompt.py` | Generate `config.py` from scratch |
-| 6 | `python ner_agent_auto.py --rebuild "test"` | Build the FAISS tool-selection index |
+| 3 | `python gen_schema_meta.py --verbose` | Infer `id_property`, topics, descriptions via LLM |
+| 4 | *(fulltext indexes — handled by setup_project.py)* | Create all Neo4j fulltext indexes |
+| 5 | `python gen_tools.py` | Generate `@tool` functions from the live schema |
+| 6 | `python gen_system_prompt.py` | Generate `config.py` from scratch |
+| 7 | `python ner_agent_auto.py --rebuild "test"` | Build the FAISS tool-selection index |
 
 > **Tip:** Verify fulltext indexes in the Neo4j Browser with  
 > `SHOW FULLTEXT INDEXES YIELD name, state`  
@@ -210,11 +258,13 @@ If you prefer to run each step individually or need to debug a specific stage:
 |---|---|
 | `.env` | Credentials — **never commit this file** |
 | `requirements.txt` | Python dependencies |
-| `setup_project.py` | **One-click setup** — runs all 7 setup steps automatically |
+| `setup_project.py` | **One-click setup** — runs all 8 setup steps automatically |
 | `config.py` | **Auto-generated** system prompts + schema constants |
 | `neo4j_search.py` | Fulltext index management + `search_tool()` / `search_rel_tool()` |
+| `test_neo4j_search.py` | Tests for fulltext search deduplication + score ordering |
 | `gen_schema_csv.py` | Export full schema to `schema_nodes.csv` + `schema_relations.csv` |
-| `gen_tools.py` | Generate `@tool` functions from the live schema |
+| `gen_schema_meta.py` | LLM-infer `id_property`, topics, descriptions → `schema_meta.json` |
+| `gen_tools.py` | Generate `@tool` functions from the live schema + `schema_meta.json` |
 | `generated_node_tools.py` | **Auto-generated** node property search tools |
 | `generated_rel_tools.py` | **Auto-generated** relationship search tools |
 | `gen_system_prompt.py` | Generate complete `config.py` from the live schema |
@@ -224,6 +274,7 @@ If you prefer to run each step individually or need to debug a specific stage:
 | `faiss_tools_auto/` | **Auto-generated** FAISS vector index (gitignore this) |
 | `schema_nodes.csv` | **Auto-generated** node schema export |
 | `schema_relations.csv` | **Auto-generated** relationship schema export |
+| `schema_meta.json` | **Auto-generated** LLM-inferred schema metadata |
 
 ---
 
