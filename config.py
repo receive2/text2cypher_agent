@@ -262,7 +262,3 @@ DEFAULT_TOP_K         = 5    # FAISS tool-selection top-k
 TOOL_TOP_K            = 10   # fulltext search top-k per tool call
 STABILITY_K           = 3    # consecutive stable validation rounds before stopping
 MAX_VALIDATION_ROUNDS = 20   # hard cap on validation rounds per property pair
-N_CLUSTERS            = 50   # k-means clusters for semantic sampling
-SAMPLES_PER_CLUSTER   = 4    # samples drawn per cluster
-FULL_DATA_THRESHOLD   = 200  # rows — below this, return all data
-SAMPLING_THRESHOLD    = 5000 # rows — above this, switch to cluster sampling
