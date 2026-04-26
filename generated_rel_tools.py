@@ -16,22 +16,22 @@ from config import TOOL_TOP_K
 @tool
 def get_acted_in_roles(user_query: str) -> List[str]:
     """Get the canonical ACTED_IN.roles values from the database."""
-    search_term = get_entity(user_query, topic='roles in ACTED_IN relationship')
-    return search_rel_tool(phrase=search_term, rel_type='ACTED_IN', property_name='roles', k=TOOL_TOP_K, verbose=True)
+    search_term = get_entity(user_query, topic="character names")
+    return search_rel_tool(phrase=search_term, rel_type="ACTED_IN", property_name="roles", k=TOOL_TOP_K, verbose=True)
 
 
 @tool
 def get_reviewed_summary(user_query: str) -> List[str]:
     """Get the canonical REVIEWED.summary values from the database."""
-    search_term = get_entity(user_query, topic='summary in REVIEWED relationship')
-    return search_rel_tool(phrase=search_term, rel_type='REVIEWED', property_name='summary', k=TOOL_TOP_K, verbose=True)
+    search_term = get_entity(user_query, topic="review summary")
+    return search_rel_tool(phrase=search_term, rel_type="REVIEWED", property_name="summary", k=TOOL_TOP_K, verbose=True)
 
 
 @tool
 def get_reviewed_rating(user_query: str) -> List[str]:
     """Get the canonical REVIEWED.rating values from the database."""
-    search_term = get_entity(user_query, topic='rating in REVIEWED relationship')
-    return search_rel_tool(phrase=search_term, rel_type='REVIEWED', property_name='rating', k=TOOL_TOP_K, verbose=True)
+    search_term = get_entity(user_query, topic="review score")
+    return search_rel_tool(phrase=search_term, rel_type="REVIEWED", property_name="rating", k=TOOL_TOP_K, verbose=True)
 
 
 
@@ -44,28 +44,28 @@ def get_reviewed_rating(user_query: str) -> List[str]:
 
 @tool
 def get_directed_relation(user_query: str) -> List[str]:
-    """Find Movie.title values reachable via (:Person)-[:DIRECTED]->(:Movie). This property represents the title of a movie."""
-    search_term = get_entity(user_query, topic='movie title')
-    return search_tool(phrase=search_term, node_label='Movie', property_name='title', k=TOOL_TOP_K, verbose=True)
+    """Find Movie.title values reachable via (:Person)-[:DIRECTED]->(:Movie) in the database."""
+    search_term = get_entity(user_query, topic="movie title in DIRECTED relationship")
+    return search_tool(phrase=search_term, node_label="Movie", property_name="title", k=TOOL_TOP_K, verbose=True)
 
 
 @tool
 def get_follows_relation(user_query: str) -> List[str]:
-    """Find Person.name values reachable via (:Person)-[:FOLLOWS]->(:Person). This property represents the full name of a person."""
-    search_term = get_entity(user_query, topic='person name')
-    return search_tool(phrase=search_term, node_label='Person', property_name='name', k=TOOL_TOP_K, verbose=True)
+    """Find Person.name values reachable via (:Person)-[:FOLLOWS]->(:Person) in the database."""
+    search_term = get_entity(user_query, topic="person name in FOLLOWS relationship")
+    return search_tool(phrase=search_term, node_label="Person", property_name="name", k=TOOL_TOP_K, verbose=True)
 
 
 @tool
 def get_produced_relation(user_query: str) -> List[str]:
-    """Find Movie.title values reachable via (:Person)-[:PRODUCED]->(:Movie). This property represents the title of a movie."""
-    search_term = get_entity(user_query, topic='movie title')
-    return search_tool(phrase=search_term, node_label='Movie', property_name='title', k=TOOL_TOP_K, verbose=True)
+    """Find Movie.title values reachable via (:Person)-[:PRODUCED]->(:Movie) in the database."""
+    search_term = get_entity(user_query, topic="movie title in PRODUCED relationship")
+    return search_tool(phrase=search_term, node_label="Movie", property_name="title", k=TOOL_TOP_K, verbose=True)
 
 
 @tool
 def get_wrote_relation(user_query: str) -> List[str]:
-    """Find Movie.title values reachable via (:Person)-[:WROTE]->(:Movie). This property represents the title of a movie."""
-    search_term = get_entity(user_query, topic='movie title')
-    return search_tool(phrase=search_term, node_label='Movie', property_name='title', k=TOOL_TOP_K, verbose=True)
+    """Find Movie.title values reachable via (:Person)-[:WROTE]->(:Movie) in the database."""
+    search_term = get_entity(user_query, topic="movie title in WROTE relationship")
+    return search_tool(phrase=search_term, node_label="Movie", property_name="title", k=TOOL_TOP_K, verbose=True)
 

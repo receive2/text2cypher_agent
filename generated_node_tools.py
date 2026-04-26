@@ -10,48 +10,42 @@ from config import TOOL_TOP_K
 
 @tool
 def get_person_born(user_query: str) -> List[str]:
-    """Get the canonical Person.born values from the database.
-    The year a person was born."""
-    search_term = get_entity(user_query, topic='person birth year')
-    return search_tool(phrase=search_term, node_label='Person', property_name='born', k=TOOL_TOP_K, verbose=True)
+    """Get the canonical Person.born values from the database."""
+    search_term = get_entity(user_query, topic="person birth year")
+    return search_tool(phrase=search_term, node_label="Person", property_name="born", k=TOOL_TOP_K, verbose=True)
 
 
 @tool
 def get_person_name(user_query: str) -> List[str]:
-    """Get the canonical Person.name values from the database.
-    This property represents the full name of a person."""
-    search_term = get_entity(user_query, topic='person name')
-    return search_tool(phrase=search_term, node_label='Person', property_name='name', k=TOOL_TOP_K, verbose=True)
+    """Get the canonical Person.name values from the database."""
+    search_term = get_entity(user_query, topic="person name")
+    return search_tool(phrase=search_term, node_label="Person", property_name="name", k=TOOL_TOP_K, verbose=True)
 
 
 @tool
 def get_movie_tagline(user_query: str) -> List[str]:
-    """Get the canonical Movie.tagline values from the database.
-    The tagline is a short, memorable phrase used to promote the movie."""
-    search_term = get_entity(user_query, topic='movie tagline')
-    return search_tool(phrase=search_term, node_label='Movie', property_name='tagline', k=TOOL_TOP_K, verbose=True)
+    """Get the canonical Movie.tagline values from the database."""
+    search_term = get_entity(user_query, topic="movie tagline")
+    return search_tool(phrase=search_term, node_label="Movie", property_name="tagline", k=TOOL_TOP_K, verbose=True)
 
 
 @tool
 def get_movie_title(user_query: str) -> List[str]:
-    """Get the canonical Movie.title values from the database.
-    This property represents the title of a movie."""
-    search_term = get_entity(user_query, topic='movie title')
-    return search_tool(phrase=search_term, node_label='Movie', property_name='title', k=TOOL_TOP_K, verbose=True)
+    """Get the canonical Movie.title values from the database."""
+    search_term = get_entity(user_query, topic="movie title")
+    return search_tool(phrase=search_term, node_label="Movie", property_name="title", k=TOOL_TOP_K, verbose=True)
 
 
 @tool
 def get_movie_released(user_query: str) -> List[str]:
-    """Get the canonical Movie.released values from the database.
-    The year a movie was released."""
-    search_term = get_entity(user_query, topic='movie release year')
-    return search_tool(phrase=search_term, node_label='Movie', property_name='released', k=TOOL_TOP_K, verbose=True)
+    """Get the canonical Movie.released values from the database."""
+    search_term = get_entity(user_query, topic="movie release year")
+    return search_tool(phrase=search_term, node_label="Movie", property_name="released", k=TOOL_TOP_K, verbose=True)
 
 
 @tool
 def get_movie_votes(user_query: str) -> List[str]:
-    """Get the canonical Movie.votes values from the database.
-    The number of votes a movie has received."""
-    search_term = get_entity(user_query, topic='movie votes')
-    return search_tool(phrase=search_term, node_label='Movie', property_name='votes', k=TOOL_TOP_K, verbose=True)
+    """Get the canonical Movie.votes values from the database."""
+    search_term = get_entity(user_query, topic="movie vote count")
+    return search_tool(phrase=search_term, node_label="Movie", property_name="votes", k=TOOL_TOP_K, verbose=True)
 

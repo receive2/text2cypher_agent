@@ -42,7 +42,7 @@ Environment variables  (loaded from .env)
   NEO4J_URI          bolt / neo4j+s URI  (required)
   NEO4J_USERNAME                         (required)
   NEO4J_PASSWORD                         (required)
-  NEO4J_DATABASE     default: movies
+  NEO4J_DATABASE     default: neo4j
 """
 
 from __future__ import annotations
@@ -500,7 +500,7 @@ Answer:"""
 
 
 def generate_qa_sp() -> str:
-    """Generate the QA answer-formatting system prompt (generic)."""
+    """Generate the QA answer-formatting system prompt (domain-agnostic)."""
     return """\
 You are a helpful AI assistant that answers questions about a graph database.
 
@@ -522,22 +522,22 @@ Output format
 
 Examples
 ────────
-Q: Who directed The Matrix?
-Relevant Data: [{{"director": "Lana Wachowski"}}]
-A: The Matrix was directed by Lana Wachowski.
+Q: Who is associated with item "Alpha"?
+Relevant Data: [{{"name": "Alice"}}]
+A: Alice is associated with item "Alpha".
 
-Q: How many movies were released before 2000?
-Relevant Data: [{{"count": 38}}]
-A: There are 38 movies released before 2000 in the database.
+Q: How many records were created before 2020?
+Relevant Data: [{{"count": 42}}]
+A: There are 42 records created before 2020 in the database.
 
-Q: What roles did Tom Hanks play?
-Relevant Data: [{{"movie": "Cast Away", "roles": ["Chuck Noland"]}}, {{"movie": "Forrest Gump", "roles": ["Forrest Gump"]}}]
+Q: What are the properties of node "X"?
+Relevant Data: [{{"property": "status", "value": "active"}}, {{"property": "region", "value": "west"}}]
 A:
-Tom Hanks appeared in 2 movies:
-| Movie        | Role         |
-|-------------|-------------|
-| Cast Away    | Chuck Noland |
-| Forrest Gump | Forrest Gump |
+Node "X" has the following properties:
+| Property | Value  |
+|----------|--------|
+| status   | active |
+| region   | west   |
 
 Now answer the following:
 
@@ -548,7 +548,7 @@ Answer:"""
 
 
 def generate_prompt_aligner_sp() -> str:
-    """Generate the prompt-aligner system prompt (generic)."""
+    """Generate the prompt-aligner system prompt (domain-agnostic)."""
     return """\
 You are a Cypher query expert helping to align a user question with the query
 that was actually executed against the graph database.
@@ -571,14 +571,14 @@ Rules
 
 Examples
 ────────
-[user_question]  What movies did Neo act in?
-[cypher_query]   MATCH (p:Person {{name: "Keanu Reeves"}})-[:ACTED_IN]->(m:Movie)
-                 RETURN m.title AS movie_title
-[rephrased]      What movies did Keanu Reeves act in?
+[user_question]  What items does Alice manage?
+[cypher_query]   MATCH (p:Person {{name: "Alice Smith"}})-[:MANAGES]->(i:Item)
+                 RETURN i.name AS item_name
+[rephrased]      What items does Alice Smith manage?
 
-[user_question]  Find old films.
-[cypher_query]   MATCH (m:Movie) WHERE m.released < 1980 RETURN m.title, m.released
-[rephrased]      Find movies released before 1980.
+[user_question]  Find old records.
+[cypher_query]   MATCH (r:Record) WHERE r.created_year < 2000 RETURN r.name, r.created_year
+[rephrased]      Find records created before the year 2000.
 
 Now rephrase:
 

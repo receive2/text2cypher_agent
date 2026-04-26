@@ -10,10 +10,11 @@ Steps executed (in order):
   1  Verify .env contains all required environment variables
   2  Test Neo4j connectivity
   3  Export schema to CSV files (schema_nodes.csv, schema_relations.csv)
-  4  Create Neo4j fulltext indexes for every node + relationship property
-  5  Generate @tool functions  (generated_node_tools.py, generated_rel_tools.py)
-  6  Generate config.py from scratch (system prompts + schema constants)
-  7  Build the FAISS tool-selection index (faiss_tools_auto/)
+  4  Generate schema_meta.json (LLM-inferred metadata: id_property, topics)
+  5  Create Neo4j fulltext indexes for every node + relationship property
+  6  Generate @tool functions  (generated_node_tools.py, generated_rel_tools.py)
+  7  Generate config.py from scratch (system prompts + schema constants)
+  8  Build the FAISS tool-selection index (faiss_tools_auto/)
 
 Usage
 -----
@@ -27,7 +28,7 @@ Environment variables  (loaded from .env)
   NEO4J_URI          bolt / neo4j+s URI  (required)
   NEO4J_USERNAME                         (required)
   NEO4J_PASSWORD                         (required)
-  NEO4J_DATABASE     default: movies
+  NEO4J_DATABASE     default: neo4j
   OPENAI_API_KEY                         (required for steps 6 and 7)
 """
 
@@ -90,7 +91,7 @@ _OPTIONAL_VARS = ["NEO4J_DATABASE", "OPENAI_API_KEY", "OPENAI_BASE_URL",
 
 def step_check_env() -> str:
     """Return the database name after validating env vars."""
-    _header("Step 1 / 7 — Checking environment variables")
+    _header("Step 1 / 8 — Checking environment variables")
 
     missing = [v for v in _REQUIRED_VARS if not os.getenv(v)]
     if missing:
@@ -133,7 +134,7 @@ def step_check_env() -> str:
 # ──────────────────────────────────────────────────────────────────────────────
 
 def step_test_connection(database: str) -> None:
-    _header("Step 2 / 7 — Testing Neo4j connection")
+    _header("Step 2 / 8 — Testing Neo4j connection")
 
     from neo4j import GraphDatabase
 
@@ -174,7 +175,7 @@ def step_test_connection(database: str) -> None:
 # ──────────────────────────────────────────────────────────────────────────────
 
 def step_export_schema(database: str) -> None:
-    _header("Step 3 / 7 — Exporting schema to CSV")
+    _header("Step 3 / 8 — Exporting schema to CSV")
 
     from neo4j import GraphDatabase
     from gen_schema_csv import collect_node_schema, collect_rel_schema, \
@@ -199,11 +200,32 @@ def step_export_schema(database: str) -> None:
 
 
 # ──────────────────────────────────────────────────────────────────────────────
-# Step 4 — Create fulltext indexes
+# Step 4 — Generate schema_meta.json (LLM-inferred metadata)
+# ──────────────────────────────────────────────────────────────────────────────
+
+def step_generate_schema_meta() -> None:
+    _header("Step 4 / 8 — Generating schema_meta.json (LLM inference)")
+
+    from gen_schema_meta import generate_schema_meta
+
+    meta = generate_schema_meta(
+        nodes_csv = "schema_nodes.csv",
+        rels_csv  = "schema_relations.csv",
+        output    = "schema_meta.json",
+        language  = os.getenv("TOOL_GEN_LANGUAGE", "en"),
+    )
+
+    n_labels = len(meta.get("nodes", {}))
+    n_rels   = len(meta.get("relationships", {}))
+    _ok(f"{n_labels} label(s) + {n_rels} rel type(s)  →  schema_meta.json")
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Step 5 — Create fulltext indexes
 # ──────────────────────────────────────────────────────────────────────────────
 
 def step_create_indexes(database: str) -> None:
-    _header("Step 4 / 7 — Creating Neo4j fulltext indexes")
+    _header("Step 5 / 8 — Creating Neo4j fulltext indexes")
 
     import csv
     from neo4j_search import (
@@ -272,11 +294,11 @@ def step_create_indexes(database: str) -> None:
 
 
 # ──────────────────────────────────────────────────────────────────────────────
-# Step 5 — Generate @tool files
+# Step 6 — Generate @tool files
 # ──────────────────────────────────────────────────────────────────────────────
 
 def step_generate_tools(database: str) -> None:
-    _header("Step 5 / 7 — Generating @tool functions")
+    _header("Step 6 / 8 — Generating @tool functions")
 
     from neo4j import GraphDatabase
     from gen_tools import (
@@ -309,11 +331,11 @@ def step_generate_tools(database: str) -> None:
 
 
 # ──────────────────────────────────────────────────────────────────────────────
-# Step 6 — Generate config.py
+# Step 7 — Generate config.py
 # ──────────────────────────────────────────────────────────────────────────────
 
 def step_generate_config(database: str) -> None:
-    _header("Step 6 / 7 — Generating config.py")
+    _header("Step 7 / 8 — Generating config.py")
 
     from gen_system_prompt import generate_all
 
@@ -329,11 +351,11 @@ def step_generate_config(database: str) -> None:
 
 
 # ──────────────────────────────────────────────────────────────────────────────
-# Step 7 — Build FAISS tool-selection index
+# Step 8 — Build FAISS tool-selection index
 # ──────────────────────────────────────────────────────────────────────────────
 
 def step_build_faiss() -> None:
-    _header("Step 7 / 7 — Building FAISS tool-selection index")
+    _header("Step 8 / 8 — Building FAISS tool-selection index")
 
     from ner_agent_auto import rebuild_tools_faiss
 
@@ -378,16 +400,19 @@ def main() -> None:
     database = args.database
 
     # ⚠ Step order matters — DO NOT reorder:
-    #   Step 5 (gen tools)  → writes generated_*_tools.py files
-    #   Step 6 (gen config) → imports generated tools to build NER_SP, writes config.py
-    #   Step 7 (FAISS)      → imports generated tools (which import config.py)
+    #   Step 3 (schema CSV)   → writes schema_nodes.csv, schema_relations.csv
+    #   Step 4 (schema meta)  → reads CSVs, writes schema_meta.json (LLM)
+    #   Step 6 (gen tools)    → reads schema_meta.json, writes generated_*_tools.py
+    #   Step 7 (gen config)   → imports generated tools to build NER_SP, writes config.py
+    #   Step 8 (FAISS)        → imports generated tools (which import config.py)
     steps = [
-        ("Check environment",       lambda: step_check_env()),
-        ("Test Neo4j connection",   lambda: step_test_connection(database)),
-        ("Export schema to CSV",    lambda: step_export_schema(database)),
-        ("Create fulltext indexes", lambda: step_create_indexes(database)),
-        ("Generate @tool files",    lambda: step_generate_tools(database)),
-        ("Generate config.py",      lambda: step_generate_config(database)),
+        ("Check environment",         lambda: step_check_env()),
+        ("Test Neo4j connection",     lambda: step_test_connection(database)),
+        ("Export schema to CSV",      lambda: step_export_schema(database)),
+        ("Generate schema_meta.json", lambda: step_generate_schema_meta()),
+        ("Create fulltext indexes",   lambda: step_create_indexes(database)),
+        ("Generate @tool files",      lambda: step_generate_tools(database)),
+        ("Generate config.py",        lambda: step_generate_config(database)),
     ]
 
     if not args.skip_faiss:

@@ -30,16 +30,17 @@ Environment variables  (loaded from .env)
   NEO4J_URI        bolt / neo4j+s URI
   NEO4J_USERNAME
   NEO4J_PASSWORD
-  NEO4J_DATABASE   default: movies
+  NEO4J_DATABASE   default: neo4j
 """
 
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import re
 import sys
-from typing import Dict, List, Set, Tuple
+from typing import Any, Dict, List, Optional, Set, Tuple
 
 from dotenv import load_dotenv
 from neo4j import GraphDatabase
@@ -362,6 +363,13 @@ _PROP_TOPIC_SUFFIX: Dict[str, str] = {
 
 def _node_topic(label: str, prop: str) -> str:
     """Human-readable topic for a node property search."""
+    # schema_meta.json (authoritative when available)
+    topic = (_schema_meta.get("nodes", {})
+             .get(label, {}).get("properties", {})
+             .get(prop, {}).get("topic"))
+    if topic:
+        return topic
+    # Fallback: heuristic
     suffix = _PROP_TOPIC_SUFFIX.get(prop.lower(), "")
     base = f"{label} {prop}"
     return f"{base} {suffix}".strip() if suffix else base
@@ -369,20 +377,61 @@ def _node_topic(label: str, prop: str) -> str:
 
 def _rel_prop_topic(rel_type: str, prop: str) -> str:
     """Human-readable topic for a relationship property search."""
+    # schema_meta.json (authoritative when available)
+    topic = (_schema_meta.get("relationships", {})
+             .get(rel_type, {}).get("properties", {})
+             .get(prop, {}).get("topic"))
+    if topic:
+        return topic
+    # Fallback: heuristic
     return f"{prop} in {rel_type} relationship"
 
 
 def _structural_rel_topic(rel_type: str, to_label: str, end_prop: str) -> str:
     """Human-readable topic for a structural (property-less) relationship tool."""
+    # schema_meta.json — look up the end-node's property topic
+    topic = (_schema_meta.get("nodes", {})
+             .get(to_label, {}).get("properties", {})
+             .get(end_prop, {}).get("topic"))
+    if topic:
+        return f"{topic} in {rel_type} relationship"
+    # Fallback: heuristic
     return f"{to_label.lower()} {end_prop} in {rel_type} relationship"
+
+
+def _load_schema_meta(path: str = "schema_meta.json") -> Dict[str, Any]:
+    """
+    Load ``schema_meta.json`` if it exists.  Returns an empty dict on any
+    failure so callers can fall back gracefully.
+    """
+    try:
+        with open(path, encoding="utf-8") as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError, OSError):
+        return {}
+
+
+# Module-level cache — populated once by main() or generate_rel_tools_file().
+_schema_meta: Dict[str, Any] = {}
 
 
 def _guess_id_property(label: str) -> str:
     """
-    Heuristically pick the primary identifying text property for a label.
+    Pick the primary identifying property for a node label.
 
-    Returns ``"title"`` for movie/book/film-like labels, ``"name"`` otherwise.
+    Resolution order:
+      1. ``schema_meta.json``  →  ``nodes.<label>.id_property``
+      2. English-name heuristic  →  ``"title"`` for media-like labels,
+         ``"name"`` otherwise.
     """
+    # ── 1. schema_meta.json (authoritative when available) ────────────────
+    nodes_meta = _schema_meta.get("nodes", {})
+    label_meta = nodes_meta.get(label, {})
+    id_prop = label_meta.get("id_property")
+    if id_prop:
+        return id_prop
+
+    # ── 2. English-name fallback ─────────────────────────────────────────
     lower = label.lower()
     if any(kw in lower for kw in ("movie", "film", "book", "song", "album",
                                    "article", "post", "product", "item")):
@@ -487,12 +536,20 @@ def _render_structural_rel_tool(
 def generate_node_tools_file(
     node_pairs: List[Tuple[str, str]],
     output_path: str,
+    meta_path: str = "schema_meta.json",
 ) -> int:
     """
     Write ``generated_node_tools.py``.
 
+    When *meta_path* points to a valid ``schema_meta.json``, topics for each
+    node property are read from it instead of inferred by heuristic.
+
     Returns the number of @tool functions written.
     """
+    global _schema_meta
+    if not _schema_meta:
+        _schema_meta = _load_schema_meta(meta_path)
+
     seen_names: Set[str] = set()
     blocks: List[str] = []
 
@@ -512,6 +569,7 @@ def generate_rel_tools_file(
     rel_prop_pairs: List[Tuple[str, str]],
     structural_relations: List[Tuple[str, str, str]],
     output_path: str,
+    meta_path: str = "schema_meta.json",
 ) -> int:
     """
     Write ``generated_rel_tools.py``.
@@ -522,8 +580,14 @@ def generate_rel_tools_file(
     * **Part 2** – structural traversal tools for property-less relationships
       (``search_tool`` on the end node).
 
+    When *meta_path* points to a valid ``schema_meta.json``, the
+    ``id_property`` for each label is read from it instead of guessed.
+
     Returns the total number of @tool functions written.
     """
+    global _schema_meta
+    if not _schema_meta:
+        _schema_meta = _load_schema_meta(meta_path)
     seen_names: Set[str] = set()
     blocks: List[str]    = []
 
@@ -599,13 +663,28 @@ def _parse_args() -> argparse.Namespace:
         "--database",
         default=os.getenv("NEO4J_DATABASE", "neo4j"),
         metavar="DB",
-        help="Neo4j database name (default: $NEO4J_DATABASE or 'movies')",
+        help="Neo4j database name (default: $NEO4J_DATABASE or 'neo4j')",
+    )
+    p.add_argument(
+        "--meta",
+        default="schema_meta.json",
+        metavar="PATH",
+        help="Path to schema_meta.json (default: schema_meta.json)",
     )
     return p.parse_args()
 
 
 def main() -> None:
+    global _schema_meta
     args = _parse_args()
+
+    # Load schema_meta.json so _guess_id_property() can use id_property
+    _schema_meta = _load_schema_meta(args.meta)
+    if _schema_meta:
+        labels = list(_schema_meta.get("nodes", {}).keys())
+        print(f"Loaded schema_meta.json  (labels: {labels})", flush=True)
+    else:
+        print("No schema_meta.json found — using heuristic id_property guessing.", flush=True)
 
     print("Connecting to Neo4j …", flush=True)
     driver = _get_driver()

@@ -14,7 +14,22 @@ resolve each one to its canonical database value using the provided tools.
 
 Available tools
 ───────────────
-  (no tools loaded — run `python gen_tools.py`)
+  ── Node property tools ──
+  get_acted_in_roles                  canonical ACTED_IN.roles values
+  get_movie_released                  canonical Movie.released values
+  get_movie_tagline                   canonical Movie.tagline values
+  get_movie_title                     canonical Movie.title values
+  get_movie_votes                     canonical Movie.votes values
+  get_person_born                     canonical Person.born values
+  get_person_name                     canonical Person.name values
+  get_reviewed_rating                 canonical REVIEWED.rating values
+  get_reviewed_summary                canonical REVIEWED.summary values
+
+  ── Structural traversal tools ──
+  get_directed_relation               Movie.title values via (:Person)-[:DIRECTED]->(:Movie)
+  get_follows_relation                Person.name values via (:Person)-[:FOLLOWS]->(:Person)
+  get_produced_relation               Movie.title values via (:Person)-[:PRODUCED]->(:Movie)
+  get_wrote_relation                  Movie.title values via (:Person)-[:WROTE]->(:Movie)
 
 Extraction rules (follow strictly)
 ────────────────────────────────────
@@ -39,14 +54,17 @@ Extraction rules (follow strictly)
 
 Examples
 ────────
-Q: How many movies have released before 1992?
-A: {"Movie.released": [1992]}
+Q: Find the movie named "As Good as It Gets".
+A: {"Movie.title": ["As Good as It Gets"]}
 
-Q: Which movie has tagline containing "A story of love, lava and burn"?
-A: {"Movie.tagline": ["A story of love, lava and burn"]}
+Q: How many movies have released before 1999?
+A: {"Movie.released": [1999]}
 
-Q: Which person has ACTED_IN relationship with roles "['Fred Haise']"?
-A: {"ACTED_IN.roles": ["['Fred Haise']"]}
+Q: Which movie has tagline containing "The hottest data on earth. In "?
+A: {"Movie.tagline": ["The hottest data on earth. In "]}
+
+Q: Which person has acted_in roles "['Kit Keller']"?
+A: {"ACTED_IN.roles": ["['Kit Keller']"]}
 
 Q: List all items in the database.
 A: {}
@@ -65,9 +83,9 @@ Generation rules
   defined in the schema below. Never invent new ones.
 - Read-only        : never generate CREATE / MERGE / SET / DELETE / REMOVE.
 - No parameters    : do NOT use $param syntax; always inline literal values.
-  ✓  WHERE toLower(n.name) = toLower("<value>")
-  ✗  WHERE n.name = $name
-- Aliases          : always use snake_case (e.g. item_name, person_name).
+  ✓  WHERE toLower(m.title) = toLower("Inception")
+  ✗  WHERE m.title = $title
+- Aliases          : always use snake_case (e.g. movie_title, person_name).
 - LIMIT            : always add LIMIT (default 25) unless the question asks
   for a count or aggregate.
 - String comparisons: always use `toLower(n.prop) = toLower("value")` for (Movie.tagline, Movie.title, Person.name).

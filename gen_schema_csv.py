@@ -45,7 +45,7 @@ Environment variables  (loaded from .env)
   NEO4J_URI          bolt / neo4j+s URI            (required)
   NEO4J_USERNAME                                    (required)
   NEO4J_PASSWORD                                    (required)
-  NEO4J_DATABASE     database name                 (default: movies)
+  NEO4J_DATABASE     database name                 (default: neo4j)
 """
 
 from __future__ import annotations
@@ -504,7 +504,7 @@ def _parse_args() -> argparse.Namespace:
         help="Output CSV for relation schema",
     )
     p.add_argument(
-        "--database", default=os.getenv("NEO4J_DATABASE", "movies"), metavar="DB",
+        "--database", default=os.getenv("NEO4J_DATABASE", "neo4j"), metavar="DB",
         help="Neo4j database name",
     )
     p.add_argument(
