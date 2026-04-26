@@ -1,0 +1,43 @@
+# ──────────────────────────────────────────────────────────────────────────────
+# Ignore everything by default, then whitelist specific file types
+# ──────────────────────────────────────────────────────────────────────────────
+
+# Ignore everything
+*
+
+# But not .gitignore itself
+!.gitignore
+
+# Whitelist .py, .md, and requirements.txt
+!*.py
+!*.md
+!requirements.txt
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Directories to always ignore (even if they contain .py/.md files)
+# ──────────────────────────────────────────────────────────────────────────────
+
+__pycache__/
+faiss_tools/
+faiss_tools_auto/
+llmenv/
+t2c/
+not_use_code/
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Other common ignores
+# ──────────────────────────────────────────────────────────────────────────────
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# macOS
+.DS_Store

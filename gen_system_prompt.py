@@ -1,0 +1,897 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+gen_system_prompt.py
+====================
+Introspects a live Neo4j database and generates a **complete** ``config.py``
+from scratch — schema constants, system prompts, and runtime settings — all
+tailored to the actual graph in the database.
+
+What is generated
+-----------------
+``config.py`` contains four sections:
+
+  1. **System Prompts**
+       NER_SP            – NER agent prompt with a dynamic tool list,
+                           hard extraction rules, and schema-derived examples.
+       TEXT2CYPHER_SP    – Text-to-Cypher prompt with the graph schema baked in.
+       QA_SP             – Answer-formatting prompt for GraphCypherQAChain.
+       PROMPT_ALIGNER_SP – Re-words user questions to match executed Cypher.
+
+  2. **Schema Constants**  (auto-derived from the live graph)
+       NODE_<LABEL>                  e.g. NODE_MOVIE = "Movie"
+       PROPERTY_<LABEL>_<PROP>       e.g. PROPERTY_MOVIE_TITLE = "title"
+       REL_<TYPE>                    e.g. REL_ACTED_IN = "ACTED_IN"
+       REL_PROPERTY_<TYPE>_<PROP>    e.g. REL_PROPERTY_REVIEWED_RATING = "rating"
+       FILTERABLE_<LABEL>_PROPERTIES – non-numeric properties per label
+
+  3. **Index Constants**  (fulltext index names discovered from the graph)
+
+  4. **Runtime Constants**
+       MAX_THREAD, N_CLUSTERS, etc.
+
+Usage
+-----
+  python gen_system_prompt.py                     # write config.py
+  python gen_system_prompt.py --print-only        # preview, no write
+  python gen_system_prompt.py --database movies
+  python gen_system_prompt.py --output path/to/config.py
+
+Environment variables  (loaded from .env)
+-----------------------------------------
+  NEO4J_URI          bolt / neo4j+s URI  (required)
+  NEO4J_USERNAME                         (required)
+  NEO4J_PASSWORD                         (required)
+  NEO4J_DATABASE     default: movies
+"""
+
+from __future__ import annotations
+
+import argparse
+import importlib
+import inspect
+import os
+import re
+import sys
+import textwrap
+from collections import defaultdict
+from typing import Any, Dict, List, Optional, Set, Tuple
+
+from dotenv import load_dotenv
+from neo4j import GraphDatabase
+from neo4j.exceptions import Neo4jError
+
+from gen_schema_csv import collect_node_schema, collect_rel_schema
+
+load_dotenv()
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Environment & driver helpers
+# ──────────────────────────────────────────────────────────────────────────────
+
+def _require_env(name: str) -> str:
+    v = os.getenv(name)
+    if not v:
+        raise RuntimeError(
+            f"Missing required env var: {name}. Set it in .env or system environment."
+        )
+    return v
+
+
+def _get_driver():
+    return GraphDatabase.driver(
+        _require_env("NEO4J_URI"),
+        auth=(_require_env("NEO4J_USERNAME"), _require_env("NEO4J_PASSWORD")),
+    )
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Identifier helpers
+# ──────────────────────────────────────────────────────────────────────────────
+
+def _to_const(s: str) -> str:
+    """
+    Convert a camelCase / PascalCase / snake_case identifier to SCREAMING_SNAKE.
+
+    Examples:
+        "Movie"      → "MOVIE"
+        "born"       → "BORN"
+        "storeNumber"→ "STORE_NUMBER"
+        "ACTED_IN"   → "ACTED_IN"
+    """
+    # Insert underscore before uppercase letters that follow lowercase
+    s = re.sub(r"([a-z])([A-Z])", r"\1_\2", s)
+    return re.sub(r"[^A-Z0-9]", "_", s.upper()).strip("_")
+
+
+def _is_numeric_type(types_str: str) -> bool:
+    """Return True if the property type is purely numeric."""
+    return bool(re.search(r"\b(Long|Integer|Float|Double)\b", types_str or ""))
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Tool registry loader
+# ──────────────────────────────────────────────────────────────────────────────
+
+def _load_tool_registry() -> Dict[str, Any]:
+    """
+    Import generated_node_tools + generated_rel_tools and collect all BaseTool
+    instances.  Returns {} (with a warning) if the modules are absent.
+    """
+    try:
+        from langchain_core.tools import BaseTool
+    except ImportError:
+        return {}
+
+    registry: Dict[str, Any] = {}
+    for mod_name in ("generated_node_tools", "generated_rel_tools"):
+        try:
+            mod = importlib.import_module(mod_name)
+            importlib.reload(mod)
+            for name, obj in inspect.getmembers(mod):
+                if isinstance(obj, BaseTool):
+                    registry[name] = obj
+        except ImportError:
+            print(
+                f"  Warning: cannot import {mod_name!r}. "
+                "Run `python gen_tools.py` first.",
+                file=sys.stderr,
+            )
+    return registry
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Fulltext index discovery
+# ──────────────────────────────────────────────────────────────────────────────
+
+def _discover_fulltext_indexes(driver, database: str) -> List[Dict[str, str]]:
+    """
+    Query the database for existing fulltext indexes.
+
+    Returns list of dicts: {name, type, labelsOrTypes, properties}.
+    """
+    indexes = []
+    try:
+        with driver.session(database=database) as session:
+            rows = list(session.run(
+                "SHOW INDEXES YIELD name, type, labelsOrTypes, properties "
+                "WHERE type = 'FULLTEXT' RETURN name, type, labelsOrTypes, properties"
+            ))
+            for r in rows:
+                indexes.append({
+                    "name":           str(r.get("name", "")),
+                    "type":           str(r.get("type", "")),
+                    "labelsOrTypes":  list(r.get("labelsOrTypes") or []),
+                    "properties":     list(r.get("properties") or []),
+                })
+    except Exception:
+        pass
+    return indexes
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Schema block builder
+# ──────────────────────────────────────────────────────────────────────────────
+
+def _build_schema_block(
+    node_rows: List[Dict[str, Any]],
+    rel_rows:  List[Dict[str, Any]],
+) -> str:
+    """
+    Compact, human-readable schema block for embedding inside system prompts.
+
+    Example::
+        Node Labels and Properties:
+          Movie  : released (Long), tagline (String), title (String)
+          Person : born (Long), name (String)
+
+        Relationships:
+          (:Person)-[:ACTED_IN {roles: StringArray}]->(:Movie)
+          (:Person)-[:DIRECTED]->(:Movie)
+          ...
+    """
+    lines: List[str] = []
+
+    # ── Nodes ─────────────────────────────────────────────────────────────────
+    label_props: Dict[str, List[str]] = defaultdict(list)
+    for r in node_rows:
+        entry = r["property"]
+        if r.get("property_types"):
+            entry += f" ({r['property_types']})"
+        label_props[r["label"]].append(entry)
+
+    max_label_len = max((len(lb) for lb in label_props), default=8)
+    lines.append("Node Labels and Properties:")
+    for label in sorted(label_props):
+        pad = " " * (max_label_len - len(label))
+        lines.append(f"  {label}{pad} : {', '.join(sorted(label_props[label]))}")
+
+    lines.append("")
+
+    # ── Relationships ─────────────────────────────────────────────────────────
+    rel_prop_map: Dict[Tuple[str, str, str], List[str]] = defaultdict(list)
+    for r in rel_rows:
+        key = (r["rel_type"], r["from_label"], r["to_label"])
+        if r.get("property"):
+            entry = r["property"]
+            if r.get("property_types"):
+                entry += f": {r['property_types']}"
+            rel_prop_map[key].append(entry)
+        else:
+            rel_prop_map.setdefault(key, [])
+
+    lines.append("Relationships:")
+    for (rt, fl, tl) in sorted(rel_prop_map):
+        props = rel_prop_map[(rt, fl, tl)]
+        prop_part = f" {{{', '.join(props)}}}" if props else ""
+        lines.append(f"  (:{fl})-[:{rt}{prop_part}]->(:{tl})")
+
+    return "\n".join(lines)
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Tool-list formatter for NER prompt
+# ──────────────────────────────────────────────────────────────────────────────
+
+_RE_NODE_DESC   = re.compile(r"canonical\s+(\w+)\.(\w+)\s+values")
+_RE_REL_PROP    = re.compile(r"canonical\s+([A-Z][A-Z_]+)\.(\w+)\s+values")
+_RE_STRUCTURAL  = re.compile(
+    r"Find\s+(\w+)\.(\w+)\s+values\s+reachable\s+via\s+\(:(\w+)\)-\[:(\w+)\]->\(:(\w+)\)"
+)
+
+
+def _format_tool_line(func_name: str, description: str) -> str:
+    m = _RE_STRUCTURAL.match(description)
+    if m:
+        to_label, prop, from_label, rel_type, _ = m.groups()
+        return (
+            f"  {func_name:<34}  {to_label}.{prop} values "
+            f"via (:{from_label})-[:{rel_type}]->(:{to_label})"
+        )
+    m = _RE_REL_PROP.match(description)
+    if m:
+        rel_type, prop = m.groups()
+        return f"  {func_name:<34}  canonical {rel_type}.{prop} values"
+    m = _RE_NODE_DESC.search(description)
+    if m:
+        label, prop = m.groups()
+        return f"  {func_name:<34}  canonical {label}.{prop} values"
+    short = description.split("\n")[0][:72]
+    return f"  {func_name:<34}  {short}"
+
+
+def _build_tool_section(registry: Dict[str, Any]) -> str:
+    """Return a formatted tool-list block for the NER prompt."""
+    node_lines:   List[str] = []
+    rel_p_lines:  List[str] = []
+    struct_lines: List[str] = []
+
+    for func_name, tool_obj in sorted(registry.items()):
+        desc  = (tool_obj.description or "").strip()
+        line  = _format_tool_line(func_name, desc)
+        if _RE_STRUCTURAL.match(desc):
+            struct_lines.append(line)
+        elif _RE_REL_PROP.match(desc):
+            rel_p_lines.append(line)
+        else:
+            node_lines.append(line)
+
+    parts: List[str] = []
+    if node_lines:
+        parts.append("  ── Node property tools ──\n" + "\n".join(node_lines))
+    if rel_p_lines:
+        parts.append("  ── Relationship property tools ──\n" + "\n".join(rel_p_lines))
+    if struct_lines:
+        parts.append("  ── Structural traversal tools ──\n" + "\n".join(struct_lines))
+
+    return "\n\n".join(parts) if parts else "  (no tools loaded — run `python gen_tools.py`)"
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Few-shot example derivation
+# ──────────────────────────────────────────────────────────────────────────────
+
+def _derive_few_shot(
+    node_rows: List[Dict[str, Any]],
+    rel_rows:  List[Dict[str, Any]],
+) -> List[Tuple[str, str]]:
+    """
+    Return up to 5 (question, answer) tuples derived from the actual schema.
+    """
+    examples: List[Tuple[str, str]] = []
+
+    # ── 1. Identifying String property (title / name / id) ────────────────────
+    for r in node_rows:
+        prop = r["property"].lower()
+        if prop in ("title", "name", "id") and "String" in r.get("property_types", ""):
+            label  = r["label"]
+            prop_  = r["property"]
+            sample = (r.get("sample_values") or "").split(" | ")[0].strip()
+            sample = sample or f"Example {label}"
+            examples.append((
+                f'Find the {label.lower()} named "{sample}".',
+                f'{{"{label}.{prop_}": ["{sample}"]}}',
+            ))
+            break
+
+    # ── 2. Numeric property (released / born / year) ──────────────────────────
+    for r in node_rows:
+        prop = r["property"].lower()
+        types = r.get("property_types", "")
+        if prop in ("released", "born", "year") and _is_numeric_type(types):
+            label  = r["label"]
+            prop_  = r["property"]
+            sample = (r.get("sample_values") or "").split(" | ")[0].strip()
+            try:
+                num = int(float(sample))
+            except (ValueError, TypeError):
+                num = 1999
+            examples.append((
+                f"How many {label.lower()}s have {prop_} before {num}?",
+                f'{{"{label}.{prop_}": [{num}]}}',
+            ))
+            break
+
+    # ── 3. Second String property (e.g. tagline, summary) ─────────────────────
+    count = 0
+    for r in node_rows:
+        prop  = r["property"].lower()
+        types = r.get("property_types", "")
+        if prop not in ("title", "name", "id", "released", "born") and "String" in types:
+            label  = r["label"]
+            prop_  = r["property"]
+            sample = (r.get("sample_values") or "").split(" | ")[0].strip()
+            if sample:
+                examples.append((
+                    f'Which {label.lower()} has {prop_} containing "{sample[:30]}"?',
+                    f'{{"{label}.{prop_}": ["{sample[:30]}"]}}',
+                ))
+                count += 1
+                if count >= 1:
+                    break
+
+    # ── 4. Relationship property (e.g. ACTED_IN.roles) ────────────────────────
+    for r in rel_rows:
+        if r.get("property"):
+            rt     = r["rel_type"]
+            prop_  = r["property"]
+            fl     = r["from_label"]
+            tl     = r["to_label"]
+            sample = (r.get("sample_values") or "").split(" | ")[0].strip()
+            sample = sample or "Example Role"
+            examples.append((
+                f'Which {fl.lower()} has {rt.lower()} {prop_} "{sample}"?',
+                f'{{"{rt}.{prop_}": ["{sample}"]}}',
+            ))
+            break
+
+    # ── 5. Pure traversal / no entities ───────────────────────────────────────
+    examples.append((
+        "List all items in the database.",
+        "{}",
+    ))
+
+    return examples[:5]
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# PROMPT GENERATORS
+# ──────────────────────────────────────────────────────────────────────────────
+
+def generate_ner_sp(
+    node_rows: List[Dict[str, Any]],
+    rel_rows:  List[Dict[str, Any]],
+    registry:  Optional[Dict[str, Any]] = None,
+) -> str:
+    """Generate the NER agent system prompt."""
+    if registry is None:
+        registry = _load_tool_registry()
+
+    tool_block = _build_tool_section(registry)
+    examples   = _derive_few_shot(node_rows, rel_rows)
+
+    # Build key-format note from actual labels
+    key_samples = [
+        f'"{r["label"]}.{r["property"]}"' for r in node_rows[:3]
+    ]
+    key_note = ", ".join(key_samples) if key_samples else '"Label.property"'
+
+    example_block = "\n\n".join(
+        f"Q: {q}\nA: {a}" for q, a in examples
+    )
+
+    return f"""\
+You are a strict Named Entity Recognition (NER) agent for a Neo4j graph database.
+
+Your sole responsibility: extract named entities from the user question and
+resolve each one to its canonical database value using the provided tools.
+
+Available tools
+───────────────
+{tool_block}
+
+Extraction rules (follow strictly)
+────────────────────────────────────
+1.  Extract ONLY entities that are explicitly mentioned in the question.
+    If no relevant entity exists, return an empty JSON object {{}}.
+
+2.  Use a tool for every string entity that needs database lookup.
+    Exception: purely numeric values (years, IDs, counts) must be returned
+    inline as numbers — do NOT call a tool for them.
+
+3.  A match is valid ONLY when it is:
+    (a) a lexical match (case-insensitive), OR
+    (b) semantically identical (same real-world referent).
+    Never fabricate or guess values beyond what the tools return.
+
+4.  Return at most 2 best-matching canonical values per key.
+
+5.  Final output MUST be a single valid JSON object — nothing else.
+    • Keys   : "Label.property" format (e.g. {key_note})
+    • Values : always a JSON array, even for a single result
+    • No code fences, no markdown, no explanation, no extra text.
+
+Examples
+────────
+{example_block}"""
+
+
+def generate_text2cypher_sp(
+    node_rows: List[Dict[str, Any]],
+    rel_rows:  List[Dict[str, Any]],
+) -> str:
+    """Generate the text-to-Cypher system prompt with schema baked in."""
+    schema_block = _build_schema_block(node_rows, rel_rows)
+    indented     = textwrap.indent(schema_block, "    ")
+
+    # Collect string properties for filter guidance
+    string_props: List[str] = []
+    for r in node_rows:
+        if "String" in r.get("property_types", ""):
+            string_props.append(f'{r["label"]}.{r["property"]}')
+
+    filter_note = ""
+    if string_props:
+        examples_str = ", ".join(string_props[:3])
+        filter_note = (
+            f"\n- String comparisons: always use "
+            f"`toLower(n.prop) = toLower(\"value\")` for ({examples_str})."
+        )
+
+    return f"""\
+Task: Generate a single READ-ONLY Cypher query to answer the user question.
+
+Output format
+─────────────
+Return ONLY the Cypher query — no backticks, no code fences, no explanation.
+
+Generation rules
+────────────────
+- Schema adherence : use ONLY the labels, relationship types, and properties
+  defined in the schema below. Never invent new ones.
+- Read-only        : never generate CREATE / MERGE / SET / DELETE / REMOVE.
+- No parameters    : do NOT use $param syntax; always inline literal values.
+  ✓  WHERE toLower(m.title) = toLower("Inception")
+  ✗  WHERE m.title = $title
+- Aliases          : always use snake_case (e.g. movie_title, person_name).
+- LIMIT            : always add LIMIT (default 25) unless the question asks
+  for a count or aggregate.{filter_note}
+- Entity filters   : when entity values are supplied in the "Schema-relevant
+  entity filters" section below, incorporate ALL of them in the WHERE clause
+  as exact-match (string) or comparison (numeric) filters.
+
+Graph Schema (static snapshot — baked at generation time)
+──────────────────────────────────────────────────────────
+{indented}
+
+Live schema (injected at runtime by GraphCypherQAChain — authoritative):
+{{schema}}
+
+Schema-relevant entity filters
+───────────────────────────────
+(Pre-filled by the NER pipeline.  Keys are "Label.property"; values are
+canonical matches from the database.  Use ALL provided pairs in WHERE.)
+
+{{relevant_entities}}
+
+Question: {{question}}
+Answer:"""
+
+
+def generate_qa_sp() -> str:
+    """Generate the QA answer-formatting system prompt (generic)."""
+    return """\
+You are a helpful AI assistant that answers questions about a graph database.
+
+Rules
+─────
+1.  Ground all answers strictly in the "Relevant Data" provided.
+    Never use internal knowledge to add, correct, or contradict the data.
+2.  If Relevant Data is empty or irrelevant, say so clearly.
+3.  Be concise, accurate, and use natural language.
+4.  When the question asks for a list, provide it in bullet-point or table form.
+5.  When the question asks for a count or aggregate, state the number directly.
+6.  Do NOT expose raw Neo4j node IDs or internal identifiers.
+
+Output format
+─────────────
+- For narrative answers : plain prose with bullet points where helpful.
+- For tabular data      : a markdown table with clear column headers.
+- For counts / numbers  : state the figure prominently at the start.
+
+Examples
+────────
+Q: Who directed The Matrix?
+Relevant Data: [{{"director": "Lana Wachowski"}}]
+A: The Matrix was directed by Lana Wachowski.
+
+Q: How many movies were released before 2000?
+Relevant Data: [{{"count": 38}}]
+A: There are 38 movies released before 2000 in the database.
+
+Q: What roles did Tom Hanks play?
+Relevant Data: [{{"movie": "Cast Away", "roles": ["Chuck Noland"]}}, {{"movie": "Forrest Gump", "roles": ["Forrest Gump"]}}]
+A:
+Tom Hanks appeared in 2 movies:
+| Movie        | Role         |
+|-------------|-------------|
+| Cast Away    | Chuck Noland |
+| Forrest Gump | Forrest Gump |
+
+Now answer the following:
+
+Question: {{question}}
+Relevant Data:
+{{context}}
+Answer:"""
+
+
+def generate_prompt_aligner_sp() -> str:
+    """Generate the prompt-aligner system prompt (generic)."""
+    return """\
+You are a Cypher query expert helping to align a user question with the query
+that was actually executed against the graph database.
+
+Context
+───────
+Users sometimes phrase questions using informal language, incorrect property
+names, or assumptions about the schema.  The system generates the closest
+valid Cypher query it can.  Your task is to rephrase the user question so it
+accurately reflects what the executed Cypher query does — making it clear
+which labels, properties, and filter values were used.
+
+Rules
+─────
+- Output ONLY the rephrased question — no explanation, no extra text.
+- Expand abbreviations and acronyms where you can infer the full form.
+- If the Cypher query filters by a specific property value (e.g. a label,
+  type, or dimension), include that value in the rephrased question.
+- Keep the rephrased question as close to the original intent as possible.
+
+Examples
+────────
+[user_question]  What movies did Neo act in?
+[cypher_query]   MATCH (p:Person {{name: "Keanu Reeves"}})-[:ACTED_IN]->(m:Movie)
+                 RETURN m.title AS movie_title
+[rephrased]      What movies did Keanu Reeves act in?
+
+[user_question]  Find old films.
+[cypher_query]   MATCH (m:Movie) WHERE m.released < 1980 RETURN m.title, m.released
+[rephrased]      Find movies released before 1980.
+
+Now rephrase:
+
+[user_question]
+{{user_question}}
+
+[cypher_query]
+{{cypher_query}}
+
+[rephrased]"""
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Schema constants generator
+# ──────────────────────────────────────────────────────────────────────────────
+
+def generate_schema_constants(
+    node_rows:  List[Dict[str, Any]],
+    rel_rows:   List[Dict[str, Any]],
+    ft_indexes: List[Dict[str, str]],
+) -> str:
+    """
+    Emit Python constant declarations derived from the live schema.
+
+    Sections produced:
+    • Node label constants         NODE_<LABEL>
+    • Node property constants      PROPERTY_<LABEL>_<PROP>
+    • Filterable property lists    FILTERABLE_<LABEL>_PROPERTIES
+    • Relationship type constants  REL_<TYPE>
+    • Rel property constants       REL_PROPERTY_<TYPE>_<PROP>
+    • Fulltext index constants     FULLTEXT_INDEX_<NAME>
+    """
+    lines: List[str] = []
+
+    # ── Node labels ───────────────────────────────────────────────────────────
+    labels: List[str] = sorted({r["label"] for r in node_rows})
+    lines.append("# Node labels")
+    for label in labels:
+        lines.append(f'NODE_{_to_const(label)} = "{label}"')
+    lines.append("")
+
+    # ── Node properties ───────────────────────────────────────────────────────
+    lines.append("# Node properties")
+    for label in labels:
+        props = sorted({r["property"] for r in node_rows if r["label"] == label})
+        for prop in props:
+            const = f"PROPERTY_{_to_const(label)}_{_to_const(prop)}"
+            lines.append(f'{const} = "{prop}"')
+    lines.append("")
+
+    # ── Filterable property lists (non-numeric, non-embedding) ────────────────
+    lines.append("# Filterable properties per node label")
+    skip_props = {"embedding", "vector", "id"}
+    for label in labels:
+        props = sorted(
+            r["property"]
+            for r in node_rows
+            if r["label"] == label
+            and r["property"].lower() not in skip_props
+            and not _is_numeric_type(r.get("property_types", ""))
+        )
+        const = f"FILTERABLE_{_to_const(label)}_PROPERTIES"
+        prop_list = ", ".join(f'"{p}"' for p in props)
+        lines.append(f"{const} = [{prop_list}]")
+    lines.append("")
+
+    # ── Relationship types ────────────────────────────────────────────────────
+    rel_types: List[str] = sorted({r["rel_type"] for r in rel_rows})
+    lines.append("# Relationship types")
+    for rt in rel_types:
+        lines.append(f'REL_{_to_const(rt)} = "{rt}"')
+    lines.append("")
+
+    # ── Relationship properties ───────────────────────────────────────────────
+    rel_with_props = [r for r in rel_rows if r.get("property")]
+    if rel_with_props:
+        lines.append("# Relationship properties")
+        for r in sorted(rel_with_props, key=lambda x: (x["rel_type"], x["property"])):
+            const = f"REL_PROPERTY_{_to_const(r['rel_type'])}_{_to_const(r['property'])}"
+            lines.append(f'{const} = "{r["property"]}"')
+        lines.append("")
+
+    # ── Fulltext indexes ──────────────────────────────────────────────────────
+    if ft_indexes:
+        lines.append("# Fulltext index names")
+        for idx in sorted(ft_indexes, key=lambda x: x["name"]):
+            const = f"FULLTEXT_INDEX_{_to_const(idx['name'])}"
+            lines.append(f'{const} = "{idx["name"]}"')
+        lines.append("")
+
+    return "\n".join(lines)
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Runtime constants (static — not schema-dependent)
+# ──────────────────────────────────────────────────────────────────────────────
+
+_RUNTIME_CONSTANTS = """\
+# ──────────────────────────────────────────────────────────────────────────────
+# Runtime constants
+# ──────────────────────────────────────────────────────────────────────────────
+
+MAX_THREAD          = 5    # parallel tool calls in the NER agent
+DEFAULT_TOP_K       = 5    # FAISS tool-selection top-k
+TOOL_TOP_K          = 10   # fulltext search top-k per tool call
+N_CLUSTERS          = 50   # k-means clusters for semantic sampling
+SAMPLES_PER_CLUSTER = 4    # samples drawn per cluster
+FULL_DATA_THRESHOLD = 200  # rows — below this, return all data
+SAMPLING_THRESHOLD  = 5000 # rows — above this, switch to cluster sampling
+"""
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Config.py assembler
+# ──────────────────────────────────────────────────────────────────────────────
+
+def _triple_quote(s: str) -> str:
+    """Wrap *s* in a triple-quoted Python string literal."""
+    # Escape any triple-double-quote sequences that would break the literal
+    escaped = s.replace('\\', '\\\\').replace('"""', r'\"\"\"')
+    return f'"""\\\n{escaped}\n"""'
+
+
+def generate_config_py(
+    node_rows:  List[Dict[str, Any]],
+    rel_rows:   List[Dict[str, Any]],
+    ft_indexes: List[Dict[str, str]],
+    registry:   Optional[Dict[str, Any]] = None,
+    database:   str = "neo4j",
+) -> str:
+    """
+    Assemble the complete ``config.py`` content as a string.
+
+    Parameters
+    ----------
+    node_rows   : from collect_node_schema()
+    rel_rows    : from collect_rel_schema()
+    ft_indexes  : from _discover_fulltext_indexes()
+    registry    : {func_name: BaseTool} from _load_tool_registry()
+    database    : Neo4j database name (used in header comment only)
+
+    Returns
+    -------
+    str  Full Python source for config.py.
+    """
+    if registry is None:
+        registry = _load_tool_registry()
+
+    ner_sp         = generate_ner_sp(node_rows, rel_rows, registry)
+    text2cypher_sp = generate_text2cypher_sp(node_rows, rel_rows)
+    qa_sp          = generate_qa_sp()
+    aligner_sp     = generate_prompt_aligner_sp()
+    schema_consts  = generate_schema_constants(node_rows, rel_rows, ft_indexes)
+
+    sections: List[str] = []
+
+    # ── File header ───────────────────────────────────────────────────────────
+    sections.append(
+        "# AUTO-GENERATED by gen_system_prompt.py — do not edit manually.\n"
+        f"# Database : {database}\n"
+        "# Re-run `python gen_system_prompt.py` to regenerate from the live schema.\n"
+    )
+
+    # ── System prompts ────────────────────────────────────────────────────────
+    sections.append(
+        "# ──────────────────────────────────────────────────────────────────────────────\n"
+        "# System Prompts\n"
+        "# ──────────────────────────────────────────────────────────────────────────────\n"
+    )
+
+    sections.append(f"NER_SP = {_triple_quote(ner_sp)}\n")
+    sections.append(f"TEXT2CYPHER_SP = {_triple_quote(text2cypher_sp)}\n")
+    sections.append(f"QA_SP = {_triple_quote(qa_sp)}\n")
+    sections.append(f"PROMPT_ALIGNER_SP = {_triple_quote(aligner_sp)}\n")
+
+    # ── Schema constants ──────────────────────────────────────────────────────
+    sections.append(
+        "# ──────────────────────────────────────────────────────────────────────────────\n"
+        "# Schema Constants  (auto-derived from the live Neo4j database)\n"
+        "# ──────────────────────────────────────────────────────────────────────────────\n"
+    )
+    sections.append(schema_consts)
+
+    # ── Runtime constants ─────────────────────────────────────────────────────
+    sections.append(_RUNTIME_CONSTANTS)
+
+    return "\n".join(sections)
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Public entry point
+# ──────────────────────────────────────────────────────────────────────────────
+
+def generate_all(
+    database:  str  = "neo4j",
+    output:    str  = "config.py",
+    n_samples: int  = 3,
+    write:     bool = True,
+    verbose:   bool = False,
+) -> str:
+    """
+    Full pipeline: connect → collect schema → generate config.py → write.
+
+    Parameters
+    ----------
+    database  : Neo4j database name.
+    output    : Destination path for the generated config.py.
+    n_samples : Sample values per property (for schema collection).
+    write     : When True (default) write the result to *output*.
+    verbose   : Print schema counts and a prompt preview.
+
+    Returns
+    -------
+    str  The complete config.py content.
+    """
+    driver = _get_driver()
+    try:
+        print(f"Collecting node schema   (database={database!r}) …", flush=True)
+        node_rows = collect_node_schema(driver, database, n_samples=n_samples)
+        print(f"  {len(node_rows):>4d} (label × property) pairs.", flush=True)
+
+        print("Collecting relation schema …", flush=True)
+        rel_rows = collect_rel_schema(driver, database, n_samples=n_samples)
+        print(f"  {len(rel_rows):>4d} relation rows.", flush=True)
+
+        print("Discovering fulltext indexes …", flush=True)
+        ft_indexes = _discover_fulltext_indexes(driver, database)
+        print(f"  {len(ft_indexes):>4d} fulltext index(es) found.", flush=True)
+    finally:
+        driver.close()
+
+    print("Loading tool registry …", flush=True)
+    registry = _load_tool_registry()
+    print(f"  {len(registry):>4d} tools loaded.", flush=True)
+
+    print("Assembling config.py …", flush=True)
+    content = generate_config_py(
+        node_rows  = node_rows,
+        rel_rows   = rel_rows,
+        ft_indexes = ft_indexes,
+        registry   = registry,
+        database   = database,
+    )
+
+    if verbose:
+        preview_chars = 800
+        print("\n" + "─" * 70)
+        print(f"config.py preview (first {preview_chars} chars):")
+        print("─" * 70)
+        print(content[:preview_chars])
+        print("─" * 70)
+
+    if write:
+        with open(output, "w", encoding="utf-8") as fh:
+            fh.write(content)
+        print(f"\n✓  config.py written → {output!r}", flush=True)
+
+    return content
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# CLI
+# ──────────────────────────────────────────────────────────────────────────────
+
+def _parse_args() -> argparse.Namespace:
+    p = argparse.ArgumentParser(
+        description="Generate a complete config.py from the live Neo4j schema.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    p.add_argument(
+        "--database",
+        default=os.getenv("NEO4J_DATABASE", "neo4j"),
+        metavar="DB",
+        help="Neo4j database name",
+    )
+    p.add_argument(
+        "--output",
+        default="config.py",
+        metavar="PATH",
+        help="Output path for the generated config.py",
+    )
+    p.add_argument(
+        "--samples",
+        type=int,
+        default=3,
+        metavar="N",
+        help="Sample values to collect per property",
+    )
+    p.add_argument(
+        "--print-only",
+        action="store_true",
+        help="Print generated config.py to stdout without writing to disk",
+    )
+    p.add_argument(
+        "--verbose",
+        action="store_true",
+        help="Print schema details and a preview of the generated content",
+    )
+    return p.parse_args()
+
+
+def main() -> None:
+    args = _parse_args()
+    content = generate_all(
+        database  = args.database,
+        output    = args.output,
+        n_samples = args.samples,
+        write     = not args.print_only,
+        verbose   = args.verbose,
+    )
+    if args.print_only:
+        print(content)
+
+
+if __name__ == "__main__":
+    main()
