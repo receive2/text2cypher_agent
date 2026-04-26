@@ -436,6 +436,61 @@ def filter_tools_by_connectivity(
     return kept
 
 
+def _render_tool_section(tools: List[BaseTool]) -> str:
+    """Render the 'Available tools' block for exactly *tools*, grouped
+    into node / relationship-property / structural sections — matching
+    the format that gen_system_prompt.py produces for the static NER_SP."""
+    node_lines:   List[str] = []
+    rel_p_lines:  List[str] = []
+    struct_lines: List[str] = []
+
+    for t in tools:
+        desc = (t.description or "").strip()
+        line = f"  {t.name:<34}  {desc[:72]}"
+
+        if "via (:" in desc:
+            struct_lines.append(line)
+            continue
+
+        m = _RE_NODE_DESC.search(desc)
+        if m and _RE_ALL_CAPS.match(m.group(1)):
+            rel_p_lines.append(line)
+        else:
+            node_lines.append(line)
+
+    parts: List[str] = []
+    if node_lines:
+        parts.append("  ── Node property tools ──\n" + "\n".join(node_lines))
+    if rel_p_lines:
+        parts.append("  ── Relationship property tools ──\n" + "\n".join(rel_p_lines))
+    if struct_lines:
+        parts.append("  ── Structural traversal tools ──\n" + "\n".join(struct_lines))
+
+    return "\n\n".join(parts) if parts else "  (no tools selected)"
+
+
+def _build_dynamic_prompt(selected_tools: List[BaseTool]) -> str:
+    """Return a copy of NER_SP whose 'Available tools' section has been
+    replaced with a rendering of *selected_tools*. Falls back to the
+    unmodified NER_SP (with a warning) if the regex anchor cannot be
+    found — e.g. if gen_system_prompt.py changes the prompt format."""
+    tool_block = _render_tool_section(selected_tools)
+    new_prompt, n = re.subn(
+        r"(Available tools\n[─\-]+\n).*?(\n\nExtraction rules)",
+        lambda m: m.group(1) + tool_block + m.group(2),
+        NER_SP,
+        count=1,
+        flags=re.DOTALL,
+    )
+    if n == 0:
+        logger.warning(
+            "_build_dynamic_prompt: could not locate 'Available tools' "
+            "section in NER_SP — falling back to unmodified NER_SP."
+        )
+        return NER_SP
+    return new_prompt
+
+
 # ──────────────────────────────────────────────────────────────────────────────
 # 6. Agent factory with auto tool selection
 # ──────────────────────────────────────────────────────────────────────────────
@@ -497,7 +552,7 @@ def create_agent_auto(
     return create_react_agent(
         model       = llm,
         tools       = selected_tools,
-        prompt      = NER_SP,
+        prompt      = _build_dynamic_prompt(selected_tools),
         checkpointer= False,
     )
 
