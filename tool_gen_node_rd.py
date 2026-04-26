@@ -234,7 +234,7 @@ def list_node_type_property_pairs(driver, database: str) -> List[Pair]:
         return deduped2
 
 
-CAP_MULTIPLIER = 5  # scan cap = t * CAP_MULTIPLIER (cheap over-fetch for random sampling)
+from config import CAP_MULTIPLIER, SAMPLE_T
 
 
 def sample_property_values(
@@ -671,7 +671,7 @@ def run_pipeline(
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Generate tool descriptions from Neo4j and index into FAISS.")
-    parser.add_argument("--t", type=int, default=int(os.getenv("SAMPLE_T", "20")), help="Sample size t per round.")
+    parser.add_argument("--t", type=int, default=int(os.getenv("SAMPLE_T", str(SAMPLE_T))), help="Sample size t per round.")
     parser.add_argument("--output_csv", type=str, default="tool_descriptions.csv", help="Output CSV path.")
     parser.add_argument("--faiss_dir", type=str, default="faiss_tools", help="Output FAISS directory.")
     parser.add_argument("--resume", action="store_true", help="Skip pairs already present in output CSV.")
