@@ -188,9 +188,13 @@ def top_similar_values(
     # Dynamically build the Cypher query
     #    - node.{property_name} must be injected using an f-string
     #    - $index, $q, $k can be passed in as secure parameters
+    # Deduplicate by property value: collapse nodes sharing the same value
+    # and keep only the highest full-text score for each unique value.
     cypher = f"""
     CALL db.index.fulltext.queryNodes($index, $q) YIELD node, score
-    RETURN node.{property_name} AS value, score
+    WITH node.{property_name} AS value, score
+    WHERE value IS NOT NULL
+    RETURN value, max(score) AS score
     ORDER BY score DESC
     LIMIT $k
     """
@@ -299,9 +303,13 @@ def top_similar_rel_values(
     index_name = _ensure_fulltext_rel_index(rel_type, property_name)
     lucene = _lucene_query_from_phrase(phrase, fuzziness=fuzziness)
 
+    # Deduplicate by property value: collapse relationships sharing the same value
+    # and keep only the highest full-text score for each unique value.
     cypher = f"""
     CALL db.index.fulltext.queryRelationships($index, $q) YIELD relationship, score
-    RETURN relationship.{property_name} AS value, score
+    WITH relationship.{property_name} AS value, score
+    WHERE value IS NOT NULL
+    RETURN value, max(score) AS score
     ORDER BY score DESC
     LIMIT $k
     """
