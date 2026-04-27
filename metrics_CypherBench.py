@@ -54,6 +54,19 @@ numeric types).  We follow the same recipe here:
 
 A predicted query that fails to execute (syntax error, timeout, etc.)
 counts as a miss for both metrics.
+
+Result-set normalisation
+------------------------
+Comparison is delegated to :mod:`cypher_eval_normalize.normalize_result_set`,
+which structurally expands ``Node`` / ``Relationship`` / ``Path`` cells
+(label-set + property-set, never ``element_id``), rounds floats to a
+configurable epsilon, and sorts ``collect()``-style list cells unless the
+gold query has a top-level ``ORDER BY``.  Pass ``--strict-cypherbench-mode``
+on the CLI (or ``strict_cypherbench=True`` programmatically) to reproduce
+upstream CypherBench's exact published numbers.  EA stays multiset and EM
+stays ordered in both modes — the ORDER BY heuristic only governs
+``sort_collections`` inside ``collect()`` cells; it does NOT auto-promote
+EA to ordered comparison, because the EA−EM gap is a useful signal.
 """
 
 from __future__ import annotations
@@ -73,6 +86,11 @@ from loguru import logger
 from agent_helper import neo4j_graph
 from ner_agent_auto import ask_auto
 from config import DEFAULT_TOP_K, NER_MODE, NER_MODES
+from cypher_eval_normalize import (
+    normalize_result_set,
+    column_counts_match,
+    strict_cypherbench_kwargs,
+)
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -247,28 +265,89 @@ def normalise_rows(rows: Optional[Iterable[Any]]) -> List[Tuple[Any, ...]]:
 # 4. Metric computation
 # ──────────────────────────────────────────────────────────────────────────────
 
-def execution_accuracy(pred_rows: List[Any], gold_rows: List[Any]) -> bool:
+# ── Default kwargs for the new normalize_result_set comparator ──────────────
+#
+# These reproduce the legacy intent of ``_normalise_scalar`` /
+# ``_row_signature`` (case-insensitive strings, single-column unwrap, key /
+# column-order agnostic) while *additionally* giving correct behaviour for
+# Node / Relationship / Path cells and float drift.  Strict-CypherBench mode
+# overrides these via ``strict_cypherbench_kwargs()``.
+_DEFAULT_NORMALIZE_KW: Dict[str, Any] = {
+    "float_eps":                1e-6,
+    "sort_collections":         True,
+    "expand_nodes":             True,
+    "expand_relationships":     True,
+    "case_insensitive_strings": True,
+    "compare_keys":             False,
+    "compare_column_order":     False,
+}
+
+
+def execution_accuracy(
+    pred_rows: List[Any],
+    gold_rows: List[Any],
+    *,
+    gold_cypher: Optional[str] = None,
+    strict_cypherbench: bool = False,
+    normalize_kwargs: Optional[Dict[str, Any]] = None,
+) -> bool:
     """
     Multiset (order-insensitive) match between two normalised result sets.
 
     Returns ``True`` iff each side has the same rows with the same
     multiplicity.  Empty == Empty.
+
+    Parameters
+    ----------
+    gold_cypher
+        Forwarded to :func:`normalize_result_set` so the ``ORDER BY``
+        heuristic can disable ``sort_collections`` for ordered ``collect()``
+        cells.  This does **not** auto-promote EA to ordered comparison —
+        see ``cypher_eval_normalize`` module docstring "Scoping note".
+    strict_cypherbench
+        When True, normalise both sides with upstream CypherBench's exact
+        rules so published numbers can be reproduced as a sanity check.
+    normalize_kwargs
+        Optional explicit override of the kwargs forwarded to
+        :func:`normalize_result_set`.  Wins over ``strict_cypherbench``.
     """
-    p = normalise_rows(pred_rows)
-    g = normalise_rows(gold_rows)
+    kw = (
+        dict(normalize_kwargs)
+        if normalize_kwargs is not None
+        else (strict_cypherbench_kwargs() if strict_cypherbench else dict(_DEFAULT_NORMALIZE_KW))
+    )
+    # Fast path: differing column counts can never match.
+    if not column_counts_match(pred_rows, gold_rows):
+        return False
+    p = normalize_result_set(pred_rows, gold_cypher=gold_cypher, **kw)
+    g = normalize_result_set(gold_rows, gold_cypher=gold_cypher, **kw)
     return Counter(p) == Counter(g)
 
 
-def execution_match(pred_rows: List[Any], gold_rows: List[Any]) -> bool:
+def execution_match(
+    pred_rows: List[Any],
+    gold_rows: List[Any],
+    *,
+    gold_cypher: Optional[str] = None,
+    strict_cypherbench: bool = False,
+    normalize_kwargs: Optional[Dict[str, Any]] = None,
+) -> bool:
     """
     Strict ordered match between two normalised result sets.
 
     Returns ``True`` iff the rows occur in the same order.  This is the
     appropriate metric when the gold query uses ``ORDER BY`` and ranking
-    matters.
+    matters.  See :func:`execution_accuracy` for parameter docs.
     """
-    p = normalise_rows(pred_rows)
-    g = normalise_rows(gold_rows)
+    kw = (
+        dict(normalize_kwargs)
+        if normalize_kwargs is not None
+        else (strict_cypherbench_kwargs() if strict_cypherbench else dict(_DEFAULT_NORMALIZE_KW))
+    )
+    if not column_counts_match(pred_rows, gold_rows):
+        return False
+    p = normalize_result_set(pred_rows, gold_cypher=gold_cypher, **kw)
+    g = normalize_result_set(gold_rows, gold_cypher=gold_cypher, **kw)
     return p == g
 
 
@@ -283,6 +362,7 @@ def evaluate_one(
     top_k:       int  = DEFAULT_TOP_K,
     verbose:     bool = False,
     mode:        Optional[str] = None,
+    strict_cypherbench: bool = False,
 ) -> Dict[str, Any]:
     """
     Evaluate the agent on a single CypherBench example.
@@ -342,10 +422,14 @@ def evaluate_one(
     # ── Step 3: metrics (only when both sides ran) ───────────────────────────
     if record["pred_error"] is None and record["gold_error"] is None:
         record["execution_accuracy"] = execution_accuracy(
-            record["pred_rows"], record["gold_rows"]
+            record["pred_rows"], record["gold_rows"],
+            gold_cypher=gold_cypher,
+            strict_cypherbench=strict_cypherbench,
         )
         record["execution_match"] = execution_match(
-            record["pred_rows"], record["gold_rows"]
+            record["pred_rows"], record["gold_rows"],
+            gold_cypher=gold_cypher,
+            strict_cypherbench=strict_cypherbench,
         )
 
     record["elapsed_sec"] = round(time.time() - t0, 3)
@@ -364,6 +448,7 @@ def evaluate_dataset(
     skip_failures: bool = False,
     verbose:       bool = False,
     mode:          Optional[str] = None,
+    strict_cypherbench: bool = False,
 ) -> Dict[str, Any]:
     """
     Run :func:`evaluate_one` over a list of CypherBench examples and report
@@ -426,6 +511,7 @@ def evaluate_dataset(
                 top_k       = top_k,
                 verbose     = verbose,
                 mode        = mode,
+                strict_cypherbench = strict_cypherbench,
             )
 
             if rec["pred_error"]: agent_errs += 1
@@ -466,6 +552,7 @@ def evaluate_dataset(
         "agent_errors":        agent_errs,
         "gold_errors":         gold_errs,
         "ner_mode":            mode or NER_MODE,
+        "strict_cypherbench":  strict_cypherbench,
         "elapsed_sec":         elapsed,
     }
     return summary
@@ -501,6 +588,7 @@ def _format_summary(summary: Dict[str, Any]) -> str:
     return (
         "\n══════════════════════ CypherBench Evaluation ══════════════════════\n"
         f"  NER mode             : {summary.get('ner_mode', 'full')}\n"
+        f"  Strict-CypherBench   : {summary.get('strict_cypherbench', False)}\n"
         f"  Total examples       : {summary['total']}\n"
         f"  Evaluated            : {summary['evaluated']}\n"
         f"  Execution Accuracy   : {summary['execution_accuracy']:.4f}  "
@@ -535,6 +623,14 @@ def main(argv: Optional[List[str]] = None) -> int:
     ap.add_argument("--skip-failures", action="store_true",
                     help="Exclude errored examples from the denominator "
                          "(default counts them as misses).")
+    ap.add_argument("--strict-cypherbench-mode", "--strict-cypherbench",
+                    dest="strict_cypherbench", action="store_true",
+                    help="Reproduce upstream CypherBench's exact "
+                         "execution-accuracy normalisation: no Node/Rel "
+                         "structural expansion, no float epsilon, no string "
+                         "case-folding, lists sorted as upstream does. "
+                         "Use this to reproduce CypherBench's published "
+                         "numbers as a sanity check.")
     ap.add_argument("--verbose", action="store_true",
                     help="Stream agent traces and per-example logs.")
     ap.add_argument("--summary-out", default=None,
@@ -554,6 +650,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         skip_failures = args.skip_failures,
         verbose       = args.verbose,
         mode          = args.mode,
+        strict_cypherbench = args.strict_cypherbench,
     )
 
     print(_format_summary(summary))

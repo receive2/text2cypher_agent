@@ -210,6 +210,24 @@ Results: 5 passed, 0 failed, 5 total
 
 > **Note:** Requires a running Neo4j instance with the movies dataset loaded and `.env` configured.
 
+### CypherBench-style evaluation (Execution Accuracy / Match)
+
+`metrics_CypherBench.py` runs the agent over a CypherBench-style test set and reports **Execution Accuracy (EA, multiset)** and **Execution Match (EM, ordered)**. Result-set comparison is delegated to `cypher_eval_normalize.normalize_result_set`, which structurally expands `Node` / `Relationship` / `Path` cells (label-set + property-set, **never** `element_id`), rounds floats to a configurable epsilon (default `1e-6`), and sorts `collect()`-style list cells unless the gold query has a top-level `ORDER BY`. EA stays multiset and EM stays ordered in both modes — the `ORDER BY` heuristic only governs `sort_collections` inside `collect()` cells, so the EA−EM gap remains a meaningful "fraction of items where ordering matters" signal.
+
+```bash
+# Default (handles RETURN p, RETURN p, m, RETURN path correctly)
+python metrics_CypherBench.py --dataset path/to/test.jsonl --out results.jsonl
+
+# Reproduce upstream CypherBench's published numbers exactly
+python metrics_CypherBench.py --dataset path/to/test.jsonl --strict-cypherbench-mode
+```
+
+Offline unit tests for the normaliser:
+
+```bash
+python test_cypher_eval_normalize.py
+```
+
 ---
 
 ## Re-running after a schema change
