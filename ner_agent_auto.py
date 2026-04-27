@@ -65,7 +65,7 @@ from langchain_core.tools import BaseTool
 from langchain_neo4j import GraphCypherQAChain
 from langgraph.prebuilt import create_react_agent
 
-from config import NER_SP, DEFAULT_TOP_K
+from config import NER_SP, DEFAULT_TOP_K, NER_MODE, NER_MODES
 from agent_helper import (
     llm,                       # legacy default — kept for backward compat
     ner_llm     as _ner_llm,   # configured NER-stage LLM      (config.NER_LLM_CONFIG)
@@ -94,6 +94,37 @@ load_dotenv(".env", override=True)
 FAISS_AUTO_DIR: str = "faiss_tools_auto"
 # DEFAULT_TOP_K is imported from config.py so it can be tuned in one place.
 
+# Per-mode FAISS index directories.  Each mode caches its registry-specific
+# vectorstore in its own directory so switching ``NER_MODE`` (or passing
+# ``mode=...`` at call time) doesn't invalidate the index for the other mode.
+_FAISS_DIR_BY_MODE: Dict[str, str] = {
+    "full":      FAISS_AUTO_DIR,
+    "node_only": FAISS_AUTO_DIR + "_node_only",
+    # "no_ner" never touches FAISS, but we still register a placeholder so
+    # ``_FAISS_DIR_BY_MODE[mode]`` never raises a KeyError.
+    "no_ner":    FAISS_AUTO_DIR,
+}
+
+
+def _resolve_mode(mode: Optional[str]) -> str:
+    """Return the effective NER mode.
+
+    Resolution order:
+
+    1. Explicit *mode* argument when provided (must be one of ``NER_MODES``).
+    2. Fallback to the module-level default :data:`config.NER_MODE`.
+
+    A :class:`ValueError` is raised for unknown values so a typo in
+    ``config.py`` or a CLI flag fails loudly rather than silently
+    behaving like ``"full"``.
+    """
+    effective = (mode or NER_MODE or "full").strip().lower()
+    if effective not in NER_MODES:
+        raise ValueError(
+            f"Unknown NER mode {effective!r}. Expected one of {NER_MODES}."
+        )
+    return effective
+
 # ──────────────────────────────────────────────────────────────────────────────
 # 1. LLM, Neo4j & entity extraction — reused from ner_agent.py
 #    Imported at the top of this module:
@@ -105,21 +136,47 @@ FAISS_AUTO_DIR: str = "faiss_tools_auto"
 # 3. Tool registry  — scan generated modules for @tool instances
 # ──────────────────────────────────────────────────────────────────────────────
 
-def build_tool_registry() -> Dict[str, BaseTool]:
+def build_tool_registry(mode: Optional[str] = None) -> Dict[str, BaseTool]:
     """
-    Import ``generated_node_tools`` and ``generated_rel_tools``, scan their
-    module-level attributes for ``BaseTool`` instances, and return a registry::
+    Import the generated tool modules and return a registry mapping
+    ``func_name → BaseTool``.
 
-        {"get_movie_title": <BaseTool>, "get_person_name": <BaseTool>, ...}
+    Which modules are loaded depends on the resolved NER *mode*:
+
+    ====== ============================================================
+    mode    Modules loaded
+    ====== ============================================================
+    ``"full"``       ``generated_node_tools`` + ``generated_rel_tools``
+    ``"node_only"``  ``generated_node_tools`` only (relation tools dropped)
+    ``"no_ner"``     no modules — the registry is empty because the agent
+                     is bypassed entirely (callers must check the mode
+                     before relying on the registry).
+    ====== ============================================================
+
+    Parameters
+    ----------
+    mode : str | None
+        Explicit override of :data:`config.NER_MODE`.  See :func:`_resolve_mode`.
 
     Raises
     ------
     RuntimeError
-        If neither generated module can be imported (i.e. ``gen_tools.py``
-        has not been run yet).
+        If *mode* expects tool modules but none can be imported (i.e.
+        ``gen_tools.py`` has not been run yet).
     """
+    effective = _resolve_mode(mode)
+
+    if effective == "no_ner":
+        logger.info("Tool registry skipped — NER mode is 'no_ner'.")
+        return {}
+
+    if effective == "node_only":
+        target_modules = ("generated_node_tools",)
+    else:                           # "full"
+        target_modules = ("generated_node_tools", "generated_rel_tools")
+
     modules = []
-    for mod_name in ("generated_node_tools", "generated_rel_tools"):
+    for mod_name in target_modules:
         try:
             mod = importlib.import_module(mod_name)
             importlib.reload(mod)          # pick up fresh re-generations
@@ -133,13 +190,15 @@ def build_tool_registry() -> Dict[str, BaseTool]:
 
     if not modules:
         raise RuntimeError(
-            "No generated tool modules found. "
+            f"No generated tool modules found for NER mode {effective!r}. "
             "Please run `python gen_tools.py` first to create "
             "`generated_node_tools.py` and `generated_rel_tools.py`."
         )
 
     registry = build_tool_registry_from_modules(modules)
-    logger.info(f"Tool registry built: {len(registry)} tools loaded.")
+    logger.info(
+        f"Tool registry built (mode={effective!r}): {len(registry)} tools loaded."
+    )
     return registry
 
 
@@ -147,17 +206,19 @@ def build_tool_registry() -> Dict[str, BaseTool]:
 # 4. Module-level lazy singletons for registry and FAISS
 # ──────────────────────────────────────────────────────────────────────────────
 
-_registry:     Optional[Dict[str, BaseTool]]  = None
-_embeddings                                   = None
-_vectorstore                                  = None
+# Cached per-mode so switching mode at runtime (e.g. for an evaluation
+# sweep) doesn't force every call to rebuild the registry / FAISS index.
+_registry_by_mode:    Dict[str, Dict[str, BaseTool]] = {}
+_vectorstore_by_mode: Dict[str, Any]                 = {}
+_embeddings                                          = None
 
 
-def _get_registry() -> Dict[str, BaseTool]:
-    """Return the tool registry, building it on first call."""
-    global _registry
-    if _registry is None:
-        _registry = build_tool_registry()
-    return _registry
+def _get_registry(mode: Optional[str] = None) -> Dict[str, BaseTool]:
+    """Return the tool registry for the resolved *mode*, building on first call."""
+    effective = _resolve_mode(mode)
+    if effective not in _registry_by_mode:
+        _registry_by_mode[effective] = build_tool_registry(mode=effective)
+    return _registry_by_mode[effective]
 
 
 def _get_embeddings():
@@ -168,17 +229,38 @@ def _get_embeddings():
     return _embeddings
 
 
-def _get_vectorstore(faiss_dir: str = FAISS_AUTO_DIR, rebuild: bool = False):
-    """Return the FAISS vectorstore, building / loading it on first call."""
-    global _vectorstore
-    if _vectorstore is None or rebuild:
-        _vectorstore = get_or_build_tools_faiss(
-            registry   = _get_registry(),
-            faiss_dir  = faiss_dir,
+def _get_vectorstore(
+    faiss_dir: Optional[str] = None,
+    rebuild:   bool          = False,
+    mode:      Optional[str] = None,
+):
+    """Return the FAISS vectorstore for *mode*, building / loading on first call.
+
+    Each mode has its own FAISS directory (``_FAISS_DIR_BY_MODE``) so the
+    indexes for ``"full"`` and ``"node_only"`` never collide.
+
+    The ``"no_ner"`` mode never touches FAISS — callers must guard against
+    invoking this function in that mode.
+    """
+    effective = _resolve_mode(mode)
+    if effective == "no_ner":
+        raise RuntimeError(
+            "_get_vectorstore() is not callable in NER mode 'no_ner' — "
+            "the ReAct agent is bypassed entirely."
+        )
+
+    target_dir = faiss_dir or _FAISS_DIR_BY_MODE[effective]
+
+    cached = _vectorstore_by_mode.get(effective)
+    if cached is None or rebuild:
+        cached = get_or_build_tools_faiss(
+            registry   = _get_registry(mode=effective),
+            faiss_dir  = target_dir,
             rebuild    = rebuild,
             embeddings = _get_embeddings(),
         )
-    return _vectorstore
+        _vectorstore_by_mode[effective] = cached
+    return cached
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -188,10 +270,11 @@ def _get_vectorstore(faiss_dir: str = FAISS_AUTO_DIR, rebuild: bool = False):
 def select_tools_for_query(
     user_query:           str,
     top_k:                int  = DEFAULT_TOP_K,
-    faiss_dir:            str  = FAISS_AUTO_DIR,
+    faiss_dir:            Optional[str] = None,
     rebuild:              bool = False,
     filter_connectivity:  bool = True,
     verbose:              bool = False,
+    mode:                 Optional[str] = None,
 ) -> List[BaseTool]:
     """
     Use FAISS semantic search to select the *top_k* most relevant tools for
@@ -226,18 +309,35 @@ def select_tools_for_query(
     # get_follows_relation was dropped — FOLLOWS connects Person→Person,
     # not connected to Movie which is the only selected node label.
     """
-    vs   = _get_vectorstore(faiss_dir=faiss_dir, rebuild=rebuild)
+    effective_mode = _resolve_mode(mode)
+    if effective_mode == "no_ner":
+        # The agent is bypassed in this mode, so there are no tools to select.
+        if verbose:
+            print(
+                f"\n── Tool selection skipped (NER mode='no_ner') for: "
+                f"{user_query!r} ──"
+            )
+        return []
+
+    vs   = _get_vectorstore(faiss_dir=faiss_dir, rebuild=rebuild, mode=effective_mode)
     hits = search_tools(vs, user_query=user_query, top_l=top_k)
 
     if verbose:
-        print(f"\n── Tool selection for: {user_query!r} (top_k={top_k}) ──")
+        print(
+            f"\n── Tool selection for: {user_query!r} "
+            f"(top_k={top_k}, mode={effective_mode!r}) ──"
+        )
         for h in hits:
             print(f"  [{h.rank}] score={h.score:.4f}  {h.func_name}  — {h.description[:80]}")
 
-    tools = hits_to_callables(hits, _get_registry())
+    tools = hits_to_callables(hits, _get_registry(mode=effective_mode))
 
     if filter_connectivity:
-        tools = filter_tools_by_connectivity(tools, verbose=verbose)
+        tools = filter_tools_by_connectivity(
+            tools,
+            registry=_get_registry(mode=effective_mode),
+            verbose=verbose,
+        )
 
     return tools
 
@@ -507,11 +607,12 @@ def _build_dynamic_prompt(selected_tools: List[BaseTool]) -> str:
 def create_agent_auto(
     user_query:          str,
     top_k:               int  = DEFAULT_TOP_K,
-    faiss_dir:           str  = FAISS_AUTO_DIR,
+    faiss_dir:           Optional[str] = None,
     rebuild:             bool = False,
     filter_connectivity: bool = True,
     verbose:             bool = False,
     llm_obj:             Optional[BaseChatModel] = None,
+    mode:                Optional[str] = None,
 ):
     """
     Build a LangGraph ReAct agent wired with only the tools that are
@@ -546,6 +647,14 @@ def create_agent_auto(
     RuntimeError
         If no relevant tools remain after selection and filtering.
     """
+    effective_mode = _resolve_mode(mode)
+    if effective_mode == "no_ner":
+        raise RuntimeError(
+            "create_agent_auto() must not be called in NER mode 'no_ner' — "
+            "the ReAct agent is bypassed entirely.  Call ask_auto() instead, "
+            "which short-circuits NER and goes straight to Cypher generation."
+        )
+
     selected_tools = select_tools_for_query(
         user_query          = user_query,
         top_k               = top_k,
@@ -553,11 +662,12 @@ def create_agent_auto(
         rebuild             = rebuild,
         filter_connectivity = filter_connectivity,
         verbose             = verbose,
+        mode                = effective_mode,
     )
 
     if not selected_tools:
         raise RuntimeError(
-            f"No tools selected for query {user_query!r}. "
+            f"No tools selected for query {user_query!r} (mode={effective_mode!r}). "
             "Ensure generated tool files exist and the FAISS index is populated."
         )
 
@@ -627,10 +737,11 @@ def extract_content(input_string: str) -> str:
 def get_ner_auto(
     prompt:    str,
     top_k:     int  = DEFAULT_TOP_K,
-    faiss_dir: str  = FAISS_AUTO_DIR,
+    faiss_dir: Optional[str] = None,
     rebuild:   bool = False,
     verbose:   bool = False,
     llm_obj:   Optional[BaseChatModel] = None,
+    mode:      Optional[str] = None,
 ) -> str:
     """
     Run the NER agent on *prompt* with auto-selected tools and return a
@@ -655,6 +766,19 @@ def get_ner_auto(
     -------
     str  Canonical JSON string (``"{}"`` on failure).
     """
+    effective_mode = _resolve_mode(mode)
+    if effective_mode == "no_ner":
+        # Short-circuit: skip the ReAct agent entirely and return the empty
+        # entity dict.  Downstream code (ask_auto / cypher prompt) treats
+        # an empty dict as "no entity hints" and lets the LLM generate
+        # Cypher purely from the question + schema.
+        if verbose:
+            logger.info(
+                "get_ner_auto: NER mode='no_ner' — skipping ReAct agent, "
+                "returning empty entity dict."
+            )
+        return "{}"
+
     inputs      = {"messages": [("user", prompt)]}
     agent_graph = create_agent_auto(
         user_query = prompt,
@@ -663,6 +787,7 @@ def get_ner_auto(
         rebuild    = rebuild,
         verbose    = verbose,
         llm_obj    = llm_obj,
+        mode       = effective_mode,
     )
 
     message = None
@@ -687,10 +812,11 @@ def get_ner_auto(
 def get_ner_dict_auto(
     prompt:    str,
     top_k:     int  = DEFAULT_TOP_K,
-    faiss_dir: str  = FAISS_AUTO_DIR,
+    faiss_dir: Optional[str] = None,
     rebuild:   bool = False,
     verbose:   bool = False,
     llm_obj:   Optional[BaseChatModel] = None,
+    mode:      Optional[str] = None,
 ) -> Dict[str, List[Any]]:
     """
     Convenience wrapper around :func:`get_ner_auto` that returns a Python dict
@@ -707,6 +833,7 @@ def get_ner_dict_auto(
         rebuild   = rebuild,
         verbose   = verbose,
         llm_obj   = llm_obj,
+        mode      = mode,
     )
     try:
         obj = json.loads(raw)
@@ -753,12 +880,13 @@ User question:
 def ask_auto(
     prompt:        str,
     top_k:         int  = DEFAULT_TOP_K,
-    faiss_dir:     str  = FAISS_AUTO_DIR,
+    faiss_dir:     Optional[str] = None,
     rebuild:       bool = False,
     verbose:       bool = False,
     ner_llm:       Optional[BaseChatModel] = None,
     qa_llm:        Optional[BaseChatModel] = None,
     cypher_llm:    Optional[BaseChatModel] = None,
+    mode:          Optional[str] = None,
 ) -> Dict[str, Any]:
     """
     Full end-to-end pipeline with auto tool selection:
@@ -843,18 +971,36 @@ def ask_auto(
     qa_llm_eff     = qa_llm     if qa_llm     is not None else _qa_llm
     cypher_llm_eff = cypher_llm if cypher_llm is not None else _cypher_llm
 
-    # ── Step 1: entity extraction (NER) ───────────────────────────────────────
-    entities = get_ner_auto(
-        prompt    = prompt,
-        top_k     = top_k,
-        faiss_dir = faiss_dir,
-        rebuild   = rebuild,
-        verbose   = verbose,
-        llm_obj   = ner_llm_eff,
-    )
+    # ── Resolve NER mode ──────────────────────────────────────────────────────
+    # "full"      → register every generated tool, run the ReAct NER agent.
+    # "node_only" → register only generated_node_tools, run the ReAct agent.
+    # "no_ner"    → bypass the agent entirely; entities = "{}".
+    effective_mode = _resolve_mode(mode)
     if verbose:
-        print(f"\n── Extracted entities ──────────────────────────────────────────────")
-        print(f"  {entities}")
+        print(f"\n── NER mode ────────────────────────────────────────────────────────")
+        print(f"  {effective_mode}")
+
+    # ── Step 1: entity extraction (NER) ───────────────────────────────────────
+    if effective_mode == "no_ner":
+        entities = "{}"
+        if verbose:
+            print(
+                "\n── Extracted entities ──────────────────────────────────────────────"
+            )
+            print(f"  {entities}  (NER skipped — mode='no_ner')")
+    else:
+        entities = get_ner_auto(
+            prompt    = prompt,
+            top_k     = top_k,
+            faiss_dir = faiss_dir,
+            rebuild   = rebuild,
+            verbose   = verbose,
+            llm_obj   = ner_llm_eff,
+            mode      = effective_mode,
+        )
+        if verbose:
+            print(f"\n── Extracted entities ──────────────────────────────────────────────")
+            print(f"  {entities}")
 
     # ── Step 2: build the filled Cypher prompt ────────────────────────────────
     # Escape curly braces in the entity JSON so PromptTemplate doesn't treat
@@ -903,6 +1049,7 @@ def ask_auto(
         "cypher":   cypher_query,
         "result":   result,
         "context":  context,
+        "mode":     effective_mode,
     }
 
 
@@ -910,25 +1057,42 @@ def ask_auto(
 # 10. Utility: rebuild the FAISS index on demand
 # ──────────────────────────────────────────────────────────────────────────────
 
-def rebuild_tools_faiss(faiss_dir: str = FAISS_AUTO_DIR) -> int:
+def rebuild_tools_faiss(
+    faiss_dir: Optional[str] = None,
+    mode:      Optional[str] = None,
+) -> int:
     """
-    Force-rebuild the tool FAISS index from the current generated tool files.
+    Force-rebuild the tool FAISS index for the given NER *mode* from the
+    current generated tool files.
 
-    Call this after re-running ``gen_tools.py`` to pick up schema changes.
+    Call this after re-running ``gen_tools.py`` to pick up schema changes,
+    or after switching ``config.NER_MODE`` between ``"full"`` and
+    ``"node_only"`` so the per-mode index reflects the new tool set.
+
+    The ``"no_ner"`` mode raises :class:`RuntimeError` because there is
+    nothing to index in that mode.
 
     Returns
     -------
     int  Number of tools indexed.
     """
-    global _registry, _vectorstore
-    _registry    = build_tool_registry()          # reload generated modules
-    _vectorstore = get_or_build_tools_faiss(
-        registry   = _registry,
-        faiss_dir  = faiss_dir,
+    effective = _resolve_mode(mode)
+    if effective == "no_ner":
+        raise RuntimeError(
+            "rebuild_tools_faiss() is not callable in NER mode 'no_ner'."
+        )
+
+    target_dir = faiss_dir or _FAISS_DIR_BY_MODE[effective]
+
+    fresh_registry = build_tool_registry(mode=effective)
+    _registry_by_mode[effective] = fresh_registry      # reload cached registry
+    _vectorstore_by_mode[effective] = get_or_build_tools_faiss(
+        registry   = fresh_registry,
+        faiss_dir  = target_dir,
         rebuild    = True,
         embeddings = _get_embeddings(),
     )
-    return len(_registry)
+    return len(fresh_registry)
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -949,24 +1113,34 @@ if __name__ == "__main__":
                     help="Force-rebuild the FAISS tool index before running")
     ap.add_argument("--ner-only", action="store_true",
                     help="Run only the NER step (skip Cypher + Neo4j)")
+    ap.add_argument("--mode", "--ner-mode", dest="mode",
+                    choices=NER_MODES, default=None,
+                    help=f"NER pipeline mode (overrides config.NER_MODE={NER_MODE!r}). "
+                         f"One of {NER_MODES}.")
     ap.add_argument("--verbose",  action="store_true",
                     help="Print tool-selection, agent trace, and chain details")
     args = ap.parse_args()
 
+    effective_mode = _resolve_mode(args.mode)
     print(f"\nPrompt : {args.prompt}")
     print(f"top_k  : {args.top_k}")
+    print(f"mode   : {effective_mode}")
     print(f"rebuild: {args.rebuild}\n")
 
     # ── Step 1: show which tools were selected ────────────────────────────────
-    print("── Selected tools (after connectivity filter) ──────────────────────")
-    tools = select_tools_for_query(
-        user_query = args.prompt,
-        top_k      = args.top_k,
-        rebuild    = args.rebuild,
-        verbose    = True,
-    )
-    for i, t in enumerate(tools, 1):
-        print(f"  {i}. {t.name:35s}  {t.description[:60]}")
+    if effective_mode == "no_ner":
+        print("── Tool selection skipped (mode='no_ner') ──────────────────────────")
+    else:
+        print("── Selected tools (after connectivity filter) ──────────────────────")
+        tools = select_tools_for_query(
+            user_query = args.prompt,
+            top_k      = args.top_k,
+            rebuild    = args.rebuild,
+            verbose    = True,
+            mode       = effective_mode,
+        )
+        for i, t in enumerate(tools, 1):
+            print(f"  {i}. {t.name:35s}  {t.description[:60]}")
 
     if args.ner_only:
         # ── NER only ─────────────────────────────────────────────────────────
@@ -976,6 +1150,7 @@ if __name__ == "__main__":
             top_k   = args.top_k,
             rebuild = args.rebuild,
             verbose = args.verbose,
+            mode    = effective_mode,
         )
         print("entities:", entities)
     else:
@@ -986,6 +1161,7 @@ if __name__ == "__main__":
             top_k   = args.top_k,
             rebuild = args.rebuild,
             verbose = args.verbose,
+            mode    = effective_mode,
         )
         print("\nentities :", out["entities"])
         print("cypher   :", out["cypher"])

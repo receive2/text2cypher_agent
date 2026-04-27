@@ -72,7 +72,7 @@ from loguru import logger
 
 from agent_helper import neo4j_graph
 from ner_agent_auto import ask_auto
-from config import DEFAULT_TOP_K
+from config import DEFAULT_TOP_K, NER_MODE, NER_MODES
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -277,11 +277,12 @@ def execution_match(pred_rows: List[Any], gold_rows: List[Any]) -> bool:
 # ──────────────────────────────────────────────────────────────────────────────
 
 def evaluate_one(
-    question:   str,
+    question:    str,
     gold_cypher: str,
-    qid:        str = "",
-    top_k:      int = DEFAULT_TOP_K,
-    verbose:    bool = False,
+    qid:         str  = "",
+    top_k:       int  = DEFAULT_TOP_K,
+    verbose:     bool = False,
+    mode:        Optional[str] = None,
 ) -> Dict[str, Any]:
     """
     Evaluate the agent on a single CypherBench example.
@@ -308,17 +309,23 @@ def evaluate_one(
         "gold_error":       None,
         "execution_accuracy": False,
         "execution_match":    False,
+        "ner_mode":         mode or NER_MODE,
         "elapsed_sec":      0.0,
     }
 
     t0 = time.time()
 
     # ── Step 1: agent prediction (NER → Cypher → execute) ────────────────────
+    # ``mode`` is forwarded to ``ask_auto`` so the CLI / API caller can
+    # ablate the NER stage without editing config.py.
     try:
-        out = ask_auto(prompt=question, top_k=top_k, verbose=verbose)
+        out = ask_auto(prompt=question, top_k=top_k, verbose=verbose, mode=mode)
         record["predicted_cypher"] = out.get("cypher", "") or ""
         record["pred_rows"]        = out.get("context", []) or []
         record["entities"]         = out.get("entities", "")
+        # ``ask_auto`` returns the resolved mode it actually used — capture
+        # it so the per-example log isn't ambiguous when ``mode is None``.
+        record["ner_mode"]         = out.get("mode", record["ner_mode"])
     except Exception as exc:  # noqa: BLE001
         record["pred_error"] = f"{type(exc).__name__}: {exc}"
         if verbose:
@@ -356,6 +363,7 @@ def evaluate_dataset(
     limit:         Optional[int] = None,
     skip_failures: bool = False,
     verbose:       bool = False,
+    mode:          Optional[str] = None,
 ) -> Dict[str, Any]:
     """
     Run :func:`evaluate_one` over a list of CypherBench examples and report
@@ -371,6 +379,9 @@ def evaluate_dataset(
                     from the denominator.  Default *False* (CypherBench-style
                     — agent failures count as misses).
     verbose       : Stream agent traces and per-example logs.
+    mode          : Optional NER pipeline mode override —
+                    ``"full"`` / ``"node_only"`` / ``"no_ner"``.
+                    Defaults to :data:`config.NER_MODE`.
 
     Returns
     -------
@@ -385,6 +396,11 @@ def evaluate_dataset(
             "elapsed_sec":        float,
         }``
     """
+    if mode is not None and mode not in NER_MODES:
+        raise ValueError(
+            f"Unknown NER mode {mode!r}. Expected one of {NER_MODES}."
+        )
+
     if limit is not None:
         examples = examples[:limit]
 
@@ -409,6 +425,7 @@ def evaluate_dataset(
                 qid         = str(ex.get("qid", f"ex_{i}")),
                 top_k       = top_k,
                 verbose     = verbose,
+                mode        = mode,
             )
 
             if rec["pred_error"]: agent_errs += 1
@@ -448,6 +465,7 @@ def evaluate_dataset(
         "em_correct":          n_em,
         "agent_errors":        agent_errs,
         "gold_errors":         gold_errs,
+        "ner_mode":            mode or NER_MODE,
         "elapsed_sec":         elapsed,
     }
     return summary
@@ -482,6 +500,7 @@ def _jsonable(obj: Any) -> Any:
 def _format_summary(summary: Dict[str, Any]) -> str:
     return (
         "\n══════════════════════ CypherBench Evaluation ══════════════════════\n"
+        f"  NER mode             : {summary.get('ner_mode', 'full')}\n"
         f"  Total examples       : {summary['total']}\n"
         f"  Evaluated            : {summary['evaluated']}\n"
         f"  Execution Accuracy   : {summary['execution_accuracy']:.4f}  "
@@ -507,6 +526,12 @@ def main(argv: Optional[List[str]] = None) -> int:
                     help="Evaluate only the first N examples.")
     ap.add_argument("--top-k", type=int, default=DEFAULT_TOP_K,
                     help=f"Tool-selection top-k for ask_auto (default {DEFAULT_TOP_K}).")
+    ap.add_argument("--ner-mode", "--mode", dest="mode",
+                    choices=NER_MODES, default=None,
+                    help=f"NER pipeline mode (overrides config.NER_MODE={NER_MODE!r}). "
+                         f"One of {NER_MODES}.  "
+                         "'full' uses all tools, 'node_only' drops relation "
+                         "tools, 'no_ner' bypasses the agent entirely.")
     ap.add_argument("--skip-failures", action="store_true",
                     help="Exclude errored examples from the denominator "
                          "(default counts them as misses).")
@@ -528,6 +553,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         limit         = args.limit,
         skip_failures = args.skip_failures,
         verbose       = args.verbose,
+        mode          = args.mode,
     )
 
     print(_format_summary(summary))

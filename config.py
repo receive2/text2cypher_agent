@@ -313,4 +313,41 @@ MAX_VALIDATION_ROUNDS = 20   # hard cap on validation rounds per property pair
 SAMPLE_T              = 20   # sample size t per round (sample_property_values)
 CAP_MULTIPLIER        = 1000    # scan cap = t * CAP_MULTIPLIER (cheap over-fetch for random sampling)
 
+
+# ──────────────────────────────────────────────────────────────────────────────
+# NER pipeline mode
+# ──────────────────────────────────────────────────────────────────────────────
+# Controls how (or whether) the ReAct NER agent runs in front of the Cypher
+# generator.  The same three switches drive both ``ner_agent_auto.ask_auto``
+# (the full pipeline) and the CypherBench evaluator
+# (``metrics_CypherBench.evaluate_dataset``).
+#
+#   "full"      — Default.  Register every generated @tool — node property,
+#                 relation property, AND structural traversal — and run the
+#                 ReAct NER agent normally.  This is the original behaviour
+#                 and produces the richest entity-filter dictionary.
+#
+#   "node_only" — Register **only** the node-property tools generated in
+#                 ``generated_node_tools.py``; the relation tools in
+#                 ``generated_rel_tools.py`` are skipped entirely.  Use this
+#                 to ablate the contribution of relation-aware NER, or when
+#                 the target schema's relation tools are noisy.
+#
+#   "no_ner"    — Bypass the NER ReAct agent altogether.  ``ask_auto``
+#                 short-circuits with an empty entity dict and feeds only
+#                 ``{schema}`` + ``{question}`` to ``GraphCypherQAChain``.
+#                 Use this to measure how much the NER stage actually buys
+#                 you on a given dataset / model combination.
+#
+# The setting can be overridden per-call by passing ``mode=...`` to
+# ``ner_agent_auto.ask_auto`` / ``get_ner_auto`` / ``select_tools_for_query``,
+# or via ``--ner-mode`` on the ``metrics_CypherBench`` CLI.
+# ──────────────────────────────────────────────────────────────────────────────
+
+NER_MODE: str = "full"     # "full" | "node_only" | "no_ner"
+
+# Allowed values — kept centrally so callers can validate user input
+# without hard-coding the literal strings.
+NER_MODES = ("full", "node_only", "no_ner")
+
 #python ner_agent_auto.py "How many movies were released before 2000?" --verbos
