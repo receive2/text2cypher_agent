@@ -254,6 +254,54 @@ REL_PROPERTY_REVIEWED_RATING = "rating"
 REL_PROPERTY_REVIEWED_SUMMARY = "summary"
 
 # ──────────────────────────────────────────────────────────────────────────────
+# LLM configuration  (per pipeline stage)
+# ──────────────────────────────────────────────────────────────────────────────
+# Each pipeline stage has its own LLM "slot" so experiments can mix providers
+# (e.g. GPT for NER, Claude Opus for Cypher generation) without code changes.
+#
+# Schema for every entry:
+#   {
+#     "provider":    "openai" | "azure" | "anthropic" | "auto",
+#     "model":       <model-name-or-deployment>,
+#     "temperature": <float>,         # optional, default 0
+#     # Anything else is forwarded verbatim to the chat-model constructor.
+#   }
+#
+# ``agent_helper.build_llm(**LLM_CONFIG)`` consumes these dicts and returns a
+# concrete ``BaseChatModel`` — see ``agent_helper.ner_llm`` / ``qa_llm`` /
+# ``cypher_llm`` for the resolved singletons.
+#
+# Examples
+# --------
+#   NER_LLM_CONFIG    = {"provider": "openai",    "model": "gpt-4.1"}
+#   CYPHER_LLM_CONFIG = {"provider": "anthropic", "model": "claude-opus-4-20250514"}
+#   QA_LLM_CONFIG     = {"provider": "openai",    "model": "gpt-4o-mini"}
+# ──────────────────────────────────────────────────────────────────────────────
+
+NER_LLM_CONFIG: dict = {
+    "provider":    "anthropic",
+    "model":       "claude-opus-4-20250514",
+    "temperature": 0,
+}
+
+QA_LLM_CONFIG: dict = {
+    "provider":    "openai",
+    "model":       "gpt-4.1",
+    "temperature": 0,
+}
+
+CYPHER_LLM_CONFIG: dict = {
+    "provider":    "openai",
+    "model":       "gpt-4.1",
+    "temperature": 0,
+}
+
+# Legacy default — used by any code path that imports ``agent_helper.llm``
+# without specifying a stage.  Defaults to the same setup as NER.
+DEFAULT_LLM_CONFIG: dict = dict(NER_LLM_CONFIG)
+
+
+# ──────────────────────────────────────────────────────────────────────────────
 # Runtime constants
 # ──────────────────────────────────────────────────────────────────────────────
 
@@ -264,3 +312,5 @@ STABILITY_K           = 3    # consecutive stable validation rounds before stopp
 MAX_VALIDATION_ROUNDS = 20   # hard cap on validation rounds per property pair
 SAMPLE_T              = 20   # sample size t per round (sample_property_values)
 CAP_MULTIPLIER        = 1000    # scan cap = t * CAP_MULTIPLIER (cheap over-fetch for random sampling)
+
+#python ner_agent_auto.py "How many movies were released before 2000?" --verbos

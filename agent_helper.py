@@ -1,0 +1,601 @@
+import os
+import re
+import json
+import ast
+import asyncio
+import threading
+from io import BytesIO
+from pathlib import Path
+from typing import Annotated, Any, Union, TypedDict, Literal, List, Dict, Optional
+
+import httpx
+import requests
+from dotenv import load_dotenv
+from loguru import logger
+
+from langchain_openai import ChatOpenAI, AzureChatOpenAI
+from langchain_core.language_models import BaseChatModel
+from langchain_core.messages import ToolMessage, AIMessage, HumanMessage
+from langchain_core.prompts import PromptTemplate
+from langchain.chat_models import init_chat_model
+
+# ``langchain-anthropic`` is optional — only required when callers explicitly
+# request the "anthropic" provider.  Importing it lazily keeps the module
+# importable in environments that have not installed the extra package.
+try:
+    from langchain_anthropic import ChatAnthropic  # type: ignore
+except ImportError:  # pragma: no cover - only triggered when extra is missing
+    ChatAnthropic = None  # type: ignore[assignment]
+
+from langgraph.graph import StateGraph, START, END
+from langgraph.graph.message import AnyMessage, add_messages
+from langgraph.prebuilt import create_react_agent
+from langgraph.checkpoint.memory import MemorySaver
+
+from langchain_neo4j import Neo4jGraph, GraphCypherQAChain
+from neo4j import GraphDatabase
+
+from config import (
+    NER_SP,                # NOTE: update NER_SP in config.py as shown below
+    NER_LLM_CONFIG,
+    QA_LLM_CONFIG,
+    CYPHER_LLM_CONFIG,
+    DEFAULT_LLM_CONFIG,
+)
+from neo4j_search import search_tool
+
+
+# ---------- 1. Environment & global objects ----------
+load_dotenv(".env", override=True)
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Provider-agnostic LLM factory
+# ─────────────────────────────────────────────────────────────────────────────
+# ``build_llm`` returns any LangChain ``BaseChatModel`` (ChatOpenAI,
+# AzureChatOpenAI, ChatAnthropic, …).  All downstream call sites
+# (``create_react_agent``, ``GraphCypherQAChain.from_llm``) accept any
+# ``BaseChatModel``, so swapping providers does not require changes elsewhere.
+#
+# Provider selection priority (when ``provider`` is left as ``"auto"``):
+#   1. ``LLM_PROVIDER`` env var, if set  ("openai" | "azure" | "anthropic")
+#   2. Azure OpenAI    — when AZURE_OPENAI_{ENDPOINT,API_KEY,DEPLOYMENT} are set
+#   3. Anthropic       — when ANTHROPIC_API_KEY is set and OPENAI_API_KEY is not
+#   4. Public OpenAI   — fallback
+#
+# Examples:
+#   llm_gpt    = build_llm(provider="openai", model="gpt-4.1")
+#   llm_opus   = build_llm(provider="anthropic", model="claude-opus-4-20250514")
+#   llm_azure  = build_llm(provider="azure")     # uses AZURE_OPENAI_DEPLOYMENT
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Default Anthropic model — overridable via the ANTHROPIC_MODEL env var.
+DEFAULT_ANTHROPIC_MODEL = "claude-opus-4-20250514"
+
+
+def _build_http_client() -> httpx.Client:
+    """Construct a shared httpx client honoring TRUST_ENV / proxy settings."""
+    trust_env = os.getenv("TRUST_ENV", "1") != "0"
+    return httpx.Client(
+        timeout=httpx.Timeout(60.0, connect=10.0),
+        trust_env=trust_env,
+    )
+
+
+def _resolve_provider(provider: str) -> str:
+    """Resolve the ``"auto"`` sentinel into a concrete provider string."""
+    if provider and provider != "auto":
+        return provider.lower()
+
+    env_provider = os.getenv("LLM_PROVIDER", "").strip().lower()
+    if env_provider in {"openai", "azure", "anthropic"}:
+        return env_provider
+
+    if (
+        os.getenv("AZURE_OPENAI_ENDPOINT")
+        and os.getenv("AZURE_OPENAI_API_KEY")
+        and os.getenv("AZURE_OPENAI_DEPLOYMENT")
+    ):
+        return "azure"
+
+    if os.getenv("ANTHROPIC_API_KEY") and not os.getenv("OPENAI_API_KEY"):
+        return "anthropic"
+
+    return "openai"
+
+
+def _build_openai_llm(
+    model: Optional[str],
+    temperature: float,
+    http_client: httpx.Client,
+    **extra: Any,
+) -> ChatOpenAI:
+    return ChatOpenAI(
+        model=model or os.getenv("OPENAI_MODEL", "gpt-4.1"),
+        api_key=os.getenv("OPENAI_API_KEY"),
+        temperature=temperature,
+        timeout=60,
+        max_retries=6,
+        base_url=os.getenv("OPENAI_BASE_URL") or None,
+        http_client=http_client,
+        **extra,
+    )
+
+
+def _build_azure_llm(
+    model: Optional[str],
+    temperature: float,
+    http_client: httpx.Client,
+    **extra: Any,
+) -> BaseChatModel:
+    azure_endpoint = os.environ["AZURE_OPENAI_ENDPOINT"]
+    azure_key = os.environ["AZURE_OPENAI_API_KEY"]
+    azure_deployment = model or os.environ["AZURE_OPENAI_DEPLOYMENT"]
+
+    base_url = azure_endpoint.rstrip("/") + "/openai/v1/"
+    try:
+        return ChatOpenAI(
+            model=azure_deployment,
+            api_key=azure_key,
+            base_url=base_url,
+            temperature=temperature,
+            timeout=60,
+            max_retries=6,
+            http_client=http_client,
+            **extra,
+        )
+    except Exception:
+        return AzureChatOpenAI(
+            azure_deployment=azure_deployment,
+            api_version=os.getenv("AZURE_OPENAI_API_VERSION", "2024-05-01-preview"),
+            api_key=azure_key,
+            azure_endpoint=azure_endpoint,
+            temperature=temperature,
+            timeout=60,
+            max_retries=6,
+            http_client=http_client,
+            **extra,
+        )
+
+
+def _build_anthropic_llm(
+    model: Optional[str],
+    temperature: float,
+    **extra: Any,
+) -> BaseChatModel:
+    if ChatAnthropic is None:
+        raise ImportError(
+            "langchain-anthropic is not installed.  Run "
+            "`pip install langchain-anthropic` to enable provider='anthropic'."
+        )
+    api_key = os.getenv("ANTHROPIC_API_KEY")
+    if not api_key:
+        raise RuntimeError(
+            "ANTHROPIC_API_KEY is not set in the environment.  Add it to your "
+            ".env file before requesting provider='anthropic'."
+        )
+
+    return ChatAnthropic(
+        model=model or os.getenv("ANTHROPIC_MODEL", DEFAULT_ANTHROPIC_MODEL),
+        api_key=api_key,
+        temperature=temperature,
+        timeout=60,
+        max_retries=6,
+        **extra,
+    )
+
+
+def build_llm(
+    provider: str = "auto",
+    model: Optional[str] = None,
+    temperature: float = 0,
+    **extra: Any,
+) -> BaseChatModel:
+    """
+    Build a LangChain chat model for the requested provider.
+
+    Parameters
+    ----------
+    provider : {"auto", "openai", "azure", "anthropic"}
+        Which provider to instantiate.  ``"auto"`` (default) picks one based
+        on env vars — see the priority list at the top of this section.
+    model : Optional[str]
+        Model name / deployment override.  When ``None``, falls back to the
+        provider-specific env var (``OPENAI_MODEL``, ``AZURE_OPENAI_DEPLOYMENT``,
+        ``ANTHROPIC_MODEL``) or a sensible default.
+    temperature : float
+        Sampling temperature (default 0 for deterministic NER / Cypher).
+    **extra :
+        Forwarded verbatim to the underlying chat-model constructor.
+
+    Returns
+    -------
+    BaseChatModel
+        Any concrete LangChain chat model — caller code should treat it as
+        opaque and only rely on the ``BaseChatModel`` interface.
+    """
+    resolved = _resolve_provider(provider)
+    http_client = _build_http_client()
+
+    if resolved == "openai":
+        return _build_openai_llm(model, temperature, http_client, **extra)
+    if resolved == "azure":
+        return _build_azure_llm(model, temperature, http_client, **extra)
+    if resolved == "anthropic":
+        return _build_anthropic_llm(model, temperature, **extra)
+
+    raise ValueError(
+        f"Unknown LLM provider {provider!r}.  "
+        "Expected one of: 'auto', 'openai', 'azure', 'anthropic'."
+    )
+
+
+def build_llm_from_config(cfg: Dict[str, Any]) -> BaseChatModel:
+    """
+    Build an LLM from a config dict (e.g. ``NER_LLM_CONFIG`` from ``config.py``).
+
+    The dict is shallow-copied and forwarded to :func:`build_llm` as keyword
+    arguments — ``provider`` and ``model`` are recognised explicitly; any
+    additional keys (e.g. ``temperature``, ``max_tokens``) flow through to the
+    underlying chat-model constructor.
+
+    Returns the same instance on repeated calls with the same config object,
+    so each stage's singleton stays singular.
+    """
+    cfg = dict(cfg)  # don't mutate the caller's dict
+    provider    = cfg.pop("provider", "auto")
+    model       = cfg.pop("model", None)
+    temperature = cfg.pop("temperature", 0)
+    return build_llm(
+        provider=provider,
+        model=model,
+        temperature=temperature,
+        **cfg,
+    )
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Per-stage LLM singletons — driven by config.py
+# ─────────────────────────────────────────────────────────────────────────────
+# These four objects are built once at import time so the rest of the codebase
+# can ``from agent_helper import ner_llm`` (or qa_llm / cypher_llm) and trust
+# they're already wired to the right provider and model.
+#
+#   ner_llm     ← config.NER_LLM_CONFIG     (drives the NER ReAct agent)
+#   qa_llm      ← config.QA_LLM_CONFIG      (formats Cypher results into prose)
+#   cypher_llm  ← config.CYPHER_LLM_CONFIG  (writes the Cypher query)
+#   llm         ← config.DEFAULT_LLM_CONFIG (legacy default for any code that
+#                                            imports ``llm`` without a stage)
+#
+# To swap a provider or model, edit the dicts in ``config.py`` — no other code
+# changes are required.
+# ─────────────────────────────────────────────────────────────────────────────
+
+ner_llm:    BaseChatModel = build_llm_from_config(NER_LLM_CONFIG)
+qa_llm:     BaseChatModel = build_llm_from_config(QA_LLM_CONFIG)
+cypher_llm: BaseChatModel = build_llm_from_config(CYPHER_LLM_CONFIG)
+
+# Legacy alias — kept for backward compatibility with existing
+# ``from agent_helper import llm`` imports.
+llm: BaseChatModel = build_llm_from_config(DEFAULT_LLM_CONFIG)
+
+
+# ---------- 2. Neo4j ----------
+NEO4J_URI = os.environ["NEO4J_URI"]
+NEO4J_USER = os.environ["NEO4J_USERNAME"]
+NEO4J_PASS = os.environ["NEO4J_PASSWORD"]
+NEO4J_DATABASE = os.getenv("NEO4J_DATABASE", "neo4j")
+
+
+def initialize_graph(database):
+    return Neo4jGraph(
+        url=NEO4J_URI,
+        username=NEO4J_USER,
+        password=NEO4J_PASS,
+        database=database,
+    )
+
+
+neo4j_graph = initialize_graph(database=NEO4J_DATABASE)
+
+
+# ---------- 3. Helpers ----------
+def extract_agent_response_details(agent_response, messages):
+    """Collect tool calls, tool outputs, and the final AI message from an agent run."""
+    tool_calls_info = []
+    tool_outputs = {}
+
+    for msg in messages:
+        if isinstance(msg, AIMessage) and msg.tool_calls:
+            for call in msg.tool_calls:
+                tool_calls_info.append({
+                    "name": call["name"],
+                    "arguments": call["args"],
+                    "id": call["id"],
+                })
+        if isinstance(msg, ToolMessage):
+            tool_outputs[msg.tool_call_id] = msg.content
+
+    for call in tool_calls_info:
+        call["output"] = tool_outputs.get(call["id"], None)
+
+    final_message = None
+    for msg in messages[::-1]:
+        if isinstance(msg, AIMessage) and msg.content.strip():
+            final_message = msg.content.strip()
+            break
+
+    return {"tool_calls": tool_calls_info, "final_response": final_message}
+
+
+def get_entity(user_query: str, topic: str) -> str:
+    """Ask the LLM to pull the keyword related to `topic` out of the user query."""
+    TOOL_NER_PROMPT = """ Extract the key words related to {topic} from sentence under [TEXT]. 
+
+[TEXT]
+How many software engineers in this team?
+[OUTPUT]
+software engineer
+
+[TEXT]
+{user_question}
+[OUTPUT]
+"""
+    prompt_text = (
+        TOOL_NER_PROMPT
+        .replace("{user_question}", user_query)
+        .replace("{topic}", topic)
+    )
+    res = llm.invoke(prompt_text)
+    return res.content
+
+
+# ---------- 4. Tools — loaded dynamically from generated files ----------
+
+def _load_generated_tools() -> List[Any]:
+    """
+    Import all @tool functions from generated_node_tools and generated_rel_tools.
+    Returns a list of BaseTool instances, or an empty list if the generated
+    files don't exist yet (pre-setup).
+    """
+    import importlib
+    import inspect
+    from langchain_core.tools import BaseTool
+
+    tools: List[Any] = []
+    for mod_name in ("generated_node_tools", "generated_rel_tools"):
+        try:
+            mod = importlib.import_module(mod_name)
+            importlib.reload(mod)
+            for _name, obj in inspect.getmembers(mod):
+                if isinstance(obj, BaseTool):
+                    tools.append(obj)
+        except ImportError:
+            logger.warning(
+                f"Could not import {mod_name!r}. "
+                "Run `python gen_tools.py` to generate it."
+            )
+    return tools
+
+
+# ---------- 5. Agent ----------
+def create_agent(
+    model: Optional[Union[str, BaseChatModel]] = None,
+    llm_obj: Optional[BaseChatModel] = None,
+):
+    """
+    Create a ReAct agent wired with all generated tools.
+
+    Parameters
+    ----------
+    model : str | BaseChatModel | None
+        - If a ``BaseChatModel`` is passed, use it directly as the agent LLM.
+        - If a string is passed, treat it as a model name and build an LLM
+          via the auto-detected provider (preserves backward-compat with the
+          old ``model: str`` signature).
+        - If ``None``, fall back to ``llm_obj`` or the module-level ``llm``.
+    llm_obj : BaseChatModel | None
+        Explicit chat-model override (e.g. an Anthropic Claude Opus model).
+        Useful when you want to keep ``model`` as a name string.
+    """
+    tools = _load_generated_tools()
+    if not tools:
+        raise RuntimeError(
+            "No generated tools found. "
+            "Run `python setup_project.py` or `python gen_tools.py` first."
+        )
+
+    # Resolve which chat model to wire into the agent.
+    # Default = the NER-stage singleton built from config.NER_LLM_CONFIG.
+    if isinstance(model, BaseChatModel):
+        agent_llm: BaseChatModel = model
+    elif llm_obj is not None:
+        agent_llm = llm_obj
+    elif isinstance(model, str):
+        agent_llm = build_llm(model=model)
+    else:
+        agent_llm = ner_llm
+
+    agent_graph = create_react_agent(
+        model=agent_llm,
+        tools=tools,
+        prompt=NER_SP,
+        checkpointer=False,
+    )
+    return agent_graph
+
+
+# ---------- 6. Output parsing ----------
+def _to_list(v: Any) -> List[Any]:
+    """Normalize any scalar / list-ish value into a plain Python list."""
+    if v is None:
+        return []
+    if isinstance(v, list):
+        return v
+    if isinstance(v, tuple) or isinstance(v, set):
+        return list(v)
+    return [v]
+
+
+def extract_content(input_string: str) -> str:
+    """
+    Parse the agent's final message into a canonical JSON string of the form
+        {"Label.property": [values, ...]}
+
+    Guarantees:
+      - Returns a valid JSON string (use json.loads to get a dict back).
+      - Every value is wrapped in a list.
+      - Returns "{}" on any failure so downstream code never crashes.
+    """
+    if not input_string:
+        return "{}"
+
+    text = input_string.strip()
+
+    # Strip optional markdown code fences (```json ... ``` or ```python ... ```)
+    m = re.search(r"```(?:python|json)?\s*(.*?)\s*```", text, re.DOTALL)
+    if m:
+        text = m.group(1).strip()
+
+    # Try JSON first, then Python literal (to tolerate single quotes, etc.)
+    parsed: Optional[Dict[str, Any]] = None
+    for loader in (json.loads, ast.literal_eval):
+        try:
+            obj = loader(text)
+            if isinstance(obj, dict):
+                parsed = obj
+                break
+        except Exception:
+            continue
+
+    if parsed is None:
+        return "{}"
+
+    # Normalize every value to a list, e.g. 2015 -> [2015], "Inception" -> ["Inception"]
+    normalized: Dict[str, List[Any]] = {k: _to_list(v) for k, v in parsed.items()}
+    return json.dumps(normalized, ensure_ascii=False)
+
+
+def get_ner(
+    prompt: str,
+    verbose: bool = False,
+    llm_obj: Optional[BaseChatModel] = None,
+) -> str:
+    """
+    Run the NER agent on `prompt` and return a canonical JSON string.
+
+    Pass ``llm_obj`` to swap in a non-default chat model (e.g. Claude Opus
+    via ``build_llm(provider='anthropic')``) without touching the module-level
+    default.
+    """
+    inputs = {"messages": [("user", f"{prompt}")]}
+    agent_graph = create_agent(llm_obj=llm_obj)
+
+    message = None
+    for msgs in agent_graph.stream(inputs, stream_mode="values"):
+        tools_messages = [m for m in msgs["messages"] if isinstance(m, ToolMessage)]
+        message = msgs["messages"][-1]
+
+        if verbose:
+            if isinstance(message, tuple):
+                logger.info(message)
+            else:
+                message.pretty_print()
+
+            if tools_messages:
+                for tool_msg in tools_messages:
+                    logger.info(tool_msg.content)
+
+    if message is None:
+        return "{}"
+
+    return extract_content(message.content)
+
+
+def get_ner_dict(
+    prompt: str,
+    verbose: bool = False,
+    llm_obj: Optional[BaseChatModel] = None,
+) -> Dict[str, List[Any]]:
+    """Convenience wrapper: return the entity dict as a real Python dict."""
+    raw = get_ner(prompt, verbose=verbose, llm_obj=llm_obj)
+    try:
+        obj = json.loads(raw)
+        return obj if isinstance(obj, dict) else {}
+    except Exception:
+        return {}
+
+
+# ---------- 7. Cypher generation prompt ----------
+# NOTE: ``qa_llm`` and ``cypher_llm`` are now config-driven module-level
+# singletons defined in section 1 (built from ``config.QA_LLM_CONFIG`` and
+# ``config.CYPHER_LLM_CONFIG``).  Do NOT reassign them here.
+cypher_template = """Task: Generate a Cypher statement to query a Neo4j database.
+
+Rules:
+- Use ONLY relationship types, labels, and properties present in the provided schema.
+- Do NOT invent properties or relationship types not in the schema.
+- Return ONLY the Cypher query (no backticks, no prose, no explanation).
+- Prefer parameterized filters and safe patterns; avoid destructive operations (no WRITE).
+
+Domain hints (PeopleKG):
+- Common labels may include: Associate, Badge, JobPosting, Skill, Department, Location, etc.
+- Text fields like job titles or skills may need CONTAINS/STARTS WITH with case-insensitive matching.
+- If the question is ambiguous, choose the simplest valid interpretation.
+- If a value is provided by schema-relevant entity filters, inline it as a literal (e.g., 2015, "CA", "Data Engineer").
+- DO NOT use Cypher parameters (no `$param` anywhere).
+  - Inline numbers directly: 2015
+  - Inline strings directly with quotes: "Inception", "CA"
+  - Example (GOOD): WHERE toLower(m.title) = toLower("Inception")
+  - Example (BAD):  WHERE toLower(m.title) = toLower($movie_title)
+
+Schema:
+{schema}
+
+similar examples:
+MATCH (jp:JobPosting)-[:CONTAINS_JOB]->(jc:JobCode)
+WHERE jp.state = "CA"
+  AND toLower(jc.job_title) CONTAINS toLower("Data Scientist")
+RETURN count(jp) AS numberOfDataScientistJobPostingsInCA
+
+Schema-relevant attribute and values:
+    - note: Whenever the following relevant attribute and value pairs are provided, you MUST incorporate it in the "where" clause in your output. You should use it all the time.
+    - Relevant attribute and value pairs you MUST use:
+        {relevant_entities}
+
+User question:
+{question}
+"""
+
+
+# ---------- 8. Run ----------
+if __name__ == "__main__":
+    prompt = "how many movies released before 2015?"
+
+    # Get the canonical entity JSON string, e.g. '{"Movie.released": [2015]}'
+    dct = get_ner(prompt=prompt, verbose=True)
+    print("dct =", repr(dct), flush=True)
+
+    # IMPORTANT: escape braces before injecting into PromptTemplate,
+    # otherwise "{" and "}" in dct will be interpreted as template placeholders.
+    safe_dct = dct.replace("{", "{{").replace("}", "}}")
+    cypher_template_filled = cypher_template.replace("{relevant_entities}", safe_dct)
+
+    cypher_prompt = PromptTemplate(
+        input_variables=["schema", "question"],
+        template=cypher_template_filled,
+    )
+
+    # Build GraphCypherQAChain with the custom prompt
+    chain = GraphCypherQAChain.from_llm(
+        graph=neo4j_graph,
+        llm=qa_llm,                 # Formats Cypher results into a natural-language answer
+        cypher_llm=cypher_llm,      # Generates the Cypher query
+        cypher_prompt=cypher_prompt,
+        verbose=True,
+        allow_dangerous_requests=True,
+    )
+
+    resp = chain.invoke({"query": prompt})
+    print("entities:", dct)
+    print("resp:", resp)

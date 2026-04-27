@@ -58,6 +58,7 @@ from typing import Any, Dict, List, Optional, Set
 from dotenv import load_dotenv
 from loguru import logger
 
+from langchain_core.language_models import BaseChatModel
 from langchain_core.messages import AIMessage, ToolMessage
 from langchain_core.prompts import PromptTemplate
 from langchain_core.tools import BaseTool
@@ -65,7 +66,15 @@ from langchain_neo4j import GraphCypherQAChain
 from langgraph.prebuilt import create_react_agent
 
 from config import NER_SP, DEFAULT_TOP_K
-from ner_agent import llm, neo4j_graph, get_entity
+from agent_helper import (
+    llm,                       # legacy default — kept for backward compat
+    ner_llm     as _ner_llm,   # configured NER-stage LLM      (config.NER_LLM_CONFIG)
+    qa_llm      as _qa_llm,    # configured QA-stage LLM       (config.QA_LLM_CONFIG)
+    cypher_llm  as _cypher_llm,# configured Cypher-stage LLM   (config.CYPHER_LLM_CONFIG)
+    neo4j_graph,
+    get_entity,
+    build_llm,                 # noqa: F401  (re-exported for caller convenience)
+)
 from neo4j_search import search_tool
 from tool_search import (
     ToolSearchHit,
@@ -88,7 +97,7 @@ FAISS_AUTO_DIR: str = "faiss_tools_auto"
 # ──────────────────────────────────────────────────────────────────────────────
 # 1. LLM, Neo4j & entity extraction — reused from ner_agent.py
 #    Imported at the top of this module:
-#      from ner_agent import llm, neo4j_graph, get_entity
+#      from agent_helper import llm, neo4j_graph, get_entity
 # ──────────────────────────────────────────────────────────────────────────────
 
 
@@ -502,6 +511,7 @@ def create_agent_auto(
     rebuild:             bool = False,
     filter_connectivity: bool = True,
     verbose:             bool = False,
+    llm_obj:             Optional[BaseChatModel] = None,
 ):
     """
     Build a LangGraph ReAct agent wired with only the tools that are
@@ -520,6 +530,12 @@ def create_agent_auto(
     filter_connectivity  : Drop relation tools unconnected to selected node
                            labels (default *True*).
     verbose              : Log selected tools and filter decisions.
+    llm_obj              : Optional ``BaseChatModel`` to drive the NER agent.
+                           When *None*, the module-level default ``llm``
+                           (auto-resolved by ``agent_helper.build_llm``) is
+                           used.  Pass e.g.
+                           ``build_llm(provider="anthropic", model="claude-opus-4-20250514")``
+                           to run the NER agent on Claude Opus instead of GPT.
 
     Returns
     -------
@@ -550,7 +566,7 @@ def create_agent_auto(
         logger.info(f"Agent assembled with {len(selected_tools)} tools: {names}")
 
     return create_react_agent(
-        model       = llm,
+        model       = llm_obj if llm_obj is not None else _ner_llm,
         tools       = selected_tools,
         prompt      = _build_dynamic_prompt(selected_tools),
         checkpointer= False,
@@ -614,6 +630,7 @@ def get_ner_auto(
     faiss_dir: str  = FAISS_AUTO_DIR,
     rebuild:   bool = False,
     verbose:   bool = False,
+    llm_obj:   Optional[BaseChatModel] = None,
 ) -> str:
     """
     Run the NER agent on *prompt* with auto-selected tools and return a
@@ -631,6 +648,8 @@ def get_ner_auto(
     faiss_dir : FAISS index directory.
     rebuild   : Force-rebuild the FAISS tool index.
     verbose   : Stream agent messages and print tool-selection details.
+    llm_obj   : Optional ``BaseChatModel`` to drive the NER agent.
+                When *None*, the module-level default ``llm`` is used.
 
     Returns
     -------
@@ -643,6 +662,7 @@ def get_ner_auto(
         faiss_dir  = faiss_dir,
         rebuild    = rebuild,
         verbose    = verbose,
+        llm_obj    = llm_obj,
     )
 
     message = None
@@ -670,6 +690,7 @@ def get_ner_dict_auto(
     faiss_dir: str  = FAISS_AUTO_DIR,
     rebuild:   bool = False,
     verbose:   bool = False,
+    llm_obj:   Optional[BaseChatModel] = None,
 ) -> Dict[str, List[Any]]:
     """
     Convenience wrapper around :func:`get_ner_auto` that returns a Python dict
@@ -685,6 +706,7 @@ def get_ner_dict_auto(
         faiss_dir = faiss_dir,
         rebuild   = rebuild,
         verbose   = verbose,
+        llm_obj   = llm_obj,
     )
     try:
         obj = json.loads(raw)
@@ -729,11 +751,14 @@ User question:
 
 
 def ask_auto(
-    prompt:    str,
-    top_k:     int  = DEFAULT_TOP_K,
-    faiss_dir: str  = FAISS_AUTO_DIR,
-    rebuild:   bool = False,
-    verbose:   bool = False,
+    prompt:        str,
+    top_k:         int  = DEFAULT_TOP_K,
+    faiss_dir:     str  = FAISS_AUTO_DIR,
+    rebuild:       bool = False,
+    verbose:       bool = False,
+    ner_llm:       Optional[BaseChatModel] = None,
+    qa_llm:        Optional[BaseChatModel] = None,
+    cypher_llm:    Optional[BaseChatModel] = None,
 ) -> Dict[str, Any]:
     """
     Full end-to-end pipeline with auto tool selection:
@@ -746,6 +771,23 @@ def ask_auto(
     3. **Execution** — the chain runs the Cypher query on the connected
        Neo4j graph and formats the rows into a natural-language answer.
 
+    The pipeline uses **three independent LLM slots** so experiments can mix
+    providers freely (e.g. GPT for NER, Claude Opus for Cypher):
+
+    ============ ========================================================
+    Slot          Role
+    ============ ========================================================
+    ``ner_llm``   Drives the LangGraph ReAct agent that does entity NER.
+    ``qa_llm``    "Value-linking" LLM passed to ``GraphCypherQAChain.from_llm``
+                  via ``llm=`` — formats Cypher results into natural language.
+    ``cypher_llm`` Generates the Cypher query from the schema + question.
+    ============ ========================================================
+
+    Each slot defaults to the **configured singleton** from ``config.py``
+    when *None* is passed (``NER_LLM_CONFIG`` / ``QA_LLM_CONFIG`` /
+    ``CYPHER_LLM_CONFIG``), so callers don't need to thread LLM objects
+    through their code — just edit ``config.py`` once and re-import.
+
     Parameters
     ----------
     prompt    : User's natural-language question.
@@ -754,6 +796,14 @@ def ask_auto(
     rebuild   : Force-rebuild the FAISS index before running.
     verbose   : Stream agent messages, print tool-selection decisions, and
                 enable ``GraphCypherQAChain`` verbose mode.
+    ner_llm    : LLM for the NER agent stage.
+                 Defaults to ``agent_helper.ner_llm`` (config.NER_LLM_CONFIG).
+    qa_llm     : LLM for the answer-formatting (value-linking) stage in
+                 ``GraphCypherQAChain``.
+                 Defaults to ``agent_helper.qa_llm`` (config.QA_LLM_CONFIG).
+    cypher_llm : LLM for the Cypher-generation stage in
+                 ``GraphCypherQAChain``.
+                 Defaults to ``agent_helper.cypher_llm`` (config.CYPHER_LLM_CONFIG).
 
     Returns
     -------
@@ -769,12 +819,30 @@ def ask_auto(
 
     Example
     -------
+    >>> # Default — all three slots use the singletons built from config.py.
+    >>> # Edit NER_LLM_CONFIG / QA_LLM_CONFIG / CYPHER_LLM_CONFIG in config.py
+    >>> # to switch providers; no other code changes are required.
     >>> out = ask_auto("How many movies were released before 2000?")
-    >>> print(out["cypher"])
-    MATCH (m:Movie) WHERE m.released < 2000 RETURN count(m) AS total
-    >>> print(out["result"])
-    There are 23 movies released before 2000 in the database.
+
+    >>> # One-off override: keep config.py defaults for NER + QA, but try
+    >>> # Claude Opus for Cypher generation only.
+    >>> from agent_helper import build_llm
+    >>> opus = build_llm(provider="anthropic", model="claude-opus-4-20250514")
+    >>> out  = ask_auto(
+    ...     "How many movies were released before 2000?",
+    ...     cypher_llm = opus,
+    ... )
     """
+    # ── Resolve LLM slots ─────────────────────────────────────────────────────
+    # Each slot defaults to the configured singleton built from config.py:
+    #     ner_llm    → config.NER_LLM_CONFIG
+    #     qa_llm     → config.QA_LLM_CONFIG
+    #     cypher_llm → config.CYPHER_LLM_CONFIG
+    # Pass an explicit ``BaseChatModel`` to override at runtime.
+    ner_llm_eff    = ner_llm    if ner_llm    is not None else _ner_llm
+    qa_llm_eff     = qa_llm     if qa_llm     is not None else _qa_llm
+    cypher_llm_eff = cypher_llm if cypher_llm is not None else _cypher_llm
+
     # ── Step 1: entity extraction (NER) ───────────────────────────────────────
     entities = get_ner_auto(
         prompt    = prompt,
@@ -782,6 +850,7 @@ def ask_auto(
         faiss_dir = faiss_dir,
         rebuild   = rebuild,
         verbose   = verbose,
+        llm_obj   = ner_llm_eff,
     )
     if verbose:
         print(f"\n── Extracted entities ──────────────────────────────────────────────")
@@ -801,8 +870,8 @@ def ask_auto(
     # ── Step 3: build GraphCypherQAChain and run ──────────────────────────────
     chain = GraphCypherQAChain.from_llm(
         graph                    = neo4j_graph,
-        llm                      = llm,          # answer-formatting LLM
-        cypher_llm               = llm,          # Cypher-generation LLM
+        llm                      = qa_llm_eff,      # value linking LLM
+        cypher_llm               = cypher_llm_eff,  # Cypher generation LLM
         cypher_prompt            = cypher_prompt,
         verbose                  = verbose,
         allow_dangerous_requests = True,

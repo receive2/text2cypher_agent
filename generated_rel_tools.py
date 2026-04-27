@@ -3,7 +3,7 @@
 from __future__ import annotations
 from typing import List
 from langchain_core.tools import tool
-from ner_agent import get_entity
+from agent_helper import get_entity
 from neo4j_search import search_tool, search_rel_tool
 from config import TOOL_TOP_K
 

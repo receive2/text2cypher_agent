@@ -39,6 +39,11 @@ langchain-neo4j==0.1.0
 openai==1.109.1
 tiktoken==0.12.0
 
+# ── Anthropic (Claude — Opus / Sonnet / Haiku) ────────────────────────────────
+# Pinned to the last 0.2.x release to stay compatible with langchain-core 0.3.x.
+langchain-anthropic==0.2.4
+anthropic==0.97.0
+
 # ── FAISS  (install separately — choose one) ──────────────────────────────────
 # CPU only:
 #   pip install faiss-cpu
