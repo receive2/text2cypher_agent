@@ -77,7 +77,7 @@ NEO4J_DATABASE=neo4j                # the database name inside Neo4j
 OPENAI_API_KEY=sk-...
 OPENAI_MODEL=gpt-4.1                # or gpt-4o, gpt-4-turbo, etc.
 OPENAI_BASE_URL=                    # leave blank for api.openai.com
-OPENAI_EMBEDDING_MODEL=text-embedding-ada-002
+OPENAI_EMBEDDING_MODEL=text-embedding-3-small
 
 # ── Azure OpenAI (optional — replaces OpenAI when all three are set) ──────────
 AZURE_OPENAI_ENDPOINT=

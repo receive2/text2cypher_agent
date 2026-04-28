@@ -23,7 +23,7 @@ OpenAI / LangChain env vars:
   OPENAI_API_KEY
   (optional) OPENAI_MODEL (default: gpt-4o)
   (optional) OPENAI_BASE_URL
-  (optional) OPENAI_EMBEDDING_MODEL (default: text-embedding-ada-002)
+  (optional) OPENAI_EMBEDDING_MODEL (default: text-embedding-3-small)
   (optional) TRUST_ENV (default: 1)
 """
 
@@ -101,8 +101,11 @@ def build_llm(temperature: float = 0) -> ChatOpenAI:
 
 def build_embeddings() -> OpenAIEmbeddings:
     """
-    Build OpenAI embeddings client. Defaults to Ada embedding model.
+    Build OpenAI embeddings client. Defaults to ``text-embedding-3-small``.
     You can override by setting OPENAI_EMBEDDING_MODEL env var.
+
+    NOTE: keep this default in sync with ``tool_search.build_embeddings``
+    (the runtime path).  Mixing models silently degrades retrieval quality.
     """
     trust_env = os.getenv("TRUST_ENV", "1") != "0"
 
@@ -112,7 +115,7 @@ def build_embeddings() -> OpenAIEmbeddings:
     )
 
     return OpenAIEmbeddings(
-        model=os.getenv("OPENAI_EMBEDDING_MODEL", "text-embedding-ada-002"),
+        model=os.getenv("OPENAI_EMBEDDING_MODEL", "text-embedding-3-small"),
         api_key=_require_env("OPENAI_API_KEY"),
         base_url=os.getenv("OPENAI_BASE_URL") or None,
         http_client=http_client,
