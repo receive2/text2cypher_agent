@@ -3,13 +3,17 @@
 """
 gen_system_prompt.py
 ====================
-Introspects a live Neo4j database and generates a **complete** ``config.py``
-from scratch — schema constants, system prompts, and runtime settings — all
-tailored to the actual graph in the database.
+Introspects a live Neo4j database and generates ``prompts.py`` from scratch —
+system prompts and schema constants tailored to the actual graph.
+
+⚠ This script ONLY writes ``prompts.py``.  It never touches ``config.py``,
+which is user-managed and holds hyperparameters (LLM configs, NER_MODE,
+SAMPLE_T, …).  The split prevents user-edited settings from being clobbered
+each time the schema is re-derived.
 
 What is generated
 -----------------
-``config.py`` contains four sections:
+``prompts.py`` contains three sections:
 
   1. **System Prompts**
        NER_SP            – NER agent prompt with a dynamic tool list,
@@ -27,16 +31,16 @@ What is generated
 
   3. **Index Constants**  (fulltext index names discovered from the graph)
 
-  4. **Runtime Constants**
-       MAX_THREAD, DEFAULT_TOP_K, TOOL_TOP_K, STABILITY_K,
-       MAX_VALIDATION_ROUNDS.
+Runtime hyperparameters (MAX_THREAD, DEFAULT_TOP_K, TOOL_TOP_K, STABILITY_K,
+MAX_VALIDATION_ROUNDS, SAMPLE_T, CAP_MULTIPLIER, NER_MODE, *_LLM_CONFIG)
+live in ``config.py`` and are NOT regenerated.
 
 Usage
 -----
-  python gen_system_prompt.py                     # write config.py
+  python gen_system_prompt.py                     # write prompts.py
   python gen_system_prompt.py --print-only        # preview, no write
   python gen_system_prompt.py --database movies
-  python gen_system_prompt.py --output path/to/config.py
+  python gen_system_prompt.py --output path/to/prompts.py
 
 Environment variables  (loaded from .env)
 -----------------------------------------
@@ -385,12 +389,20 @@ def generate_ner_sp(
     rel_rows:  List[Dict[str, Any]],
     registry:  Optional[Dict[str, Any]] = None,
 ) -> str:
-    """Generate the NER agent system prompt."""
-    if registry is None:
-        registry = _load_tool_registry()
+    """Generate the NER agent system prompt.
 
-    tool_block = _build_tool_section(registry)
-    examples   = _derive_few_shot(node_rows, rel_rows)
+    The "Available tools" block is intentionally emitted as a ``{tool_list}``
+    placeholder.  The actual tool names are unknown at generation time — they
+    are decided at runtime by ``ner_agent_auto.py`` after FAISS-based tool
+    selection (see ``_build_dynamic_prompt``).  Baking a static tool list
+    here would (a) drift the moment ``gen_tools.py`` re-runs and
+    (b) advertise tools that the live agent has not registered.
+
+    The ``registry`` parameter is accepted for backward compatibility but
+    is ignored — kept so existing callers don't have to change signatures.
+    """
+    _ = registry  # intentionally unused — see docstring
+    examples = _derive_few_shot(node_rows, rel_rows)
 
     # Build key-format note from actual labels
     key_samples = [
@@ -402,6 +414,11 @@ def generate_ner_sp(
         f"Q: {q}\nA: {a}" for q, a in examples
     )
 
+    # NOTE: ``{{tool_list}}`` is a literal placeholder in the emitted prompt
+    # (we double the braces to escape the f-string).  At runtime,
+    # ``ner_agent_auto._build_dynamic_prompt`` substitutes this token with
+    # the rendering of the FAISS-selected tools that were actually
+    # registered with the ReAct agent.
     return f"""\
 You are a strict Named Entity Recognition (NER) agent for a Neo4j graph database.
 
@@ -410,7 +427,7 @@ resolve each one to its canonical database value using the provided tools.
 
 Available tools
 ───────────────
-{tool_block}
+{{tool_list}}
 
 Extraction rules (follow strictly)
 ────────────────────────────────────
@@ -685,24 +702,7 @@ def generate_schema_constants(
 
 
 # ──────────────────────────────────────────────────────────────────────────────
-# Runtime constants (static — not schema-dependent)
-# ──────────────────────────────────────────────────────────────────────────────
-
-_RUNTIME_CONSTANTS = """\
-# ──────────────────────────────────────────────────────────────────────────────
-# Runtime constants
-# ──────────────────────────────────────────────────────────────────────────────
-
-MAX_THREAD            = 5    # parallel tool calls in the NER agent
-DEFAULT_TOP_K         = 5    # FAISS tool-selection top-k
-TOOL_TOP_K            = 10   # fulltext search top-k per tool call
-STABILITY_K           = 3    # consecutive stable validation rounds before stopping
-MAX_VALIDATION_ROUNDS = 20   # hard cap on validation rounds per property pair
-"""
-
-
-# ──────────────────────────────────────────────────────────────────────────────
-# Config.py assembler
+# prompts.py assembler
 # ──────────────────────────────────────────────────────────────────────────────
 
 def _triple_quote(s: str) -> str:
@@ -712,7 +712,7 @@ def _triple_quote(s: str) -> str:
     return f'"""\\\n{escaped}\n"""'
 
 
-def generate_config_py(
+def generate_prompts_py(
     node_rows:  List[Dict[str, Any]],
     rel_rows:   List[Dict[str, Any]],
     ft_indexes: List[Dict[str, str]],
@@ -720,7 +720,7 @@ def generate_config_py(
     database:   str = "neo4j",
 ) -> str:
     """
-    Assemble the complete ``config.py`` content as a string.
+    Assemble the complete ``prompts.py`` content as a string.
 
     Parameters
     ----------
@@ -732,7 +732,7 @@ def generate_config_py(
 
     Returns
     -------
-    str  Full Python source for config.py.
+    str  Full Python source for prompts.py.
     """
     if registry is None:
         registry = _load_tool_registry()
@@ -750,6 +750,13 @@ def generate_config_py(
         "# AUTO-GENERATED by gen_system_prompt.py — do not edit manually.\n"
         f"# Database : {database}\n"
         "# Re-run `python gen_system_prompt.py` to regenerate from the live schema.\n"
+        "#\n"
+        "# This file contains ONLY auto-generated content:\n"
+        "#   • System prompts (NER_SP, TEXT2CYPHER_SP, QA_SP, PROMPT_ALIGNER_SP)\n"
+        "#   • Schema constants derived from the live Neo4j graph\n"
+        "#\n"
+        "# User-managed hyperparameters (LLM configs, NER_MODE, SAMPLE_T, …) live\n"
+        "# in ``config.py`` and are NEVER overwritten by ``gen_system_prompt.py``.\n"
     )
 
     # ── System prompts ────────────────────────────────────────────────────────
@@ -772,10 +779,11 @@ def generate_config_py(
     )
     sections.append(schema_consts)
 
-    # ── Runtime constants ─────────────────────────────────────────────────────
-    sections.append(_RUNTIME_CONSTANTS)
-
     return "\n".join(sections)
+
+
+# Backward-compatible alias — older imports may still reference the old name.
+generate_config_py = generate_prompts_py
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -784,25 +792,25 @@ def generate_config_py(
 
 def generate_all(
     database:  str  = "neo4j",
-    output:    str  = "config.py",
+    output:    str  = "prompts.py",
     n_samples: int  = 3,
     write:     bool = True,
     verbose:   bool = False,
 ) -> str:
     """
-    Full pipeline: connect → collect schema → generate config.py → write.
+    Full pipeline: connect → collect schema → generate prompts.py → write.
 
     Parameters
     ----------
     database  : Neo4j database name.
-    output    : Destination path for the generated config.py.
+    output    : Destination path for the generated prompts.py.
     n_samples : Sample values per property (for schema collection).
     write     : When True (default) write the result to *output*.
     verbose   : Print schema counts and a prompt preview.
 
     Returns
     -------
-    str  The complete config.py content.
+    str  The complete prompts.py content.
     """
     driver = _get_driver()
     try:
@@ -824,8 +832,8 @@ def generate_all(
     registry = _load_tool_registry()
     print(f"  {len(registry):>4d} tools loaded.", flush=True)
 
-    print("Assembling config.py …", flush=True)
-    content = generate_config_py(
+    print("Assembling prompts.py …", flush=True)
+    content = generate_prompts_py(
         node_rows  = node_rows,
         rel_rows   = rel_rows,
         ft_indexes = ft_indexes,
@@ -836,7 +844,7 @@ def generate_all(
     if verbose:
         preview_chars = 800
         print("\n" + "─" * 70)
-        print(f"config.py preview (first {preview_chars} chars):")
+        print(f"prompts.py preview (first {preview_chars} chars):")
         print("─" * 70)
         print(content[:preview_chars])
         print("─" * 70)
@@ -844,7 +852,7 @@ def generate_all(
     if write:
         with open(output, "w", encoding="utf-8") as fh:
             fh.write(content)
-        print(f"\n✓  config.py written → {output!r}", flush=True)
+        print(f"\n✓  prompts.py written → {output!r}", flush=True)
 
     return content
 
@@ -855,7 +863,8 @@ def generate_all(
 
 def _parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(
-        description="Generate a complete config.py from the live Neo4j schema.",
+        description="Generate prompts.py (system prompts + schema constants) "
+                    "from the live Neo4j schema. Does NOT touch config.py.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     p.add_argument(
@@ -866,9 +875,9 @@ def _parse_args() -> argparse.Namespace:
     )
     p.add_argument(
         "--output",
-        default="config.py",
+        default="prompts.py",
         metavar="PATH",
-        help="Output path for the generated config.py",
+        help="Output path for the generated prompts.py",
     )
     p.add_argument(
         "--samples",
@@ -880,7 +889,7 @@ def _parse_args() -> argparse.Namespace:
     p.add_argument(
         "--print-only",
         action="store_true",
-        help="Print generated config.py to stdout without writing to disk",
+        help="Print generated prompts.py to stdout without writing to disk",
     )
     p.add_argument(
         "--verbose",

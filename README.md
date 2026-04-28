@@ -224,7 +224,7 @@ Already ran `setup_project.py` once and only want to swap the embedding backend 
 **Procedure (OpenAI → BGE):**
 
 ```bash
-# 1. Install the open-source backend
+# 1. Install the open-source backend if you haven't
 pip install sentence-transformers torch
 ```
 

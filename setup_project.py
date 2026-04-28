@@ -15,7 +15,9 @@ Steps executed (in order):
    6  Backfill embeddings for every embeddable node property        [NEW]
    7  Create native vector indexes (one per embeddable property)    [NEW]
    8  Generate @tool functions  (generated_node_tools.py, generated_rel_tools.py)
-   9  Generate config.py from scratch (system prompts + schema constants)
+   9  Generate prompts.py from scratch (system prompts + schema constants).
+      ``config.py`` is NOT regenerated — it's user-managed and holds
+      hyperparameters (LLM configs, NER_MODE, SAMPLE_T, …).
   10  Build the FAISS tool-selection index (faiss_tools_auto/)
 
 Usage
@@ -730,23 +732,28 @@ def step_generate_tools(database: str) -> None:
 
 
 # ──────────────────────────────────────────────────────────────────────────────
-# Step 9 — Generate config.py (was step 7)
+# Step 9 — Generate prompts.py (was step 7)
 # ──────────────────────────────────────────────────────────────────────────────
+# This step writes the auto-generated ``prompts.py`` (system prompts + schema
+# constants).  It deliberately does NOT touch ``config.py`` — user-managed
+# hyperparameters (LLM configs, NER_MODE, SAMPLE_T, …) live there and must
+# survive every re-run of setup_project.py.
 
 def step_generate_config(database: str) -> None:
-    _header("Step 9 / 10 — Generating config.py")
+    _header("Step 9 / 10 — Generating prompts.py")
 
     from gen_system_prompt import generate_all
 
     generate_all(
         database  = database,
-        output    = "config.py",
+        output    = "prompts.py",
         n_samples = 3,
         write     = True,
         verbose   = False,
     )
-    _ok("config.py written with NER_SP, TEXT2CYPHER_SP, QA_SP, "
-        "PROMPT_ALIGNER_SP, and schema constants")
+    _ok("prompts.py written with NER_SP, TEXT2CYPHER_SP, QA_SP, "
+        "PROMPT_ALIGNER_SP, and schema constants "
+        "(config.py left untouched — hyperparameters preserved)")
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -836,10 +843,12 @@ def main() -> None:
     #   Step 8 (gen tools)             → reads schema_meta.json AND vector index
     #                                     names from EMBEDDABLE_PROPERTIES;
     #                                     writes generated_*_tools.py
-    #   Step 9 (gen config)            → imports generated tools to build
-    #                                     NER_SP, writes config.py
+    #   Step 9 (gen prompts)           → imports generated tools to build
+    #                                     NER_SP, writes prompts.py
+    #                                     (config.py is NOT touched —
+    #                                     hyperparameters survive)
     #   Step 10 (FAISS)                → imports generated tools (which import
-    #                                     config.py)
+    #                                     config.py / prompts.py)
     steps: List[tuple] = [
         ("Check environment",         lambda: step_check_env()),
         ("Test Neo4j connection",     lambda: step_test_connection(database)),
@@ -864,7 +873,7 @@ def main() -> None:
         )
 
     steps.append(("Generate @tool files",   lambda: step_generate_tools(database)))
-    steps.append(("Generate config.py",     lambda: step_generate_config(database)))
+    steps.append(("Generate prompts.py",    lambda: step_generate_config(database)))
 
     if not args.skip_faiss:
         steps.append(("Build FAISS index",  lambda: step_build_faiss()))

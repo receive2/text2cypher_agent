@@ -88,15 +88,25 @@ HYBRID_FUZZY_WEIGHT  = 0.5
 # any inline comments will be lost. Put notes ABOVE this header instead.
 # A `vector_config.py.bak` is written before each rewrite as a safety net.
 EMBEDDABLE_PROPERTIES = [
-    # Example shape (DO NOT hardcode actual labels in source code):
-    # {
-    #     "entity_type": "node",
-    #     "label": "<Label>",
-    #     "property": "<prop>",
-    #     "embedding_property": "<prop>_embedding",
-    # },
+    {
+        "entity_type":        "node",
+        "label":              "Movie",
+        "property":           "tagline",
+        "embedding_property": "tagline_embedding",
+    },
+    {
+        "entity_type":        "node",
+        "label":              "Movie",
+        "property":           "title",
+        "embedding_property": "title_embedding",
+    },
+    {
+        "entity_type":        "node",
+        "label":              "Person",
+        "property":           "name",
+        "embedding_property": "name_embedding",
+    },
 ]
-
 # ─── Auto-discovery rules ────────────────────────────────────────────────────
 DISCOVERY_PROPERTY_NAME_HINTS = [
     "title", "name", "description", "summary", "content",
