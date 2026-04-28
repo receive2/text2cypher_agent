@@ -17,6 +17,11 @@ from langchain_community.graphs import Neo4jGraph
 # defers all heavy backend work behind module-level singletons.
 import vector_config as vc
 
+# Module logger.  Per-poll "Waiting for index ..." chatter goes through
+# this logger so setup_project.py can route it to the file handler only.
+# In verbose mode the same records reach the console.
+logger = logging.getLogger(__name__)
+
 # Dedicated logger for tool-call retrieval traces. Critical for paper
 # error analysis. Silence with: logging.getLogger("t2c.retrieval").setLevel(WARNING)
 _retrieval_logger = logging.getLogger("t2c.retrieval")
@@ -72,12 +77,13 @@ def _ensure_fulltext_index(node_label: str, property_name: str) -> str:
     try:
         graph.query(cypher_query)
     except Exception as e:
-        print(f"ERROR: Failed to submit CREATE INDEX command. {e}")
+        logger.error("Failed to submit CREATE INDEX command for %s.%s: %s",
+                     node_label, property_name, e)
         raise
 
     # --- START: Wait for Index to be ONLINE (with enhanced debugging) ---
 
-    print(f"Waiting for index '{index_name}' to come online...")
+    logger.debug("Waiting for index %r to come online...", index_name)
     max_wait_seconds = 120
     start_time = time.time()
 
@@ -88,30 +94,31 @@ def _ensure_fulltext_index(node_label: str, property_name: str) -> str:
                 "SHOW FULLTEXT INDEXES YIELD name, state WHERE name = $index_name",
                 params={"index_name": index_name}
             )
-            
+
             # --- Enhanced Debugging Logic ---
             if not result:
                 # This means the index doesn't seem to exist.
-                print(f"DEBUG: Index '{index_name}' not found in 'SHOW INDEXES'. Retrying...")
+                logger.debug("Index %r not found in SHOW INDEXES. Retrying...", index_name)
             else:
                 state = result[0].get('state') # Use .get() for safety
                 if state == 'ONLINE':
-                    print(f"Index '{index_name}' is ONLINE.")
+                    logger.debug("Index %r is ONLINE.", index_name)
                     return index_name  # Success!
-                
+
                 if state == 'FAILED':
                     # The index build failed.
-                    print(f"ERROR: Index '{index_name}' has FAILED to build.")
+                    logger.error("Index %r has FAILED to build.", index_name)
                     raise RuntimeError(f"Index creation failed. State: {state}")
-                    
-                # Print the current state if not ONLINE or FAILED
-                print(f"DEBUG: Index state is '{state}'. Waiting...")
+
+                # Log the current state if not ONLINE or FAILED
+                logger.debug("Index %r state=%r. Waiting...", index_name, state)
             # --- End Enhanced Debugging Logic ---
 
         except Exception as e:
             # This will catch any *other* unexpected errors during the check
-            print(f"ERROR: An error occurred while checking index status: {e}. Retrying...")
-        
+            logger.warning("Error while checking index %r status: %s. Retrying...",
+                           index_name, e)
+
         time.sleep(2) # Wait for 2 seconds before checking again
 
     # If we exit the loop, it's a timeout
@@ -525,10 +532,11 @@ def _ensure_fulltext_rel_index(rel_type: str, property_name: str) -> str:
     try:
         graph.query(cypher_query)
     except Exception as e:
-        print(f"ERROR: Failed to submit CREATE INDEX command for relationship. {e}")
+        logger.error("Failed to submit CREATE INDEX command for relationship "
+                     "%s.%s: %s", rel_type, property_name, e)
         raise
 
-    print(f"Waiting for relationship index '{index_name}' to come online...")
+    logger.debug("Waiting for relationship index %r to come online...", index_name)
     max_wait_seconds = 120
     start_time = time.time()
 
@@ -539,17 +547,18 @@ def _ensure_fulltext_rel_index(rel_type: str, property_name: str) -> str:
                 params={"index_name": index_name},
             )
             if not result:
-                print(f"DEBUG: Index '{index_name}' not found yet. Retrying...")
+                logger.debug("Rel index %r not found yet. Retrying...", index_name)
             else:
                 state = result[0].get("state")
                 if state == "ONLINE":
-                    print(f"Index '{index_name}' is ONLINE.")
+                    logger.debug("Rel index %r is ONLINE.", index_name)
                     return index_name
                 if state == "FAILED":
                     raise RuntimeError(f"Relationship index creation failed. State: {state}")
-                print(f"DEBUG: Index state is '{state}'. Waiting...")
+                logger.debug("Rel index %r state=%r. Waiting...", index_name, state)
         except Exception as e:
-            print(f"ERROR: Checking relationship index status: {e}. Retrying...")
+            logger.warning("Error while checking rel index %r status: %s. Retrying...",
+                           index_name, e)
         time.sleep(2)
 
     raise TimeoutError(

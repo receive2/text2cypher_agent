@@ -55,6 +55,7 @@ from __future__ import annotations
 import argparse
 import importlib
 import inspect
+import logging
 import os
 import re
 import sys
@@ -69,6 +70,11 @@ from neo4j.exceptions import Neo4jError
 from gen_schema_csv import collect_node_schema, collect_rel_schema
 
 load_dotenv()
+
+# Module logger.  Per-step progress lines emitted from generate_all() flow
+# through this logger so setup_project.py can route them to the file
+# handler only by default; --verbose surfaces them on the console.
+logger = logging.getLogger(__name__)
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -138,11 +144,8 @@ def _load_tool_registry() -> Dict[str, Any]:
                 if isinstance(obj, BaseTool):
                     registry[name] = obj
         except ImportError:
-            print(
-                f"  Warning: cannot import {mod_name!r}. "
-                "Run `python gen_tools.py` first.",
-                file=sys.stderr,
-            )
+            logger.warning("cannot import %r. Run `python gen_tools.py` first.",
+                           mod_name)
     return registry
 
 
@@ -814,25 +817,25 @@ def generate_all(
     """
     driver = _get_driver()
     try:
-        print(f"Collecting node schema   (database={database!r}) …", flush=True)
+        logger.info("Collecting node schema (database=%r) …", database)
         node_rows = collect_node_schema(driver, database, n_samples=n_samples)
-        print(f"  {len(node_rows):>4d} (label × property) pairs.", flush=True)
+        logger.info("  %d (label × property) pairs.", len(node_rows))
 
-        print("Collecting relation schema …", flush=True)
+        logger.info("Collecting relation schema …")
         rel_rows = collect_rel_schema(driver, database, n_samples=n_samples)
-        print(f"  {len(rel_rows):>4d} relation rows.", flush=True)
+        logger.info("  %d relation rows.", len(rel_rows))
 
-        print("Discovering fulltext indexes …", flush=True)
+        logger.info("Discovering fulltext indexes …")
         ft_indexes = _discover_fulltext_indexes(driver, database)
-        print(f"  {len(ft_indexes):>4d} fulltext index(es) found.", flush=True)
+        logger.info("  %d fulltext index(es) found.", len(ft_indexes))
     finally:
         driver.close()
 
-    print("Loading tool registry …", flush=True)
+    logger.info("Loading tool registry …")
     registry = _load_tool_registry()
-    print(f"  {len(registry):>4d} tools loaded.", flush=True)
+    logger.info("  %d tools loaded.", len(registry))
 
-    print("Assembling prompts.py …", flush=True)
+    logger.info("Assembling prompts.py …")
     content = generate_prompts_py(
         node_rows  = node_rows,
         rel_rows   = rel_rows,
@@ -843,16 +846,13 @@ def generate_all(
 
     if verbose:
         preview_chars = 800
-        print("\n" + "─" * 70)
-        print(f"prompts.py preview (first {preview_chars} chars):")
-        print("─" * 70)
-        print(content[:preview_chars])
-        print("─" * 70)
+        logger.info("prompts.py preview (first %d chars):\n%s",
+                    preview_chars, content[:preview_chars])
 
     if write:
         with open(output, "w", encoding="utf-8") as fh:
             fh.write(content)
-        print(f"\n✓  prompts.py written → {output!r}", flush=True)
+        logger.info("prompts.py written → %r", output)
 
     return content
 

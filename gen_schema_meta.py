@@ -63,6 +63,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import logging
 import os
 import re
 import sys
@@ -73,6 +74,11 @@ from typing import Any, Dict, List, Optional, Tuple
 from dotenv import load_dotenv
 
 load_dotenv(".env", override=True)
+
+# Module logger.  Per-label progress lines are logger.info so setup_project.py
+# routes them to the file handler only by default; --verbose surfaces them
+# back on the console.
+logger = logging.getLogger(__name__)
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -154,8 +160,7 @@ def _read_node_schema(csv_path: str) -> Dict[str, List[Dict[str, str]]]:
                 if label:
                     by_label[label].append(row)
     except FileNotFoundError:
-        print(f"  ⚠  {csv_path} not found.  Run gen_schema_csv.py first.",
-              flush=True)
+        logger.warning("%s not found.  Run gen_schema_csv.py first.", csv_path)
     return dict(by_label)
 
 
@@ -189,8 +194,7 @@ def _read_rel_schema(csv_path: str) -> Tuple[
                 if prop:
                     props_by_rel[rt].append(row)
     except FileNotFoundError:
-        print(f"  ⚠  {csv_path} not found.  Run gen_schema_csv.py first.",
-              flush=True)
+        logger.warning("%s not found.  Run gen_schema_csv.py first.", csv_path)
     return dict(props_by_rel), dict(topology)
 
 
@@ -357,8 +361,8 @@ def infer_node_meta(
 
     parsed = _parse_json(msg.content or "")
     if parsed is None:
-        print(f"    ⚠  LLM output for {label!r} was not valid JSON.  "
-              "Using empty metadata.", flush=True)
+        logger.warning("LLM output for label %r was not valid JSON. "
+                       "Using empty metadata.", label)
         return {"id_property": None, "properties": {}}
 
     return parsed
@@ -405,8 +409,8 @@ def infer_rel_meta(
 
     parsed = _parse_json(msg.content or "")
     if parsed is None:
-        print(f"    ⚠  LLM output for {rel_type!r} was not valid JSON.  "
-              "Using empty metadata.", flush=True)
+        logger.warning("LLM output for rel %r was not valid JSON. "
+                       "Using empty metadata.", rel_type)
         return {"properties": {}}
 
     return parsed
@@ -438,22 +442,20 @@ def generate_schema_meta(
     -------
     dict  The complete schema_meta structure (also written to *output*).
     """
-    print("Reading schema CSVs …", flush=True)
+    logger.info("Reading schema CSVs …")
     node_groups              = _read_node_schema(nodes_csv)
     rel_groups, topology_map = _read_rel_schema(rels_csv)
 
     if not node_groups and not rel_groups:
-        print("  ⚠  No schema data found in CSVs.  Cannot generate metadata.",
-              flush=True)
+        logger.warning("No schema data found in CSVs. Cannot generate metadata.")
         return {}
 
     n_rel_with_props = len(rel_groups)
-    print(f"  {len(node_groups)} node label(s), "
-          f"{n_rel_with_props} relationship type(s) with properties",
-          flush=True)
+    logger.info("%d node label(s), %d relationship type(s) with properties",
+                len(node_groups), n_rel_with_props)
 
     # Build LLM
-    print("Initializing LLM …", flush=True)
+    logger.info("Initializing LLM …")
     llm = _build_llm(temperature=0)
 
     meta: Dict[str, Any] = {"nodes": {}, "relationships": {}}
@@ -461,19 +463,19 @@ def generate_schema_meta(
     # ── Infer node metadata ──────────────────────────────────────────────────
     for i, (label, rows) in enumerate(sorted(node_groups.items()), 1):
         prop_names = [r.get("property", "") for r in rows]
-        print(f"  [{i}/{len(node_groups)}] {label}  "
-              f"({len(rows)} props: {prop_names})", flush=True)
+        logger.info("[%d/%d] %s (%d props: %s)",
+                    i, len(node_groups), label, len(rows), prop_names)
         try:
             result = infer_node_meta(llm, label, rows, language=language)
             meta["nodes"][label] = result
             id_prop = result.get("id_property")
-            print(f"    ✓  id_property = {id_prop!r}", flush=True)
+            logger.info("  id_property = %r", id_prop)
             if verbose:
                 for pn, pm in result.get("properties", {}).items():
-                    print(f"       {pn}: type={pm.get('data_type')}, "
-                          f"topic={pm.get('topic')!r}", flush=True)
+                    logger.debug("    %s: type=%s, topic=%r",
+                                 pn, pm.get("data_type"), pm.get("topic"))
         except Exception as e:
-            print(f"    ✗  LLM call failed for {label!r}: {e}", flush=True)
+            logger.error("LLM call failed for label %r: %s", label, e)
             meta["nodes"][label] = {"id_property": None, "properties": {}}
 
     # ── Infer relationship metadata ──────────────────────────────────────────
@@ -483,14 +485,14 @@ def generate_schema_meta(
         conns = topology_map.get(rt, [])
         if rows:
             prop_names = sorted({r.get("property", "") for r in rows})
-            print(f"  [{i}/{len(all_rel_types)}] {rt}  "
-                  f"({len(prop_names)} props: {prop_names})", flush=True)
+            logger.info("[%d/%d] %s (%d props: %s)",
+                        i, len(all_rel_types), rt, len(prop_names), prop_names)
             try:
                 result = infer_rel_meta(llm, rt, rows, conns, language=language)
                 meta["relationships"][rt] = result
-                print(f"    ✓  done", flush=True)
+                logger.info("  done")
             except Exception as e:
-                print(f"    ✗  LLM call failed for {rt!r}: {e}", flush=True)
+                logger.error("LLM call failed for rel %r: %s", rt, e)
                 meta["relationships"][rt] = {"properties": {}}
         else:
             # Structural (property-less) relationship — no LLM call needed.
@@ -506,8 +508,8 @@ def generate_schema_meta(
 
     n_labels = len(meta["nodes"])
     n_rels   = len(meta["relationships"])
-    print(f"\n✓  schema_meta.json written → {output!r}  "
-          f"({n_labels} labels, {n_rels} rel types)", flush=True)
+    logger.info("schema_meta.json written → %r (%d labels, %d rel types)",
+                output, n_labels, n_rels)
     return meta
 
 
