@@ -32,12 +32,39 @@ langgraph-sdk==0.1.74
 langsmith==0.1.147
 
 # ── Neo4j ─────────────────────────────────────────────────────────────────────
+# Native vector indexes require Neo4j >= 5.18 (verified at startup by
+# embedding_helper.check_neo4j_version). The pinned client below works
+# against any 5.x server.
 neo4j==5.28.3
 langchain-neo4j==0.1.0
 
 # ── OpenAI ────────────────────────────────────────────────────────────────────
+# Used for both chat completions (gpt-4o etc.) and the default embedding
+# backend (text-embedding-3-small, 1536d) selected by
+# vector_config.EMBEDDING_BACKEND="openai".
 openai==1.109.1
 tiktoken==0.12.0
+
+# ── Embedding backend (OPTIONAL — sentence-transformers / local) ──────────────
+# The OpenAI backend above is the default and is sufficient for paper
+# experiments. Install the entries below ONLY if you set
+# vector_config.EMBEDDING_BACKEND="sentence_transformers" (e.g. for paper
+# reproducibility runs that must avoid closed-source models).
+#
+# These pull in several GB of PyTorch wheels — kept commented so OpenAI
+# users are not forced to install them.
+#
+#   pip install sentence-transformers torch
+#
+# sentence-transformers>=2.7
+# torch>=2.2
+#
+# for cpu
+# pip install torch==2.5.1 --index-url https://download.pytorch.org/whl/cpu
+# pip install sentence-transformers==3.3.1
+
+torch==2.5.1
+sentence-transformers==3.3.1
 
 # ── Anthropic (Claude — Opus / Sonnet / Haiku) ────────────────────────────────
 # Pinned to the last 0.2.x release to stay compatible with langchain-core 0.3.x.
