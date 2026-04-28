@@ -29,7 +29,10 @@ What it produces
         "ACTED_IN": {
           "properties": {
             "roles": {"data_type": "list", "topic": "actor roles", "description": "..."}
-          }
+          },
+          "endpoints": [
+            {"from": "Person", "to": "Movie"}
+          ]
         }
       },
       "generated_at_utc": "2026-04-26T...",
@@ -196,6 +199,72 @@ def _read_rel_schema(csv_path: str) -> Tuple[
     except FileNotFoundError:
         logger.warning("%s not found.  Run gen_schema_csv.py first.", csv_path)
     return dict(props_by_rel), dict(topology)
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Relationship endpoint discovery — single source of truth for connectivity
+# ──────────────────────────────────────────────────────────────────────────────
+
+def _resolve_relationship_endpoints(
+    csv_topology: Dict[str, List[Tuple[str, str]]],
+) -> Dict[str, List[Tuple[str, str]]]:
+    """
+    Return ``{rel_type: [(from_label, to_label), ...]}`` covering EVERY
+    relationship type in the database — including those carrying properties
+    (e.g. ACTED_IN, REVIEWED) that ``gen_tools.py`` would otherwise skip when
+    emitting structural traversal tools.
+
+    Resolution order
+    ----------------
+    1. Live database via :func:`gen_tools.list_structural_relations` — this is
+       the authoritative, single source of truth and matches the schema
+       Neo4j currently presents.
+    2. Fallback: the topology already extracted from
+       ``schema_relations.csv`` by :func:`_read_rel_schema`.
+
+    The two paths return identical data when the CSV is fresh; the live-DB
+    query is preferred so that ``schema_meta.json`` cannot drift away from the
+    actual graph just because the CSV is stale.
+    """
+    try:
+        from neo4j import GraphDatabase
+        from gen_tools import list_structural_relations  # type: ignore
+
+        uri      = os.environ.get("NEO4J_URI")
+        user     = os.environ.get("NEO4J_USERNAME")
+        pwd      = os.environ.get("NEO4J_PASSWORD")
+        database = os.environ.get("NEO4J_DATABASE", "neo4j")
+
+        if not (uri and user and pwd):
+            raise RuntimeError(
+                "NEO4J_URI / NEO4J_USERNAME / NEO4J_PASSWORD not set"
+            )
+
+        driver = GraphDatabase.driver(uri, auth=(user, pwd))
+        try:
+            triples = list_structural_relations(driver, database)
+        finally:
+            driver.close()
+
+        endpoints: Dict[str, List[Tuple[str, str]]] = {}
+        for rt, fl, tl in triples:
+            pairs = endpoints.setdefault(rt, [])
+            pair  = (fl, tl)
+            if pair not in pairs:
+                pairs.append(pair)
+
+        logger.info(
+            "Resolved %d relationship endpoint mapping(s) from live database.",
+            len(endpoints),
+        )
+        return endpoints
+    except Exception as exc:
+        logger.warning(
+            "Live-DB endpoint resolution unavailable (%s); falling back to "
+            "CSV-derived topology.", exc,
+        )
+        # csv_topology is already a list-of-tuples per rel
+        return {rt: list(pairs) for rt, pairs in csv_topology.items()}
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -478,11 +547,22 @@ def generate_schema_meta(
             logger.error("LLM call failed for label %r: %s", label, e)
             meta["nodes"][label] = {"id_property": None, "properties": {}}
 
+    # ── Resolve relationship endpoints (single source of truth) ──────────────
+    # We capture endpoints for *every* rel type — including those with
+    # properties — so downstream consumers (e.g. ner_agent_auto's connectivity
+    # filter) can resolve the connected node labels without parsing tool
+    # description strings.
+    endpoints_map = _resolve_relationship_endpoints(topology_map)
+
     # ── Infer relationship metadata ──────────────────────────────────────────
-    all_rel_types = sorted(set(rel_groups.keys()) | set(topology_map.keys()))
+    all_rel_types = sorted(
+        set(rel_groups.keys())
+        | set(topology_map.keys())
+        | set(endpoints_map.keys())
+    )
     for i, rt in enumerate(all_rel_types, 1):
         rows  = rel_groups.get(rt, [])
-        conns = topology_map.get(rt, [])
+        conns = endpoints_map.get(rt) or topology_map.get(rt, [])
         if rows:
             prop_names = sorted({r.get("property", "") for r in rows})
             logger.info("[%d/%d] %s (%d props: %s)",
@@ -497,6 +577,17 @@ def generate_schema_meta(
         else:
             # Structural (property-less) relationship — no LLM call needed.
             meta["relationships"][rt] = {"properties": {}}
+
+        # ── Persist endpoints for connectivity resolution downstream ──────────
+        endpoints_for_rt = endpoints_map.get(rt) or topology_map.get(rt) or []
+        if endpoints_for_rt:
+            meta["relationships"][rt]["endpoints"] = [
+                {"from": fl, "to": tl} for fl, tl in endpoints_for_rt
+            ]
+        else:
+            # Preserve key with an empty list so consumers can distinguish
+            # "no endpoints discovered" from "older meta file lacking the field".
+            meta["relationships"][rt]["endpoints"] = []
 
     # ── Timestamp + language ─────────────────────────────────────────────────
     meta["generated_at_utc"] = datetime.now(timezone.utc).isoformat()

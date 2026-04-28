@@ -50,17 +50,17 @@ Extraction rules (follow strictly)
 
 Examples
 ────────
-Q: Find the author named "https://openalex.org/A5045479885".
-A: {"Author.id": ["https://openalex.org/A5045479885"]}
+Q: Find the author named "https://openalex.org/A5024485922".
+A: {"Author.id": ["https://openalex.org/A5024485922"]}
 
-Q: How many movies have released before 1975?
-A: {"Movie.released": [1975]}
+Q: How many movies have released before 1999?
+A: {"Movie.released": [1999]}
 
-Q: Which movie has tagline containing "Walk a mile you'll never forge"?
-A: {"Movie.tagline": ["Walk a mile you'll never forge"]}
+Q: Which movie has tagline containing "Everything is connected"?
+A: {"Movie.tagline": ["Everything is connected"]}
 
-Q: Which person has acted_in roles "['Denny Lachance']"?
-A: {"ACTED_IN.roles": ["['Denny Lachance']"]}
+Q: Which person has acted_in roles "['Judge Fielding']"?
+A: {"ACTED_IN.roles": ["['Judge Fielding']"]}
 
 Q: List all items in the database.
 A: {}
@@ -88,6 +88,57 @@ Generation rules
 - Entity filters   : when entity values are supplied in the "Schema-relevant
   entity filters" section below, incorporate ALL of them in the WHERE clause
   as exact-match (string) or comparison (numeric) filters.
+- List-typed properties:
+  When the schema declares a property as a *list/array type* (e.g.
+  ``StringArray``, ``FloatArray``) — for example ``ACTED_IN.roles`` is a
+  ``StringArray`` of character names — the NER pipeline emits the
+  corresponding entity-filter value as a **list of lists**:
+  ``"Label.prop": [[v1], [v2], ...]`` (the outer list is the standard
+  "candidate values" wrapper; the inner list is the list-typed value
+  itself).
+  Expand each inner value ``vi`` into its own membership predicate
+  ``vi IN <alias>.<prop>`` and join multiple values with ``OR``:
+    ✓  ``"Neo" IN r.roles``                        (single value)
+    ✓  ``("Neo" IN r.roles OR "Morpheus" IN r.roles)``  (multiple values)
+    ✗  ``["Neo"] IN r.roles``                      (wrong — list-in-list never matches)
+    ✗  ``r.roles CONTAINS "Neo"``                  (wrong — CONTAINS is string-only)
+  For non-list (scalar) properties, keep the existing ``=`` /
+  ``toLower(...)`` / numeric-comparison behaviour unchanged — the new rule
+  applies *only* when the schema marks the target property as an array
+  type.
+
+Examples
+────────
+# 1. List-typed relationship property — single value
+Question: Who played Neo in The Matrix?
+Schema-relevant entity filters:
+  {{"Movie.title": ["The Matrix"], "ACTED_IN.roles": [["Neo"]]}}
+Cypher:
+  MATCH (p:Person)-[r:ACTED_IN]->(m:Movie)
+  WHERE toLower(m.title) = toLower("The Matrix") AND "Neo" IN r.roles
+  RETURN p.name AS person_name
+  LIMIT 25
+
+# 2. List-typed relationship property — multiple values
+Question: Who played Neo or Morpheus in The Matrix?
+Schema-relevant entity filters:
+  {{"Movie.title": ["The Matrix"], "ACTED_IN.roles": [["Neo"], ["Morpheus"]]}}
+Cypher:
+  MATCH (p:Person)-[r:ACTED_IN]->(m:Movie)
+  WHERE toLower(m.title) = toLower("The Matrix")
+        AND ("Neo" IN r.roles OR "Morpheus" IN r.roles)
+  RETURN DISTINCT p.name AS person_name
+  LIMIT 25
+
+# 3. Scalar relationship property — DO NOT apply the IN-expansion rule
+Question: Which reviewers gave The Matrix a rating above 90?
+Schema-relevant entity filters:
+  {{"Movie.title": ["The Matrix"], "REVIEWED.rating": [90]}}
+Cypher:
+  MATCH (p:Person)-[r:REVIEWED]->(m:Movie)
+  WHERE toLower(m.title) = toLower("The Matrix") AND r.rating > 90
+  RETURN p.name AS person_name, r.rating AS rating
+  LIMIT 25
 
 Graph Schema (static snapshot — baked at generation time)
 ──────────────────────────────────────────────────────────
@@ -266,9 +317,12 @@ FULLTEXT_INDEX_AUTHOR_ID_INDEX = "Author_id_Index"
 FULLTEXT_INDEX_AUTHOR_NAME_INDEX = "Author_name_Index"
 FULLTEXT_INDEX_MOVIE_RELEASED_INDEX = "Movie_released_Index"
 FULLTEXT_INDEX_MOVIE_TAGLINE_INDEX = "Movie_tagline_Index"
+FULLTEXT_INDEX_MOVIE_TAGLINE_EMBEDDING_INDEX = "Movie_tagline_embedding_Index"
 FULLTEXT_INDEX_MOVIE_TITLE_INDEX = "Movie_title_Index"
+FULLTEXT_INDEX_MOVIE_TITLE_EMBEDDING_INDEX = "Movie_title_embedding_Index"
 FULLTEXT_INDEX_PERSON_BORN_INDEX = "Person_born_Index"
 FULLTEXT_INDEX_PERSON_NAME_INDEX = "Person_name_Index"
+FULLTEXT_INDEX_PERSON_NAME_EMBEDDING_INDEX = "Person_name_embedding_Index"
 FULLTEXT_INDEX_REVIEWED_RATING_REL_INDEX = "REVIEWED_rating_RelIndex"
 FULLTEXT_INDEX_REVIEWED_SUMMARY_REL_INDEX = "REVIEWED_summary_RelIndex"
 FULLTEXT_INDEX_WORK_ID_INDEX = "Work_id_Index"

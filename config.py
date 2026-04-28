@@ -112,3 +112,8 @@ NER_MODE: str = "full"     # "full" | "node_only" | "no_ner"
 # Allowed values — kept centrally so callers can validate user input
 # without hard-coding the literal strings.
 NER_MODES = ("full", "node_only", "no_ner")
+
+#  python ner_agent_auto.py "Who played neo in matrix?"  --verbose
+#  python ner_agent_auto.py "Who played Neo or Morpheus in The Matrix?" " --verbose
+#  python ner_agent_auto.py "Who act  in matrix?"  --verbose
+#  python ner_agent_auto.py "Who played Neo or Morpheus in The Matrix?" --verbose

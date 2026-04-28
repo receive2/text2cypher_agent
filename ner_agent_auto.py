@@ -357,23 +357,106 @@ _RE_ALL_CAPS        = re.compile(r"^[A-Z][A-Z_]+$")   # rel type (e.g. ACTED_IN)
 _RE_PASCAL          = re.compile(r"^[A-Z][a-z]\w*$")  # node label (e.g. Movie)
 
 
+_SCHEMA_META_PATH: str = "schema_meta.json"
+
+
+def _load_rel_connectivity_from_meta(
+    meta_path: str = _SCHEMA_META_PATH,
+) -> Optional[Dict[str, Set[str]]]:
+    """
+    Read ``schema_meta.json`` and return ``{rel_type: {label, …}}`` built from
+    the ``endpoints`` field persisted by ``gen_schema_meta.py``.
+
+    Returns
+    -------
+    dict
+        Connectivity map when the meta file exposes the new ``endpoints``
+        field on at least one relationship.
+    None
+        When the file is absent, malformed, or pre-dates the ``endpoints``
+        field — in which case callers should fall back to the legacy
+        description-parsing path.
+    """
+    try:
+        with open(meta_path, encoding="utf-8") as fh:
+            meta = json.load(fh)
+    except FileNotFoundError:
+        logger.warning(
+            "schema_meta.json not found at {!r}; falling back to "
+            "description parsing for relationship connectivity. "
+            "Run gen_schema_meta.py to regenerate.", meta_path,
+        )
+        return None
+    except json.JSONDecodeError as exc:
+        logger.warning(
+            "schema_meta.json could not be parsed ({}); falling back to "
+            "description parsing for relationship connectivity.", exc,
+        )
+        return None
+
+    rels = meta.get("relationships") or {}
+    if not isinstance(rels, dict) or not rels:
+        return None
+
+    conn: Dict[str, Set[str]] = {}
+    found_any = False
+    for rt, info in rels.items():
+        if not isinstance(info, dict):
+            continue
+        endpoints = info.get("endpoints")
+        if not endpoints:
+            continue
+        found_any = True
+        for ep in endpoints:
+            if not isinstance(ep, dict):
+                continue
+            fl = ep.get("from")
+            tl = ep.get("to")
+            labels = {x for x in (fl, tl) if isinstance(x, str) and x}
+            if labels:
+                conn.setdefault(rt, set()).update(labels)
+
+    if not found_any:
+        logger.warning(
+            "schema_meta.json lacks the 'endpoints' field on every "
+            "relationship; falling back to description parsing. "
+            "Re-run gen_schema_meta.py to regenerate with endpoints."
+        )
+        return None
+
+    return conn
+
+
 def _build_rel_connectivity_map(
     registry: Dict[str, BaseTool],
 ) -> Dict[str, Set[str]]:
     """
-    Scan the full tool registry for structural relation tools and build a
-    mapping ``{rel_type: {from_label, to_label}}``.
+    Build a ``{rel_type: {label, …}}`` map describing which node labels each
+    relationship type connects.
 
-    Structural rel tool descriptions follow the pattern::
+    Resolution order
+    ----------------
+    1. **Preferred** — read endpoints directly from ``schema_meta.json``.
+       This is the single source of truth and covers *every* relationship
+       type, including property-bearing ones (e.g. ``ACTED_IN``,
+       ``REVIEWED``) whose connectivity is otherwise unrecoverable from tool
+       descriptions because ``gen_tools.py`` does not emit structural
+       traversal tools for them.
+    2. **Fallback** — scan the registry for structural relation tool
+       descriptions matching ``(:X)-[:Y]->(:Z)``.  Used only when
+       ``schema_meta.json`` is missing or pre-dates the ``endpoints`` field;
+       a warning is emitted recommending regeneration.
 
-        "Find Movie.title values reachable via (:Person)-[:DIRECTED]->(:Movie)…"
-
-    which yields ``{"DIRECTED": {"Person", "Movie"}}``.
-
-    This map is used to resolve the connected node labels for
-    *relationship-property* tools (e.g. ``get_acted_in_roles``) whose own
-    descriptions don't mention node labels directly.
+    The map is consumed by :func:`_get_tool_node_labels` to resolve the
+    connected labels of relationship-property tools whose own descriptions
+    don't mention node labels.
     """
+    # ── Preferred: schema_meta.json (authoritative) ────────────────────────────
+    from_meta = _load_rel_connectivity_from_meta()
+    if from_meta is not None:
+        return from_meta
+
+    # ── Fallback: description parsing (legacy behaviour) ──────────────────────
     conn: Dict[str, Set[str]] = {}
     for tool_obj in registry.values():
         m = _RE_STRUCTURAL_DESC.search(tool_obj.description or "")
@@ -894,6 +977,59 @@ Cypher rules for literals:
   BAD:  WHERE toLower(m.title) = toLower($movie_title)
 - Inline numbers directly: 2015
 - Inline strings with double quotes: "Inception", "CA"
+
+Cypher rules for list-typed properties (CRITICAL):
+- When the schema declares a property as a list/array type
+  (e.g. StringArray, FloatArray) -- for example ACTED_IN.roles is a
+  StringArray of character names -- the NER pipeline emits the corresponding
+  entity-filter value as a LIST OF LISTS:
+      "Label.prop": [[v1], [v2], ...]
+  The outer list is the standard "candidate values" wrapper; each inner list
+  is the list-typed value itself.
+- For each inner value vi, emit a membership predicate `vi IN <alias>.<prop>`
+  (or `vi IN n.<prop>` for node properties).  Combine multiple values with OR.
+    GOOD: "Neo" IN r.roles
+    GOOD: ("Neo" IN r.roles OR "Morpheus" IN r.roles)
+    BAD:  ["Neo"] IN r.roles               (list-in-list never matches a string array)
+    BAD:  r.roles CONTAINS "Neo"           (CONTAINS is a string-substring operator)
+- Never paste the inner list literal into the predicate; always unwrap to its
+  scalar element(s).
+- For non-list (scalar) properties, keep the existing `=` / `toLower(...)` /
+  numeric-comparison behaviour unchanged.  The new rule applies ONLY when the
+  schema marks the target property as an array type.
+
+Examples
+- - - - -
+# 1. List-typed relationship property -- single value
+Question: Who played Neo in The Matrix?
+Schema-relevant entity filters:
+  "Movie.title": ["The Matrix"], "ACTED_IN.roles": [["Neo"]]
+Cypher:
+  MATCH (p:Person)-[r:ACTED_IN]->(m:Movie)
+  WHERE toLower(m.title) = toLower("The Matrix") AND "Neo" IN r.roles
+  RETURN p.name AS person_name
+  LIMIT 25
+
+# 2. List-typed relationship property -- multiple values
+Question: Who played Neo or Morpheus in The Matrix?
+Schema-relevant entity filters:
+  "Movie.title": ["The Matrix"], "ACTED_IN.roles": [["Neo"], ["Morpheus"]]
+Cypher:
+  MATCH (p:Person)-[r:ACTED_IN]->(m:Movie)
+  WHERE toLower(m.title) = toLower("The Matrix")
+        AND ("Neo" IN r.roles OR "Morpheus" IN r.roles)
+  RETURN DISTINCT p.name AS person_name
+  LIMIT 25
+
+# 3. Scalar relationship property -- DO NOT apply the IN-expansion rule
+Question: Which reviewers gave The Matrix a rating above 90?
+Schema-relevant entity filters:
+  "Movie.title": ["The Matrix"], "REVIEWED.rating": [90]
+Cypher:
+  MATCH (p:Person)-[r:REVIEWED]->(m:Movie)
+  WHERE toLower(m.title) = toLower("The Matrix") AND r.rating > 90
+  RETURN p.name AS person_name, r.rating AS rating
+  LIMIT 25
 
 Schema:
 {schema}

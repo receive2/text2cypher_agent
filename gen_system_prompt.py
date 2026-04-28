@@ -505,6 +505,57 @@ Generation rules
 - Entity filters   : when entity values are supplied in the "Schema-relevant
   entity filters" section below, incorporate ALL of them in the WHERE clause
   as exact-match (string) or comparison (numeric) filters.
+- List-typed properties:
+  When the schema declares a property as a *list/array type* (e.g.
+  ``StringArray``, ``FloatArray``) — for example ``ACTED_IN.roles`` is a
+  ``StringArray`` of character names — the NER pipeline emits the
+  corresponding entity-filter value as a **list of lists**:
+  ``"Label.prop": [[v1], [v2], ...]`` (the outer list is the standard
+  "candidate values" wrapper; the inner list is the list-typed value
+  itself).
+  Expand each inner value ``vi`` into its own membership predicate
+  ``vi IN <alias>.<prop>`` and join multiple values with ``OR``:
+    ✓  ``"Neo" IN r.roles``                        (single value)
+    ✓  ``("Neo" IN r.roles OR "Morpheus" IN r.roles)``  (multiple values)
+    ✗  ``["Neo"] IN r.roles``                      (wrong — list-in-list never matches)
+    ✗  ``r.roles CONTAINS "Neo"``                  (wrong — CONTAINS is string-only)
+  For non-list (scalar) properties, keep the existing ``=`` /
+  ``toLower(...)`` / numeric-comparison behaviour unchanged — the new rule
+  applies *only* when the schema marks the target property as an array
+  type.
+
+Examples
+────────
+# 1. List-typed relationship property — single value
+Question: Who played Neo in The Matrix?
+Schema-relevant entity filters:
+  {{{{"Movie.title": ["The Matrix"], "ACTED_IN.roles": [["Neo"]]}}}}
+Cypher:
+  MATCH (p:Person)-[r:ACTED_IN]->(m:Movie)
+  WHERE toLower(m.title) = toLower("The Matrix") AND "Neo" IN r.roles
+  RETURN p.name AS person_name
+  LIMIT 25
+
+# 2. List-typed relationship property — multiple values
+Question: Who played Neo or Morpheus in The Matrix?
+Schema-relevant entity filters:
+  {{{{"Movie.title": ["The Matrix"], "ACTED_IN.roles": [["Neo"], ["Morpheus"]]}}}}
+Cypher:
+  MATCH (p:Person)-[r:ACTED_IN]->(m:Movie)
+  WHERE toLower(m.title) = toLower("The Matrix")
+        AND ("Neo" IN r.roles OR "Morpheus" IN r.roles)
+  RETURN DISTINCT p.name AS person_name
+  LIMIT 25
+
+# 3. Scalar relationship property — DO NOT apply the IN-expansion rule
+Question: Which reviewers gave The Matrix a rating above 90?
+Schema-relevant entity filters:
+  {{{{"Movie.title": ["The Matrix"], "REVIEWED.rating": [90]}}}}
+Cypher:
+  MATCH (p:Person)-[r:REVIEWED]->(m:Movie)
+  WHERE toLower(m.title) = toLower("The Matrix") AND r.rating > 90
+  RETURN p.name AS person_name, r.rating AS rating
+  LIMIT 25
 
 Graph Schema (static snapshot — baked at generation time)
 ──────────────────────────────────────────────────────────
