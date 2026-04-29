@@ -252,14 +252,18 @@ _RE_STRUCTURAL  = re.compile(
 
 
 def _format_tool_line(func_name: str, description: str) -> str:
-    m = _RE_STRUCTURAL.match(description)
+    # ``.search`` (not ``.match``) is intentional: tool docstrings now begin
+    # with action-oriented prose like ``"Look up canonical ..."`` /
+    # ``"Find ..."`` — the regex-anchored phrase may appear anywhere in the
+    # description.  Capture groups remain unchanged.
+    m = _RE_STRUCTURAL.search(description)
     if m:
         to_label, prop, from_label, rel_type, _ = m.groups()
         return (
             f"  {func_name:<34}  {to_label}.{prop} values "
             f"via (:{from_label})-[:{rel_type}]->(:{to_label})"
         )
-    m = _RE_REL_PROP.match(description)
+    m = _RE_REL_PROP.search(description)
     if m:
         rel_type, prop = m.groups()
         return f"  {func_name:<34}  canonical {rel_type}.{prop} values"
@@ -280,9 +284,11 @@ def _build_tool_section(registry: Dict[str, Any]) -> str:
     for func_name, tool_obj in sorted(registry.items()):
         desc  = (tool_obj.description or "").strip()
         line  = _format_tool_line(func_name, desc)
-        if _RE_STRUCTURAL.match(desc):
+        # ``.search`` matches the regex-anchored phrase regardless of the
+        # leading action prose ("Look up canonical …" / "Find …").
+        if _RE_STRUCTURAL.search(desc):
             struct_lines.append(line)
-        elif _RE_REL_PROP.match(desc):
+        elif _RE_REL_PROP.search(desc):
             rel_p_lines.append(line)
         else:
             node_lines.append(line)
@@ -382,7 +388,62 @@ def _derive_few_shot(
         "{}",
     ))
 
-    return examples[:5]
+    # ── 6. Multi-entity meta-example (Coverage > caution) ─────────────────────
+    # The first 5 examples each show ONE entity-type extraction.  The agent
+    # learns the implicit pattern "one question → one entity type" and stops
+    # after the most salient match.  Example 6 deliberately fans out across
+    # TWO entity types (a node-property AND a relationship-property) so the
+    # agent learns to keep going.
+    #
+    # Schema-agnostic construction:
+    #   L1, prop1     — first node label with a String "name"/"title" property.
+    #   R, propR      — first relationship type that has any property.
+    # If either is unavailable, the example is skipped here and
+    # ``generate_ner_sp`` injects a static fallback meta-instruction instead.
+    L1: Optional[str]    = None
+    prop1: Optional[str] = None
+    sample_name: str     = ""
+    for r in node_rows:
+        prop_lower = r["property"].lower()
+        if prop_lower in ("title", "name") and "String" in r.get("property_types", ""):
+            L1    = r["label"]
+            prop1 = r["property"]
+            sv = (r.get("sample_values") or "").split(" | ")[0].strip()
+            sample_name = sv or f"Example {L1}"
+            break
+
+    R: Optional[str]     = None
+    propR: Optional[str] = None
+    sample1: str         = ""
+    sample2: str         = ""
+    for r in rel_rows:
+        if r.get("property"):
+            R     = r["rel_type"]
+            propR = r["property"]
+            sv_list = [
+                s.strip()
+                for s in (r.get("sample_values") or "").split(" | ")
+                if s.strip()
+            ]
+            sample1 = sv_list[0] if sv_list else "ValueA"
+            sample2 = sv_list[1] if len(sv_list) > 1 else "ValueB"
+            break
+
+    if L1 and R and prop1 and propR:
+        l1_lower = L1.lower()
+        r_lower  = R.lower()
+        q = (
+            f"Find {l1_lower}s related to {r_lower} with {propR} "
+            f"\"{sample1}\" or \"{sample2}\", mentioning {l1_lower} "
+            f"\"{sample_name}\"."
+        )
+        a = (
+            f'{{"{R}.{propR}": [["{sample1}"], ["{sample2}"]], '
+            f'"{L1}.{prop1}": ["{sample_name}"]}}'
+        )
+        examples.append((q, a))
+
+    return examples[:6]
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -419,6 +480,19 @@ def generate_ner_sp(
         f"Q: {q}\nA: {a}" for q, a in examples
     )
 
+    # If ``_derive_few_shot`` could not construct a multi-entity example
+    # (the schema lacks a relationship-with-property), inject a static
+    # meta-instruction so the agent still receives the "fan out across
+    # entity types" lesson.  Five base examples + the dynamic example would
+    # be six; anything less means dynamic construction was skipped.
+    if len(examples) < 6:
+        example_block += (
+            "\n\nNote: When a question mentions multiple entity types "
+            "(e.g. both a movie AND the role played in it), you MUST call "
+            "tools for ALL of them and include ALL keys in the output JSON. "
+            "Never stop after the first successful lookup."
+        )
+
     # NOTE: ``{{tool_list}}`` is a literal placeholder in the emitted prompt
     # (we double the braces to escape the f-string).  At runtime,
     # ``ner_agent_auto._build_dynamic_prompt`` substitutes this token with
@@ -450,14 +524,26 @@ Extraction rules (follow strictly)
 
 4.  Return at most 2 best-matching canonical values per key.
 
-5.  If a tool returns NO matching values (empty result), do NOT guess or
-    fabricate a value.  Drop that key from the output entirely.
-    Only include keys where the tool returned at least one valid match.
+5.  If a tool returns NO matching values (empty result), drop that key from
+    the output.  Do NOT fabricate a value.  (But always TRY the lookup
+    first per rule 7 — never skip a call because you predict it will be
+    empty.)
 
 6.  Final output MUST be a single valid JSON object — nothing else.
     • Keys   : "Label.property" format (e.g. {key_note})
     • Values : always a JSON array, even for a single result
     • No code fences, no markdown, no explanation, no extra text.
+
+7.  Coverage over caution: For EVERY noun phrase in the question that could
+    plausibly refer to a database entity (a person, a movie, an
+    organization, a category, etc.), call the corresponding tool to verify
+    — even if you are not fully sure the mention matches anything.
+    Lowercase, partial, abbreviated, or informal mentions ("matrix" for
+    "The Matrix", "godfather" for "The Godfather") still count and MUST be
+    looked up.  It is far better to make an extra tool call that returns
+    nothing than to skip a tool call and miss an entity.  Do NOT decide on
+    your own that a mention is "too informal" or "probably not in the
+    database" — let the tool decide.
 
 Examples
 ────────

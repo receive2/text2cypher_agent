@@ -28,7 +28,7 @@ from config import TOOL_TOP_K
 
 @tool
 def get_acted_in_roles(user_query: str) -> List[str]:
-    """Get the canonical ACTED_IN.roles values from the database."""
+    """Look up canonical ACTED_IN.roles values. Call this whenever the question mentions a roles value associated with a acted_in relationship. When in doubt, call it."""
     search_term = get_entity(user_query, topic="character names")
     # v1: relationship-property retrieval is fuzzy-only.
     # TODO(v2): drop mode="fuzzy" once rel-property vector indexes ship.
@@ -37,7 +37,7 @@ def get_acted_in_roles(user_query: str) -> List[str]:
 
 @tool
 def get_reviewed_summary(user_query: str) -> List[str]:
-    """Get the canonical REVIEWED.summary values from the database."""
+    """Look up canonical REVIEWED.summary values. Call this whenever the question mentions a summary value associated with a reviewed relationship. When in doubt, call it."""
     search_term = get_entity(user_query, topic="review summary")
     # v1: relationship-property retrieval is fuzzy-only.
     # TODO(v2): drop mode="fuzzy" once rel-property vector indexes ship.
@@ -46,8 +46,8 @@ def get_reviewed_summary(user_query: str) -> List[str]:
 
 @tool
 def get_reviewed_rating(user_query: str) -> List[str]:
-    """Get the canonical REVIEWED.rating values from the database."""
-    search_term = get_entity(user_query, topic="review score")
+    """Look up canonical REVIEWED.rating values. Call this whenever the question mentions a rating value associated with a reviewed relationship. When in doubt, call it."""
+    search_term = get_entity(user_query, topic="movie rating score")
     # v1: relationship-property retrieval is fuzzy-only.
     # TODO(v2): drop mode="fuzzy" once rel-property vector indexes ship.
     return search_rel_tool(phrase=search_term, rel_type="REVIEWED", property_name="rating", k=TOOL_TOP_K, verbose=True, mode="fuzzy")
@@ -63,7 +63,7 @@ def get_reviewed_rating(user_query: str) -> List[str]:
 
 @tool
 def get_authored_relation(user_query: str) -> List[str]:
-    """Find Work.title values reachable via (:Author)-[:AUTHORED]->(:Work) in the database."""
+    """Find Work.title values reachable via (:Author)-[:AUTHORED]->(:Work). Call this when the question references a work's title that may be related to a author, including partial or informal mentions. When in doubt, call it."""
     search_term = get_entity(user_query, topic="work title in AUTHORED relationship")
     # PERMANENT: structural traversal tools are not semantic retrieval.
     # mode="fuzzy" is intentional and must NOT be removed.
@@ -72,7 +72,7 @@ def get_authored_relation(user_query: str) -> List[str]:
 
 @tool
 def get_directed_relation(user_query: str) -> List[str]:
-    """Find Movie.title values reachable via (:Person)-[:DIRECTED]->(:Movie) in the database."""
+    """Find Movie.title values reachable via (:Person)-[:DIRECTED]->(:Movie). Call this when the question references a movie's title that may be related to a person, including partial or informal mentions. When in doubt, call it."""
     search_term = get_entity(user_query, topic="movie title in DIRECTED relationship")
     # PERMANENT: structural traversal tools are not semantic retrieval.
     # mode="fuzzy" is intentional and must NOT be removed.
@@ -81,7 +81,7 @@ def get_directed_relation(user_query: str) -> List[str]:
 
 @tool
 def get_follows_relation(user_query: str) -> List[str]:
-    """Find Person.name values reachable via (:Person)-[:FOLLOWS]->(:Person) in the database."""
+    """Find Person.name values reachable via (:Person)-[:FOLLOWS]->(:Person). Call this when the question references a person's name that may be related to a person, including partial or informal mentions. When in doubt, call it."""
     search_term = get_entity(user_query, topic="person name in FOLLOWS relationship")
     # PERMANENT: structural traversal tools are not semantic retrieval.
     # mode="fuzzy" is intentional and must NOT be removed.
@@ -90,7 +90,7 @@ def get_follows_relation(user_query: str) -> List[str]:
 
 @tool
 def get_produced_relation(user_query: str) -> List[str]:
-    """Find Movie.title values reachable via (:Person)-[:PRODUCED]->(:Movie) in the database."""
+    """Find Movie.title values reachable via (:Person)-[:PRODUCED]->(:Movie). Call this when the question references a movie's title that may be related to a person, including partial or informal mentions. When in doubt, call it."""
     search_term = get_entity(user_query, topic="movie title in PRODUCED relationship")
     # PERMANENT: structural traversal tools are not semantic retrieval.
     # mode="fuzzy" is intentional and must NOT be removed.
@@ -99,7 +99,7 @@ def get_produced_relation(user_query: str) -> List[str]:
 
 @tool
 def get_wrote_relation(user_query: str) -> List[str]:
-    """Find Movie.title values reachable via (:Person)-[:WROTE]->(:Movie) in the database."""
+    """Find Movie.title values reachable via (:Person)-[:WROTE]->(:Movie). Call this when the question references a movie's title that may be related to a person, including partial or informal mentions. When in doubt, call it."""
     search_term = get_entity(user_query, topic="movie title in WROTE relationship")
     # PERMANENT: structural traversal tools are not semantic retrieval.
     # mode="fuzzy" is intentional and must NOT be removed.

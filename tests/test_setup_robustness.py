@@ -171,6 +171,77 @@ def test_drop_embedding_pairs_relationship_entity_type() -> None:
     assert ("REVIEWED", "summary_vec") not in out
 
 
+# ── 3b. Tool-description regexes still match the new aggressive-coverage
+#       docstring templates ─────────────────────────────────────────────────
+#
+# ``tools.gen_tools._render_*_tool`` was rewritten to emit action-oriented
+# docstrings ("Look up canonical …", "Find … reachable via … Call this when
+# …").  The NER prompt assembler in ``schema.gen_system_prompt`` parses these
+# descriptions with three regexes (``_RE_NODE_DESC``, ``_RE_REL_PROP``,
+# ``_RE_STRUCTURAL``).  This test pins the contract: the new templates must
+# still be recognised by all three regexes with the correct capture groups,
+# otherwise the tool-list section in NER_SP silently degrades.
+
+def test_tool_description_regexes_still_match() -> None:
+    """The three regexes in ``schema.gen_system_prompt`` must continue to
+    capture (label/rel_type, property[, from_label, rel_type, to_label])
+    from the new aggressive-coverage docstring templates."""
+    from schema.gen_system_prompt import (  # noqa: E402
+        _RE_NODE_DESC,
+        _RE_REL_PROP,
+        _RE_STRUCTURAL,
+    )
+
+    # ── Node-property template (matches via .search anywhere) ────────────
+    node_doc = (
+        "Look up canonical Movie.title values. "
+        "Call this whenever the question mentions a movie's title \u2014 "
+        "including lowercase, abbreviated, or partial mentions "
+        "(e.g. 'matrix' \u2192 'The Matrix'). When in doubt, call it."
+    )
+    m_node = _RE_NODE_DESC.search(node_doc)
+    assert m_node is not None, (
+        f"_RE_NODE_DESC failed to match new node-property docstring:\n{node_doc}"
+    )
+    assert m_node.groups() == ("Movie", "title")
+
+    # ── Relationship-property template ───────────────────────────────────
+    rel_doc = (
+        "Look up canonical ACTED_IN.roles values. "
+        "Call this whenever the question mentions a roles value associated "
+        "with a acted_in relationship. When in doubt, call it."
+    )
+    m_rel = _RE_REL_PROP.search(rel_doc)
+    assert m_rel is not None, (
+        f"_RE_REL_PROP failed to match new rel-property docstring:\n{rel_doc}"
+    )
+    assert m_rel.groups() == ("ACTED_IN", "roles")
+
+    # ── Structural-traversal template (graph notation preserved) ──────────
+    struct_doc = (
+        "Find Movie.title values reachable via "
+        "(:Person)-[:DIRECTED]->(:Movie). "
+        "Call this when the question references a movie's title that may be "
+        "related to a person, including partial or informal mentions. "
+        "When in doubt, call it."
+    )
+    m_struct = _RE_STRUCTURAL.search(struct_doc)
+    assert m_struct is not None, (
+        f"_RE_STRUCTURAL failed to match new structural docstring:\n{struct_doc}"
+    )
+    assert m_struct.groups() == ("Movie", "title", "Person", "DIRECTED", "Movie")
+
+    # ── Cross-check: rel-prop description must NOT be picked up by the
+    # node regex's all-caps anchor logic in the wrong order.  The
+    # categorization in ``_build_tool_section`` depends on testing
+    # _RE_STRUCTURAL first, then _RE_REL_PROP, then _RE_NODE_DESC.  Verify
+    # _RE_REL_PROP is the *first* of the latter two to fire for rel docs.
+    assert _RE_REL_PROP.search(rel_doc) is not None
+    # Sanity: node-prop docstring (lowercase label) does NOT trip
+    # _RE_REL_PROP's all-caps anchor (Movie has only one uppercase letter).
+    assert _RE_REL_PROP.search(node_doc) is None
+
+
 # ── 4. FAISS clean-rebuild lifecycle ────────────────────────────────────────
 #
 # These tests guard the contract of ``ner_agent_auto.rebuild_tools_faiss``:

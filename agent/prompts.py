@@ -39,31 +39,46 @@ Extraction rules (follow strictly)
 
 4.  Return at most 2 best-matching canonical values per key.
 
-5.  If a tool returns NO matching values (empty result), do NOT guess or
-    fabricate a value.  Drop that key from the output entirely.
-    Only include keys where the tool returned at least one valid match.
+5.  If a tool returns NO matching values (empty result), drop that key from
+    the output.  Do NOT fabricate a value.  (But always TRY the lookup
+    first per rule 7 — never skip a call because you predict it will be
+    empty.)
 
 6.  Final output MUST be a single valid JSON object — nothing else.
     • Keys   : "Label.property" format (e.g. "Author.id", "Author.name", "Movie.released")
     • Values : always a JSON array, even for a single result
     • No code fences, no markdown, no explanation, no extra text.
 
+7.  Coverage over caution: For EVERY noun phrase in the question that could
+    plausibly refer to a database entity (a person, a movie, an
+    organization, a category, etc.), call the corresponding tool to verify
+    — even if you are not fully sure the mention matches anything.
+    Lowercase, partial, abbreviated, or informal mentions ("matrix" for
+    "The Matrix", "godfather" for "The Godfather") still count and MUST be
+    looked up.  It is far better to make an extra tool call that returns
+    nothing than to skip a tool call and miss an entity.  Do NOT decide on
+    your own that a mention is "too informal" or "probably not in the
+    database" — let the tool decide.
+
 Examples
 ────────
-Q: Find the author named "https://openalex.org/A5026985550".
-A: {"Author.id": ["https://openalex.org/A5026985550"]}
+Q: Find the author named "https://openalex.org/A5113642302".
+A: {"Author.id": ["https://openalex.org/A5113642302"]}
 
-Q: How many movies have released before 1986?
-A: {"Movie.released": [1986]}
+Q: How many movies have released before 2006?
+A: {"Movie.released": [2006]}
 
-Q: Which movie has tagline containing "Come as you are"?
-A: {"Movie.tagline": ["Come as you are"]}
+Q: Which movie has tagline containing "In every life there comes a ti"?
+A: {"Movie.tagline": ["In every life there comes a ti"]}
 
-Q: Which person has acted_in roles "['David Frost']"?
-A: {"ACTED_IN.roles": ["['David Frost']"]}
+Q: Which person has acted_in roles "['Mom']"?
+A: {"ACTED_IN.roles": ["['Mom']"]}
 
 Q: List all items in the database.
 A: {}
+
+Q: Find authors related to acted_in with roles "['Mom']" or "['The Tracker']", mentioning author "David Lowe".
+A: {"ACTED_IN.roles": [["['Mom']"], ["['The Tracker']"]], "Author.name": ["David Lowe"]}
 """
 
 TEXT2CYPHER_SP = """\

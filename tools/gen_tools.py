@@ -632,7 +632,17 @@ def _render_node_tool(func_name: str, label: str, prop: str) -> str:
                                property_name="title", k=TOOL_TOP_K, verbose=True)
     """
     topic = _node_topic(label, prop)
-    doc   = f"Get the canonical {label}.{prop} values from the database."
+    # Action-oriented docstring: tells the NER agent WHEN to call the tool,
+    # not just what it returns.  The "canonical {Label}.{prop} values" phrase
+    # is preserved verbatim so the regex parser in
+    # ``schema.gen_system_prompt._RE_NODE_DESC`` continues to capture
+    # (label, prop) for the NER prompt's tool-list section.
+    doc = (
+        f"Look up canonical {label}.{prop} values. "
+        f"Call this whenever the question mentions a {label.lower()}'s "
+        f"{prop} \u2014 including lowercase, abbreviated, or partial mentions "
+        f"(e.g. 'matrix' \u2192 'The Matrix'). When in doubt, call it."
+    )
     return (
         f"@tool\n"
         f"def {func_name}(user_query: str) -> List[str]:\n"
@@ -666,7 +676,16 @@ def _render_rel_property_tool(func_name: str, rel_type: str, prop: str) -> str:
                                    verbose=True, mode="fuzzy")
     """
     topic = _rel_prop_topic(rel_type, prop)
-    doc   = f"Get the canonical {rel_type}.{prop} values from the database."
+    # Action-oriented docstring (see _render_node_tool for rationale).
+    # The "canonical {RelType}.{prop} values" phrase is preserved so that
+    # ``schema.gen_system_prompt._RE_REL_PROP`` keeps matching this format
+    # via .search() (the rel-type's all-caps anchor still distinguishes
+    # rel-property descriptions from node-property descriptions).
+    doc = (
+        f"Look up canonical {rel_type}.{prop} values. "
+        f"Call this whenever the question mentions a {prop} value associated "
+        f"with a {rel_type.lower()} relationship. When in doubt, call it."
+    )
     return (
         f"@tool\n"
         f"def {func_name}(user_query: str) -> List[str]:\n"
@@ -709,9 +728,17 @@ def _render_structural_rel_tool(
     """
     end_prop = _guess_id_property(to_label)
     topic    = _structural_rel_topic(rel_type, to_label, end_prop)
-    doc      = (
+    # Action-oriented docstring.  The full graph-pattern notation
+    # ``(:From)-[:Rel]->(:To)`` is preserved so the regex parser in
+    # ``schema.gen_system_prompt._RE_STRUCTURAL`` continues to capture
+    # (to_label, end_prop, from_label, rel_type, to_label).  The trailing
+    # action prose is what the NER agent reads to decide WHEN to call.
+    doc = (
         f"Find {to_label}.{end_prop} values reachable via "
-        f"(:{from_label})-[:{rel_type}]->(:{to_label}) in the database."
+        f"(:{from_label})-[:{rel_type}]->(:{to_label}). "
+        f"Call this when the question references a {to_label.lower()}'s "
+        f"{end_prop} that may be related to a {from_label.lower()}, "
+        f"including partial or informal mentions. When in doubt, call it."
     )
     return (
         f"@tool\n"
