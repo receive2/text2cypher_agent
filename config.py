@@ -24,11 +24,17 @@
 #
 # Schema for every entry:
 #   {
-#     "provider":    "openai" | "azure" | "anthropic" | "auto",
-#     "model":       <model-name-or-deployment>,
+#     "provider":    "openai" | "azure" | "anthropic" | "hf_compatible" | "auto",
+#     "model":       <model-name | deployment | MODEL_REGISTRY key>,
 #     "temperature": <float>,         # optional, default 0
-#     # Anything else is forwarded verbatim to the chat-model constructor.
+#     # Anything else (max_tokens, top_p, …) is forwarded verbatim to the
+#     # chat-model constructor.
 #   }
+#
+# When ``provider == "hf_compatible"`` the ``model`` field is interpreted as
+# a key into ``MODEL_REGISTRY`` (see below).  The factory looks the key up to
+# get the actual base_url / api_key / model id that should be sent to the
+# OpenAI-compatible server.
 #
 # ``agent_helper.build_llm(**LLM_CONFIG)`` consumes these dicts and returns a
 # concrete ``BaseChatModel`` — see ``agent_helper.ner_llm`` / ``qa_llm`` /
@@ -36,10 +42,107 @@
 #
 # Examples
 # --------
-#   NER_LLM_CONFIG    = {"provider": "openai",    "model": "gpt-4.1"}
-#   CYPHER_LLM_CONFIG = {"provider": "anthropic", "model": "claude-opus-4-20250514"}
-#   QA_LLM_CONFIG     = {"provider": "openai",    "model": "gpt-4o-mini"}
+#   NER_LLM_CONFIG    = {"provider": "openai",        "model": "gpt-4.1"}
+#   CYPHER_LLM_CONFIG = {"provider": "anthropic",     "model": "claude-opus-4-20250514"}
+#   QA_LLM_CONFIG     = {"provider": "openai",        "model": "gpt-4o-mini"}
+#   NER_LLM_CONFIG    = {"provider": "hf_compatible", "model": "llama-8b-hf"}
 # ──────────────────────────────────────────────────────────────────────────────
+
+# ──────────────────────────────────────────────────────────────────────────────
+# MODEL_REGISTRY — open-source / fine-tuned model endpoints
+# ──────────────────────────────────────────────────────────────────────────────
+# Every entry describes a single OpenAI-compatible HTTP endpoint.  The factory
+# in ``agent_helper`` instantiates an ``openai``-SDK-compatible chat client
+# (LangChain's ``ChatOpenAI`` is just a thin wrapper around the openai SDK)
+# pointed at ``base_url`` with credentials from ``os.environ[api_key_env]`` and
+# uses ``model`` as the value to send in the request body's ``model`` field.
+#
+# ── Why a single ``hf_compatible`` provider for all of these? ────────────────
+# The Hugging Face serverless router, HF Inference Endpoints, Groq, Together,
+# Fireworks, Anyscale, etc. ALL expose an OpenAI-compatible
+# ``/v1/chat/completions`` endpoint.  That means the same openai SDK works for
+# every one of them — only ``base_url``, ``api_key``, and ``model`` change.
+# We funnel them through one provider name and let the registry encode the
+# differences.
+#
+# ── HF Inference Endpoints + TGI ─────────────────────────────────────────────
+# HF Inference Endpoints use TGI (Text Generation Inference) as the default
+# inference engine.  TGI exposes an OpenAI-compatible
+# ``/v1/chat/completions`` endpoint, which is why we can use the openai SDK
+# to call it.  For HF Inference Endpoint registry entries:
+#
+#   * ``base_url`` is the *unique* endpoint URL HF gives you per-deployment.
+#     The URL itself identifies which model is being served.
+#   * ``model`` should be set to the literal string ``"tgi"``.  The OpenAI
+#     request schema requires a ``model`` field, but TGI ignores it because
+#     the URL already pins the model — convention is to fill it with "tgi".
+#
+# Recommendation: when deploying your own fine-tuned models, use HF Inference
+# Endpoints with TGI.  You get a stable URL, an OpenAI-compatible API, and
+# zero engine-config work — just push the merged model to the Hub and click
+# "Deploy ▸ Inference Endpoints".
+#
+# ── HF serverless router ─────────────────────────────────────────────────────
+# For ``https://router.huggingface.co/v1`` the ``model`` field must be the
+# full HF Hub repo id (e.g. ``meta-llama/Llama-3.1-8B-Instruct``), NOT
+# ``"tgi"``.  The router uses ``model`` to route between many models behind
+# one URL.
+#
+# ── Other OpenAI-compatible providers ────────────────────────────────────────
+# For Groq, Together, Fireworks, etc. use whatever model id the provider
+# documents (e.g. Groq's ``llama-3.1-8b-instant``).
+#
+# ── Adding a new fine-tuned model ────────────────────────────────────────────
+# 1. Deploy the merged model to an HF Inference Endpoint.
+# 2. Add a new entry below: a unique key, the endpoint URL as ``base_url``,
+#    ``"HUGGINGFACE_TOKEN"`` for ``api_key_env`` (this is the variable name
+#    used by .env / .env.example in this repo — point it at whatever env var
+#    actually holds the HF token), and ``"tgi"`` for ``model``.
+# 3. Reference the new key from any of NER_LLM_CONFIG / QA_LLM_CONFIG /
+#    CYPHER_LLM_CONFIG (with ``provider="hf_compatible"``).
+# ──────────────────────────────────────────────────────────────────────────────
+
+MODEL_REGISTRY: dict = {
+    # ── HF serverless router (multiplexes many open-source models) ──────────
+    # ``model`` must be the full HF Hub repo id; the router uses it to pick
+    # which backend to forward the request to.
+    "llama-8b-hf": {
+        "base_url":    "https://router.huggingface.co/v1",
+        "api_key_env": "HUGGINGFACE_TOKEN",
+        "model":       "meta-llama/Llama-3.1-8B-Instruct",
+    },
+    "qwen-7b-hf": {
+        "base_url":    "https://router.huggingface.co/v1",
+        "api_key_env": "HUGGINGFACE_TOKEN",
+        "model":       "Qwen/Qwen2.5-7B-Instruct",
+    },
+
+    # ── Groq (other OpenAI-compatible provider, kept for flexibility) ───────
+    # Use Groq's documented model id (NOT a HF Hub repo id, NOT "tgi").
+    "llama-8b-groq": {
+        "base_url":    "https://api.groq.com/openai/v1",
+        "api_key_env": "GROQ_API_KEY",
+        "model":       "llama-3.1-8b-instant",
+    },
+
+    # ── Dedicated HF Inference Endpoint (per fine-tuned model) ──────────────
+    # Each fine-tuned model gets its own URL.  The URL pins the model, so
+    # ``model`` is just ``"tgi"`` (TGI ignores the field but the OpenAI
+    # request schema requires it).  Replace the placeholder URL below with
+    # the real endpoint URL after deploying.
+    "my-svl-cypher-lora-v1": {
+        "base_url":    "https://abc123.us-east-1.aws.endpoints.huggingface.cloud/v1/",
+        "api_key_env": "HUGGINGFACE_TOKEN",
+        "model":       "tgi",  # TGI: URL identifies the model, "tgi" is a placeholder
+    },
+    # Add more fine-tuned model endpoints here as you deploy them.
+    # "my-ner-lora-v2": {
+    #     "base_url":    "https://xyz789.us-east-1.aws.endpoints.huggingface.cloud/v1/",
+    #     "api_key_env": "HUGGINGFACE_TOKEN",
+    #     "model":       "tgi",
+    # },
+}
+
 
 NER_LLM_CONFIG: dict = {
     "provider":    "anthropic",
@@ -47,17 +150,38 @@ NER_LLM_CONFIG: dict = {
     "temperature": 0,
 }
 
+
 QA_LLM_CONFIG: dict = {
     "provider":    "openai",
     "model":       "gpt-4.1",
     "temperature": 0,
 }
 
+
 CYPHER_LLM_CONFIG: dict = {
-    "provider":    "openai",
-    "model":       "gpt-4.1",
-    "temperature": 0,
+   "provider":    "openai",
+   "model":       "gpt-4.1",
+   "temperature": 0,
 }
+
+# CYPHER_LLM_CONFIG = {
+#     "provider":    "hf_compatible",
+#     "model":       "llama-8b-hf",   # MODEL_REGISTRY key
+#     "temperature": 0,
+#     "max_tokens":  512,
+# }
+
+# Example: route the Cypher generator at an open-source / fine-tuned model
+# served behind an OpenAI-compatible endpoint (HF router, HF Inference
+# Endpoint, Groq, etc.).  The ``model`` field is a key into MODEL_REGISTRY.
+# Uncomment to switch — no other code change needed.
+#
+# CYPHER_LLM_CONFIG: dict = {
+#     "provider":    "hf_compatible",
+#     "model":       "my-svl-cypher-lora-v1",   # ← MODEL_REGISTRY key
+#     "temperature": 0,
+#     "max_tokens":  512,
+# }
 
 # Legacy default — used by any code path that imports ``agent_helper.llm``
 # without specifying a stage.  Defaults to the same setup as NER.
@@ -116,4 +240,4 @@ NER_MODES = ("full", "node_only", "no_ner")
 #  python ner_agent_auto.py "Who played neo in matrix?"  --verbose
 #  python ner_agent_auto.py "Who played Neo or Morpheus in The Matrix?" " --verbose
 #  python ner_agent_auto.py "Who act  in matrix?"  --verbose
-#  python ner_agent_auto.py "Who played Neo or Morpheus in The Matrix?" --verbose
+#  python ner_agent_auto.py "Who played neo or morphes in matrix?" --verbose
