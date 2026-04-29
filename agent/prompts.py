@@ -50,17 +50,17 @@ Extraction rules (follow strictly)
 
 Examples
 ────────
-Q: Find the author named "https://openalex.org/A5024485922".
-A: {"Author.id": ["https://openalex.org/A5024485922"]}
+Q: Find the author named "https://openalex.org/A5026985550".
+A: {"Author.id": ["https://openalex.org/A5026985550"]}
 
-Q: How many movies have released before 1999?
-A: {"Movie.released": [1999]}
+Q: How many movies have released before 1986?
+A: {"Movie.released": [1986]}
 
-Q: Which movie has tagline containing "Everything is connected"?
-A: {"Movie.tagline": ["Everything is connected"]}
+Q: Which movie has tagline containing "Come as you are"?
+A: {"Movie.tagline": ["Come as you are"]}
 
-Q: Which person has acted_in roles "['Judge Fielding']"?
-A: {"ACTED_IN.roles": ["['Judge Fielding']"]}
+Q: Which person has acted_in roles "['David Frost']"?
+A: {"ACTED_IN.roles": ["['David Frost']"]}
 
 Q: List all items in the database.
 A: {}

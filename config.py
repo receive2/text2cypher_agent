@@ -193,7 +193,7 @@ DEFAULT_LLM_CONFIG: dict = dict(NER_LLM_CONFIG)
 # ──────────────────────────────────────────────────────────────────────────────
 
 MAX_THREAD            = 5    # parallel tool calls in the NER agent
-DEFAULT_TOP_K         = 5    # FAISS tool-selection top-k
+DEFAULT_TOP_K         = 10    # FAISS tool-selection top-k
 TOOL_TOP_K            = 10   # fulltext search top-k per tool call
 STABILITY_K           = 3    # consecutive stable validation rounds before stopping
 MAX_VALIDATION_ROUNDS = 20   # hard cap on validation rounds per property pair

@@ -53,6 +53,7 @@ import importlib
 import json
 import os
 import re
+import shutil
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Union
 
@@ -1225,6 +1226,77 @@ def ask_auto(
 # 10. Utility: rebuild the FAISS index on demand
 # ──────────────────────────────────────────────────────────────────────────────
 
+def _drop_embedding_tool_names(registry: Dict[str, BaseTool]) -> Dict[str, BaseTool]:
+    """
+    Defense-in-depth filter applied immediately before FAISS indexing.
+
+    Drops any tool whose name ends in ``_embedding`` or ``_vector``. This is
+    redundant with the schema-layer filter in ``tools.gen_tools`` (which is
+    the real fix), but costs nothing and protects against:
+      • hand-written tools that accidentally use the suffix,
+      • stale ``generated_*.py`` files from before the schema-layer fix,
+      • future drift if a new code path bypasses ``gen_tools`` entirely.
+    """
+    filtered: Dict[str, BaseTool] = {}
+    for name, tool in registry.items():
+        lower = name.lower()
+        if lower.endswith("_embedding") or lower.endswith("_vector"):
+            logger.info(
+                f"[ner_agent_auto] FAISS pre-index filter: dropping tool "
+                f"{name!r} (suffix _embedding/_vector)"
+            )
+            continue
+        filtered[name] = tool
+    return filtered
+
+
+def _purge_faiss_dir(target_dir: str) -> None:
+    """
+    Remove the FAISS index directory and every artifact under it, in place.
+
+    The FAISS index is a pure derivative of the current schema. It is
+    rebuilt from scratch on every call to :func:`rebuild_tools_faiss` —
+    resumability on partial failure is handled in the embedding-backfill
+    layer (``embedding_helper.backfill_embeddings``), NOT here.
+
+    Why a full rmtree instead of relying on ``FAISS.save_local()``'s
+    overwrite of ``index.faiss`` + ``index.pkl``:
+      • ``save_local`` only rewrites those two files — any orphan
+        artifact (e.g. ``.DS_Store``, a stale fingerprint file from a
+        future PR, half-renamed experimental files) survives silently.
+      • Reuse of a schema-derived artifact across schema changes is a
+        known bug source. Clean rebuild is the only behaviour we want.
+      • CypherBench databases are tiny (1k–50k nodes). The FAISS rebuild
+        cost is dominated by the embedding API call, which the registry
+        already requires regardless of disk state. Deleting first costs
+        microseconds and adds zero retry burden.
+    """
+    p = Path(target_dir)
+    if not p.exists():
+        logger.info(
+            f"[ner_agent_auto] FAISS purge: nothing to delete at {target_dir!r}"
+        )
+        return
+
+    if p.is_dir():
+        # List contents before deletion so the log shows exactly what was
+        # blown away — useful when debugging a "stale orphan" report.
+        try:
+            entries = sorted(child.name for child in p.iterdir())
+        except OSError:
+            entries = []
+        for name in entries:
+            logger.info(
+                f"[ner_agent_auto] FAISS purge: removing {target_dir}/{name}"
+            )
+        shutil.rmtree(target_dir, ignore_errors=True)
+    else:
+        # Defensive — should never happen because we always point at a dir,
+        # but cover it in case a future caller passes an explicit file.
+        logger.info(f"[ner_agent_auto] FAISS purge: removing file {target_dir!r}")
+        p.unlink(missing_ok=True)
+
+
 def rebuild_tools_faiss(
     faiss_dir: Optional[str] = None,
     mode:      Optional[str] = None,
@@ -1240,6 +1312,12 @@ def rebuild_tools_faiss(
     The ``"no_ner"`` mode raises :class:`RuntimeError` because there is
     nothing to index in that mode.
 
+    FAISS index is a pure derivative of the current schema. It is rebuilt
+    from scratch every run. Resumability on partial failure is handled in
+    the embedding-backfill layer, not here. The target directory is
+    purged before rebuild so orphan files from prior runs (or from a
+    different graph database) cannot leak through.
+
     Returns
     -------
     int  Number of tools indexed.
@@ -1252,8 +1330,24 @@ def rebuild_tools_faiss(
 
     target_dir = faiss_dir or _FAISS_DIR_BY_MODE[effective]
 
+    # Step 1 — purge any prior on-disk index BEFORE building the new one.
+    # See _purge_faiss_dir for the full rationale.
+    _purge_faiss_dir(target_dir)
+
+    # Step 2 — build a fresh registry from the freshly regenerated tool
+    # modules.  build_tool_registry() reloads the modules so on-disk
+    # changes from gen_tools.py are picked up immediately.
     fresh_registry = build_tool_registry(mode=effective)
+
+    # Defense-in-depth: strip any embedding/vector tools that slipped through
+    # the schema-layer filter in tools.gen_tools (e.g. from a stale generated
+    # module or a hand-written tool). See _drop_embedding_tool_names.
+    fresh_registry = _drop_embedding_tool_names(fresh_registry)
     _registry_by_mode[effective] = fresh_registry      # reload cached registry
+
+    # Step 3 — rebuild the on-disk FAISS index from scratch. After the
+    # purge above, get_or_build_tools_faiss() always takes the build path
+    # (rebuild=True is belt-and-braces — the directory is empty anyway).
     _vectorstore_by_mode[effective] = get_or_build_tools_faiss(
         registry   = fresh_registry,
         faiss_dir  = target_dir,

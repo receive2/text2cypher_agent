@@ -40,22 +40,6 @@ def get_movie_released(user_query: str) -> List[str]:
 
 
 @tool
-def get_movie_tagline_embedding(user_query: str) -> List[str]:
-    """Get the canonical Movie.tagline_embedding values from the database."""
-    search_term = get_entity(user_query, topic="tagline vector embedding")
-    # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
-    return search_tool(phrase=search_term, node_label="Movie", property_name="tagline_embedding", k=TOOL_TOP_K, verbose=True)
-
-
-@tool
-def get_movie_title_embedding(user_query: str) -> List[str]:
-    """Get the canonical Movie.title_embedding values from the database."""
-    search_term = get_entity(user_query, topic="title vector embedding")
-    # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
-    return search_tool(phrase=search_term, node_label="Movie", property_name="title_embedding", k=TOOL_TOP_K, verbose=True)
-
-
-@tool
 def get_person_name(user_query: str) -> List[str]:
     """Get the canonical Person.name values from the database."""
     search_term = get_entity(user_query, topic="person name")
@@ -72,14 +56,6 @@ def get_person_born(user_query: str) -> List[str]:
 
 
 @tool
-def get_person_name_embedding(user_query: str) -> List[str]:
-    """Get the canonical Person.name_embedding values from the database."""
-    search_term = get_entity(user_query, topic="name vector embedding")
-    # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
-    return search_tool(phrase=search_term, node_label="Person", property_name="name_embedding", k=TOOL_TOP_K, verbose=True)
-
-
-@tool
 def get_work_title(user_query: str) -> List[str]:
     """Get the canonical Work.title values from the database."""
     search_term = get_entity(user_query, topic="work title")
@@ -90,7 +66,7 @@ def get_work_title(user_query: str) -> List[str]:
 @tool
 def get_work_id(user_query: str) -> List[str]:
     """Get the canonical Work.id values from the database."""
-    search_term = get_entity(user_query, topic="work identifier")
+    search_term = get_entity(user_query, topic="work unique identifier")
     # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
     return search_tool(phrase=search_term, node_label="Work", property_name="id", k=TOOL_TOP_K, verbose=True)
 

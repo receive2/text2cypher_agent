@@ -44,6 +44,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
 from dotenv import load_dotenv
+from loguru import logger
 from neo4j import GraphDatabase
 from neo4j.exceptions import Neo4jError
 
@@ -126,6 +127,134 @@ def _get_driver():
 
 
 # ──────────────────────────────────────────────────────────────────────────────
+# Embedding-column filter
+#
+# Vector-embedding properties (e.g. ``Movie.title_embedding``) are written into
+# Neo4j by ``setup_project.py`` Step 6, which means they show up in
+# ``db.schema.nodeTypeProperties()`` / ``db.schema.relTypeProperties()`` like
+# any other property. Without filtering they get promoted into nonsensical
+# ``get_<label>_<prop>_embedding`` @tool functions that pollute the FAISS
+# tool-selection index.
+#
+# ``_drop_embedding_pairs()`` is the single, authoritative chokepoint that
+# removes them. It applies three layers of defense in priority order:
+#
+#   1. Type-based   — ``propertyTypes`` is a floating-point list
+#                     (``LIST<FLOAT>``, ``LIST<FLOAT64>``, ``LIST<DOUBLE>``,
+#                     etc.). Catches embeddings regardless of naming.
+#   2. Config-based — pair is registered in
+#                     ``vector_config.EMBEDDABLE_PROPERTIES``.
+#   3. Naming-based — property name ends in ``_embedding`` or ``_vector``.
+#                     Belt-and-braces against orphaned columns from old
+#                     runs or hand-built databases.
+# ──────────────────────────────────────────────────────────────────────────────
+
+def _is_embedding_type(property_types: Optional[List[str]]) -> bool:
+    """
+    Return True if any element of *property_types* denotes a floating-point
+    list (e.g. ``LIST<FLOAT>``, ``LIST<FLOAT64>``, ``LIST<DOUBLE>``,
+    ``FloatArray``, ``DoubleArray``).
+
+    Neo4j's ``propertyTypes`` field is a list of strings — formats vary across
+    versions (4.x returns ``LIST<FLOAT>``; some drivers return ``FloatArray``)
+    so this check is intentionally tolerant.
+    """
+    if not property_types:
+        return False
+    for t in property_types:
+        if not t:
+            continue
+        tu = str(t).upper().replace(" ", "")
+        if "LIST" in tu and ("FLOAT" in tu or "DOUBLE" in tu):
+            return True
+        if "FLOATARRAY" in tu or "DOUBLEARRAY" in tu:
+            return True
+    return False
+
+
+def _embeddable_properties_set(entity_type: str) -> Set[Tuple[str, str]]:
+    """
+    Return the set of ``(label_or_reltype, embedding_property)`` pairs that
+    ``vector_config.EMBEDDABLE_PROPERTIES`` registers for *entity_type*
+    (``"node"`` or ``"relationship"``).
+
+    Imported lazily so ``tools.gen_tools`` does not hard-depend on
+    ``vector_config`` for callers who only need the rendering helpers.
+    Returns an empty set if the import fails for any reason.
+    """
+    try:
+        from vector_config import EMBEDDABLE_PROPERTIES  # noqa: WPS433
+    except Exception:
+        return set()
+
+    out: Set[Tuple[str, str]] = set()
+    for entry in EMBEDDABLE_PROPERTIES:
+        if entry.get("entity_type") != entity_type:
+            continue
+        # Node entries use "label"; relationship entries may use "label" or
+        # "rel_type". Accept both so future-proof relationship configs work.
+        label = (entry.get("label")
+                 or entry.get("rel_type")
+                 or entry.get("relationship"))
+        emb = entry.get("embedding_property")
+        if label and emb:
+            out.add((label, emb))
+    return out
+
+
+def _drop_embedding_pairs(
+    triples: List[Tuple[str, str, Optional[List[str]]]],
+    *,
+    entity_type: str,
+) -> List[Tuple[str, str]]:
+    """
+    Filter ``(label_or_reltype, property, propertyTypes)`` triples,
+    removing any that look like a vector / embedding column.
+
+    Uses three-layer defense in priority order: type > config > naming
+    (see module-level docstring above).
+
+    Logs every drop at INFO level with the layer that caught it, so
+    ``setup_project.py`` re-runs leave a paper trail proving the filter
+    fired on the expected columns.
+
+    Returns the surviving ``(label, property)`` pairs in input order.
+    """
+    embeddable = _embeddable_properties_set(entity_type)
+    out: List[Tuple[str, str]] = []
+
+    for label, prop, types in triples:
+        # Layer 1 — type-based (most robust, catches embeddings regardless of name)
+        if _is_embedding_type(types):
+            logger.info(
+                f"[gen_tools] Filtered embedding column: {label}.{prop} "
+                f"(reason: type={types})"
+            )
+            continue
+
+        # Layer 2 — config-based (authoritative source of truth)
+        if (label, prop) in embeddable:
+            logger.info(
+                f"[gen_tools] Filtered embedding column: {label}.{prop} "
+                f"(reason: vector_config.EMBEDDABLE_PROPERTIES)"
+            )
+            continue
+
+        # Layer 3 — naming-based (belt-and-braces for orphaned columns)
+        lower = prop.lower()
+        if lower.endswith("_embedding") or lower.endswith("_vector"):
+            logger.info(
+                f"[gen_tools] Filtered embedding column: {label}.{prop} "
+                f"(reason: name suffix)"
+            )
+            continue
+
+        out.append((label, prop))
+
+    return out
+
+
+# ──────────────────────────────────────────────────────────────────────────────
 # Schema introspection
 # ──────────────────────────────────────────────────────────────────────────────
 
@@ -137,8 +266,14 @@ def list_node_pairs(driver, database: str) -> List[Tuple[str, str]]:
     Tries ``db.schema.nodeTypeProperties()`` first (Neo4j 4.4+).
     Falls back to scanning each label's ``keys(n)`` if the procedure is
     unavailable.
+
+    Vector/embedding columns are filtered out via :func:`_drop_embedding_pairs`
+    before returning, so callers never see them. The primary path leverages
+    the procedure's ``propertyTypes`` field for type-based filtering; the
+    fallback path has no type info so it relies on the config and naming
+    layers only.
     """
-    pairs: List[Tuple[str, str]] = []
+    triples: List[Tuple[str, str, Optional[List[str]]]] = []
     seen: Set[Tuple[str, str]] = set()
 
     with driver.session(database=database) as session:
@@ -146,20 +281,21 @@ def list_node_pairs(driver, database: str) -> List[Tuple[str, str]]:
         try:
             records = list(session.run(
                 "CALL db.schema.nodeTypeProperties() "
-                "YIELD nodeType, propertyName "
-                "RETURN nodeType, propertyName"
+                "YIELD nodeType, propertyName, propertyTypes "
+                "RETURN nodeType, propertyName, propertyTypes"
             ))
             for r in records:
                 nt = str(r.get("nodeType") or "").strip()
                 pn = str(r.get("propertyName") or "").strip()
+                pts = r.get("propertyTypes")
                 if not nt or not pn:
                     continue
                 label = _parse_primary_label(nt)
                 key = (label, pn)
                 if key not in seen:
                     seen.add(key)
-                    pairs.append(key)
-            return pairs
+                    triples.append((label, pn, list(pts) if pts else None))
+            return _drop_embedding_pairs(triples, entity_type="node")
         except (Neo4jError, Exception):
             pass  # fall through to scan
 
@@ -178,9 +314,11 @@ def list_node_pairs(driver, database: str) -> List[Tuple[str, str]]:
                     key = (label, pn)
                     if key not in seen:
                         seen.add(key)
-                        pairs.append(key)
+                        # Fallback path has no propertyTypes — config &
+                        # naming layers in _drop_embedding_pairs still apply.
+                        triples.append((label, pn, None))
 
-    return pairs
+    return _drop_embedding_pairs(triples, entity_type="node")
 
 
 def list_rel_property_pairs(driver, database: str) -> List[Tuple[str, str]]:
@@ -190,8 +328,14 @@ def list_rel_property_pairs(driver, database: str) -> List[Tuple[str, str]]:
 
     Tries ``db.schema.relTypeProperties()`` first (Neo4j 4.4+).
     Falls back to scanning live relationships.
+
+    Vector/embedding columns are filtered out via :func:`_drop_embedding_pairs`
+    before returning. The demo Movies graph has no relationship-level
+    embeddings today, but the moment any are added (e.g. ``ACTED_IN.summary``
+    + ``ACTED_IN.summary_embedding``) this filter prevents them from being
+    promoted into bogus ``get_<reltype>_<prop>_embedding`` tools.
     """
-    pairs: List[Tuple[str, str]] = []
+    triples: List[Tuple[str, str, Optional[List[str]]]] = []
     seen: Set[Tuple[str, str]] = set()
 
     with driver.session(database=database) as session:
@@ -199,21 +343,22 @@ def list_rel_property_pairs(driver, database: str) -> List[Tuple[str, str]]:
         try:
             records = list(session.run(
                 "CALL db.schema.relTypeProperties() "
-                "YIELD relType, propertyName "
+                "YIELD relType, propertyName, propertyTypes "
                 "WHERE propertyName IS NOT NULL "
-                "RETURN relType, propertyName"
+                "RETURN relType, propertyName, propertyTypes"
             ))
             for r in records:
                 # relType may arrive as `:`ACTED_IN`` — clean it unconditionally
                 rt = _clean_rel_type(str(r.get("relType") or ""))
                 pn = str(r.get("propertyName") or "").strip()
+                pts = r.get("propertyTypes")
                 if not rt or not pn:
                     continue
                 key = (rt, pn)
                 if key not in seen:
                     seen.add(key)
-                    pairs.append(key)
-            return pairs
+                    triples.append((rt, pn, list(pts) if pts else None))
+            return _drop_embedding_pairs(triples, entity_type="relationship")
         except (Neo4jError, Exception):
             pass  # fall through to scan
 
@@ -231,9 +376,11 @@ def list_rel_property_pairs(driver, database: str) -> List[Tuple[str, str]]:
                 key = (rt, pn)
                 if key not in seen:
                     seen.add(key)
-                    pairs.append(key)
+                    # Fallback path has no propertyTypes — config &
+                    # naming layers in _drop_embedding_pairs still apply.
+                    triples.append((rt, pn, None))
 
-    return pairs
+    return _drop_embedding_pairs(triples, entity_type="relationship")
 
 
 def list_structural_relations(driver, database: str) -> List[Tuple[str, str, str]]:
