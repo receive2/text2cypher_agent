@@ -262,6 +262,7 @@ def _get_vectorstore(
             faiss_dir  = target_dir,
             rebuild    = rebuild,
             embeddings = _get_embeddings(),
+            ner_mode   = effective,
         )
         _vectorstore_by_mode[effective] = cached
     return cached
@@ -1348,11 +1349,13 @@ def rebuild_tools_faiss(
     # Step 3 — rebuild the on-disk FAISS index from scratch. After the
     # purge above, get_or_build_tools_faiss() always takes the build path
     # (rebuild=True is belt-and-braces — the directory is empty anyway).
+    # Pass ner_mode so the fresh fingerprint records the resolved mode.
     _vectorstore_by_mode[effective] = get_or_build_tools_faiss(
         registry   = fresh_registry,
         faiss_dir  = target_dir,
         rebuild    = True,
         embeddings = _get_embeddings(),
+        ner_mode   = effective,
     )
     return len(fresh_registry)
 

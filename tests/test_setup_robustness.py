@@ -1,28 +1,12 @@
 """
-Regression test: vector embedding columns must NEVER be promoted into
-``@tool`` functions.
+Regression tests for setup_project.py robustness invariants.
 
-The bug this guards against
----------------------------
-``setup_project.py`` Step 6 writes embeddings into Neo4j as node/relationship
-properties using ``vector_config.EMBEDDABLE_PROPERTIES``. Step 8 then calls
-``tools.gen_tools.list_node_pairs()`` (and the relationship equivalent), which
-runs ``CALL db.schema.nodeTypeProperties()`` and used to return EVERY (label,
-property) pair — including the embedding columns from Step 6. The result was
-nonsensical tools like ``get_movie_title_embedding`` polluting the FAISS
-tool-selection index.
-
-The fix lives in ``tools.gen_tools._drop_embedding_pairs`` and is exercised
-here by:
-  1. Reading the generated module produced by the most recent
-     ``setup_project.py`` / ``gen_tools.py`` run and asserting no
-     ``_embedding`` / ``_vector`` tools leaked through.
-  2. Iterating ``vector_config.EMBEDDABLE_PROPERTIES`` and asserting the
-     corresponding ``get_<label>_<embedding_property>`` function does not
-     exist in the generated module.
-  3. Unit-testing ``_drop_embedding_pairs`` directly with a synthetic input
-     that exercises all three filter layers (type / config / naming) — this
-     check runs even on a CI box with no live Neo4j.
+Covers:
+  - Embedding columns are never promoted to fulltext-search @tools
+    (gen_tools._drop_embedding_pairs).
+  - FAISS rebuild is a clean operation — no orphan files survive.
+  - FAISS index is never silently reused against a mismatched env
+    (fingerprint guard).
 """
 
 from __future__ import annotations
@@ -381,6 +365,221 @@ def test_rebuild_after_schema_shrink_has_no_orphan_entries(_fake_faiss_env) -> N
     assert surviving == {"get_team_name", "get_player_name"}, (
         f"Schema-A tools leaked into the rebuilt index: extra={surviving - {'get_team_name', 'get_player_name'}}"
     )
+
+
+# ── 5. FAISS fingerprint guard ──────────────────────────────────────────────
+#
+# Each FAISS index directory carries a sibling ``fingerprint.json`` that pins
+# the live env at build time (database, NEO4J_URI host, embedding model, tool
+# set hash, …). ``load_faiss_vectorstore`` verifies it before loading and
+# raises ``StaleFaissIndexError`` on any mismatch. The guard NEVER auto-
+# rebuilds — that would mask the user's mistake.
+#
+# These tests exercise the contract directly (no ner_agent_auto involved):
+# build a small index with FakeEmbeddings, then load it under a perturbed
+# environment and assert the guard fires with a useful message.
+
+import json as _json
+import os as _os
+
+
+@pytest.fixture
+def _fp_env(tmp_path, monkeypatch):
+    """
+    Sandbox for the fingerprint guard tests.
+
+    Pins ``NEO4J_DATABASE`` / ``NEO4J_URI`` to deterministic values so the
+    fingerprint built inside the test is stable, and yields:
+
+      * ``faiss_dir``  — empty tmp directory the test will populate.
+      * ``embeddings`` — offline ``FakeEmbeddings(size=8)``.
+      * ``build``      — helper that calls ``build_tools_faiss`` with a
+                         dict-of-(name, description) registry stub.
+      * ``load``       — helper that calls ``load_faiss_vectorstore``.
+    """
+    from langchain_community.embeddings.fake import FakeEmbeddings
+    from langchain_core.tools import tool as _tool
+
+    from tools.tool_search import build_tools_faiss, load_faiss_vectorstore
+
+    # Pin env so the live fingerprint is deterministic across test boxes.
+    monkeypatch.setenv("NEO4J_DATABASE", "movies_test")
+    monkeypatch.setenv("NEO4J_URI",      "neo4j+s://abc123.databases.neo4j.io:7687")
+
+    # Make sure vector_config is freshly importable and exposes the two
+    # attrs the fingerprint reads. (It's a real module on disk; we patch
+    # attributes inside the individual mismatch tests as needed.)
+    import vector_config  # noqa: F401  (cache it)
+
+    embeddings = FakeEmbeddings(size=8)
+    faiss_dir  = tmp_path / "faiss_fp"
+
+    def _make_tool(name: str, description: str):
+        @_tool
+        def _stub(user_query: str) -> list:
+            """placeholder"""
+            return []
+        _stub.name        = name
+        _stub.description = description
+        return _stub
+
+    def _build(specs, *, ner_mode: str = "full"):
+        registry = {
+            func_name: _make_tool(func_name, desc)
+            for func_name, desc in specs
+        }
+        build_tools_faiss(
+            registry, str(faiss_dir),
+            embeddings=embeddings,
+            ner_mode=ner_mode,
+        )
+        return registry
+
+    def _load(*, expected_tool_names=None, expected_ner_mode=None):
+        return load_faiss_vectorstore(
+            str(faiss_dir), embeddings=embeddings,
+            expected_tool_names=expected_tool_names,
+            expected_ner_mode=expected_ner_mode,
+        )
+
+    return {
+        "faiss_dir":  faiss_dir,
+        "embeddings": embeddings,
+        "build":      _build,
+        "load":       _load,
+        "monkeypatch": monkeypatch,
+    }
+
+
+def test_fingerprint_written_on_build(_fp_env) -> None:
+    """``build_tools_faiss`` must write ``fingerprint.json`` next to
+    ``index.faiss`` with all 9 documented fields populated."""
+    _fp_env["build"]([
+        ("get_movie_title",   "Movie.title"),
+        ("get_movie_tagline", "Movie.tagline"),
+        ("get_person_name",   "Person.name"),
+    ])
+
+    fp_path = _fp_env["faiss_dir"] / "fingerprint.json"
+    assert fp_path.is_file(), "fingerprint.json was not written next to the index"
+
+    fp = _json.loads(fp_path.read_text(encoding="utf-8"))
+    expected_keys = {
+        "database", "neo4j_uri_host", "tool_names_hash", "tool_count",
+        "embedding_model", "embedding_backend", "ner_mode", "built_at",
+        "schema_version",
+    }
+    assert set(fp.keys()) == expected_keys, (
+        f"fingerprint key set mismatch: missing={expected_keys - set(fp)!r}, "
+        f"extra={set(fp) - expected_keys!r}"
+    )
+    assert fp["database"]       == "movies_test"
+    assert fp["neo4j_uri_host"] == "abc123.databases.neo4j.io"
+    assert fp["tool_count"]     == 3
+    assert fp["ner_mode"]       == "full"
+    assert fp["schema_version"] == 1
+    assert fp["tool_names_hash"], "tool_names_hash must not be empty"
+    assert fp["built_at"],        "built_at timestamp must be set"
+
+
+def test_load_succeeds_with_matching_fingerprint(_fp_env) -> None:
+    """Load must succeed without raising when nothing in the env has
+    drifted between build-time and load-time."""
+    registry = _fp_env["build"]([
+        ("get_movie_title", "Movie.title"),
+        ("get_person_name", "Person.name"),
+    ])
+
+    vs = _fp_env["load"](
+        expected_tool_names=list(registry.keys()),
+        expected_ner_mode="full",
+    )
+    assert vs.index.ntotal == 2
+
+
+def test_load_raises_on_database_mismatch(_fp_env) -> None:
+    """Switching ``NEO4J_DATABASE`` between build and load is the canonical
+    CypherBench mistake. The guard must catch it with a message naming the
+    ``database`` field."""
+    _fp_env["build"]([("get_movie_title", "Movie.title")])
+
+    # Simulate the user switching from movies_test → soccer_test without
+    # rerunning setup_project.py.
+    _fp_env["monkeypatch"].setenv("NEO4J_DATABASE", "soccer_test")
+
+    from tools.tool_search import StaleFaissIndexError
+    with pytest.raises(StaleFaissIndexError) as excinfo:
+        _fp_env["load"]()
+    msg = str(excinfo.value)
+    assert "database" in msg, f"error msg should name the 'database' field: {msg!r}"
+    assert "soccer_test" in msg
+    assert "movies_test" in msg
+
+
+def test_load_raises_on_tool_set_change(_fp_env) -> None:
+    """Loading with a registry whose ``func_name`` set differs from build
+    time must raise with a ``tool_names_hash`` mismatch."""
+    _fp_env["build"]([
+        ("get_movie_title", "Movie.title"),
+        ("get_movie_tagline", "Movie.tagline"),
+    ])
+
+    # The on-disk index was built from {get_movie_title, get_movie_tagline}.
+    # The "live" registry now has a different shape — exactly what happens
+    # after a schema change without rebuild.
+    different_names = ["get_team_name", "get_player_name", "get_match_score"]
+
+    from tools.tool_search import StaleFaissIndexError
+    with pytest.raises(StaleFaissIndexError) as excinfo:
+        _fp_env["load"](expected_tool_names=different_names)
+    msg = str(excinfo.value)
+    assert "tool_names_hash" in msg, (
+        f"error msg should name the 'tool_names_hash' field: {msg!r}"
+    )
+
+
+def test_load_raises_when_fingerprint_missing(_fp_env) -> None:
+    """An index built by an older code path (no fingerprint at all) must
+    not load silently — the guard must demand a rebuild."""
+    _fp_env["build"]([("get_movie_title", "Movie.title")])
+
+    # Older indexes had only index.faiss + index.pkl. Simulate that.
+    fp_path = _fp_env["faiss_dir"] / "fingerprint.json"
+    fp_path.unlink()
+    assert not fp_path.exists()
+
+    from tools.tool_search import StaleFaissIndexError
+    with pytest.raises(StaleFaissIndexError) as excinfo:
+        _fp_env["load"]()
+    msg = str(excinfo.value).lower()
+    assert "no fingerprint file" in msg, (
+        f"error msg should mention 'no fingerprint file': {msg!r}"
+    )
+
+
+def test_load_raises_on_embedding_model_change(_fp_env) -> None:
+    """Switching ``vector_config.EMBEDDING_MODEL_NAME`` invalidates the
+    vector space — the guard must reject the load even when dimensions
+    happen to match."""
+    _fp_env["build"]([("get_movie_title", "Movie.title")])
+
+    # Simulate the user editing vector_config.py to point at a different
+    # embedding model. _live_fingerprint() reads the attr on every call.
+    import vector_config
+    _fp_env["monkeypatch"].setattr(
+        vector_config, "EMBEDDING_MODEL_NAME",
+        "totally-different-model-v2",
+        raising=False,
+    )
+
+    from tools.tool_search import StaleFaissIndexError
+    with pytest.raises(StaleFaissIndexError) as excinfo:
+        _fp_env["load"]()
+    msg = str(excinfo.value)
+    assert "embedding_model" in msg, (
+        f"error msg should name the 'embedding_model' field: {msg!r}"
+    )
+    assert "totally-different-model-v2" in msg
 
 
 if __name__ == "__main__":

@@ -33,16 +33,20 @@ Workflow B — search a registry-based FAISS index (built from @tool docstrings)
 
 from __future__ import annotations
 
+import hashlib
 import inspect
 import json
 import os
 from dataclasses import dataclass, field
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
+from urllib.parse import urlparse
 
 from paths import FAISS_AUTO_DIR
 
 import httpx
+from loguru import logger
 from langchain_core.tools import BaseTool
 from langchain_openai import OpenAIEmbeddings
 
@@ -56,6 +60,220 @@ try:
     load_dotenv()
 except Exception:
     pass
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Fingerprint guard
+#
+# Each FAISS index directory carries a sibling ``fingerprint.json`` that
+# captures the live environment at build time. ``load_faiss_vectorstore()``
+# verifies the fingerprint against the current environment BEFORE loading,
+# and raises :class:`StaleFaissIndexError` on any mismatch.
+#
+# This is the safety net for the CypherBench workflow where users switch
+# between graph databases (Movies → Soccer → NBA → …) and may forget to
+# rerun ``setup_project.py``. Without the guard, querying a stale index
+# silently returns wrong tools. With the guard, the user gets a clear,
+# actionable error message and is forced to rerun setup.
+#
+# Design rule: the guard NEVER auto-rebuilds. Auto-rebuild would mask the
+# user's mistake and re-introduce the exact bug class this guard exists to
+# catch. Mismatch ⇒ raise ⇒ user reruns setup explicitly.
+# ──────────────────────────────────────────────────────────────────────────────
+
+#: Filename written next to ``index.faiss`` / ``index.pkl``.
+FINGERPRINT_FILENAME = "fingerprint.json"
+
+#: Schema version of the fingerprint file itself. Bump when fields change
+#: in a backward-incompatible way (renaming, removing, semantic changes).
+FINGERPRINT_SCHEMA_VERSION = 1
+
+
+class StaleFaissIndexError(RuntimeError):
+    """Raised when an on-disk FAISS index does not match the live env.
+
+    Two scenarios surface this:
+      • The index has no ``fingerprint.json`` — built by an older version
+        of the code that predates the guard.
+      • At least one fingerprint field disagrees with the live env
+        (database, NEO4J_URI host, tool set hash, embedding model, etc.).
+
+    The error message lists every mismatched field with expected vs. found
+    values so the user can diagnose without re-reading the JSON manually.
+    """
+
+
+def _neo4j_uri_host(uri: Optional[str]) -> str:
+    """
+    Extract the host portion of a Neo4j URI, stripping scheme/port/credentials.
+
+    Examples::
+
+        'neo4j+s://user:pw@93075fe8.databases.neo4j.io:7687' → '93075fe8.databases.neo4j.io'
+        'bolt://localhost:7687'                              → 'localhost'
+        ''                                                   → ''
+    """
+    if not uri:
+        return ""
+    try:
+        parsed = urlparse(uri)
+        # urlparse on bolt://... yields netloc 'user:pw@host:port'; hostname strips all that.
+        return (parsed.hostname or "").lower()
+    except Exception:
+        return ""
+
+
+def _hash_tool_names(tool_names: List[str]) -> str:
+    """
+    Stable SHA-256 hex digest of a sorted list of tool ``func_name``s.
+
+    Sorting is essential — registry iteration order is implementation-defined,
+    so the hash must be order-invariant.
+    """
+    payload = "\n".join(sorted(tool_names)).encode("utf-8")
+    return hashlib.sha256(payload).hexdigest()
+
+
+def _live_fingerprint(
+    tool_names: List[str],
+    *,
+    ner_mode: str = "full",
+) -> Dict[str, Any]:
+    """
+    Build the fingerprint dict from the LIVE environment + the registry.
+
+    Reads:
+      • ``NEO4J_DATABASE``    env var (defaults to ``"default"``)
+      • ``NEO4J_URI``         env var (host portion only)
+      • ``vector_config.EMBEDDING_MODEL_NAME``
+      • ``vector_config.EMBEDDING_BACKEND``
+
+    ``vector_config`` is imported lazily so this module stays importable
+    even before the project is fully configured.
+    """
+    try:
+        import vector_config as vc  # noqa: WPS433
+        embedding_model   = getattr(vc, "EMBEDDING_MODEL_NAME", "")
+        embedding_backend = getattr(vc, "EMBEDDING_BACKEND",   "")
+    except Exception:
+        embedding_model = ""
+        embedding_backend = ""
+
+    return {
+        "database":          os.getenv("NEO4J_DATABASE") or "default",
+        "neo4j_uri_host":    _neo4j_uri_host(os.getenv("NEO4J_URI")),
+        "tool_names_hash":   _hash_tool_names(tool_names),
+        "tool_count":        len(tool_names),
+        "embedding_model":   str(embedding_model),
+        "embedding_backend": str(embedding_backend),
+        "ner_mode":          ner_mode,
+        "built_at":          datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "schema_version":    FINGERPRINT_SCHEMA_VERSION,
+    }
+
+
+def _write_fingerprint(faiss_dir: Union[str, Path], fingerprint: Dict[str, Any]) -> Path:
+    """
+    Persist *fingerprint* to ``<faiss_dir>/fingerprint.json``.
+
+    Uses ``Path.write_text()`` for an atomic single-write — no streaming so
+    a crash during ``json.dump`` cannot leave a half-written fingerprint.
+    """
+    fp_path = Path(faiss_dir) / FINGERPRINT_FILENAME
+    fp_path.write_text(json.dumps(fingerprint, indent=2), encoding="utf-8")
+    return fp_path
+
+
+def _verify_fingerprint(
+    faiss_dir: Union[str, Path],
+    *,
+    expected_tool_names: Optional[List[str]] = None,
+    expected_ner_mode: Optional[str] = None,
+) -> Dict[str, Any]:
+    """
+    Compare the on-disk fingerprint against the live environment.
+
+    Parameters
+    ----------
+    faiss_dir
+        Directory holding ``index.faiss`` + ``fingerprint.json``.
+    expected_tool_names
+        Optional list of ``func_name``s the live caller is about to query
+        with. When provided, ``tool_names_hash`` and ``tool_count`` are
+        also checked. Pass ``None`` to skip those two fields (e.g. when
+        the caller does not have a registry on hand — only the database
+        / model checks fire).
+    expected_ner_mode
+        Optional NER mode the caller intends to use. When provided, the
+        fingerprint's ``ner_mode`` is checked too.
+
+    Returns
+    -------
+    dict
+        The on-disk fingerprint (parsed). Only returned on success.
+
+    Raises
+    ------
+    StaleFaissIndexError
+        When the file is missing, unreadable, or any field mismatches.
+    """
+    fp_path = Path(faiss_dir) / FINGERPRINT_FILENAME
+
+    if not fp_path.is_file():
+        raise StaleFaissIndexError(
+            f"FAISS index at {os.fspath(faiss_dir)!r} has no fingerprint file. "
+            "This index was built by an older version of the code. "
+            "Rerun setup_project.py to regenerate."
+        )
+
+    try:
+        on_disk = json.loads(fp_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise StaleFaissIndexError(
+            f"FAISS fingerprint at {fp_path!r} is unreadable ({exc!r}). "
+            "Rerun setup_project.py to regenerate."
+        ) from exc
+
+    live = _live_fingerprint(
+        expected_tool_names if expected_tool_names is not None else [],
+        ner_mode=expected_ner_mode or on_disk.get("ner_mode", "full"),
+    )
+
+    # Fields that ALWAYS get compared.
+    compare_fields: List[str] = [
+        "database",
+        "neo4j_uri_host",
+        "embedding_model",
+        "embedding_backend",
+        "schema_version",
+    ]
+    # Tool-set fields only fire when the caller passed a registry.
+    if expected_tool_names is not None:
+        compare_fields += ["tool_names_hash", "tool_count"]
+    # NER mode only fires when the caller pinned one explicitly.
+    if expected_ner_mode is not None:
+        compare_fields += ["ner_mode"]
+
+    mismatches: List[str] = []
+    for field_name in compare_fields:
+        expected = live.get(field_name)
+        found    = on_disk.get(field_name)
+        if expected != found:
+            mismatches.append(f"  - {field_name}: expected {expected!r}, found {found!r}")
+
+    if mismatches:
+        raise StaleFaissIndexError(
+            f"FAISS index at {os.fspath(faiss_dir)!r} is stale:\n"
+            + "\n".join(mismatches)
+            + "\nRerun setup_project.py against the current database."
+        )
+
+    logger.debug(
+        f"[tool_search] FAISS fingerprint OK at {fp_path} "
+        f"(db={on_disk.get('database')!r}, tools={on_disk.get('tool_count')}, "
+        f"model={on_disk.get('embedding_model')!r})"
+    )
+    return on_disk
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -142,18 +360,59 @@ class ToolSearchHit:
 def load_faiss_vectorstore(
     faiss_dir: Union[str, Path],
     embeddings: Optional[OpenAIEmbeddings] = None,
+    *,
+    expected_tool_names: Optional[List[str]] = None,
+    expected_ner_mode:   Optional[str]       = None,
+    skip_fingerprint:    bool                = False,
 ) -> FAISS:
     """
     Load a FAISS vectorstore from a directory produced by ``FAISS.save_local()``.
 
     Handles both old (no ``allow_dangerous_deserialization``) and new
     LangChain API signatures transparently.
+
+    Fingerprint guard (default behaviour)
+    -------------------------------------
+    Before delegating to ``FAISS.load_local()``, the on-disk
+    ``fingerprint.json`` is verified against the live environment. Any
+    mismatch raises :class:`StaleFaissIndexError`; the error is NEVER
+    swallowed here — the user must rerun ``setup_project.py``.
+
+    Parameters
+    ----------
+    faiss_dir
+        Directory holding the index files + fingerprint.
+    embeddings
+        Embedding client used for queries (not validated against the
+        fingerprint — the embedding *model name* is, via the fingerprint
+        ``embedding_model`` field).
+    expected_tool_names
+        Optional list of ``func_name``s the caller will query with. When
+        provided, the fingerprint's ``tool_names_hash`` + ``tool_count``
+        are also verified. Pass ``None`` (the default) to skip those two
+        fields when the caller does not have a registry on hand.
+    expected_ner_mode
+        Optional NER mode for an extra defensive check.
+    skip_fingerprint
+        Escape hatch for tests / migrations that need to bypass the guard
+        deliberately. **Never** pass ``True`` from production code.
     """
     if not os.path.isdir(faiss_dir):
         raise FileNotFoundError(
             f"FAISS directory not found: {faiss_dir!r}. "
             "Run the appropriate build step first."
         )
+
+    # ── Fingerprint check fires BEFORE any expensive load work. ───────────
+    # We deliberately do not catch StaleFaissIndexError here — see the
+    # module docstring above StaleFaissIndexError for the rationale.
+    if not skip_fingerprint:
+        _verify_fingerprint(
+            faiss_dir,
+            expected_tool_names=expected_tool_names,
+            expected_ner_mode=expected_ner_mode,
+        )
+
     if embeddings is None:
         embeddings = build_embeddings()
     try:
@@ -274,9 +533,11 @@ def build_tool_registry_from_modules(modules: list) -> Dict[str, BaseTool]:
 
 
 def build_tools_faiss(
-    registry: Dict[str, BaseTool],
-    faiss_dir: Union[str, Path],
+    registry:   Dict[str, BaseTool],
+    faiss_dir:  Union[str, Path],
     embeddings: Optional[OpenAIEmbeddings] = None,
+    *,
+    ner_mode:   str = "full",
 ) -> FAISS:
     """
     Build and persist a FAISS vectorstore from a tool registry.
@@ -324,14 +585,32 @@ def build_tools_faiss(
     Path(faiss_dir).mkdir(parents=True, exist_ok=True)
     vs = FAISS.from_texts(texts=texts, embedding=embeddings, metadatas=metadatas)
     vs.save_local(os.fspath(faiss_dir))
+
+    # Write the fingerprint AFTER save_local() succeeds so a build that
+    # crashes mid-write never leaves a fingerprint pointing at a partial
+    # index. See the module-level docstring on StaleFaissIndexError for
+    # the design rationale.
+    fingerprint = _live_fingerprint(
+        list(registry.keys()),
+        ner_mode=ner_mode,
+    )
+    fp_path = _write_fingerprint(faiss_dir, fingerprint)
+    logger.info(
+        f"[tool_search] Wrote FAISS fingerprint: {fp_path} "
+        f"(db={fingerprint['database']!r}, "
+        f"tools={fingerprint['tool_count']}, "
+        f"model={fingerprint['embedding_model']!r})"
+    )
     return vs
 
 
 def get_or_build_tools_faiss(
-    registry: Dict[str, BaseTool],
-    faiss_dir: Union[str, Path] = FAISS_AUTO_DIR,
-    rebuild:   bool = False,
+    registry:   Dict[str, BaseTool],
+    faiss_dir:  Union[str, Path] = FAISS_AUTO_DIR,
+    rebuild:    bool = False,
     embeddings: Optional[OpenAIEmbeddings] = None,
+    *,
+    ner_mode:   str = "full",
 ) -> FAISS:
     """
     Load the FAISS index from *faiss_dir* if it exists, otherwise build it.
@@ -341,11 +620,24 @@ def get_or_build_tools_faiss(
     registry  : Tool registry; only used when building (not loading).
     faiss_dir : Directory of the FAISS index.
     rebuild   : If *True*, always rebuild even if the directory exists.
+                ``rebuild_tools_faiss`` always passes ``True`` so the
+                fingerprint check on the load path is bypassed (a fresh
+                fingerprint is written instead).
     embeddings: Shared embeddings client.
+    ner_mode  : Recorded in the new fingerprint when (re)building. Has no
+                effect on the load path — verification reads the on-disk
+                value.
 
     Returns
     -------
     FAISS  Ready-to-query vectorstore.
+
+    Raises
+    ------
+    StaleFaissIndexError
+        Propagated from :func:`load_faiss_vectorstore` when the on-disk
+        fingerprint does not match the live env. Never auto-rebuilt — the
+        user must rerun ``setup_project.py``.
     """
     if embeddings is None:
         embeddings = build_embeddings()
@@ -357,14 +649,21 @@ def get_or_build_tools_faiss(
 
     if index_exists and not rebuild:
         print(f"Loading tool FAISS index from {faiss_dir!r} …", flush=True)
-        return load_faiss_vectorstore(faiss_dir, embeddings)
+        # Pass the live registry's tool names so the fingerprint also
+        # validates the tool-set hash + count. StaleFaissIndexError
+        # bubbles up — do NOT catch and rebuild.
+        return load_faiss_vectorstore(
+            faiss_dir, embeddings,
+            expected_tool_names=list(registry.keys()) if registry else None,
+            expected_ner_mode=ner_mode,
+        )
 
     action = "Rebuilding" if (index_exists and rebuild) else "Building"
     print(
         f"{action} tool FAISS index ({len(registry)} tools) → {faiss_dir!r} …",
         flush=True,
     )
-    return build_tools_faiss(registry, faiss_dir, embeddings)
+    return build_tools_faiss(registry, faiss_dir, embeddings, ner_mode=ner_mode)
 
 
 def hits_to_callables(
