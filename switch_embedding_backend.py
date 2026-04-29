@@ -155,7 +155,7 @@ def main() -> None:
     # Reset cached singletons BEFORE verify_backend — without this, an OpenAI
     # client cached by a previous run can still be used after we've switched
     # to BGE, and the dim sanity check fails confusingly.
-    import embedding_helper as eh
+    from embedding import embedding_helper as eh
     eh.reset_caches()
 
     try:

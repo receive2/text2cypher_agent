@@ -40,11 +40,14 @@ import json
 import os
 import re
 import sys
-from typing import Any, Dict, List, Optional, Set, Tuple
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
 from dotenv import load_dotenv
 from neo4j import GraphDatabase
 from neo4j.exceptions import Neo4jError
+
+from paths import GENERATED_NODE_TOOLS, GENERATED_REL_TOOLS, SCHEMA_META
 
 load_dotenv()
 
@@ -65,8 +68,8 @@ _NODE_HEADER = '''\
 from __future__ import annotations
 from typing import List
 from langchain_core.tools import tool
-from agent_helper import get_entity
-from neo4j_search import search_tool
+from agent.agent_helper import get_entity
+from neo4j_lib.neo4j_search import search_tool
 from config import TOOL_TOP_K
 
 
@@ -91,8 +94,8 @@ _REL_HEADER = '''\
 from __future__ import annotations
 from typing import List
 from langchain_core.tools import tool
-from agent_helper import get_entity
-from neo4j_search import search_tool, search_rel_tool
+from agent.agent_helper import get_entity
+from neo4j_lib.neo4j_search import search_tool, search_rel_tool
 from config import TOOL_TOP_K
 
 
@@ -419,7 +422,7 @@ def _structural_rel_topic(rel_type: str, to_label: str, end_prop: str) -> str:
     return f"{to_label.lower()} {end_prop} in {rel_type} relationship"
 
 
-def _load_schema_meta(path: str = "schema_meta.json") -> Dict[str, Any]:
+def _load_schema_meta(path: Union[str, Path] = SCHEMA_META) -> Dict[str, Any]:
     """
     Load ``schema_meta.json`` if it exists.  Returns an empty dict on any
     failure so callers can fall back gracefully.
@@ -581,8 +584,8 @@ def _render_structural_rel_tool(
 
 def generate_node_tools_file(
     node_pairs: List[Tuple[str, str]],
-    output_path: str,
-    meta_path: str = "schema_meta.json",
+    output_path: Union[str, Path],
+    meta_path: Union[str, Path] = SCHEMA_META,
 ) -> int:
     """
     Write ``generated_node_tools.py``.
@@ -605,6 +608,7 @@ def generate_node_tools_file(
         blocks.append(_render_node_tool(func_name, label, prop))
 
     content = _NODE_HEADER + "\n\n".join(blocks) + "\n"
+    Path(output_path).parent.mkdir(parents=True, exist_ok=True)
     with open(output_path, "w", encoding="utf-8") as fh:
         fh.write(content)
 
@@ -614,8 +618,8 @@ def generate_node_tools_file(
 def generate_rel_tools_file(
     rel_prop_pairs: List[Tuple[str, str]],
     structural_relations: List[Tuple[str, str, str]],
-    output_path: str,
-    meta_path: str = "schema_meta.json",
+    output_path: Union[str, Path],
+    meta_path: Union[str, Path] = SCHEMA_META,
 ) -> int:
     """
     Write ``generated_rel_tools.py``.
@@ -675,6 +679,7 @@ def generate_rel_tools_file(
             )
 
     content = _REL_HEADER + "\n\n".join(blocks) + "\n"
+    Path(output_path).parent.mkdir(parents=True, exist_ok=True)
     with open(output_path, "w", encoding="utf-8") as fh:
         fh.write(content)
 
@@ -695,15 +700,15 @@ def _parse_args() -> argparse.Namespace:
     )
     p.add_argument(
         "--node-output",
-        default="generated_node_tools.py",
+        default=str(GENERATED_NODE_TOOLS),
         metavar="PATH",
-        help="Output path for node tools (default: generated_node_tools.py)",
+        help=f"Output path for node tools (default: {GENERATED_NODE_TOOLS})",
     )
     p.add_argument(
         "--rel-output",
-        default="generated_rel_tools.py",
+        default=str(GENERATED_REL_TOOLS),
         metavar="PATH",
-        help="Output path for relation tools (default: generated_rel_tools.py)",
+        help=f"Output path for relation tools (default: {GENERATED_REL_TOOLS})",
     )
     p.add_argument(
         "--database",
@@ -713,9 +718,9 @@ def _parse_args() -> argparse.Namespace:
     )
     p.add_argument(
         "--meta",
-        default="schema_meta.json",
+        default=str(SCHEMA_META),
         metavar="PATH",
-        help="Path to schema_meta.json (default: schema_meta.json)",
+        help=f"Path to schema_meta.json (default: {SCHEMA_META})",
     )
     return p.parse_args()
 

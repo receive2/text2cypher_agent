@@ -17,8 +17,8 @@ Workflow A — search an LLM-generated FAISS index (built by tool_gen_node_rd.py
 
 Workflow B — search a registry-based FAISS index (built from @tool docstrings)
 --------------------------------------------------------------------------------
-  from generated_node_tools import *
-  from generated_rel_tools   import *
+  from generated.generated_node_tools import *
+  from generated.generated_rel_tools   import *
 
   registry = build_tool_registry_from_modules(
       [generated_node_tools, generated_rel_tools]
@@ -37,7 +37,10 @@ import inspect
 import json
 import os
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Union
+
+from paths import FAISS_AUTO_DIR
 
 import httpx
 from langchain_core.tools import BaseTool
@@ -137,7 +140,7 @@ class ToolSearchHit:
 # ──────────────────────────────────────────────────────────────────────────────
 
 def load_faiss_vectorstore(
-    faiss_dir: str,
+    faiss_dir: Union[str, Path],
     embeddings: Optional[OpenAIEmbeddings] = None,
 ) -> FAISS:
     """
@@ -272,7 +275,7 @@ def build_tool_registry_from_modules(modules: list) -> Dict[str, BaseTool]:
 
 def build_tools_faiss(
     registry: Dict[str, BaseTool],
-    faiss_dir: str,
+    faiss_dir: Union[str, Path],
     embeddings: Optional[OpenAIEmbeddings] = None,
 ) -> FAISS:
     """
@@ -318,15 +321,15 @@ def build_tools_faiss(
             "description": desc,
         })
 
-    os.makedirs(faiss_dir, exist_ok=True)
+    Path(faiss_dir).mkdir(parents=True, exist_ok=True)
     vs = FAISS.from_texts(texts=texts, embedding=embeddings, metadatas=metadatas)
-    vs.save_local(faiss_dir)
+    vs.save_local(os.fspath(faiss_dir))
     return vs
 
 
 def get_or_build_tools_faiss(
     registry: Dict[str, BaseTool],
-    faiss_dir: str = "faiss_tools_auto",
+    faiss_dir: Union[str, Path] = FAISS_AUTO_DIR,
     rebuild:   bool = False,
     embeddings: Optional[OpenAIEmbeddings] = None,
 ) -> FAISS:

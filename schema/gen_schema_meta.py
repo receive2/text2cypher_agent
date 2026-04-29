@@ -72,9 +72,12 @@ import re
 import sys
 from collections import defaultdict
 from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional, Tuple
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from dotenv import load_dotenv
+
+from paths import SCHEMA_META, SCHEMA_NODES_CSV, SCHEMA_RELS_CSV
 
 load_dotenv(".env", override=True)
 
@@ -149,7 +152,7 @@ def _build_llm(temperature: float = 0):
 # CSV readers — group schema rows by label / rel_type
 # ──────────────────────────────────────────────────────────────────────────────
 
-def _read_node_schema(csv_path: str) -> Dict[str, List[Dict[str, str]]]:
+def _read_node_schema(csv_path: Union[str, Path]) -> Dict[str, List[Dict[str, str]]]:
     """
     Read ``schema_nodes.csv`` and group rows by label.
 
@@ -167,7 +170,7 @@ def _read_node_schema(csv_path: str) -> Dict[str, List[Dict[str, str]]]:
     return dict(by_label)
 
 
-def _read_rel_schema(csv_path: str) -> Tuple[
+def _read_rel_schema(csv_path: Union[str, Path]) -> Tuple[
     Dict[str, List[Dict[str, str]]],
     Dict[str, List[Tuple[str, str]]],
 ]:
@@ -228,7 +231,7 @@ def _resolve_relationship_endpoints(
     """
     try:
         from neo4j import GraphDatabase
-        from gen_tools import list_structural_relations  # type: ignore
+        from tools.gen_tools import list_structural_relations  # type: ignore
 
         uri      = os.environ.get("NEO4J_URI")
         user     = os.environ.get("NEO4J_USERNAME")
@@ -490,9 +493,9 @@ def infer_rel_meta(
 # ──────────────────────────────────────────────────────────────────────────────
 
 def generate_schema_meta(
-    nodes_csv: str  = "schema_nodes.csv",
-    rels_csv:  str  = "schema_relations.csv",
-    output:    str  = "schema_meta.json",
+    nodes_csv: Union[str, Path] = SCHEMA_NODES_CSV,
+    rels_csv:  Union[str, Path] = SCHEMA_RELS_CSV,
+    output:    Union[str, Path] = SCHEMA_META,
     language:  str  = "en",
     verbose:   bool = False,
 ) -> Dict[str, Any]:
@@ -594,6 +597,7 @@ def generate_schema_meta(
     meta["language"]         = language
 
     # ── Write output ─────────────────────────────────────────────────────────
+    Path(output).parent.mkdir(parents=True, exist_ok=True)
     with open(output, "w", encoding="utf-8") as f:
         json.dump(meta, f, indent=2, ensure_ascii=False)
 
@@ -617,16 +621,16 @@ def _parse_args() -> argparse.Namespace:
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     p.add_argument(
-        "--nodes-csv", default="schema_nodes.csv", metavar="PATH",
-        help="Path to schema_nodes.csv",
+        "--nodes-csv", default=str(SCHEMA_NODES_CSV), metavar="PATH",
+        help=f"Path to schema_nodes.csv (default: {SCHEMA_NODES_CSV})",
     )
     p.add_argument(
-        "--rels-csv", default="schema_relations.csv", metavar="PATH",
-        help="Path to schema_relations.csv",
+        "--rels-csv", default=str(SCHEMA_RELS_CSV), metavar="PATH",
+        help=f"Path to schema_relations.csv (default: {SCHEMA_RELS_CSV})",
     )
     p.add_argument(
-        "--output", default="schema_meta.json", metavar="PATH",
-        help="Output path for schema_meta.json",
+        "--output", default=str(SCHEMA_META), metavar="PATH",
+        help=f"Output path for schema_meta.json (default: {SCHEMA_META})",
     )
     p.add_argument(
         "--language",

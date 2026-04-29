@@ -12,6 +12,11 @@
 !*.py
 !*.md
 !requirements.txt
+!.env.example
+
+# Allow descent into subdirectories so the whitelists above apply recursively
+# (without this, `*` blocks git from visiting subdirs at all)
+!*/
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Directories to always ignore (even if they contain .py/.md files)
@@ -41,3 +46,22 @@ not_use_code/
 
 # macOS
 .DS_Store
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Refactor additions (2026-04-28)
+# ──────────────────────────────────────────────────────────────────────────────
+
+# Python cache
+*.pyc
+.ipynb_checkpoints/
+
+# Runtime data
+schema_data/
+logs/
+
+# Generated artifacts (keep .py files tracked, ignore everything else)
+generated/tool_descriptions.csv
+generated/faiss/
+
+# Backups
+*.bak

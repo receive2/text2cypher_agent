@@ -354,7 +354,7 @@ def _vector_query_node(
     caller is expected to catch and fall back to fuzzy.
     """
     # Defer the import so users on the fuzzy-only path never load it.
-    from embedding_helper import embed_query, index_name_for
+    from embedding.embedding_helper import embed_query, index_name_for
 
     index_name = index_name_for(node_label, property_name)
     graph      = get_neo4j_graph()

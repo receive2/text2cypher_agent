@@ -83,10 +83,10 @@ from typing import Any, Dict, Iterable, List, Optional, Tuple
 
 from loguru import logger
 
-from agent_helper import neo4j_graph
+from agent.agent_helper import neo4j_graph
 from ner_agent_auto import ask_auto
 from config import DEFAULT_TOP_K, NER_MODE, NER_MODES
-from cypher_eval_normalize import (
+from .cypher_eval_normalize import (
     normalize_result_set,
     column_counts_match,
     strict_cypherbench_kwargs,

@@ -23,7 +23,7 @@ import unittest
 from collections import Counter
 from typing import Any, Iterable
 
-from cypher_eval_normalize import (
+from eval.cypher_eval_normalize import (
     normalize_result_set,
     column_counts_match,
     has_order_by,

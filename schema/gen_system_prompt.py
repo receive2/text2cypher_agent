@@ -61,13 +61,15 @@ import re
 import sys
 import textwrap
 from collections import defaultdict
-from typing import Any, Dict, List, Optional, Set, Tuple
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
 from dotenv import load_dotenv
 from neo4j import GraphDatabase
 from neo4j.exceptions import Neo4jError
 
-from gen_schema_csv import collect_node_schema, collect_rel_schema
+from .gen_schema_csv import collect_node_schema, collect_rel_schema
+from paths import PROMPTS
 
 load_dotenv()
 
@@ -136,7 +138,7 @@ def _load_tool_registry() -> Dict[str, Any]:
         return {}
 
     registry: Dict[str, Any] = {}
-    for mod_name in ("generated_node_tools", "generated_rel_tools"):
+    for mod_name in ("generated.generated_node_tools", "generated.generated_rel_tools"):
         try:
             mod = importlib.import_module(mod_name)
             importlib.reload(mod)
@@ -846,7 +848,7 @@ generate_config_py = generate_prompts_py
 
 def generate_all(
     database:  str  = "neo4j",
-    output:    str  = "prompts.py",
+    output:    Union[str, Path] = PROMPTS,
     n_samples: int  = 3,
     write:     bool = True,
     verbose:   bool = False,
@@ -901,9 +903,10 @@ def generate_all(
                     preview_chars, content[:preview_chars])
 
     if write:
+        Path(output).parent.mkdir(parents=True, exist_ok=True)
         with open(output, "w", encoding="utf-8") as fh:
             fh.write(content)
-        logger.info("prompts.py written → %r", output)
+        logger.info("prompts.py written → %r", str(output))
 
     return content
 
@@ -926,9 +929,9 @@ def _parse_args() -> argparse.Namespace:
     )
     p.add_argument(
         "--output",
-        default="prompts.py",
+        default=str(PROMPTS),
         metavar="PATH",
-        help="Output path for the generated prompts.py",
+        help=f"Output path for the generated prompts.py (default: {PROMPTS})",
     )
     p.add_argument(
         "--samples",

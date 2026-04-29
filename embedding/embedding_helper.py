@@ -25,7 +25,8 @@ import logging
 import os
 import re
 import time
-from typing import Any, Dict, Iterable, Iterator, List, Optional, Tuple
+from pathlib import Path
+from typing import Any, Dict, Iterable, Iterator, List, Optional, Tuple, Union
 
 from tenacity import (
     before_sleep_log,
@@ -36,6 +37,7 @@ from tenacity import (
 )
 
 import vector_config as vc
+from paths import SCHEMA_META
 
 logger = logging.getLogger("embedding_helper")
 if not logger.handlers:
@@ -405,7 +407,7 @@ def is_embeddable(prop_meta: Dict[str, Any]) -> bool:
 
 
 def discover_embeddable_properties(
-    schema_meta_path: str = "schema_meta.json",
+    schema_meta_path: Union[str, Path] = SCHEMA_META,
     *,
     driver=None,
     database: Optional[str] = None,

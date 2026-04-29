@@ -58,6 +58,15 @@ from typing import Callable, List, Optional
 
 from dotenv import load_dotenv
 
+from paths import (
+    GENERATED_NODE_TOOLS,
+    GENERATED_REL_TOOLS,
+    PROMPTS,
+    SCHEMA_META,
+    SCHEMA_NODES_CSV,
+    SCHEMA_RELS_CSV,
+)
+
 load_dotenv(".env", override=True)
 
 # NOTE: setup_logging is imported here BEFORE any module that touches
@@ -65,7 +74,7 @@ load_dotenv(".env", override=True)
 # configure() is called from main() — module-level imports of those
 # submodules happen lazily inside step functions, so the bridge is always
 # in place before any noisy module starts producing records.
-import setup_logging
+from scripts import setup_logging
 
 _LOG = logging.getLogger("setup_project")
 
@@ -260,7 +269,7 @@ def step_check_env(s: Step) -> str:
 
 def step_test_connection(s: Step, database: str) -> None:
     from neo4j import GraphDatabase
-    from embedding_helper import check_neo4j_version
+    from embedding.embedding_helper import check_neo4j_version
 
     uri  = os.environ["NEO4J_URI"]
     user = os.environ["NEO4J_USERNAME"]
@@ -310,7 +319,7 @@ def step_test_connection(s: Step, database: str) -> None:
 
 def step_export_schema(s: Step, database: str) -> None:
     from neo4j import GraphDatabase
-    from gen_schema_csv import collect_node_schema, collect_rel_schema, \
+    from schema.gen_schema_csv import collect_node_schema, collect_rel_schema, \
         write_nodes_csv, write_rels_csv
 
     uri  = os.environ["NEO4J_URI"]
@@ -324,8 +333,9 @@ def step_export_schema(s: Step, database: str) -> None:
     finally:
         driver.close()
 
-    write_nodes_csv(node_rows, "schema_nodes.csv")
-    write_rels_csv(rel_rows,   "schema_relations.csv")
+    SCHEMA_NODES_CSV.parent.mkdir(parents=True, exist_ok=True)
+    write_nodes_csv(node_rows, SCHEMA_NODES_CSV)
+    write_rels_csv(rel_rows,   SCHEMA_RELS_CSV)
 
     s.detail("%d (label × property) pairs → schema_nodes.csv", len(node_rows))
     s.detail("%d relation rows → schema_relations.csv", len(rel_rows))
@@ -337,12 +347,13 @@ def step_export_schema(s: Step, database: str) -> None:
 # ──────────────────────────────────────────────────────────────────────────────
 
 def step_generate_schema_meta(s: Step) -> None:
-    from gen_schema_meta import generate_schema_meta
+    from schema.gen_schema_meta import generate_schema_meta
 
+    SCHEMA_META.parent.mkdir(parents=True, exist_ok=True)
     meta = generate_schema_meta(
-        nodes_csv = "schema_nodes.csv",
-        rels_csv  = "schema_relations.csv",
-        output    = "schema_meta.json",
+        nodes_csv = SCHEMA_NODES_CSV,
+        rels_csv  = SCHEMA_RELS_CSV,
+        output    = SCHEMA_META,
         language  = os.getenv("TOOL_GEN_LANGUAGE", "en"),
     )
 
@@ -358,7 +369,7 @@ def step_generate_schema_meta(s: Step) -> None:
 
 def step_create_indexes(s: Step, database: str) -> None:
     import csv
-    from neo4j_search import (
+    from neo4j_lib.neo4j_search import (
         set_neo4j_graph, initialize_graph,
         _ensure_fulltext_index, _ensure_fulltext_rel_index,
     )
@@ -369,14 +380,14 @@ def step_create_indexes(s: Step, database: str) -> None:
     # ── Node property indexes ─────────────────────────────────────────────────
     node_props: List[tuple] = []
     try:
-        with open("schema_nodes.csv", newline="", encoding="utf-8") as f:
+        with open(SCHEMA_NODES_CSV, newline="", encoding="utf-8") as f:
             for row in csv.DictReader(f):
                 label = row.get("label", "").strip()
                 prop  = row.get("property", "").strip()
                 if label and prop:
                     node_props.append((label, prop))
     except FileNotFoundError:
-        _warn_console("schema_nodes.csv not found — skipping node indexes. "
+        _warn_console(f"{SCHEMA_NODES_CSV} not found — skipping node indexes. "
                       "Did Step 3 complete?")
 
     created_node = 0
@@ -393,7 +404,7 @@ def step_create_indexes(s: Step, database: str) -> None:
     # ── Relationship property indexes ─────────────────────────────────────────
     rel_props: List[tuple] = []
     try:
-        with open("schema_relations.csv", newline="", encoding="utf-8") as f:
+        with open(SCHEMA_RELS_CSV, newline="", encoding="utf-8") as f:
             for row in csv.DictReader(f):
                 rt   = row.get("rel_type", "").strip()
                 prop = row.get("property", "").strip()
@@ -448,7 +459,7 @@ def step_backfill_embeddings(
     importlib.reload(vc)
 
     from neo4j import GraphDatabase
-    from embedding_helper import (
+    from embedding.embedding_helper import (
         backfill_embeddings, discover_embeddable_properties,
         drop_vector_indexes, estimate_distinct_values,
         null_embedding_properties, reset_caches, sample_avg_lengths,
@@ -475,7 +486,7 @@ def step_backfill_embeddings(
                 s.detail("EMBEDDABLE_PROPERTIES is empty — running auto-discovery.")
 
             discovered = discover_embeddable_properties(
-                "schema_meta.json", driver=driver, database=database,
+                SCHEMA_META, driver=driver, database=database,
             )
             if not discovered:
                 _warn_console("Auto-discovery returned no embeddable properties. "
@@ -563,7 +574,7 @@ def step_backfill_embeddings(
                     _warn_console("Aborted by user.")
                     sys.exit(1)
         elif vc.EMBEDDING_BACKEND == "sentence_transformers":
-            from embedding_helper import _st_active_device
+            from embedding.embedding_helper import _st_active_device
             device = _st_active_device()
             rate = 1500 if device in ("cuda", "mps") else 200
             est_s = total_distinct / max(1, rate)
@@ -599,7 +610,7 @@ def _fmt_dur(seconds: float) -> str:
 
 
 def _index_name(entry: dict) -> str:
-    from embedding_helper import index_name_for
+    from embedding.embedding_helper import index_name_for
     return index_name_for(entry["label"], entry["property"])
 
 
@@ -691,7 +702,7 @@ def step_create_vector_indexes(s: Step, database: str) -> None:
         return
 
     from neo4j import GraphDatabase
-    from embedding_helper import create_vector_indexes
+    from embedding.embedding_helper import create_vector_indexes
 
     uri  = os.environ["NEO4J_URI"]
     user = os.environ["NEO4J_USERNAME"]
@@ -746,7 +757,7 @@ def step_create_vector_indexes(s: Step, database: str) -> None:
 
 def step_generate_tools(s: Step, database: str) -> None:
     from neo4j import GraphDatabase
-    from gen_tools import (
+    from tools.gen_tools import (
         list_node_pairs,
         list_rel_property_pairs,
         list_structural_relations,
@@ -766,12 +777,13 @@ def step_generate_tools(s: Step, database: str) -> None:
     finally:
         driver.close()
 
-    n_node = generate_node_tools_file(node_pairs, "generated_node_tools.py")
+    GENERATED_NODE_TOOLS.parent.mkdir(parents=True, exist_ok=True)
+    n_node = generate_node_tools_file(node_pairs, GENERATED_NODE_TOOLS)
     n_rel  = generate_rel_tools_file(rel_prop_pairs, structural_rels,
-                                     "generated_rel_tools.py")
+                                     GENERATED_REL_TOOLS)
 
-    s.detail("%d node tools → generated_node_tools.py", n_node)
-    s.detail("%d rel  tools → generated_rel_tools.py",  n_rel)
+    s.detail("%d node tools → %s", n_node, GENERATED_NODE_TOOLS)
+    s.detail("%d rel  tools → %s", n_rel,  GENERATED_REL_TOOLS)
     s.metric(f"{n_node} node, {n_rel} rel")
 
 
@@ -780,18 +792,19 @@ def step_generate_tools(s: Step, database: str) -> None:
 # ──────────────────────────────────────────────────────────────────────────────
 
 def step_generate_config(s: Step, database: str) -> None:
-    from gen_system_prompt import generate_all
+    from schema.gen_system_prompt import generate_all
 
+    PROMPTS.parent.mkdir(parents=True, exist_ok=True)
     generate_all(
         database  = database,
-        output    = "prompts.py",
+        output    = PROMPTS,
         n_samples = 3,
         write     = True,
         verbose   = False,
     )
-    s.detail("prompts.py written with NER_SP, TEXT2CYPHER_SP, QA_SP, "
+    s.detail("%s written with NER_SP, TEXT2CYPHER_SP, QA_SP, "
              "PROMPT_ALIGNER_SP, and schema constants "
-             "(config.py left untouched — hyperparameters preserved)")
+             "(config.py left untouched — hyperparameters preserved)", PROMPTS)
     s.metric("ok")
 
 
@@ -981,7 +994,7 @@ def _print_final_summary(database: str, args: argparse.Namespace) -> None:
         sys.stdout.write(f"  Retrieval mode     : {vc.TOOL_RETRIEVAL_MODE!r}\n")
 
         if not args.skip_embeddings and vc.EMBEDDABLE_PROPERTIES:
-            from embedding_helper import index_name_for
+            from embedding.embedding_helper import index_name_for
             node_entries = [e for e in vc.EMBEDDABLE_PROPERTIES
                             if e.get("entity_type") == "node"]
             sys.stdout.write(

@@ -54,11 +54,14 @@ import argparse
 import csv
 import os
 import sys
-from typing import Any, Dict, List, Set, Tuple
+from pathlib import Path
+from typing import Any, Dict, List, Set, Tuple, Union
 
 from dotenv import load_dotenv
 from neo4j import GraphDatabase
 from neo4j.exceptions import Neo4jError
+
+from paths import SCHEMA_NODES_CSV, SCHEMA_RELS_CSV
 
 load_dotenv()
 
@@ -440,16 +443,18 @@ REL_FIELDS = [
 ]
 
 
-def write_nodes_csv(rows: List[Dict[str, Any]], path: str) -> None:
+def write_nodes_csv(rows: List[Dict[str, Any]], path: Union[str, Path]) -> None:
     """Write node schema rows to *path*."""
+    Path(path).parent.mkdir(parents=True, exist_ok=True)
     with open(path, "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=NODE_FIELDS, extrasaction="ignore")
         writer.writeheader()
         writer.writerows(rows)
 
 
-def write_rels_csv(rows: List[Dict[str, Any]], path: str) -> None:
+def write_rels_csv(rows: List[Dict[str, Any]], path: Union[str, Path]) -> None:
     """Write relation schema rows to *path*."""
+    Path(path).parent.mkdir(parents=True, exist_ok=True)
     with open(path, "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=REL_FIELDS, extrasaction="ignore")
         writer.writeheader()
@@ -496,11 +501,11 @@ def _parse_args() -> argparse.Namespace:
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     p.add_argument(
-        "--nodes-output", default="schema_nodes.csv", metavar="PATH",
+        "--nodes-output", default=str(SCHEMA_NODES_CSV), metavar="PATH",
         help="Output CSV for node schema",
     )
     p.add_argument(
-        "--rels-output",  default="schema_relations.csv", metavar="PATH",
+        "--rels-output",  default=str(SCHEMA_RELS_CSV), metavar="PATH",
         help="Output CSV for relation schema",
     )
     p.add_argument(

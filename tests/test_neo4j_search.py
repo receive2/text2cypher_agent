@@ -16,7 +16,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from neo4j_search import (
+from neo4j_lib.neo4j_search import (
     top_similar_values,
     top_similar_rel_values,
     search_tool,
