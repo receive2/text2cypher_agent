@@ -80,9 +80,9 @@ EVAL_PAIRS: list[tuple[str, str]] = [
 # Datasets ship one combined test file that internally tags each example
 # with its graph; the worker filters per-pair via ``graph_filter``.
 
-CYPHERBENCH_PATH  = "/Users/q0w01lh/datasets/cypherbench/test.json"
-MINDTHEQUERY_PATH = "/Users/q0w01lh/datasets/mindthequery/Train_Test_Splits/Manual"
-ZOGRASCOPE_PATH   = "/Users/q0w01lh/datasets/zograscope/data/zograscope_test_v1.csv"
+CYPHERBENCH_PATH  = "/Users/username/datasets/cypherbench/test.json"
+MINDTHEQUERY_PATH = "/Users/username/datasets/mindthequery/Train_Test_Splits/Manual"
+ZOGRASCOPE_PATH   = "/Users/username/datasets/zograscope/data/zograscope_test_v1.csv"
 
 
 
