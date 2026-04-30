@@ -65,33 +65,70 @@ def _fmt_metric(v: Any) -> str:
         return str(v)
 
 
-def _print_table(rows: Dict[str, Dict[str, Any]]) -> None:
-    """Render the dataset × metric summary table."""
+# Bucket rows are printed in this order; rows where n == 0 are skipped so
+# datasets that don't populate every bucket don't print empty lines.
+_BUCKET_ORDER = ("all", "easy", "medium", "hard", "extra")
+
+
+def _print_dataset_table(name: str, summary: Dict[str, Any]) -> None:
+    """
+    Render one bucketed summary table for a single dataset:
+
+        ══ <dataset> ══
+        bucket    EA       EM       PSJS     n       n_err
+        ────────────────────────────────────────────────────
+        all       ...
+        easy      ...
+        medium    ...
+        hard      ...
+        extra     ...
+    """
+    if "_error" in summary:
+        print(f"\n══ {name} ══")
+        print(f"  ERROR: {summary['_error']}")
+        return
+
+    by = summary.get("by_difficulty")
+    if not by:
+        # Backward-compatible fallback: synthesise an "all" row from the
+        # top-level fields (used only if a dataset module hasn't been
+        # upgraded to emit by_difficulty).
+        by = {
+            "all": {
+                "ea":       summary.get("ea"),
+                "em":       summary.get("em"),
+                "psjs":     summary.get("psjs"),
+                "n":        summary.get("n", 0),
+                "n_errors": summary.get("n_errors", 0),
+            }
+        }
+
     header = (
-        f"{'dataset':<14}  {'EA':>7}  {'EM':>7}  {'PSJS':>7}  "
-        f"{'n':>5}  {'n_ea':>5}  {'n_em':>5}  {'n_psjs':>6}  {'n_err':>5}"
+        f"{'bucket':<8}  {'EA':>7}  {'EM':>7}  {'PSJS':>7}  "
+        f"{'n':>5}  {'n_err':>5}"
     )
-    print()
-    print("═" * len(header))
+    print(f"\n══ {name} ══")
     print(header)
     print("─" * len(header))
-    for name, summary in rows.items():
-        if "_error" in summary:
-            print(f"{name:<14}  {summary['_error']}")
+    for b in _BUCKET_ORDER:
+        cell = by.get(b)
+        if not cell or cell.get("n", 0) == 0:
             continue
-        ns = summary.get("n_scored", {}) or {}
         print(
-            f"{name:<14}  "
-            f"{_fmt_metric(summary.get('ea')):>7}  "
-            f"{_fmt_metric(summary.get('em')):>7}  "
-            f"{_fmt_metric(summary.get('psjs')):>7}  "
-            f"{summary.get('n', 0):>5}  "
-            f"{ns.get('ea', 0):>5}  "
-            f"{ns.get('em', 0):>5}  "
-            f"{ns.get('psjs', 0):>6}  "
-            f"{summary.get('n_errors', 0):>5}"
+            f"{b:<8}  "
+            f"{_fmt_metric(cell.get('ea')):>7}  "
+            f"{_fmt_metric(cell.get('em')):>7}  "
+            f"{_fmt_metric(cell.get('psjs')):>7}  "
+            f"{cell.get('n', 0):>5}  "
+            f"{cell.get('n_errors', 0):>5}"
         )
-    print("═" * len(header))
+
+
+def _print_tables(rows: Dict[str, Dict[str, Any]]) -> None:
+    """Render one bucketed table per dataset."""
+    print()
+    for name, summary in rows.items():
+        _print_dataset_table(name, summary)
     print()
 
 
@@ -139,7 +176,7 @@ def main() -> int:
 
         summaries[dataset] = summary
 
-    _print_table(summaries)
+    _print_tables(summaries)
     return 0
 
 

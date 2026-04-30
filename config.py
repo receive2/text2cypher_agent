@@ -147,20 +147,10 @@ MODEL_REGISTRY: dict = {
         "api_key_env": "HUGGINGFACE_TOKEN",
         "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
     },
-    "qwen-coder-14b-hf": {
-        "base_url": "https://router.huggingface.co/v1",
-        "api_key_env": "HUGGINGFACE_TOKEN",
-        "model": "Qwen/Qwen2.5-Coder-14B-Instruct",
-    },
     "qwen-coder-32b-hf": {
         "base_url": "https://router.huggingface.co/v1",
         "api_key_env": "HUGGINGFACE_TOKEN",
         "model": "Qwen/Qwen2.5-Coder-32B-Instruct",
-    },
-    "deepseek-v3-hf": {
-        "base_url": "https://router.huggingface.co/v1",
-        "api_key_env": "HUGGINGFACE_TOKEN",
-        "model": "deepseek-ai/DeepSeek-V3.2:fastest",
     },
     "qwen-coder-32b-groq": {
         "base_url": "https://api.groq.com/openai/v1",

@@ -95,6 +95,7 @@ from .cypher_eval_normalize import (
 )
 from .exact_match import exact_match as _literal_exact_match
 from .psjs import compute_psjs as _compute_psjs
+from .difficulty import classify as _classify_difficulty, aggregate_by_difficulty
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -296,6 +297,7 @@ def evaluate_one(example: Dict[str, Any]) -> Dict[str, Any]:
         "pred_cypher": "",
         "gold_cypher": gold_cypher,
         "graph":       graph_name,
+        "difficulty":  _classify_difficulty(gold_cypher),
         "error":       None,
     }
 
@@ -395,9 +397,6 @@ def evaluate_dataset(
         examples = examples[:limit]
 
     records: List[Dict[str, Any]] = []
-    n_errors = 0
-    n_scored = {"ea": 0, "em": 0, "psjs": 0}
-    sums     = {"ea": 0.0, "em": 0.0, "psjs": 0.0}
 
     out_fh = None
     if out:
@@ -419,24 +418,18 @@ def evaluate_dataset(
                     "pred_cypher": "",
                     "gold_cypher": ex.get("cypher"),
                     "graph":       ex.get("graph"),
+                    "difficulty":  _classify_difficulty(ex.get("cypher")),
                     "error":       f"harness: {type(exc).__name__}: {exc}",
                 }
                 if verbose:
                     logger.error(traceback.format_exc())
 
             records.append(rec)
-            if rec.get("error"):
-                n_errors += 1
-            for key in ("ea", "em", "psjs"):
-                v = rec.get(key)
-                if v is None:
-                    continue
-                n_scored[key] += 1
-                sums[key] += float(v)
 
             if verbose:
                 logger.info(
                     f"[{i:>4}/{len(examples)}] {rec['qid']} "
+                    f"diff={rec.get('difficulty')} "
                     f"EA={rec['ea']} EM={rec['em']} PSJS={rec['psjs']}"
                     + (f"  err={rec['error']}" if rec.get('error') else "")
                 )
@@ -448,18 +441,17 @@ def evaluate_dataset(
         if out_fh:
             out_fh.close()
 
-    means = {
-        k: (sums[k] / n_scored[k]) if n_scored[k] else 0.0
-        for k in ("ea", "em", "psjs")
-    }
+    by_difficulty = aggregate_by_difficulty(records)
+    all_cell      = by_difficulty["all"]
     return {
         "dataset":     "mindthequery",
-        "n":           len(examples),
-        "n_scored":    n_scored,
-        "n_errors":    n_errors,
-        "ea":          means["ea"],
-        "em":          means["em"],
-        "psjs":        means["psjs"],
+        "n":           all_cell["n"],
+        "n_scored":    all_cell["n_scored"],
+        "n_errors":    all_cell["n_errors"],
+        "ea":          all_cell["ea"]   if all_cell["ea"]   is not None else 0.0,
+        "em":          all_cell["em"]   if all_cell["em"]   is not None else 0.0,
+        "psjs":        all_cell["psjs"] if all_cell["psjs"] is not None else 0.0,
+        "by_difficulty": by_difficulty,
         "elapsed_sec": round(time.time() - t0, 2),
         "records":     records,
     }
