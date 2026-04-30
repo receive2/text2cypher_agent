@@ -141,6 +141,32 @@ MODEL_REGISTRY: dict = {
     #     "api_key_env": "HUGGINGFACE_TOKEN",
     #     "model":       "tgi",
     # },
+
+    "qwen-coder-7b-hf": {
+        "base_url": "https://router.huggingface.co/v1",
+        "api_key_env": "HUGGINGFACE_TOKEN",
+        "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+    },
+    "qwen-coder-14b-hf": {
+        "base_url": "https://router.huggingface.co/v1",
+        "api_key_env": "HUGGINGFACE_TOKEN",
+        "model": "Qwen/Qwen2.5-Coder-14B-Instruct",
+    },
+    "qwen-coder-32b-hf": {
+        "base_url": "https://router.huggingface.co/v1",
+        "api_key_env": "HUGGINGFACE_TOKEN",
+        "model": "Qwen/Qwen2.5-Coder-32B-Instruct",
+    },
+    "deepseek-v3-hf": {
+        "base_url": "https://router.huggingface.co/v1",
+        "api_key_env": "HUGGINGFACE_TOKEN",
+        "model": "deepseek-ai/DeepSeek-V3.2:fastest",
+    },
+    "qwen-coder-32b-groq": {
+        "base_url": "https://api.groq.com/openai/v1",
+        "api_key_env": "GROQ_API_KEY",
+        "model": "qwen-2.5-coder-32b",
+    },
 }
 
 
@@ -150,6 +176,13 @@ NER_LLM_CONFIG: dict = {
     "temperature": 0,
 }
 
+# NER_LLM_CONFIG: dict = {
+#     "provider":    "hf_compatible",
+#     "model":       "llama-8b-hf",   # MODEL_REGISTRY key
+#     "temperature": 0,
+#     "max_tokens":  512,
+# }
+
 
 QA_LLM_CONFIG: dict = {
     "provider":    "openai",
@@ -158,13 +191,21 @@ QA_LLM_CONFIG: dict = {
 }
 
 
+
 CYPHER_LLM_CONFIG: dict = {
-   "provider":    "openai",
-   "model":       "gpt-4.1",
-   "temperature": 0,
+    "provider":    "hf_compatible",
+    "model":       "qwen-coder-32b-hf",   # MODEL_REGISTRY key
+    "temperature": 0,
 }
 
-# CYPHER_LLM_CONFIG = {
+
+# CYPHER_LLM_CONFIG: dict = {
+#    "provider":    "openai",
+#    "model":       "gpt-4.1",
+#    "temperature": 0,
+# }
+
+# CYPHER_LLM_CONFIG: dict = {
 #     "provider":    "hf_compatible",
 #     "model":       "llama-8b-hf",   # MODEL_REGISTRY key
 #     "temperature": 0,
