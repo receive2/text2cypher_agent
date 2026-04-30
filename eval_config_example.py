@@ -80,17 +80,10 @@ EVAL_PAIRS: list[tuple[str, str]] = [
 # Datasets ship one combined test file that internally tags each example
 # with its graph; the worker filters per-pair via ``graph_filter``.
 
-# CypherBench: path to the test set JSON / JSONL.
-CYPHERBENCH_PATH = "path/to/cypherbench_test.jsonl"
+CYPHERBENCH_PATH  = "/Users/q0w01lh/datasets/cypherbench/test.json"
+MINDTHEQUERY_PATH = "/Users/q0w01lh/datasets/mindthequery/Train_Test_Splits/Manual"
+ZOGRASCOPE_PATH   = "/Users/q0w01lh/datasets/zograscope/data/zograscope_test_v1.csv"
 
-# Mind-the-Query: path to a single *.json file or to the
-# ``Train_Test_Splits/Manual`` (or ``Automated``) directory; the loader
-# walks it recursively and concatenates every ``*_test.json`` file it
-# finds.  See :mod:`eval.metrics_MindTheQuery` for accepted layouts.
-MINDTHEQUERY_PATH = "path/to/Mind-the-Query/Train_Test_Splits/Manual"
-
-# ZOGRASCOPE: path to ``data/zograscope_test_v1.csv``.
-ZOGRASCOPE_PATH = "path/to/ZOGRASCOPE/data/zograscope_test_v1.csv"
 
 
 # ── Output dirs ──────────────────────────────────────────────────────────────
