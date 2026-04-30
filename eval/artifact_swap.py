@@ -99,7 +99,7 @@ def _setup_artifacts_root() -> Path:
     """
     try:
         from eval_config import SETUP_ARTIFACTS_ROOT  # noqa: WPS433
-    except Exception:  # pragma: no cover — fallback only
+    except (ImportError, AttributeError):  # pragma: no cover — fallback only
         SETUP_ARTIFACTS_ROOT = "setup_artifacts"
     root = Path(SETUP_ARTIFACTS_ROOT)
     if not root.is_absolute():
@@ -148,6 +148,14 @@ def _validate_archive_complete(archive: Path) -> None:
             f"Archive {archive} is incomplete; missing entries: {missing}. "
             "Re-run setup_and_archive.py for this (dataset, graph) pair."
         )
+    for rel in SWAP_DIRS_OPTIONAL:
+        p = archive / rel
+        if p.is_dir() and not any(p.iterdir()):
+            raise FileNotFoundError(
+                f"Archive {archive} has empty optional directory {rel}/. "
+                "Either delete the empty directory from the archive or re-run "
+                "setup_and_archive.py to repopulate."
+            )
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -160,7 +168,7 @@ def _atomic_copy_file(src: Path, dst: Path) -> None:
     copies never overwrite the live file.
     """
     dst.parent.mkdir(parents=True, exist_ok=True)
-    tmp = dst.with_suffix(dst.suffix + ".swap.tmp")
+    tmp = dst.parent / (dst.name + ".swap.tmp")
     try:
         shutil.copy2(src, tmp)
         os.replace(tmp, dst)
@@ -256,34 +264,45 @@ def swap_in(dataset: str, graph: str) -> None:
     archive = archive_dir_for(dataset, graph)
     _validate_archive_complete(archive)
 
-    # ── Files ───────────────────────────────────────────────────────────────
-    for rel in SWAP_FILES:
-        _atomic_copy_file(archive / rel, _live_path(rel))
+    try:
+        # ── Files ───────────────────────────────────────────────────────────
+        for rel in SWAP_FILES:
+            _atomic_copy_file(archive / rel, _live_path(rel))
 
-    for rel in SWAP_FILES_OPTIONAL:
-        src = archive / rel
-        if src.is_file():
-            _atomic_copy_file(src, _live_path(rel))
-        else:
-            logger.debug(f"artifact_swap.swap_in: optional file absent in archive: {rel}")
+        for rel in SWAP_FILES_OPTIONAL:
+            src = archive / rel
+            if src.is_file():
+                _atomic_copy_file(src, _live_path(rel))
+            else:
+                logger.debug(f"artifact_swap.swap_in: optional file absent in archive: {rel}")
 
-    # ── Dirs ────────────────────────────────────────────────────────────────
-    for rel in SWAP_DIRS:
-        _replace_dir(archive / rel, _live_path(rel))
+        # ── Dirs ────────────────────────────────────────────────────────────
+        for rel in SWAP_DIRS:
+            _replace_dir(archive / rel, _live_path(rel))
 
-    for rel in SWAP_DIRS_OPTIONAL:
-        src = archive / rel
-        if src.is_dir():
-            _replace_dir(src, _live_path(rel))
-        else:
-            logger.debug(f"artifact_swap.swap_in: optional dir absent in archive: {rel}")
+        for rel in SWAP_DIRS_OPTIONAL:
+            src = archive / rel
+            if src.is_dir():
+                _replace_dir(src, _live_path(rel))
+            else:
+                logger.debug(f"artifact_swap.swap_in: optional dir absent in archive: {rel}")
 
-    # ── Partial vector_config.py rewrite ────────────────────────────────────
-    from scripts._vector_config_io import replace_embeddable_block
-    snippet = (archive / _SNIPPET_NAME).read_text(encoding="utf-8")
-    replace_embeddable_block(str(_live_path(_VECTOR_CONFIG_REL)), snippet)
+        # ── Partial vector_config.py rewrite ────────────────────────────────
+        from scripts._vector_config_io import replace_embeddable_block
+        snippet = (archive / _SNIPPET_NAME).read_text(encoding="utf-8").rstrip("\n")
+        replace_embeddable_block(str(_live_path(_VECTOR_CONFIG_REL)), snippet)
 
-    _write_sentinel(pair_id)
+        _write_sentinel(pair_id)
+    except Exception as exc:
+        logger.error(
+            f"artifact_swap.swap_in: PARTIAL FAILURE for {pair_id}. "
+            f"Live artifacts may now be in an inconsistent state — a mix of "
+            f"the previous graph and {pair_id}. Before running eval, re-run "
+            f"swap_in for the intended graph, or run "
+            f"`scripts/setup_and_archive.py {dataset} {graph} --force` to "
+            f"re-establish a known state. Original error: {exc}"
+        )
+        raise
     logger.info(f"artifact_swap.swap_in: live setup is now {pair_id}.")
 
 

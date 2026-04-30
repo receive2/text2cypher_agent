@@ -84,3 +84,5 @@ eval_config.py
 # Per-graph archived setup outputs — large, machine-generated, and
 # tied to private database contents; recreate via scripts/setup_and_archive.py.
 setup_artifacts/
+cypherbench/
+datasets/

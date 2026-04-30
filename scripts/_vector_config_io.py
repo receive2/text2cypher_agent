@@ -133,6 +133,13 @@ def replace_embeddable_block(path: str, snippet: str) -> None:
             "'EMBEDDABLE_PROPERTIES = [' (got first 64 chars: "
             f"{snippet[:64]!r})"
         )
+    if not snippet.rstrip().endswith("]"):
+        raise ValueError(
+            "replace_embeddable_block: snippet must end with ']' "
+            f"(got last 64 chars: {snippet[-64:]!r}). "
+            "The archived snippet may be truncated — re-run "
+            "scripts/setup_and_archive.py for this (dataset, graph) pair."
+        )
     p = Path(path)
     text = p.read_text(encoding="utf-8")
     m = _find_block(text, path_for_error=path)
