@@ -3,80 +3,135 @@
 """
 eval_config.py
 ==============
-Single source of truth for the t2c text-to-Cypher evaluation harness.
+Single source of truth for the t2c text-to-Cypher evaluation harness
+under the **per-graph** architecture.
 
 This is *not* an argparse-driven CLI config — it's a plain Python module
-that the user hand-edits between runs.  ``eval_run.py`` imports the
-module-level variables defined below and feeds them straight into each
-dataset's ``evaluate_dataset(...)`` entry point.
+that the user hand-edits between runs.  The harness is composed of three
+scripts that all read from this module:
+
+    setup_and_archive.py  -- one-time per-graph setup + artifact archive
+    eval_run.py           -- runs evaluation in fresh subprocesses
+    eval_aggregate.py     -- prints a bucketed table over everything on disk
+
+Each evaluated graph lives in its own Docker container with its own URI
+and credentials; ``GRAPH_CONNS`` is the registry.  ``EVAL_PAIRS`` is the
+slice of that registry to actually run on the next ``python eval_run.py``.
+
+Privacy note
+------------
+``GRAPH_CONNS`` is the **single source of truth for connection info**.
+Credentials live here, not in ``.env``.  This file is gitignored
+(see ``.gitignore``); if it was already committed you must
+``git rm --cached eval_config.py`` to untrack the live copy without
+deleting it from disk.
 
 Edit, save, then run::
 
     python eval_run.py
-
-Variables
----------
-DATASETS
-    Iterable of datasets to evaluate.  Any subset of
-    ``{"cypherbench", "mindthequery", "zograscope"}``.
-
-CYPHERBENCH_PATH / MINDTHEQUERY_PATH / ZOGRASCOPE_PATH
-    Path each module's ``evaluate_dataset(path, ...)`` will read from.
-    The variable names end in ``_PATH`` for consistency, but the value
-    can point at *whatever* the corresponding loader expects:
-
-    * **CypherBench** — a ``*.json`` or ``*.jsonl`` test file.
-      See :mod:`eval.metrics_CypherBench` docstring.
-    * **Mind-the-Query** — either a single ``*.json`` file (a JSON
-      array of examples) or a directory containing ``*_test.json``
-      files (walked recursively).  Mind-the-Query's native release
-      format is a directory tree of JSON arrays — *do not* pre-convert
-      it to JSONL.  See :mod:`eval.metrics_MindTheQuery` docstring.
-    * **ZOGRASCOPE** — a ``*.csv`` file (typically
-      ``data/zograscope_test_v1.csv``) or a directory containing it.
-      ZOGRASCOPE's native format is CSV.  See
-      :mod:`eval.metrics_ZOGRASCOPE` docstring.
-
-OUT_DIR
-    Output directory for per-dataset JSONL result files.  Each run
-    writes ``<OUT_DIR>/<dataset>.jsonl`` containing one record per
-    example, plus ``<OUT_DIR>/<dataset>.summary.json``.
-
-LIMIT
-    Optional cap on examples per dataset (``None`` = all).
-
-VERBOSE
-    Per-example log lines.
+    python eval_aggregate.py
 """
 
 from __future__ import annotations
 
-# Which datasets to run: any subset of {"cypherbench", "mindthequery", "zograscope"}
-DATASETS = ["cypherbench", "mindthequery", "zograscope"]
+from dataclasses import dataclass
 
-# ── Dataset paths ─────────────────────────────────────────────────────────────
-# Each path may point at a JSONL file, a JSON file, a CSV file, or a
-# directory — see each eval/metrics_*.py module's docstring for details.
 
-# CypherBench: path to the test set JSON / JSONL
-# (e.g. cypherbench's test split released under their HuggingFace repo).
+# ── Connection registry ──────────────────────────────────────────────────────
+
+@dataclass
+class GraphConn:
+    """
+    Per-graph Neo4j connection.
+
+    Each graph lives in its own Docker container, with its own bolt URI
+    and credentials.  The default ``database`` is ``"neo4j"`` because the
+    intra-container DB name is independent of the graph name itself —
+    distinct graphs are distinguished by the URI / port, not by the DB
+    name inside the container.
+    """
+    uri:      str
+    user:     str
+    password: str
+    database: str = "neo4j"
+
+
+# (dataset, graph) -> connection.  Graph names can collide across datasets
+# (CypherBench's ``movie`` vs Mind-the-Query's ``movie`` are different
+# datasets), so we key on the pair rather than on graph alone.
+GRAPH_CONNS: dict[tuple[str, str], GraphConn] = {
+    # Examples — uncomment and edit:
+    # ("cypherbench",  "movie"):       GraphConn(uri="bolt://localhost:7687", user="neo4j", password="..."),
+    # ("cypherbench",  "nba"):         GraphConn(uri="bolt://localhost:7688", user="neo4j", password="..."),
+    # ("mindthequery", "bloom50"):     GraphConn(uri="bolt://localhost:7689", user="neo4j", password="..."),
+    # ("zograscope",   "pole"):        GraphConn(uri="bolt://localhost:7690", user="neo4j", password="..."),
+}
+
+
+# Which (dataset, graph) pairs to evaluate on the next run of eval_run.py.
+# Edit this between runs to do partial evals; existing on-disk records
+# persist and are picked up by ``eval_aggregate.py``.
+EVAL_PAIRS: list[tuple[str, str]] = [
+    # ("cypherbench", "movie"),
+]
+
+
+# ── Test-set paths (per dataset, not per graph) ──────────────────────────────
+# Datasets ship one combined test file that internally tags each example
+# with its graph; the worker filters per-pair via ``graph_filter``.
+
+# CypherBench: path to the test set JSON / JSONL.
 CYPHERBENCH_PATH = "path/to/cypherbench_test.jsonl"
 
-# Mind-the-Query: path to a single *_test.json file or a 'test/' directory
-# (https://github.com/endeavorXx/Mind-the-Query, Train_Test_Splits/).
-MINDTHEQUERY_PATH = "path/to/Mind-the-Query/Train_Test_Splits/Manual/bloom/test"
+# Mind-the-Query: path to a single *.json file or to the
+# ``Train_Test_Splits/Manual`` (or ``Automated``) directory; the loader
+# walks it recursively and concatenates every ``*_test.json`` file it
+# finds.  See :mod:`eval.metrics_MindTheQuery` for accepted layouts.
+MINDTHEQUERY_PATH = "path/to/Mind-the-Query/Train_Test_Splits/Manual"
 
-# ZOGRASCOPE: path to data/zograscope_test_v1.csv
-# (https://github.com/interact-erc/ZOGRASCOPE).
+# ZOGRASCOPE: path to ``data/zograscope_test_v1.csv``.
 ZOGRASCOPE_PATH = "path/to/ZOGRASCOPE/data/zograscope_test_v1.csv"
 
-# ── Run-time switches ─────────────────────────────────────────────────────────
 
-# Output directory for per-dataset jsonl results + summary json.
+# ── Output dirs ──────────────────────────────────────────────────────────────
+
+# Per-(dataset, graph) records + summary live here.  File naming:
+#     <dataset>__<graph>.records.jsonl
+#     <dataset>__<graph>.summary.json
 OUT_DIR = "logs/eval"
 
-# Optional cap on examples per dataset (None = all).
-LIMIT = None
+# Archived per-graph setup outputs (one subdir per (dataset, graph) pair).
+SETUP_ARTIFACTS_ROOT = "setup_artifacts"
 
-# Verbose per-example logging.
-VERBOSE = False
+
+# ── Run-time switches ────────────────────────────────────────────────────────
+
+# Per-dataset cap on examples (None = all).  Applied independently for
+# each (dataset, graph) pair after the graph filter.
+LIMIT: int | None = None
+
+# Verbose per-example log lines.
+VERBOSE: bool = False
+
+
+# ── Helpers ──────────────────────────────────────────────────────────────────
+
+def conn_for(dataset: str, graph: str) -> GraphConn:
+    """
+    Look up the :class:`GraphConn` for a (dataset, graph) pair.
+
+    Raises
+    ------
+    KeyError
+        If the pair is missing, with a message listing every key
+        currently registered in :data:`GRAPH_CONNS` so the caller can see
+        what's available.
+    """
+    try:
+        return GRAPH_CONNS[(dataset, graph)]
+    except KeyError as exc:
+        available = sorted(GRAPH_CONNS.keys())
+        raise KeyError(
+            f"No GraphConn registered for ({dataset!r}, {graph!r}). "
+            f"Available pairs in eval_config.GRAPH_CONNS: {available}"
+        ) from exc

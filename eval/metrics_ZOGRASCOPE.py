@@ -252,7 +252,15 @@ def evaluate_one(example: Dict[str, Any]) -> Dict[str, Any]:
     -------
     dict
         ``{"qid", "question", "ea", "em", "psjs", "pred_cypher",
-           "gold_cypher", "error"}``.
+           "gold_cypher", "graph", "difficulty", "error"}``.
+
+        ``graph`` is hardcoded to ``"pole"`` — ZOGRASCOPE targets the
+        single POLE crime-investigation property graph.  The field is
+        present so per-graph filtering and downstream aggregation
+        round-trip cleanly with the other two datasets.  ``difficulty``
+        is one of ``"easy"`` / ``"medium"`` / ``"hard"`` / ``"extra"`` /
+        ``None`` and is computed from the gold Cypher by
+        :mod:`eval.difficulty`.
     """
     qid         = str(example.get("qid", ""))
     question    = str(example.get("question", ""))
@@ -266,6 +274,7 @@ def evaluate_one(example: Dict[str, Any]) -> Dict[str, Any]:
         "psjs":        None,
         "pred_cypher": "",
         "gold_cypher": gold_cypher,
+        "graph":       "pole",
         "difficulty":  _classify_difficulty(gold_cypher),
         "error":       None,
     }
@@ -332,13 +341,23 @@ def _jsonable(obj: Any) -> Any:
 
 
 def evaluate_dataset(
-    path:    str,
-    limit:   Optional[int] = None,
-    out:     Optional[str] = None,
-    verbose: bool          = False,
+    path:         str,
+    limit:        Optional[int] = None,
+    out:          Optional[str] = None,
+    verbose:      bool          = False,
+    graph_filter: Optional[str] = None,
 ) -> Dict[str, Any]:
     """
     Run :func:`evaluate_one` over the ZOGRASCOPE test CSV at *path*.
+
+    Parameters
+    ----------
+    graph_filter
+        When set, only examples whose ``graph`` field equals this value
+        are kept.  ZOGRASCOPE has exactly one underlying graph
+        (``"pole"``), so the only meaningful values are ``None`` (no
+        filter) and ``"pole"``; any other value will skip every
+        example.  Accepted for API parity with the other two datasets.
 
     Returns
     -------
@@ -351,11 +370,26 @@ def evaluate_dataset(
             "ea":          float,
             "em":          float,
             "psjs":        float,
+            "by_difficulty": dict,
             "elapsed_sec": float,
             "records":     [evaluate_one(...), ...],
         }``
     """
     examples = load_dataset(path)
+
+    if graph_filter is not None:
+        before = len(examples)
+        # Every ZOGRASCOPE example targets the POLE graph; the loader
+        # doesn't materialise the field on the example dict, so we apply
+        # the filter as a constant predicate.  This keeps non-"pole"
+        # filters honest (they correctly skip everything).
+        examples = examples if graph_filter == "pole" else []
+        skipped = before - len(examples)
+        logger.info(
+            f"ZOGRASCOPE graph_filter={graph_filter!r}: kept "
+            f"{len(examples)}/{before} examples (skipped {skipped})."
+        )
+
     if limit is not None:
         examples = examples[:limit]
 

@@ -106,6 +106,11 @@ _QUESTION_KEYS = ("nl_question", "question", "natural_language_question", "nl")
 _CYPHER_KEYS   = ("gold_cypher", "cypher", "target_cypher", "ground_truth_cypher")
 _ANSWER_KEYS   = ("answer", "gold_answer", "expected_answer", "result")
 _ID_KEYS       = ("qid", "id", "question_id", "gid")
+# CypherBench tags each example with the underlying property graph it
+# targets (``graph`` in the public release; legacy snapshots used
+# ``schema``).  Surfaced on the per-example record so the per-graph
+# eval driver can filter per pair.
+_GRAPH_KEYS    = ("graph", "schema", "source_dataset", "dataset")
 
 
 def _first_present(d: Dict[str, Any], keys: Tuple[str, ...]) -> Optional[Any]:
@@ -174,6 +179,7 @@ def load_dataset(path: str) -> List[Dict[str, Any]]:
             "question": str(question),
             "cypher":   str(cypher),
             "answer":   _first_present(row, _ANSWER_KEYS),
+            "graph":    _first_present(row, _GRAPH_KEYS),
             "raw":      row,
         })
 
@@ -601,6 +607,9 @@ def evaluate_one(example: Dict[str, Any]) -> Dict[str, Any]:
             "psjs":        float | None,
             "pred_cypher": str,
             "gold_cypher": str | None,
+            "graph":       str | None,     # per-example target graph (None
+                                           # if the source row didn't tag one)
+            "difficulty":  "easy"|"medium"|"hard"|"extra"|None,
             "error":       Optional[str],
         }``
 
@@ -613,6 +622,7 @@ def evaluate_one(example: Dict[str, Any]) -> Dict[str, Any]:
     qid         = str(example.get("qid", ""))
     question    = str(example.get("question", ""))
     gold_cypher = example.get("cypher")
+    graph_name  = example.get("graph")
 
     record: Dict[str, Any] = {
         "qid":         qid,
@@ -622,6 +632,7 @@ def evaluate_one(example: Dict[str, Any]) -> Dict[str, Any]:
         "psjs":        None,
         "pred_cypher": "",
         "gold_cypher": gold_cypher,
+        "graph":       graph_name,
         "difficulty":  _classify_difficulty(gold_cypher),
         "error":       None,
     }
@@ -668,10 +679,11 @@ def evaluate_one(example: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def evaluate_dataset(
-    path:    str,
-    limit:   Optional[int] = None,
-    out:     Optional[str] = None,
-    verbose: bool          = False,
+    path:         str,
+    limit:        Optional[int] = None,
+    out:          Optional[str] = None,
+    verbose:      bool          = False,
+    graph_filter: Optional[str] = None,
 ) -> Dict[str, Any]:
     """
     Run :func:`evaluate_one` over the CypherBench test set at *path* and
@@ -689,6 +701,12 @@ def evaluate_dataset(
         Optional JSONL path to stream per-example records to.
     verbose
         Per-example log lines.
+    graph_filter
+        When set, examples whose ``graph`` field doesn't equal this value
+        are skipped before any agent invocation.  Examples with a
+        ``None`` graph (source row didn't tag one) are also skipped, with
+        a count logged.  Used by the per-graph eval driver to restrict a
+        worker subprocess to a single underlying property graph.
 
     Returns
     -------
@@ -701,11 +719,22 @@ def evaluate_dataset(
             "ea":         float,               # mean EA over scored
             "em":         float,               # mean EM over scored
             "psjs":       float,               # mean PSJS over scored
+            "by_difficulty": dict,             # bucketed sub-summaries
             "elapsed_sec": float,
             "records":    [evaluate_one(...), ...],
         }``
     """
     examples = load_dataset(path)
+
+    if graph_filter is not None:
+        before = len(examples)
+        examples = [ex for ex in examples if ex.get("graph") == graph_filter]
+        skipped = before - len(examples)
+        logger.info(
+            f"CypherBench graph_filter={graph_filter!r}: kept "
+            f"{len(examples)}/{before} examples (skipped {skipped})."
+        )
+
     if limit is not None:
         examples = examples[:limit]
 

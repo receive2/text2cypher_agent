@@ -65,3 +65,22 @@ generated/faiss/
 
 # Backups
 *.bak
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Per-graph eval harness (2026-04-30)
+# ──────────────────────────────────────────────────────────────────────────────
+
+# eval_config.py holds Neo4j credentials in GRAPH_CONNS — must NOT be
+# committed.  This explicit entry overrides the !*.py whitelist above.
+# NOTE: if eval_config.py is currently tracked by git, you must run
+#   git rm --cached eval_config.py
+# to untrack the live copy without deleting it from disk.
+eval_config.py
+
+# Live "which (dataset, graph) is currently swapped in" sentinel,
+# written by eval/artifact_swap.py.
+.current_setup
+
+# Per-graph archived setup outputs — large, machine-generated, and
+# tied to private database contents; recreate via scripts/setup_and_archive.py.
+setup_artifacts/

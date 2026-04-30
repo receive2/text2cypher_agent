@@ -616,73 +616,19 @@ def _index_name(entry: dict) -> str:
 
 def _rewrite_embeddable_block(path: str, entries: list) -> None:
     """
-    Rewrite the `EMBEDDABLE_PROPERTIES = [...]` block in `vector_config.py`
-    in place.  See full docstring history for the strict + permissive regex
-    rationale; behaviour is unchanged from the previous implementation.
+    Rewrite the ``EMBEDDABLE_PROPERTIES = [...]`` block in
+    ``vector_config.py`` in place.
+
+    Thin wrapper around
+    :func:`scripts._vector_config_io.rewrite_embeddable_block` so the
+    per-graph artifact-swap path (:mod:`eval.artifact_swap`) can share
+    the exact same regex / backup behaviour without importing this
+    module's orchestration code.  The shared helper writes ``<path>.bak``
+    before mutation; behaviour is otherwise unchanged.
     """
-    import re as _re
-    import shutil
-
-    with open(path, encoding="utf-8") as f:
-        text = f.read()
-
-    strict = _re.search(
-        r"^EMBEDDABLE_PROPERTIES\s*=\s*\[.*?^\]\s*$",
-        text,
-        flags=_re.MULTILINE | _re.DOTALL,
-    )
-    permissive = strict or _re.search(
-        r"^EMBEDDABLE_PROPERTIES\s*=\s*\[.*?\][ \t]*(?:#[^\n]*)?$",
-        text,
-        flags=_re.MULTILINE | _re.DOTALL,
-    )
-
-    if not permissive:
-        msg = [
-            f"Could not find EMBEDDABLE_PROPERTIES block in {path!r}.",
-            "Neither the strict nor permissive regex matched.",
-            "",
-            "Paste the following into vector_config.py manually, then re-run:",
-            "",
-            "EMBEDDABLE_PROPERTIES = [",
-        ]
-        for e in entries:
-            msg.append("    {")
-            msg.append(f'        "entity_type":        "{e["entity_type"]}",')
-            msg.append(f'        "label":              "{e["label"]}",')
-            msg.append(f'        "property":           "{e["property"]}",')
-            msg.append(f'        "embedding_property": "{e["embedding_property"]}",')
-            msg.append("    },")
-        msg.append("]")
-        raise RuntimeError("\n".join(msg))
-
-    if strict is None:
-        _warn_console(f"_rewrite_embeddable_block: strict regex missed in "
-                      f"{path!r}; used permissive fallback.")
-
-    backup = path + ".bak"
-    try:
-        shutil.copy(path, backup)
-    except OSError as e:
-        raise RuntimeError(
-            f"Could not write backup {backup!r}: {e}. Aborting rewrite."
-        ) from e
-
-    lines = ["EMBEDDABLE_PROPERTIES = ["]
-    for e in entries:
-        lines.append("    {")
-        lines.append(f'        "entity_type":        "{e["entity_type"]}",')
-        lines.append(f'        "label":              "{e["label"]}",')
-        lines.append(f'        "property":           "{e["property"]}",')
-        lines.append(f'        "embedding_property": "{e["embedding_property"]}",')
-        lines.append("    },")
-    lines.append("]")
-    new_block = "\n".join(lines)
-
-    new_text = text[:permissive.start()] + new_block + text[permissive.end():]
-    with open(path, "w", encoding="utf-8") as f:
-        f.write(new_text)
-    _LOG.info("Backup written: %s", backup)
+    from scripts._vector_config_io import rewrite_embeddable_block as _impl
+    _impl(path, entries)
+    _LOG.info("Backup written: %s", path + ".bak")
 
 
 # ──────────────────────────────────────────────────────────────────────────────

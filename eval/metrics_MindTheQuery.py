@@ -281,7 +281,12 @@ def evaluate_one(example: Dict[str, Any]) -> Dict[str, Any]:
     -------
     dict
         ``{"qid", "question", "ea", "em", "psjs", "pred_cypher",
-           "gold_cypher", "graph", "error"}``.
+           "gold_cypher", "graph", "difficulty", "error"}``.
+
+        ``graph`` is the example's ``source_dataset`` (e.g. ``"bloom50"``,
+        ``"covid"``).  ``difficulty`` is one of ``"easy"`` / ``"medium"``
+        / ``"hard"`` / ``"extra"`` / ``None`` and is computed from the
+        gold Cypher by :mod:`eval.difficulty`.
     """
     qid         = str(example.get("qid", ""))
     question    = str(example.get("question", ""))
@@ -366,16 +371,27 @@ def _jsonable(obj: Any) -> Any:
 
 
 def evaluate_dataset(
-    path:    str,
-    limit:   Optional[int] = None,
-    out:     Optional[str] = None,
-    verbose: bool          = False,
+    path:         str,
+    limit:        Optional[int] = None,
+    out:          Optional[str] = None,
+    verbose:      bool          = False,
+    graph_filter: Optional[str] = None,
 ) -> Dict[str, Any]:
     """
     Run :func:`evaluate_one` over the Mind-the-Query examples at *path*.
 
     See module docstring for accepted ``path`` shapes (single JSON file
     or directory).
+
+    Parameters
+    ----------
+    graph_filter
+        When set, examples whose ``graph`` (a.k.a. ``source_dataset``)
+        doesn't equal this value are skipped before any agent
+        invocation.  Examples with a ``None`` graph are also skipped,
+        with a count logged.  Used by the per-graph eval driver to
+        restrict a worker subprocess to a single underlying property
+        graph.
 
     Returns
     -------
@@ -388,11 +404,22 @@ def evaluate_dataset(
             "ea":          float,
             "em":          float,
             "psjs":        float,
+            "by_difficulty": dict,
             "elapsed_sec": float,
             "records":     [evaluate_one(...), ...],
         }``
     """
     examples = load_dataset(path)
+
+    if graph_filter is not None:
+        before = len(examples)
+        examples = [ex for ex in examples if ex.get("graph") == graph_filter]
+        skipped = before - len(examples)
+        logger.info(
+            f"Mind-the-Query graph_filter={graph_filter!r}: kept "
+            f"{len(examples)}/{before} examples (skipped {skipped})."
+        )
+
     if limit is not None:
         examples = examples[:limit]
 

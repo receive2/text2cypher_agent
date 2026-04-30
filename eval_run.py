@@ -3,180 +3,189 @@
 """
 eval_run.py
 ===========
-Minimal driver for the text-to-Cypher evaluation harness.
+Subprocess driver for the per-graph text-to-Cypher evaluation harness.
 
-This script intentionally has **no CLI flags** — every parameter lives
-in :mod:`eval_config`, which the user hand-edits.  Run::
+For each ``(dataset, graph)`` pair listed in :data:`eval_config.EVAL_PAIRS`
+this script:
 
-    python eval_run.py
+    1. Looks up the :class:`eval_config.GraphConn` for the pair.
+    2. Calls :func:`eval.artifact_swap.swap_in` to copy that graph's
+       archived setup outputs (``schema_data/``, ``generated/`` tools,
+       ``agent/prompts.py``, FAISS index, ``EMBEDDABLE_PROPERTIES``
+       snippet) into the live repo locations.
+    3. Spawns ``python -m eval._worker <dataset> <graph> ...`` as a
+       fresh subprocess with the connection's URI / user / password /
+       database injected via ``EVAL_NEO4J_*`` env vars.
+    4. Captures the subprocess's exit code and continues to the next
+       pair on failure (one bad pair never aborts the rest).
 
-The script:
+Per-pair output files
+---------------------
+For each pair it writes::
 
-1. Imports the config module-level variables from ``eval_config``.
-2. Imports ``evaluate_dataset`` from each ``eval/metrics_*.py``.
-3. Iterates over ``DATASETS`` and invokes the matching loader.
-4. Writes per-dataset JSONL records + a summary JSON to ``OUT_DIR``.
-5. Prints a small summary table (dataset × {EA, EM, PSJS, n, n_scored,
-   n_errors}) to stdout.
+    <OUT_DIR>/<dataset>__<graph>.records.jsonl   — one record per example
+    <OUT_DIR>/<dataset>__<graph>.summary.json    — aggregate summary
 
-Per-dataset output files
-------------------------
-For each dataset it writes:
+Records and summaries from previous runs persist on disk; re-running
+``eval_run.py`` for a different slice of ``EVAL_PAIRS`` adds new files
+without touching old ones.  The bucketed table is **not** printed here
+— run ``python eval_aggregate.py`` for that.
 
-    <OUT_DIR>/<dataset>.jsonl          — one evaluate_one() record per line
-    <OUT_DIR>/<dataset>.summary.json   — aggregate summary (no records)
-
-Errors loading or running a dataset are caught and reported in the
-summary table — one bad dataset does not abort the others.
+This script has no CLI flags.  Edit :mod:`eval_config` and re-run.
 """
 
 from __future__ import annotations
 
-import json
+import os
+import subprocess
 import sys
 from pathlib import Path
-from typing import Any, Dict
+from typing import List, Tuple
 
 import eval_config as cfg
-from eval.metrics_CypherBench  import evaluate_dataset as eval_cypherbench
-from eval.metrics_MindTheQuery import evaluate_dataset as eval_mindthequery
-from eval.metrics_ZOGRASCOPE   import evaluate_dataset as eval_zograscope
+from eval.artifact_swap import swap_in
 
 
-# Mapping of dataset name → (evaluate_dataset fn, config path attribute).
-_DISPATCH = {
-    "cypherbench":  (eval_cypherbench,  "CYPHERBENCH_PATH"),
-    "mindthequery": (eval_mindthequery, "MINDTHEQUERY_PATH"),
-    "zograscope":   (eval_zograscope,   "ZOGRASCOPE_PATH"),
+# Mapping of dataset name → ``eval_config`` attribute that holds its
+# test-set path.  The worker subprocess reads neither; the parent passes
+# the resolved path on the command line.
+_PATH_ATTR = {
+    "cypherbench":  "CYPHERBENCH_PATH",
+    "mindthequery": "MINDTHEQUERY_PATH",
+    "zograscope":   "ZOGRASCOPE_PATH",
 }
 
 
-def _summary_only(summary: Dict[str, Any]) -> Dict[str, Any]:
-    """Drop the (potentially huge) per-example records list."""
-    return {k: v for k, v in summary.items() if k != "records"}
-
-
-def _fmt_metric(v: Any) -> str:
-    if v is None:
-        return "  n/a"
-    try:
-        return f"{float(v):.4f}"
-    except Exception:
-        return str(v)
-
-
-# Bucket rows are printed in this order; rows where n == 0 are skipped so
-# datasets that don't populate every bucket don't print empty lines.
-_BUCKET_ORDER = ("all", "easy", "medium", "hard", "extra")
-
-
-def _print_dataset_table(name: str, summary: Dict[str, Any]) -> None:
-    """
-    Render one bucketed summary table for a single dataset:
-
-        ══ <dataset> ══
-        bucket    EA       EM       PSJS     n       n_err
-        ────────────────────────────────────────────────────
-        all       ...
-        easy      ...
-        medium    ...
-        hard      ...
-        extra     ...
-    """
-    if "_error" in summary:
-        print(f"\n══ {name} ══")
-        print(f"  ERROR: {summary['_error']}")
-        return
-
-    by = summary.get("by_difficulty")
-    if not by:
-        # Backward-compatible fallback: synthesise an "all" row from the
-        # top-level fields (used only if a dataset module hasn't been
-        # upgraded to emit by_difficulty).
-        by = {
-            "all": {
-                "ea":       summary.get("ea"),
-                "em":       summary.get("em"),
-                "psjs":     summary.get("psjs"),
-                "n":        summary.get("n", 0),
-                "n_errors": summary.get("n_errors", 0),
-            }
-        }
-
-    header = (
-        f"{'bucket':<8}  {'EA':>7}  {'EM':>7}  {'PSJS':>7}  "
-        f"{'n':>5}  {'n_err':>5}"
-    )
-    print(f"\n══ {name} ══")
-    print(header)
-    print("─" * len(header))
-    for b in _BUCKET_ORDER:
-        cell = by.get(b)
-        if not cell or cell.get("n", 0) == 0:
-            continue
-        print(
-            f"{b:<8}  "
-            f"{_fmt_metric(cell.get('ea')):>7}  "
-            f"{_fmt_metric(cell.get('em')):>7}  "
-            f"{_fmt_metric(cell.get('psjs')):>7}  "
-            f"{cell.get('n', 0):>5}  "
-            f"{cell.get('n_errors', 0):>5}"
+def _resolve_test_path(dataset: str) -> str:
+    attr = _PATH_ATTR.get(dataset)
+    if attr is None:
+        raise ValueError(
+            f"Unknown dataset {dataset!r}; expected one of {sorted(_PATH_ATTR)}."
         )
+    path = getattr(cfg, attr, None)
+    if not path:
+        raise ValueError(f"eval_config.{attr} is not set.")
+    return path
 
 
-def _print_tables(rows: Dict[str, Dict[str, Any]]) -> None:
-    """Render one bucketed table per dataset."""
-    print()
-    for name, summary in rows.items():
-        _print_dataset_table(name, summary)
-    print()
+def _build_env(uri: str, user: str, password: str, database: str) -> dict[str, str]:
+    """Copy the parent env and overlay the worker's connection vars."""
+    env = dict(os.environ)
+    env["EVAL_NEO4J_URI"]      = uri
+    env["EVAL_NEO4J_USER"]     = user
+    env["EVAL_NEO4J_PASSWORD"] = password
+    env["EVAL_NEO4J_DATABASE"] = database
+    return env
+
+
+def _run_pair(
+    dataset:     str,
+    graph:       str,
+    out_dir:     Path,
+    *,
+    limit:       int | None,
+    verbose:     bool,
+) -> Tuple[bool, str]:
+    """
+    Run one (dataset, graph) pair end-to-end.  Returns ``(ok, status_msg)``.
+
+    On any failure (archive missing, subprocess non-zero, exception
+    during swap_in) returns ``(False, "<reason>")`` and does not raise.
+    The caller logs the reason and moves on.
+    """
+    out_records = out_dir / f"{dataset}__{graph}.records.jsonl"
+    out_summary = out_dir / f"{dataset}__{graph}.summary.json"
+
+    # ── Step 1: swap in archived artifacts ──────────────────────────────────
+    try:
+        swap_in(dataset, graph)
+    except FileNotFoundError as exc:
+        return False, f"swap_in: {exc}"
+    except Exception as exc:  # noqa: BLE001
+        return False, f"swap_in: {type(exc).__name__}: {exc}"
+
+    # ── Step 2: connection lookup ───────────────────────────────────────────
+    try:
+        conn = cfg.conn_for(dataset, graph)
+    except KeyError as exc:
+        return False, f"conn_for: {exc}"
+
+    # ── Step 3: resolve test path ───────────────────────────────────────────
+    try:
+        test_path = _resolve_test_path(dataset)
+    except ValueError as exc:
+        return False, f"test path: {exc}"
+
+    # ── Step 4: subprocess launch ───────────────────────────────────────────
+    cmd: List[str] = [
+        sys.executable, "-m", "eval._worker",
+        dataset, graph, str(test_path),
+        str(out_records), str(out_summary),
+    ]
+    if limit is not None:
+        cmd += ["--limit", str(limit)]
+    if verbose:
+        cmd += ["--verbose"]
+
+    env = _build_env(conn.uri, conn.user, conn.password, conn.database)
+
+    print(f"\n[eval_run] ▶ {dataset}__{graph}  uri={conn.uri}  db={conn.database}")
+    proc = subprocess.run(cmd, env=env, check=False, capture_output=True, text=True)
+
+    # Always echo stdout (the worker may have streamed verbose lines there).
+    if proc.stdout:
+        sys.stdout.write(proc.stdout)
+    if proc.stderr:
+        sys.stderr.write(proc.stderr)
+
+    if proc.returncode != 0:
+        # Tail the last ~20 stderr lines for the status print.
+        stderr_tail = "\n".join((proc.stderr or "").splitlines()[-20:])
+        return False, (
+            f"worker exited {proc.returncode}; stderr tail:\n{stderr_tail}"
+        )
+    return True, "ok"
 
 
 def main() -> int:
     out_dir = Path(getattr(cfg, "OUT_DIR", "logs/eval"))
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    summaries: Dict[str, Dict[str, Any]] = {}
+    pairs: List[Tuple[str, str]] = list(getattr(cfg, "EVAL_PAIRS", []) or [])
+    if not pairs:
+        print(
+            "[eval_run] eval_config.EVAL_PAIRS is empty — nothing to do. "
+            "Edit eval_config.py and re-run.",
+            file=sys.stderr,
+        )
+        return 1
 
-    for dataset in cfg.DATASETS:
-        if dataset not in _DISPATCH:
-            print(
-                f"[eval_run] Unknown dataset {dataset!r}; "
-                f"expected one of {sorted(_DISPATCH)}",
-                file=sys.stderr,
-            )
-            summaries[dataset] = {"_error": f"unknown dataset {dataset!r}"}
-            continue
+    statuses: list[tuple[str, str, bool, str]] = []
+    for dataset, graph in pairs:
+        ok, msg = _run_pair(
+            dataset, graph, out_dir,
+            limit   = getattr(cfg, "LIMIT", None),
+            verbose = bool(getattr(cfg, "VERBOSE", False)),
+        )
+        statuses.append((dataset, graph, ok, msg))
+        if not ok:
+            print(f"[eval_run] ✗ {dataset}__{graph}: {msg}", file=sys.stderr)
 
-        fn, path_attr = _DISPATCH[dataset]
-        path = getattr(cfg, path_attr, None)
-        if not path:
-            summaries[dataset] = {"_error": f"{path_attr} not set in eval_config"}
-            continue
+    # ── Final per-pair status line ─────────────────────────────────────────
+    print("\n══ eval_run summary ══")
+    for dataset, graph, ok, msg in statuses:
+        mark = "✓" if ok else "✗"
+        suffix = "" if ok else f"  ({msg.splitlines()[0]})"
+        print(f"  {mark} {dataset}__{graph}{suffix}")
+    print(
+        "\nRun `python eval_aggregate.py` to print the bucketed metric table "
+        f"over everything currently in {out_dir}."
+    )
 
-        out_jsonl   = out_dir / f"{dataset}.jsonl"
-        out_summary = out_dir / f"{dataset}.summary.json"
-
-        print(f"\n[eval_run] {dataset}: path={path}")
-        try:
-            summary = fn(
-                path    = path,
-                limit   = cfg.LIMIT,
-                out     = str(out_jsonl),
-                verbose = cfg.VERBOSE,
-            )
-        except Exception as exc:  # noqa: BLE001 — surface every failure
-            print(f"[eval_run] {dataset} FAILED: {type(exc).__name__}: {exc}",
-                  file=sys.stderr)
-            summaries[dataset] = {"_error": f"{type(exc).__name__}: {exc}"}
-            continue
-
-        with out_summary.open("w", encoding="utf-8") as fh:
-            json.dump(_summary_only(summary), fh, ensure_ascii=False, indent=2)
-
-        summaries[dataset] = summary
-
-    _print_tables(summaries)
+    # Exit non-zero iff every pair failed; partial success returns 0 so
+    # the user can still aggregate what landed on disk.
+    if statuses and all(not ok for _, _, ok, _ in statuses):
+        return 2
     return 0
 
 
