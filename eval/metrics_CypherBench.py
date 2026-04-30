@@ -91,6 +91,8 @@ from .cypher_eval_normalize import (
     column_counts_match,
     strict_cypherbench_kwargs,
 )
+from .exact_match import exact_match as _literal_exact_match
+from .psjs import compute_psjs as _compute_psjs
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -355,7 +357,7 @@ def execution_match(
 # 5. Per-example evaluation
 # ──────────────────────────────────────────────────────────────────────────────
 
-def evaluate_one(
+def evaluate_one_legacy(
     question:    str,
     gold_cypher: str,
     qid:         str  = "",
@@ -365,7 +367,14 @@ def evaluate_one(
     strict_cypherbench: bool = False,
 ) -> Dict[str, Any]:
     """
-    Evaluate the agent on a single CypherBench example.
+    Evaluate the agent on a single CypherBench example (legacy CLI path).
+
+    .. note::
+        This is the original positional-argument entry point used by the
+        ``__main__`` CLI of this module.  New harness code should use
+        :func:`evaluate_one`, which takes a single ``example`` dict and
+        returns the unified ``{"ea", "em", "psjs", ...}`` schema shared by
+        all three dataset modules (CypherBench, Mind-the-Query, ZOGRASCOPE).
 
     Steps
     -----
@@ -440,7 +449,7 @@ def evaluate_one(
 # 6. Batch evaluation
 # ──────────────────────────────────────────────────────────────────────────────
 
-def evaluate_dataset(
+def evaluate_dataset_legacy(
     examples:      List[Dict[str, Any]],
     out_path:      Optional[str] = None,
     top_k:         int  = DEFAULT_TOP_K,
@@ -451,8 +460,15 @@ def evaluate_dataset(
     strict_cypherbench: bool = False,
 ) -> Dict[str, Any]:
     """
-    Run :func:`evaluate_one` over a list of CypherBench examples and report
-    aggregate Execution Accuracy / Execution Match.
+    Legacy CLI entry-point — operates on a pre-loaded list of examples and
+    reports the original CypherBench-only metrics (Execution Accuracy +
+    Execution Match, where the latter is *ordered* result-set match, NOT the
+    literal-string EM defined by :mod:`eval.exact_match`).
+
+    .. note::
+        New harness code should use :func:`evaluate_dataset`, which accepts
+        a *path*, returns the unified ``{"ea", "em", "psjs", ...}`` schema,
+        and is shared with the Mind-the-Query and ZOGRASCOPE modules.
 
     Parameters
     ----------
@@ -504,7 +520,7 @@ def evaluate_dataset(
     t0 = time.time()
     try:
         for i, ex in enumerate(examples, 1):
-            rec = evaluate_one(
+            rec = evaluate_one_legacy(
                 question    = ex["question"],
                 gold_cypher = ex["cypher"],
                 qid         = str(ex.get("qid", f"ex_{i}")),
@@ -556,6 +572,196 @@ def evaluate_dataset(
         "elapsed_sec":         elapsed,
     }
     return summary
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# 6b. Unified harness API — shared schema with metrics_MindTheQuery /
+#     metrics_ZOGRASCOPE.  Computes EA + literal-string EM + PSJS.
+# ──────────────────────────────────────────────────────────────────────────────
+
+def evaluate_one(example: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Evaluate a single CypherBench example under the unified harness schema.
+
+    Parameters
+    ----------
+    example : dict
+        Loaded by :func:`load_dataset` — must contain ``question`` and
+        ``cypher`` (gold).  ``qid`` is optional.
+
+    Returns
+    -------
+    dict
+        ``{
+            "qid":         str,
+            "question":    str,
+            "ea":          bool | None,
+            "em":          bool | None,    # literal-string EM (eval.exact_match)
+            "psjs":        float | None,
+            "pred_cypher": str,
+            "gold_cypher": str | None,
+            "error":       Optional[str],
+        }``
+
+        ``ea``/``em``/``psjs`` are ``None`` only when not applicable
+        (CypherBench always ships gold Cypher, so they are never ``None``
+        under normal operation — they may be ``None`` only on agent failure
+        for EA, or PSJS-rewrite-no-EA edge cases).  ``error`` is ``None`` on
+        success.
+    """
+    qid         = str(example.get("qid", ""))
+    question    = str(example.get("question", ""))
+    gold_cypher = example.get("cypher")
+
+    record: Dict[str, Any] = {
+        "qid":         qid,
+        "question":    question,
+        "ea":          None,
+        "em":          None,
+        "psjs":        None,
+        "pred_cypher": "",
+        "gold_cypher": gold_cypher,
+        "error":       None,
+    }
+
+    # ── Step 1: agent prediction ────────────────────────────────────────────
+    try:
+        out = ask_auto(prompt=question)
+        pred_cypher = out.get("cypher", "") or ""
+        pred_rows   = out.get("context", []) or []
+        record["pred_cypher"] = pred_cypher
+    except Exception as exc:  # noqa: BLE001
+        record["error"] = f"agent: {type(exc).__name__}: {exc}"
+        return record
+
+    # ── Step 2: gold execution ───────────────────────────────────────────────
+    gold_rows, gold_err = execute_cypher(gold_cypher) if gold_cypher else (None, "no gold cypher")
+    if gold_err is not None:
+        record["error"] = f"gold: {gold_err}"
+        # We can still compute EM since it is purely string-based.
+        record["em"] = _literal_exact_match(pred_cypher, gold_cypher)
+        return record
+
+    # ── Step 3: metrics ──────────────────────────────────────────────────────
+    try:
+        record["ea"] = execution_accuracy(pred_rows, gold_rows, gold_cypher=gold_cypher)
+    except Exception as exc:  # noqa: BLE001
+        record["error"] = f"ea: {type(exc).__name__}: {exc}"
+
+    record["em"] = _literal_exact_match(pred_cypher, gold_cypher)
+
+    try:
+        record["psjs"] = _compute_psjs(
+            pred_cypher, gold_cypher,
+            neo4j_graph=neo4j_graph,
+            ea_value=record["ea"],
+        )
+    except Exception as exc:  # noqa: BLE001
+        # Don't blank out EA/EM if PSJS itself blew up — just log it on
+        # the record's error field if there isn't already one.
+        if record["error"] is None:
+            record["error"] = f"psjs: {type(exc).__name__}: {exc}"
+
+    return record
+
+
+def evaluate_dataset(
+    path:    str,
+    limit:   Optional[int] = None,
+    out:     Optional[str] = None,
+    verbose: bool          = False,
+) -> Dict[str, Any]:
+    """
+    Run :func:`evaluate_one` over the CypherBench test set at *path* and
+    return the unified summary dict shared with the Mind-the-Query and
+    ZOGRASCOPE harnesses.
+
+    Parameters
+    ----------
+    path
+        Path to a CypherBench JSON or JSONL file.  See
+        :func:`load_dataset` for the accepted layout.
+    limit
+        Cap on examples to evaluate (``None`` = all).
+    out
+        Optional JSONL path to stream per-example records to.
+    verbose
+        Per-example log lines.
+
+    Returns
+    -------
+    dict
+        ``{
+            "dataset":    "cypherbench",
+            "n":          int,                 # examples attempted
+            "n_scored":   {"ea": int, "em": int, "psjs": int},
+            "n_errors":   int,
+            "ea":         float,               # mean EA over scored
+            "em":         float,               # mean EM over scored
+            "psjs":       float,               # mean PSJS over scored
+            "elapsed_sec": float,
+            "records":    [evaluate_one(...), ...],
+        }``
+    """
+    examples = load_dataset(path)
+    if limit is not None:
+        examples = examples[:limit]
+
+    records: List[Dict[str, Any]] = []
+    n_errors = 0
+    n_scored = {"ea": 0, "em": 0, "psjs": 0}
+    sums     = {"ea": 0.0, "em": 0.0, "psjs": 0.0}
+
+    out_fh = None
+    if out:
+        Path(out).parent.mkdir(parents=True, exist_ok=True)
+        out_fh = open(out, "w", encoding="utf-8")
+
+    t0 = time.time()
+    try:
+        for i, ex in enumerate(examples, 1):
+            rec = evaluate_one(ex)
+            records.append(rec)
+
+            if rec.get("error"):
+                n_errors += 1
+            for key in ("ea", "em", "psjs"):
+                v = rec.get(key)
+                if v is None:
+                    continue
+                n_scored[key] += 1
+                sums[key] += float(v)
+
+            if verbose:
+                logger.info(
+                    f"[{i:>4}/{len(examples)}] {rec['qid']} "
+                    f"EA={rec['ea']} EM={rec['em']} PSJS={rec['psjs']}"
+                    + (f"  err={rec['error']}" if rec.get('error') else "")
+                )
+
+            if out_fh:
+                out_fh.write(json.dumps(_jsonable(rec), ensure_ascii=False) + "\n")
+                out_fh.flush()
+    finally:
+        if out_fh:
+            out_fh.close()
+
+    means = {
+        k: (sums[k] / n_scored[k]) if n_scored[k] else 0.0
+        for k in ("ea", "em", "psjs")
+    }
+
+    return {
+        "dataset":     "cypherbench",
+        "n":           len(examples),
+        "n_scored":    n_scored,
+        "n_errors":    n_errors,
+        "ea":          means["ea"],
+        "em":          means["em"],
+        "psjs":        means["psjs"],
+        "elapsed_sec": round(time.time() - t0, 2),
+        "records":     records,
+    }
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -642,7 +848,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         print("No examples loaded — nothing to evaluate.", file=sys.stderr)
         return 1
 
-    summary = evaluate_dataset(
+    summary = evaluate_dataset_legacy(
         examples      = examples,
         out_path      = args.out,
         top_k         = args.top_k,
