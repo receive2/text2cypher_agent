@@ -67,7 +67,7 @@ from paths import (
     SCHEMA_RELS_CSV,
 )
 
-load_dotenv(".env", override=True)
+load_dotenv(".env", override=False)
 
 # NOTE: setup_logging is imported here BEFORE any module that touches
 # stdlib logging (embedding_helper, neo4j_search) or loguru (ner_agent_auto).
