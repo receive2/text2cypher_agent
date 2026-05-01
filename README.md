@@ -399,22 +399,153 @@ Results: 5 passed, 0 failed, 5 total
 
 > **Note:** Requires a running Neo4j instance with the movies dataset loaded and `.env` configured.
 
-### CypherBench-style evaluation (Execution Accuracy / Match)
+### Per-graph evaluation harness (CypherBench / Mind-the-Query / ZOGRASCOPE)
 
-`metrics_CypherBench.py` runs the agent over a CypherBench-style test set and reports **Execution Accuracy (EA, multiset)** and **Execution Match (EM, ordered)**. Result-set comparison is delegated to `cypher_eval_normalize.normalize_result_set`, which structurally expands `Node` / `Relationship` / `Path` cells (label-set + property-set, **never** `element_id`), rounds floats to a configurable epsilon (default `1e-6`), and sorts `collect()`-style list cells unless the gold query has a top-level `ORDER BY`. EA stays multiset and EM stays ordered in both modes — the `ORDER BY` heuristic only governs `sort_collections` inside `collect()` cells, so the EA−EM gap remains a meaningful "fraction of items where ordering matters" signal.
+The repo ships a **per-graph** evaluation harness that runs the live agent over one or more `(dataset, graph)` pairs, each pointing at its own Neo4j container, and reports bucketed metrics across all of them. The harness is a Python module + three top-level scripts — there is no CLI; you edit `eval_config.py` and re-run.
+
+**Pipeline:**
+
+```
+eval_config.py            ← edit: connections, test paths, which pairs to run
+       │
+       ▼
+scripts/setup_and_archive.py <dataset> <graph>
+       │   • Runs setup_project.py against that graph's Neo4j
+       │   • Archives schema_data/, generated/, agent/prompts.py,
+       │     FAISS index, EMBEDDABLE_PROPERTIES → setup_artifacts/<dataset>__<graph>/
+       ▼
+eval_run.py
+       │   • For each pair in EVAL_PAIRS:
+       │       1. swap_in archived artifacts into the live repo
+       │       2. spawn `python -m eval._worker <dataset> <graph> ...`
+       │          with EVAL_NEO4J_* env vars pointing at that container
+       │       3. write logs/eval/<dataset>__<graph>.records.jsonl
+       │                   logs/eval/<dataset>__<graph>.summary.json
+       ▼
+eval_aggregate.py
+           • Re-aggregates every records.jsonl on disk by difficulty
+             bucket and prints one table per dataset
+```
+
+#### 1 — Configure `eval_config.py`
+
+The repo ships an `eval_config_example.py`. Copy it to `eval_config.py` (gitignored — credentials live here, not in `.env`) and fill in:
+
+```python
+# Per-(dataset, graph) Neo4j connection registry.  Each graph runs in
+# its own Docker container with its own bolt port.
+GRAPH_CONNS: dict[tuple[str, str], GraphConn] = {
+    ("cypherbench",  "movie"):    GraphConn(uri="bolt://localhost:7687", user="neo4j", password="..."),
+    ("cypherbench",  "nba"):      GraphConn(uri="bolt://localhost:7688", user="neo4j", password="..."),
+    ("mindthequery", "bloom50"):  GraphConn(uri="bolt://localhost:7689", user="neo4j", password="..."),
+    ("zograscope",   "pole"):     GraphConn(uri="bolt://localhost:7690", user="neo4j", password="..."),
+}
+
+# Test-set paths (one combined file per dataset; the worker filters by graph).
+CYPHERBENCH_PATH  = "/path/to/cypherbench/test.json"
+MINDTHEQUERY_PATH = "/path/to/mindthequery/Train_Test_Splits/Manual"
+ZOGRASCOPE_PATH   = "/path/to/zograscope/data/zograscope_test_v1.csv"
+
+# Which pairs to evaluate on the next `python eval_run.py`.
+EVAL_PAIRS: list[tuple[str, str]] = [
+    ("cypherbench", "movie"),
+    ("cypherbench", "nba"),
+]
+
+LIMIT:   int | None = None      # cap examples per pair (None = all)
+VERBOSE: bool       = False     # per-example log lines
+OUT_DIR              = "logs/eval"
+SETUP_ARTIFACTS_ROOT = "setup_artifacts"
+```
+
+#### 2 — Set up + archive each graph (one-time per graph)
+
+For every `(dataset, graph)` pair you plan to evaluate, run setup against that graph's Neo4j container and archive the resulting artifacts:
 
 ```bash
-# Default (handles RETURN p, RETURN p, m, RETURN path correctly)
-python metrics_CypherBench.py --dataset path/to/test.jsonl --out results.jsonl
-
-# Reproduce upstream CypherBench's published numbers exactly
-python metrics_CypherBench.py --dataset path/to/test.jsonl --strict-cypherbench-mode
+python scripts/setup_and_archive.py cypherbench movie
+python scripts/setup_and_archive.py cypherbench nba
+python scripts/setup_and_archive.py mindthequery bloom50
+python scripts/setup_and_archive.py zograscope pole
 ```
+
+The script reads the connection from `eval_config.GRAPH_CONNS`, injects `NEO4J_*` env vars, runs the standard `setup_project.py` UI against that container, then archives the per-graph outputs under `setup_artifacts/<dataset>__<graph>/`. It also runs a manifest round-trip check so a buggy archive is caught immediately.
+
+Re-running for an already-archived pair requires `--force`:
+
+```bash
+python scripts/setup_and_archive.py cypherbench movie --force
+# All setup_project.py flags forward through:
+python scripts/setup_and_archive.py cypherbench movie --skip-embeddings --yes
+python scripts/setup_and_archive.py cypherbench movie --reset-embeddings
+```
+
+#### 3 — Run the evaluation
+
+```bash
+python eval_run.py
+```
+
+For each pair in `EVAL_PAIRS` the driver:
+
+1. Calls `eval.artifact_swap.swap_in(dataset, graph)` to copy the archived setup outputs into the live repo locations (so `agent/`, `generated/`, `schema_data/`, FAISS index all match that graph).
+2. Looks up the `GraphConn`, builds the worker env (`EVAL_NEO4J_URI` / `_USER` / `_PASSWORD` / `_DATABASE`).
+3. Spawns `python -m eval._worker <dataset> <graph> <test_path> <records_out> <summary_out>` as a fresh subprocess so each pair gets a clean Python interpreter.
+4. Writes:
+   - `logs/eval/<dataset>__<graph>.records.jsonl` — one line per example (gold cypher, predicted cypher, EA / EM verdict, normalised result-sets, error info)
+   - `logs/eval/<dataset>__<graph>.summary.json` — aggregate summary for that pair
+
+A failure on one pair (missing archive, worker crash, etc.) is logged and skipped — the rest of `EVAL_PAIRS` still runs. The driver only exits non-zero if **every** pair failed.
+
+#### 4 — Print the bucketed table
+
+```bash
+python eval_aggregate.py
+```
+
+Scans `logs/eval/` for every `*.summary.json`, groups by dataset (parsed from the `<dataset>__<graph>` filename prefix), re-aggregates the underlying `.records.jsonl` files via `eval.difficulty.aggregate_by_difficulty`, and prints one bucketed table per dataset (rows: `all` / `easy` / `medium` / `hard` / `extra`) with a footer naming the graphs that contributed. Records persist on disk across runs, so partial re-evals just overwrite the affected pair's two files and leave everything else untouched.
+
+#### Metrics & normalisation
+
+Each per-dataset metric module under `eval/` computes the headline numbers; for CypherBench-style datasets the harness reports **Execution Accuracy (EA, multiset)** and **Execution Match (EM, ordered)**. Result-set comparison is delegated to `eval/cypher_eval_normalize.py:normalize_result_set`, which structurally expands `Node` / `Relationship` / `Path` cells (label-set + property-set, **never** `element_id`), rounds floats to a configurable epsilon (default `1e-6`), and sorts `collect()`-style list cells unless the gold query has a top-level `ORDER BY`. EA stays multiset and EM stays ordered in both modes — the `ORDER BY` heuristic only governs `sort_collections` inside `collect()` cells, so the EA−EM gap remains a meaningful "fraction of items where ordering matters" signal.
 
 Offline unit tests for the normaliser:
 
 ```bash
-python test_cypher_eval_normalize.py
+python -m pytest tests/test_cypher_eval_normalize.py
+```
+
+#### Typical workflows
+
+**Add one new graph and re-run the full table:**
+
+```bash
+# 1. Add a row to GRAPH_CONNS in eval_config.py
+# 2. Set up + archive:
+python scripts/setup_and_archive.py cypherbench fictional_university
+# 3. Add ("cypherbench", "fictional_university") to EVAL_PAIRS, then:
+python eval_run.py
+python eval_aggregate.py
+```
+
+**Re-run just one pair after a code change** (existing records for other pairs are reused):
+
+```bash
+# Set EVAL_PAIRS = [("cypherbench", "movie")] in eval_config.py
+python eval_run.py            # overwrites only that pair's two files
+python eval_aggregate.py      # table still includes every other pair on disk
+```
+
+**Smoke-test on 20 examples per pair:**
+
+```python
+# In eval_config.py
+LIMIT   = 20
+VERBOSE = True
+```
+
+```bash
+python eval_run.py
 ```
 
 ---
