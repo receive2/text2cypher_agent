@@ -18,7 +18,7 @@ from config import TOOL_TOP_K
 @tool
 def get_movie_title(user_query: str) -> List[str]:
     """Look up canonical Movie.title values. Call this whenever the question mentions a movie's title — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
-    search_term = get_entity(user_query, topic="movie title")
+    search_term = get_entity(user_query, topic="Movie title")
     # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
     return search_tool(phrase=search_term, node_label="Movie", property_name="title", k=TOOL_TOP_K, verbose=True)
 
@@ -26,7 +26,7 @@ def get_movie_title(user_query: str) -> List[str]:
 @tool
 def get_movie_tagline(user_query: str) -> List[str]:
     """Look up canonical Movie.tagline values. Call this whenever the question mentions a movie's tagline — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
-    search_term = get_entity(user_query, topic="movie tagline")
+    search_term = get_entity(user_query, topic="Movie tagline")
     # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
     return search_tool(phrase=search_term, node_label="Movie", property_name="tagline", k=TOOL_TOP_K, verbose=True)
 
@@ -34,7 +34,7 @@ def get_movie_tagline(user_query: str) -> List[str]:
 @tool
 def get_movie_released(user_query: str) -> List[str]:
     """Look up canonical Movie.released values. Call this whenever the question mentions a movie's released — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
-    search_term = get_entity(user_query, topic="movie release year")
+    search_term = get_entity(user_query, topic="Movie released year")
     # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
     return search_tool(phrase=search_term, node_label="Movie", property_name="released", k=TOOL_TOP_K, verbose=True)
 
@@ -42,7 +42,7 @@ def get_movie_released(user_query: str) -> List[str]:
 @tool
 def get_person_name(user_query: str) -> List[str]:
     """Look up canonical Person.name values. Call this whenever the question mentions a person's name — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
-    search_term = get_entity(user_query, topic="person name")
+    search_term = get_entity(user_query, topic="person given name")
     # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
     return search_tool(phrase=search_term, node_label="Person", property_name="name", k=TOOL_TOP_K, verbose=True)
 
@@ -50,7 +50,7 @@ def get_person_name(user_query: str) -> List[str]:
 @tool
 def get_person_born(user_query: str) -> List[str]:
     """Look up canonical Person.born values. Call this whenever the question mentions a person's born — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
-    search_term = get_entity(user_query, topic="person birth year")
+    search_term = get_entity(user_query, topic="Person born year")
     # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
     return search_tool(phrase=search_term, node_label="Person", property_name="born", k=TOOL_TOP_K, verbose=True)
 
@@ -58,7 +58,7 @@ def get_person_born(user_query: str) -> List[str]:
 @tool
 def get_work_title(user_query: str) -> List[str]:
     """Look up canonical Work.title values. Call this whenever the question mentions a work's title — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
-    search_term = get_entity(user_query, topic="work title")
+    search_term = get_entity(user_query, topic="Work title")
     # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
     return search_tool(phrase=search_term, node_label="Work", property_name="title", k=TOOL_TOP_K, verbose=True)
 
@@ -66,7 +66,7 @@ def get_work_title(user_query: str) -> List[str]:
 @tool
 def get_work_id(user_query: str) -> List[str]:
     """Look up canonical Work.id values. Call this whenever the question mentions a work's id — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
-    search_term = get_entity(user_query, topic="work unique identifier")
+    search_term = get_entity(user_query, topic="Work id ID")
     # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
     return search_tool(phrase=search_term, node_label="Work", property_name="id", k=TOOL_TOP_K, verbose=True)
 
@@ -74,7 +74,7 @@ def get_work_id(user_query: str) -> List[str]:
 @tool
 def get_work_year(user_query: str) -> List[str]:
     """Look up canonical Work.year values. Call this whenever the question mentions a work's year — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
-    search_term = get_entity(user_query, topic="publication year")
+    search_term = get_entity(user_query, topic="Work year year")
     # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
     return search_tool(phrase=search_term, node_label="Work", property_name="year", k=TOOL_TOP_K, verbose=True)
 
@@ -82,7 +82,7 @@ def get_work_year(user_query: str) -> List[str]:
 @tool
 def get_author_name(user_query: str) -> List[str]:
     """Look up canonical Author.name values. Call this whenever the question mentions a author's name — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
-    search_term = get_entity(user_query, topic="person name")
+    search_term = get_entity(user_query, topic="Author name")
     # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
     return search_tool(phrase=search_term, node_label="Author", property_name="name", k=TOOL_TOP_K, verbose=True)
 
@@ -90,7 +90,7 @@ def get_author_name(user_query: str) -> List[str]:
 @tool
 def get_author_id(user_query: str) -> List[str]:
     """Look up canonical Author.id values. Call this whenever the question mentions a author's id — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
-    search_term = get_entity(user_query, topic="author unique identifier")
+    search_term = get_entity(user_query, topic="Author id ID")
     # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
     return search_tool(phrase=search_term, node_label="Author", property_name="id", k=TOOL_TOP_K, verbose=True)
 

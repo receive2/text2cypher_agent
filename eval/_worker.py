@@ -101,17 +101,31 @@ def _bridge_env() -> None:
 # ──────────────────────────────────────────────────────────────────────────────
 
 def _load_evaluate_dataset(dataset: str) -> Callable[..., Dict[str, Any]]:
-    """Return the matching ``evaluate_dataset`` for *dataset* (lazy import)."""
-    if dataset == "cypherbench":
+    """
+    Return the matching ``evaluate_dataset`` for *dataset* (lazy import).
+
+    Augmented variants (``cypherbench_augmented`` / etc.) share the
+    underlying loader + evaluator with their base variant; the
+    :mod:`eval.dataset_base` mapping does the lookup.  The dataset name
+    seen on the wire is forwarded to the metrics module separately so
+    summary output reflects the augmented variant.
+    """
+    from eval.dataset_base import base_dataset
+
+    base = base_dataset(dataset)  # raises ValueError on unknown name
+
+    if base == "cypherbench":
         from eval.metrics_CypherBench import evaluate_dataset
-    elif dataset == "mindthequery":
+    elif base == "mindthequery":
         from eval.metrics_MindTheQuery import evaluate_dataset
-    elif dataset == "zograscope":
+    elif base == "zograscope":
         from eval.metrics_ZOGRASCOPE import evaluate_dataset
     else:
+        # Unreachable while _DATASET_BASE values stay in the known set,
+        # but kept defensively in case the mapping grows in future.
         raise ValueError(
-            f"eval._worker: unknown dataset {dataset!r}; expected one of "
-            "{'cypherbench', 'mindthequery', 'zograscope'}."
+            f"eval._worker: dataset_base for {dataset!r} resolved to "
+            f"unknown base {base!r}."
         )
     return evaluate_dataset
 
@@ -151,6 +165,7 @@ def main(argv: list[str] | None = None) -> int:
         out          = args.out_records,
         verbose      = args.verbose,
         graph_filter = args.graph,
+        dataset_name = args.dataset,
     )
 
     out_path = Path(args.out_summary)

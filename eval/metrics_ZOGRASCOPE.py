@@ -346,6 +346,7 @@ def evaluate_dataset(
     out:          Optional[str] = None,
     verbose:      bool          = False,
     graph_filter: Optional[str] = None,
+    dataset_name: Optional[str] = None,
 ) -> Dict[str, Any]:
     """
     Run :func:`evaluate_one` over the ZOGRASCOPE test CSV at *path*.
@@ -440,7 +441,11 @@ def evaluate_dataset(
     by_difficulty = aggregate_by_difficulty(records)
     all_cell      = by_difficulty["all"]
     return {
-        "dataset":     "zograscope",
+        # ``dataset_name`` (when supplied by the eval harness) overrides
+        # the hardcoded base label so augmented variants like
+        # ``zograscope_augmented`` show up as a distinct dataset in the
+        # aggregated report.
+        "dataset":     dataset_name or "zograscope",
         "n":           all_cell["n"],
         "n_scored":    all_cell["n_scored"],
         "n_errors":    all_cell["n_errors"],

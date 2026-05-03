@@ -90,15 +90,51 @@ HYBRID_FUZZY_WEIGHT  = 0.5
 EMBEDDABLE_PROPERTIES = [
     {
         "entity_type":        "node",
-        "label":              "Movie",
-        "property":           "tagline",
-        "embedding_property": "tagline_embedding",
+        "label":              "Crime",
+        "property":           "charge",
+        "embedding_property": "charge_embedding",
     },
     {
         "entity_type":        "node",
-        "label":              "Movie",
-        "property":           "title",
-        "embedding_property": "title_embedding",
+        "label":              "Crime",
+        "property":           "note",
+        "embedding_property": "note_embedding",
+    },
+    {
+        "entity_type":        "node",
+        "label":              "Location",
+        "property":           "address",
+        "embedding_property": "address_embedding",
+    },
+    {
+        "entity_type":        "node",
+        "label":              "Location",
+        "property":           "postcode",
+        "embedding_property": "postcode_embedding",
+    },
+    {
+        "entity_type":        "node",
+        "label":              "Object",
+        "property":           "description",
+        "embedding_property": "description_embedding",
+    },
+    {
+        "entity_type":        "node",
+        "label":              "Officer",
+        "property":           "name",
+        "embedding_property": "name_embedding",
+    },
+    {
+        "entity_type":        "node",
+        "label":              "Officer",
+        "property":           "rank",
+        "embedding_property": "rank_embedding",
+    },
+    {
+        "entity_type":        "node",
+        "label":              "Officer",
+        "property":           "surname",
+        "embedding_property": "surname_embedding",
     },
     {
         "entity_type":        "node",
@@ -106,11 +142,18 @@ EMBEDDABLE_PROPERTIES = [
         "property":           "name",
         "embedding_property": "name_embedding",
     },
-]
-# ─── Auto-discovery rules ────────────────────────────────────────────────────
-DISCOVERY_PROPERTY_NAME_HINTS = [
-    "title", "name", "description", "summary", "content",
-    "body", "text", "label", "caption", "headline", "abstract",
+    {
+        "entity_type":        "node",
+        "label":              "Person",
+        "property":           "surname",
+        "embedding_property": "surname_embedding",
+    },
+    {
+        "entity_type":        "node",
+        "label":              "Vehicle",
+        "property":           "model",
+        "embedding_property": "model_embedding",
+    },
 ]
 DISCOVERY_MIN_AVG_LENGTH      = 4
 DISCOVERY_PROPERTY_BLACKLIST  = ["id", "uuid", "url", "uri", "embedding", "vector"]

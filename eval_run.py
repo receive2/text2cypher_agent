@@ -49,10 +49,18 @@ from eval.artifact_swap import swap_in
 # Mapping of dataset name → ``eval_config`` attribute that holds its
 # test-set path.  The worker subprocess reads neither; the parent passes
 # the resolved path on the command line.
+#
+# Augmented variants (``*_augmented``) point at separate test-set paths
+# so the augmentation runner's output can be evaluated independently of
+# the base data.  The base attribute is kept so existing call sites
+# (and partial eval_config installs) keep working.
 _PATH_ATTR = {
-    "cypherbench":  "CYPHERBENCH_PATH",
-    "mindthequery": "MINDTHEQUERY_PATH",
-    "zograscope":   "ZOGRASCOPE_PATH",
+    "cypherbench":            "CYPHERBENCH_PATH",
+    "cypherbench_augmented":  "CYPHERBENCH_AUGMENTED_PATH",
+    "mindthequery":           "MINDTHEQUERY_PATH",
+    "mindthequery_augmented": "MINDTHEQUERY_AUGMENTED_PATH",
+    "zograscope":             "ZOGRASCOPE_PATH",
+    "zograscope_augmented":   "ZOGRASCOPE_AUGMENTED_PATH",
 }
 
 

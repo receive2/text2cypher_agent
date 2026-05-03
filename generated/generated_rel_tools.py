@@ -29,7 +29,7 @@ from config import TOOL_TOP_K
 @tool
 def get_acted_in_roles(user_query: str) -> List[str]:
     """Look up canonical ACTED_IN.roles values. Call this whenever the question mentions a roles value associated with a acted_in relationship. When in doubt, call it."""
-    search_term = get_entity(user_query, topic="character names")
+    search_term = get_entity(user_query, topic="roles in ACTED_IN relationship")
     # v1: relationship-property retrieval is fuzzy-only.
     # TODO(v2): drop mode="fuzzy" once rel-property vector indexes ship.
     return search_rel_tool(phrase=search_term, rel_type="ACTED_IN", property_name="roles", k=TOOL_TOP_K, verbose=True, mode="fuzzy")
@@ -38,7 +38,7 @@ def get_acted_in_roles(user_query: str) -> List[str]:
 @tool
 def get_reviewed_summary(user_query: str) -> List[str]:
     """Look up canonical REVIEWED.summary values. Call this whenever the question mentions a summary value associated with a reviewed relationship. When in doubt, call it."""
-    search_term = get_entity(user_query, topic="review summary")
+    search_term = get_entity(user_query, topic="summary in REVIEWED relationship")
     # v1: relationship-property retrieval is fuzzy-only.
     # TODO(v2): drop mode="fuzzy" once rel-property vector indexes ship.
     return search_rel_tool(phrase=search_term, rel_type="REVIEWED", property_name="summary", k=TOOL_TOP_K, verbose=True, mode="fuzzy")
@@ -47,7 +47,7 @@ def get_reviewed_summary(user_query: str) -> List[str]:
 @tool
 def get_reviewed_rating(user_query: str) -> List[str]:
     """Look up canonical REVIEWED.rating values. Call this whenever the question mentions a rating value associated with a reviewed relationship. When in doubt, call it."""
-    search_term = get_entity(user_query, topic="movie rating score")
+    search_term = get_entity(user_query, topic="rating in REVIEWED relationship")
     # v1: relationship-property retrieval is fuzzy-only.
     # TODO(v2): drop mode="fuzzy" once rel-property vector indexes ship.
     return search_rel_tool(phrase=search_term, rel_type="REVIEWED", property_name="rating", k=TOOL_TOP_K, verbose=True, mode="fuzzy")
@@ -63,11 +63,11 @@ def get_reviewed_rating(user_query: str) -> List[str]:
 
 @tool
 def get_authored_relation(user_query: str) -> List[str]:
-    """Find Work.title values reachable via (:Author)-[:AUTHORED]->(:Work). Call this when the question references a work's title that may be related to a author, including partial or informal mentions. When in doubt, call it."""
-    search_term = get_entity(user_query, topic="work title in AUTHORED relationship")
+    """Find Work.name values reachable via (:Author)-[:AUTHORED]->(:Work). Call this when the question references a work's name that may be related to a author, including partial or informal mentions. When in doubt, call it."""
+    search_term = get_entity(user_query, topic="work name in AUTHORED relationship")
     # PERMANENT: structural traversal tools are not semantic retrieval.
     # mode="fuzzy" is intentional and must NOT be removed.
-    return search_tool(phrase=search_term, node_label="Work", property_name="title", k=TOOL_TOP_K, verbose=True, mode="fuzzy")
+    return search_tool(phrase=search_term, node_label="Work", property_name="name", k=TOOL_TOP_K, verbose=True, mode="fuzzy")
 
 
 @tool
@@ -81,11 +81,11 @@ def get_directed_relation(user_query: str) -> List[str]:
 
 @tool
 def get_follows_relation(user_query: str) -> List[str]:
-    """Find Person.name values reachable via (:Person)-[:FOLLOWS]->(:Person). Call this when the question references a person's name that may be related to a person, including partial or informal mentions. When in doubt, call it."""
-    search_term = get_entity(user_query, topic="person name in FOLLOWS relationship")
+    """Find Person.nhs_no values reachable via (:Person)-[:FOLLOWS]->(:Person). Call this when the question references a person's nhs_no that may be related to a person, including partial or informal mentions. When in doubt, call it."""
+    search_term = get_entity(user_query, topic="NHS number in FOLLOWS relationship")
     # PERMANENT: structural traversal tools are not semantic retrieval.
     # mode="fuzzy" is intentional and must NOT be removed.
-    return search_tool(phrase=search_term, node_label="Person", property_name="name", k=TOOL_TOP_K, verbose=True, mode="fuzzy")
+    return search_tool(phrase=search_term, node_label="Person", property_name="nhs_no", k=TOOL_TOP_K, verbose=True, mode="fuzzy")
 
 
 @tool

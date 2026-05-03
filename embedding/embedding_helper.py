@@ -39,6 +39,27 @@ from tenacity import (
 import vector_config as vc
 from paths import SCHEMA_META
 
+
+# Stage-2 explicit-name whitelist used by :func:`is_embeddable`.  A
+# property whose lowercased name CONTAINS any of these substrings is
+# embedded UNCONDITIONALLY (no length check).  Historically this lived
+# in ``vector_config.DISCOVERY_PROPERTY_NAME_HINTS`` but the helper now
+# carries its own fallback so it stays robust when ``vector_config.py``
+# is mid-rewrite (e.g. between ``setup_project.py`` runs that strip the
+# auto-discovery rules block).  Callers may still override by defining
+# the constant in ``vector_config`` — :func:`_discovery_name_hints`
+# prefers ``vector_config`` when present.
+_DEFAULT_DISCOVERY_NAME_HINTS: List[str] = [
+    "title", "name", "description", "summary", "content",
+    "body", "text", "label", "caption", "headline", "abstract",
+]
+
+
+def _discovery_name_hints() -> List[str]:
+    """Return Stage-2 substring hints — vector_config override OR default."""
+    return list(getattr(vc, "DISCOVERY_PROPERTY_NAME_HINTS",
+                        _DEFAULT_DISCOVERY_NAME_HINTS))
+
 logger = logging.getLogger("embedding_helper")
 if not logger.handlers:
     # Default to INFO; callers can silence via logger.setLevel(logging.WARNING).
@@ -397,7 +418,7 @@ def is_embeddable(prop_meta: Dict[str, Any]) -> bool:
         return False
 
     # ── Stage 2: explicit signals (UNCONDITIONAL, no length check) ────────
-    if any(h in prop_lower for h in vc.DISCOVERY_PROPERTY_NAME_HINTS):
+    if any(h in prop_lower for h in _discovery_name_hints()):
         return True
     if data_type in vc.DISCOVERY_TEXT_DATA_TYPES:
         return True

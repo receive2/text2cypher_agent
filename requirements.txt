@@ -108,6 +108,13 @@ packaging==24.2
 # ── Database ──────────────────────────────────────────────────────────────────
 SQLAlchemy==2.0.35
 
+# ── Data augmentation ─────────────────────────────────────────────────────────
+# Used by data_augmentation/augmenters/typo.py for keyboard-adjacent /
+# random-char-swap typo simulation.  Falls back to a small built-in
+# implementation if nlpaug isn't available.
+nlpaug>=1.1.11
+nltk>=3.8
+
 # ── Misc utilities ────────────────────────────────────────────────────────────
 tenacity==8.5.0
 tqdm==4.67.3
