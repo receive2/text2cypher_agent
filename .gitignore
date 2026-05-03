@@ -59,6 +59,12 @@ not_use_code/
 schema_data/
 logs/
 
+# Data-augmentation LLM cache (cache/augmenter_paraphrase.jsonl).
+# Note: the broad `*` rule near the top already ignores non-whitelisted
+# files, but we keep this explicit for clarity and to discourage
+# accidentally tracking a large response cache.
+cache/
+
 # Generated artifacts (keep .py files tracked, ignore everything else)
 generated/tool_descriptions.csv
 generated/faiss/

@@ -267,7 +267,7 @@ def cypherbench_source(tmp_path: Path) -> Path:
 def mindthequery_source(tmp_path: Path) -> Path:
     """Build a minimal Mind-the-Query directory layout."""
     src  = tmp_path / "mtq_src"
-    sub  = src / "Manual" / "covid" / "test"
+    sub  = src / "Train_Test_Splits" / "Manual" / "covid" / "test"
     sub.mkdir(parents=True)
     rows = [
         {
@@ -363,7 +363,7 @@ def test_mindthequery_augmenter_output_loads_via_metrics(mindthequery_source: Pa
         "data_augmentation.datasets.augment_mindthequery",
         mindthequery_source, target,
     )
-    test_file = target / "Manual" / "covid" / "test" / "Complex_test.json"
+    test_file = target / "Train_Test_Splits" / "Manual" / "covid" / "test" / "Complex_test.json"
     assert test_file.is_file()
     assert stats["kept"] >= 1, f"augmenter dropped every row: {stats}"
 
@@ -585,6 +585,324 @@ def test_archive_reuse_returns_false_for_non_augmented(_archive_sandbox):
     # Even if we put a fake "base" archive on disk, a non-augmented dataset
     # name should not trigger the reuse path.
     assert sa._maybe_reuse_base_archive("cypherbench", "movie") is False
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# 5. LLM disk cache — Bug A regression
+# ──────────────────────────────────────────────────────────────────────────────
+
+def test_llm_cache_persists_and_dedups(tmp_path: Path, monkeypatch):
+    """
+    Mock the underlying chat-model invocation, count calls, and verify:
+      - first call: hits LLM (count=1)
+      - second call same input: served from cache (count still 1)
+      - third call different input: hits LLM (count=2)
+      - cache JSONL has exactly 2 lines after.
+    """
+    cache_file = tmp_path / "cache.jsonl"
+    monkeypatch.setenv("DATA_AUG_CACHE_FILE", str(cache_file))
+
+    # Reload the module so the new env var takes effect.
+    import importlib
+    import data_augmentation.llm as dal
+    dal = importlib.reload(dal)
+
+    # Sanity: the module-level cache is empty for this isolated file.
+    assert dal._CACHE == {}
+    assert dal._CACHE_PATH == cache_file
+
+    invocations = {"n": 0}
+
+    class _FakeReply:
+        def __init__(self, content: str) -> None:
+            self.content = content
+
+    class _FakeLLM:
+        def invoke(self, msgs):
+            invocations["n"] += 1
+            # Echo the human prompt back so different prompts produce
+            # different responses (and different cache entries).
+            human = next(m for m in msgs if m.__class__.__name__ == "HumanMessage")
+            return _FakeReply(f"reply::{human.content}")
+
+    client = dal.LLMClient({
+        "provider":    "anthropic",
+        "model":       "test-model",
+        "temperature": 0.0,
+    })
+    monkeypatch.setattr(client, "_ensure_llm", lambda: _FakeLLM())
+
+    # 1st call — miss.
+    r1 = client.complete("hello world", system="sys-A")
+    assert r1 == "reply::hello world"
+    assert invocations["n"] == 1
+
+    # 2nd call — same inputs → cache hit.
+    r2 = client.complete("hello world", system="sys-A")
+    assert r2 == "reply::hello world"
+    assert invocations["n"] == 1, "second call must NOT invoke LLM"
+
+    # 3rd call — different prompt → miss.
+    r3 = client.complete("different prompt", system="sys-A")
+    assert r3 == "reply::different prompt"
+    assert invocations["n"] == 2
+
+    # JSONL has exactly 2 entries.
+    assert cache_file.is_file()
+    lines = [ln for ln in cache_file.read_text(encoding="utf-8").splitlines() if ln.strip()]
+    assert len(lines) == 2, f"expected 2 cache lines, got {len(lines)}: {lines}"
+    parsed = [json.loads(ln) for ln in lines]
+    keys = {p["key"] for p in parsed}
+    assert len(keys) == 2  # distinct keys for distinct (system, prompt, model)
+
+
+def test_llm_cache_failure_not_persisted(tmp_path: Path, monkeypatch):
+    """A None response (LLM failure) must NOT be cached."""
+    cache_file = tmp_path / "cache.jsonl"
+    monkeypatch.setenv("DATA_AUG_CACHE_FILE", str(cache_file))
+
+    import importlib
+    import data_augmentation.llm as dal
+    dal = importlib.reload(dal)
+
+    class _Reply:
+        def __init__(self, content) -> None:
+            self.content = content
+
+    class _FailLLM:
+        def invoke(self, msgs):
+            return _Reply("")  # empty → complete() returns None
+
+    client = dal.LLMClient({"model": "x"})
+    monkeypatch.setattr(client, "_ensure_llm", lambda: _FailLLM())
+
+    assert client.complete("p") is None
+    assert not cache_file.is_file() or cache_file.read_text(encoding="utf-8").strip() == ""
+
+
+def test_llm_client_falls_back_when_agent_helper_unavailable(tmp_path: Path, monkeypatch):
+    """
+    Regression: when ``agent.agent_helper.build_llm_from_config`` blows up
+    at import or call time (e.g. Neo4j not reachable), ``_ensure_llm()``
+    must transparently fall back to direct LangChain construction.
+    """
+    # Isolate the cache so this test can't poison or be poisoned by others.
+    cache_file = tmp_path / "cache.jsonl"
+    monkeypatch.setenv("DATA_AUG_CACHE_FILE", str(cache_file))
+
+    import importlib
+    import sys as _sys
+    import data_augmentation.llm as dal
+    dal = importlib.reload(dal)
+
+    # Force the agent helper import path to fail.  We install a fake module
+    # whose attribute access raises so the try/except inside _ensure_llm
+    # exercises the fallback branch.
+    class _Boom(Exception):
+        pass
+
+    class _FakeAgentHelper:
+        @staticmethod
+        def build_llm_from_config(_cfg):
+            raise _Boom("simulated Neo4j-unavailable failure")
+
+    fake_pkg = type(_sys)("agent")
+    fake_pkg.agent_helper = _FakeAgentHelper  # type: ignore[attr-defined]
+    monkeypatch.setitem(_sys.modules, "agent", fake_pkg)
+    monkeypatch.setitem(_sys.modules, "agent.agent_helper", _FakeAgentHelper)
+
+    # Stub ChatAnthropic so we don't actually attempt a network/auth call.
+    constructed = {"calls": 0, "kwargs": None}
+
+    class _FakeChatAnthropic:
+        def __init__(self, **kwargs):
+            constructed["calls"] += 1
+            constructed["kwargs"] = kwargs
+
+        def invoke(self, msgs):
+            class _R:
+                content = "ok"
+            return _R()
+
+    fake_la = type(_sys)("langchain_anthropic")
+    fake_la.ChatAnthropic = _FakeChatAnthropic  # type: ignore[attr-defined]
+    monkeypatch.setitem(_sys.modules, "langchain_anthropic", fake_la)
+
+    client = dal.LLMClient({
+        "provider":    "anthropic",
+        "model":       "claude-fake",
+        "temperature": 0.42,
+    })
+
+    # _ensure_llm() must NOT raise even though the agent helper fails.
+    llm = client._ensure_llm()
+    assert llm is not None
+    assert isinstance(llm, _FakeChatAnthropic)
+    assert constructed["calls"] == 1
+    # The fallback must thread provider config through to ChatAnthropic.
+    assert constructed["kwargs"] == {"model": "claude-fake", "temperature": 0.42}
+
+    # End-to-end: complete() succeeds via the fallback path.
+    assert client.complete("hello") == "ok"
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# 6. Strategy order distribution — Bug B regression
+# ──────────────────────────────────────────────────────────────────────────────
+
+def test_strategy_order_distribution_uniform():
+    """
+    Run _strategy_order 1000 times with the canonical 18/18/18/18/18/10
+    weights and a seeded RNG.  Verify position 1 (and position 2) reflect
+    the configured weights, not a fixed-order fallback chain.
+    """
+    from data_augmentation.pipeline import _strategy_order
+
+    weights = {
+        "casing":     0.18,
+        "partial":    0.18,
+        "abbrev":     0.18,
+        "synonym":    0.18,
+        "paraphrase": 0.18,
+        "typo":       0.10,
+    }
+
+    rng = random.Random(42)
+    N = 1000
+    pos_counts: List[Dict[str, int]] = [{k: 0 for k in weights} for _ in range(len(weights))]
+
+    for _ in range(N):
+        order = _strategy_order(rng, weights)
+        assert sorted(order) == sorted(weights.keys()), \
+            "every strategy must appear exactly once per order"
+        for i, name in enumerate(order):
+            pos_counts[i][name] += 1
+
+    # Position 1: casing should be ~18% (NOT >40% as the old fixed-order
+    # fallback chain produced).  Typo should be ~10%.
+    p1 = pos_counts[0]
+    casing_p1 = p1["casing"] / N
+    typo_p1   = p1["typo"]   / N
+    assert abs(casing_p1 - 0.18) < 0.05, (
+        f"position 1 casing rate = {casing_p1:.3f}, expected ~0.18 (±0.05); "
+        f"this likely means the fallback chain is fixed-order again"
+    )
+    assert casing_p1 < 0.40, (
+        f"position 1 casing rate = {casing_p1:.3f} — fallback chain looks "
+        f"fixed-order (Bug B regression)"
+    )
+    assert abs(typo_p1 - 0.10) < 0.05, \
+        f"position 1 typo rate = {typo_p1:.3f}, expected ~0.10 (±0.05)"
+
+    # Position 2: casing rate should also be reasonable (random sampling,
+    # not auto-promoted as a fixed fallback).  Allow a wider band because
+    # conditioning on "casing was not picked at position 1" shifts the
+    # distribution slightly upward.
+    p2 = pos_counts[1]
+    casing_p2 = p2["casing"] / N
+    assert 0.13 <= casing_p2 <= 0.30, (
+        f"position 2 casing rate = {casing_p2:.3f}, expected roughly "
+        f"0.18-0.22 (random sampling-without-replacement, not auto-promoted)"
+    )
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# 7. Mind-the-Query scope — Bug C regression
+# ──────────────────────────────────────────────────────────────────────────────
+
+def test_mindthequery_only_augments_manual_test(tmp_path: Path):
+    """
+    Lay out a temp mtq tree containing:
+      - Train_Test_Splits/Manual/bloom/test/foo_test.json    (eligible)
+      - Train_Test_Splits/Automated/x/test/bar_test.json     (NOT eligible)
+      - Manually_Validated_Datasets/y/baz.json               (NOT eligible)
+    Call augment_mindthequery.run() and assert ONLY the Manual file's NL
+    was perturbed; the other two are byte-identical to source.
+    """
+    src = tmp_path / "mtq_in"
+    dst = tmp_path / "mtq_out"
+
+    # Eligible: Train_Test_Splits/Manual/bloom/test/foo_test.json
+    manual = src / "Train_Test_Splits" / "Manual" / "bloom" / "test"
+    manual.mkdir(parents=True)
+    manual_rows = [
+        {
+            "NL Question": "Find patients diagnosed with COVID-19 in Manhattan.",
+            "Cypher":      "MATCH (p:Patient)-[:DIAGNOSED_WITH]->(d:Disease {name: 'COVID-19'}) WHERE p.borough = 'Manhattan' RETURN p",
+        },
+    ]
+    (manual / "foo_test.json").write_text(
+        json.dumps(manual_rows, ensure_ascii=False), encoding="utf-8",
+    )
+
+    # NOT eligible: Train_Test_Splits/Automated/x/test/bar_test.json
+    automated = src / "Train_Test_Splits" / "Automated" / "x" / "test"
+    automated.mkdir(parents=True)
+    automated_rows = [
+        {
+            "NL Question": "Which doctors work at Mount Sinai?",
+            "Cypher":      "MATCH (d:Doctor)-[:WORKS_AT]->(h:Hospital {name: 'Mount Sinai'}) RETURN d.name",
+        },
+    ]
+    (automated / "bar_test.json").write_text(
+        json.dumps(automated_rows, ensure_ascii=False), encoding="utf-8",
+    )
+
+    # NOT eligible: Manually_Validated_Datasets/y/baz.json
+    mvd = src / "Manually_Validated_Datasets" / "y"
+    mvd.mkdir(parents=True)
+    mvd_rows = [
+        {
+            "NL Question": "List nurses certified in Pediatrics.",
+            "Cypher":      "MATCH (n:Nurse)-[:CERTIFIED_IN]->(s:Speciality {name: 'Pediatrics'}) RETURN n.name",
+        },
+    ]
+    (mvd / "baz.json").write_text(
+        json.dumps(mvd_rows, ensure_ascii=False), encoding="utf-8",
+    )
+
+    # Run.
+    import data_augmentation.datasets.augment_mindthequery as mtq
+    stats = mtq.run(
+        source_root=src,
+        target_root=dst,
+        splits=["test"],
+        proportions=_RULE_PROPS,
+        llm_config=None,
+        use_llm_entity_fallback=False,
+        seed=42,
+    )
+
+    # Manual file: augmented.
+    out_manual = dst / "Train_Test_Splits" / "Manual" / "bloom" / "test" / "foo_test.json"
+    assert out_manual.is_file()
+    out_manual_rows = json.loads(out_manual.read_text(encoding="utf-8"))
+    assert len(out_manual_rows) == 1
+    assert out_manual_rows[0]["NL Question"] != manual_rows[0]["NL Question"], \
+        "Manual/bloom/test row should have a perturbed NL"
+    assert out_manual_rows[0].get("_aug_meta", {}).get("augmented") is True
+
+    # Automated file: copied verbatim (byte-identical).
+    out_automated = dst / "Train_Test_Splits" / "Automated" / "x" / "test" / "bar_test.json"
+    assert out_automated.is_file()
+    assert (
+        (src / "Train_Test_Splits" / "Automated" / "x" / "test" / "bar_test.json").read_bytes()
+        == out_automated.read_bytes()
+    ), "Automated/x/test file must be copied verbatim, not augmented"
+
+    # Manually_Validated_Datasets file: copied verbatim.
+    out_mvd = dst / "Manually_Validated_Datasets" / "y" / "baz.json"
+    assert out_mvd.is_file()
+    assert (
+        (src / "Manually_Validated_Datasets" / "y" / "baz.json").read_bytes()
+        == out_mvd.read_bytes()
+    ), "Manually_Validated_Datasets file must be copied verbatim, not augmented"
+
+    # Stats: only the manual file is in per_file.
+    per_file = stats.get("per_file", {})
+    assert len(per_file) == 1, f"expected only 1 augmented file, got {list(per_file)}"
+    assert any("Manual" in k and "bloom" in k for k in per_file), \
+        f"expected Manual/bloom file in per_file, got {list(per_file)}"
 
 
 if __name__ == "__main__":

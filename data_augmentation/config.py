@@ -21,13 +21,6 @@ DEFAULT_PROPORTIONS: dict[str, float] = {
     "typo":       0.10,
 }
 
-# Strategy-pick order used as a deterministic fallback when the
-# weighted-random pick declines (returns ``None``).  Cheapest strategies
-# first so we don't redundantly hit the LLM.
-FALLBACK_ORDER: tuple[str, ...] = (
-    "casing", "typo", "partial", "abbrev", "synonym", "paraphrase",
-)
-
 # ── Entity extraction ────────────────────────────────────────────────────────
 
 # When the literal-cross-reference yields zero entities, optionally fall

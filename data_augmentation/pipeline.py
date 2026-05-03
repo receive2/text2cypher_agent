@@ -21,7 +21,6 @@ from loguru import logger
 from data_augmentation.augmenters import STRATEGY_REGISTRY, AugContext
 from data_augmentation.config import (
     DEFAULT_PROPORTIONS,
-    FALLBACK_ORDER,
 )
 from data_augmentation.entity_extractor import EntitySpan, extract_entities
 from data_augmentation.llm import LLMClient
@@ -63,10 +62,23 @@ def _strategy_order(
     rng: random.Random,
     weights: Dict[str, float],
 ) -> List[str]:
-    """Pick a primary strategy, then append a deterministic fallback list."""
-    primary = _pick_strategy(rng, weights)
-    fallback = [s for s in FALLBACK_ORDER if s != primary and s in weights]
-    return [primary] + fallback
+    """
+    Sample strategies one-by-one without replacement, weighted at each
+    step.  This eliminates the over-representation that a fixed-order
+    fallback chain produces when the primary pick declines: every
+    position's distribution stays close to the configured weights, so a
+    universally-succeeding strategy (e.g. ``casing``) cannot dominate
+    the augmented dataset.
+    """
+    order: List[str] = []
+    remaining = dict(weights)
+    while remaining:
+        keys = list(remaining)
+        w = [remaining[k] for k in keys]
+        pick = rng.choices(keys, weights=w, k=1)[0]
+        order.append(pick)
+        del remaining[pick]
+    return order
 
 
 # ──────────────────────────────────────────────────────────────────────────────

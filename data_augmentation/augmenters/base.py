@@ -9,7 +9,8 @@ Decline cases include: partial-name on a single-token entity, abbrev
 with no known mapping and LLM disabled, etc.
 
 The pipeline catches ``None`` and falls through to the next strategy
-in :data:`data_augmentation.config.FALLBACK_ORDER` so a declined pick
+sampled by :func:`data_augmentation.pipeline._strategy_order` (weighted
+sampling without replacement, recomputed per entity) so a declined pick
 doesn't waste the row.
 """
 

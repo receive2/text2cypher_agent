@@ -36,10 +36,13 @@ abbrev/synonym + the LLM entity fallback all become no-ops).
 
 from __future__ import annotations
 
+import csv
+import json
 import os
 import sys
+from collections import Counter
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from loguru import logger
 
@@ -100,12 +103,122 @@ SOURCE_ROOT:   str = "~/datasets"
 TARGET_SUFFIX: str = "_augmented"
 
 
+_STRATEGIES = ("casing", "partial", "abbrev", "synonym", "paraphrase", "typo")
+_TARGET_PCT = {
+    "casing":     0.18,
+    "partial":    0.18,
+    "abbrev":     0.18,
+    "synonym":    0.18,
+    "paraphrase": 0.18,
+    "typo":       0.10,
+}
+
+
 # ──────────────────────────────────────────────────────────────────────────────
 # Driver
 # ──────────────────────────────────────────────────────────────────────────────
 
 def _expand(p: str) -> Path:
     return Path(os.path.expanduser(p)).resolve()
+
+
+def _strategy_counts_for_aug_dir(aug_root: Path) -> Counter:
+    """
+    Walk an augmented-dataset directory and tally strategies recorded in
+    each row's ``_aug_meta.edits[].strategy`` field.
+
+    Supports both JSON-list shape (CypherBench, Mind-the-Query) and CSV
+    shape (ZOGRASCOPE) where ``_aug_meta`` is a JSON string column.
+    """
+    c: Counter = Counter()
+    if not aug_root.is_dir():
+        return c
+
+    for p in aug_root.rglob("*"):
+        if not p.is_file():
+            continue
+        suf = p.suffix.lower()
+        if suf == ".json":
+            try:
+                with p.open("r", encoding="utf-8") as fh:
+                    data = json.load(fh)
+            except Exception:  # noqa: BLE001
+                continue
+            if not isinstance(data, list):
+                continue
+            for row in data:
+                if not isinstance(row, dict):
+                    continue
+                meta = row.get("_aug_meta")
+                if not isinstance(meta, dict):
+                    continue
+                for e in meta.get("edits", []) or []:
+                    s = e.get("strategy") if isinstance(e, dict) else None
+                    if isinstance(s, str):
+                        c[s] += 1
+        elif suf == ".csv":
+            try:
+                with p.open("r", encoding="utf-8", newline="") as fh:
+                    reader = csv.DictReader(fh)
+                    for row in reader:
+                        raw_meta = row.get("_aug_meta")
+                        if not raw_meta:
+                            continue
+                        try:
+                            meta = json.loads(raw_meta)
+                        except json.JSONDecodeError:
+                            continue
+                        if not isinstance(meta, dict):
+                            continue
+                        for e in meta.get("edits", []) or []:
+                            s = e.get("strategy") if isinstance(e, dict) else None
+                            if isinstance(s, str):
+                                c[s] += 1
+            except Exception:  # noqa: BLE001
+                continue
+    return c
+
+
+def _print_strategy_distribution(per_dataset_counts: Dict[str, Counter]) -> None:
+    """Print a per-dataset strategy distribution table with ⚠ flags."""
+    if not per_dataset_counts:
+        return
+
+    print("══ strategy distribution (target: ~18% each, typo ~10%) ══")
+    name_w = max(len("strategy"), max(len(s) for s in _STRATEGIES))
+    col_w = 14
+    header = " " * (name_w + 2) + "".join(f"{ds:>{col_w}}" for ds in per_dataset_counts)
+    print(header)
+
+    # Pre-compute totals.
+    totals = {ds: sum(c.values()) for ds, c in per_dataset_counts.items()}
+    skewed_lines: List[str] = []
+
+    for strat in _STRATEGIES:
+        cells: List[str] = []
+        for ds, counts in per_dataset_counts.items():
+            tot = totals[ds]
+            if tot == 0:
+                cells.append(f"{'  —':>{col_w}}")
+                continue
+            pct = counts.get(strat, 0) / tot
+            cell = f"{pct * 100:>{col_w - 2}.1f}%"
+            cells.append(cell)
+            # Skewed-warning rule: >25% always; <12% for non-typo only.
+            high = pct > 0.25
+            low  = (pct < 0.12) if strat != "typo" else (pct < 0.05 or pct > 0.15)
+            if high or low:
+                skewed_lines.append(
+                    f"⚠ skewed: {ds} {strat} = {pct * 100:.1f}% "
+                    f"(target {_TARGET_PCT[strat] * 100:.0f}%)"
+                )
+        print(f"  {strat:<{name_w}}" + "".join(cells))
+
+    if skewed_lines:
+        print()
+        for line in skewed_lines:
+            print(line)
+    print()
 
 
 def main() -> int:
@@ -173,16 +286,27 @@ def main() -> int:
     # ── Summary ────────────────────────────────────────────────────────────
     print("\n══ data augmentation summary ══")
     any_failed = False
+    successful_datasets: List[str] = []
     for ds, info in overall.items():
         if info.get("ok"):
             stats = info["stats"]
             print(
                 f"  ✓ {ds:<14}  kept={stats['kept']:<6}  dropped={stats['dropped']}"
             )
+            successful_datasets.append(ds)
         else:
             any_failed = True
             print(f"  ✗ {ds:<14}  ERROR: {info['error']}")
     print()
+
+    # ── Strategy distribution table ────────────────────────────────────────
+    per_dataset_counts: Dict[str, Counter] = {}
+    for ds in successful_datasets:
+        aug_dir = source_root / f"{ds}{TARGET_SUFFIX}"
+        per_dataset_counts[ds] = _strategy_counts_for_aug_dir(aug_dir)
+    if per_dataset_counts:
+        _print_strategy_distribution(per_dataset_counts)
+
     return 2 if any_failed else 0
 
 

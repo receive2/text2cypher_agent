@@ -29,16 +29,19 @@ Output: ``~/datasets/mindthequery_augmented/`` mirrors the source.
 
 Augmentation policy
 -------------------
-* A file is "augmentable" if it ends with ``.json`` AND its filename
-  matches the requested splits via :func:`split_filter` AND its content
-  is a JSON list of dicts containing ``NL Question`` + ``Cypher``.
-* Other JSON files (e.g. ``db_schema.jsonl``, statistics) are copied
-  verbatim.
-* Non-JSON files / directories not matching the above are copied
-  verbatim.
-* The eval harness reads from ``Train_Test_Splits/<Manual|Automated>/...``
-  and ``Manually_Validated_Datasets/...`` — both layouts are
-  augmented when they contain valid examples.
+* A file is "augmentable" only when ALL of the following hold:
+    1. its relative path is under ``Train_Test_Splits/Manual/<graph>/test/``
+    2. its filename ends with ``_test.json``
+    3. its filename matches the requested splits via :func:`split_filter`
+    4. its content is a JSON list of dicts containing ``NL Question`` +
+       ``Cypher``.
+* All other files (Automated splits, train splits, top-level files,
+  ``Manually_Validated_Datasets/``, ``Datasets/``, statistics, etc.) are
+  copied verbatim so the directory structure stays complete in case
+  future configs reference them.
+* The eval harness (``eval/metrics_MindTheQuery.py::load_dataset``) only
+  consumes ``Train_Test_Splits/Manual/<graph>/test/`` — augmenting
+  anything else is wasted LLM calls.
 """
 
 from __future__ import annotations
@@ -68,6 +71,26 @@ def _first_present_key(d: Dict[str, Any], keys: tuple[str, ...]) -> Optional[str
         if k in d and d[k] is not None:
             return k
     return None
+
+
+def _is_manual_test_path(rel: Path) -> bool:
+    """
+    True iff *rel* is a ``Train_Test_Splits/Manual/<graph>/test/<file>_test.json``
+    relative path.  Anything else (Automated splits, train splits,
+    Manually_Validated_Datasets, Datasets, top-level files) is out of
+    scope for augmentation — those files get copied verbatim.
+    """
+    parts = rel.parts
+    if len(parts) < 5:
+        return False
+    if parts[0] != "Train_Test_Splits" or parts[1] != "Manual":
+        return False
+    # parts[2] is the <graph> name; parts[3] must be the "test" leaf dir.
+    if parts[3] != "test":
+        return False
+    if not rel.name.endswith("_test.json"):
+        return False
+    return True
 
 
 def _is_augmentable_json_list(data: Any) -> bool:
@@ -172,10 +195,18 @@ def run(
             dst.mkdir(parents=True, exist_ok=True)
             continue
 
-        # By default, copy verbatim.
+        # By default, copy verbatim.  Only files under
+        # Train_Test_Splits/Manual/<graph>/test/*_test.json are eligible
+        # for augmentation; everything else (Automated, train splits,
+        # Manually_Validated_Datasets, Datasets, top-level files) is
+        # copied as-is.
         copy_only = True
 
-        if src.suffix.lower() == ".json" and split_filter(src.name, splits):
+        if (
+            _is_manual_test_path(rel)
+            and src.suffix.lower() == ".json"
+            and split_filter(src.name, splits)
+        ):
             try:
                 with src.open("r", encoding="utf-8") as fh:
                     head = json.load(fh)
