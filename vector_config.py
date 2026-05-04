@@ -87,74 +87,7 @@ HYBRID_FUZZY_WEIGHT  = 0.5
 # rebuilt from scratch every time `setup_project.py --rediscover` runs, so
 # any inline comments will be lost. Put notes ABOVE this header instead.
 # A `vector_config.py.bak` is written before each rewrite as a safety net.
-EMBEDDABLE_PROPERTIES = [
-    {
-        "entity_type":        "node",
-        "label":              "Crime",
-        "property":           "charge",
-        "embedding_property": "charge_embedding",
-    },
-    {
-        "entity_type":        "node",
-        "label":              "Crime",
-        "property":           "note",
-        "embedding_property": "note_embedding",
-    },
-    {
-        "entity_type":        "node",
-        "label":              "Location",
-        "property":           "address",
-        "embedding_property": "address_embedding",
-    },
-    {
-        "entity_type":        "node",
-        "label":              "Location",
-        "property":           "postcode",
-        "embedding_property": "postcode_embedding",
-    },
-    {
-        "entity_type":        "node",
-        "label":              "Object",
-        "property":           "description",
-        "embedding_property": "description_embedding",
-    },
-    {
-        "entity_type":        "node",
-        "label":              "Officer",
-        "property":           "name",
-        "embedding_property": "name_embedding",
-    },
-    {
-        "entity_type":        "node",
-        "label":              "Officer",
-        "property":           "rank",
-        "embedding_property": "rank_embedding",
-    },
-    {
-        "entity_type":        "node",
-        "label":              "Officer",
-        "property":           "surname",
-        "embedding_property": "surname_embedding",
-    },
-    {
-        "entity_type":        "node",
-        "label":              "Person",
-        "property":           "name",
-        "embedding_property": "name_embedding",
-    },
-    {
-        "entity_type":        "node",
-        "label":              "Person",
-        "property":           "surname",
-        "embedding_property": "surname_embedding",
-    },
-    {
-        "entity_type":        "node",
-        "label":              "Vehicle",
-        "property":           "model",
-        "embedding_property": "model_embedding",
-    },
-]
+EMBEDDABLE_PROPERTIES = []
 DISCOVERY_MIN_AVG_LENGTH      = 4
 DISCOVERY_PROPERTY_BLACKLIST  = ["id", "uuid", "url", "uri", "embedding", "vector"]
 

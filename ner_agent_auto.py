@@ -89,7 +89,13 @@ from tools.tool_search import (
     search_tools,
 )
 
-load_dotenv(".env", override=True)
+# override=False is REQUIRED.  scripts/setup_and_archive.py injects per-pair
+# NEO4J_* env vars into the setup_project.py subprocess (Step 10 imports this
+# module to build the FAISS index); using override=True here would silently
+# overwrite those with the local .env values, poisoning the build against
+# the wrong database.  The parent process environment is authoritative;
+# .env only fills gaps.
+load_dotenv(".env", override=False)
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Constants

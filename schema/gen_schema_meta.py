@@ -79,7 +79,12 @@ from dotenv import load_dotenv
 
 from paths import SCHEMA_META, SCHEMA_NODES_CSV, SCHEMA_RELS_CSV
 
-load_dotenv(".env", override=True)
+# override=False is REQUIRED.  scripts/setup_and_archive.py injects per-pair
+# NEO4J_* env vars into the setup_project.py subprocess; using override=True
+# here would silently overwrite those with the local .env values mid-run,
+# poisoning every subsequent step (schema queries hit the wrong database).
+# The parent process environment is authoritative; .env only fills gaps.
+load_dotenv(".env", override=False)
 
 # Module logger.  Per-label progress lines are logger.info so setup_project.py
 # routes them to the file handler only by default; --verbose surfaces them
