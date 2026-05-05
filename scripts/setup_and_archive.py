@@ -294,6 +294,9 @@ def _build_setup_argv(database: str) -> List[str]:
         str(_REPO_ROOT / "setup_project.py"),
         "--database", database,
         "--yes",  # always non-interactive in batch mode
+        "--skip-embeddings",  # fuzzy retrieval is the paper baseline (TOOL_RETRIEVAL_MODE="fuzzy")
+                              # so Steps 6-7 (embedding backfill, vector indexes) are unnecessary.
+                              # Remove this line for a hybrid-mode run.
     ]
 
 

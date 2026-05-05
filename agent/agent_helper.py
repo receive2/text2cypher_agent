@@ -47,7 +47,15 @@ from neo4j_lib.neo4j_search import search_tool
 
 
 # ---------- 1. Environment & global objects ----------
-load_dotenv(".env", override=True)
+# override=False is REQUIRED.  scripts/setup_and_archive.py and the eval
+# pipeline (eval/eval_run.py via eval_config.GRAPH_CONNS) inject per-pair
+# NEO4J_* env vars into the subprocess environment; using override=True
+# here would silently overwrite those with the local .env values at import
+# time, pinning the module-level neo4j_graph singleton to the wrong
+# database (e.g. the Aura demo DB) regardless of which graph the caller
+# thinks it's targeting.  The parent process environment is authoritative;
+# .env only fills gaps.
+load_dotenv(".env", override=False)
 
 
 # ─────────────────────────────────────────────────────────────────────────────

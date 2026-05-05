@@ -182,18 +182,18 @@ QA_LLM_CONFIG: dict = {
 
 
 
-CYPHER_LLM_CONFIG: dict = {
-    "provider":    "hf_compatible",
-    "model":       "qwen-coder-32b-hf",   # MODEL_REGISTRY key
-    "temperature": 0,
-}
-
-
 # CYPHER_LLM_CONFIG: dict = {
-#    "provider":    "openai",
-#    "model":       "gpt-4.1",
-#    "temperature": 0,
+#     "provider":    "hf_compatible",
+#     "model":       "qwen-coder-32b-hf",   # MODEL_REGISTRY key
+#     "temperature": 0,
 # }
+
+
+CYPHER_LLM_CONFIG: dict = {
+   "provider":    "openai",
+   "model":       "gpt-4.1",
+   "temperature": 0,
+}
 
 # CYPHER_LLM_CONFIG: dict = {
 #     "provider":    "hf_compatible",
