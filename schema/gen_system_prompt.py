@@ -181,6 +181,26 @@ def _discover_fulltext_indexes(driver, database: str) -> List[Dict[str, str]]:
 
 
 # ──────────────────────────────────────────────────────────────────────────────
+# Centrality helper
+# ──────────────────────────────────────────────────────────────────────────────
+
+def _label_centrality(label: str, rel_rows: List[Dict[str, Any]]) -> int:
+    """Count how many relations have *label* as ``from_label``.
+
+    Used to identify the graph's "central entity" — the label that appears
+    most often as the source of relationships.  In the cypherbench/movie
+    schema, ``Movie`` is the centre of gravity (it has many outgoing
+    relations to Person, Genre, Country, Award, ProductionCompany, …),
+    while ``Award``, ``Genre``, etc. are leaf entities.
+
+    The default alphabetical sort would otherwise make few-shot examples
+    revolve around ``Award`` (alphabetically first), which mis-teaches the
+    LLM about which entity is the focus of typical questions.
+    """
+    return sum(1 for r in rel_rows if r.get("from_label") == label)
+
+
+# ──────────────────────────────────────────────────────────────────────────────
 # Schema block builder
 # ──────────────────────────────────────────────────────────────────────────────
 
@@ -236,6 +256,26 @@ def _build_schema_block(
         props = rel_prop_map[(rt, fl, tl)]
         prop_part = f" {{{', '.join(props)}}}" if props else ""
         lines.append(f"  (:{fl})-[:{rt}{prop_part}]->(:{tl})")
+
+    # ── Central entities (graph "centre of gravity") ──────────────────────────
+    # Highlight the labels that appear most often as relationship sources.
+    # This signals to the LLM where typical questions are anchored — without
+    # it, the model treats all labels as equally likely subjects, which is a
+    # bad assumption for hub-and-spoke schemas (Movie/Person/User/etc.).
+    if label_props and rel_rows:
+        central_labels = sorted(
+            label_props.keys(),
+            key=lambda lb: (-_label_centrality(lb, rel_rows), lb),
+        )
+        # Keep only labels that actually have outgoing relations
+        central_labels = [
+            lb for lb in central_labels if _label_centrality(lb, rel_rows) > 0
+        ][:3]
+        if central_labels:
+            lines.append("")
+            lines.append(
+                f"Central entities (most relationships): {', '.join(central_labels)}"
+            )
 
     return "\n".join(lines)
 
@@ -317,8 +357,27 @@ def _derive_few_shot(
     """
     examples: List[Tuple[str, str]] = []
 
+    # Order node_rows so that rows belonging to the most-central labels come
+    # first.  Without this, alphabetical iteration biases all examples toward
+    # leaf entities (e.g. "Award" comes before "Movie"), which mis-teaches the
+    # NER agent about which entity the typical question is anchored on.
+    # Stable sort: ties fall back to original order.
+    _orig_node_index = {id(r): i for i, r in enumerate(node_rows)}
+    sorted_node_rows = sorted(
+        node_rows,
+        key=lambda r: (
+            -_label_centrality(r["label"], rel_rows),
+            _orig_node_index[id(r)],
+        ),
+    )
+
     # ── 1. Identifying String property (title / name / id) ────────────────────
-    for r in node_rows:
+    # NOTE on output shape: single-entity questions emit a BARE SCALAR value
+    # (no [...] wrapper).  This prevents the brackets from leaking verbatim
+    # into the downstream Cypher query (a frequent failure mode where the
+    # LLM copies ``["Inception"]`` into ``n.title = ["Inception"]``).
+    # Multi-value examples still use JSON arrays -- see example #6 below.
+    for r in sorted_node_rows:
         prop = r["property"].lower()
         if prop in ("title", "name", "id") and "String" in r.get("property_types", ""):
             label  = r["label"]
@@ -327,12 +386,12 @@ def _derive_few_shot(
             sample = sample or f"Example {label}"
             examples.append((
                 f'Find the {label.lower()} named "{sample}".',
-                f'{{"{label}.{prop_}": ["{sample}"]}}',
+                f'{{"{label}.{prop_}": "{sample}"}}',
             ))
             break
 
     # ── 2. Numeric property (released / born / year) ──────────────────────────
-    for r in node_rows:
+    for r in sorted_node_rows:
         prop = r["property"].lower()
         types = r.get("property_types", "")
         if prop in ("released", "born", "year") and _is_numeric_type(types):
@@ -345,13 +404,13 @@ def _derive_few_shot(
                 num = 1999
             examples.append((
                 f"How many {label.lower()}s have {prop_} before {num}?",
-                f'{{"{label}.{prop_}": [{num}]}}',
+                f'{{"{label}.{prop_}": {num}}}',
             ))
             break
 
     # ── 3. Second String property (e.g. tagline, summary) ─────────────────────
     count = 0
-    for r in node_rows:
+    for r in sorted_node_rows:
         prop  = r["property"].lower()
         types = r.get("property_types", "")
         if prop not in ("title", "name", "id", "released", "born") and "String" in types:
@@ -361,7 +420,7 @@ def _derive_few_shot(
             if sample:
                 examples.append((
                     f'Which {label.lower()} has {prop_} containing "{sample[:30]}"?',
-                    f'{{"{label}.{prop_}": ["{sample[:30]}"]}}',
+                    f'{{"{label}.{prop_}": "{sample[:30]}"}}',
                 ))
                 count += 1
                 if count >= 1:
@@ -378,13 +437,16 @@ def _derive_few_shot(
             sample = sample or "Example Role"
             examples.append((
                 f'Which {fl.lower()} has {rt.lower()} {prop_} "{sample}"?',
-                f'{{"{rt}.{prop_}": ["{sample}"]}}',
+                f'{{"{rt}.{prop_}": "{sample}"}}',
             ))
             break
 
     # ── 5. Pure traversal / no entities ───────────────────────────────────────
+    # Use unambiguously-global phrasing ("every entity", "show every") so the
+    # agent doesn't confuse this with a constrained "list all X with Y" query
+    # that still requires entity extraction.
     examples.append((
-        "List all items in the database.",
+        "Show every entity in the graph.",
         "{}",
     ))
 
@@ -403,7 +465,7 @@ def _derive_few_shot(
     L1: Optional[str]    = None
     prop1: Optional[str] = None
     sample_name: str     = ""
-    for r in node_rows:
+    for r in sorted_node_rows:
         prop_lower = r["property"].lower()
         if prop_lower in ("title", "name") and "String" in r.get("property_types", ""):
             L1    = r["label"]
@@ -431,15 +493,27 @@ def _derive_few_shot(
 
     if L1 and R and prop1 and propR:
         l1_lower = L1.lower()
-        r_lower  = R.lower()
+        # Phrase the question with explicit "or" wording (teaches OR/IN logic)
+        # and "specifically" disambiguation (signals which mention is the
+        # entity name vs. the property values).  This is materially clearer
+        # than the previous "Find X related to <rel_type>" phrasing, which
+        # awkwardly leaks the relationship type into the natural language.
         q = (
-            f"Find {l1_lower}s related to {r_lower} with {propR} "
-            f"\"{sample1}\" or \"{sample2}\", mentioning {l1_lower} "
-            f"\"{sample_name}\"."
+            f'Find {l1_lower}s where {propR} is "{sample1}" or "{sample2}", '
+            f'specifically the {l1_lower} named "{sample_name}".'
         )
+        # Output shape is uniform regardless of whether ``propR`` is scalar or
+        # list-typed: the entity-filter value is simply a flat JSON array of
+        # the two candidate values.  The Cypher LLM decides whether to emit
+        # ``IN``/``=``/``OR``-of-``IN`` based on the SCHEMA type of the
+        # property -- it does not need (and must not see) any structural
+        # hint from the value shape.
+        rel_values = f'["{sample1}", "{sample2}"]'
+        # ``{L1}.{prop1}`` carries the disambiguating entity name -- a single
+        # value, so emit it as a bare scalar (no [...] wrapper).
         a = (
-            f'{{"{R}.{propR}": [["{sample1}"], ["{sample2}"]], '
-            f'"{L1}.{prop1}": ["{sample_name}"]}}'
+            f'{{"{R}.{propR}": {rel_values}, '
+            f'"{L1}.{prop1}": "{sample_name}"}}'
         )
         examples.append((q, a))
 
@@ -522,7 +596,15 @@ Extraction rules (follow strictly)
     (b) semantically identical (same real-world referent).
     Never fabricate or guess values beyond what the tools return.
 
-4.  Return at most 2 best-matching canonical values per key.
+4.  Return the single best-matching canonical value per key by default.
+    Return multiple values (up to 2) ONLY when the question explicitly
+    mentions multiple distinct entities of the same type:
+      - "compare X and Y"
+      - "movies by Spielberg or Tarantino"
+      - "either A or B"
+    Single-entity questions MUST emit a bare scalar value, NOT a 1-element
+    list.  (Wrapping a single value in [...] tends to leak the brackets
+    into the downstream Cypher query.)
 
 5.  If a tool returns NO matching values (empty result), drop that key from
     the output.  Do NOT fabricate a value.  (But always TRY the lookup
@@ -531,19 +613,41 @@ Extraction rules (follow strictly)
 
 6.  Final output MUST be a single valid JSON object — nothing else.
     • Keys   : "Label.property" format (e.g. {key_note})
-    • Values : always a JSON array, even for a single result
+    • Values :
+        - SINGLE value  → bare scalar  (e.g. "Inception" or 2015)
+        - MULTIPLE values (2+) → JSON array  (e.g. ["Neo", "Morpheus"])
+        - NEVER mix: do NOT wrap a single value in a 1-element list.
     • No code fences, no markdown, no explanation, no extra text.
 
 7.  Coverage over caution: For EVERY noun phrase in the question that could
     plausibly refer to a database entity (a person, a movie, an
     organization, a category, etc.), call the corresponding tool to verify
     — even if you are not fully sure the mention matches anything.
-    Lowercase, partial, abbreviated, or informal mentions ("matrix" for
-    "The Matrix", "godfather" for "The Godfather") still count and MUST be
-    looked up.  It is far better to make an extra tool call that returns
-    nothing than to skip a tool call and miss an entity.  Do NOT decide on
-    your own that a mention is "too informal" or "probably not in the
-    database" — let the tool decide.
+    Lowercase, partial, abbreviated, or informal mentions ("chicago" for
+    "Chicago, IL", "gates" for "Bill Gates", "pirates" for "Pirates of the
+    Caribbean") still count and MUST be looked up.  It is far better to
+    make an extra tool call that returns nothing than to skip a tool call
+    and miss an entity.  Do NOT decide on your own that a mention is "too
+    informal" or "probably not in the database" — let the tool decide.
+
+8.  Distinguish filter values from generic schema terms:
+    - Filter values: specific named entities mentioned as the SUBJECT of
+      a constraint ("Tom Hanks", "Inception", "Best Picture", "1995").
+    - Generic schema terms: words that describe the QUERY SHAPE without
+      naming specific entities ("movie", "director", "actor", "person",
+      "genre", "country").
+    Call tools ONLY for filter values, NOT for generic schema terms.
+    Generic terms map to schema labels/relations that the Cypher generator
+    handles structurally; they don't need canonical lookup.
+
+    Examples:
+      Q: "Who directed Inception?"
+         filter values: ["Inception"]   generic: ["who", "directed"]
+         → Call Movie.name tool for "Inception", NOT Person.name tool for "who".
+
+      Q: "List directors of Italian movies."
+         filter values: ["Italian"]     generic: ["directors", "movies"]
+         → Call Country.name tool for "Italian", NOT Person.name for "directors".
 
 Examples
 ────────
@@ -568,8 +672,11 @@ def generate_text2cypher_sp(
     if string_props:
         examples_str = ", ".join(string_props[:3])
         filter_note = (
-            f"\n- String comparisons: always use "
-            f"`toLower(n.prop) = toLower(\"value\")` for ({examples_str})."
+            f"\n- String comparisons: prefer exact-case equality (`n.prop = \"value\"`) "
+            f"for entity values supplied via the \"Schema-relevant entity filters\" "
+            f"section — these are already canonicalized by the retrieval pipeline. "
+            f"Use `toLower(n.prop) = toLower(\"value\")` only for free-text user input "
+            f"that hasn't been resolved to a canonical entity."
         )
 
     return f"""\
@@ -585,54 +692,75 @@ Generation rules
   defined in the schema below. Never invent new ones.
 - Read-only        : never generate CREATE / MERGE / SET / DELETE / REMOVE.
 - No parameters    : do NOT use $param syntax; always inline literal values.
-  ✓  WHERE toLower(m.title) = toLower("Inception")
+  ✓  WHERE m.name = "Inception"        # entity from retrieval
   ✗  WHERE m.title = $title
-- Aliases          : always use snake_case (e.g. movie_title, person_name).
-- LIMIT            : always add LIMIT (default 25) unless the question asks
-  for a count or aggregate.{filter_note}
+- Aliases          : aliases are optional. When the question asks for a
+  single property, return it directly without alias (e.g. `RETURN m.name`).
+  Use snake_case aliases only when needed for disambiguation (multiple
+  result columns from the same node, or aggregation results).
+- LIMIT            : only add LIMIT when the question explicitly requests
+  a bounded number of results ("top N", "first N", "the three most ...").
+  Do NOT add LIMIT to general listing queries ("list all X", "find Y",
+  "what are the Z") — these expect complete results.{filter_note}
 - Entity filters   : when entity values are supplied in the "Schema-relevant
-  entity filters" section below, incorporate ALL of them in the WHERE clause
-  as exact-match (string) or comparison (numeric) filters.
-- List-typed properties:
-  When the schema declares a property as a *list/array type* (e.g.
-  ``StringArray``, ``FloatArray``) — for example ``WORKED_ON.tags`` is a
-  ``StringArray`` of contribution tags — the NER pipeline emits the
-  corresponding entity-filter value as a **list of lists**:
-  ``"Label.prop": [[v1], [v2], ...]`` (the outer list is the standard
-  "candidate values" wrapper; the inner list is the list-typed value
-  itself).
-  Expand each inner value ``vi`` into its own membership predicate
-  ``vi IN <alias>.<prop>`` and join multiple values with ``OR``:
-    ✓  ``"design" IN r.tags``                          (single value)
-    ✓  ``("design" IN r.tags OR "review" IN r.tags)``  (multiple values)
-    ✗  ``["design"] IN r.tags``                        (wrong — list-in-list never matches)
-    ✗  ``r.tags CONTAINS "design"``                    (wrong — CONTAINS is string-only)
-  For non-list (scalar) properties, keep the existing ``=`` /
-  ``toLower(...)`` / numeric-comparison behaviour unchanged — the new rule
-  applies *only* when the schema marks the target property as an array
-  type.
+  entity filters" section, use them in the query.  Values come in TWO
+  shapes -- pick the predicate based on (a) the SCHEMA type of the target
+  property and (b) the shape of the supplied value:
+
+    Schema type     Value shape         Predicate
+    ----------      ----------          --------------------------------------
+    scalar          scalar              n.prop = "v"        (or toLower(...))
+    scalar          array  [v1, v2]     n.prop IN ["v1","v2"]
+    list/array      scalar              "v" IN n.prop
+    list/array      array  [v1, v2]     ("v1" IN n.prop OR "v2" IN n.prop)
+
+  Combine multiple entity filters using question semantics:
+    - "and", "both", "with X and Y"  →  AND in WHERE
+    - "or", "either", "X or Y"        →  OR in WHERE, or UNION across MATCH
+  When the question contains "either ... or" referring to different schema
+  paths (different relations or labels), prefer UNION across separate MATCH
+  blocks. Use a single MATCH with AND only when ALL filters logically must
+  hold simultaneously.
+
+  Anti-patterns -- never emit any of these:
+    ✗  ``n.prop = ["Inception"]``       (copying a wrapper that was never there)
+    ✗  ``["design"] IN r.tags``         (list-in-array never matches)
+    ✗  ``r.tags CONTAINS "design"``     (CONTAINS is string-substring only)
+
+- Empty entity filters : when "Schema-relevant entity filters" is empty,
+  the question is global / unbounded ("list all", "what are all", "which X
+  exist", "show every Y"). Write the query using only schema structure
+  without WHERE-clause entity filters. The MATCH pattern alone defines the
+  result set.
 
 Examples
 ────────
-# 1. Simple String lookup
-Schema: (:Author)-[:WROTE]->(:Book)
-Question: Find the book titled "The Long Voyage".
+# 1. Simple lookup (return literal value, not node)
+Schema: (:Book {{{{name: String}}}})
+Question: Find the book named "The Long Voyage".
 Cypher:
-  MATCH (b:Book)
-  WHERE toLower(b.title) = toLower("The Long Voyage")
-  RETURN b
-  LIMIT 25
+  MATCH (b:Book {{{{name: "The Long Voyage"}}}})
+  RETURN b.name
 
-# 2. List-typed property (IN)
+# 2. List-typed property (IN) -- multi-value filter
 Schema: (:Employee)-[:WORKED_ON {{{{tags: StringArray}}}}]->(:Project)
 Question: Find employees whose contributions to a project are tagged "design" or "review".
 Schema-relevant entity filters:
-  {{{{"WORKED_ON.tags": [["design"], ["review"]]}}}}
+  {{{{"WORKED_ON.tags": ["design", "review"]}}}}
 Cypher:
   MATCH (e:Employee)-[r:WORKED_ON]->(p:Project)
   WHERE "design" IN r.tags OR "review" IN r.tags
-  RETURN DISTINCT e.name AS employee_name
-  LIMIT 25
+  RETURN DISTINCT e.name
+
+# 2b. List-typed property (IN) -- single-value filter (scalar form)
+Schema: (:Person)-[:ACTED_IN {{{{roles: StringArray}}}}]->(:Movie)
+Question: Who played Neo?
+Schema-relevant entity filters:
+  {{{{"ACTED_IN.roles": "Neo"}}}}
+Cypher:
+  MATCH (p:Person)-[r:ACTED_IN]->(m:Movie)
+  WHERE "Neo" IN r.roles
+  RETURN DISTINCT p.name
 
 # 3. Numeric scalar comparison
 Schema: (:Customer)-[:BOUGHT {{{{rating: Float}}}}]->(:Product)
@@ -641,15 +769,14 @@ Cypher:
   MATCH (c:Customer)-[r:BOUGHT]->(p:Product)
   WHERE r.rating > 4.5
   RETURN c.name AS customer_name, r.rating AS rating
-  LIMIT 25
 
-# 4. Aggregation (COUNT)
+# 4. Aggregation (COUNT) — CypherBench template style
 Schema: (:City)-[:LOCATED_IN]->(:Country)
 Question: How many cities are located in country "Imaginaria"?
 Cypher:
-  MATCH (c:City)-[:LOCATED_IN]->(co:Country)
-  WHERE co.name = "Imaginaria"
-  RETURN count(DISTINCT c) AS city_count
+  MATCH (n:City)-[:LOCATED_IN]->(co:Country {{{{name: "Imaginaria"}}}})
+  WITH DISTINCT n
+  RETURN count(n)
 
 # 5. Multi-hop traversal
 Schema: (:Author)-[:WROTE]->(:Book)-[:BELONGS_TO]->(:Genre)
@@ -657,18 +784,17 @@ Question: Find authors who wrote books in the genre "Fantasy".
 Cypher:
   MATCH (a:Author)-[:WROTE]->(b:Book)-[:BELONGS_TO]->(g:Genre)
   WHERE g.name = "Fantasy"
-  RETURN DISTINCT a.name AS author_name
-  LIMIT 25
+  RETURN DISTINCT a.name
 
 # 6. UNION across two relationship types
 Schema: (:Person)-[:LIKES]->(:Topic), (:Person)-[:STUDIES]->(:Topic)
 Question: Find people who like or study topic "AI".
 Cypher:
   MATCH (p:Person)-[:LIKES]->(t:Topic {{{{name: "AI"}}}})
-  RETURN p.name AS person_name
+  RETURN p.name
   UNION
   MATCH (p:Person)-[:STUDIES]->(t:Topic {{{{name: "AI"}}}})
-  RETURN p.name AS person_name
+  RETURN p.name
 
 # 7. GROUP BY with sort (no entity filter)
 Schema: (:Department)<-[:WORKS_IN]-(:Employee)
@@ -677,7 +803,31 @@ Cypher:
   MATCH (d:Department)<-[:WORKS_IN]-(e:Employee)
   RETURN d.name AS department, count(e) AS employee_count
   ORDER BY employee_count DESC
-  LIMIT 25
+
+# 8. WITH DISTINCT for deduplication after MATCH (template-style query)
+Schema: (:Movie)-[:hasCastMember]->(:Person)
+Question: How many movies feature actor "Tom Hanks"?
+Cypher:
+  MATCH (n:Movie)-[r:hasCastMember]->(m:Person {{{{name: "Tom Hanks"}}}})
+  WITH DISTINCT n
+  RETURN count(n)
+
+# 9. Listing with WITH DISTINCT (CypherBench template — most common pattern)
+Schema: (:Movie)-[:hasGenre]->(:Genre)
+Question: List the names of movies in the genre "Drama".
+Cypher:
+  MATCH (n:Movie)-[r0:hasGenre]->(m0:Genre {{{{name: "Drama"}}}})
+  WITH DISTINCT n
+  RETURN n.name
+
+# 10. OPTIONAL MATCH for "include X even if no related Y"
+Schema: (:Author)-[:WROTE]->(:Book), (:Book)-[:HAS_REVIEW]->(:Review)
+Question: List all authors and the number of reviews each has received (including authors with zero reviews).
+Cypher:
+  MATCH (n:Author)-[:WROTE]->(b:Book)
+  OPTIONAL MATCH (b)-[:HAS_REVIEW]->(rv:Review)
+  WITH n, count(DISTINCT rv) AS review_count
+  RETURN n.name, review_count
 
 Graph Schema (static snapshot — baked at generation time)
 ──────────────────────────────────────────────────────────

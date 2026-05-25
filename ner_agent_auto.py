@@ -42,8 +42,14 @@ How tool selection works
 
 5. ``get_ner_auto(prompt, top_k, verbose)``
    Orchestrates steps 3-4, runs the agent, and parses the output to the
-   canonical JSON string ``{"Label.property": [values, ...]}`` — identical
-   format to ``ner_agent.get_ner()``.
+   canonical JSON string
+
+       {"Label.property": "<scalar>"}                  -- single value
+       {"Label.property": ["v1", "v2", ...]}           -- multiple values
+
+   -- a bare scalar for the common single-match case so the brackets do
+   not leak into the downstream Cypher query, and a list only for the rare
+   multi-value case.  Identical convention to ``ner_agent.get_ner()``.
 """
 
 from __future__ import annotations
@@ -819,11 +825,70 @@ def _to_list(v: Any) -> List[Any]:
     return [v]
 
 
+def _flatten_and_dedupe(v: Any) -> List[Any]:
+    """
+    Flatten ONE level of nested lists and drop ``None`` / duplicates while
+    preserving first-seen order.
+
+    Accepts any of:
+      - scalar              → ``[scalar]``
+      - flat list           → list (deduped, None-stripped)
+      - list of lists       → flattened one level (legacy ``[[v1], [v2]]``)
+      - mixed list+scalar   → flattened (each scalar kept, each inner list
+                              expanded)
+
+    The output is always a *flat* list of scalars; downstream callers decide
+    whether to collapse a 1-element list into a bare scalar.
+    """
+    out:  List[Any] = []
+    seen: Set[str]  = set()
+    for item in _to_list(v):
+        inner = item if isinstance(item, (list, tuple)) else [item]
+        for x in inner:
+            if x is None:
+                continue
+            # JSON-serialise the value so dict/list scalars (rare) still
+            # dedupe cleanly; fall back to repr() for non-JSON types.
+            try:
+                key = json.dumps(x, ensure_ascii=False, sort_keys=True)
+            except TypeError:
+                key = repr(x)
+            if key in seen:
+                continue
+            seen.add(key)
+            out.append(x)
+    return out
+
+
+def _collapse_singletons(d: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Convert ``{"k": [v]}`` → ``{"k": v}`` so single-value entries surface as
+    bare scalars in the canonical NER output.  Multi-value entries keep their
+    list form.  Empty lists are dropped from the result entirely.
+    """
+    out: Dict[str, Any] = {}
+    for k, v in d.items():
+        flat = _flatten_and_dedupe(v) if isinstance(v, (list, tuple)) else _flatten_and_dedupe([v])
+        if not flat:
+            continue          # drop empty keys -- equivalent to "no match"
+        out[k] = flat[0] if len(flat) == 1 else flat
+    return out
+
+
 def extract_content(input_string: str) -> str:
     """
     Parse the agent's final message into a canonical JSON string of the form::
 
-        {"Label.property": [values, ...]}
+        {"Label.property": <scalar>}              # single value
+        {"Label.property": [v1, v2, ...]}         # multiple values
+
+    The format is deliberately scalar-for-single / list-for-multi so the
+    downstream Cypher LLM never sees a stray ``[...]`` wrapper around a
+    single-value filter (which previously leaked into queries as
+    ``m.title = ["Inception"]`` -- a guaranteed empty result).
+
+    Defensive normalisation also flattens any nested ``[[v1], [v2]]`` shapes
+    that older NER outputs / model variants may still produce.
 
     Returns ``"{}"`` on any failure so downstream code never crashes.
     """
@@ -849,8 +914,33 @@ def extract_content(input_string: str) -> str:
     if parsed is None:
         return "{}"
 
-    normalized = {k: _to_list(v) for k, v in parsed.items()}
+    normalized = _collapse_singletons(parsed)
     return json.dumps(normalized, ensure_ascii=False)
+
+
+def _normalize_for_injection(entities_json: str) -> str:
+    """
+    Idempotent guard applied immediately before the entity dict is injected
+    into the Cypher generation prompt.
+
+    Mirrors :func:`extract_content`'s ``_collapse_singletons`` step so that
+    even if the upstream NER output bypassed ``extract_content`` (older
+    callers, manual overrides, cached results, model emitting ``[[v]]`` despite
+    the prompt), the Cypher LLM still sees the canonical scalar-or-list
+    shape and never copies a stray ``[...]`` wrapper into the WHERE clause.
+
+    Failures degrade gracefully -- the original JSON string is returned
+    unchanged if it cannot be parsed.
+    """
+    if not entities_json or entities_json.strip() in ("{}", ""):
+        return "{}"
+    try:
+        parsed = json.loads(entities_json)
+    except Exception:
+        return entities_json
+    if not isinstance(parsed, dict):
+        return entities_json
+    return json.dumps(_collapse_singletons(parsed), ensure_ascii=False)
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -914,7 +1004,16 @@ def get_ner_auto(
     )
 
     message = None
-    for msgs in agent_graph.stream(inputs, stream_mode="values"):
+    # ``recursion_limit=8`` caps the ReAct tool-call loop to at most 8 steps
+    # (4 think/act pairs). NER tasks are usually solved in 2–4 LLM calls;
+    # anything beyond ~8 is the model spinning, not making progress, and
+    # would otherwise hit LangGraph's default of 25 — i.e. up to 25 × 60s
+    # of avoidable wall-clock per example.
+    for msgs in agent_graph.stream(
+        inputs,
+        stream_mode="values",
+        config={"recursion_limit": 8},
+    ):
         tool_msgs = [m for m in msgs["messages"] if isinstance(m, ToolMessage)]
         message   = msgs["messages"][-1]
 
@@ -940,14 +1039,21 @@ def get_ner_dict_auto(
     verbose:   bool = False,
     llm_obj:   Optional[BaseChatModel] = None,
     mode:      Optional[str] = None,
-) -> Dict[str, List[Any]]:
+) -> Dict[str, Any]:
     """
     Convenience wrapper around :func:`get_ner_auto` that returns a Python dict
     instead of a JSON string.
 
     Returns
     -------
-    dict  ``{"Label.property": [values, ...]}`` or ``{}`` on failure.
+    dict
+        Canonical entity dict.  Values follow the scalar-or-list convention:
+
+        - single value  → bare scalar (e.g. ``"Inception"`` or ``2015``)
+        - multiple values (2+) → list (e.g. ``["Neo", "Morpheus"]``)
+        - no match → key omitted
+
+        Returns ``{}`` on parse failure.
     """
     raw = get_ner_auto(
         prompt    = prompt,
@@ -988,42 +1094,48 @@ Cypher rules for literals:
 - Inline numbers directly: 2015
 - Inline strings with double quotes: "Inception", "CA"
 
-Cypher rules for list-typed properties (CRITICAL):
-- When the schema declares a property as a list/array type
-  (e.g. StringArray, FloatArray) -- for example ACTED_IN.roles is a
-  StringArray of character names -- the NER pipeline emits the corresponding
-  entity-filter value as a LIST OF LISTS:
-      "Label.prop": [[v1], [v2], ...]
-  The outer list is the standard "candidate values" wrapper; each inner list
-  is the list-typed value itself.
-- For each inner value vi, emit a membership predicate `vi IN <alias>.<prop>`
-  (or `vi IN n.<prop>` for node properties).  Combine multiple values with OR.
-    GOOD: "Neo" IN r.roles
-    GOOD: ("Neo" IN r.roles OR "Morpheus" IN r.roles)
-    BAD:  ["Neo"] IN r.roles               (list-in-list never matches a string array)
-    BAD:  r.roles CONTAINS "Neo"           (CONTAINS is a string-substring operator)
-- Never paste the inner list literal into the predicate; always unwrap to its
-  scalar element(s).
-- For non-list (scalar) properties, keep the existing `=` / `toLower(...)` /
-  numeric-comparison behaviour unchanged.  The new rule applies ONLY when the
-  schema marks the target property as an array type.
+Entity-filter value shapes (CRITICAL):
+- Single value  → bare scalar:   "Label.prop": "Inception"
+- Multiple values (2+) → JSON array: "Label.prop": ["Neo", "Morpheus"]
+- Empty / missing → key is omitted entirely.
+There is NEVER a single-element list wrapper such as ["Inception"] and
+NEVER a list-of-lists such as [["Neo"], ["Morpheus"]].  Treat the value
+type itself (scalar vs. array) as the only signal you need.
+
+How to translate each shape into Cypher -- pick the row by the SCHEMA type
+of the target property, not by the shape of the entity-filter value:
+
+    Schema type      Filter value        Cypher predicate
+    ----------       --------------      ------------------------------------
+    scalar           scalar              n.prop = "v"        (or toLower(...))
+    scalar           array [v1, v2]      n.prop IN ["v1","v2"]
+    list/array       scalar              "v" IN n.prop
+    list/array       array [v1, v2]      ("v1" IN n.prop OR "v2" IN n.prop)
+
+Anti-patterns -- never emit any of these:
+    BAD:  n.prop = ["Inception"]            (copying the wrapper verbatim)
+    BAD:  ["Neo"] IN r.roles                (list-in-array never matches)
+    BAD:  r.roles CONTAINS "Neo"            (CONTAINS is string-substring only)
+
+Numeric filters keep the usual comparison operators (=, <, >, <=, >=);
+the array-vs-scalar rule above applies only to string/list-typed properties.
 
 Examples
 - - - - -
-# 1. List-typed relationship property -- single value
+# 1. List-typed relationship property -- single value (scalar in filter)
 Question: Who played Neo in The Matrix?
 Schema-relevant entity filters:
-  "Movie.title": ["The Matrix"], "ACTED_IN.roles": [["Neo"]]
+  "Movie.title": "The Matrix", "ACTED_IN.roles": "Neo"
 Cypher:
   MATCH (p:Person)-[r:ACTED_IN]->(m:Movie)
   WHERE toLower(m.title) = toLower("The Matrix") AND "Neo" IN r.roles
   RETURN p.name AS person_name
   LIMIT 25
 
-# 2. List-typed relationship property -- multiple values
+# 2. List-typed relationship property -- multiple values (array in filter)
 Question: Who played Neo or Morpheus in The Matrix?
 Schema-relevant entity filters:
-  "Movie.title": ["The Matrix"], "ACTED_IN.roles": [["Neo"], ["Morpheus"]]
+  "Movie.title": "The Matrix", "ACTED_IN.roles": ["Neo", "Morpheus"]
 Cypher:
   MATCH (p:Person)-[r:ACTED_IN]->(m:Movie)
   WHERE toLower(m.title) = toLower("The Matrix")
@@ -1031,10 +1143,10 @@ Cypher:
   RETURN DISTINCT p.name AS person_name
   LIMIT 25
 
-# 3. Scalar relationship property -- DO NOT apply the IN-expansion rule
+# 3. Scalar relationship property -- DO NOT use IN-expansion
 Question: Which reviewers gave The Matrix a rating above 90?
 Schema-relevant entity filters:
-  "Movie.title": ["The Matrix"], "REVIEWED.rating": [90]
+  "Movie.title": "The Matrix", "REVIEWED.rating": 90
 Cypher:
   MATCH (p:Person)-[r:REVIEWED]->(m:Movie)
   WHERE toLower(m.title) = toLower("The Matrix") AND r.rating > 90
@@ -1114,8 +1226,10 @@ def ask_auto(
     dict with keys:
 
     =========== ============================================================
-    ``entities`` Canonical entity JSON string, e.g.
-                 ``'{"Movie.released": [2015]}'``
+    ``entities`` Canonical entity JSON string.  Single matches are emitted
+                 as bare scalars; multi-value matches as JSON arrays.  E.g.
+                 ``'{"Movie.released": 2015}'`` (single) or
+                 ``'{"ACTED_IN.roles": ["Neo", "Morpheus"]}'`` (multi).
     ``cypher``   The Cypher query generated by the LLM.
     ``result``   Natural-language answer produced by the QA LLM.
     ``context``  Raw list of dicts returned by Neo4j before formatting.
@@ -1179,8 +1293,19 @@ def ask_auto(
             print(f"  {entities}")
 
     # ── Step 2: build the filled Cypher prompt ────────────────────────────────
+    # Defensive normalisation: collapse any 1-element list to a scalar and
+    # flatten nested ``[[v1],[v2]]`` shapes before injection.  ``extract_content``
+    # already does this for outputs that pass through it, but this second pass
+    # is a belt-and-suspenders guarantee that the Cypher LLM never sees a
+    # stray wrapper such as ``["Inception"]`` (which it would otherwise be
+    # tempted to copy verbatim into the query).
+    entities = _normalize_for_injection(entities)
+    if verbose:
+        print(f"\n── Entities (post-normalisation, injected to Cypher LLM) ──")
+        print(f"  {entities}")
+
     # Escape curly braces in the entity JSON so PromptTemplate doesn't treat
-    # them as placeholder markers (e.g. {"Movie.released": [2015]} → safe).
+    # them as placeholder markers (e.g. {"Movie.released": 2015} → safe).
     safe_entities = entities.replace("{", "{{").replace("}", "}}")
     filled = CYPHER_TEMPLATE.replace("{relevant_entities}", safe_entities)
 

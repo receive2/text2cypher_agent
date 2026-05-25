@@ -138,7 +138,7 @@ def _build_openai_llm(
         api_key=os.getenv("OPENAI_API_KEY"),
         temperature=temperature,
         timeout=60,
-        max_retries=6,
+        max_retries=2,
         base_url=os.getenv("OPENAI_BASE_URL") or None,
         http_client=http_client,
         **extra,
@@ -163,7 +163,7 @@ def _build_azure_llm(
             base_url=base_url,
             temperature=temperature,
             timeout=60,
-            max_retries=6,
+            max_retries=2,
             http_client=http_client,
             **extra,
         )
@@ -175,7 +175,7 @@ def _build_azure_llm(
             azure_endpoint=azure_endpoint,
             temperature=temperature,
             timeout=60,
-            max_retries=6,
+            max_retries=2,
             http_client=http_client,
             **extra,
         )
@@ -203,7 +203,7 @@ def _build_anthropic_llm(
         api_key=api_key,
         temperature=temperature,
         timeout=60,
-        max_retries=6,
+        max_retries=2,
         **extra,
     )
 
@@ -279,7 +279,7 @@ def _build_hf_compatible_llm(
         base_url=base_url,
         temperature=temperature,
         timeout=60,
-        max_retries=6,
+        max_retries=2,
         http_client=http_client,
         **extra,           # forwards max_tokens, top_p, model_kwargs, etc.
     )
@@ -544,15 +544,55 @@ def _to_list(v: Any) -> List[Any]:
     return [v]
 
 
+def _flatten_and_dedupe(v: Any) -> List[Any]:
+    """
+    Flatten ONE level of nested lists and drop ``None`` / duplicates while
+    preserving first-seen order.  Tolerates legacy ``[[v1], [v2]]`` outputs
+    produced by older NER prompts.
+    """
+    out:  List[Any] = []
+    seen: set      = set()
+    for item in _to_list(v):
+        inner = item if isinstance(item, (list, tuple)) else [item]
+        for x in inner:
+            if x is None:
+                continue
+            try:
+                key = json.dumps(x, ensure_ascii=False, sort_keys=True)
+            except TypeError:
+                key = repr(x)
+            if key in seen:
+                continue
+            seen.add(key)
+            out.append(x)
+    return out
+
+
+def _collapse_singletons(d: Dict[str, Any]) -> Dict[str, Any]:
+    """``{"k": [v]}`` → ``{"k": v}``; multi-value lists are preserved; empty
+    lists drop the key entirely."""
+    out: Dict[str, Any] = {}
+    for k, v in d.items():
+        flat = _flatten_and_dedupe(v) if isinstance(v, (list, tuple)) else _flatten_and_dedupe([v])
+        if not flat:
+            continue
+        out[k] = flat[0] if len(flat) == 1 else flat
+    return out
+
+
 def extract_content(input_string: str) -> str:
     """
-    Parse the agent's final message into a canonical JSON string of the form
-        {"Label.property": [values, ...]}
+    Parse the agent's final message into a canonical JSON string of the form::
+
+        {"Label.property": <scalar>}              # single value
+        {"Label.property": [v1, v2, ...]}         # multiple values
 
     Guarantees:
-      - Returns a valid JSON string (use json.loads to get a dict back).
-      - Every value is wrapped in a list.
-      - Returns "{}" on any failure so downstream code never crashes.
+      - Returns a valid JSON string (use ``json.loads`` to get a dict back).
+      - Single-value entries surface as bare scalars (no ``[...]`` wrapper).
+      - Multi-value entries keep their JSON array form.
+      - Legacy nested ``[[v1], [v2]]`` outputs are flattened automatically.
+      - Returns ``"{}"`` on any failure so downstream code never crashes.
     """
     if not input_string:
         return "{}"
@@ -578,8 +618,7 @@ def extract_content(input_string: str) -> str:
     if parsed is None:
         return "{}"
 
-    # Normalize every value to a list, e.g. 2015 -> [2015], "Inception" -> ["Inception"]
-    normalized: Dict[str, List[Any]] = {k: _to_list(v) for k, v in parsed.items()}
+    normalized = _collapse_singletons(parsed)
     return json.dumps(normalized, ensure_ascii=False)
 
 
@@ -623,8 +662,12 @@ def get_ner_dict(
     prompt: str,
     verbose: bool = False,
     llm_obj: Optional[BaseChatModel] = None,
-) -> Dict[str, List[Any]]:
-    """Convenience wrapper: return the entity dict as a real Python dict."""
+) -> Dict[str, Any]:
+    """Convenience wrapper: return the entity dict as a real Python dict.
+
+    Values follow the scalar-or-list convention: a bare scalar for a single
+    match, a list for multiple matches.  ``{}`` on parse failure.
+    """
     raw = get_ner(prompt, verbose=verbose, llm_obj=llm_obj)
     try:
         obj = json.loads(raw)
