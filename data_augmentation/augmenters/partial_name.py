@@ -38,24 +38,23 @@ class PartialNameAugmenter(Augmenter):
 
     def apply(self, surface: str, ctx: AugContext) -> Optional[str]:
         toks = _TOKEN_RE.findall(surface)
-        if len(toks) < 2:
+        # Require ≥3 tokens.  Two-token entities ("The Lakers",
+        # "United States", "Caroline Link") have no token we can safely
+        # drop without destroying the referent.
+        if len(toks) < 3:
             return None
 
-        # How many tokens to drop (1 ≤ k < n).  Bias toward dropping
-        # one token so the perturbation stays close to natural usage.
-        n = len(toks)
-        # Weighted choice: 1 token → highest probability, more → less.
-        weights = [1.0 / (i + 1) for i in range(n - 1)]
-        k = ctx.rng.choices(range(1, n), weights=weights, k=1)[0]
-
-        # Drop from leading or trailing — flip a coin.
+        # Always drop exactly ONE token.  The previous weighted multi-
+        # token drop produced unrecoverable surfaces like
+        # "House Committee on Education and the Workforce" →
+        # "House Committee" that no NER could resolve.
         side = ctx.rng.choice(("leading", "trailing"))
         if side == "leading":
-            kept = toks[k:]
+            kept = toks[1:]
         else:
-            kept = toks[:-k]
+            kept = toks[:-1]
 
-        if not kept:
+        if len(kept) < 2:
             return None
         cand = " ".join(kept)
         if cand == surface:

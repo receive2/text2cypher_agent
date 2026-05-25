@@ -137,8 +137,71 @@ def _run_pair(
 
     env = _build_env(conn.uri, conn.user, conn.password, conn.database)
 
-    print(f"\n[eval_run] ▶ {dataset}__{graph}  uri={conn.uri}  db={conn.database}")
-    proc = subprocess.run(cmd, env=env, check=False, capture_output=True, text=True)
+    # ── Outer subprocess timeout ────────────────────────────────────────────
+    # The per-example wall-clock cap lives inside the worker (see
+    # ``EVAL_PER_EXAMPLE_TIMEOUT`` / the watchdog in
+    # ``metrics_CypherBench.evaluate_dataset``).  This subprocess timeout
+    # is the *outer* safety net — sized to comfortably hold ``limit``
+    # examples at the per-example cap plus startup overhead (FAISS load
+    # + Neo4j connect + dataset parse ≈ 30–60 s).
+    #
+    # When ``limit is None`` we don't know how many examples a graph will
+    # produce (e.g. cypherbench_augmented/movie has 372). The old default
+    # of ``limit or 100`` undersized the cap (6620 s) for those large
+    # pairs. Use the env var ``EVAL_WORKER_TIMEOUT_SEC`` for an explicit
+    # override, otherwise budget 4 h — well beyond any healthy
+    # 200–500-example pair at ~10 s/example and bounded enough to fire
+    # before a real wedge consumes the full CI window.
+    per_example_sec = int(os.environ.get("EVAL_PER_EXAMPLE_TIMEOUT", "60")) + 5
+    explicit_outer  = os.environ.get("EVAL_WORKER_TIMEOUT_SEC")
+    if explicit_outer:
+        outer_timeout = float(explicit_outer)
+    elif limit is not None:
+        outer_timeout = limit * per_example_sec + 120
+    else:
+        # 4-hour ceiling for an entire-graph pass.
+        outer_timeout = 4 * 60 * 60
+
+    print(
+        f"\n[eval_run] ▶ {dataset}__{graph}  uri={conn.uri}  db={conn.database}  "
+        f"outer_timeout={int(outer_timeout)}s"
+    )
+    try:
+        proc = subprocess.run(
+            cmd,
+            env=env,
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=outer_timeout,
+        )
+    except subprocess.TimeoutExpired as exc:
+        # Surface whatever the worker managed to emit before being killed.
+        partial_stdout = exc.stdout if isinstance(exc.stdout, str) else (
+            exc.stdout.decode("utf-8", errors="replace") if exc.stdout else ""
+        )
+        partial_stderr = exc.stderr if isinstance(exc.stderr, str) else (
+            exc.stderr.decode("utf-8", errors="replace") if exc.stderr else ""
+        )
+        if partial_stdout:
+            sys.stdout.write(partial_stdout)
+        if partial_stderr:
+            sys.stderr.write(partial_stderr)
+        limit_val = env.get("EVAL_LIMIT") or (
+            cmd[cmd.index("--limit") + 1] if "--limit" in cmd else "<all>"
+        )
+        print(
+            f"[eval_run] ⚠ TIMEOUT after {exc.timeout}s on "
+            f"{dataset}__{graph} (uri={conn.uri} db={conn.database} "
+            f"test_path={test_path} limit={limit_val}). "
+            f"Worker subprocess killed; moving on to the next EVAL_PAIR.",
+            file=sys.stderr,
+        )
+        # Do NOT raise — let the outer loop continue.
+        return False, (
+            f"worker timed out after {exc.timeout}s "
+            f"(dataset={dataset}, graph={graph}, limit={limit_val})"
+        )
 
     # Always echo stdout (the worker may have streamed verbose lines there).
     if proc.stdout:

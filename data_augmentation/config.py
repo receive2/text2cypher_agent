@@ -43,6 +43,15 @@ DEFAULT_LLM_CONFIG: dict = {
     "temperature": 0.4,
 }
 
+# ── Edit budget ──────────────────────────────────────────────────────────────
+
+# Hard cap on the number of (entity, strategy) edits applied to ONE
+# augmented row.  Multi-edit rows compounded surface-form artifacts
+# ("the the X", "the movie the movie X") because adjacent spans both
+# got rewritten without context awareness.  Set to None to disable the
+# cap and revert to the legacy unlimited behaviour.
+MAX_EDITS_PER_ROW: int | None = 1
+
 # ── Misc ─────────────────────────────────────────────────────────────────────
 
 # Default RNG seed (overridden by the runner for reproducibility).

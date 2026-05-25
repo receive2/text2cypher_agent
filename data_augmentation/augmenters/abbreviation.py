@@ -150,30 +150,82 @@ def _build_lookup(pairs: List[Tuple[str, str]]) -> Dict[str, str]:
 _KNOWN_ABBREVIATIONS: Dict[str, str] = _build_lookup(_PAIRS)
 
 
-_LLM_SYSTEM = (
-    "You output the canonical short form / acronym for a named entity.  "
-    "Respond with ONLY the short form on a single line — no quotes, no "
-    "punctuation, no explanation.  If no widely-recognised short form "
-    "exists, respond with the single word NONE."
+# ── LLM gates ──────────────────────────────────────────────────────────────
+#
+# Earlier versions used a single "produce a short form" prompt with only
+# `len(cand) < len(surface)` validation.  That accepted Wikipedia-style
+# hallucinations like "The Saul Zaentz Company" → "SZC" and
+# "Walt Disney Animation Studios" → "WDAS" — surface forms that aren't
+# recognised anywhere outside the LLM's prior.
+#
+# The replacement is a strict two-stage gate:
+#
+#   Stage 1 (recognizability judge):
+#       Ask the LLM whether the entity has a widely-recognised
+#       abbreviation that a typical reader of news / Wikipedia would
+#       resolve unambiguously back to the same entity.  Must return
+#       YES / NO on a single line.
+#   Stage 2 (production):
+#       Only if stage 1 returned YES, ask for the abbreviation.  Reply
+#       must be strictly shorter than the input and case-insensitively
+#       different.
+#
+# Stage 1 is the load-bearing filter: it cuts the SZC / WDAS class
+# entirely.  Stage 2 retains the existing length / equality validation.
+# Two-shot prompting (vs. one merged prompt) keeps the judge's decision
+# disentangled from the LLM's eagerness to "produce something".
+
+_JUDGE_SYSTEM = (
+    "You decide whether a named entity has a WIDELY-RECOGNISED "
+    "abbreviation, acronym or initialism.  A widely-recognised "
+    "abbreviation is one that a typical reader of news or Wikipedia "
+    "would unambiguously resolve back to the same entity, and that "
+    "appears as an alternative name in mainstream reference works.\n\n"
+    "Examples:\n"
+    "  - 'United States of America' → YES (USA)\n"
+    "  - 'National Basketball Association' → YES (NBA)\n"
+    "  - 'Federal Bureau of Investigation' → YES (FBI)\n"
+    "  - 'New York City' → YES (NYC)\n"
+    "  - 'The Saul Zaentz Company' → NO (no widely-known abbreviation)\n"
+    "  - 'Walt Disney Animation Studios' → NO\n"
+    "  - 'Mirage Enterprises' → NO\n"
+    "  - 'BAFTA Award for Best Production Design' → NO\n"
+    "  - 'Caroline Link' → NO (personal name, no standard abbreviation)\n\n"
+    "Answer with ONLY 'YES' or 'NO' on a single line — nothing else."
 )
 
-_LLM_PROMPT = (
+_JUDGE_PROMPT = "Entity: {entity}\nIs there a widely-recognised abbreviation? (YES/NO):"
+
+_PRODUCE_SYSTEM = (
+    "You output the canonical, widely-recognised abbreviation / "
+    "acronym / initialism for the entity below.  Respond with ONLY the "
+    "abbreviation on a single line — no quotes, no punctuation, no "
+    "explanation.  Use the form that would appear on Wikipedia or in "
+    "major news outlets.  If you cannot produce one with high "
+    "confidence, respond with NONE."
+)
+
+_PRODUCE_PROMPT = (
     "Entity: {entity}\n"
-    "Short form (acronym, initialism, or shortened name):"
+    "Widely-recognised abbreviation (e.g. USA, NBA, FBI, NYC):"
 )
 
 
 class AbbreviationAugmenter(Augmenter):
     """
-    Static curated bidirectional dict + LLM fallback.
+    Static curated bidirectional dict + two-stage LLM recognizability judge.
 
     Static-dict path
         Returns the paired form whenever ``surface`` (case-insensitive)
-        is on either side of a curated pair.
+        is on either side of a curated pair.  This is the cheapest path
+        and most reliable for the ~50 hand-picked entries.
 
-    LLM fallback
-        Only invoked when the static dict misses AND ``ctx.llm.enabled``
-        is True.  The LLM is asked for the canonical short form.
+    LLM path (when ``ctx.llm.enabled`` and static dict misses)
+        Stage 1: judge whether a widely-recognised abbreviation exists
+        for the entity (YES/NO).  Stage 2 only fires on YES, asking
+        for the abbreviation itself.  This kills the prior LLM-fallback's
+        habit of inventing plausible-but-unknown acronyms like "SZC"
+        for "The Saul Zaentz Company".
     """
     name = "abbrev"
 
@@ -188,21 +240,39 @@ class AbbreviationAugmenter(Augmenter):
             if cand and cand.lower() != key:
                 return cand
 
-        # 2. LLM fallback.
+        # 2. Two-stage LLM judge.
         if not ctx.llm.enabled:
             return None
+
+        # Stage 1: recognizability judge.
+        judge_resp = ctx.llm.complete(
+            _JUDGE_PROMPT.format(entity=surface),
+            system=_JUDGE_SYSTEM,
+        )
+        verdict = first_nonempty_line(judge_resp)
+        if not verdict:
+            return None
+        verdict_norm = verdict.strip().rstrip(".").upper()
+        if verdict_norm != "YES":
+            return None
+
+        # Stage 2: produce the abbreviation.
         resp = ctx.llm.complete(
-            _LLM_PROMPT.format(entity=surface),
-            system=_LLM_SYSTEM,
+            _PRODUCE_PROMPT.format(entity=surface),
+            system=_PRODUCE_SYSTEM,
         )
         cand = first_nonempty_line(resp)
         if not cand:
             return None
         if cand.lower() == "none":
             return None
-        # Sanity-check: must be shorter than original and different.
+        # Strictly shorter than original AND different (case-insensitive).
         if len(cand) >= len(surface):
             return None
         if cand.lower() == surface.lower():
+            return None
+        # Reject anything containing whitespace longer than one space —
+        # genuine abbreviations are compact tokens, not phrases.
+        if cand.count(" ") > 1:
             return None
         return cand

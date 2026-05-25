@@ -67,23 +67,35 @@ _ALPHA = string.ascii_letters
 
 
 def _builtin_typo(surface: str, rng) -> Optional[str]:
-    """One-character swap in a randomly-chosen alphabetic word."""
+    """
+    One-character swap in a randomly-chosen alphabetic word.
+
+    Preserves the first letter of the entity (and of each word) — most
+    entity-recognition pipelines are anchored to the leading character,
+    so a typo there is functionally a different entity rather than a
+    typo.  The pipeline's ``_validate_edit`` enforces the same
+    invariant, so a typo that touches the first character is rejected
+    upstream anyway.
+    """
     words = surface.split()
     if not words:
         return None
-    # Pick word indices that contain ≥ 2 alphabetic chars.
+    # Pick word indices that contain ≥ 3 alphabetic chars so we have
+    # room to swap two letters AFTER position 0.
     candidates: List[int] = [
         i for i, w in enumerate(words)
-        if sum(c.isalpha() for c in w) >= 2
+        if sum(c.isalpha() for c in w) >= 3
     ]
     if not candidates:
         return None
     wi = rng.choice(candidates)
     word = words[wi]
 
-    # Pick two adjacent alphabetic positions and swap them.
-    alpha_positions = [i for i, c in enumerate(word) if c.isalpha()]
-    # Need at least two consecutive-ish alphabetic chars.
+    # Pick two adjacent alphabetic positions to swap — but exclude
+    # position 0 of the FIRST word of the surface (which is the
+    # surface's first character).  For other words we still avoid
+    # position 0 since it's the word-initial character.
+    alpha_positions = [i for i, c in enumerate(word) if c.isalpha() and i > 0]
     pairs = [
         (alpha_positions[i], alpha_positions[i + 1])
         for i in range(len(alpha_positions) - 1)
@@ -134,14 +146,31 @@ def _nlpaug_typo(surface: str, ctx: AugContext) -> Optional[str]:
     return cand
 
 
+def _first_char_preserved(orig: str, cand: str) -> bool:
+    """True iff orig[0] == cand[0] (case-insensitive).  Empty inputs fail."""
+    if not orig or not cand:
+        return False
+    return orig[:1].lower() == cand[:1].lower()
+
+
 class TypoAugmenter(Augmenter):
     name = "typo"
 
     def apply(self, surface: str, ctx: AugContext) -> Optional[str]:
-        if not surface or len(surface.strip()) < 2:
+        # Require ≥3 stripped chars so we can meaningfully alter a
+        # non-first character.
+        if not surface or len(surface.strip()) < 3:
             return None
 
-        cand = _nlpaug_typo(surface, ctx)
-        if cand:
-            return cand
+        # nlpaug doesn't expose a "preserve first letter" knob, so retry
+        # a handful of times and reject any candidate that mangles the
+        # leading character.  The pipeline-side ``_validate_edit`` will
+        # also reject these, so retries here just keep the typo strategy
+        # from being wasted on the safety gate.
+        for _ in range(4):
+            cand = _nlpaug_typo(surface, ctx)
+            if cand and _first_char_preserved(surface, cand):
+                return cand
+
+        # Fall back to the deterministic built-in (already first-char safe).
         return _builtin_typo(surface, ctx.rng)

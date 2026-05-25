@@ -559,12 +559,18 @@ def generate_ner_sp(
     # meta-instruction so the agent still receives the "fan out across
     # entity types" lesson.  Five base examples + the dynamic example would
     # be six; anything less means dynamic construction was skipped.
+    #
+    # Wording is bounded ("ALL of them" but subject to rule 7's 4-call
+    # hard budget) — earlier "Never stop after the first successful
+    # lookup" wording combined with the unconditional rule 7 to push the
+    # agent past its ReAct recursion budget on multi-entity questions.
     if len(examples) < 6:
         example_block += (
-            "\n\nNote: When a question mentions multiple entity types "
-            "(e.g. both a movie AND the role played in it), you MUST call "
-            "tools for ALL of them and include ALL keys in the output JSON. "
-            "Never stop after the first successful lookup."
+            "\n\nNote: When a question mentions multiple distinct entity "
+            "types (e.g. both a movie AND the role played in it), call "
+            "the appropriate name/title tool for each one and include "
+            "ALL resolved keys in the output JSON.  Respect the rule-7 "
+            "budget: at most 1 call per mention, at most 4 calls total."
         )
 
     # NOTE: ``{{tool_list}}`` is a literal placeholder in the emitted prompt
@@ -619,16 +625,28 @@ Extraction rules (follow strictly)
         - NEVER mix: do NOT wrap a single value in a 1-element list.
     • No code fences, no markdown, no explanation, no extra text.
 
-7.  Coverage over caution: For EVERY noun phrase in the question that could
-    plausibly refer to a database entity (a person, a movie, an
-    organization, a category, etc.), call the corresponding tool to verify
-    — even if you are not fully sure the mention matches anything.
-    Lowercase, partial, abbreviated, or informal mentions ("chicago" for
-    "Chicago, IL", "gates" for "Bill Gates", "pirates" for "Pirates of the
-    Caribbean") still count and MUST be looked up.  It is far better to
-    make an extra tool call that returns nothing than to skip a tool call
-    and miss an entity.  Do NOT decide on your own that a mention is "too
-    informal" or "probably not in the database" — let the tool decide.
+7.  Coverage over caution (bounded): For each PROPER-NAME mention in the
+    question (a specific person, movie, organization, award, place, etc.),
+    call exactly ONE tool against the entity's primary name/title field
+    — the {{Label}}.name or {{Label}}.title tool — even if the mention is
+    lowercase, partial, abbreviated, or informal ("chicago" for "Chicago,
+    IL", "gates" for "Bill Gates", "pirates" for "Pirates of the
+    Caribbean").  Let the tool decide whether the mention matches.
+
+    HARD BUDGET — DO NOT EXCEED:
+      • At most 1 tool call per distinct proper-name mention.
+      • At most 4 tool calls total per question.
+      • NEVER call multiple tools for the same mention "just to be sure"
+        (do NOT try {{Label}}.eid, {{Label}}.aliases, {{Label}}.provenance
+        on a name mention — those fields are for opaque identifiers and
+        URLs, not names; each tool's docstring tells you exactly when it
+        is appropriate to call).
+      • If your first 4 tool calls have not resolved every mention, STOP
+        and emit the partial result.  Do NOT keep searching.
+
+    Why the budget exists: each tool call costs an LLM round-trip plus a
+    database query.  Without the budget, multi-entity questions blow the
+    per-example time budget and the agent is terminated mid-search.
 
 8.  Distinguish filter values from generic schema terms:
     - Filter values: specific named entities mentioned as the SUBJECT of

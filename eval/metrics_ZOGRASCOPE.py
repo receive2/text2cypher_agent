@@ -79,6 +79,7 @@ from __future__ import annotations
 
 import csv
 import json
+import os
 import time
 import traceback
 from pathlib import Path
@@ -96,6 +97,9 @@ from .cypher_eval_normalize import (
 from .exact_match import exact_match as _literal_exact_match
 from .psjs import compute_psjs as _compute_psjs
 from .difficulty import classify as _classify_difficulty, aggregate_by_difficulty
+# Reuse the timestamped progress heartbeat from the CypherBench driver so the
+# log format is identical across all three eval entry points.
+from .metrics_CypherBench import _heartbeat as _heartbeat_cb
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -401,9 +405,26 @@ def evaluate_dataset(
         Path(out).parent.mkdir(parents=True, exist_ok=True)
         out_fh = open(out, "w", encoding="utf-8")
 
+    # Print the NER-agent feature-flag banner once at startup — wrap in
+    # try/except so a banner failure can never take down the eval.
+    try:
+        from ner_agent_auto import print_feature_flags
+        print_feature_flags()
+    except Exception:
+        pass
+
     t0 = time.time()
+    total = len(examples)
+    _heartbeat_every = max(1, int(os.getenv("EVAL_HEARTBEAT_EVERY", "1")))
     try:
         for i, ex in enumerate(examples, 1):
+            _heartbeat_cb(
+                i, total, t0,
+                kind="start",
+                qid=ex.get("qid"),
+                question=ex.get("question") or "",
+                every=_heartbeat_every,
+            )
             try:
                 rec = evaluate_one(ex)
             except Exception as exc:  # noqa: BLE001
@@ -422,6 +443,18 @@ def evaluate_dataset(
                     logger.error(traceback.format_exc())
 
             records.append(rec)
+            _heartbeat_cb(
+                i, total, t0,
+                kind="done",
+                qid=rec.get("qid"),
+                ea=rec.get("ea"),
+                em=rec.get("em"),
+                psjs=rec.get("psjs"),
+                err=rec.get("error"),
+                elapsed=rec.get("elapsed_total_sec"),
+                records_so_far=records,
+                every=_heartbeat_every,
+            )
 
             if verbose:
                 logger.info(

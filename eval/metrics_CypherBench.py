@@ -94,6 +94,18 @@ from .cypher_eval_normalize import (
 from .exact_match import exact_match as _literal_exact_match
 from .psjs import compute_psjs as _compute_psjs
 from .difficulty import classify as _classify_difficulty, aggregate_by_difficulty
+from neo4j_lib.safe_query import safe_cypher_run, TransactionTimedOutError
+
+
+# Default server-side per-transaction timeout used by ``execute_cypher`` for
+# the gold-cypher and ad-hoc cypher executions in this module.  Overridable
+# via the ``EVAL_NEO4J_QUERY_TIMEOUT`` env var (seconds, float).  30 s is a
+# conservative cap — well-formed CypherBench gold queries on the 1k–50k-node
+# eval graphs typically finish in milliseconds; anything past 30 s is almost
+# certainly a pathological query plan (cross product, missing LIMIT, etc.).
+_DEFAULT_CYPHER_TIMEOUT_SEC = float(
+    os.environ.get("EVAL_NEO4J_QUERY_TIMEOUT", "30")
+)
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -191,25 +203,67 @@ def load_dataset(path: str) -> List[Dict[str, Any]]:
 # 2. Gold-Cypher execution
 # ──────────────────────────────────────────────────────────────────────────────
 
-def execute_cypher(cypher: str) -> Tuple[Optional[List[Dict[str, Any]]], Optional[str]]:
+def execute_cypher(
+    cypher: str,
+    *,
+    timeout: Optional[float] = None,
+) -> Tuple[Optional[List[Dict[str, Any]]], Optional[str]]:
     """
     Run *cypher* against the live Neo4j database via ``agent_helper.neo4j_graph``.
+
+    Parameters
+    ----------
+    cypher
+        The Cypher statement to execute. Empty / whitespace-only is rejected.
+    timeout
+        Per-transaction server-side timeout in seconds. Defaults to
+        :data:`_DEFAULT_CYPHER_TIMEOUT_SEC` (30 s, overridable via the
+        ``EVAL_NEO4J_QUERY_TIMEOUT`` env var). When the driver of the bound
+        ``neo4j_graph`` is reachable (``_driver`` attribute), the query is
+        executed via :func:`neo4j_lib.safe_query.safe_cypher_run` which
+        enforces the timeout server-side. If we can't reach the driver
+        (custom wrapper), we fall through to the historic no-timeout
+        ``neo4j_graph.query(...)`` path with a logged warning.
 
     Returns
     -------
     (rows, error)
         On success ``rows`` is a list of dicts (LangChain Neo4jGraph output)
         and ``error`` is ``None``.  On failure ``rows`` is ``None`` and
-        ``error`` carries the exception's string form.
+        ``error`` carries the exception's string form. Transaction-timeout
+        failures surface as ``error="transaction timeout: …"`` so callers
+        can grep / classify them distinctly from real syntax errors.
     """
     if not cypher or not cypher.strip():
         return None, "empty cypher"
+
+    eff_timeout = float(timeout) if timeout is not None else _DEFAULT_CYPHER_TIMEOUT_SEC
+
+    driver   = getattr(neo4j_graph, "_driver",   None)
+    database = getattr(neo4j_graph, "_database", None)
+
     try:
-        rows = neo4j_graph.query(cypher)
-        # ``Neo4jGraph.query`` already returns a list of dicts; normalise to that.
+        if driver is not None:
+            rows = safe_cypher_run(
+                driver,
+                cypher,
+                params=None,
+                timeout=eff_timeout,
+                database=database,
+            )
+        else:
+            # Fallback only triggers on a non-LangChain Neo4jGraph wrapper.
+            logger.warning(
+                "execute_cypher: neo4j_graph has no _driver attribute; "
+                "falling back to neo4j_graph.query() with NO client-side "
+                "timeout enforcement."
+            )
+            rows = neo4j_graph.query(cypher)
         if rows is None:
             return [], None
         return list(rows), None
+    except TransactionTimedOutError as exc:  # type: ignore[misc]
+        return None, f"transaction timeout: {type(exc).__name__}: {exc}"
     except Exception as exc:  # noqa: BLE001 — we want to surface every failure
         return None, f"{type(exc).__name__}: {exc}"
 
@@ -635,24 +689,39 @@ def evaluate_one(example: Dict[str, Any]) -> Dict[str, Any]:
         "graph":       graph_name,
         "difficulty":  _classify_difficulty(gold_cypher),
         "error":       None,
+        # ── Per-stage timing (seconds). All four fields are always present so
+        #    downstream grep / pandas filtering never needs `.get()` guards. ──
+        "elapsed_agent_sec": 0.0,   # ask_auto end-to-end (NER + cypher gen + pred-exec + QA)
+        "elapsed_gold_sec":  0.0,   # execute_cypher(gold_cypher)
+        "elapsed_psjs_sec":  0.0,   # _compute_psjs(...)
+        "elapsed_total_sec": 0.0,   # sum, for quick "this example took N seconds" filtering
     }
 
+    t_total_start = time.perf_counter()
+
     # ── Step 1: agent prediction ────────────────────────────────────────────
+    t0 = time.perf_counter()
     try:
         out = ask_auto(prompt=question)
         pred_cypher = out.get("cypher", "") or ""
         pred_rows   = out.get("context", []) or []
         record["pred_cypher"] = pred_cypher
     except Exception as exc:  # noqa: BLE001
+        record["elapsed_agent_sec"] = round(time.perf_counter() - t0, 3)
+        record["elapsed_total_sec"] = round(time.perf_counter() - t_total_start, 3)
         record["error"] = f"agent: {type(exc).__name__}: {exc}"
         return record
+    record["elapsed_agent_sec"] = round(time.perf_counter() - t0, 3)
 
     # ── Step 2: gold execution ───────────────────────────────────────────────
+    t0 = time.perf_counter()
     gold_rows, gold_err = execute_cypher(gold_cypher) if gold_cypher else (None, "no gold cypher")
+    record["elapsed_gold_sec"] = round(time.perf_counter() - t0, 3)
     if gold_err is not None:
         record["error"] = f"gold: {gold_err}"
         # We can still compute EM since it is purely string-based.
         record["em"] = _literal_exact_match(pred_cypher, gold_cypher)
+        record["elapsed_total_sec"] = round(time.perf_counter() - t_total_start, 3)
         return record
 
     # ── Step 3: metrics ──────────────────────────────────────────────────────
@@ -663,6 +732,7 @@ def evaluate_one(example: Dict[str, Any]) -> Dict[str, Any]:
 
     record["em"] = _literal_exact_match(pred_cypher, gold_cypher)
 
+    t0 = time.perf_counter()
     try:
         record["psjs"] = _compute_psjs(
             pred_cypher, gold_cypher,
@@ -674,17 +744,345 @@ def evaluate_one(example: Dict[str, Any]) -> Dict[str, Any]:
         # the record's error field if there isn't already one.
         if record["error"] is None:
             record["error"] = f"psjs: {type(exc).__name__}: {exc}"
+    record["elapsed_psjs_sec"]  = round(time.perf_counter() - t0, 3)
+    record["elapsed_total_sec"] = round(time.perf_counter() - t_total_start, 3)
 
     return record
 
 
+# ──────────────────────────────────────────────────────────────────────────────
+# 6c. Per-example hard timeout (watchdog)
+#
+# A single Cypher example should finish in ~10–30 s end-to-end on the eval
+# graphs.  Anything past ~60 s is almost always one of:
+#   • an LLM call stuck in its httpx retry chain,
+#   • the NER ReAct agent spinning in a tool-call loop,
+#   • a malformed predicted Cypher hanging the Neo4j server,
+#   • the gold-Cypher execution hanging (slow plan, locked DB).
+#
+# Strategy
+# --------
+# We use a **two-layer** watchdog:
+#
+# 1. ``signal.SIGALRM`` (cooperative): raises :class:`_ExampleTimeoutError`
+#    in the main thread when the cap is exceeded.  This is fast and clean
+#    when nothing intercepts the exception.
+#
+# 2. ``threading.Thread`` (hard): if the SIGALRM-raised exception is
+#    *swallowed* by a broad ``except Exception:`` block — which LangGraph's
+#    :class:`ToolNode` does by default (see ``langgraph/prebuilt/tool_node.py``
+#    where it catches every ``Exception`` and converts it to a
+#    ``ToolMessage`` so the ReAct loop can continue) — the example would
+#    otherwise hang forever, because ``signal.alarm()`` is one-shot.
+#    The hard backstop fires after ``2 × timeout_sec`` and forcibly raises
+#    :class:`_ExampleTimeoutError` again from the watcher thread via
+#    :func:`_PyThreadState_SetAsyncExc` (when available) and, as a final
+#    resort after ``3 × timeout_sec``, calls :func:`os._exit` so the
+#    parent driver moves on to the next pair.
+#
+# We also make :class:`_ExampleTimeoutError` a subclass of
+# :class:`BaseException`, NOT :class:`Exception`, so the standard
+# ``except Exception:`` blocks scattered across LangChain / LangGraph /
+# httpx do *not* catch it.  This was the root cause of the
+# 2026-05-25 ``cypherbench_augmented/movie`` run wedging at example #17
+# for 107 minutes before the parent's outer timeout fired.
+#
+# On Windows ``SIGALRM`` is unavailable; we still install the threading
+# backstop so the watchdog continues to work in degraded form.
+# ──────────────────────────────────────────────────────────────────────────────
+
+# Default per-example wall-clock cap.  Overridable via the
+# ``EVAL_PER_EXAMPLE_TIMEOUT`` env var (seconds, int).  Set to 0 to disable
+# the watchdog entirely (NOT recommended — that's how a single hung example
+# wedges a 100-question run for 5 min+ before the subprocess timeout fires).
+_DEFAULT_PER_EXAMPLE_TIMEOUT_SEC = int(
+    os.environ.get("EVAL_PER_EXAMPLE_TIMEOUT", "60")
+)
+
+try:
+    import signal as _signal
+    _HAVE_SIGALRM = hasattr(_signal, "SIGALRM")
+except Exception:  # pragma: no cover
+    _signal       = None  # type: ignore[assignment]
+    _HAVE_SIGALRM = False
+
+
+class _ExampleTimeoutError(BaseException):
+    """
+    Raised by the watchdog (SIGALRM handler or backstop thread) when an
+    example exceeds its budget.
+
+    Inherits from :class:`BaseException` rather than :class:`Exception`
+    on purpose: LangGraph's ``ToolNode``, LangChain runnables, and the
+    Neo4j driver all use bare ``except Exception:`` blocks internally.
+    A normal ``Exception`` subclass would be swallowed by those handlers
+    (the timeout would silently turn into an error ToolMessage and the
+    agent loop would keep spinning), which is exactly the bug that
+    wedged the 2026-05-25 cypherbench_augmented/movie run on example #17
+    for 107 minutes.
+    """
+
+
+def _alarm_handler(signum, frame):  # noqa: ARG001 — signal handler signature
+    raise _ExampleTimeoutError()
+
+
+def _async_raise_in_thread(tid: int, exc_type: type) -> bool:
+    """
+    Raise *exc_type* asynchronously in the Python thread with id *tid*.
+
+    Uses :func:`ctypes.pythonapi.PyThreadState_SetAsyncExc`.  Returns
+    ``True`` on success.  This is the documented mechanism for hard-
+    cancelling a thread that has gone unresponsive; in our case the
+    "thread" is the main thread, and we call it from a daemon watcher
+    when SIGALRM was swallowed by a ``except Exception:`` block deep
+    inside LangGraph / LangChain / the Neo4j driver.
+
+    Caveat: this only takes effect at the next bytecode boundary in the
+    target thread.  If the main thread is parked in a C extension that
+    never releases the GIL, the exception is queued but not delivered.
+    That's why we still escalate to ``os._exit`` as a final resort.
+    """
+    try:
+        import ctypes
+        res = ctypes.pythonapi.PyThreadState_SetAsyncExc(
+            ctypes.c_long(tid), ctypes.py_object(exc_type),
+        )
+        if res > 1:
+            # We hit more than one thread — undo by passing NULL.
+            ctypes.pythonapi.PyThreadState_SetAsyncExc(ctypes.c_long(tid), None)
+            return False
+        return res == 1
+    except Exception:  # pragma: no cover — defensive
+        return False
+
+
+def _evaluate_one_with_watchdog(
+    example:     Dict[str, Any],
+    timeout_sec: int,
+) -> Dict[str, Any]:
+    """
+    Run :func:`evaluate_one` with a hard wall-clock cap.
+
+    See the module-level commentary above for the two-layer design
+    (SIGALRM cooperative + thread-based hard backstop).
+
+    When the cap is exceeded, return a record with all metrics ``None``,
+    ``error="example timeout: exceeded Ns"``, and ``elapsed_total_sec``
+    set to the elapsed time.  This means the example will count as
+    ``n_errors`` in the aggregate, NOT silently as a miss — making slow
+    examples easy to spot via ``grep "example timeout"`` on the records
+    JSONL.
+
+    When ``timeout_sec <= 0`` falls through to a bare
+    ``evaluate_one(example)`` call.
+    """
+    if timeout_sec <= 0:
+        return evaluate_one(example)
+
+    import threading
+
+    t0 = time.perf_counter()
+
+    # ── Layer 1: cooperative SIGALRM (UNIX only) ────────────────────────────
+    old_handler = None
+    if _HAVE_SIGALRM:
+        old_handler = _signal.signal(_signal.SIGALRM, _alarm_handler)  # type: ignore[union-attr]
+        _signal.alarm(timeout_sec)                                     # type: ignore[union-attr]
+
+    # ── Layer 2: hard backstop on a daemon thread ───────────────────────────
+    # Fires at 2× the cap if SIGALRM gets swallowed by a broad except
+    # block in LangGraph / LangChain / the driver.  Escalates to
+    # ``os._exit`` at 3× the cap when the main thread is parked in a
+    # GIL-holding C extension and PyThreadState_SetAsyncExc cannot get
+    # an exception delivered.
+    main_tid = threading.get_ident()
+    stop_evt = threading.Event()
+
+    def _backstop() -> None:
+        # First escalation: async-raise in the main thread.
+        if not stop_evt.wait(timeout_sec * 2):
+            logger.warning(
+                "watchdog backstop: SIGALRM appears to have been swallowed; "
+                "async-raising _ExampleTimeoutError in main thread after "
+                "%.1fs.",
+                timeout_sec * 2,
+            )
+            _async_raise_in_thread(main_tid, _ExampleTimeoutError)
+        else:
+            return
+        # Second escalation: hard exit if main thread is in a
+        # GIL-holding C extension and the async-raise didn't land.
+        if not stop_evt.wait(timeout_sec):
+            logger.error(
+                "watchdog backstop: example still running %.1fs past cap "
+                "(async-raise did not land — likely GIL-holding C extension). "
+                "Hard-exiting worker via os._exit(3) so the parent driver "
+                "moves on to the next pair.",
+                timeout_sec * 3,
+            )
+            os._exit(3)
+
+    watcher = threading.Thread(target=_backstop, name="t2c-watchdog", daemon=True)
+    watcher.start()
+
+    try:
+        return evaluate_one(example)
+    except _ExampleTimeoutError:
+        gold_cypher = example.get("cypher")
+        elapsed = round(time.perf_counter() - t0, 3)
+        return {
+            "qid":         str(example.get("qid", "")),
+            "question":    str(example.get("question", "")),
+            "ea":          None,
+            "em":          None,
+            "psjs":        None,
+            "pred_cypher": "",
+            "gold_cypher": gold_cypher,
+            "graph":       example.get("graph"),
+            "difficulty":  _classify_difficulty(gold_cypher),
+            "error":       f"example timeout: exceeded {timeout_sec}s",
+            "elapsed_agent_sec": elapsed,
+            "elapsed_gold_sec":  0.0,
+            "elapsed_psjs_sec":  0.0,
+            "elapsed_total_sec": elapsed,
+        }
+    finally:
+        # Stop the backstop thread first so it doesn't fire mid-cleanup.
+        stop_evt.set()
+        # Always cancel the pending alarm and restore the prior handler,
+        # even if evaluate_one raised some unrelated exception.
+        if _HAVE_SIGALRM:
+            _signal.alarm(0)                                  # type: ignore[union-attr]
+            _signal.signal(_signal.SIGALRM, old_handler)      # type: ignore[union-attr]
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Progress heartbeat
+# ──────────────────────────────────────────────────────────────────────────────
+#
+# Long evaluations (hundreds of examples) need to surface live progress so an
+# operator can tell at a glance whether the run is healthy, stalled, or about
+# to overrun a meeting.  We print one line BEFORE each example (so a hang
+# leaves a "started at HH:MM:SS, record N" pin in the log) and one line AFTER
+# (with score, running mean EA, and an ETA based on completed records).
+#
+# The output goes to BOTH stdout (so it shows up in tee'd logs) and is
+# flushed immediately — a hung pipe is the exact failure mode this guards
+# against, so buffered prints would defeat the purpose.
+#
+# Honors ``EVAL_HEARTBEAT_EVERY`` (default 1) — set to e.g. 10 to print only
+# every 10th record, but the first start and last done always print.
+
+def _fmt_hms(seconds: float) -> str:
+    """Format a duration in seconds as ``HhMMmSSs`` (compact, no zero pad
+    on the leading unit). Used for both elapsed and ETA columns."""
+    if seconds is None or seconds < 0:
+        return "--"
+    s = int(round(seconds))
+    h, rem = divmod(s, 3600)
+    m, s = divmod(rem, 60)
+    if h:
+        return f"{h}h{m:02d}m{s:02d}s"
+    if m:
+        return f"{m}m{s:02d}s"
+    return f"{s}s"
+
+
+def _heartbeat(
+    i: int,
+    total: int,
+    t0: float,
+    *,
+    kind: str,
+    qid: Any = None,
+    question: Optional[str] = None,
+    ea: Any = None,
+    em: Any = None,
+    psjs: Any = None,
+    err: Any = None,
+    elapsed: Any = None,
+    records_so_far: Optional[List[Dict[str, Any]]] = None,
+    every: int = 1,
+) -> None:
+    """Print a single timestamped progress line for record *i* of *total*.
+
+    Always prints the first start (``i==1``) and the last done (``i==total``)
+    regardless of *every* — so the operator gets bookend markers even when
+    sampling.
+
+    *kind* ∈ {``"start"``, ``"done"``}. ``start`` prints the question so it's
+    visible WHICH example is in flight when a hang happens. ``done`` prints
+    the per-record metrics plus the running mean EA and an ETA estimated
+    from completed wall-clock time.
+    """
+    # Sampling: skip middle records when ``every > 1`` but always show
+    # boundaries (first/last) and any error so the log doesn't go silent.
+    is_boundary = (i == 1) or (i == total)
+    is_error = err is not None and err != ""
+    if not is_boundary and not is_error and (i % max(1, every)) != 0:
+        return
+
+    ts = time.strftime("%H:%M:%S", time.localtime())
+    prefix = f"[{ts}] [{i:>4}/{total}]"
+    qid_str = f"qid={qid}" if qid is not None else ""
+
+    if kind == "start":
+        q = (question or "").replace("\n", " ").strip()
+        if len(q) > 120:
+            q = q[:117] + "..."
+        msg = f"{prefix} ▶ start  {qid_str}  q={q!r}"
+    else:
+        # Compute running mean EA across all completed records so far so the
+        # operator can see whether the run is trending up or down without
+        # waiting for the final summary.
+        running_ea_str = "--"
+        if records_so_far:
+            ea_vals = [r.get("ea") for r in records_so_far if r.get("ea") is not None]
+            if ea_vals:
+                running_ea_str = f"{(sum(1 for v in ea_vals if v) / len(ea_vals)):.3f}"
+
+        # ETA: extrapolate remaining wall time from average per-record cost.
+        wall = time.time() - t0
+        eta_str = "--"
+        if i > 0 and i < total:
+            per = wall / i
+            eta_str = _fmt_hms(per * (total - i))
+        elapsed_str = (
+            f"t={float(elapsed):.1f}s"
+            if isinstance(elapsed, (int, float))
+            else "t=?"
+        )
+        err_str = f"  err={str(err)[:80]}" if is_error else ""
+        msg = (
+            f"{prefix} ✔ done   {qid_str}  "
+            f"ea={ea} em={em} psjs={psjs}  {elapsed_str}  "
+            f"runEA={running_ea_str}  wall={_fmt_hms(wall)}  ETA={eta_str}"
+            f"{err_str}"
+        )
+
+    # Flush both stdout AND stderr so the line survives any buffering layer
+    # (tee, nohup, container log driver). Eat any I/O error — a heartbeat
+    # MUST NOT take down the eval.
+    try:
+        print(msg, flush=True)
+    except Exception:
+        pass
+    try:
+        sys.stderr.write(msg + "\n")
+        sys.stderr.flush()
+    except Exception:
+        pass
+
+
 def evaluate_dataset(
-    path:         str,
-    limit:        Optional[int] = None,
-    out:          Optional[str] = None,
-    verbose:      bool          = False,
-    graph_filter: Optional[str] = None,
-    dataset_name: Optional[str] = None,
+    path:                  str,
+    limit:                 Optional[int] = None,
+    out:                   Optional[str] = None,
+    verbose:               bool          = False,
+    graph_filter:          Optional[str] = None,
+    dataset_name:          Optional[str] = None,
+    per_example_timeout:   Optional[int] = None,
 ) -> Dict[str, Any]:
     """
     Run :func:`evaluate_one` over the CypherBench test set at *path* and
@@ -739,6 +1137,28 @@ def evaluate_dataset(
     if limit is not None:
         examples = examples[:limit]
 
+    # Resolve the per-example hard timeout. Priority:
+    #   1. explicit ``per_example_timeout`` arg (None → env default)
+    #   2. ``EVAL_PER_EXAMPLE_TIMEOUT`` env var (read at import time)
+    #   3. built-in default (60 s)
+    eff_timeout = (
+        per_example_timeout
+        if per_example_timeout is not None
+        else _DEFAULT_PER_EXAMPLE_TIMEOUT_SEC
+    )
+    if eff_timeout > 0 and not _HAVE_SIGALRM:
+        logger.warning(
+            "evaluate_dataset: per-example watchdog requested "
+            f"(timeout={eff_timeout}s) but SIGALRM is unavailable on this "
+            "platform — running with no per-example timeout."
+        )
+    elif eff_timeout > 0:
+        logger.info(
+            f"evaluate_dataset: per-example wall-clock cap = {eff_timeout}s "
+            f"(override via EVAL_PER_EXAMPLE_TIMEOUT env var or "
+            f"per_example_timeout= arg)."
+        )
+
     records: List[Dict[str, Any]] = []
 
     out_fh = None
@@ -746,16 +1166,50 @@ def evaluate_dataset(
         Path(out).parent.mkdir(parents=True, exist_ok=True)
         out_fh = open(out, "w", encoding="utf-8")
 
+    # Print the NER-agent feature-flag banner once at startup so the operator
+    # can confirm which fixes are active before a long evaluation begins.
+    try:
+        from ner_agent_auto import print_feature_flags
+        print_feature_flags()
+    except Exception:
+        pass  # banner is informational; never fail eval over it
+
     t0 = time.time()
+    total = len(examples)
+    _heartbeat_every = max(1, int(os.getenv("EVAL_HEARTBEAT_EVERY", "1")))
     try:
         for i, ex in enumerate(examples, 1):
-            rec = evaluate_one(ex)
+            # PRE-record heartbeat: print BEFORE the watchdog call so a hang
+            # leaves a "started at HH:MM:SS, record N" line in the log
+            # instead of going dark.
+            _heartbeat(
+                i, total, t0,
+                kind="start",
+                qid=ex.get("qid"),
+                question=ex.get("question") or ex.get("nl_question") or "",
+                every=_heartbeat_every,
+            )
+            rec = _evaluate_one_with_watchdog(ex, timeout_sec=eff_timeout)
             records.append(rec)
+            # POST-record heartbeat with score + running mean EA + ETA.
+            _heartbeat(
+                i, total, t0,
+                kind="done",
+                qid=rec.get("qid"),
+                ea=rec.get("ea"),
+                em=rec.get("em"),
+                psjs=rec.get("psjs"),
+                err=rec.get("error"),
+                elapsed=rec.get("elapsed_total_sec"),
+                records_so_far=records,
+                every=_heartbeat_every,
+            )
 
             if verbose:
                 logger.info(
-                    f"[{i:>4}/{len(examples)}] {rec['qid']} "
+                    f"[{i:>4}/{total}] {rec['qid']} "
                     f"diff={rec.get('difficulty')} "
+                    f"t={rec.get('elapsed_total_sec', 0)}s "
                     f"EA={rec['ea']} EM={rec['em']} PSJS={rec['psjs']}"
                     + (f"  err={rec['error']}" if rec.get('error') else "")
                 )

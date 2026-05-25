@@ -160,10 +160,22 @@ MODEL_REGISTRY: dict = {
 }
 
 
+# NER_LLM_CONFIG: dict = {
+#     "provider":    "anthropic",
+#     "model":       "claude-opus-4-7",
+#     "temperature": 0,
+# }
+
+# NER_LLM_CONFIG: dict = {
+#     "provider":    "anthropic",
+#     "model":       "claude-sonnet-4-5",
+#     "temperature": 0,
+# }
+
 NER_LLM_CONFIG: dict = {
-    "provider":    "anthropic",
-    "model":       "claude-opus-4-20250514",
-    "temperature": 0,
+   "provider":    "openai",
+   "model":       "gpt-4.1",
+   "temperature": 0,
 }
 
 # NER_LLM_CONFIG: dict = {
@@ -262,7 +274,7 @@ CAP_MULTIPLIER        = 1000    # scan cap = t * CAP_MULTIPLIER (cheap over-fetc
 # or via ``--ner-mode`` on the ``metrics_CypherBench`` CLI.
 # ──────────────────────────────────────────────────────────────────────────────
 
-NER_MODE: str = "full"     # "full" | "node_only" | "no_ner"
+NER_MODE: str = "node_only"     # "full" | "node_only" | "no_ner"
 
 # Allowed values — kept centrally so callers can validate user input
 # without hard-coding the literal strings.

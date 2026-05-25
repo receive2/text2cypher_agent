@@ -21,9 +21,130 @@ from loguru import logger
 from data_augmentation.augmenters import STRATEGY_REGISTRY, AugContext
 from data_augmentation.config import (
     DEFAULT_PROPORTIONS,
+    MAX_EDITS_PER_ROW,
 )
 from data_augmentation.entity_extractor import EntitySpan, extract_entities
 from data_augmentation.llm import LLMClient
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Post-augmenter validation
+# ──────────────────────────────────────────────────────────────────────────────
+#
+# Each strategy has its own contract about what a "safe" perturbation
+# looks like.  These contracts exist because the gold Cypher is held
+# constant: a perturbation that destroys NER's ability to recover the
+# original entity literal makes the row unsolvable.
+#
+#   casing      : always safe (NER agents normalise case via toLower(...))
+#   typo        : safe iff edit-distance(orig, new) ≤ 1 AND first char unchanged
+#   partial     : safe iff orig has ≥ 3 tokens AND the LAST token of orig
+#                 survives in new AND we did not strip a leading article
+#                 ("the", "a", "an") that left a generic-looking remnant
+#   synonym     : safe iff orig appears (case-insensitive) as substring of
+#                 new — i.e. the strategy added scaffolding rather than
+#                 *replacing* the entity.  This kills "Walt Disney
+#                 Animation Studios" → "Disney animated" while keeping
+#                 "Tom Hanks" → "the actor Tom Hanks".
+#   paraphrase  : same substring-survives invariant as synonym.
+#   abbrev      : has its own internal LLM-judge gate; trust the augmenter.
+
+_ARTICLES = {"the", "a", "an"}
+
+# Trailing tokens that are commonly "category" words rather than part of
+# the canonical entity name — safe to drop as a trailing partial.
+_TRAILING_FILLERS = {
+    "series", "film", "films", "movie", "movies", "trilogy", "saga",
+    "company", "corporation", "inc", "co", "ltd", "limited",
+    "team", "fc", "club", "studios", "studio", "group", "press",
+}
+
+
+def _edit_distance_le1(a: str, b: str) -> bool:
+    """True iff a and b differ by at most one single-character edit
+    (insert, delete, or substitution).  Cheap; assumes short strings."""
+    if a == b:
+        return True
+    la, lb = len(a), len(b)
+    if abs(la - lb) > 1:
+        return False
+    # substitution
+    if la == lb:
+        diffs = sum(1 for x, y in zip(a, b) if x != y)
+        return diffs <= 1
+    # insertion / deletion — make a the shorter one
+    if la > lb:
+        a, b = b, a
+        la, lb = lb, la
+    # Walk and skip exactly once
+    i = j = 0
+    skipped = False
+    while i < la and j < lb:
+        if a[i] == b[j]:
+            i += 1
+            j += 1
+        else:
+            if skipped:
+                return False
+            skipped = True
+            j += 1
+    return True
+
+
+def _validate_edit(
+    strategy: str,
+    orig:     str,
+    new:      str,
+) -> bool:
+    """
+    Reject post-hoc edits that violate per-strategy safety invariants.
+    Returns True to keep, False to drop (pipeline then falls through to
+    the next strategy in order).
+    """
+    if not new or new == orig:
+        return False
+
+    o_lc = orig.lower()
+    n_lc = new.lower()
+
+    if strategy == "casing":
+        # Same characters modulo case → always safe.
+        return o_lc == n_lc and orig != new
+
+    if strategy == "typo":
+        # ≤1 char edit AND first letter unchanged (preserves the most
+        # distinctive char of most named entities).
+        if not _edit_distance_le1(orig, new):
+            return False
+        if orig[:1].lower() != new[:1].lower():
+            return False
+        return True
+
+    if strategy == "partial":
+        o_toks = orig.split()
+        n_toks = new.split()
+        if len(o_toks) < 3:
+            return False                               # don't truncate short names
+        if len(n_toks) < 2:
+            return False                               # need to keep some shape
+        # Allowed shapes (matches the tightened augmenter that only drops
+        # a SINGLE token from the leading or trailing edge):
+        #   leading-drop:  new == orig[1:]
+        #   trailing-drop: new == orig[:-1] AND orig[-1] is a known filler
+        if n_toks == o_toks[1:]:
+            return True
+        if n_toks == o_toks[:-1] and o_toks[-1].lower() in _TRAILING_FILLERS:
+            return True
+        return False
+
+    if strategy in ("synonym", "paraphrase"):
+        # Substring-survives: the original entity literal (case-insensitive)
+        # must still appear inside the new surface so NER can still pick
+        # it up.  Kills replacement-style synonyms / runaway paraphrases.
+        return o_lc in n_lc
+
+    # abbrev / unknown strategies: trust the augmenter's own validation.
+    return True
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -206,13 +327,19 @@ def augment_nl(
     }
 
     for span in spans:
+        # Expose the current span's offsets to context-aware augmenters
+        # (e.g. paraphrase) so they can inspect surrounding text.
+        ctx.span_start = span.start
+        ctx.span_end   = span.end
         order = _strategy_order(rng, weights)
         chosen_strategy: Optional[str] = None
         new_surface: Optional[str] = None
+        tried: List[str] = []
         for strat_name in order:
             aug = instances.get(strat_name)
             if aug is None:
                 continue
+            tried.append(strat_name)
             try:
                 cand = aug.apply(span.surface, ctx)
             except Exception as exc:  # noqa: BLE001
@@ -221,13 +348,21 @@ def augment_nl(
                     f"raised on {span.surface!r}: {exc}"
                 )
                 cand = None
-            if cand and cand != span.surface:
-                chosen_strategy = strat_name
-                new_surface = cand
-                break
+            if not cand or cand == span.surface:
+                continue
+            # Post-augmenter safety gate (Fix B).
+            if not _validate_edit(strat_name, span.surface, cand):
+                logger.debug(
+                    f"data_augmentation.pipeline: rejected {strat_name!r} "
+                    f"edit {span.surface!r} → {cand!r} (failed safety invariant)"
+                )
+                continue
+            chosen_strategy = strat_name
+            new_surface = cand
+            break
 
         if chosen_strategy is None or new_surface is None:
-            skipped.append({"surface": span.surface, "tried": order})
+            skipped.append({"surface": span.surface, "tried": tried})
             continue
 
         replacements.append((span, new_surface))
@@ -241,6 +376,28 @@ def augment_nl(
 
     if not replacements:
         return None
+
+    # ── Fix A: cap edits per row ───────────────────────────────────────────
+    # The pipeline used to apply every successful edit, which produced
+    # compositional artifacts ("the the X", "the movie the movie X")
+    # when adjacent / overlapping spans both got rewritten.  Cap at
+    # MAX_EDITS_PER_ROW (default 1) by sampling without replacement.
+    if MAX_EDITS_PER_ROW is not None and len(replacements) > MAX_EDITS_PER_ROW:
+        # Sample uniformly without replacement; keep both lists in lock-step.
+        idxs = list(range(len(replacements)))
+        keep_idxs = sorted(rng.sample(idxs, MAX_EDITS_PER_ROW))
+        # Move the rest to `skipped`.
+        for i in idxs:
+            if i in keep_idxs:
+                continue
+            sp = replacements[i][0]
+            skipped.append({
+                "surface": sp.surface,
+                "tried":   [edits_pending[i]["strategy"]],
+                "reason":  "max_edits_per_row",
+            })
+        replacements   = [replacements[i]   for i in keep_idxs]
+        edits_pending  = [edits_pending[i]  for i in keep_idxs]
 
     # 3. Apply replacements right-to-left and capture output spans.
     new_nl, new_spans = _apply_replacements(nl, replacements)

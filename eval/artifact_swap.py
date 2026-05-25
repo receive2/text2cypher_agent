@@ -69,13 +69,19 @@ SWAP_FILES_OPTIONAL: list[str] = [
 ]
 
 # Directories to swap (whole-tree replace).
+#
+# Both FAISS index directories are REQUIRED because ``step_build_faiss``
+# in ``setup_project.py`` builds both unconditionally — the archive is a
+# mode-agnostic snapshot, so any downstream NER_MODE flip just works
+# without re-running setup.  See the docstring of ``step_build_faiss``
+# for the rationale (cost is negligible: ~100 embedding calls + a few
+# MB on disk per graph).
 SWAP_DIRS: list[str] = [
     "generated/faiss/tools_auto",
-]
-
-SWAP_DIRS_OPTIONAL: list[str] = [
     "generated/faiss/tools_auto_node_only",
 ]
+
+SWAP_DIRS_OPTIONAL: list[str] = []
 
 # vector_config.py is partially swapped: only the EMBEDDABLE_PROPERTIES
 # block.  At archive time, we extract that block and write it to

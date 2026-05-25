@@ -759,11 +759,39 @@ def step_generate_config(s: Step, database: str) -> None:
 # ──────────────────────────────────────────────────────────────────────────────
 
 def step_build_faiss(s: Step) -> None:
+    """
+    Build BOTH ``full`` and ``node_only`` FAISS tool-selection indexes
+    unconditionally, regardless of the current ``config.NER_MODE``.
+
+    Rationale
+    ---------
+    Setup is mode-agnostic on purpose: the resulting artifact archive
+    must be a complete snapshot that works for every NER mode any
+    downstream user might pick.  Coupling setup to a single user's
+    ``NER_MODE`` choice means a stranger who clones the repo and flips
+    the mode would silently get an archive missing the index they need.
+
+    Cost is negligible — both indexes embed the same ~55 tool docstrings
+    against the same OpenAI ``text-embedding-3-small`` model, so the
+    second call is mostly cache hits on the embedding side and a tiny
+    on-disk write (a few MB) on the FAISS side.  The ``no_ner`` mode
+    is the only one that builds nothing (it raises in
+    ``rebuild_tools_faiss``); we silently skip it.
+    """
     from ner_agent_auto import rebuild_tools_faiss
 
-    n = rebuild_tools_faiss()
-    s.detail("%d tools indexed → faiss_tools_auto/", n)
-    s.metric(f"{n} tools")
+    built: list[tuple[str, int]] = []
+    for mode in ("full", "node_only"):
+        try:
+            n = rebuild_tools_faiss(mode=mode)
+        except RuntimeError as exc:  # raised for "no_ner" — not applicable here
+            s.detail("skipped mode=%s: %s", mode, exc)
+            continue
+        suffix = "" if mode == "full" else "_node_only"
+        s.detail("%d tools indexed → faiss/tools_auto%s/", n, suffix)
+        built.append((mode, n))
+
+    s.metric(", ".join(f"{m}={n}" for m, n in built) or "none")
 
 
 # ──────────────────────────────────────────────────────────────────────────────

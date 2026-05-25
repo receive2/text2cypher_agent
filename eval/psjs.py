@@ -75,6 +75,11 @@ from typing import Any, List, Optional, Set, Tuple
 
 from loguru import logger
 
+from neo4j_lib.safe_query import (
+    TransactionTimedOutError,
+    safe_cypher_run,
+)
+
 
 # ──────────────────────────────────────────────────────────────────────────────
 # 1. Query-rewriting primitives — direct port of cypherbench reference
@@ -315,9 +320,20 @@ def _run_provenance_query(
     return_col: str,
     *,
     use_element_id: bool,
+    timeout: Optional[float] = None,
 ) -> Tuple[Optional[Set[Any]], Optional[str]]:
     """
     Rewrite *cypher* for provenance and execute it.
+
+    Parameters
+    ----------
+    timeout
+        Per-transaction server-side timeout, in seconds.  When supplied,
+        the query is executed via :func:`neo4j_lib.safe_query.safe_cypher_run`
+        using the driver embedded in *neo4j_graph* (LangChain
+        ``Neo4jGraph`` exposes its driver as ``_driver``).  When ``None``,
+        falls back to the historic ``neo4j_graph.query(...)`` path which
+        has no client-side timeout enforcement.
 
     Returns
     -------
@@ -325,7 +341,8 @@ def _run_provenance_query(
         On success, ``id_set`` is the set of element-IDs touched by the
         query and ``error`` is None.  On rewrite-failure ``id_set`` is
         ``None`` and ``error`` is a human-readable reason.  On execution
-        failure both are None / error string respectively.
+        failure both are None / error string respectively.  Transaction
+        timeouts surface as ``error="transaction timeout: …"``.
     """
     rewritten = _build_ps_cypher(
         cypher, return_var=return_col, use_element_id=use_element_id
@@ -333,8 +350,28 @@ def _run_provenance_query(
     if rewritten is None:
         return None, "no MATCH clause to rewrite"
 
+    # Prefer the timeout-enforcing helper when we can reach the underlying
+    # driver.  LangChain's ``Neo4jGraph`` stores it as ``_driver`` and the
+    # active database name as ``_database``.  If those attributes are
+    # missing (custom wrapper), fall through to the legacy path.
+    driver = getattr(neo4j_graph, "_driver", None) if timeout is not None else None
+    database = getattr(neo4j_graph, "_database", None) if driver is not None else None
+
     try:
-        rows = neo4j_graph.query(rewritten)
+        if driver is not None:
+            rows = safe_cypher_run(
+                driver,
+                rewritten,
+                params=None,
+                timeout=float(timeout),
+                database=database,
+            )
+        else:
+            rows = neo4j_graph.query(rewritten)
+    except TransactionTimedOutError as exc:  # type: ignore[misc]
+        # Surface timeout distinctly so the caller can log it and apply
+        # the function's existing failure convention.
+        return None, f"transaction timeout: {type(exc).__name__}: {exc}"
     except Exception as exc:  # noqa: BLE001 — surface every failure
         return None, f"{type(exc).__name__}: {exc}"
 
@@ -348,7 +385,7 @@ def compute_psjs(
     *,
     neo4j_graph: Any,
     ea_value: Optional[bool] = None,
-    timeout: int = 120,  # noqa: ARG001 — kept for API parity with reference impl
+    timeout: int = 120,
 ) -> Optional[float]:
     """
     Compute Provenance Subgraph Jaccard Similarity between *pred_cypher* and
@@ -363,7 +400,14 @@ def compute_psjs(
         Reference Cypher.  ``None`` ⇒ PSJS is N/A — returns ``None``.
     neo4j_graph
         Object with a ``.query(cypher)`` method (e.g.
-        ``langchain_neo4j.Neo4jGraph``).
+        ``langchain_neo4j.Neo4jGraph``).  When the object also exposes a
+        ``_driver`` attribute (LangChain's ``Neo4jGraph`` does), each
+        provenance query is run via
+        :func:`neo4j_lib.safe_query.safe_cypher_run` so the *timeout*
+        below is enforced as a **server-side per-transaction cap**.  When
+        ``_driver`` is missing, the query falls back to
+        ``neo4j_graph.query(...)`` and the timeout is **not** enforced
+        (the caller should treat that as best-effort).
     ea_value
         Execution-Accuracy verdict (``True`` / ``False``).  Used **only**
         when one or both queries cannot be rewritten for provenance —
@@ -371,14 +415,21 @@ def compute_psjs(
         If *ea_value* is ``None`` and a fallback is needed, this function
         returns ``None``.
     timeout
-        Accepted for API parity with the reference implementation; not
-        currently propagated through ``Neo4jGraph.query``.
+        Per-query, server-side transaction-timeout cap in **seconds**,
+        applied independently to the gold and the predicted provenance
+        rewrites.  When either query exceeds it, Neo4j aborts the
+        transaction (raising :class:`TransientError` /
+        :class:`ClientError`) and this function returns ``0.0``,
+        matching the existing "execution failure" convention.  The
+        caller's example is **not** aborted.
 
     Returns
     -------
     float | None
         Jaccard similarity in [0, 1], or ``None`` when PSJS is not
-        applicable (no gold) or no fallback is available.
+        applicable (no gold) or no fallback is available.  Returns
+        ``0.0`` if either provenance query failed (including on
+        transaction timeout).
     """
     if gold_cypher is None:
         return None
@@ -394,16 +445,19 @@ def compute_psjs(
     # ── Try elementId() first; fall back to id() on syntax failure ──────────
     use_eid = True
     gold_ids, gold_err = _run_provenance_query(
-        neo4j_graph, gold_cypher, "elemId1", use_element_id=use_eid
+        neo4j_graph, gold_cypher, "elemId1",
+        use_element_id=use_eid, timeout=timeout,
     )
     if gold_err and "elementId" in (gold_err or ""):
         # Likely Neo4j < 5 — retry whole pipeline with id().
         use_eid = False
         gold_ids, gold_err = _run_provenance_query(
-            neo4j_graph, gold_cypher, "elemId1", use_element_id=use_eid
+            neo4j_graph, gold_cypher, "elemId1",
+            use_element_id=use_eid, timeout=timeout,
         )
     pred_ids, pred_err = _run_provenance_query(
-        neo4j_graph, pred_cypher, "elemId2", use_element_id=use_eid
+        neo4j_graph, pred_cypher, "elemId2",
+        use_element_id=use_eid, timeout=timeout,
     )
 
     # ── Fallback path: at least one query is not rewritable ─────────────────
@@ -429,10 +483,23 @@ def compute_psjs(
 
     # ── Other execution errors — match reference: return 0.0 ────────────────
     if gold_err is not None or pred_err is not None:
-        logger.warning(
-            "PSJS execution failed — returning 0.0.  gold_err=%r pred_err=%r",
-            gold_err, pred_err,
+        # Distinguish timeout in the log message so operators can grep
+        # for it; the return value (0.0) follows the existing convention.
+        timed_out = (
+            (gold_err or "").startswith("transaction timeout")
+            or (pred_err or "").startswith("transaction timeout")
         )
+        if timed_out:
+            logger.warning(
+                "PSJS provenance query timed out after %ss — returning 0.0.  "
+                "gold_err=%r pred_err=%r",
+                timeout, gold_err, pred_err,
+            )
+        else:
+            logger.warning(
+                "PSJS execution failed — returning 0.0.  gold_err=%r pred_err=%r",
+                gold_err, pred_err,
+            )
         return 0.0
 
     # gold_ids / pred_ids are guaranteed to be sets at this point.

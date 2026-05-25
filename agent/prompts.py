@@ -60,16 +60,28 @@ Extraction rules (follow strictly)
         - NEVER mix: do NOT wrap a single value in a 1-element list.
     • No code fences, no markdown, no explanation, no extra text.
 
-7.  Coverage over caution: For EVERY noun phrase in the question that could
-    plausibly refer to a database entity (a person, a movie, an
-    organization, a category, etc.), call the corresponding tool to verify
-    — even if you are not fully sure the mention matches anything.
-    Lowercase, partial, abbreviated, or informal mentions ("chicago" for
-    "Chicago, IL", "gates" for "Bill Gates", "pirates" for "Pirates of the
-    Caribbean") still count and MUST be looked up.  It is far better to
-    make an extra tool call that returns nothing than to skip a tool call
-    and miss an entity.  Do NOT decide on your own that a mention is "too
-    informal" or "probably not in the database" — let the tool decide.
+7.  Coverage over caution (bounded): For each PROPER-NAME mention in the
+    question (a specific person, movie, organization, award, place, etc.),
+    call exactly ONE tool against the entity's primary name/title field
+    — the {Label}.name or {Label}.title tool — even if the mention is
+    lowercase, partial, abbreviated, or informal ("chicago" for "Chicago,
+    IL", "gates" for "Bill Gates", "pirates" for "Pirates of the
+    Caribbean").  Let the tool decide whether the mention matches.
+
+    HARD BUDGET — DO NOT EXCEED:
+      • At most 1 tool call per distinct proper-name mention.
+      • At most 4 tool calls total per question.
+      • NEVER call multiple tools for the same mention "just to be sure"
+        (do NOT try {Label}.eid, {Label}.aliases, {Label}.provenance
+        on a name mention — those fields are for opaque identifiers and
+        URLs, not names; each tool's docstring tells you exactly when it
+        is appropriate to call).
+      • If your first 4 tool calls have not resolved every mention, STOP
+        and emit the partial result.  Do NOT keep searching.
+
+    Why the budget exists: each tool call costs an LLM round-trip plus a
+    database query.  Without the budget, multi-entity questions blow the
+    per-example time budget and the agent is terminated mid-search.
 
 8.  Distinguish filter values from generic schema terms:
     - Filter values: specific named entities mentioned as the SUBJECT of
@@ -92,22 +104,22 @@ Extraction rules (follow strictly)
 
 Examples
 ────────
-Q: Find the award named "AACTA International Award for Best Actress".
-A: {"Award.name": "AACTA International Award for Best Actress"}
+Q: Find the movie named "What Girls Never Say".
+A: {"Movie.name": "What Girls Never Say"}
 
-Q: Which award has aliases containing "['Canadian Film Awards']"?
-A: {"Award.aliases": "['Canadian Film Awards']"}
+Q: Which movie has aliases containing "['Belt', 'La cintura']"?
+A: {"Movie.aliases": "['Belt', 'La cintura']"}
 
-Q: Which movie has hascastmember character_role "Lady Elizabeth Murray"?
-A: {"hasCastMember.character_role": "Lady Elizabeth Murray"}
+Q: Which movie has hascastmember character_role "Charles X of France"?
+A: {"hasCastMember.character_role": "Charles X of France"}
 
 Q: Show every entity in the graph.
 A: {}
 
-Q: Find awards where character_role is "Lady Elizabeth Murray" or "David Spritz", specifically the award named "AACTA International Award for Best Actress".
-A: {"hasCastMember.character_role": ["Lady Elizabeth Murray", "David Spritz"], "Award.name": "AACTA International Award for Best Actress"}
+Q: Find movies where character_role is "Charles X of France" or "Mary Magdalene", specifically the movie named "What Girls Never Say".
+A: {"hasCastMember.character_role": ["Charles X of France", "Mary Magdalene"], "Movie.name": "What Girls Never Say"}
 
-Note: When a question mentions multiple entity types (e.g. both a movie AND the role played in it), you MUST call tools for ALL of them and include ALL keys in the output JSON. Never stop after the first successful lookup.
+Note: When a question mentions multiple distinct entity types (e.g. both a movie AND the role played in it), call the appropriate name/title tool for each one and include ALL resolved keys in the output JSON.  Respect the rule-7 budget: at most 1 call per mention, at most 4 calls total.
 """
 
 TEXT2CYPHER_SP = """\

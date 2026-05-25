@@ -46,6 +46,12 @@ class AugContext:
     nl:      str
     rng:     random.Random
     llm:     LLMClient
+    # Per-entity span offsets into ``nl``.  Set by the pipeline immediately
+    # before calling an augmenter; ``None`` outside that window.  Context-
+    # aware augmenters (paraphrase) read these to know what's adjacent to
+    # the entity (e.g. a preceding article).
+    span_start: Optional[int] = None
+    span_end:   Optional[int] = None
 
 
 class Augmenter(ABC):

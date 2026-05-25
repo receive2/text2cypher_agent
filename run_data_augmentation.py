@@ -59,10 +59,11 @@ from data_augmentation.datasets import get_runner
 # ──────────────────────────────────────────────────────────────────────────────
 
 # Which datasets to augment.  Comment out / shrink for partial runs.
+# 2026-05-24: validating fix package on cypherbench only first; expand
+# back to mindthequery / zograscope after the cypherbench eval rebound
+# is confirmed.
 DATASETS_TO_AUGMENT: List[str] = [
     "cypherbench",
-    "mindthequery",
-    "zograscope",
 ]
 
 
@@ -73,13 +74,20 @@ DATASETS_TO_AUGMENT: List[str] = [
 SPLITS_TO_AUGMENT: List[str] = ["test"]
 
 # Strategy proportions — six strategies, weights normalised at runtime.
+#
+# 2026-05-24: rebalanced after the pipeline post-augmenter safety gate
+# was tightened.  ``abbrev`` is gated by a two-stage LLM recognizability
+# judge so its effective output rate is naturally low even at this
+# weight (most named entities have no widely-recognised abbreviation);
+# ``paraphrase`` gets a small bump now that the prompt is context-aware
+# and unlikely to introduce double-article artifacts.
 AUG_PROPORTIONS: Dict[str, float] = {
-    "casing":     0.18,
-    "partial":    0.18,
-    "abbrev":     0.18,
-    "synonym":    0.18,
-    "paraphrase": 0.18,
-    "typo":       0.10,
+    "casing":     0.20,
+    "partial":    0.15,
+    "abbrev":     0.08,
+    "synonym":    0.17,
+    "paraphrase": 0.25,
+    "typo":       0.15,
 }
 
 # LLM config — same shape as config.py LLM dicts.  Set to None to
@@ -105,12 +113,12 @@ TARGET_SUFFIX: str = "_augmented"
 
 _STRATEGIES = ("casing", "partial", "abbrev", "synonym", "paraphrase", "typo")
 _TARGET_PCT = {
-    "casing":     0.18,
-    "partial":    0.18,
-    "abbrev":     0.18,
-    "synonym":    0.18,
-    "paraphrase": 0.18,
-    "typo":       0.10,
+    "casing":     0.20,
+    "partial":    0.15,
+    "abbrev":     0.08,
+    "synonym":    0.17,
+    "paraphrase": 0.25,
+    "typo":       0.15,
 }
 
 
@@ -204,13 +212,17 @@ def _print_strategy_distribution(per_dataset_counts: Dict[str, Counter]) -> None
             pct = counts.get(strat, 0) / tot
             cell = f"{pct * 100:>{col_w - 2}.1f}%"
             cells.append(cell)
-            # Skewed-warning rule: >25% always; <12% for non-typo only.
-            high = pct > 0.25
-            low  = (pct < 0.12) if strat != "typo" else (pct < 0.05 or pct > 0.15)
+            # Skewed-warning rule: flag if observed proportion is more
+            # than 50% off the target in either direction.  abbrev's
+            # target is low by design (gated by recognizability judge)
+            # so we don't insist on a tight floor.
+            target = _TARGET_PCT[strat]
+            high = pct > target * 1.5
+            low  = pct < target * 0.5
             if high or low:
                 skewed_lines.append(
                     f"⚠ skewed: {ds} {strat} = {pct * 100:.1f}% "
-                    f"(target {_TARGET_PCT[strat] * 100:.0f}%)"
+                    f"(target {target * 100:.0f}%)"
                 )
         print(f"  {strat:<{name_w}}" + "".join(cells))
 
