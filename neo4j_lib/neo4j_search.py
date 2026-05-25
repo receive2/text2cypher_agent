@@ -243,6 +243,18 @@ def search_tool(
     """
     effective_mode = (mode or vc.TOOL_RETRIEVAL_MODE).lower()
 
+    # ── Defense-in-depth: short-circuit on empty / whitespace-only phrase ─────
+    # The NER stage (agent.agent_helper.get_entity) already strips template
+    # markers like "[OUTPUT]", but any future / alternate caller path could
+    # still feed an empty string here.  A blank Lucene query against the
+    # full-text index can return arbitrary low-score rows and the
+    # vector-embedding path will charge an API call for no useful signal,
+    # so we exit early with the same shape the real path would return.
+    if not phrase or not str(phrase).strip():
+        _log_retrieval(phrase, node_label, property_name, effective_mode,
+                       fuzzy=[], vector=None, final=[])
+        return []
+
     # ── Legacy fuzzy path — preserved exactly as before ───────────────────────
     if effective_mode == "fuzzy":
         results = top_similar_values(

@@ -435,9 +435,106 @@ def extract_agent_response_details(agent_response, messages):
     return {"tool_calls": tool_calls_info, "final_response": final_message}
 
 
+# Few-shot prompt markers that some LLMs (notably weaker / non-instruction-tuned
+# variants) echo back verbatim instead of stripping.  We scrub these from the
+# response before handing the value off to the retrieval layer — otherwise
+# strings like ``"[OUTPUT]\nElijah Wood"`` end up in the FAISS / Lucene query
+# and either return zero hits (when the marker is the entire string) or
+# pollute the fuzzy score (e.g. ranking ``Output`` above ``Argo``).
+_TEMPLATE_MARKER_RE = re.compile(
+    r"""^\s*               # leading whitespace
+        \[(?:OUTPUT|TEXT|INPUT|ANSWER|RESULT)\]   # bracketed section header
+        \s*[:\-]?\s*       # optional separator
+        \n?                # optional newline after the marker
+    """,
+    re.IGNORECASE | re.VERBOSE,
+)
+
+# Plain-text preambles like ``Answer: Neo`` or ``Output - Foo``.
+_PREAMBLE_RE = re.compile(
+    r"""^\s*
+        (?:answer|output|result|response|entity|keyword|keywords?)
+        \s*[:\-–]\s*
+    """,
+    re.IGNORECASE | re.VERBOSE,
+)
+
+# Outer wrapping quotes / backticks — single, double, smart, backtick.
+_WRAPPING_QUOTES = ('"', "'", "`", "\u201c", "\u201d", "\u2018", "\u2019")
+
+
+def _clean_entity_response(raw: str) -> str:
+    """
+    Sanitize a raw LLM response from the NER few-shot prompt.
+
+    Handles three contamination patterns observed in eval logs:
+
+    1. Section-header echo:  ``"[OUTPUT]\\nElijah Wood"`` → ``"Elijah Wood"``
+    2. Preamble echo:        ``"Answer: Neo"``           → ``"Neo"``
+    3. Wrapping quotes:      ``'"The Matrix"'``          → ``"The Matrix"``
+
+    Also collapses runs of internal whitespace (``"The  Matrix"`` →
+    ``"The Matrix"``) and trims surrounding whitespace.  Returns an empty
+    string when the response is non-textual or reduces to nothing — callers
+    can early-exit on falsy values to avoid invoking the retrieval layer
+    with garbage.
+    """
+    if raw is None:
+        return ""
+    if not isinstance(raw, str):
+        # Some LLM clients return list-of-content-blocks.  Try to coerce
+        # the first text block, otherwise stringify.
+        try:
+            if isinstance(raw, list) and raw and isinstance(raw[0], dict):
+                raw = raw[0].get("text", "") or ""
+            else:
+                raw = str(raw)
+        except Exception:
+            return ""
+
+    s = raw
+
+    # Repeatedly strip template markers and preambles — the LLM may emit
+    # several in a row (e.g. ``"[OUTPUT]\nAnswer: Foo"``).
+    for _ in range(4):
+        new = _TEMPLATE_MARKER_RE.sub("", s)
+        new = _PREAMBLE_RE.sub("", new)
+        if new == s:
+            break
+        s = new
+
+    # If the model echoed the entire few-shot pattern, only keep the line
+    # after the LAST ``[OUTPUT]`` (case-insensitive) marker.
+    parts = re.split(r"\[OUTPUT\]\s*\n?", s, flags=re.IGNORECASE)
+    if len(parts) > 1:
+        s = parts[-1]
+
+    s = s.strip()
+
+    # Strip matched wrapping quotes (one layer; repeat for nested smart quotes).
+    for _ in range(2):
+        if len(s) >= 2 and s[0] in _WRAPPING_QUOTES and s[-1] in _WRAPPING_QUOTES:
+            s = s[1:-1].strip()
+        else:
+            break
+
+    # Collapse internal whitespace runs (incl. newlines/tabs) to a single space.
+    s = re.sub(r"\s+", " ", s).strip()
+
+    return s
+
+
 def get_entity(user_query: str, topic: str) -> str:
-    """Ask the LLM to pull the keyword related to `topic` out of the user query."""
-    TOOL_NER_PROMPT = """ Extract the key words related to {topic} from sentence under [TEXT]. 
+    """Ask the LLM to pull the keyword related to `topic` out of the user query.
+
+    The returned string is post-processed by :func:`_clean_entity_response`
+    to strip few-shot template markers (``[OUTPUT]``), preambles (``Answer:``),
+    and wrapping quotes that some LLMs echo back from the prompt.  An empty
+    string is returned when the LLM produced no usable entity — callers
+    should treat that as "nothing to look up" rather than passing the value
+    on to the retrieval layer.
+    """
+    TOOL_NER_PROMPT = """ Extract the key words related to {topic} from sentence under [TEXT].
 
 [TEXT]
 How many software engineers in this team?
@@ -454,7 +551,14 @@ software engineer
         .replace("{topic}", topic)
     )
     res = llm.invoke(prompt_text)
-    return res.content
+    cleaned = _clean_entity_response(getattr(res, "content", res))
+    if not cleaned:
+        logger.debug(
+            "get_entity: LLM returned no usable entity for topic={!r} "
+            "query={!r} (raw={!r}); returning empty string.",
+            topic, user_query, getattr(res, "content", res),
+        )
+    return cleaned
 
 
 # ---------- 4. Tools — loaded dynamically from generated files ----------
