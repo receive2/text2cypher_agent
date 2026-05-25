@@ -295,36 +295,42 @@ def select_tools_for_query(
 ) -> List[BaseTool]:
     """
     Use FAISS semantic search to select the *top_k* most relevant tools for
-    *user_query* from the full tool registry, then optionally prune relation
-    tools that are not connected to any selected node label.
+    *user_query* from the full tool registry, then optionally top up the
+    selection with the node tools needed to complete each selected
+    relation's endpoint coverage.
 
     Parameters
     ----------
     user_query           : Natural-language question or instruction.
-    top_k                : Maximum number of tools to return (default 5).
+    top_k                : Maximum number of tools to return from FAISS
+                           (default 5).  Connectivity top-up may add a
+                           handful of extra node tools on top of this.
     faiss_dir            : Directory of the FAISS index (built automatically if absent).
     rebuild              : Force-rebuild the FAISS index even if it already exists.
     filter_connectivity  : When *True* (default), call
                            :func:`filter_tools_by_connectivity` after FAISS
-                           search to remove relation tools whose node labels
-                           don't overlap with the selected node tools.
-                           Set to *False* to keep all FAISS hits as-is.
+                           search to **additively** ensure that every
+                           selected relation tool's endpoint node labels
+                           also have a node tool registered with the agent.
+                           No tool is ever dropped -- only appended.
+                           Set to *False* to skip the top-up and use the
+                           raw FAISS hits as-is.
     verbose              : Print ranked hits and filter decisions to stdout.
 
     Returns
     -------
     List[BaseTool]
-        Ordered from most to least relevant.  May be fewer than *top_k* if
-        the registry is smaller, duplicates are collapsed, or connectivity
-        filtering removes unrelated relation tools.
+        Ordered as: FAISS hits (most → least relevant) followed by any
+        appended endpoint-coverage node tools.
 
     Example
     -------
-    >>> tools = select_tools_for_query("movies released in 2015", top_k=5)
+    >>> tools = select_tools_for_query("who played Neo in The Matrix", top_k=2)
     >>> [t.name for t in tools]
-    ['get_movie_released', 'get_movie_title', 'get_acted_in_roles']
-    # get_follows_relation was dropped — FOLLOWS connects Person→Person,
-    # not connected to Movie which is the only selected node label.
+    ['get_acted_in_roles', 'get_movie_title', 'get_person_name']
+    # FAISS returned [get_acted_in_roles, get_movie_title]; ACTED_IN
+    # connects Person↔Movie, Movie is already covered by get_movie_title,
+    # so the connectivity top-up appended get_person_name to cover Person.
     """
     effective_mode = _resolve_mode(mode)
     if effective_mode == "no_ner":
@@ -545,49 +551,75 @@ def filter_tools_by_connectivity(
     verbose: bool = False,
 ) -> List[BaseTool]:
     """
-    Remove relation tools from *selected_tools* whose connected node labels
-    have **no overlap** with the node labels already covered by the selected
-    node tools.
+    Ensure connectivity by **additive expansion** -- keep every FAISS-selected
+    tool and *top up* the selection with the node tools that complete each
+    selected relation's endpoint coverage.
+
+    Rationale
+    ---------
+    The previous behaviour was subtractive: a relation tool was DROPPED if
+    its endpoint node labels did not overlap with the labels already covered
+    by the selected *node* tools.  That penalty cascaded badly -- one weak
+    FAISS hit on the node side caused otherwise-relevant relation tools to
+    disappear from the NER agent, which then could not lookup the entities
+    they were supposed to resolve.  Empirically this regressed PSJS on
+    cypherbench_augmented (0.6397 -> 0.5721 with the agent enabled).
+
+    The new behaviour is additive and never deletes anything:
+      - Every tool the caller passed in is kept (FAISS already ranked them).
+      - For each selected relation tool, we look up its endpoint node labels
+        from the connectivity map.
+      - For each endpoint label that is NOT already covered by a selected
+        node tool, we scan the full registry for a matching node tool and
+        append it to the result.
+
+    Worst-case cost is bounded by the number of endpoint labels demanded by
+    the selected relations (typically 1-4 extra tools), so the agent's
+    context never explodes.
 
     Algorithm
     ---------
-    1. Build a ``{rel_type: {labels}}`` connectivity map from **all** tools in
-       the full registry (structural rel tool docstrings encode the pattern
-       ``(:{From})-[:{REL}]->(:{To})``).
-    2. Collect the node labels covered by every *node* tool in the selection.
-    3. For each *relation* tool in the selection, compute its connected labels
-       and test whether they intersect with the node-label set from step 2.
-       Drop the relation tool if the intersection is empty.
-
-    Node tools are **always** kept.
+    1. Build a ``{rel_type: {labels}}`` connectivity map from the full
+       registry (preferred source: ``schema_meta.json``; fallback: structural
+       rel tool descriptions).
+    2. ``covered``  = labels already supplied by selected NODE tools.
+    3. ``demanded`` = labels referenced by selected RELATION tools' endpoints.
+    4. ``missing``  = demanded - covered.
+    5. For each label in ``missing`` (sorted for log stability), find the
+       first registry node tool that covers it and append it (deduped by
+       tool name).
 
     Parameters
     ----------
     selected_tools : Tools returned by :func:`select_tools_for_query`.
     registry       : Full tool registry.  When *None*, the module-level
                      singleton ``_registry`` is used.
-    verbose        : Log which tools are dropped and why.
+    verbose        : Log which tools were appended and why.
 
     Returns
     -------
-    List[BaseTool]  Filtered tool list, preserving the original order.
+    List[BaseTool]
+        Selected tools (original order) followed by the appended node tools
+        (sorted by the missing label they cover, for determinism).
 
     Example
     -------
-    Suppose the query is *"movies directed by Spielberg"* and FAISS returns::
+    Suppose the query is *"who played Neo in The Matrix"* and FAISS returns::
 
-        [get_movie_title, get_acted_in_roles, get_follows_relation]
+        [get_acted_in_roles, get_movie_title]
 
-    Node labels from node tools = {``Movie``}
+    ============== ====================================== ============
+    Selected tool  Kind / endpoint labels                 Coverage role
+    ============== ====================================== ============
+    get_acted_in_roles  rel-property, endpoints {Person, Movie}    demands
+    get_movie_title     node tool,    labels {Movie}               covers Movie
+    ============== ====================================== ============
 
-    ========================== ============================ ======
-    Relation tool              Connected labels             Action
-    ========================== ============================ ======
-    ``get_acted_in_roles``     ``{Person, Movie}``          **KEEP**  (Movie ∈ {Movie})
-    ``get_follows_relation``   ``{Person}``                 **DROP**  (Person ∉ {Movie})
-    ========================== ============================ ======
+    ``demanded = {Person, Movie}``, ``covered = {Movie}`` →
+    ``missing = {Person}`` → append ``get_person_name`` (first node tool in
+    the registry whose labels include ``Person``).
 
-    Result: ``[get_movie_title, get_acted_in_roles]``
+    Result: ``[get_acted_in_roles, get_movie_title, get_person_name]``
     """
     if registry is None:
         registry = _get_registry()
@@ -595,54 +627,54 @@ def filter_tools_by_connectivity(
     # Build {rel_type → {label, …}} from the full registry
     rel_conn = _build_rel_connectivity_map(registry)
 
-    # ── Step 1: collect labels from selected NODE tools ────────────────────────
-    selected_node_labels: Set[str] = set()
+    # ── Step 1: labels currently covered by selected NODE tools ───────────────
+    covered: Set[str] = set()
     for tool_obj in selected_tools:
         if not _is_rel_tool(tool_obj):
-            labels = _get_tool_node_labels(tool_obj, rel_conn)
-            selected_node_labels.update(labels)
+            covered.update(_get_tool_node_labels(tool_obj, rel_conn))
 
-    if not selected_node_labels:
-        # Cannot determine node context → skip filtering to avoid dropping
-        # all relation tools incorrectly.
-        if verbose:
-            logger.info(
-                "filter_tools_by_connectivity: no node labels identified "
-                "in selected tools — skipping filter."
-            )
-        return selected_tools
-
-    # ── Step 2: filter ─────────────────────────────────────────────────────────
-    kept:    List[BaseTool] = []
-    dropped: List[BaseTool] = []
-
+    # ── Step 2: labels demanded by selected RELATION tools' endpoints ─────────
+    demanded: Set[str] = set()
     for tool_obj in selected_tools:
-        if not _is_rel_tool(tool_obj):
-            kept.append(tool_obj)          # node tools are always kept
-            continue
+        if _is_rel_tool(tool_obj):
+            demanded.update(_get_tool_node_labels(tool_obj, rel_conn))
 
-        labels = _get_tool_node_labels(tool_obj, rel_conn)
-        if labels & selected_node_labels:
-            kept.append(tool_obj)
-        else:
-            dropped.append(tool_obj)
+    missing: Set[str] = demanded - covered
+
+    # ── Step 3: top-up node tools for each missing endpoint label ─────────────
+    seen_names: Set[str] = {t.name for t in selected_tools}
+    appended:   List[BaseTool] = []
+
+    # sorted() makes the append order deterministic across runs / dict orderings
+    for label in sorted(missing):
+        for cand in registry.values():
+            if cand.name in seen_names:
+                continue
+            if _is_rel_tool(cand):
+                continue
+            if label in _get_tool_node_labels(cand, rel_conn):
+                appended.append(cand)
+                seen_names.add(cand.name)
+                break  # one node tool per missing label is enough
+
+    result = list(selected_tools) + appended
 
     if verbose:
-        if dropped:
+        if appended:
             logger.info(
-                f"filter_tools_by_connectivity: "
-                f"selected node labels = {selected_node_labels}  |  "
-                f"dropped {len(dropped)} unconnected relation tool(s): "
-                f"{[t.name for t in dropped]}"
+                f"filter_tools_by_connectivity (additive): "
+                f"covered={sorted(covered)}  demanded={sorted(demanded)}  "
+                f"missing={sorted(missing)}  →  appended {len(appended)} "
+                f"node tool(s): {[t.name for t in appended]}"
             )
         else:
             logger.info(
-                f"filter_tools_by_connectivity: "
-                f"selected node labels = {selected_node_labels}  |  "
-                f"all {len(kept)} relation tools are connected — nothing dropped."
+                f"filter_tools_by_connectivity (additive): "
+                f"covered={sorted(covered)}  demanded={sorted(demanded)}  "
+                f"missing=∅  →  no top-up needed (kept {len(selected_tools)})."
             )
 
-    return kept
+    return result
 
 
 def _render_tool_section(tools: List[BaseTool]) -> str:
