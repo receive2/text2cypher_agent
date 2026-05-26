@@ -70,6 +70,7 @@ Public API
 
 from __future__ import annotations
 
+import os
 import re
 from typing import Any, List, Optional, Set, Tuple
 
@@ -79,6 +80,70 @@ from neo4j_lib.safe_query import (
     TransactionTimedOutError,
     safe_cypher_run,
 )
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Timeout-classification helper
+#
+# ``safe_query.TransactionTimedOutError`` is the tuple
+# ``(TransientError, ClientError)`` because the Neo4j 5.x server raises
+# timeouts as one or the other depending on version.  That tuple is far too
+# broad to use as a binary "this was a timeout" signal — *every* malformed
+# predicted Cypher (unknown label, syntax error, missing parameter) also
+# raises ``ClientError`` and was previously being mis-classified as
+# "transaction timeout" in the eval logs.  That's why qids c64fb6db
+# (Metro-Goldwyn-Mayer) and 18046b50 (Lord of the Rings) showed PSJS-timeout
+# warnings within 7–15 s of starting, instead of the 120 s server cap.
+#
+# The Neo4j Python driver attaches a ``.code`` attribute of the form
+# ``Neo.<Category>.<Sub>.<Specific>`` to every error.  Real transaction
+# timeouts use codes that contain ``Timeout`` / ``TimedOut`` / ``Terminated``;
+# we match on that substring rather than on exception class.
+# ──────────────────────────────────────────────────────────────────────────────
+_TIMEOUT_CODE_RE = re.compile(r"(Timeout|TimedOut|Terminated)", re.IGNORECASE)
+
+
+def _safe_exc_text(exc: BaseException) -> str:
+    """Render an exception as ``ClassName: message`` while tolerating
+    ``__str__`` implementations that themselves raise (some neo4j driver
+    error subclasses crash in ``__str__`` when they're only partially
+    hydrated — e.g. in test harnesses)."""
+    name = type(exc).__name__
+    try:
+        body = str(exc)
+    except Exception:  # noqa: BLE001 — defensive only
+        # Fall back to fields most likely to be populated.
+        body = getattr(exc, "message", None) or getattr(exc, "code", None) or "<unrenderable>"
+    return f"{name}: {body}"
+
+
+def _is_real_timeout(exc: BaseException) -> bool:
+    """Return True iff *exc* is a Neo4j transaction-timeout (not a generic
+    client/transient error)."""
+    code = getattr(exc, "code", None) or ""
+    if isinstance(code, str) and _TIMEOUT_CODE_RE.search(code):
+        return True
+    # Some driver versions stash the status code in ``.gql_status`` or only
+    # in the message body — fall back to a substring match on the rendered
+    # text.  Wrap ``str(exc)`` in a try/except: partially-constructed
+    # exception objects (synthetic test doubles, half-hydrated driver
+    # errors) can raise inside ``__str__``.
+    try:
+        msg = str(exc)
+    except Exception:  # noqa: BLE001 — defensive only
+        msg = ""
+    return bool(_TIMEOUT_CODE_RE.search(msg))
+
+
+# Default per-query, server-side transaction-timeout cap (seconds).  Overridable
+# via ``EVAL_PSJS_TIMEOUT_SEC`` so operators can bump or lower it without a
+# code edit.  60 s aligns with the per-example wall-clock watchdog in
+# ``metrics_CypherBench.evaluate_dataset`` — no point keeping PSJS alive past
+# the point its parent example has already been killed.
+try:
+    _DEFAULT_PSJS_TIMEOUT_SEC = int(os.environ.get("EVAL_PSJS_TIMEOUT_SEC", "60"))
+except ValueError:
+    _DEFAULT_PSJS_TIMEOUT_SEC = 60
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -369,11 +434,19 @@ def _run_provenance_query(
         else:
             rows = neo4j_graph.query(rewritten)
     except TransactionTimedOutError as exc:  # type: ignore[misc]
-        # Surface timeout distinctly so the caller can log it and apply
-        # the function's existing failure convention.
-        return None, f"transaction timeout: {type(exc).__name__}: {exc}"
+        # ``TransactionTimedOutError`` is the tuple ``(TransientError,
+        # ClientError)`` — both classes also cover ordinary client-side
+        # errors (unknown labels, syntax errors, missing params).  We must
+        # interrogate ``.code`` to tell a *real* timeout apart from a
+        # garden-variety bad-Cypher error; otherwise both end up logged as
+        # "transaction timeout" and PSJS silently returns 0.0 for what is
+        # actually a malformed predicted query.
+        text = _safe_exc_text(exc)
+        if _is_real_timeout(exc):
+            return None, f"transaction timeout: {text}"
+        return None, text
     except Exception as exc:  # noqa: BLE001 — surface every failure
-        return None, f"{type(exc).__name__}: {exc}"
+        return None, _safe_exc_text(exc)
 
     ids = {r[return_col] for r in (rows or []) if r.get(return_col) is not None}
     return ids, None
@@ -385,7 +458,7 @@ def compute_psjs(
     *,
     neo4j_graph: Any,
     ea_value: Optional[bool] = None,
-    timeout: int = 120,
+    timeout: Optional[int] = None,
 ) -> Optional[float]:
     """
     Compute Provenance Subgraph Jaccard Similarity between *pred_cypher* and
@@ -442,6 +515,9 @@ def compute_psjs(
     if pred_cypher == gold_cypher:
         return 1.0
 
+    if timeout is None:
+        timeout = _DEFAULT_PSJS_TIMEOUT_SEC
+
     # ── Try elementId() first; fall back to id() on syntax failure ──────────
     use_eid = True
     gold_ids, gold_err = _run_provenance_query(
@@ -469,14 +545,14 @@ def compute_psjs(
         if ea_value is None:
             logger.info(
                 "PSJS fallback triggered (query not rewritable) but no EA "
-                "value supplied — returning None.  gold_err=%r pred_err=%r",
+                "value supplied — returning None.  gold_err={!r} pred_err={!r}",
                 gold_err, pred_err,
             )
             return None
         psjs_fb = 1.0 if ea_value else 0.0
         logger.info(
-            "PSJS fallback: query not rewritable for provenance — using EA=%s "
-            "→ PSJS=%s.  gold_err=%r pred_err=%r",
+            "PSJS fallback: query not rewritable for provenance — using EA={} "
+            "→ PSJS={}.  gold_err={!r} pred_err={!r}",
             ea_value, psjs_fb, gold_err, pred_err,
         )
         return psjs_fb
@@ -485,19 +561,25 @@ def compute_psjs(
     if gold_err is not None or pred_err is not None:
         # Distinguish timeout in the log message so operators can grep
         # for it; the return value (0.0) follows the existing convention.
+        # Note: ``_run_provenance_query`` now only emits the
+        # "transaction timeout" prefix for *real* server-side timeouts (per
+        # ``_is_real_timeout``), so other ClientError / TransientError
+        # cases — invalid label, syntax error, etc. — land in the generic
+        # branch below with the original exception text intact.
         timed_out = (
             (gold_err or "").startswith("transaction timeout")
             or (pred_err or "").startswith("transaction timeout")
         )
         if timed_out:
             logger.warning(
-                "PSJS provenance query timed out after %ss — returning 0.0.  "
-                "gold_err=%r pred_err=%r",
+                "PSJS provenance query timed out after {}s — returning 0.0.  "
+                "gold_err={!r} pred_err={!r}",
                 timeout, gold_err, pred_err,
             )
         else:
             logger.warning(
-                "PSJS execution failed — returning 0.0.  gold_err=%r pred_err=%r",
+                "PSJS execution failed — returning 0.0.  "
+                "gold_err={!r} pred_err={!r}",
                 gold_err, pred_err,
             )
         return 0.0
