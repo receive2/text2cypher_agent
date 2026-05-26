@@ -175,6 +175,130 @@ def _lucene_query_from_phrase(phrase: str, fuzziness: int = 1) -> str:
     )
 
 
+# ──────────────────────────────────────────────────────────────────────────────
+# Post-retrieval re-ranking (mitigates Lucene BM25 length-norm bias)
+#
+# Observation from logs/eval/cypherbench_augmented__movie (2026-05-25):
+#   phrase             top-1 (wrong)                truth          truth-rank
+#   "big short"        Big Rig         (6.97)       The Big Short  #3 (6.01)
+#   "The Blind Side"   Blind Side      (7.32)       The Blind Side #2 (6.97)
+#
+# Both regressions follow the same pattern: a *shorter* candidate that is a
+# subset of the truth value outscores the truth value itself.  This is a
+# well-known artefact of Lucene's BM25 length normalization — shorter docs
+# get a multiplicative bonus, and the per-token-fuzzy-OR query we issue
+# does nothing to favour candidates that actually contain *all* the input
+# tokens or exact-match the input phrase.
+#
+# We fix it with a small, deterministic post-pass that boosts:
+#   (a) exact case-folded matches (×2.0),
+#   (b) substring containment in either direction (×1.5),
+#   (c) content-token coverage (×[1.0, 1.4] linear in fraction covered),
+# and lightly penalizes candidates that pile on many *extra* tokens beyond
+# the phrase.  Stopwords ("the", "a", "of", ...) are ignored when computing
+# token coverage so "The Blind Side" matches "Blind Side" perfectly.
+#
+# The raw Lucene score remains the base — irrelevant low-scoring candidates
+# can't leapfrog relevant ones via multiplier alone — so this is a pure
+# *ordering* improvement, not a recall change.
+# ──────────────────────────────────────────────────────────────────────────────
+_STOPWORDS = frozenset({
+    # English function words that distort token coverage / length penalty.
+    # Deliberately conservative — anything ambiguous (e.g. "first") is kept.
+    "the", "a", "an", "of", "and", "or", "but", "in", "on", "at", "to",
+    "for", "is", "are", "was", "were", "be", "been", "being",
+    "by", "with", "from", "as", "into", "than", "that", "this",
+    "it", "its", "their", "his", "her",
+})
+
+
+def _norm_for_rerank(s: str) -> str:
+    """Casefold + collapse whitespace.  Used for exact / substring compares."""
+    if not s:
+        return ""
+    return re.sub(r"\s+", " ", s.casefold().strip())
+
+
+def _content_tokens(s: str) -> List[str]:
+    """Lowercase word tokens with stopwords removed."""
+    if not s:
+        return []
+    return [
+        t for t in re.findall(r"\w+", s.casefold(), flags=re.UNICODE)
+        if t not in _STOPWORDS
+    ]
+
+
+def _rerank_fuzzy_candidates(
+    phrase: str,
+    rows: List[Dict[str, Any]],
+) -> List[Dict[str, Any]]:
+    """
+    Re-order Lucene full-text results to favour exact / substring / fully-
+    covered matches over short distractors that BM25 over-rewards.
+
+    Returns a new list of dicts; the original ``score`` is preserved under
+    the key ``_base_score`` and the boost factor under ``_rerank_mult`` so
+    callers can audit ranking decisions.  Stable for ties.
+    """
+    if not rows or not phrase:
+        return rows
+
+    phrase_norm = _norm_for_rerank(phrase)
+    phrase_tokens = set(_content_tokens(phrase))
+    n_phrase = len(phrase_tokens) or 1
+
+    out: List[Dict[str, Any]] = []
+    for r in rows:
+        value = r.get("value", "")
+        if not isinstance(value, str) or not value:
+            new_r = dict(r)
+            new_r.setdefault("_base_score", float(r.get("score", 0.0)))
+            new_r.setdefault("_rerank_mult", 1.0)
+            out.append(new_r)
+            continue
+
+        v_norm = _norm_for_rerank(value)
+        v_tokens = set(_content_tokens(value))
+
+        base = float(r.get("score", 0.0))
+        mult = 1.0
+
+        # (a) Exact case-folded match: strongest signal.
+        if v_norm and v_norm == phrase_norm:
+            mult *= 2.0
+        # (b) Substring containment in either direction.  Catches the
+        # canonical "Blind Side" ⊂ "The Blind Side" and vice-versa cases.
+        elif phrase_norm and (phrase_norm in v_norm or v_norm in phrase_norm):
+            mult *= 1.5
+
+        # (c) Content-token coverage: how many phrase tokens (stopwords
+        # excluded) appear in the candidate.
+        if phrase_tokens:
+            coverage = len(phrase_tokens & v_tokens) / n_phrase
+            mult *= 1.0 + 0.4 * coverage
+
+        # (d) Mild penalty for unrelated extra tokens in the candidate.
+        # Keeps "Pirates of the Caribbean: Dead Man's Chest" from outranking
+        # "Pirates of the Caribbean" for a 3-token query.  Cap the penalty
+        # so a long but otherwise-perfect candidate is never demoted below
+        # an irrelevant short one.
+        extras = len(v_tokens - phrase_tokens)
+        if extras > 0:
+            mult *= 1.0 / (1.0 + 0.05 * extras)
+
+        new_score = base * mult
+        new_r = dict(r)
+        new_r["score"] = new_score
+        new_r["_base_score"] = base
+        new_r["_rerank_mult"] = mult
+        out.append(new_r)
+
+    # Sort stable by new score desc; ties keep original Lucene order.
+    out.sort(key=lambda x: x.get("score", 0.0), reverse=True)
+    return out
+
+
 # 3) top k similarity
 def top_similar_values(
     phrase: str, 
@@ -257,13 +381,21 @@ def search_tool(
 
     # ── Legacy fuzzy path — preserved exactly as before ───────────────────────
     if effective_mode == "fuzzy":
+        # Over-fetch so the re-ranker has slack: BM25 may rank the true
+        # answer at #3..#10, and trimming to k *before* re-ranking would
+        # let the original ordering bug survive (we observed "The Big Short"
+        # at Lucene-rank #3 for the query "big short" — re-ranker can lift
+        # it to #1 only if it's still in the candidate pool).
+        fetch_k = max(k * 2, 20) if vc.FUZZY_RERANK_ENABLED else k
         results = top_similar_values(
             phrase,
             node_label=node_label,
             property_name=property_name,
-            k=k,
+            k=fetch_k,
             fuzziness=1,
         )
+        if vc.FUZZY_RERANK_ENABLED:
+            results = _rerank_fuzzy_candidates(phrase, results)[:k]
         values: List[str] = []
         for i, r in enumerate(results, 1):
             if verbose:

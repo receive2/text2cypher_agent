@@ -76,6 +76,14 @@ RRF_K                = 60              # Cormack et al. 2009 default
 HYBRID_VECTOR_WEIGHT = 0.5             # used only when strategy = "weighted"
 HYBRID_FUZZY_WEIGHT  = 0.5
 
+# ─── Fuzzy re-ranking (BM25 length-norm correction) ──────────────────────────
+# Enables the post-retrieval re-ranker in ``neo4j_lib.neo4j_search`` that
+# boosts exact / substring / fully-covered matches over short distractors
+# Lucene over-rewards.  Fixes cases like "big short" ranking "Big Rig"
+# above "The Big Short" and "The Blind Side" being beaten by "Blind Side".
+# Set to False to restore the legacy ordering (raw BM25, no boosts).
+FUZZY_RERANK_ENABLED = True
+
 # ─── Embeddable properties (auto-discovered, user-confirmed) ─────────────────
 # IMPORTANT: each entry corresponds to ONE tool / ONE vector index.
 # The "entity_type" field is "node" in v1; "relationship" is reserved for v2.
