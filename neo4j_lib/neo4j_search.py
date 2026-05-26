@@ -176,7 +176,7 @@ def _lucene_query_from_phrase(phrase: str, fuzziness: int = 1) -> str:
 
 
 # ──────────────────────────────────────────────────────────────────────────────
-# Post-retrieval re-ranking (mitigates Lucene BM25 length-norm bias)
+# Post-retrieval re-ranking (mitigates length-norm / partial-match bias)
 #
 # Observation from logs/eval/cypherbench_augmented__movie (2026-05-25):
 #   phrase             top-1 (wrong)                truth          truth-rank
@@ -184,11 +184,12 @@ def _lucene_query_from_phrase(phrase: str, fuzziness: int = 1) -> str:
 #   "The Blind Side"   Blind Side      (7.32)       The Blind Side #2 (6.97)
 #
 # Both regressions follow the same pattern: a *shorter* candidate that is a
-# subset of the truth value outscores the truth value itself.  This is a
-# well-known artefact of Lucene's BM25 length normalization — shorter docs
-# get a multiplicative bonus, and the per-token-fuzzy-OR query we issue
-# does nothing to favour candidates that actually contain *all* the input
-# tokens or exact-match the input phrase.
+# subset of the truth value outscores the truth value itself.  Initially
+# diagnosed as a Lucene BM25 length-normalization artefact, but the same
+# class of mis-ranking also surfaces on the vector and hybrid paths:
+# cosine-on-embeddings has no token-coverage signal, and RRF/weighted
+# fusion only knows about ranks, not match quality.  All three retrieval
+# modes therefore share the same post-pass.
 #
 # We fix it with a small, deterministic post-pass that boosts:
 #   (a) exact case-folded matches (×2.0),
@@ -198,9 +199,12 @@ def _lucene_query_from_phrase(phrase: str, fuzziness: int = 1) -> str:
 # the phrase.  Stopwords ("the", "a", "of", ...) are ignored when computing
 # token coverage so "The Blind Side" matches "Blind Side" perfectly.
 #
-# The raw Lucene score remains the base — irrelevant low-scoring candidates
-# can't leapfrog relevant ones via multiplier alone — so this is a pure
-# *ordering* improvement, not a recall change.
+# The boosts are multiplicative on whatever base score the retrieval path
+# produced (BM25, cosine, RRF, or weighted-fusion).  Because they are
+# multiplicative — never additive in a different unit — they are
+# scale-invariant: irrelevant low-scoring candidates can't leapfrog
+# relevant ones via the boost alone.  This is a pure *ordering*
+# improvement, not a recall change.
 # ──────────────────────────────────────────────────────────────────────────────
 _STOPWORDS = frozenset({
     # English function words that distort token coverage / length penalty.
@@ -413,13 +417,24 @@ def search_tool(
     fuzzy_rows: List[Dict[str, Any]] = []
     vector_rows: List[Dict[str, Any]] = []
 
+    # Same slack rationale as the fuzzy branch: vector cosine similarity and
+    # hybrid RRF / weighted-fusion scores both suffer the *same* class of
+    # bug — a shorter / partially-matching candidate can outrank an exact
+    # match because neither cosine-on-embedding nor rank-fusion knows about
+    # token coverage. We over-fetch when re-rank is enabled so the post-pass
+    # has room to lift the truth from #3..#10 to #1; if it's disabled we
+    # short-circuit to the legacy behaviour with zero extra DB cost.
+    rerank = vc.FUZZY_RERANK_ENABLED
+    slack = 2 if rerank else 1
+    pool_top_k = final_top_k * slack
+
     try:
         if effective_mode == "vector":
             vector_rows = _vector_query_node(
                 phrase, node_label, property_name,
-                top_k=vc.HYBRID_VECTOR_TOP_K,
+                top_k=vc.HYBRID_VECTOR_TOP_K * slack,
             )
-            merged = vector_rows[:final_top_k]
+            pool = vector_rows[:pool_top_k]
 
         elif effective_mode == "hybrid":
             # NOTE(v2): parallelize fuzzy and vector branches. v1 runs them
@@ -437,13 +452,26 @@ def search_tool(
                 phrase, node_label, property_name,
                 top_k=vc.HYBRID_VECTOR_TOP_K,
             )
-            merged = _merge_results(
+            # Ask _merge_results for a larger pool so the re-ranker can
+            # actually change ranking. Per-source top_k stays at the config
+            # defaults — RRF/weighted fusion already pulls from 20 fuzzy + 20
+            # vector candidates, so a 2x merge-slice is the cheapest knob.
+            pool = _merge_results(
                 fuzzy_rows, vector_rows,
                 strategy=vc.HYBRID_STRATEGY,
-                final_top_k=final_top_k,
+                final_top_k=pool_top_k,
             )
         else:
             raise ValueError(f"Unknown retrieval mode: {effective_mode!r}")
+
+        # Apply the same exact-/substring-/coverage-boost post-pass we use on
+        # the fuzzy path. The multiplicative boosts are scale-invariant — they
+        # work equally well on raw cosine, RRF reciprocal-rank, and BM25 — so
+        # the helper is reused as-is. Skip when there's no slack (rerank off).
+        if rerank:
+            merged = _rerank_fuzzy_candidates(phrase, pool)[:final_top_k]
+        else:
+            merged = pool[:final_top_k]
 
     except Exception as exc:
         _retrieval_logger.warning(
