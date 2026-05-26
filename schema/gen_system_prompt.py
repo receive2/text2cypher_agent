@@ -720,6 +720,25 @@ Generation rules
   a bounded number of results ("top N", "first N", "the three most ...").
   Do NOT add LIMIT to general listing queries ("list all X", "find Y",
   "what are the Z") — these expect complete results.{filter_note}
+- Question intent → RETURN shape : MATCH the question's wh-word to the
+  RETURN form, BEFORE writing the rest of the query.  Mis-matching the
+  RETURN shape is the single biggest failure mode in eval — these mappings
+  are non-negotiable:
+
+    Wh-word / phrase                            RETURN shape
+    -----------------------------------------   --------------------------------
+    "How many X ...", "What is the number       RETURN count(n)
+    of X ...", "Count the X ..."                (NEVER return the X values themselves)
+    "List ...", "Show ...", "Which X ...",      RETURN DISTINCT n.name  (or similar
+    "Who is ...", "What are the ..."            scalar property)
+    "Who/which is younger/older/longer/         RETURN CASE WHEN ... THEN ... ELSE ... END
+    larger/shorter/heavier/taller/etc."         (comparator BETWEEN two named entities)
+    (comparison between two specific entities)
+    "Top N ...", "First N ...",                 RETURN ... ORDER BY ... LIMIT N
+    "The N most ..."
+
+  "How many" → count, ALWAYS.  A list of names is the wrong answer.
+  "Who is younger" → CASE WHEN, NOT `ORDER BY date_of_birth DESC LIMIT 1`.
 - Entity filters   : when entity values are supplied in the "Schema-relevant
   entity filters" section, use them in the query.  Values come in TWO
   shapes -- pick the predicate based on (a) the SCHEMA type of the target
@@ -734,11 +753,15 @@ Generation rules
 
   Combine multiple entity filters using question semantics:
     - "and", "both", "with X and Y"  →  AND in WHERE
-    - "or", "either", "X or Y"        →  OR in WHERE, or UNION across MATCH
-  When the question contains "either ... or" referring to different schema
-  paths (different relations or labels), prefer UNION across separate MATCH
-  blocks. Use a single MATCH with AND only when ALL filters logically must
-  hold simultaneously.
+    - "or", "either", "X or Y"        →  UNION across MATCH (preferred), or
+                                          OR in WHERE (for scalar-on-scalar only)
+  Disjunction default = UNION.  When the question has "or" / "either"
+  between two named entity values (same relation, different value; or
+  different relations entirely), emit a SEPARATE MATCH-RETURN block per
+  value joined by ``UNION`` — this matches the CypherBench gold style and
+  fixes the common failure mode where OR-in-WHERE returns the right set
+  but the wrong row shape / dedup behaviour.  Use a single MATCH with
+  AND only when ALL filters logically must hold simultaneously.
 
   Anti-patterns -- never emit any of these:
     ✗  ``n.prop = ["Inception"]``       (copying a wrapper that was never there)
@@ -846,6 +869,33 @@ Cypher:
   OPTIONAL MATCH (b)-[:HAS_REVIEW]->(rv:Review)
   WITH n, count(DISTINCT rv) AS review_count
   RETURN n.name, review_count
+
+# 11. Disjunction over entity values on the SAME relation → UNION (NOT OR-in-WHERE)
+# CypherBench gold style: a question like "X in Genre A or Genre B" is encoded
+# as parallel MATCH+RETURN blocks joined by UNION, one per value. OR-in-WHERE
+# returns the right rows but the wrong shape and is marked wrong by EM/EA.
+Schema: (:Movie)-[:hasGenre]->(:Genre)
+Question: List the names of movies in genre "Drama" or "Comedy".
+Cypher:
+  MATCH (n:Movie)-[r0:hasGenre]->(m0:Genre {{{{name: "Drama"}}}})
+  WITH DISTINCT n
+  RETURN n.name
+  UNION
+  MATCH (n:Movie)-[r0:hasGenre]->(m0:Genre {{{{name: "Comedy"}}}})
+  WITH DISTINCT n
+  RETURN n.name
+
+# 12. Comparator between two named entities → CASE WHEN (NOT ORDER BY+LIMIT 1)
+# Questions of the form "who/which of A or B is younger/older/longer/larger/…"
+# return ONE row picking the winning entity. The gold pattern is a direct
+# CASE-WHEN comparison; ORDER BY <prop> LIMIT 1 is the canonical wrong answer
+# because it (a) doesn't constrain the two candidates and (b) returns the
+# wrong row shape under ties.
+Schema: (:Person {{{{date_of_birth: Date}}}})
+Question: Who is younger, "Alice Smith" or "Bob Lee"?
+Cypher:
+  MATCH (a:Person {{{{name: "Alice Smith"}}}}), (b:Person {{{{name: "Bob Lee"}}}})
+  RETURN CASE WHEN a.date_of_birth > b.date_of_birth THEN a.name ELSE b.name END
 
 Graph Schema (static snapshot — baked at generation time)
 ──────────────────────────────────────────────────────────
