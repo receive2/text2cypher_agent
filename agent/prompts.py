@@ -336,13 +336,13 @@ Graph Schema (static snapshot — baked at generation time)
 
     Relationships:
       (:Movie)-[:directedBy]->(:Person)
-      (:Movie)-[:hasCastMember {character_role: String}]->(:Person)
+      (:Movie)-[:hasCastMember {{character_role: String}}]->(:Person)
       (:Movie)-[:hasGenre]->(:Genre)
       (:Movie)-[:originatesFrom]->(:Country)
       (:Movie)-[:partOfSeries]->(:FilmSeries)
       (:Movie)-[:producedBy]->(:ProductionCompany)
-      (:Movie)-[:receivesAward {winners: StringArray, year: Long}]->(:Award)
-      (:Movie)-[:releasedIn {date: Date}]->(:Country)
+      (:Movie)-[:receivesAward {{winners: StringArray, year: Long}}]->(:Award)
+      (:Movie)-[:releasedIn {{date: Date}}]->(:Country)
       (:Movie)-[:writtenBy]->(:Person)
 
     Central entities (most relationships): Movie

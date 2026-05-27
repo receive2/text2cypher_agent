@@ -678,7 +678,12 @@ def generate_text2cypher_sp(
 ) -> str:
     """Generate the text-to-Cypher system prompt with schema baked in."""
     schema_block = _build_schema_block(node_rows, rel_rows)
-    indented     = textwrap.indent(schema_block, "    ")
+    # Escape ``{`` / ``}`` so PromptTemplate (used by GraphCypherQAChain
+    # downstream) does not interpret relation-property declarations like
+    # ``{character_role: String}`` as placeholders.  The escaped braces are
+    # rendered as single braces in the final prompt seen by the LLM.
+    schema_block_escaped = schema_block.replace("{", "{{").replace("}", "}}")
+    indented     = textwrap.indent(schema_block_escaped, "    ")
 
     # Collect string properties for filter guidance
     string_props: List[str] = []
