@@ -324,22 +324,34 @@ def top_similar_values(
 
     # Dynamically build the Cypher query
     #    - node.{property_name} must be injected using an f-string
-    #    - $index, $q, $k can be passed in as secure parameters
+    #    - $index, $q, $k, $min_score can be passed in as secure parameters
     # Deduplicate by property value: collapse nodes sharing the same value
     # and keep only the highest full-text score for each unique value.
+    #
+    # The post-aggregation `WHERE max(score) >= $min_score` filter drops
+    # prefix-collision rows (e.g. ``score=0.0001`` from `Award#Q9*` ID prefix
+    # noise) before they reach the re-ranker / NER agent. See
+    # ``vector_config.FUZZY_MIN_SCORE`` for the rationale and tuning notes.
     cypher = f"""
     CALL db.index.fulltext.queryNodes($index, $q) YIELD node, score
     WITH node.{property_name} AS value, score
     WHERE value IS NOT NULL
-    RETURN value, max(score) AS score
+    WITH value, max(score) AS score
+    WHERE score >= $min_score
+    RETURN value, score
     ORDER BY score DESC
     LIMIT $k
     """
-    
+
     graph = get_neo4j_graph()
     rows = graph.query(
         cypher,
-        params={"index": index_name, "q": lucene, "k": k}
+        params={
+            "index":     index_name,
+            "q":         lucene,
+            "k":         k,
+            "min_score": float(vc.FUZZY_MIN_SCORE),
+        },
     )
     return rows
 
@@ -755,16 +767,28 @@ def top_similar_rel_values(
 
     # Deduplicate by property value: collapse relationships sharing the same value
     # and keep only the highest full-text score for each unique value.
+    # Same `FUZZY_MIN_SCORE` floor as `top_similar_values` — drops Lucene
+    # prefix-collision noise before it reaches the re-ranker / NER agent.
     cypher = f"""
     CALL db.index.fulltext.queryRelationships($index, $q) YIELD relationship, score
     WITH relationship.{property_name} AS value, score
     WHERE value IS NOT NULL
-    RETURN value, max(score) AS score
+    WITH value, max(score) AS score
+    WHERE score >= $min_score
+    RETURN value, score
     ORDER BY score DESC
     LIMIT $k
     """
     graph = get_neo4j_graph()
-    rows = graph.query(cypher, params={"index": index_name, "q": lucene, "k": k})
+    rows = graph.query(
+        cypher,
+        params={
+            "index":     index_name,
+            "q":         lucene,
+            "k":         k,
+            "min_score": float(vc.FUZZY_MIN_SCORE),
+        },
+    )
     return rows
 
 

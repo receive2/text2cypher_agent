@@ -236,7 +236,18 @@ DEFAULT_LLM_CONFIG: dict = dict(NER_LLM_CONFIG)
 # ──────────────────────────────────────────────────────────────────────────────
 
 MAX_THREAD            = 5    # parallel tool calls in the NER agent
-DEFAULT_TOP_K         = 10    # FAISS tool-selection top-k
+# DEFAULT_TOP_K: how many tools the FAISS tool-selector returns per question.
+#
+# Bumped from 10 → 15 because the partial-name probe showed that on the
+# movie graph, top-10 systematically excluded Person tools when the
+# question used relational verbs ("feature X in cast", "starring Y",
+# "directed by Z"). The eight movie/film-series/award tools dominated the
+# top half of the ranking and Person.name fell to ~#11, so the ReAct
+# agent never even saw it and resorted to calling `get_movie_eid("Elijah
+# Wood")` — a wrong-label tool with predictable empty results. 15 leaves
+# slack for the agent to discover the right tool without inflating
+# token usage materially.
+DEFAULT_TOP_K         = 15   # FAISS tool-selection top-k
 TOOL_TOP_K            = 10   # fulltext search top-k per tool call
 STABILITY_K           = 3    # consecutive stable validation rounds before stopping
 MAX_VALIDATION_ROUNDS = 20   # hard cap on validation rounds per property pair
@@ -274,7 +285,7 @@ CAP_MULTIPLIER        = 1000    # scan cap = t * CAP_MULTIPLIER (cheap over-fetc
 # or via ``--ner-mode`` on the ``metrics_CypherBench`` CLI.
 # ──────────────────────────────────────────────────────────────────────────────
 
-NER_MODE: str = "node_only"     # "full" | "node_only" | "no_ner"
+NER_MODE: str = "no_ner"     # "full" | "node_only" | "no_ner"
 
 # Allowed values — kept centrally so callers can validate user input
 # without hard-coding the literal strings.

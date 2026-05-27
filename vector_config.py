@@ -93,6 +93,27 @@ HYBRID_FUZZY_WEIGHT  = 0.5
 # compatibility with the original fuzzy-only commit.
 FUZZY_RERANK_ENABLED = True
 
+# ─── Fuzzy / Lucene minimum-score floor ──────────────────────────────────────
+# When `db.index.fulltext.queryNodes` finds NO real match for a query, Lucene
+# still returns prefix-collision rows with vanishingly small scores
+# (e.g. `score=0.0001` from `Award#Q9*` prefixes colliding with stray tokens
+# in the query string). These rows are pure noise but the agent treats them
+# as valid entity payloads and injects them into the Cypher WHERE clause —
+# we observed this turn a partial-name probe ("Award for Best Foreign Feature
+# Film" → 10 random `Award#Q9...` eids → `WHERE a.eid IN [...]` → 218 828
+# spurious movie matches).
+#
+# Filtering at the Cypher layer (inside `top_similar_values`) drops these
+# rows BEFORE they reach the re-ranker / merger, so every downstream path
+# (fuzzy / hybrid / NER injection) benefits with one change.
+#
+# Tuning notes:
+#   - Lucene BM25 scores on Q-ID prefix collisions cluster at ~1e-4.
+#   - Real entity-name matches we've seen sit at 3.0 – 12.0+.
+#   - 0.1 is comfortably above the noise floor and well below any real hit.
+#   - Set to 0.0 to disable the floor (legacy behaviour).
+FUZZY_MIN_SCORE: float = 0.1
+
 # ─── Embeddable properties (auto-discovered, user-confirmed) ─────────────────
 # IMPORTANT: each entry corresponds to ONE tool / ONE vector index.
 # The "entity_type" field is "node" in v1; "relationship" is reserved for v2.

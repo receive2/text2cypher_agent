@@ -613,7 +613,213 @@ def _guess_id_property(label: str) -> str:
 # Code-rendering helpers — each returns a complete function block as a string
 # ──────────────────────────────────────────────────────────────────────────────
 
-def _render_node_tool(func_name: str, label: str, prop: str) -> str:
+# ──────────────────────────────────────────────────────────────────────────────
+# Tool-description helpers
+#
+# The tool docstring IS the retrieval signal — FAISS embeds it and the ReAct
+# agent reads it to decide which tool to call. Two failure modes observed on
+# the cypherbench_augmented__movie partial-name probe motivate the
+# property-class branching and relational-hint injection below:
+#
+#   Bug #2 (`*_eid` vs `*_name` conflation):
+#     The legacy docstring was identical across machine-ID properties (eid,
+#     uuid, ...) and human-readable name properties (name, title, ...).
+#     FAISS could not separate them, so the agent picked `get_award_eid`
+#     when the question said "Award for Best Foreign Feature Film" — a
+#     human-readable name. Fix: branch the docstring template by
+#     `data_type` from `schema_meta.json` (ID props get a restrictive
+#     "ONLY for literal Q-IDs / UUIDs" line; name props get an inclusive
+#     "primary entity-name tool" line).
+#
+#   Bug #1 (Person tool missing from top-K when question is relational):
+#     The agent saw "feature Elijah Wood in cast" and FAISS returned
+#     movie/award/filmseries tools, with no Person tool in the top-10.
+#     Person.name's docstring mentioned only "person's name" — nothing
+#     about "cast member", "starring", "directed by", etc. Fix: derive
+#     relational verb forms from `structural_relations` (e.g. the rel
+#     `(:Movie)-[:hasCastMember]->(:Person)` yields the English hint
+#     "has cast member <name>") and inject them into the docstrings of
+#     name-class properties for labels that participate in those rels.
+# ──────────────────────────────────────────────────────────────────────────────
+
+# Property names that strictly identify a machine identifier. The agent
+# should ONLY call these when the question contains a verbatim ID token.
+_MACHINE_ID_PROP_NAMES = frozenset({
+    "eid", "id", "uuid", "qid", "wid", "wikidata_id", "wikidata", "wikidataid",
+    "freebase_id", "freebaseid", "imdb_id", "imdbid", "tmdb_id", "tmdbid",
+    "isbn", "issn", "doi", "orcid", "uri", "url",
+})
+
+# Property names that hold a human-readable display name. These are the
+# PRIMARY entity-resolution channel — the agent should default to these
+# whenever a question references an entity by name.
+_NAME_PROP_NAMES = frozenset({
+    "name", "title", "label", "fullname", "full_name", "displayname",
+    "display_name",
+})
+
+# Property names that hold long descriptive text. The agent should pick
+# these when the question paraphrases content rather than naming entities.
+_DESCRIPTION_PROP_NAMES = frozenset({
+    "description", "summary", "biography", "bio", "plot", "synopsis",
+    "overview", "abstract", "content",
+})
+
+
+def _indef_article(noun: str) -> str:
+    """
+    Return ``"a"`` or ``"an"`` for *noun* (the bare noun, no leading
+    article).  Heuristic by first letter — good enough for the labels
+    we see in practice (Movie, Person, Award, Country, Genre, FilmSeries,
+    ProductionCompany, Award, Date, …). The function only needs to be
+    right for the docstrings we render — those strings are mostly read
+    by FAISS embedding (which is article-insensitive) and a human
+    reviewer, so we accept the well-known h-silent edge cases
+    ("an hour") that this heuristic mishandles.
+    """
+    if not noun:
+        return "a"
+    return "an" if noun[0].lower() in "aeiou" else "a"
+
+
+def _classify_property(label: str, prop: str) -> str:
+    """
+    Return the property class — drives the docstring template inside
+    :func:`_render_node_tool`.
+
+    Resolution order:
+      1. `schema_meta.json` `data_type` (authoritative when present —
+         `setup_project.py` step 5 fills this in by inspecting actual
+         property values, so it's strictly better than name heuristics).
+      2. Property-name match against the frozensets above.
+      3. Suffix heuristic for unrecognised `*_id` / `*_eid` / `*_uuid`.
+      4. Fallback: `"other"`.
+
+    Returns one of: ``"id"`` | ``"name"`` | ``"description"`` | ``"other"``.
+    """
+    # ── 1. schema_meta.json data_type ────────────────────────────────────────
+    dtype = (
+        _schema_meta.get("nodes", {})
+        .get(label, {})
+        .get("properties", {})
+        .get(prop, {})
+        .get("data_type")
+    )
+    if dtype:
+        dt = str(dtype).strip().lower()
+        if dt in ("id", "identifier", "external_id"):
+            return "id"
+        if dt in ("name", "title", "label"):
+            return "name"
+        if dt in ("text", "description", "summary"):
+            return "description"
+
+    # ── 2. Property-name match ───────────────────────────────────────────────
+    p = prop.lower()
+    if p in _MACHINE_ID_PROP_NAMES:
+        return "id"
+    if p in _NAME_PROP_NAMES:
+        return "name"
+    if p in _DESCRIPTION_PROP_NAMES:
+        return "description"
+
+    # ── 3. Suffix heuristic for unrecognised ID-shaped names ─────────────────
+    if p.endswith("_id") or p.endswith("_eid") or p.endswith("_uuid"):
+        return "id"
+
+    # ── 4. Fallback ──────────────────────────────────────────────────────────
+    return "other"
+
+
+# CamelCase / mixedCase → space-separated lowercase words. Used to turn
+# Neo4j relationship type names into English verb forms for relational
+# hint injection. Examples:
+#     'hasCastMember' → 'has cast member'
+#     'directedBy'    → 'directed by'
+#     'releasedIn'    → 'released in'
+#     'partOfSeries'  → 'part of series'
+def _camel_to_english(name: str) -> str:
+    """CamelCase / mixedCase → English-style 'has cast member', 'directed by'."""
+    s = re.sub(r"([A-Z]+)([A-Z][a-z])", r"\1 \2", name)
+    s = re.sub(r"([a-z0-9])([A-Z])", r"\1 \2", s)
+    # Also split SNAKE_CASE / kebab-case
+    s = s.replace("_", " ").replace("-", " ")
+    return " ".join(s.split()).lower()
+
+
+def _relational_hint(
+    label: str,
+    structural_relations: List[Tuple[str, str, str]],
+) -> str:
+    """
+    Build an English-verb hint string for *label* by inspecting which
+    relationships connect TO or FROM it.
+
+    Example, for ``label = "Person"`` and a movie graph with::
+
+        (:Movie)-[:hasCastMember]->(:Person)
+        (:Movie)-[:directedBy]->(:Person)
+        (:Movie)-[:writtenBy]->(:Person)
+
+    we return::
+
+        "Often invoked via relational phrasings like 'has cast member X', "
+        "'directed by X', 'written by X' — call this tool whenever the "
+        "question references a person through such a phrasing, not only "
+        "when it literally says the word 'person'."
+
+    Returns an empty string when *label* participates in no structural
+    relations (e.g. an isolated node label), so the caller can append
+    the hint unconditionally without a branch.
+
+    Implementation notes
+    --------------------
+    * Only relations where *label* appears as `from_label` OR `to_label`
+      are considered; we do not include self-edges twice.
+    * The relation type itself is camelCase → English-verbalised
+      (`hasCastMember` → `has cast member`). This works because Neo4j
+      conventions for the movie / cypherbench graphs already encode the
+      verb in the relation name; no NLP model is required.
+    * Hints are deduplicated and capped at the first 6 distinct verb
+      forms — more than that produces noisy embeddings that hurt FAISS
+      ranking more than they help.
+    """
+    if not structural_relations:
+        return ""
+
+    verbs: List[str] = []
+    seen: Set[str] = set()
+    for rt, fl, tl in structural_relations:
+        if fl != label and tl != label:
+            continue
+        verb = _camel_to_english(rt)
+        if not verb or verb in seen:
+            continue
+        seen.add(verb)
+        verbs.append(verb)
+        if len(verbs) >= 6:
+            break
+
+    if not verbs:
+        return ""
+
+    quoted = ", ".join(f"'{v} X'" for v in verbs)
+    label_low = label.lower()
+    art       = _indef_article(label_low)
+    return (
+        f" Often invoked via relational phrasings like {quoted} — "
+        f"call this tool whenever the question references {art} "
+        f"{label_low} through such a phrasing, not only when it "
+        f"literally says the word '{label_low}'."
+    )
+
+
+def _render_node_tool(
+    func_name: str,
+    label: str,
+    prop: str,
+    structural_relations: Optional[List[Tuple[str, str, str]]] = None,
+) -> str:
     """
     Render a single node @tool function — HYBRID-CAPABLE.
 
@@ -622,27 +828,90 @@ def _render_node_tool(func_name: str, label: str, prop: str) -> str:
     is omitted, so flipping the config value runs the
     fuzzy/vector/hybrid ablation without regenerating these tools.
 
-    Matches the exact style used in ``ner_agent.py``::
+    Docstring template
+    ------------------
+    The docstring IS the retrieval signal — FAISS embeds it and the
+    ReAct agent reads it to decide WHEN to call this tool. We pick the
+    template based on the property class returned by
+    :func:`_classify_property`:
 
-        @tool
-        def get_movie_title(user_query: str) -> List[str]:
-            \"\"\"Get the canonical Movie.title values from the database.\"\"\"
-            search_term = get_entity(user_query, topic="movie title")
-            return search_tool(phrase=search_term, node_label="Movie",
-                               property_name="title", k=TOOL_TOP_K, verbose=True)
+    * **id** props (eid, uuid, …)  — restrictive: "ONLY when the
+      question contains a literal machine identifier". This pushes
+      `get_<label>_name` ahead of `get_<label>_eid` when the question
+      mentions a human-readable entity, which is the common case.
+
+    * **name** props (name, title, …)  — inclusive: "PRIMARY tool for
+      resolving <label> entities", PLUS a relational-hint clause built
+      from ``structural_relations`` so phrasings like
+      "feature X in cast" / "directed by X" / "released in X" recall
+      the right name-lookup tool.
+
+    * **description** props (description, summary, …)  — paraphrase
+      mode: "Call when the question paraphrases content".
+
+    * **other** (years, ratings, structural codes, …)  — the legacy
+      "lowercase/abbreviated/partial mentions" template, unchanged.
+
+    The phrase ``"canonical {label}.{prop} values"`` is preserved
+    verbatim in every branch so the regex parser in
+    ``schema.gen_system_prompt._RE_NODE_DESC`` continues to capture
+    (label, prop) for the NER prompt's tool-list section.
     """
-    topic = _node_topic(label, prop)
-    # Action-oriented docstring: tells the NER agent WHEN to call the tool,
-    # not just what it returns.  The "canonical {Label}.{prop} values" phrase
-    # is preserved verbatim so the regex parser in
-    # ``schema.gen_system_prompt._RE_NODE_DESC`` continues to capture
-    # (label, prop) for the NER prompt's tool-list section.
-    doc = (
-        f"Look up canonical {label}.{prop} values. "
-        f"Call this whenever the question mentions a {label.lower()}'s "
-        f"{prop} \u2014 including lowercase, abbreviated, or partial mentions "
-        f"(e.g. 'matrix' \u2192 'The Matrix'). When in doubt, call it."
-    )
+    topic     = _node_topic(label, prop)
+    klass     = _classify_property(label, prop)
+    label_low = label.lower()
+    art       = _indef_article(label_low)         # "a" / "an"
+
+    if klass == "id":
+        # ID props: restrict invocation to literal machine-identifier mentions.
+        doc = (
+            f"Look up canonical {label}.{prop} values. "
+            f"ONLY call this when the question contains a literal machine "
+            f"identifier (e.g. a Wikidata 'Q12345' / 'wd:Q12345' code, an "
+            f"IMDb 'tt0000000' code, a UUID, or a similar opaque ID string) "
+            f"that refers to {art} {label_low}. "
+            f"NEVER call this for human-readable {label_low} names — use "
+            f"the corresponding name lookup tool (get_{_label_snake(label)}_name "
+            f"if present) instead."
+        )
+    elif klass == "name":
+        # Name props: this is the PRIMARY entity-resolution channel.
+        # Inject relational hint built from structural_relations so the
+        # tool is discoverable via phrasings that don't literally say
+        # "<label> name" (e.g. "has cast member X" → Person.name).
+        rel_hint = _relational_hint(label, structural_relations or [])
+        doc = (
+            f"Look up canonical {label}.{prop} values. "
+            f"This is the PRIMARY tool for resolving {art} {label_low} entity "
+            f"by name. Call this whenever the question references {art} "
+            f"{label_low} BY NAME \u2014 including lowercase, abbreviated, "
+            f"partial, paraphrased, or possessive mentions "
+            f"(e.g. 'matrix' \u2192 'The Matrix', "
+            f"'Foreign Feature Film' \u2192 "
+            f"'Amanda Award for Best Foreign Feature Film')."
+            f"{rel_hint} "
+            f"When in doubt between this and a *_eid tool, prefer this one."
+        )
+    elif klass == "description":
+        # Description props: paraphrase-friendly free-text.
+        doc = (
+            f"Look up canonical {label}.{prop} values. "
+            f"Call this when the question paraphrases or summarises the "
+            f"{label_low}'s content (themes, topics, plot points, "
+            f"biographical details) rather than naming it directly. "
+            f"For name-based references, prefer the name-lookup tool "
+            f"(get_{_label_snake(label)}_name if present) instead."
+        )
+    else:
+        # Other props (years, ratings, structural codes, …): legacy template.
+        doc = (
+            f"Look up canonical {label}.{prop} values. "
+            f"Call this whenever the question mentions a {label_low}'s "
+            f"{prop} \u2014 including lowercase, abbreviated, or partial "
+            f"mentions (e.g. 'matrix' \u2192 'The Matrix'). When in doubt, "
+            f"call it."
+        )
+
     return (
         f"@tool\n"
         f"def {func_name}(user_query: str) -> List[str]:\n"
@@ -760,12 +1029,24 @@ def generate_node_tools_file(
     node_pairs: List[Tuple[str, str]],
     output_path: Union[str, Path],
     meta_path: Union[str, Path] = SCHEMA_META,
+    structural_relations: Optional[List[Tuple[str, str, str]]] = None,
 ) -> int:
     """
     Write ``generated_node_tools.py``.
 
     When *meta_path* points to a valid ``schema_meta.json``, topics for each
     node property are read from it instead of inferred by heuristic.
+
+    *structural_relations* (optional) carries the
+    ``(rel_type, from_label, to_label)`` triples from
+    :func:`list_structural_relations`. When supplied, name-class
+    docstrings receive relational-hint clauses derived from these
+    triples (e.g. Person.name picks up "has cast member X / directed by
+    X / written by X"), which fixes the
+    "tool buried below top-K when question is relational" failure mode
+    observed on the partial-name probe. Caller is expected to pass it;
+    defaulting to ``None`` keeps the legacy contract for any external
+    importer of this function.
 
     Returns the number of @tool functions written.
     """
@@ -779,7 +1060,10 @@ def generate_node_tools_file(
     for label, prop in node_pairs:
         base      = f"get_{_label_snake(label)}_{_prop_snake(prop)}"
         func_name = _unique_name(base, seen_names)
-        blocks.append(_render_node_tool(func_name, label, prop))
+        blocks.append(_render_node_tool(
+            func_name, label, prop,
+            structural_relations=structural_relations,
+        ))
 
     content = _NODE_HEADER + "\n\n".join(blocks) + "\n"
     Path(output_path).parent.mkdir(parents=True, exist_ok=True)
@@ -932,7 +1216,15 @@ def main() -> None:
         flush=True,
     )
 
-    n_node = generate_node_tools_file(node_pairs, args.node_output)
+    # Pass structural_rels into the node generator so name-class docstrings
+    # get relational-hint clauses ("has cast member X", "directed by X", ...)
+    # derived from the graph's actual rel patterns. This is what makes
+    # Person.name discoverable when the question uses relational phrasings
+    # — see _render_node_tool for the failure mode being patched.
+    n_node = generate_node_tools_file(
+        node_pairs, args.node_output,
+        structural_relations=structural_rels,
+    )
     print(f"\n✓  {n_node:>3d} node tools  →  {args.node_output}", flush=True)
 
     n_rel = generate_rel_tools_file(rel_prop_pairs, structural_rels, args.rel_output)
