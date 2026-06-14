@@ -13,7 +13,7 @@ Deploying two benchmark datasets to a single GCP Compute Engine VM:
 | Zone | us-central1-a |
 | Machine type | n2d-highmem-8 (8 vCPU, 64GB RAM) |
 | Disk | 100GB |
-| External IP | 136.112.47.158 |
+| External IP | 34.9.85.21 |
 | Internal IP | 10.128.0.2 |
 | Project | research-infra-494923 |
 | Neo4j auth | neo4j / <redacted> (all graphs) |

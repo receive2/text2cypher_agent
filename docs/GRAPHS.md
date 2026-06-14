@@ -1,6 +1,6 @@
 # Deployed Neo4j Graphs
 
-All graphs run on VM `136.112.47.158` (GCP, `us-central1-a`).
+All graphs run on VM `34.9.85.21` (GCP, `us-central1-a`).
 **Auth:** `neo4j` / `<password>` (all graphs)
 
 ---
@@ -32,10 +32,10 @@ All graphs run on VM `136.112.47.158` (GCP, `us-central1-a`).
 - **Rel types:** `basedIn`, `foundedBy`, `hasBoardMember`, `hasCEO`, `operatesIn`, `subsidiaryOf`
 
 ```bash
-cypher-shell -a bolt://136.112.47.158:15062 -u neo4j -p <password> "MATCH (n) RETURN count(n);"
+cypher-shell -a bolt://34.9.85.21:15062 -u neo4j -p <password> "MATCH (n) RETURN count(n);"
 ```
 ```python
-driver = GraphDatabase.driver("bolt://136.112.47.158:15062", auth=("neo4j", "<password>"))
+driver = GraphDatabase.driver("bolt://34.9.85.21:15062", auth=("neo4j", "<password>"))
 ```
 
 ---
@@ -45,10 +45,10 @@ driver = GraphDatabase.driver("bolt://136.112.47.158:15062", auth=("neo4j", "<pa
 - **Rel types:** `basedIn`, `bornIn`, `diedIn`, `fromUniverse`, `hasFather`, `hasMother`, `hasSpouse`, `hasStudent`, `killedBy`, `memberOf`
 
 ```bash
-cypher-shell -a bolt://136.112.47.158:15063 -u neo4j -p <password> "MATCH (n) RETURN count(n);"
+cypher-shell -a bolt://34.9.85.21:15063 -u neo4j -p <password> "MATCH (n) RETURN count(n);"
 ```
 ```python
-driver = GraphDatabase.driver("bolt://136.112.47.158:15063", auth=("neo4j", "<password>"))
+driver = GraphDatabase.driver("bolt://34.9.85.21:15063", auth=("neo4j", "<password>"))
 ```
 
 ---
@@ -58,10 +58,10 @@ driver = GraphDatabase.driver("bolt://136.112.47.158:15063", auth=("neo4j", "<pa
 - **Rel types:** `departsFrom`, `destinedFor`, `involves`, `manufacturedBy`, `operatedBy`
 
 ```bash
-cypher-shell -a bolt://136.112.47.158:15064 -u neo4j -p <password> "MATCH (n) RETURN count(n);"
+cypher-shell -a bolt://34.9.85.21:15064 -u neo4j -p <password> "MATCH (n) RETURN count(n);"
 ```
 ```python
-driver = GraphDatabase.driver("bolt://136.112.47.158:15064", auth=("neo4j", "<password>"))
+driver = GraphDatabase.driver("bolt://34.9.85.21:15064", auth=("neo4j", "<password>"))
 ```
 
 ---
@@ -71,10 +71,10 @@ driver = GraphDatabase.driver("bolt://136.112.47.158:15064", auth=("neo4j", "<pa
 - **Rel types:** `flowsInto`, `flowsThrough`, `locatedIn`, `partOf`
 
 ```bash
-cypher-shell -a bolt://136.112.47.158:15065 -u neo4j -p <password> "MATCH (n) RETURN count(n);"
+cypher-shell -a bolt://34.9.85.21:15065 -u neo4j -p <password> "MATCH (n) RETURN count(n);"
 ```
 ```python
-driver = GraphDatabase.driver("bolt://136.112.47.158:15065", auth=("neo4j", "<password>"))
+driver = GraphDatabase.driver("bolt://34.9.85.21:15065", auth=("neo4j", "<password>"))
 ```
 
 ---
@@ -84,10 +84,10 @@ driver = GraphDatabase.driver("bolt://136.112.47.158:15065", auth=("neo4j", "<pa
 - **Rel types:** `directedBy`, `hasCastMember`, `hasGenre`, `originatesFrom`, `partOfSeries`, `producedBy`, `receivesAward`, `releasedIn`, `writtenBy`
 
 ```bash
-cypher-shell -a bolt://136.112.47.158:15066 -u neo4j -p <password> "MATCH (n) RETURN count(n);"
+cypher-shell -a bolt://34.9.85.21:15066 -u neo4j -p <password> "MATCH (n) RETURN count(n);"
 ```
 ```python
-driver = GraphDatabase.driver("bolt://136.112.47.158:15066", auth=("neo4j", "<password>"))
+driver = GraphDatabase.driver("bolt://34.9.85.21:15066", auth=("neo4j", "<password>"))
 ```
 
 ---
@@ -97,10 +97,10 @@ driver = GraphDatabase.driver("bolt://136.112.47.158:15066", auth=("neo4j", "<pa
 - **Rel types:** `draftedBy`, `hasHomeVenue`, `partOfConference`, `partOfDivision`, `playsFor`, `playsPosition`, `receivesAward`
 
 ```bash
-cypher-shell -a bolt://136.112.47.158:15067 -u neo4j -p <password> "MATCH (n) RETURN count(n);"
+cypher-shell -a bolt://34.9.85.21:15067 -u neo4j -p <password> "MATCH (n) RETURN count(n);"
 ```
 ```python
-driver = GraphDatabase.driver("bolt://136.112.47.158:15067", auth=("neo4j", "<password>"))
+driver = GraphDatabase.driver("bolt://34.9.85.21:15067", auth=("neo4j", "<password>"))
 ```
 
 ---
@@ -110,10 +110,10 @@ driver = GraphDatabase.driver("bolt://136.112.47.158:15067", auth=("neo4j", "<pa
 - **Rel types:** `belongsTo`, `foundedBy`, `hasDiplomaticRelationWith`, `hasHeadOfGovernment`, `hasHeadOfState`, `headedBy`, `holdsPosition`, `leads`, `memberOf`, `operatesIn`
 
 ```bash
-cypher-shell -a bolt://136.112.47.158:15068 -u neo4j -p <password> "MATCH (n) RETURN count(n);"
+cypher-shell -a bolt://34.9.85.21:15068 -u neo4j -p <password> "MATCH (n) RETURN count(n);"
 ```
 ```python
-driver = GraphDatabase.driver("bolt://136.112.47.158:15068", auth=("neo4j", "<password>"))
+driver = GraphDatabase.driver("bolt://34.9.85.21:15068", auth=("neo4j", "<password>"))
 ```
 
 ---
@@ -126,10 +126,10 @@ driver = GraphDatabase.driver("bolt://136.112.47.158:15068", auth=("neo4j", "<pa
 - **Rel types:** `DELIVERED_AT`, `FOR_SHOP`, `FROM`, `FROM_IP`, `HAS_ADDRESS`, `HAS_BANKACCOUNT`, `HAS_CREDITCARD`, `HAS_PHONENUMBER`, `HAS_SSN`, `HAS_UNSECUREDLOAN`, `LOCATED_IN`, `SEND`, `WITH`, `WITH_CARD`, `WITH_LOGIN`
 
 ```bash
-cypher-shell -a bolt://136.112.47.158:15071 -u neo4j -p <password> "MATCH (n) RETURN count(n);"
+cypher-shell -a bolt://34.9.85.21:15071 -u neo4j -p <password> "MATCH (n) RETURN count(n);"
 ```
 ```python
-driver = GraphDatabase.driver("bolt://136.112.47.158:15071", auth=("neo4j", "<password>"))
+driver = GraphDatabase.driver("bolt://34.9.85.21:15071", auth=("neo4j", "<password>"))
 ```
 
 ---
@@ -140,10 +140,10 @@ driver = GraphDatabase.driver("bolt://136.112.47.158:15071", auth=("neo4j", "<pa
 - **Rel types:** `LOCATED_AT`, `PART_OF`, `PERFORMS_VISIT`, `VISITS`
 
 ```bash
-cypher-shell -a bolt://136.112.47.158:15072 -u neo4j -p <password> "MATCH (n) RETURN count(n);"
+cypher-shell -a bolt://34.9.85.21:15072 -u neo4j -p <password> "MATCH (n) RETURN count(n);"
 ```
 ```python
-driver = GraphDatabase.driver("bolt://136.112.47.158:15072", auth=("neo4j", "<password>"))
+driver = GraphDatabase.driver("bolt://34.9.85.21:15072", auth=("neo4j", "<password>"))
 ```
 
 ---
@@ -154,10 +154,10 @@ driver = GraphDatabase.driver("bolt://136.112.47.158:15072", auth=("neo4j", "<pa
 - **Rel types:** `HAS`, `USES`, `WATCHED`
 
 ```bash
-cypher-shell -a bolt://136.112.47.158:15073 -u neo4j -p <password> "MATCH (n) RETURN count(n);"
+cypher-shell -a bolt://34.9.85.21:15073 -u neo4j -p <password> "MATCH (n) RETURN count(n);"
 ```
 ```python
-driver = GraphDatabase.driver("bolt://136.112.47.158:15073", auth=("neo4j", "<password>"))
+driver = GraphDatabase.driver("bolt://34.9.85.21:15073", auth=("neo4j", "<password>"))
 ```
 
 ---
@@ -168,10 +168,10 @@ driver = GraphDatabase.driver("bolt://136.112.47.158:15073", auth=("neo4j", "<pa
 - **Rel types:** `FALLS_UNDER`, `HAS_REACTION`, `IS_CONCOMITANT`, `IS_INTERACTING`, `IS_PRIMARY_SUSPECT`, `IS_SECONDARY_SUSPECT`, `PRESCRIBED`, `RECEIVED`, `REGISTERED`, `REPORTED_BY`, `RESULTED_IN`
 
 ```bash
-cypher-shell -a bolt://136.112.47.158:15074 -u neo4j -p <password> "MATCH (n) RETURN count(n);"
+cypher-shell -a bolt://34.9.85.21:15074 -u neo4j -p <password> "MATCH (n) RETURN count(n);"
 ```
 ```python
-driver = GraphDatabase.driver("bolt://136.112.47.158:15074", auth=("neo4j", "<password>"))
+driver = GraphDatabase.driver("bolt://34.9.85.21:15074", auth=("neo4j", "<password>"))
 ```
 
 ---
@@ -182,10 +182,10 @@ driver = GraphDatabase.driver("bolt://136.112.47.158:15074", auth=("neo4j", "<pa
 - **Rel types:** `COACH_FOR`, `FOR`, `IN_SQUAD`, `IN_TOURNAMENT`, `NAMED`, `PARTICIPATED_IN`, `PLAYED_IN`, `REPRESENTS`, `SCORED_GOAL`
 
 ```bash
-cypher-shell -a bolt://136.112.47.158:15075 -u neo4j -p <password> "MATCH (n) RETURN count(n);"
+cypher-shell -a bolt://34.9.85.21:15075 -u neo4j -p <password> "MATCH (n) RETURN count(n);"
 ```
 ```python
-driver = GraphDatabase.driver("bolt://136.112.47.158:15075", auth=("neo4j", "<password>"))
+driver = GraphDatabase.driver("bolt://34.9.85.21:15075", auth=("neo4j", "<password>"))
 ```
 
 ---
@@ -198,10 +198,10 @@ driver = GraphDatabase.driver("bolt://136.112.47.158:15075", auth=("neo4j", "<pa
 - **Rel types:** `CALLED`, `CALLER`, `CURRENT_ADDRESS`, `FAMILY_REL`, `HAS_EMAIL`, `HAS_PHONE`, `HAS_POSTCODE`, `INVESTIGATED_BY`, `INVOLVED_IN`, `KNOWS`, `KNOWS_LW`, `KNOWS_PHONE`, `KNOWS_SN`, `LOCATION_IN_AREA`, `OCCURRED_AT`, `PARTY_TO`, `POSTCODE_IN_AREA`
 
 ```bash
-cypher-shell -a bolt://136.112.47.158:15076 -u neo4j -p <password> "MATCH (n) RETURN count(n);"
+cypher-shell -a bolt://34.9.85.21:15076 -u neo4j -p <password> "MATCH (n) RETURN count(n);"
 ```
 ```python
-driver = GraphDatabase.driver("bolt://136.112.47.158:15076", auth=("neo4j", "<password>"))
+driver = GraphDatabase.driver("bolt://34.9.85.21:15076", auth=("neo4j", "<password>"))
 ```
 
 ---
@@ -213,21 +213,21 @@ from neo4j import GraphDatabase
 
 GRAPHS = {
     # CypherBench
-    "company":              "bolt://136.112.47.158:15062",
-    "fictional_character":  "bolt://136.112.47.158:15063",
-    "flight_accident":      "bolt://136.112.47.158:15064",
-    "geography":            "bolt://136.112.47.158:15065",
-    "movie":                "bolt://136.112.47.158:15066",
-    "nba":                  "bolt://136.112.47.158:15067",
-    "politics":             "bolt://136.112.47.158:15068",
+    "company":              "bolt://34.9.85.21:15062",
+    "fictional_character":  "bolt://34.9.85.21:15063",
+    "flight_accident":      "bolt://34.9.85.21:15064",
+    "geography":            "bolt://34.9.85.21:15065",
+    "movie":                "bolt://34.9.85.21:15066",
+    "nba":                  "bolt://34.9.85.21:15067",
+    "politics":             "bolt://34.9.85.21:15068",
     # Mind-the-Query
-    "bloom":                "bolt://136.112.47.158:15071",
-    "covid":                "bolt://136.112.47.158:15072",
-    "er":                   "bolt://136.112.47.158:15073",
-    "healthcare":           "bolt://136.112.47.158:15074",
-    "wwc":                  "bolt://136.112.47.158:15075",
+    "bloom":                "bolt://34.9.85.21:15071",
+    "covid":                "bolt://34.9.85.21:15072",
+    "er":                   "bolt://34.9.85.21:15073",
+    "healthcare":           "bolt://34.9.85.21:15074",
+    "wwc":                  "bolt://34.9.85.21:15075",
     # ZOGRASCOPE
-    "pole":                 "bolt://136.112.47.158:15076",
+    "pole":                 "bolt://34.9.85.21:15076",
 }
 
 def get_driver(graph_name):

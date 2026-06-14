@@ -635,5 +635,20 @@ If you prefer to run each step individually or need to debug a specific stage:
 **FAISS index stale after schema change**  
 → Re-run `python setup_project.py` or `python ner_agent_auto.py --rebuild "test"`.
 
+**Mind-the-Query / ZOGRASCOPE containers not running after VM reboot**  
+→ The systemd services (`mindthequery.service`, `zograscope.service`) fail on boot when stopped containers from the previous session still exist. Restart them manually:
+```bash
+gcloud compute ssh cypherbench-neo4j --zone=us-central1-a --project=research-infra-494923 \
+  --command="sudo systemctl start mindthequery.service zograscope.service"
+```
+→ The start scripts have been patched with `docker rm -f` before each `docker run`, so this should not recur.
+
+**VM external IP changed after reboot**  
+→ GCP assigns ephemeral IPs; the IP may change each time the VM stops and starts. Check the current IP with:
+```bash
+gcloud compute instances describe cypherbench-neo4j --zone=us-central1-a --project=research-infra-494923 --format='get(networkInterfaces[0].accessConfigs[0].natIP)'
+```
+→ Update `docs/GRAPHS.md` and any local `eval_config.py` connections to use the new IP.
+
 **`SyntaxError` in `generated_rel_tools.py`**  
 → Re-run `python gen_tools.py` — caused by a Neo4j relType formatting artifact, now fixed.
