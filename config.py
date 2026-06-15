@@ -17,6 +17,8 @@
 #   3. NER pipeline mode
 # ──────────────────────────────────────────────────────────────────────────────
 
+import os
+
 # ──────────────────────────────────────────────────────────────────────────────
 # LLM configuration  (per pipeline stage)
 # ──────────────────────────────────────────────────────────────────────────────
@@ -286,7 +288,10 @@ CAP_MULTIPLIER        = 1000    # scan cap = t * CAP_MULTIPLIER (cheap over-fetc
 # or via ``--ner-mode`` on the ``metrics_CypherBench`` CLI.
 # ──────────────────────────────────────────────────────────────────────────────
 
-NER_MODE: str = "no_ner"     # "full" | "node_only" | "no_ner"
+# Env-overridable so eval runs can switch mode without editing this file:
+#     NER_MODE=full python eval_run.py
+# Falls back to the literal default when the env var is unset.
+NER_MODE: str = os.getenv("NER_MODE", "no_ner")     # "full" | "node_only" | "no_ner"
 
 # Allowed values — kept centrally so callers can validate user input
 # without hard-coding the literal strings.
