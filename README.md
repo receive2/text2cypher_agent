@@ -135,14 +135,14 @@ That's it. The script runs all 10 setup steps automatically and prints the statu
 |---|---|---|
 | 1 | *(env check)* | Validates `.env` + reports active embedding backend |
 | 2 | *(Neo4j driver)* | Confirms connection, lists labels, probes Neo4j ≥ 5.18 |
-| 3 | `gen_schema_csv` | `schema_nodes.csv`, `schema_relations.csv` |
-| 4 | `gen_schema_meta` | `schema_meta.json` (LLM-inferred `id_property`, topics, descriptions) |
-| 5 | `neo4j_search` | Creates all fulltext indexes in Neo4j |
-| 6 | `embedding_helper` | **NEW** — auto-discovers embeddable properties, embeds all distinct values, writes back via `db.create.setNodeVectorProperty` |
-| 7 | `embedding_helper` | **NEW** — creates one native vector index per (label, property) entry |
-| 8 | `gen_tools` | `generated_node_tools.py`, `generated_rel_tools.py` |
-| 9 | `gen_system_prompt` | Fresh `config.py` (system prompts + schema constants) |
-| 10 | `ner_agent_auto` | `faiss_tools_auto/` tool-selection index |
+| 3 | `schema.gen_schema_csv` | `schema_data/schema_nodes.csv`, `schema_data/schema_relations.csv` |
+| 4 | `schema.gen_schema_meta` | `schema_data/schema_meta.json` (LLM-inferred `id_property`, topics, descriptions) |
+| 5 | `neo4j_lib.neo4j_search` | Creates all fulltext indexes in Neo4j |
+| 6 | `embedding.embedding_helper` | Auto-discovers embeddable properties, embeds all distinct values, writes back via `db.create.setNodeVectorProperty` |
+| 7 | `embedding.embedding_helper` | Creates one native vector index per (label, property) entry |
+| 8 | `tools.gen_tools` | `generated/generated_node_tools.py`, `generated/generated_rel_tools.py` |
+| 9 | `schema.gen_system_prompt` | Fresh `agent/prompts.py` (system prompts + schema constants) |
+| 10 | `ner_agent_auto` | `generated/faiss` tool-selection index |
 
 > **Step 4** is what makes the pipeline domain-agnostic. It uses the LLM to analyze the schema CSVs and infer which property identifies each node label (e.g. `title` for Movie, `name` for Person), plus short topic phrases used for NER extraction. This metadata flows into Step 6 (auto-discovery decides which properties get embedded) and Step 8 (so generated tools have accurate descriptions for any database).
 
@@ -260,7 +260,7 @@ python switch_embedding_backend.py
 4. Re-embeds every distinct value with the new backend
 5. Recreates vector indexes at the new dim
 
-`generated_node_tools.py`, `generated_rel_tools.py`, `config.py`, and `faiss_tools_auto/` are intentionally NOT touched.
+`generated/generated_node_tools.py`, `generated/generated_rel_tools.py`, `config.py`, `agent/prompts.py`, and `generated/faiss` are intentionally NOT touched.
 
 **Flags:**
 
@@ -317,7 +317,7 @@ Or call the helpers directly from Python:
 
 ```python
 from neo4j import GraphDatabase
-from embedding_helper import (
+from embedding.embedding_helper import (
     backfill_embeddings, create_vector_indexes, verify_backend,
 )
 import vector_config as vc, os
@@ -363,10 +363,10 @@ print(result["context"])  # raw rows returned by Neo4j
 
 ### Fulltext search deduplication test
 
-`test_neo4j_search.py` verifies that the fulltext search functions return **unique property values** (no duplicates), ranked by the best matching score.
+`tests/test_neo4j_search.py` verifies that the fulltext search functions return **unique property values** (no duplicates), ranked by the best matching score.
 
 ```bash
-python test_neo4j_search.py
+python -m tests.test_neo4j_search
 ```
 
 The script runs 5 test cases:
@@ -409,8 +409,9 @@ The repo ships a **per-graph** evaluation harness that runs the live agent over 
 eval_config.py            ← edit: connections, test paths, which pairs to run
        │
        ▼
-scripts/setup_and_archive.py <dataset> <graph>
-       │   • Runs setup_project.py against that graph's Neo4j
+scripts/setup_and_archive.py        (no args — reads EVAL_PAIRS)
+       │   • For each pair in EVAL_PAIRS, runs setup_project.py against
+       │     that graph's Neo4j
        │   • Archives schema_data/, generated/, agent/prompts.py,
        │     FAISS index, EMBEDDABLE_PROPERTIES → setup_artifacts/<dataset>__<graph>/
        ▼
@@ -460,25 +461,23 @@ SETUP_ARTIFACTS_ROOT = "setup_artifacts"
 
 #### 2 — Set up + archive each graph (one-time per graph)
 
-For every `(dataset, graph)` pair you plan to evaluate, run setup against that graph's Neo4j container and archive the resulting artifacts:
+`setup_and_archive.py` takes **no arguments** — it reads `eval_config.EVAL_PAIRS` as the single source of truth and sets up + archives every pair listed there. To set up only a subset, shrink `EVAL_PAIRS` first.
 
 ```bash
-python scripts/setup_and_archive.py cypherbench movie
-python scripts/setup_and_archive.py cypherbench nba
-python scripts/setup_and_archive.py mindthequery bloom50
-python scripts/setup_and_archive.py zograscope pole
+python scripts/setup_and_archive.py
 ```
 
-The script reads the connection from `eval_config.GRAPH_CONNS`, injects `NEO4J_*` env vars, runs the standard `setup_project.py` UI against that container, then archives the per-graph outputs under `setup_artifacts/<dataset>__<graph>/`. It also runs a manifest round-trip check so a buggy archive is caught immediately.
+For each pair in `EVAL_PAIRS` the script:
 
-Re-running for an already-archived pair requires `--force`:
+1. Wipes any live-state artifacts left by a previous run (so stale data can't be bundled into the new archive).
+2. Looks up the pair's `eval_config.GraphConn`.
+3. Drops every vector index and nulls every embedding property on that pair's live database, so setup re-embeds against the current `vector_config` identity.
+4. Subprocess-invokes `setup_project.py --yes` with the connection injected via `NEO4J_*` env vars and the pair's `database` passed on `--database`.
+5. Archives the per-graph outputs under `setup_artifacts/<dataset>__<graph>/` (always overwriting any existing archive), then runs a manifest round-trip check so a buggy archive is caught — and deleted — immediately.
 
-```bash
-python scripts/setup_and_archive.py cypherbench movie --force
-# All setup_project.py flags forward through:
-python scripts/setup_and_archive.py cypherbench movie --skip-embeddings --yes
-python scripts/setup_and_archive.py cypherbench movie --reset-embeddings
-```
+The run is **fail-fast**: if any pair fails (subprocess non-zero, archive/round-trip failure, Neo4j reset failure, …) the whole run aborts. On abort the script prints a per-pair summary plus a copy-pasteable `EVAL_PAIRS` retry block listing the failed pair and every pair skipped by the abort, so you can resume from where it broke. The working tree is always left clean (post-pair wipe runs in `finally`).
+
+> The legacy `python scripts/setup_and_archive.py <dataset> <graph>` positional-args form is intentionally rejected with a non-zero exit — drive everything through `EVAL_PAIRS`.
 
 #### 3 — Run the evaluation
 
@@ -521,9 +520,10 @@ python -m pytest tests/test_cypher_eval_normalize.py
 
 ```bash
 # 1. Add a row to GRAPH_CONNS in eval_config.py
-# 2. Set up + archive:
-python scripts/setup_and_archive.py cypherbench fictional_university
-# 3. Add ("cypherbench", "fictional_university") to EVAL_PAIRS, then:
+# 2. Add ("cypherbench", "fictional_university") to EVAL_PAIRS
+# 3. Set up + archive every pair in EVAL_PAIRS:
+python scripts/setup_and_archive.py
+# 4. Run + aggregate:
 python eval_run.py
 python eval_aggregate.py
 ```
@@ -561,10 +561,10 @@ python setup_project.py
 Or run only the affected steps manually:
 
 ```bash
-python gen_schema_csv.py                        # re-export schema CSVs
-python gen_schema_meta.py                       # re-infer schema metadata (LLM)
-python gen_tools.py                             # regenerate @tool functions
-python gen_system_prompt.py                     # regenerate config.py
+python -m schema.gen_schema_csv                 # re-export schema CSVs
+python -m schema.gen_schema_meta                # re-infer schema metadata (LLM)
+python -m tools.gen_tools                       # regenerate @tool functions
+python -m schema.gen_system_prompt              # regenerate agent/prompts.py
 python ner_agent_auto.py --rebuild "test"       # rebuild the FAISS index
 ```
 
@@ -576,12 +576,12 @@ If you prefer to run each step individually or need to debug a specific stage:
 
 | # | Command | What it does |
 |---|---|---|
-| 1 | `python neo4j_diag.py` | Verify connection and list node labels |
-| 2 | `python gen_schema_csv.py --print-summary` | Export schema to CSV and print a summary |
-| 3 | `python gen_schema_meta.py --verbose` | Infer `id_property`, topics, descriptions via LLM |
+| 1 | `python -m neo4j_lib.neo4j_diag` | Verify connection and list node labels |
+| 2 | `python -m schema.gen_schema_csv --print-summary` | Export schema to CSV and print a summary |
+| 3 | `python -m schema.gen_schema_meta --verbose` | Infer `id_property`, topics, descriptions via LLM |
 | 4 | *(fulltext indexes — handled by setup_project.py)* | Create all Neo4j fulltext indexes |
-| 5 | `python gen_tools.py` | Generate `@tool` functions from the live schema |
-| 6 | `python gen_system_prompt.py` | Generate `config.py` from scratch |
+| 5 | `python -m tools.gen_tools` | Generate `@tool` functions from the live schema |
+| 6 | `python -m schema.gen_system_prompt` | Generate `agent/prompts.py` from scratch |
 | 7 | `python ner_agent_auto.py --rebuild "test"` | Build the FAISS tool-selection index |
 
 > **Tip:** Verify fulltext indexes in the Neo4j Browser with  
@@ -598,22 +598,26 @@ If you prefer to run each step individually or need to debug a specific stage:
 | `requirements.txt` | Python dependencies |
 | `setup_project.py` | **One-click setup** — runs all 10 setup steps automatically |
 | `switch_embedding_backend.py` | **One-click backend swap** — re-embeds + rebuilds vector indexes after editing `EMBEDDING_BACKEND` in `vector_config.py`; does NOT regenerate tools / system prompt / FAISS |
-| `config.py` | **Auto-generated** system prompts + schema constants |
-| `neo4j_search.py` | Fulltext index management + `search_tool()` / `search_rel_tool()` |
-| `test_neo4j_search.py` | Tests for fulltext search deduplication + score ordering |
-| `gen_schema_csv.py` | Export full schema to `schema_nodes.csv` + `schema_relations.csv` |
-| `gen_schema_meta.py` | LLM-infer `id_property`, topics, descriptions → `schema_meta.json` |
-| `gen_tools.py` | Generate `@tool` functions from the live schema + `schema_meta.json` |
-| `generated_node_tools.py` | **Auto-generated** node property search tools |
-| `generated_rel_tools.py` | **Auto-generated** relationship search tools |
-| `gen_system_prompt.py` | Generate complete `config.py` from the live schema |
-| `tool_search.py` | FAISS-based tool search engine |
-| `ner_agent.py` | NER agent (fixed tool list — for reference) |
-| `ner_agent_auto.py` | NER agent with automatic FAISS tool selection |
-| `faiss_tools_auto/` | **Auto-generated** FAISS vector index (gitignore this) |
-| `schema_nodes.csv` | **Auto-generated** node schema export |
-| `schema_relations.csv` | **Auto-generated** relationship schema export |
-| `schema_meta.json` | **Auto-generated** LLM-inferred schema metadata |
+| `config.py` | **User-managed** runtime settings — LLM configs per stage, NER mode, sampling/validation knobs. **Not** auto-generated; safe to edit by hand |
+| `vector_config.py` | Retrieval mode (`fuzzy`/`vector`/`hybrid`), embedding backend + dim, `EMBEDDABLE_PROPERTIES` |
+| `paths.py` | Centralized filesystem-layout constants for every generated artifact |
+| `ner_agent_auto.py` | NER agent with automatic FAISS tool selection (main entrypoint) |
+| `agent/prompts.py` | **Auto-generated** system prompts (`NER_SP`, `TEXT2CYPHER_SP`, `QA_SP`, `PROMPT_ALIGNER_SP`) + schema constants |
+| `schema/gen_schema_csv.py` | Export full schema to `schema_data/schema_nodes.csv` + `schema_relations.csv` |
+| `schema/gen_schema_meta.py` | LLM-infer `id_property`, topics, descriptions → `schema_data/schema_meta.json` |
+| `schema/gen_system_prompt.py` | Generate `agent/prompts.py` from the live schema |
+| `tools/gen_tools.py` | Generate `@tool` functions from the live schema + `schema_meta.json` |
+| `tools/tool_search.py` | FAISS-based tool search engine |
+| `neo4j_lib/neo4j_search.py` | Fulltext index management + `search_tool()` / `search_rel_tool()` |
+| `neo4j_lib/neo4j_diag.py` | Connection diagnostics (run with `python -m neo4j_lib.neo4j_diag`) |
+| `embedding/embedding_helper.py` | Embeddable-property discovery, backfill, vector-index creation |
+| `generated/generated_node_tools.py` | **Auto-generated** node property search tools |
+| `generated/generated_rel_tools.py` | **Auto-generated** relationship search tools |
+| `generated/faiss/` | **Auto-generated** FAISS tool-selection index (gitignored) |
+| `schema_data/schema_nodes.csv` | **Auto-generated** node schema export |
+| `schema_data/schema_relations.csv` | **Auto-generated** relationship schema export |
+| `schema_data/schema_meta.json` | **Auto-generated** LLM-inferred schema metadata |
+| `tests/test_neo4j_search.py` | Tests for fulltext search deduplication + score ordering |
 
 ---
 
@@ -623,14 +627,14 @@ If you prefer to run each step individually or need to debug a specific stage:
 → Check `NEO4J_URI` in `.env`. For local Neo4j use `bolt://localhost:7687`. For AuraDB use `neo4j+s://`.
 
 **`No module named 'generated_node_tools'`**  
-→ Run `python setup_project.py` or `python gen_tools.py` first.
+→ Run `python setup_project.py` or `python -m tools.gen_tools` first.
 
 **`Missing required env var: OPENAI_API_KEY`**  
 → Make sure `.env` exists in the project root and all required keys are set.
 
 **Fulltext index search returns no results**  
 → Check that indexes are `ONLINE` in the Neo4j Browser.  
-→ Re-run `python setup_project.py` or `python neo4j_search.py`.
+→ Re-run `python setup_project.py` to rebuild the fulltext indexes.
 
 **FAISS index stale after schema change**  
 → Re-run `python setup_project.py` or `python ner_agent_auto.py --rebuild "test"`.
@@ -650,5 +654,5 @@ gcloud compute instances describe cypherbench-neo4j --zone=us-central1-a --proje
 ```
 → Update `docs/GRAPHS.md` and any local `eval_config.py` connections to use the new IP.
 
-**`SyntaxError` in `generated_rel_tools.py`**  
-→ Re-run `python gen_tools.py` — caused by a Neo4j relType formatting artifact, now fixed.
+**`SyntaxError` in `generated/generated_rel_tools.py`**  
+→ Re-run `python -m tools.gen_tools` — caused by a Neo4j relType formatting artifact, now fixed.
