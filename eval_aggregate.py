@@ -48,7 +48,7 @@ from eval.difficulty import aggregate_by_difficulty
 
 # Bucket print order; rows where ``n == 0`` are skipped silently so
 # datasets that don't populate every bucket don't print empty lines.
-_BUCKET_ORDER = ("all", "easy", "medium", "hard", "extra")
+_BUCKET_ORDER = ("all", "easy", "medium", "hard")
 
 
 # ──────────────────────────────────────────────────────────────────────────────

@@ -262,7 +262,7 @@ def evaluate_one(example: Dict[str, Any]) -> Dict[str, Any]:
         single POLE crime-investigation property graph.  The field is
         present so per-graph filtering and downstream aggregation
         round-trip cleanly with the other two datasets.  ``difficulty``
-        is one of ``"easy"`` / ``"medium"`` / ``"hard"`` / ``"extra"`` /
+        is one of ``"easy"`` / ``"medium"`` / ``"hard"`` /
         ``None`` and is computed from the gold Cypher by
         :mod:`eval.difficulty`.
     """

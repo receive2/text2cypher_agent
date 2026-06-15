@@ -663,7 +663,7 @@ def evaluate_one(example: Dict[str, Any]) -> Dict[str, Any]:
             "gold_cypher": str | None,
             "graph":       str | None,     # per-example target graph (None
                                            # if the source row didn't tag one)
-            "difficulty":  "easy"|"medium"|"hard"|"extra"|None,
+            "difficulty":  "easy"|"medium"|"hard"|None,
             "error":       Optional[str],
         }``
 

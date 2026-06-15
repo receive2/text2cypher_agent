@@ -3,100 +3,84 @@
 """
 difficulty.py
 =============
-Per-example difficulty bucketing for the text-to-Cypher evaluation harness.
+Per-example query-difficulty bucketing for the text-to-Cypher evaluation
+harness. **Graded rubric per docs/DIFFICULTY_REDESIGN.md.**
 
 Public API
 ----------
-    classify(gold_cypher) -> "easy" | "medium" | "hard" | "extra" | None
+    classify(gold_cypher) -> "easy" | "medium" | "hard" | None
     classify_explain(gold_cypher) -> (bucket, reason)
     aggregate_by_difficulty(records) -> dict   # used by metrics_*.evaluate_dataset
 
 The classifier inspects the **gold** Cypher only — predictions can be
 malformed and we want a stable bucket per example.  When ``gold_cypher``
-is ``None`` or whitespace-only the bucket is ``None``; such examples
-contribute to the ``"all"`` aggregate but to no individual bucket.
+is ``None`` or whitespace-only the bucket is ``None``.
 
-Bucketing rule (verbatim from the harness spec)
------------------------------------------------
-The bucket is the highest tier whose conditions match.  Check
-**Extra → Hard → Medium → Easy** in order; the first tier whose
-conditions are met wins.
+**Three tiers, not four.**  text2cypher literature uses 2-3 tiers
+(BIRD / DuSQL / SpCQL / Neo4j Text2Cypher); only Spider/CSpider use the
+4-tier "extra" scheme, which doesn't fit curated graph-QA benchmarks
+whose extra tail is naturally < 5%.  We keep Spider's *paradigm*
+(static formula + global thresholds, graded accumulation) but use
+**easy / medium / hard** like the rest of the text2cypher field.
 
-Extra — any of:
-    * Complex boolean filtering in WHERE: ≥2 boolean operators among
-      AND / OR / NOT, or any mix of AND with OR regardless of count.
-    * Nested subqueries: a ``CALL { ... }`` block whose body contains
-      another ``CALL { ... }``, or any subquery expression
-      (``EXISTS { ... }`` / ``COUNT { ... }`` / ``COLLECT { ... }``)
-      nested inside another subquery clause or expression.
-    * Variable-length paths: relationship patterns containing ``*``
-      (e.g. ``[r*1..3]``, ``[*..5]``, ``[*]``).
+Rubric (graded score — accumulation, not single-feature triggers)
+-----------------------------------------------------------------
+Three dimensions, each 0/1/2.  ``score = Reach + Operation + Filtering``
+(0-6).  Bucket from the LOCKED global thresholds below.
 
-Hard — any of (and not Extra):
-    * Aggregation function calls: ``COUNT(...)``, ``SUM(...)``,
-      ``AVG(...)``, ``MIN(...)``, ``MAX(...)``, ``COLLECT(...)``.
-      Includes ``count(*)``.
-    * Subquery / chaining clauses: ``CALL { ... }``, or any ``WITH``
-      (including bare projection / rename — by design).
-    * Top-level subquery expressions: ``EXISTS { ... }``,
-      ``COUNT { ... }``, ``COLLECT { ... }``.
-    * List ops: ``UNWIND``.
-    * Path-pattern functions: ``shortestPath``, ``allShortestPaths``.
-    * 4 or more fixed hops in the longest path (variable-length hops
-      do NOT count here — they route to Extra).
+**Reach** — max hops in any single comma-separated path across all
+``MATCH`` / ``OPTIONAL MATCH`` clauses.
 
-Medium — any of (and not Hard/Extra):
-    * ``ORDER BY``, ``LIMIT``, ``SKIP``, ``DISTINCT``.
-    * Multi-hop fixed paths: 2 or 3 relationship patterns in the
-      longest path.
-    * ``OPTIONAL MATCH``.
-    * Exactly one boolean operator in WHERE (one AND, OR, or NOT).
+    0 :  ≤ 1 fixed hop
+    1 :  2 or 3 fixed hops
+    2 :  ≥ 4 fixed hops  OR  any variable-length pattern ``[*]`` / ``[r*..]``
 
-Easy — default when no higher tier matches AND the query satisfies all of:
-    * Uses only the clauses ``MATCH`` / ``WHERE`` / ``RETURN`` (any of
-      these may be absent — e.g. a bare ``MATCH (n:Person) RETURN n``
-      with no WHERE qualifies).
-    * Longest path is ≤1 relationship pattern.
-    * WHERE, if present, contains no boolean operators.
+**Operation** — MAX across detectors (do NOT sum within Operation).
 
-Safety net
-    If a query falls through all four checks (no higher tier matched,
-    but the query also uses a clause not in Easy's whitelist), classify
-    it as **Hard**.  This shouldn't happen on well-formed gold queries;
-    when it does, ``classify_explain`` records the reason as
-    ``"hard: safety-net (...)"`` so the case is visible in logs.
+    0 :  plain retrieval (no agg, no sort, no subquery, no special path)
+    1 :  any single agg call (``count/sum/avg/min/max/collect``) /
+         ``ORDER BY`` / ``LIMIT`` / ``SKIP`` (NOT the argmax pattern
+         below) / ``OPTIONAL MATCH`` / ``UNWIND`` /
+         ``shortestPath`` / ``allShortestPaths``
+    2 :  grouping (agg + non-agg key in same RETURN/WITH projection) /
+         argmax pattern (``ORDER BY <expr> [DESC] LIMIT 1``) /
+         ``CASE WHEN`` / ``UNION`` / a flat subquery block
+         (``CALL{}`` / ``EXISTS{}`` / ``COUNT{}`` / ``COLLECT{}``)
 
-Hop counting
-------------
-"Longest path" is the maximum number of relationship patterns appearing
-in any single comma-separated path expression across all
-``MATCH`` / ``OPTIONAL MATCH`` clauses.  Paths in different MATCH
-clauses or different comma-separated elements within one MATCH are
-counted independently; we take the max.
+**Filtering** — predicates across all WHERE clauses + property-map filters in
+MATCH patterns.  Per WHERE clause: ``preds_in_clause = 1 + #AND + #OR``;
+sum across WHEREs; add the count of ``{k:v}`` property-map blocks in MATCH.
 
-    MATCH (a)-[:R]->(b)                                → 1
-    MATCH (a)-[:R]->(b)-[:S]->(c)                      → 2
-    MATCH (a)-[:R]->(b), (c)-[:S]->(d)                 → 1 (max(1, 1))
-    MATCH (a)-[:R]->(b) MATCH (b)-[:S]->(c)            → 1 (max(1, 1))
-    MATCH (a)-[r*1..3]->(b)                            → variable-length → Extra
+    0 :  0-1 predicates total
+    1 :  exactly 2
+    2 :  ≥ 3 total  OR  any single WHERE clause mixes AND and OR
 
-Bare relationship patterns (``--``, ``-->``, ``<--``) count the same as
-``-[...]->``.
+**WITH dispatch** (the idiom fix — CypherBench has WITH/DISTINCT in 93% of
+gold).  A ``WITH`` clause feeds Operation **iff its projection contains an
+aggregation call** (then it is counted via the agg/group-by detectors);
+otherwise the ``WITH`` itself is ignored.  ``DISTINCT`` is always ignored.
+
+**Bucket thresholds (LOCKED globally — never re-tuned per dataset):**
+
+    score 0      -> easy
+    score 1-2    -> medium
+    score >= 3   -> hard
+
+**Hard-override** (-> hard regardless of score; reason carries the
+``hard-override:`` prefix so callers can still filter for these):
+
+    * a subquery block (CALL/EXISTS/COUNT/COLLECT ``{}``) contains
+      *another* such block (depth >= 2);
+    * ``UNION`` combined with a multi-hop path (Reach >= 1).
+
+Single-level subqueries are Op=2 but do **not** trigger the override.
 
 Pre-processing
 --------------
-Before scanning for keywords, we strip the gold Cypher of:
-
-    * Line comments: ``// ... <newline>``.
-    * Block comments: ``/* ... */``.
-    * Single-quoted strings (with backslash-escape handling).
-    * Double-quoted strings (with backslash-escape handling).
-    * Backtick-quoted identifiers.
-
-A small regex-based stripper handles this — we deliberately avoid
-pulling in a full Cypher parser.  Keyword detection is case-insensitive.
-The stripping is applied once and all feature checks run against the
-stripped text.
+Comments, string literals and backtick identifiers are stripped before
+any keyword scan (line / block comments, single / double quoted strings,
+backtick-quoted idents).  The stripping is applied once and all feature
+checks run against the stripped text.  Keyword detection is case-insensitive.
 """
 
 from __future__ import annotations
@@ -106,11 +90,11 @@ from typing import Any, Dict, List, Optional, Tuple
 
 try:
     from typing import Literal  # py3.8+
-    Bucket = Literal["easy", "medium", "hard", "extra"]
+    Bucket = Literal["easy", "medium", "hard"]
 except ImportError:  # pragma: no cover
     Bucket = str  # type: ignore[misc,assignment]
 
-_BUCKETS: Tuple[str, ...] = ("easy", "medium", "hard", "extra")
+_BUCKETS: Tuple[str, ...] = ("easy", "medium", "hard")
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -311,104 +295,161 @@ def _where_bool_summary(s: str) -> Tuple[int, int, int]:
 _AGG_FN_RE = re.compile(
     r"\b(?:COUNT|SUM|AVG|MIN|MAX|COLLECT)\s*\(", re.IGNORECASE
 )
-_SUBQUERY_EXPR_RE = re.compile(
-    r"\b(?:EXISTS|COUNT|COLLECT)\s*\{", re.IGNORECASE
+_SUBQUERY_OPEN_ANY_RE = re.compile(
+    r"\b(?:CALL|EXISTS|COUNT|COLLECT)\s*\{", re.IGNORECASE
 )
-_CALL_BLOCK_RE = re.compile(r"\bCALL\s*\{", re.IGNORECASE)
-_WITH_RE       = re.compile(r"\bWITH\b", re.IGNORECASE)
-_UNWIND_RE     = re.compile(r"\bUNWIND\b", re.IGNORECASE)
 _SHORTEST_PATH_RE = re.compile(
     r"\b(?:shortestPath|allShortestPaths)\s*\(", re.IGNORECASE
 )
 _ORDER_BY_RE = re.compile(r"\bORDER\s+BY\b", re.IGNORECASE)
 _LIMIT_RE    = re.compile(r"\bLIMIT\b", re.IGNORECASE)
+_LIMIT_1_RE  = re.compile(r"\bLIMIT\s+1\b(?!\s*\d)", re.IGNORECASE)
 _SKIP_RE     = re.compile(r"\bSKIP\b", re.IGNORECASE)
-_DISTINCT_RE = re.compile(r"\bDISTINCT\b", re.IGNORECASE)
 _OPT_MATCH_RE = re.compile(r"\bOPTIONAL\s+MATCH\b", re.IGNORECASE)
+_UNWIND_RE   = re.compile(r"\bUNWIND\b", re.IGNORECASE)
+_UNION_RE    = re.compile(r"\bUNION(?:\s+ALL)?\b", re.IGNORECASE)
+_CASE_WHEN_RE = re.compile(r"\bCASE\s+WHEN\b", re.IGNORECASE)
 
 
 # ──────────────────────────────────────────────────────────────────────────────
-# 7. Public classifier
+# 7. Dimension scorers — Reach / Operation / Filtering
 # ──────────────────────────────────────────────────────────────────────────────
+
+def _reach_score(s: str) -> int:
+    """0:≤1 hop · 1:2–3 hops · 2:≥4 hops or variable-length."""
+    if _has_var_length_path(s):
+        return 2
+    h = _max_fixed_hops(s)
+    if h >= 4:
+        return 2
+    if h >= 2:
+        return 1
+    return 0
+
+
+def _has_groupby(s: str) -> bool:
+    """True if any RETURN or WITH projection has BOTH an aggregation call AND
+    a non-aggregation key (= group-by)."""
+    for seg in _clause_segments(s, ("RETURN", "WITH")):
+        parts = _split_top_level_commas(seg)
+        if len(parts) < 2:
+            continue
+        has_agg = any(_AGG_FN_RE.search(p) for p in parts)
+        has_non_agg = any(not _AGG_FN_RE.search(p) for p in parts)
+        if has_agg and has_non_agg:
+            return True
+    return False
+
+
+def _has_argmax_pattern(s: str) -> bool:
+    """``ORDER BY <expr> [DESC] LIMIT 1`` — argmax / argmin / time-sensitive."""
+    return bool(_ORDER_BY_RE.search(s) and _LIMIT_1_RE.search(s))
+
+
+def _operation_score(s: str) -> int:
+    """MAX across Operation detectors (do NOT sum within Operation)."""
+    # Op = 2 detectors
+    if (_has_groupby(s)
+            or _has_argmax_pattern(s)
+            or _CASE_WHEN_RE.search(s)
+            or _UNION_RE.search(s)
+            or _SUBQUERY_OPEN_ANY_RE.search(s)):
+        return 2
+    # Op = 1 detectors
+    if (_AGG_FN_RE.search(s)
+            or _ORDER_BY_RE.search(s)
+            or _LIMIT_RE.search(s)
+            or _SKIP_RE.search(s)
+            or _OPT_MATCH_RE.search(s)
+            or _UNWIND_RE.search(s)
+            or _SHORTEST_PATH_RE.search(s)):
+        return 1
+    return 0
+
+
+# Property-map opener inside a MATCH pattern: ``Label {``, ``rel {``, or
+# ``)`` immediately followed by ``{`` (the closing-paren-then-map case is
+# rare; the common forms are ``Label {`` and ``var:Label {``).
+_PROPMAP_OPEN_RE = re.compile(r"[A-Za-z0-9_)\]]\s*\{")
+
+
+def _count_propmap_filters(s: str) -> int:
+    """Count of ``{k:v}`` property-map blocks inside MATCH / OPTIONAL MATCH
+    patterns.  Each block = ≥ 1 filter; we count blocks, not keys."""
+    n = 0
+    for seg in _clause_segments(s, ("MATCH", "OPTIONAL MATCH")):
+        n += len(_PROPMAP_OPEN_RE.findall(seg))
+    return n
+
+
+def _filtering_score(s: str) -> int:
+    """0: 0–1 preds · 1: 2 preds · 2: ≥3 preds OR mixed AND+OR in any WHERE."""
+    preds = 0
+    any_mixed = False
+    for seg in _clause_segments(s, ("WHERE",)):
+        n_and = len(_AND_RE.findall(seg))
+        n_or  = len(_OR_RE.findall(seg))
+        preds += 1 + n_and + n_or
+        if n_and > 0 and n_or > 0:
+            any_mixed = True
+    preds += _count_propmap_filters(s)
+    if any_mixed:
+        return 2
+    if preds >= 3:
+        return 2
+    if preds == 2:
+        return 1
+    return 0
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# 8. Public classifier — graded score + extra-override
+# ──────────────────────────────────────────────────────────────────────────────
+
+def _hard_override(s: str) -> Optional[str]:
+    """Return an override reason if the query is unconditionally hard."""
+    if _has_nested_subquery(s):
+        return "hard-override: nested subquery (depth ≥ 2)"
+    if _UNION_RE.search(s) and _max_fixed_hops(s) >= 2:
+        return "hard-override: UNION + multi-hop"
+    return None
+
 
 def classify_explain(gold_cypher: Optional[str]) -> Tuple[Optional[str], str]:
     """
     Return ``(bucket, reason)`` where *bucket* is one of
-    ``"easy" | "medium" | "hard" | "extra" | None`` and *reason* names
-    the rule that fired (e.g. ``"extra: variable-length path"``,
-    ``"medium: ORDER BY"``).
-
-    Returns ``(None, "no gold cypher")`` when *gold_cypher* is ``None``
-    or whitespace-only.
+    ``"easy" | "medium" | "hard" | None`` and *reason* describes the score
+    breakdown.  Returns ``(None, "no gold cypher")`` when *gold_cypher*
+    is ``None`` or whitespace-only.
     """
     if gold_cypher is None or not gold_cypher.strip():
         return None, "no gold cypher"
 
     s = _strip(gold_cypher)
 
-    # ── Extra ────────────────────────────────────────────────────────────────
-    n_and, n_or, n_not = _where_bool_summary(s)
-    total_bool = n_and + n_or + n_not
-    if total_bool >= 2 or (n_and > 0 and n_or > 0):
-        return "extra", (
-            f"extra: complex boolean filtering in WHERE "
-            f"(and={n_and} or={n_or} not={n_not})"
-        )
-    if _has_var_length_path(s):
-        return "extra", "extra: variable-length path"
-    if _has_nested_subquery(s):
-        return "extra", "extra: nested subquery"
+    override = _hard_override(s)
+    if override is not None:
+        return "hard", override
 
-    # ── Hard ─────────────────────────────────────────────────────────────────
-    if _AGG_FN_RE.search(s):
-        return "hard", "hard: aggregation function"
-    if _CALL_BLOCK_RE.search(s):
-        return "hard", "hard: CALL { ... } subquery"
-    if _WITH_RE.search(s):
-        return "hard", "hard: WITH"
-    if _SUBQUERY_EXPR_RE.search(s):
-        return "hard", "hard: subquery expression (EXISTS/COUNT/COLLECT { })"
-    if _UNWIND_RE.search(s):
-        return "hard", "hard: UNWIND"
-    if _SHORTEST_PATH_RE.search(s):
-        return "hard", "hard: shortestPath / allShortestPaths"
-    max_hops = _max_fixed_hops(s)
-    if max_hops >= 4:
-        return "hard", f"hard: {max_hops} fixed hops"
+    reach = _reach_score(s)
+    op    = _operation_score(s)
+    filt  = _filtering_score(s)
+    score = reach + op + filt
 
-    # ── Medium ───────────────────────────────────────────────────────────────
-    if _ORDER_BY_RE.search(s):
-        return "medium", "medium: ORDER BY"
-    if _LIMIT_RE.search(s):
-        return "medium", "medium: LIMIT"
-    if _SKIP_RE.search(s):
-        return "medium", "medium: SKIP"
-    if _DISTINCT_RE.search(s):
-        return "medium", "medium: DISTINCT"
-    if _OPT_MATCH_RE.search(s):
-        return "medium", "medium: OPTIONAL MATCH"
-    if 2 <= max_hops <= 3:
-        return "medium", f"medium: {max_hops} fixed hops"
-    if total_bool == 1:
-        return "medium", "medium: single boolean operator in WHERE"
-
-    # ── Easy (whitelist + path + boolean) ────────────────────────────────────
-    seen = {kw for _, _, kw in _clause_headers(s)}
-    allowed = {"MATCH", "WHERE", "RETURN"}
-    if seen <= allowed and max_hops <= 1 and total_bool == 0:
-        return "easy", "easy: simple MATCH/WHERE/RETURN"
-
-    # ── Safety net — clauses outside Easy's whitelist that none of the
-    #    higher tiers caught (rare on well-formed gold queries).
-    extras = sorted(seen - allowed) if seen else []
-    return "hard", f"hard: safety-net (clauses outside Easy whitelist: {extras})"
+    if score >= 3:
+        bucket = "hard"
+    elif score >= 1:
+        bucket = "medium"
+    else:
+        bucket = "easy"
+    return bucket, f"{bucket}: reach={reach} op={op} filter={filt} score={score}"
 
 
 def classify(gold_cypher: Optional[str]) -> Optional[str]:
     """
     Classify a gold Cypher query into one of
-    ``"easy" | "medium" | "hard" | "extra"`` or ``None`` (when no gold
-    Cypher is available — e.g. Mind-the-Query NL-only examples).
+    ``"easy" | "medium" | "hard"`` or ``None`` (when no gold Cypher is
+    available — e.g. Mind-the-Query NL-only examples).
 
     See :func:`classify_explain` for the rule definitions and a
     machine-readable reason string.
@@ -444,7 +485,6 @@ def aggregate_by_difficulty(records: List[Dict[str, Any]]) -> Dict[str, Dict[str
             "easy":   {...},
             "medium": {...},
             "hard":   {...},
-            "extra":  {...},
         }``
 
         Per-bucket cell layout::

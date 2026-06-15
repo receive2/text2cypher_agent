@@ -290,8 +290,8 @@ def evaluate_one(example: Dict[str, Any]) -> Dict[str, Any]:
 
         ``graph`` is the example's ``source_dataset`` (e.g. ``"bloom50"``,
         ``"covid"``).  ``difficulty`` is one of ``"easy"`` / ``"medium"``
-        / ``"hard"`` / ``"extra"`` / ``None`` and is computed from the
-        gold Cypher by :mod:`eval.difficulty`.
+        / ``"hard"`` / ``None`` and is computed from the gold Cypher by
+        :mod:`eval.difficulty`.
     """
     qid         = str(example.get("qid", ""))
     question    = str(example.get("question", ""))

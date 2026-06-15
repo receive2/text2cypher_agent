@@ -34,6 +34,7 @@ from data_augmentation.entity_extractor import EntitySpan, extract_entities
 from data_augmentation.kb_aliases import AliasProvider
 from data_augmentation.llm import LLMClient
 from data_augmentation import validity as V
+from eval.difficulty import classify as _classify_difficulty
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -242,6 +243,10 @@ def augment_nl(
                 "augmented": True,
                 "original_nl": nl,
                 "graph": graph,
+                # query_difficulty is the bucket from eval/difficulty.py
+                # (easy/medium/hard) computed from gold_cypher.  None when
+                # gold_cypher is absent (MTQ NL-only rows).
+                "query_difficulty": _classify_difficulty(gold_cypher),
                 "edits": [{
                     "strategy": strat,
                     "from": sp.surface,
