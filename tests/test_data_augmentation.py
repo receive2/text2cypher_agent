@@ -99,25 +99,22 @@ _install_metrics_import_stubs()
 # toward `casing` so every detected entity is reliably perturbed without an
 # LLM call.  `partial` and `typo` are kept non-zero as fallbacks if casing
 # happens to be a no-op (e.g. an already-lowercase entity).
+# Rule-based proportions: only the algorithmic strategies (no LLM, no DB).
 _RULE_PROPS = {
-    "casing":     0.7,
-    "partial":    0.1,
-    "abbrev":     0.0,
-    "synonym":    0.0,
-    "paraphrase": 0.0,  # LLM-only — keep at 0
-    "typo":       0.2,
+    "casing":  0.7,
+    "partial": 0.1,
+    "typo":    0.2,
 }
 
 
 def _augment_row(nl: str, gold_cypher: str, *, seed: int = 42):
-    """Run augment_nl with rule-based knobs only (no LLM calls)."""
+    """Run augment_nl with rule-based knobs only (no LLM, no ValueProvider)."""
     from data_augmentation.pipeline import augment_nl
     return augment_nl(
         nl,
         gold_cypher,
         proportions=_RULE_PROPS,
         llm=None,
-        llm_config=None,
         use_llm_entity_fallback=False,
         rng=random.Random(seed),
     )
@@ -158,11 +155,11 @@ def test_base_dataset_augmented_name_maps_to_base():
 def _assert_aug_meta_shape(meta: Dict[str, Any], original_nl: str) -> None:
     assert meta["augmented"] is True
     assert meta["original_nl"] == original_nl
-    assert isinstance(meta["edits"], list) and len(meta["edits"]) >= 1
+    # Redesign: exactly one (entity, strategy) edit per row.
+    assert isinstance(meta["edits"], list) and len(meta["edits"]) == 1
     for e in meta["edits"]:
-        assert {"strategy", "from", "to", "src_span", "dst_span", "source"} <= set(e)
-        assert isinstance(e["src_span"], list) and len(e["src_span"]) == 2
-        assert isinstance(e["dst_span"], list) and len(e["dst_span"]) == 2
+        assert {"strategy", "from", "to", "source", "needs_verification",
+                "label", "prop", "validity"} <= set(e)
         assert e["from"] != e["to"]
 
 
@@ -180,13 +177,13 @@ def test_augment_nl_cypherbench_format():
     assert new_nl != nl,                   "NL must be perturbed"
     _assert_aug_meta_shape(meta, original_nl=nl)
 
-    # Both detected entities should have been perturbed (no `skipped` block).
+    # Redesign: one edit per row; the edited surface must be one of the
+    # gold-cypher literals.
     surfaces = {e["from"] for e in meta["edits"]}
-    assert "The Matrix"    in surfaces
-    assert "United States" in surfaces
-    assert meta.get("skipped", []) == [], (
-        f"expected no skipped entities, got {meta.get('skipped')}"
-    )
+    assert surfaces <= {"The Matrix", "United States"}
+    # no spliced article/word doubling
+    import re as _re
+    assert not _re.search(r"\b(\w+)\s+\1\b", new_nl, _re.IGNORECASE)
 
 
 def test_augment_nl_mindthequery_format():
@@ -203,8 +200,7 @@ def test_augment_nl_mindthequery_format():
     assert new_nl != nl
     _assert_aug_meta_shape(meta, original_nl=nl)
     surfaces = {e["from"] for e in meta["edits"]}
-    assert "COVID-19"  in surfaces
-    assert "Manhattan" in surfaces
+    assert surfaces <= {"COVID-19", "Manhattan"}
 
 
 def test_augment_nl_zograscope_format():
@@ -221,8 +217,8 @@ def test_augment_nl_zograscope_format():
     assert new_nl != nl
     _assert_aug_meta_shape(meta, original_nl=nl)
     surfaces = {e["from"] for e in meta["edits"]}
-    # Both literals should be detected entities; both should be perturbed.
-    assert "Smith et al." in surfaces
+    # '2020' is a numeric id → filtered out; only 'Smith et al.' is augmentable.
+    assert surfaces == {"Smith et al."}
     assert "2020"         in surfaces or len(surfaces) >= 1
 
 
@@ -747,63 +743,13 @@ def test_llm_client_falls_back_when_agent_helper_unavailable(tmp_path: Path, mon
 
 
 # ──────────────────────────────────────────────────────────────────────────────
-# 6. Strategy order distribution — Bug B regression
+# 6. Strategy mixture — superseded by the redesign's QuotaSampler.
 # ──────────────────────────────────────────────────────────────────────────────
-
-def test_strategy_order_distribution_uniform():
-    """
-    Run _strategy_order 1000 times with the canonical 18/18/18/18/18/10
-    weights and a seeded RNG.  Verify position 1 (and position 2) reflect
-    the configured weights, not a fixed-order fallback chain.
-    """
-    from data_augmentation.pipeline import _strategy_order
-
-    weights = {
-        "casing":     0.18,
-        "partial":    0.18,
-        "abbrev":     0.18,
-        "synonym":    0.18,
-        "paraphrase": 0.18,
-        "typo":       0.10,
-    }
-
-    rng = random.Random(42)
-    N = 1000
-    pos_counts: List[Dict[str, int]] = [{k: 0 for k in weights} for _ in range(len(weights))]
-
-    for _ in range(N):
-        order = _strategy_order(rng, weights)
-        assert sorted(order) == sorted(weights.keys()), \
-            "every strategy must appear exactly once per order"
-        for i, name in enumerate(order):
-            pos_counts[i][name] += 1
-
-    # Position 1: casing should be ~18% (NOT >40% as the old fixed-order
-    # fallback chain produced).  Typo should be ~10%.
-    p1 = pos_counts[0]
-    casing_p1 = p1["casing"] / N
-    typo_p1   = p1["typo"]   / N
-    assert abs(casing_p1 - 0.18) < 0.05, (
-        f"position 1 casing rate = {casing_p1:.3f}, expected ~0.18 (±0.05); "
-        f"this likely means the fallback chain is fixed-order again"
-    )
-    assert casing_p1 < 0.40, (
-        f"position 1 casing rate = {casing_p1:.3f} — fallback chain looks "
-        f"fixed-order (Bug B regression)"
-    )
-    assert abs(typo_p1 - 0.10) < 0.05, \
-        f"position 1 typo rate = {typo_p1:.3f}, expected ~0.10 (±0.05)"
-
-    # Position 2: casing rate should also be reasonable (random sampling,
-    # not auto-promoted as a fixed fallback).  Allow a wider band because
-    # conditioning on "casing was not picked at position 1" shifts the
-    # distribution slightly upward.
-    p2 = pos_counts[1]
-    casing_p2 = p2["casing"] / N
-    assert 0.13 <= casing_p2 <= 0.30, (
-        f"position 2 casing rate = {casing_p2:.3f}, expected roughly "
-        f"0.18-0.22 (random sampling-without-replacement, not auto-promoted)"
-    )
+# The pre-redesign `_strategy_order` (weighted sampling-without-replacement,
+# first-success fallback) was removed: it could not honor target proportions
+# when strategies decline at different rates (casing+paraphrase reached ~90%).
+# The replacement is the deficit-greedy QuotaSampler; its convergence is tested
+# in tests/test_augmentation_redesign.py::test_quota_sampler_converges_to_targets.
 
 
 # ──────────────────────────────────────────────────────────────────────────────

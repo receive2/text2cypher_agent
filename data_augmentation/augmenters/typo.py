@@ -1,176 +1,113 @@
 """
 data_augmentation.augmenters.typo
 =================================
-Real-world typing-noise simulation.
+Typing-noise simulation — in-house, no nlpaug (whose version-dependent RNG
+broke reproducibility, and whose swap action produced transpositions the old
+plain-Levenshtein gate then rejected, driving typo to 0%).
 
-Uses ``nlpaug.augmenter.char`` (KeyboardAug + RandomCharAug) when the
-package is available; falls back to a tiny built-in implementation if
-nlpaug isn't installed (so the rest of the pipeline still works on a
-slim env).
+Exactly one edit per surface, of one of four real-keyboard-slip kinds:
 
-The injected noise is *small* by design — at most one or two char
-changes per entity — because the goal is "user typed Balretta instead
-of Barletta", not "user wrote a paragraph of gibberish".
+    keyboard substitution   'Sacramento' -> 'Sxcramento'   (adjacent key)
+    adjacent transposition  'Barletta'   -> 'Balretta'     (finger order)
+    deletion                'Barletta'   -> 'Barleta'
+    doubling                'Barletta'   -> 'Barlettta'
+
+Word-initial characters are never touched (entity recognition is anchored
+on them; a leading-char change is a different entity, not a typo).  The
+pipeline's margin check (validity.check_validity) additionally rejects any
+result that lands within Damerau-1 of *another* DB value (the WN5→NW5 class).
 """
 
 from __future__ import annotations
 
-import string
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
-from loguru import logger
+from data_augmentation.augmenters.base import (
+    Augmenter, AugContext, EditProposal, SOURCE_ALGORITHMIC,
+)
 
-from data_augmentation.augmenters.base import Augmenter, AugContext
-
-
-# Lazy module-level state for nlpaug — built once.
-_nlpaug_keyboard = None
-_nlpaug_random = None
-_nlpaug_attempted = False
-
-
-def _ensure_nlpaug() -> None:
-    global _nlpaug_keyboard, _nlpaug_random, _nlpaug_attempted
-    if _nlpaug_attempted:
-        return
-    _nlpaug_attempted = True
-    try:
-        from nlpaug.augmenter.char import KeyboardAug, RandomCharAug
-
-        # Conservative knobs: at most one word affected, at most one char
-        # changed per word, no stop-words, preserve digits / punct.
-        _nlpaug_keyboard = KeyboardAug(
-            aug_char_min=1, aug_char_max=1,
-            aug_word_min=1, aug_word_max=1,
-            include_special_char=False,
-            include_numeric=False,
-            include_upper_case=False,
-        )
-        _nlpaug_random = RandomCharAug(
-            action="swap",
-            aug_char_min=1, aug_char_max=1,
-            aug_word_min=1, aug_word_max=1,
-            include_numeric=False,
-            include_upper_case=False,
-        )
-        logger.debug("data_augmentation.typo: nlpaug initialised")
-    except Exception as exc:  # noqa: BLE001
-        logger.info(
-            f"data_augmentation.typo: nlpaug unavailable ({exc}); "
-            "falling back to built-in single-char swap."
-        )
+# QWERTY adjacency for keyboard-slip substitutions.
+_ADJ = {
+    "q": "wa", "w": "qeas", "e": "wrds", "r": "etdf", "t": "ryfg",
+    "y": "tugh", "u": "yihj", "i": "uojk", "o": "ipkl", "p": "ol",
+    "a": "qwsz", "s": "weadzx", "d": "ersfcx", "f": "rtdgcv", "g": "tyfhvb",
+    "h": "yugjbn", "j": "uihknm", "k": "iojlm", "l": "opk",
+    "z": "asx", "x": "sdzc", "c": "dfxv", "v": "fgcb", "b": "ghvn",
+    "n": "hjbm", "m": "jkn",
+}
 
 
-# ── Built-in fallback ───────────────────────────────────────────────────────
-
-_ALPHA = string.ascii_letters
-
-
-def _builtin_typo(surface: str, rng) -> Optional[str]:
-    """
-    One-character swap in a randomly-chosen alphabetic word.
-
-    Preserves the first letter of the entity (and of each word) — most
-    entity-recognition pipelines are anchored to the leading character,
-    so a typo there is functionally a different entity rather than a
-    typo.  The pipeline's ``_validate_edit`` enforces the same
-    invariant, so a typo that touches the first character is rejected
-    upstream anyway.
-    """
-    words = surface.split()
-    if not words:
-        return None
-    # Pick word indices that contain ≥ 3 alphabetic chars so we have
-    # room to swap two letters AFTER position 0.
-    candidates: List[int] = [
-        i for i, w in enumerate(words)
-        if sum(c.isalpha() for c in w) >= 3
-    ]
-    if not candidates:
-        return None
-    wi = rng.choice(candidates)
-    word = words[wi]
-
-    # Pick two adjacent alphabetic positions to swap — but exclude
-    # position 0 of the FIRST word of the surface (which is the
-    # surface's first character).  For other words we still avoid
-    # position 0 since it's the word-initial character.
-    alpha_positions = [i for i, c in enumerate(word) if c.isalpha() and i > 0]
-    pairs = [
-        (alpha_positions[i], alpha_positions[i + 1])
-        for i in range(len(alpha_positions) - 1)
-    ]
-    if not pairs:
-        return None
-    a, b = rng.choice(pairs)
-    chars = list(word)
-    chars[a], chars[b] = chars[b], chars[a]
-    new_word = "".join(chars)
-    if new_word == word:
-        return None
-    words[wi] = new_word
-    cand = " ".join(words)
-    if cand == surface:
-        return None
-    return cand
-
-
-# ── nlpaug-backed implementation ────────────────────────────────────────────
-
-def _nlpaug_typo(surface: str, ctx: AugContext) -> Optional[str]:
-    _ensure_nlpaug()
-    if _nlpaug_keyboard is None and _nlpaug_random is None:
-        return None
-
-    # Pick keyboard or random-swap with equal probability — keyboard
-    # mimics adjacent-key slips, random-swap mimics finger-order slips.
-    aug = ctx.rng.choice([a for a in (_nlpaug_keyboard, _nlpaug_random) if a is not None])
-    try:
-        out = aug.augment(surface)
-    except Exception as exc:  # noqa: BLE001
-        logger.debug(f"data_augmentation.typo: nlpaug.augment failed: {exc}")
-        return None
-
-    # nlpaug returns either a string or a list of strings depending on version.
-    if isinstance(out, list):
-        if not out:
-            return None
-        cand = out[0]
-    else:
-        cand = out
-    if not isinstance(cand, str):
-        return None
-    cand = cand.strip()
-    if not cand or cand == surface:
-        return None
-    return cand
-
-
-def _first_char_preserved(orig: str, cand: str) -> bool:
-    """True iff orig[0] == cand[0] (case-insensitive).  Empty inputs fail."""
-    if not orig or not cand:
-        return False
-    return orig[:1].lower() == cand[:1].lower()
+def _alterable_positions(word: str) -> List[int]:
+    """Alphabetic positions in *word* excluding index 0 (word-initial)."""
+    return [i for i, c in enumerate(word) if c.isalpha() and i > 0]
 
 
 class TypoAugmenter(Augmenter):
     name = "typo"
 
-    def apply(self, surface: str, ctx: AugContext) -> Optional[str]:
-        # Require ≥3 stripped chars so we can meaningfully alter a
-        # non-first character.
+    def apply(self, surface: str, ctx: AugContext) -> Optional[EditProposal]:
         if not surface or len(surface.strip()) < 3:
             return None
 
-        # nlpaug doesn't expose a "preserve first letter" knob, so retry
-        # a handful of times and reject any candidate that mangles the
-        # leading character.  The pipeline-side ``_validate_edit`` will
-        # also reject these, so retries here just keep the typo strategy
-        # from being wasted on the safety gate.
-        for _ in range(4):
-            cand = _nlpaug_typo(surface, ctx)
-            if cand and _first_char_preserved(surface, cand):
-                return cand
+        words = surface.split()
+        # words with at least one alterable (non-initial alpha) position
+        wi_candidates = [i for i, w in enumerate(words) if _alterable_positions(w)]
+        if not wi_candidates:
+            return None
 
-        # Fall back to the deterministic built-in (already first-char safe).
-        return _builtin_typo(surface, ctx.rng)
+        # A few attempts so a no-op op (e.g. doubling that equals nothing
+        # useful, or a substitution picking the same char) still yields a typo.
+        for _ in range(6):
+            wi = ctx.rng.choice(wi_candidates)
+            new_word = self._one_edit(words[wi], ctx)
+            if new_word and new_word != words[wi]:
+                out = list(words)
+                out[wi] = new_word
+                cand = " ".join(out)
+                if cand != surface:
+                    return EditProposal(surface=cand, source=SOURCE_ALGORITHMIC)
+        return None
+
+    def _one_edit(self, word: str, ctx: AugContext) -> Optional[str]:
+        positions = _alterable_positions(word)
+        if not positions:
+            return None
+        op = ctx.rng.choice(("sub", "transpose", "delete", "double"))
+        chars = list(word)
+
+        if op == "sub":
+            p = ctx.rng.choice(positions)
+            lo = chars[p].lower()
+            repl = _ADJ.get(lo)
+            if not repl:
+                return None
+            nc = ctx.rng.choice(repl)
+            chars[p] = nc.upper() if chars[p].isupper() else nc
+            return "".join(chars)
+
+        if op == "transpose":
+            pairs: List[Tuple[int, int]] = [
+                (positions[i], positions[i + 1])
+                for i in range(len(positions) - 1)
+                if positions[i + 1] == positions[i] + 1
+            ]
+            if not pairs:
+                return None
+            a, b = ctx.rng.choice(pairs)
+            chars[a], chars[b] = chars[b], chars[a]
+            return "".join(chars)
+
+        if op == "delete":
+            # keep ≥2 chars so the word stays a word
+            if len(word) <= 2:
+                return None
+            p = ctx.rng.choice(positions)
+            del chars[p]
+            return "".join(chars)
+
+        if op == "double":
+            p = ctx.rng.choice(positions)
+            chars.insert(p, chars[p])
+            return "".join(chars)
+
+        return None

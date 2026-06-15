@@ -1,46 +1,39 @@
 """
 data_augmentation.augmenters.casing
 ===================================
-Casing perturbation — the cheapest robustness improvement.
+Casing perturbation — the difficulty floor / control condition.
+
+``.title()`` was dropped: it mangled apostrophes ("Night's Watch" →
+"Night'S Watch"), which is a Python artifact, not real user input.  Only
+all-lower and all-UPPER remain — both are things users actually type.
 
 ::
 
-    'Sacramento Kings' -> 'sacramento kings'  (lower)
-    'Sacramento Kings' -> 'SACRAMENTO KINGS'  (upper)
-    'sacramento kings' -> 'Sacramento Kings'  (title)
+    'Sacramento Kings' -> 'sacramento kings'   (lower)
+    'Sacramento Kings' -> 'SACRAMENTO KINGS'   (upper)
 """
 
 from __future__ import annotations
 
 from typing import Optional
 
-from data_augmentation.augmenters.base import Augmenter, AugContext
+from data_augmentation.augmenters.base import (
+    Augmenter, AugContext, EditProposal, SOURCE_ALGORITHMIC,
+)
 
 
 class CasingAugmenter(Augmenter):
     name = "casing"
 
-    # Variants attempted in order; first that produces a *change* wins.
-    _VARIANTS: tuple[str, ...] = ("lower", "upper", "title")
+    _VARIANTS = ("lower", "upper")
 
-    def apply(self, surface: str, ctx: AugContext) -> Optional[str]:
-        if not surface or surface.strip() == "":
+    def apply(self, surface: str, ctx: AugContext) -> Optional[EditProposal]:
+        if not surface or not surface.strip():
             return None
-
-        # Pick a deterministic-but-shuffled variant order so multiple
-        # entities in the same row don't all flip to identical casing.
         order = list(self._VARIANTS)
         ctx.rng.shuffle(order)
-
         for variant in order:
-            if variant == "lower":
-                cand = surface.lower()
-            elif variant == "upper":
-                cand = surface.upper()
-            elif variant == "title":
-                cand = surface.title()
-            else:  # pragma: no cover — exhaustive above
-                continue
+            cand = surface.lower() if variant == "lower" else surface.upper()
             if cand != surface:
-                return cand
+                return EditProposal(surface=cand, source=SOURCE_ALGORITHMIC)
         return None

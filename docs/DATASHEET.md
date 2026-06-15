@@ -1,0 +1,155 @@
+# Datasheet — Entity-Perturbed text2cypher Benchmark
+
+A robustness benchmark for natural-language→Cypher question answering. Built by
+perturbing the **entity mention** in each question of three existing
+text2cypher datasets, while leaving the gold Cypher (and thus the answer)
+unchanged. Status: **v2 staging** (pre-human-verification; see §7).
+
+## 1. Motivation
+
+Existing text2cypher benchmarks are unrealistically clean: the entity a user
+mentions almost always matches a graph value verbatim, so a system can succeed
+by exact string matching and reported accuracy overstates real-world
+robustness. Real users abbreviate, nickname, shorten, and mistype entities.
+This benchmark restores that realism by rewriting the entity mention into a
+plausible variant, creating a **grounding gap** that a value-grounding step
+must close.
+
+**Headline:** across 4,875 perturbed examples, a baseline case-insensitive
+exact-match no longer recovers the canonical entity on **89.9%** of them
+(89.8 / 89.9 / 90.0% on the three datasets independently).
+
+## 2. Composition
+
+3 datasets, 13 graphs, **4,875** perturbed examples (test split).
+
+| dataset | graphs | examples |
+|---|---|--:|
+| CypherBench | nba, flight_accident, fictional_character, company, geography, movie, politics | 2,136 |
+| Mind-the-Query | bloom, covid, er, healthcare, wwc | 1,298 |
+| ZOGRASCOPE | pole | 1,441 |
+
+Each example preserves the original row (`_source_row`), the unchanged
+`gold_cypher`, the perturbed question (`nl`), and `_aug_meta` recording the
+single edit: `strategy`, `from` (canonical DB value), `to` (perturbed surface),
+`source` (provenance), `needs_verification`, `(label, prop)`, and the
+`grounding_probe` difficulty signals.
+
+## 3. Perturbation taxonomy
+
+One edit per example. Five strategies, each a distinct grounding challenge:
+
+| strategy | what it does | example | target share |
+|---|---|---|--:|
+| `casing` | re-case (lower/UPPER) — difficulty floor / control | `Sacramento Kings`→`SACRAMENTO KINGS` | 10% |
+| `typo` | one keyboard-slip / transposition / deletion / doubling | `Barletta`→`Balretta` | 22.5% |
+| `partial` | drop words, keep the distinctive head | `Los Angeles Lakers`→`Lakers` | 22.5% |
+| `abbrev` | acronym / short form | `Golden State Warriors`→`GSW` | 22.5% |
+| `alias` | replacement nickname / brand–generic (no surface overlap) | `Tocilizumab`→`Actemra` | 22.5% |
+
+(`paraphrase` was excluded by design — it leaves the entity verbatim and so
+poses no value-grounding challenge.)
+
+## 4. Difficulty spectrum (objective, model-independent)
+
+Each edit is classified by how the perturbed surface relates to the canonical
+value (DB- and model-free):
+
+| class | meaning | all | cypherbench | mtq | zograscope |
+|---|---|--:|--:|--:|--:|
+| `exact_ci` | case-insensitive exact still matches (trivial) | 10.1% | 10.1% | 10.2% | 10.0% |
+| `edit_distance` | within Damerau ≤2 (fuzzy-recoverable) | 38.3% | 25.5% | 41.1% | 54.7% |
+| `substring` | perturbed ⊆ canonical (fulltext-recoverable) | 30.2% | 31.6% | 27.3% | 30.7% |
+| `semantic` | no surface overlap (needs world knowledge / vector) | 21.4% | 32.8% | 21.3% | 4.6% |
+
+`semantic` is the hardest tier and is where value-grounding / vector retrieval
+is required; its share tracks alias/abbrev availability per domain.
+
+## 5. Generation method
+
+1. **Entity extraction** — the entity is the gold-Cypher string literal that
+   appears in the question; the `(label, property)` it is compared against is
+   parsed from the Cypher so checks can be scoped. Dates, times, emails, and
+   structured IDs/postcodes are excluded (low grounding value, collision-dense).
+2. **Strategy selection** — a deficit-greedy quota sampler targets the shares
+   in §3; `casing` is capped at its target so the trivial control never
+   inflates. A row is dropped (with reason) if no eligible strategy yields a
+   valid edit — never silently substituted.
+3. **Surface generation** — `casing`/`typo`/`partial` are algorithmic;
+   `abbrev`/`alias` prefer **attested sources** (CypherBench's shipped
+   Wikidata aliases; curated tables; RxNorm for drugs) and fall back to an
+   **LLM proposer** (gpt-4.1) only when attested misses. LLMs *propose*; they
+   never *judge* validity.
+4. **Validity gates (DB-grounded, model-free)** — every edit must (a) not
+   collide with a *different* value of the same `(label, prop)`, (b) for
+   `partial`, resolve uniquely by containment, (c) for `typo`, leave the
+   canonical the unique value within Damerau-1 (margin). A splice grammar guard
+   repairs article/word-doubling at the insertion seam.
+5. **Synthetic-domain rule** — fabricated graphs (`pole`, `bloom`, `er`) have
+   no real-world aliases, so the `alias` strategy is disabled there (preventing
+   hallucinated aliases for fabricated entities).
+6. **Reproducibility** — per-row RNG seeded from `(seed, dataset, row_id)`;
+   generation only reads the graph DB. Proposer model: `gpt-4.1`
+   (pin the exact snapshot used).
+
+## 6. Realized distribution (per graph)
+
+`kept/total` examples and realized strategy %; `verify` = LLM-proposed edits
+queued for human verification.
+
+| dataset | graph | kept/total | casing | typo | partial | abbrev | alias | verify |
+|---|---|--:|--:|--:|--:|--:|--:|--:|
+| cypherbench | nba | 258/270 | 10.1 | 22.9 | 22.1 | 22.1 | 22.9 | 75 |
+| cypherbench | flight_accident | 170/189 | 10.0 | 22.4 | 22.4 | 22.4 | 22.9 | 24 |
+| cypherbench | fictional_character | 326/385 | 10.1 | 29.4 | 28.5 | 2.8 | 29.1 | 88 |
+| cypherbench | company | 308/347 | 10.1 | 22.7 | 22.4 | 22.1 | 22.7 | 42 |
+| cypherbench | geography | 339/366 | 10.0 | 23.0 | 23.0 | 20.9 | 23.0 | 87 |
+| cypherbench | movie | 370/401 | 10.0 | 22.7 | 22.2 | 22.4 | 22.7 | 78 |
+| cypherbench | politics | 365/390 | 10.1 | 22.5 | 22.5 | 22.5 | 22.5 | 37 |
+| mindthequery | bloom *(synthetic)* | 40/58 | 10.0 | 50.0 | 27.5 | 12.5 | 0.0 | 6 |
+| mindthequery | covid | 342/438 | 10.2 | 63.5 | 20.2 | 0.0 | 6.1 | 22 |
+| mindthequery | er *(synthetic)* | 202/421 | 10.4 | 37.6 | 17.8 | 34.2 | 0.0 | 30 |
+| mindthequery | healthcare | 439/460 | 10.0 | 26.9 | 26.4 | 10.0 | 26.7 | 174 |
+| mindthequery | wwc | 275/452 | 10.2 | 33.5 | 33.1 | 2.5 | 20.7 | 60 |
+| zograscope | pole *(synthetic)* | 1441/2117 | 10.0 | 54.0 | 30.0 | 6.0 | 0.0 | 91 |
+
+**Honest accounting.** `casing` is pinned at 10% everywhere. Where entities have
+abbreviations/aliases (all CypherBench except fictional_character; healthcare),
+the four informative strategies reach ~22.5% each. Where they do not
+(fictional_character, covid, wwc, and synthetic graphs where `alias` is off),
+the realized mix is `typo`/`partial`-heavy by supply, not by design — we report
+the per-graph mix rather than forcing abbreviations/aliases that do not exist.
+
+## 7. Quality control & known limitations
+
+- **Human verification.** Every LLM-proposed edit (814 total: alias 403,
+  abbrev 225, partial 186) is queued for human verification
+  (`review_queue_ALL.csv` + `docs/REVIEW_GUIDE.md`); algorithmic and
+  attested-source edits are trusted. Verdicts (keep/fix/drop) are applied to
+  produce the released version. **This v2 is pre-verification.**
+- **Residual LLM noise** caught by verification: standings-code abbreviations
+  (`the CHI`) and invented nicknames for obscure entities. Closed-set categories
+  (≤30 distinct values: divisions, conferences, positions, awards) are excluded
+  from LLM aliasing to prevent sibling-swaps.
+- **Layout.** v2 is a consolidated `test.json`; converting to each source's
+  eval layout (Mind-the-Query per-graph files; ZOGRASCOPE CSV) is pending before
+  harness consumption (`_source_row` preserved, so conversion is lossless).
+- **Difficulty ranks.** `fulltext_rank`/`vector_rank` are not computed (the
+  benchmark graphs ship without those indexes); the §4 class spectrum is
+  index-free.
+
+## 8. Files
+
+```
+~/datasets/<dataset>_augmented_v2/
+  test.json              # augmented examples (+ _aug_meta, gold_cypher, _source_row)
+  test.probed.json       # + grounding_probe difficulty signals
+  report.json            # per-graph realized distribution + drop reasons
+  needs_verification.jsonl  # LLM-proposed edits for human review
+~/datasets/review_queue_ALL.csv     # consolidated review sheet (814 edits)
+docs/REVIEW_GUIDE.md                # human-verification instructions
+```
+
+Generated by `scripts/generate_augmented.py`; probed by
+`scripts/grounding_probe.py`; pipeline in `data_augmentation/` (see
+`docs/AUGMENTATION_REDESIGN.md`).

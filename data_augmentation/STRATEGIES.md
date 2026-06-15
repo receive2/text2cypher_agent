@@ -1,5 +1,16 @@
 # Data Augmentation Strategies
 
+> ⚠️ **OUTDATED — describes the pre-redesign pipeline (6 strategies incl.
+> `paraphrase`/`synonym`, `_strategy_order` fallback sampling). That design was
+> replaced (see `docs/AUGMENTATION_REDESIGN.md`).**
+> The authoritative, current, appendix-quality methodology is
+> **[`docs/AUGMENTATION_METHODS.md`](../docs/AUGMENTATION_METHODS.md)** (5
+> categories: casing / typo / partial / abbrev / alias; deficit-greedy quota
+> sampler; DB-grounded validity). The content below is kept only for historical
+> reference and should not be cited.
+
+---
+
 This file documents every entity-perturbation strategy implemented in
 this module. It is the authoritative reference — if you add a new
 strategy, update this file in the same commit.
