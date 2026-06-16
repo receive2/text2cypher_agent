@@ -150,8 +150,8 @@ def _lucene_query_from_phrase(phrase: str, fuzziness: int = 1) -> str:
         boundary; both halves still get fuzzy-matched). Better than the old
         ``[A-Za-z0-9]+`` which produced the same split but discarded any
         accented Latin characters in tokens like ``"François"``.
-      • Non-Latin scripts work: ``"东京"`` → ``["东京"]`` instead of ``[]``,
-        so a Chinese / Japanese / Korean / Arabic database still gets
+      • Non-Latin scripts work: ``"Москва"`` → ``["Москва"]`` instead of ``[]``,
+        so a Cyrillic / Chinese / Japanese / Korean / Arabic database still gets
         per-token fuzzy matching. Critical for paper portability.
 
     Each token is also escaped against the Lucene reserved-character set so
@@ -591,10 +591,12 @@ def _merge_results(
     `strategy`:
         "rrf"      — Reciprocal Rank Fusion (rank-based, no score scaling)
         "weighted" — min-max normalize scores, then weighted sum
+        "cascade"  — fuzzy-first: fuzzy candidates rank first (order kept),
+                     vector candidates appended in the tail (dedup)
 
     Returns [{value, score}, ...] sorted descending, length <= final_top_k.
-    Score is the merged score (RRF or weighted) — NOT comparable to raw
-    fuzzy/vector scores; it's only ordinal.
+    Score is the merged score (RRF / weighted / cascade-ordinal) — NOT
+    comparable to raw fuzzy/vector scores; it's only ordinal.
     """
     if strategy == "rrf":
         merged = _rrf_merge(fuzzy_rows, vector_rows, k=vc.RRF_K)
@@ -604,10 +606,44 @@ def _merge_results(
             wf=vc.HYBRID_FUZZY_WEIGHT,
             wv=vc.HYBRID_VECTOR_WEIGHT,
         )
+    elif strategy == "cascade":
+        merged = _cascade_merge(fuzzy_rows, vector_rows)
     else:
         raise ValueError(f"Unknown HYBRID_STRATEGY: {strategy!r}")
 
     return merged[:final_top_k]
+
+
+def _cascade_merge(
+    fuzzy_rows: List[Dict[str, Any]],
+    vector_rows: List[Dict[str, Any]],
+) -> List[Dict[str, Any]]:
+    """
+    Fuzzy-first cascade. Fuzzy candidates rank first in their original order;
+    vector candidates not already present are appended in the tail.
+
+    Rationale (see docs/NER_ABLATION_HEAD_BASELINE notes): on string-recoverable
+    perturbations (casing/typo/partial) Lucene fuzzy is near-perfect at rank-1,
+    so RRF/weighted fusion can only *displace* the correct match with a
+    semantically-near-but-wrong vector neighbour (e.g. "NOVOSIBIRSK…"→"Russia",
+    "THR"→"Niš…Airport"). Cascade never lets vector outrank fuzzy: fuzzy's top-1
+    is preserved verbatim, so cascade == pure fuzzy wherever fuzzy is confident,
+    while vector still fills the lower ranks to give the agent a recall path on
+    the hard (abbrev/alias) tier where fuzzy returns nothing useful.
+
+    Score is a synthetic strictly-descending ordinal (cascade carries no
+    comparable similarity score; only the order matters downstream).
+    """
+    out: List[Dict[str, Any]] = []
+    seen: set = set()
+    total = len(fuzzy_rows) + len(vector_rows)
+    for r in list(fuzzy_rows) + list(vector_rows):
+        v = r["value"]
+        if v in seen:
+            continue
+        seen.add(v)
+        out.append({"value": v, "score": float(total - len(out))})
+    return out
 
 
 def _rrf_merge(

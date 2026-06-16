@@ -979,6 +979,86 @@ def _normalize_for_injection(entities_json: str) -> str:
 # 8. Main entry points
 # ──────────────────────────────────────────────────────────────────────────────
 
+# ──────────────────────────────────────────────────────────────────────────────
+# Tool-result backfill (safety net for the NER agent's lossy final synthesis)
+# ──────────────────────────────────────────────────────────────────────────────
+
+# Each generated tool's docstring opens with e.g. "Look up canonical
+# AircraftModel.name values." — we parse the "Label.property" out of that so a
+# ToolMessage can be mapped back to the entity-dict key it grounds. The
+# " values" anchor keeps the match precise (avoids "e.g." / sentence noise).
+_TOOL_KEY_RE = re.compile(r"\b([A-Za-z][A-Za-z0-9]*)\.([a-z][A-Za-z0-9_]*) values")
+
+
+def _tool_key_map(mode: Optional[str]) -> Dict[str, str]:
+    """Map each registry tool's func-name → its ``"Label.property"`` key,
+    parsed from the tool description. Empty dict on any failure."""
+    out: Dict[str, str] = {}
+    try:
+        reg = _get_registry(mode=mode)
+    except Exception:  # noqa: BLE001 — backfill is best-effort
+        return out
+    for name, tool in reg.items():
+        m = _TOOL_KEY_RE.search(getattr(tool, "description", "") or "")
+        if m:
+            out[name] = f"{m.group(1)}.{m.group(2)}"
+    return out
+
+
+def _parse_tool_values(content: Any) -> List[str]:
+    """Best-effort parse a ``ToolMessage.content`` into ``List[str]`` of
+    canonical values (best-first). The tool returns ``List[str]``; LangChain
+    may hand it back as a list or a stringified list."""
+    if isinstance(content, list):
+        return [str(v) for v in content if str(v).strip()]
+    s = str(content).strip()
+    if not s:
+        return []
+    try:
+        v = ast.literal_eval(s)
+        if isinstance(v, list):
+            return [str(x) for x in v if str(x).strip()]
+        return [str(v)] if str(v).strip() else []
+    except Exception:  # noqa: BLE001
+        return [s]
+
+
+def _backfill_from_tools(
+    llm_dict:  Dict[str, Any],
+    tool_msgs: List[ToolMessage],
+    key_map:   Dict[str, str],
+) -> Dict[str, Any]:
+    """Safety-net backfill: re-attach groundings the NER agent *recovered via
+    its own tool calls* but then dropped in its final-answer JSON synthesis.
+
+    Conservative by construction — only **adds** keys that are missing (or
+    empty) in ``llm_dict``; it never overrides a value the LLM emitted. Each
+    harvested key takes the top-1 (best-match) canonical value from the first
+    tool call that produced it.
+
+    Fixes the dominant end-to-end grounding loss (see the NER funnel analysis):
+    the ReAct agent calls the right value-lookup tool, gets the canonical value
+    at rank-1, but its final message returns ``{}`` — so nothing is injected and
+    the Cypher LLM falls back to the question's perturbed surface form.
+    """
+    harvested: Dict[str, str] = {}
+    for tm in tool_msgs:
+        key = key_map.get(getattr(tm, "name", "") or "")
+        if not key or key in harvested:
+            continue
+        vals = _parse_tool_values(tm.content)
+        if vals:
+            harvested[key] = vals[0]
+    if not harvested:
+        return llm_dict
+    merged = dict(llm_dict)
+    for key, val in harvested.items():
+        cur = merged.get(key)
+        if cur is None or cur == "" or cur == []:
+            merged[key] = val
+    return merged
+
+
 def get_ner_auto(
     prompt:    str,
     top_k:     int  = DEFAULT_TOP_K,
@@ -1036,6 +1116,7 @@ def get_ner_auto(
     )
 
     message = None
+    tool_msgs: List[ToolMessage] = []
     # ``recursion_limit=8`` caps the ReAct tool-call loop to at most 8 steps
     # (4 think/act pairs). NER tasks are usually solved in 2–4 LLM calls;
     # anything beyond ~8 is the model spinning, not making progress, and
@@ -1060,7 +1141,26 @@ def get_ner_auto(
     if message is None:
         return "{}"
 
-    return extract_content(message.content)
+    final_json = extract_content(message.content)
+
+    # ── Safety net: backfill groundings the agent recovered but dropped ───────
+    # The ReAct agent's final-answer JSON sometimes drops a canonical value its
+    # own tool call already returned at rank-1 (returns {} or omits a key). We
+    # re-attach those from the tool-call history — additively, never overriding
+    # what the LLM emitted. See _backfill_from_tools.
+    try:
+        llm_dict = json.loads(final_json)
+        if not isinstance(llm_dict, dict):
+            llm_dict = {}
+    except Exception:  # noqa: BLE001
+        llm_dict = {}
+    merged = _backfill_from_tools(llm_dict, tool_msgs, _tool_key_map(effective_mode))
+    if verbose and merged != llm_dict:
+        logger.info(
+            "get_ner_auto: tool-backfill added "
+            f"{ {k: merged[k] for k in merged if k not in llm_dict} }"
+        )
+    return json.dumps(merged, ensure_ascii=False)
 
 
 def get_ner_dict_auto(

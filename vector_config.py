@@ -71,7 +71,7 @@ TOOL_RETRIEVAL_MODE = "fuzzy"          # "fuzzy" | "vector" | "hybrid"
 HYBRID_VECTOR_TOP_K  = 20
 HYBRID_FUZZY_TOP_K   = 20
 HYBRID_FINAL_TOP_K   = 10
-HYBRID_STRATEGY      = "rrf"           # "rrf" | "weighted"
+HYBRID_STRATEGY      = "cascade"           # "rrf" | "weighted" | "cascade"
 RRF_K                = 60              # Cormack et al. 2009 default
 HYBRID_VECTOR_WEIGHT = 0.5             # used only when strategy = "weighted"
 HYBRID_FUZZY_WEIGHT  = 0.5
