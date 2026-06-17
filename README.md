@@ -572,6 +572,14 @@ python -m schema.gen_system_prompt              # regenerate agent/prompts.py
 python ner_agent_auto.py --rebuild "test"       # rebuild the FAISS index
 ```
 
+> **Hand-edited `schema_data/schema_meta.json`?** (e.g. to fix a wrong
+> `id_property` or a topic.) It is **re-inferred by the LLM and overwritten** by
+> both `schema.gen_schema_meta` and a full `setup_project.py`. After editing it
+> by hand, re-run **only the downstream steps that consume it** —
+> `tools.gen_tools` → `schema.gen_system_prompt` → FAISS rebuild — and do **not**
+> re-run `schema.gen_schema_meta` or the full `setup_project.py`, or your edits
+> are clobbered.
+
 ---
 
 ## Advanced: manual step-by-step setup

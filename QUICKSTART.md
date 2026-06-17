@@ -56,6 +56,12 @@ index). Re-run it after the graph schema changes. Useful flags:
 `--skip-embeddings` (fuzzy-only, no vector index), `--yes` (non-interactive),
 `--rediscover` (re-pick embeddable properties).
 
+> **If you hand-edit the inferred `schema_data/schema_meta.json`** (e.g. to fix a
+> wrong `id_property`), re-run only the downstream steps that consume it —
+> `python -m tools.gen_tools` → `python -m schema.gen_system_prompt` →
+> `python ner_agent_auto.py --rebuild "test"` — **not** the full `setup_project.py`
+> (it re-infers and overwrites your edits). See the README for detail.
+
 ## 4. Ask a question (does it work?)
 
 ```bash
