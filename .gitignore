@@ -95,3 +95,4 @@ datasets/
 # Tracked source package — exempt from the broad datasets/ ignore above.
 !data_augmentation/datasets/
 !data_augmentation/datasets/**
+verification/

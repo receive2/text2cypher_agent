@@ -1,0 +1,159 @@
+# Human Verification Protocol — Entity-Perturbed text2cypher Benchmark
+
+The release-grade protocol for human-validating the benchmark's entity
+perturbations. It supersedes the annotator-facing [`REVIEW_GUIDE.md`](REVIEW_GUIDE.md)
+(which it keeps as the per-row instruction sheet) by adding the methodology a
+benchmark paper needs: coverage of **all** provenance classes, double
+annotation, inter-annotator agreement (IAA), adjudication, and a fixed
+reporting schedule.
+
+Tooling: [`scripts/verification_sample.py`](../scripts/verification_sample.py)
+builds the (seeded, stratified) annotation queues; after annotation,
+[`scripts/verification_stats.py`](../scripts/verification_stats.py) computes IAA
++ validity rates with confidence intervals.
+
+---
+
+## 0. Why this exists
+
+Each test question's entity mention is rewritten to a realistic variant while
+the gold Cypher (which uses the **canonical** value) is left unchanged. The
+benchmark is only valid if every rewrite **still refers to the same database
+entity** — otherwise the gold answer is silently wrong (*referent corruption*).
+Automatic checks (DB grounding, attested aliases, collision filters) catch most
+cases but not all (a typo can land on another real value; a KB alias can be
+ambiguous). Human verification measures the residual corruption rate and makes
+it defensible.
+
+## 1. What each item is judged on (three independent labels)
+
+| field | values | meaning |
+|---|---|---|
+| **validity** *(decisive)* | `valid` / `invalid` / `unsure` | Does the perturbed surface form still refer to the **same, unique** DB entity? `invalid` if it (a) names a *different* entity, (b) names a *sibling* in the same family, or (c) is **ambiguous** (could resolve to several entities). Because the gold Cypher uses the unchanged canonical value, **validity = gold correctness**. |
+| **naturalness** *(quality)* | `natural` / `awkward` / `unnatural` | Would a real user plausibly write it in a question? |
+| **source_error** *(side-channel)* | `yes` / `no` | Is the *source dataset's own gold* already wrong here (independent of the perturbation)? Flag → excluded from the release, **not** counted as perturbation corruption. |
+
+The `keep / fix / drop` action is **derived** from the three (see §6); annotators
+record the three primitives so validity rate and naturalness rate can be reported
+cleanly and separately.
+
+## 2. Annotators
+
+- **≥ 3 annotators** (3 enables Krippendorff's α / Fleiss κ; 2 only supports
+  Cohen κ).
+- Domain familiarity matching the datasets (NBA, geography, politics, aviation,
+  biomedical…). Each row carries a one-line KB description of the canonical
+  entity to aid judgment.
+- **Independent**: no communication during annotation; item order **randomised
+  per annotator**.
+- **Blind to provenance** (annotators are not told whether a row is LLM- / KB- /
+  rule-generated) and **blind to any system output** (never show model
+  predictions). The sampler enforces this — provenance lives only in the key
+  file, never in the annotator CSVs.
+
+## 3. Coverage — what gets verified (all provenance classes)
+
+The benchmark (4,875 perturbations) splits by **provenance**, which determines
+how each part is verified:
+
+| provenance | count | how verified |
+|---|--:|---|
+| **LLM-proposed** (alias/abbrev/partial) | 814 | **Full census** (every item) |
+| **Attested / KB** (alias/abbrev from a knowledge base) | 693 | **Full census** |
+| **Algorithmic / rule** (casing, typo, rule-based partial) | 3,368 | **Powered stratified sample** |
+
+- **Tier 1 — full census of the 1,507 human/KB-mediated edits.** This is where
+  corruption is most plausible; verify all.
+- **Tier 2 — powered sample of the 3,368 purely-algorithmic edits.** "Trusted by
+  construction" is an assumption; *measure* it. Default sample (for ±2.5–3% Wilson
+  margin at an expected validity ≈ 0.97): **typo 300, rule-partial 200, casing
+  150** (≈ 650). Typo is the largest strategy (1,808) **and** the most
+  collision-prone, so it gets the tightest target.
+
+Stratify (and report) on three axes: **strategy × provenance × source dataset**
+(CypherBench / Mind-the-Query / ZOGRASCOPE) — corruption risk differs by domain.
+
+## 4. Procedure (order matters)
+
+1. **Calibration round.** All annotators jointly label ~50 items spanning every
+   strategy; discuss disagreements; refine the guideline. The calibration set is
+   **excluded** from the measured release (prevents data-snooping).
+2. **Freeze the guideline** (pre-registration). It is not edited mid-annotation.
+3. **Double annotation.** Every queued item (Tier 1 census + Tier 2 sample) is
+   labeled by **≥ 2 independent annotators**. The sampler assigns each item to a
+   rotating annotator pair, so coverage is even and every pair co-annotates a
+   share (enabling pairwise κ and a missing-data-tolerant Krippendorff α).
+4. **Compute IAA** (§5). If a stratum's α/κ is low, the guideline is unclear for
+   it → refine and **re-annotate that stratum**; never silently accept.
+5. **Adjudication.** Items where the two annotators disagree (incl. any `unsure`)
+   are resolved to a single gold label by a third annotator / expert, or by
+   consensus discussion. Record the **disagreement rate** and the method.
+6. **Apply outcomes** (§6) and report (§7).
+
+## 5. Inter-annotator agreement (the reliability evidence)
+
+Computed on the **validity** label (the decisive one):
+
+- **Krippendorff's α** (nominal) over the full item×rater matrix — handles 2
+  raters/item with missing cells, so it fits the rotating-pair design. **Primary.**
+- **Pairwise Cohen's κ** per annotator pair (on co-annotated items) — reported
+  for transparency.
+- **Fleiss' κ** if (and only if) a fully-overlapped subset exists.
+
+Report **overall + per strategy + per dataset**. Acceptance: **α/κ ≥ 0.6**
+acceptable, **≥ 0.8** strong. (Naturalness IAA may go in an appendix.)
+
+## 6. Applying the verdicts
+
+- `invalid` or `source_error` → **drop** from the release. The released
+  benchmark is the cleaned set; report the **final N**.
+- `valid` + (`awkward`/`unnatural`) → either **drop** (cleanest — introduces no
+  unverified surface form) or **fix** to a better form *and re-verify the fixed
+  form* in a second pass. State which policy was used.
+- `valid` + `natural` → **keep**.
+
+## 7. What to report in the paper (fixed schedule)
+
+A "Human Verification" subsection with:
+
+1. Annotator count + qualifications + calibration.
+2. Verification scope: Tier 1 census size, Tier 2 sample sizes.
+3. **IAA**: validity α (and κ), **overall + per strategy + per dataset**.
+4. **Validity (and corruption = 1−validity) rate**: overall + per stratum, each
+   with a **Wilson 95% CI** (e.g. `alias valid 96.5% [94.8, 97.8]`).
+5. **Algorithmic-tier sampled validity rate + CI** (justifies trusting the
+   un-censused 3,368).
+6. **Disagreement rate** + adjudication method.
+7. **Final released N** after dropping invalid / source-error rows.
+
+## 8. Ethics & reproducibility
+
+- Annotator recruitment, informed consent, and compensation (Responsible-NLP
+  section).
+- Release the verification artifacts: anonymised per-item verdicts, the key file,
+  and the `verification_stats.py` output, so reviewers can recompute every number.
+
+---
+
+## Appendix — running the tooling
+
+```bash
+# 1. Build the seeded, stratified, blinded annotation queues.
+python scripts/verification_sample.py \
+    --out verification/ --annotators 3 --seed 42 \
+    --sample-typo 300 --sample-partial 200 --sample-casing 150
+# -> verification/verification_key.csv          (full metadata; NOT for annotators)
+#    verification/verification_annotator_A.csv  (blind; A fills validity/naturalness/...)
+#    verification/verification_annotator_B.csv
+#    verification/verification_annotator_C.csv
+
+# 2. Annotators fill their CSVs (validity, naturalness, source_error,
+#    corrected_form, notes), then:
+python scripts/verification_stats.py \
+    --key verification/verification_key.csv \
+    --annotations verification/verification_annotator_*.csv \
+    --out verification/report.md
+# -> Krippendorff alpha + pairwise Cohen kappa, validity rate + Wilson CI
+#    per (strategy x provenance x dataset) and overall, disagreement rate,
+#    final retained N.
+```
