@@ -93,7 +93,12 @@ from .cypher_eval_normalize import (
 )
 from .exact_match import exact_match as _literal_exact_match
 from .psjs import compute_psjs as _compute_psjs
-from .difficulty import classify as _classify_difficulty, aggregate_by_difficulty
+from .difficulty import (
+    classify as _classify_difficulty,
+    aggregate_by_difficulty,
+    aggregate_by_strategy,
+    strategy_of,
+)
 from neo4j_lib.safe_query import safe_cypher_run, TransactionTimedOutError
 
 
@@ -1190,6 +1195,7 @@ def evaluate_dataset(
                 every=_heartbeat_every,
             )
             rec = _evaluate_one_with_watchdog(ex, timeout_sec=eff_timeout)
+            rec["strategy"] = strategy_of(ex)  # perturbation tier (augmented sets)
             records.append(rec)
             # POST-record heartbeat with score + running mean EA + ETA.
             _heartbeat(

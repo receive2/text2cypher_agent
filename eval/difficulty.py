@@ -510,6 +510,61 @@ def aggregate_by_difficulty(records: List[Dict[str, Any]]) -> Dict[str, Dict[str
     mean.  Examples whose ``difficulty`` is ``None`` (no gold Cypher)
     contribute to ``"all"`` but to no individual bucket.
     """
+    return _aggregate_by(records, "difficulty", _BUCKETS)
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# 9. Perturbation-strategy bucketing (augmented datasets)
+# ──────────────────────────────────────────────────────────────────────────────
+
+# The five entity-perturbation strategies that define the augmented benchmark.
+STRATEGY_BUCKETS: Tuple[str, ...] = ("casing", "typo", "partial", "abbrev", "alias")
+
+
+def strategy_of(example: Dict[str, Any]) -> Optional[str]:
+    """
+    Return the perturbation ``strategy`` of an augmented example
+    (``casing`` / ``typo`` / ``partial`` / ``abbrev`` / ``alias``), read from
+    ``_aug_meta.edits[0].strategy``.
+
+    Returns ``None`` for non-augmented / unlabelled rows.  Accepts either a
+    normalised example (original row preserved under ``"raw"``) or a raw
+    dataset row directly, so it can be called from any record-build site.
+    """
+    if not isinstance(example, dict):
+        return None
+    raw = example.get("raw") if isinstance(example.get("raw"), dict) else example
+    meta = raw.get("_aug_meta") if isinstance(raw, dict) else None
+    if not isinstance(meta, dict):
+        return None
+    edits = meta.get("edits")
+    if isinstance(edits, list) and edits and isinstance(edits[0], dict):
+        return edits[0].get("strategy")
+    return None
+
+
+def aggregate_by_strategy(records: List[Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
+    """
+    Aggregate per-example records by perturbation ``strategy``, mirroring
+    :func:`aggregate_by_difficulty` cell-for-cell.  Records whose ``"strategy"``
+    is ``None`` (non-augmented / unlabelled) contribute to ``"all"`` only — so a
+    non-augmented dataset yields an all-``None`` per-bucket table that the
+    renderer skips.
+    """
+    return _aggregate_by(records, "strategy", STRATEGY_BUCKETS)
+
+
+def _aggregate_by(
+    records: List[Dict[str, Any]],
+    field:   str,
+    buckets: Tuple[str, ...],
+) -> Dict[str, Dict[str, Any]]:
+    """
+    Generic bucketed mean-aggregator shared by :func:`aggregate_by_difficulty`
+    and :func:`aggregate_by_strategy`.  Buckets each record by ``rec[field]``;
+    a value not in *buckets* (including ``None``) contributes to ``"all"`` only.
+    Returns the standard cell shape (see :func:`aggregate_by_difficulty`).
+    """
     cells = {
         name: {
             "ea": None, "em": None, "psjs": None,
@@ -517,16 +572,16 @@ def aggregate_by_difficulty(records: List[Dict[str, Any]]) -> Dict[str, Dict[str
             "n_scored": {"ea": 0, "em": 0, "psjs": 0},
             "n_errors": 0,
         }
-        for name in ("all",) + _BUCKETS
+        for name in ("all",) + buckets
     }
     sums = {name: {"ea": 0.0, "em": 0.0, "psjs": 0.0}
-            for name in ("all",) + _BUCKETS}
+            for name in ("all",) + buckets}
 
     for rec in records:
-        diff = rec.get("difficulty")
+        val = rec.get(field)
         targets = ["all"]
-        if diff in _BUCKETS:
-            targets.append(diff)
+        if val in buckets:
+            targets.append(val)
 
         for name in targets:
             cell = cells[name]
@@ -540,7 +595,7 @@ def aggregate_by_difficulty(records: List[Dict[str, Any]]) -> Dict[str, Dict[str
                 cell["n_scored"][k] += 1
                 sums[name][k] += float(v)
 
-    for name in ("all",) + _BUCKETS:
+    for name in ("all",) + buckets:
         for k in ("ea", "em", "psjs"):
             ns = cells[name]["n_scored"][k]
             cells[name][k] = (sums[name][k] / ns) if ns > 0 else None

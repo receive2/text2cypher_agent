@@ -43,12 +43,17 @@ from pathlib import Path
 from typing import Any, Dict, List
 
 import eval_config as cfg
-from eval.difficulty import aggregate_by_difficulty
+from eval.difficulty import (
+    aggregate_by_difficulty,
+    aggregate_by_strategy,
+    STRATEGY_BUCKETS,
+)
 
 
 # Bucket print order; rows where ``n == 0`` are skipped silently so
 # datasets that don't populate every bucket don't print empty lines.
 _BUCKET_ORDER = ("all", "easy", "medium", "hard")
+_STRATEGY_ORDER = ("all",) + STRATEGY_BUCKETS
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -114,19 +119,21 @@ def _fmt_metric(v: Any) -> str:
 
 
 def _print_dataset_table(
-    dataset:     str,
-    by_diff:     Dict[str, Dict[str, Any]],
-    graphs:      List[str],
+    dataset:      str,
+    cells:        Dict[str, Dict[str, Any]],
+    graphs:       List[str],
+    bucket_order: tuple = _BUCKET_ORDER,
+    axis:         str   = "difficulty",
 ) -> None:
     header = (
-        f"{'bucket':<8}  {'EA':>7}  {'EM':>7}  {'PSJS':>7}  "
+        f"{axis:<8}  {'EA':>7}  {'EM':>7}  {'PSJS':>7}  "
         f"{'n':>5}  {'n_err':>5}"
     )
-    print(f"\n══ {dataset} ══")
+    print(f"\n══ {dataset} — by {axis} ══")
     print(header)
     print("─" * len(header))
-    for b in _BUCKET_ORDER:
-        cell = by_diff.get(b)
+    for b in bucket_order:
+        cell = cells.get(b)
         if not cell or cell.get("n", 0) == 0:
             continue
         print(
@@ -138,6 +145,13 @@ def _print_dataset_table(
             f"{cell.get('n_errors', 0):>5}"
         )
     print(f"  (aggregated from {len(graphs)} graph{'s' if len(graphs) != 1 else ''}: {graphs})")
+
+
+def _has_strategy_rows(by_strategy: Dict[str, Dict[str, Any]]) -> bool:
+    """True iff at least one *named* strategy bucket has examples — i.e. this is
+    an augmented dataset. Non-augmented datasets populate only ``"all"``, so we
+    skip the (otherwise misleading all-in-one-row) strategy table for them."""
+    return any(by_strategy.get(b, {}).get("n", 0) > 0 for b in STRATEGY_BUCKETS)
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -199,7 +213,15 @@ def main() -> int:
             continue
 
         by_diff = aggregate_by_difficulty(records)
-        _print_dataset_table(dataset, by_diff, graphs)
+        _print_dataset_table(dataset, by_diff, graphs,
+                             bucket_order=_BUCKET_ORDER, axis="difficulty")
+
+        # Per-strategy table — only for augmented datasets (records carry a
+        # non-null "strategy"). Skipped silently for the base/non-augmented sets.
+        by_strategy = aggregate_by_strategy(records)
+        if _has_strategy_rows(by_strategy):
+            _print_dataset_table(dataset, by_strategy, graphs,
+                                 bucket_order=_STRATEGY_ORDER, axis="strategy")
 
     print()
     return 0

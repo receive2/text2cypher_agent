@@ -96,7 +96,12 @@ from .cypher_eval_normalize import (
 )
 from .exact_match import exact_match as _literal_exact_match
 from .psjs import compute_psjs as _compute_psjs
-from .difficulty import classify as _classify_difficulty, aggregate_by_difficulty
+from .difficulty import (
+    classify as _classify_difficulty,
+    aggregate_by_difficulty,
+    aggregate_by_strategy,
+    strategy_of,
+)
 # Reuse the timestamped progress heartbeat from the CypherBench driver so we
 # don't drift two copies of the same formatter.  Importing rather than
 # duplicating keeps the log format identical across all three eval runs.
@@ -474,6 +479,7 @@ def evaluate_dataset(
                 if verbose:
                     logger.error(traceback.format_exc())
 
+            rec["strategy"] = strategy_of(ex)  # perturbation tier (augmented sets)
             records.append(rec)
             _heartbeat_cb(
                 i, total, t0,
