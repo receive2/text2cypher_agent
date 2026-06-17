@@ -18,6 +18,8 @@
 # ──────────────────────────────────────────────────────────────────────────────
 
 import os
+from dataclasses import dataclass
+from typing import Optional
 
 # ──────────────────────────────────────────────────────────────────────────────
 # LLM configuration  (per pipeline stage)
@@ -306,6 +308,7 @@ NER_MODES = (
     "react_node_rel",
     "plan_exec_node_only",
     "plan_exec_node_rel",
+    "plan_exec_node_rel_hybrid",
 )
 
 # Back-compat aliases: legacy mode names → canonical names.  Existing eval
@@ -317,6 +320,119 @@ NER_MODE_ALIASES = {
     "plan_exec": "plan_exec_node_rel",
 }
 
+# ──────────────────────────────────────────────────────────────────────────────
+# Value-linking configuration — four orthogonal axes
+# ──────────────────────────────────────────────────────────────────────────────
+# The flat ``NER_MODE`` enum above is a (mis-named) legacy entry point. The
+# value-linking pipeline is really four independent choices:
+#
+#   VAL_LINK_MODE   no_val_link | rag | val_link
+#                     no_val_link — feed only {schema}+{question} to the Cypher LLM.
+#                     rag         — single-round agent baseline.
+#                     val_link    — run the value-linking grounder (axes below apply).
+#   AGENT_TYPE      react | plan_exec        (only when VAL_LINK_MODE=val_link)
+#   RETRIEVAL_TYPE  fuzzy | hybrid           (only when VAL_LINK_MODE=val_link)
+#                     drives BOTH grounders: react reads it via
+#                     vector_config.TOOL_RETRIEVAL_MODE; plan_exec unions
+#                     fuzzy+vector candidates per tool.
+#   TOOL_TYPE       node | node_rel          (only when VAL_LINK_MODE=val_link)
+#
+# Resolution precedence (see resolve_spec):
+#   1. an explicit flat ``mode=`` argument,
+#   2. the NER_MODE env var if set (legacy single-string entry point),
+#   3. these four axis variables (each env-overridable).
+# ──────────────────────────────────────────────────────────────────────────────
+VAL_LINK_MODE:  str = os.getenv("VAL_LINK_MODE",  "no_val_link")  # no_val_link | rag | val_link
+AGENT_TYPE:     str = os.getenv("AGENT_TYPE",     "plan_exec")    # react | plan_exec
+RETRIEVAL_TYPE: str = os.getenv("RETRIEVAL_TYPE", "fuzzy")        # fuzzy | hybrid
+TOOL_TYPE:      str = os.getenv("TOOL_TYPE",      "node_rel")     # node | node_rel
+
+_VAL_LINK_MODES  = ("no_val_link", "rag", "val_link")
+_AGENT_TYPES     = ("react", "plan_exec")
+_RETRIEVAL_TYPES = ("fuzzy", "hybrid")
+_TOOL_TYPES      = ("node", "node_rel")
+
+
+@dataclass(frozen=True)
+class GroundingSpec:
+    """Resolved value-linking configuration. ``agent`` / ``retrieval`` / ``tool``
+    are ``None`` unless ``val_link == "val_link"``."""
+    val_link:  str
+    agent:     Optional[str] = None
+    retrieval: Optional[str] = None
+    tool:      Optional[str] = None
+
+    @property
+    def canonical(self) -> str:
+        """Legacy flat-name equivalent (so existing string-keyed code is
+        unchanged): no_val_link→'no_ner', rag→'rag', else
+        '<agent>_<tool-suffix>[ _hybrid]' where tool 'node'→'node_only'."""
+        if self.val_link == "no_val_link":
+            return "no_ner"
+        if self.val_link == "rag":
+            return "rag"
+        suffix = "node_only" if self.tool == "node" else "node_rel"
+        name = f"{self.agent}_{suffix}"
+        return name + "_hybrid" if self.retrieval == "hybrid" else name
+
+
+# Canonical/legacy flat name → GroundingSpec.
+_FLAT_TO_SPEC = {
+    "no_ner":                    GroundingSpec("no_val_link"),
+    "rag":                       GroundingSpec("rag"),
+    "react_node_only":           GroundingSpec("val_link", "react",     "fuzzy",  "node"),
+    "react_node_rel":            GroundingSpec("val_link", "react",     "fuzzy",  "node_rel"),
+    "plan_exec_node_only":       GroundingSpec("val_link", "plan_exec", "fuzzy",  "node"),
+    "plan_exec_node_rel":        GroundingSpec("val_link", "plan_exec", "fuzzy",  "node_rel"),
+    "plan_exec_node_rel_hybrid": GroundingSpec("val_link", "plan_exec", "hybrid", "node_rel"),
+}
+
+
+def _spec_from_axes(val_link: str, agent: str, retrieval: str, tool: str) -> GroundingSpec:
+    vl = (val_link or "no_val_link").strip().lower()
+    if vl not in _VAL_LINK_MODES:
+        raise ValueError(f"VAL_LINK_MODE must be one of {_VAL_LINK_MODES}, got {val_link!r}.")
+    if vl != "val_link":
+        return GroundingSpec(vl)
+    ag, rt, tl = (agent or "").strip().lower(), (retrieval or "").strip().lower(), (tool or "").strip().lower()
+    for label, val, allowed in (("AGENT_TYPE", ag, _AGENT_TYPES),
+                                ("RETRIEVAL_TYPE", rt, _RETRIEVAL_TYPES),
+                                ("TOOL_TYPE", tl, _TOOL_TYPES)):
+        if val not in allowed:
+            raise ValueError(
+                f"{label} must be one of {allowed} when VAL_LINK_MODE='val_link', got {val!r}."
+            )
+    return GroundingSpec("val_link", ag, rt, tl)
+
+
+def _spec_from_flat(name: str) -> GroundingSpec:
+    n = NER_MODE_ALIASES.get((name or "").strip().lower(), (name or "").strip().lower())
+    if n in _FLAT_TO_SPEC:
+        return _FLAT_TO_SPEC[n]
+    # Composed canonical name not in the table (e.g. 'react_node_rel_hybrid'): parse it.
+    hybrid = n.endswith("_hybrid")
+    core = n[: -len("_hybrid")] if hybrid else n
+    for ag in ("plan_exec", "react"):
+        if core.startswith(ag + "_"):
+            suffix = core[len(ag) + 1:]
+            tool = "node" if suffix == "node_only" else suffix   # flat 'node_only' → axis 'node'
+            return _spec_from_axes("val_link", ag, "hybrid" if hybrid else "fuzzy", tool)
+    raise ValueError(f"Unknown value-linking mode {name!r}. Expected one of {tuple(_FLAT_TO_SPEC)} or four valid axes.")
+
+
+def resolve_spec(mode: Optional[str] = None) -> GroundingSpec:
+    """Resolve the active :class:`GroundingSpec`.
+
+    Precedence: explicit *mode* flat name → ``NER_MODE`` env var (legacy) →
+    the four axis variables.
+    """
+    if mode:
+        return _spec_from_flat(mode)
+    env_flat = os.environ.get("NER_MODE")
+    if env_flat:
+        return _spec_from_flat(env_flat)
+    return _spec_from_axes(VAL_LINK_MODE, AGENT_TYPE, RETRIEVAL_TYPE, TOOL_TYPE)
+
 # RAG baseline: the ReAct NER agent restricted to a SINGLE tool-call round and
 # with the tool-result backfill DISABLED. It uses the same (node + relation)
 # tool set as `full`, but the agent gets one think→act→observe cycle and must
@@ -324,7 +440,7 @@ NER_MODE_ALIASES = {
 # retrieval round of an LLM agent recovers" as a lower-effort baseline against
 # the full agentic `full` / `node_only` modes (which loop + backfill).
 # RAG_RECURSION_LIMIT caps the LangGraph supersteps: agent → tools → agent ≈ 3.
-RAG_RECURSION_LIMIT = 3
+RAG_RECURSION_LIMIT = 1
 
 # plan_exec baseline: a deterministic plan-and-execute grounder (no ReAct loop).
 #   PLAN     — one LLM call decomposes the question into entity mentions, each
@@ -339,7 +455,13 @@ RAG_RECURSION_LIMIT = 3
 # get_entity intermediate layer, and candidates (not a single forced pick) are
 # given to the generator. Retrieval stays fuzzy (no value-embedding index).
 PLAN_EXEC_TOOLS_PER_ENTITY = 2    # tools routed per extracted mention
-PLAN_EXEC_VALUES_PER_TOOL  = 10   # top-K canonical values searched per tool
+PLAN_EXEC_VALUES_PER_TOOL  = 10   # top-K canonical values searched per tool (fuzzy modes)
+
+# plan_exec_node_rel_hybrid: per tool, union fuzzy top-K with vector top-K
+# candidates (fuzzy first, vector fills the tail). Tests whether in-graph
+# embedding recall recovers the alias/abbrev cases fuzzy misses.
+PLAN_EXEC_HYBRID_FUZZY_K  = 10    # fuzzy candidates per tool
+PLAN_EXEC_HYBRID_VECTOR_K = 5     # embedding (vector-index) candidates per tool
 
 #  python ner_agent_auto.py "Who played neo in matrix?"  --verbose
 #  python ner_agent_auto.py "Who played Neo or Morpheus in The Matrix?" " --verbose

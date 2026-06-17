@@ -154,10 +154,14 @@ def _run_meta() -> Dict[str, Any]:
     }
     try:
         import config as _c
-        # Canonical resolved mode (maps legacy aliases).
+        # Resolve the four-axis value-linking spec (maps legacy aliases / env).
         try:
-            from ner_agent_auto import _resolve_mode
-            meta["ner_mode"] = _resolve_mode(os.environ.get("NER_MODE"))
+            spec = _c.resolve_spec(os.environ.get("NER_MODE"))
+            meta["ner_mode"]       = spec.canonical
+            meta["val_link_mode"]  = spec.val_link
+            meta["agent_type"]     = spec.agent
+            meta["retrieval_type"] = spec.retrieval
+            meta["tool_type"]      = spec.tool
         except Exception:  # noqa: BLE001
             meta["ner_mode"] = os.environ.get("NER_MODE")
         meta["ner_llm"]    = _c.NER_LLM_CONFIG.get("model")

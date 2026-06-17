@@ -183,10 +183,21 @@ def _render_meta_header(
         "",
         f"- **Generated:** {generated_at}",
         f"- **Source:** `{out_dir}`",
-        f"- **NER mode(s):** {', '.join(modes)}",
+        f"- **Mode(s):** {', '.join(modes)}",
         f"- **Datasets:** {', '.join(datasets)}",
         f"- **Graphs:** {', '.join(graphs)}",
     ]
+    # Value-linking axes (only emit the ones captured by run_meta).
+    axis_fields = [
+        ("val_link_mode",  "VAL_LINK_MODE"),
+        ("agent_type",     "AGENT_TYPE"),
+        ("retrieval_type", "RETRIEVAL_TYPE"),
+        ("tool_type",      "TOOL_TYPE"),
+    ]
+    for key, label in axis_fields:
+        vals = _distinct(key)
+        if vals:
+            lines.append(f"- **{label}:** {', '.join(vals)}")
     # Key config — only emit rows we actually captured.
     cfg_fields = [
         ("ner_llm",                    "NER LLM"),

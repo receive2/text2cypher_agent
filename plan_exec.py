@@ -43,7 +43,12 @@ import re
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-from config import PLAN_EXEC_TOOLS_PER_ENTITY, PLAN_EXEC_VALUES_PER_TOOL
+from config import (
+    PLAN_EXEC_TOOLS_PER_ENTITY,
+    PLAN_EXEC_VALUES_PER_TOOL,
+    PLAN_EXEC_HYBRID_FUZZY_K,
+    PLAN_EXEC_HYBRID_VECTOR_K,
+)
 from paths import REPO_ROOT
 
 logger = logging.getLogger("t2c.plan_exec")
@@ -229,15 +234,42 @@ def _route_tools(descriptor: str, kind: str, node_only: bool = False,
     return chosen[:PLAN_EXEC_TOOLS_PER_ENTITY]
 
 
+def _retrieve_values(mention: str, label: str, prop: str, hybrid: bool) -> List[str]:
+    """Canonical-value lookup for one (label, property) target.
+
+    Fuzzy modes: a single fuzzy ``search_tool`` of size ``PLAN_EXEC_VALUES_PER_TOOL``.
+    Hybrid mode: union fuzzy top-``PLAN_EXEC_HYBRID_FUZZY_K`` with vector
+    top-``PLAN_EXEC_HYBRID_VECTOR_K`` (fuzzy first, vector fills the tail,
+    de-duplicated) so in-graph embedding recall can surface alias/abbrev hits
+    that BM25 fuzzy misses."""
+    from neo4j_lib.neo4j_search import search_tool  # lazy import
+
+    if not hybrid:
+        return search_tool(phrase=mention, node_label=label, property_name=prop,
+                           k=PLAN_EXEC_VALUES_PER_TOOL, mode="fuzzy")
+
+    fuzzy = search_tool(phrase=mention, node_label=label, property_name=prop,
+                        k=PLAN_EXEC_HYBRID_FUZZY_K, mode="fuzzy")
+    try:
+        vector = search_tool(phrase=mention, node_label=label, property_name=prop,
+                             k=PLAN_EXEC_HYBRID_VECTOR_K, mode="vector")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("plan_exec: vector search failed for %s.%s: %s", label, prop, exc)
+        vector = []
+    merged = list(fuzzy)
+    for v in vector:
+        if v not in merged:
+            merged.append(v)
+    return merged
+
+
 def execute_entity(entity: Dict[str, str], node_only: bool = False,
-                   verbose: bool = False) -> Dict[str, Any]:
+                   hybrid: bool = False, verbose: bool = False) -> Dict[str, Any]:
     """EXECUTE stage for one mention. Returns the structured evidence:
 
         {"mention", "kind", "candidates": [{"label","property","values":[...]}],
          "patterns": ["(:A)-[:rel]->(:B)", ...]}
     """
-    from neo4j_lib.neo4j_search import search_tool  # lazy import
-
     mention    = entity["mention"]
     kind       = entity["kind"]
     descriptor = entity["descriptor"]
@@ -262,12 +294,9 @@ def execute_entity(entity: Dict[str, str], node_only: bool = False,
             continue
         seen_lp.add((label, prop))
         try:
-            values = search_tool(
-                phrase=mention, node_label=label, property_name=prop,
-                k=PLAN_EXEC_VALUES_PER_TOOL, mode="fuzzy",
-            )
+            values = _retrieve_values(mention, label, prop, hybrid=hybrid)
         except Exception as exc:  # noqa: BLE001
-            logger.warning("plan_exec: search_tool failed for %s.%s: %s", label, prop, exc)
+            logger.warning("plan_exec: value lookup failed for %s.%s: %s", label, prop, exc)
             values = []
         if values:
             candidates.append({"label": label, "property": prop, "values": values})
@@ -320,6 +349,7 @@ def get_plan_exec_evidence(
     query: str,
     llm_obj,
     node_only: bool = False,
+    hybrid: bool = False,
     verbose: bool = False,
     return_structured: bool = False,
 ):
@@ -329,17 +359,21 @@ def get_plan_exec_evidence(
     ``plan_exec_node_only`` mode); relation mentions then route to node tools
     or contribute nothing, so no relationship patterns are emitted.
 
+    *hybrid* unions fuzzy + vector candidates per tool (the
+    ``plan_exec_node_rel_hybrid`` mode).
+
     With ``return_structured=True`` returns ``(injection_str, evidence_list)``.
     """
     if verbose:
-        print(f"\n── plan_exec: PLAN ── (node_only={node_only})\n  query={query!r}")
+        print(f"\n── plan_exec: PLAN ── (node_only={node_only}, hybrid={hybrid})\n  query={query!r}")
     plan = plan_entities(query, llm_obj)
     if verbose:
         print(f"  extracted {len(plan)} mentions: "
               f"{[(p['mention'], p['kind']) for p in plan]}")
         print("── plan_exec: EXECUTE ──")
 
-    evidence = [execute_entity(e, node_only=node_only, verbose=verbose) for e in plan]
+    evidence = [execute_entity(e, node_only=node_only, hybrid=hybrid, verbose=verbose)
+                for e in plan]
     injection = build_injection(evidence)
 
     if verbose:
