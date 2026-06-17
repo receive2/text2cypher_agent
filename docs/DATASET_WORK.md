@@ -3,7 +3,7 @@
 Self-contained record of the entity-perturbed text2cypher benchmark work, so it
 survives loss of chat history. Last updated 2026-06-14.
 
-**Sibling docs:** [`AUGMENTATION_REDESIGN.md`](AUGMENTATION_REDESIGN.md) = the
+**Sibling docs:** [`AUGMENTATION_REDESIGN.md`](archive/AUGMENTATION_REDESIGN.md) = the
 plan & decisions; [`DATASHEET.md`](DATASHEET.md) = the release-facing dataset
 description; [`REVIEW_GUIDE.md`](REVIEW_GUIDE.md) = human-verification
 instructions; [`GRAPHS.md`](GRAPHS.md) / [`DEPLOY_LOG.md`](DEPLOY_LOG.md) = the

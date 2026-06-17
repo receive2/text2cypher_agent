@@ -1,6 +1,6 @@
 # NER Ablation — Clean HEAD Baseline (movie · geography · politics)
 
-> **Supersedes the gated-integration-era numbers in [`NER_ABLATION_REPORT.md`](NER_ABLATION_REPORT.md).**
+> **Supersedes the gated-integration-era numbers in [`NER_ABLATION_REPORT.md`](archive/NER_ABLATION_REPORT.md).**
 > This run uses the committed **HEAD** pipeline (commit `8d209c8`): the single
 > mixed-tool NER agent, with FAISS top-K selection over the combined tool index.
 > The exploratory `gated-integration` / C-pruning / `K_rel` cap changes were
@@ -125,7 +125,7 @@ so the agent mis-extracts (e.g. reads "passed away" as a date lookup instead of
 grounding the two person names). The original mixed top-K was better precisely
 because relation tools displaced those distractors. The change was reverted; the
 ablation above uses the clean HEAD selection. Details:
-[`NER_IMPROVEMENT_PROPOSAL.md`](NER_IMPROVEMENT_PROPOSAL.md) (now a record of the
+[`NER_IMPROVEMENT_PROPOSAL.md`](archive/NER_IMPROVEMENT_PROPOSAL.md) (now a record of the
 rejected direction).
 
 ## Appendix — pooled by query-difficulty
