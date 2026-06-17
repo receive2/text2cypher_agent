@@ -3,6 +3,10 @@
 All graphs run on VM `34.9.85.21` (GCP, `us-central1-a`).
 **Auth:** `neo4j` / `<password>` (all graphs)
 
+**APOC:** All 13 graphs have APOC 5.20.0 installed (192 procedures).
+- CypherBench — bundled in the `megagonlabs/neo4j-with-loader:2.4` image
+- Mind-the-Query + ZOGRASCOPE — JAR mounted from `/opt/apoc/apoc-5.20.0-core.jar` on the VM
+
 ---
 
 ## Quick Reference

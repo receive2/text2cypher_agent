@@ -288,6 +288,51 @@ cypher-shell -a bolt://136.112.47.158:<port> -u neo4j -p <password> "MATCH (n) R
 
 ---
 
+## Part 4: APOC Installation
+
+### Target
+- **Scope:** All 13 Neo4j containers
+- **APOC version:** 5.20.0 (matches Neo4j 5.20.0)
+- **Discovery:** CypherBench already had APOC in `megagonlabs/neo4j-with-loader:2.4`; MTQ and ZOGRASCOPE needed it added
+
+### Steps
+
+#### Step 1: Download APOC JAR
+- [x] Downloaded `apoc-5.20.0-core.jar` to `/opt/apoc/` on VM
+  ```bash
+  sudo mkdir -p /opt/apoc
+  sudo curl -L -o /opt/apoc/apoc-5.20.0-core.jar \
+    https://github.com/neo4j/apoc/releases/download/5.20.0/apoc-5.20.0-core.jar
+  ```
+
+#### Step 2: Patch Start Scripts
+- [x] `/opt/mindthequery/start_mtq_graphs.sh` — added plugin volume mount and unrestricted env var to each `docker run` call
+- [x] `/opt/zograscope/start_zograscope_graphs.sh` — same
+- Each `docker run` now includes:
+  ```
+  -v /opt/apoc/apoc-5.20.0-core.jar:/plugins/apoc-5.20.0-core.jar
+  -e NEO4J_dbms_security_procedures_unrestricted='apoc.*'
+  ```
+
+#### Step 3: Restart Services
+- [x] `sudo systemctl restart mindthequery.service zograscope.service`
+
+#### Step 4: Verification
+- [x] All 6 MTQ + ZOGRASCOPE containers confirmed: `apoc.version()` → `"5.20.0"`, 192 procedures loaded
+- [x] All 7 CypherBench containers confirmed: APOC already present in image, same version and count
+
+### Result
+
+| Suite | Containers | APOC source |
+|-------|-----------|-------------|
+| CypherBench (ports 15062–15068) | 7 | Bundled in `megagonlabs/neo4j-with-loader:2.4` |
+| Mind-the-Query (ports 15071–15075) | 5 | `/opt/apoc/apoc-5.20.0-core.jar` mounted at startup |
+| ZOGRASCOPE (port 15076) | 1 | `/opt/apoc/apoc-5.20.0-core.jar` mounted at startup |
+
+Install script: `scripts/install_apoc.sh` (in this repo)
+
+---
+
 ## Bugs & Fixes
 
 ### Bug 1: `$HOME not set` in git-lfs during startup script

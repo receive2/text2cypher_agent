@@ -8,9 +8,10 @@
 # But not .gitignore itself
 !.gitignore
 
-# Whitelist .py, .md, and requirements.txt
+# Whitelist .py, .md, .sh, and requirements.txt
 !*.py
 !*.md
+!*.sh
 !requirements.txt
 !.env.example
 
