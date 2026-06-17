@@ -139,6 +139,45 @@ def _summary_only(summary: Dict[str, Any]) -> Dict[str, Any]:
     return {k: v for k, v in summary.items() if k != "records"}
 
 
+def _run_meta() -> Dict[str, Any]:
+    """Capture the mode + key config this run executed under, so the summary
+    (and the aggregated report) records exactly how the numbers were produced.
+
+    Reads the resolved NER mode and config singletons; degrades gracefully if
+    any import / attribute is unavailable so the eval never fails on metadata.
+    """
+    from datetime import datetime
+
+    meta: Dict[str, Any] = {
+        "generated_at": datetime.now().astimezone().isoformat(timespec="seconds"),
+        "ner_mode_env": os.environ.get("NER_MODE"),
+    }
+    try:
+        import config as _c
+        # Canonical resolved mode (maps legacy aliases).
+        try:
+            from ner_agent_auto import _resolve_mode
+            meta["ner_mode"] = _resolve_mode(os.environ.get("NER_MODE"))
+        except Exception:  # noqa: BLE001
+            meta["ner_mode"] = os.environ.get("NER_MODE")
+        meta["ner_llm"]    = _c.NER_LLM_CONFIG.get("model")
+        meta["cypher_llm"] = _c.CYPHER_LLM_CONFIG.get("model")
+        meta["qa_llm"]     = _c.QA_LLM_CONFIG.get("model")
+        meta["tool_select_top_k"]  = getattr(_c, "DEFAULT_TOP_K", None)
+        meta["values_per_tool"]    = getattr(_c, "TOOL_TOP_K", None)
+        meta["plan_exec_tools_per_entity"] = getattr(_c, "PLAN_EXEC_TOOLS_PER_ENTITY", None)
+        meta["plan_exec_values_per_tool"]  = getattr(_c, "PLAN_EXEC_VALUES_PER_TOOL", None)
+    except Exception:  # noqa: BLE001
+        pass
+    try:
+        import vector_config as _vc
+        meta["tool_retrieval_mode"] = getattr(_vc, "TOOL_RETRIEVAL_MODE", None)
+        meta["hybrid_strategy"]     = getattr(_vc, "HYBRID_STRATEGY", None)
+    except Exception:  # noqa: BLE001
+        pass
+    return meta
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(
         prog="python -m eval._worker",
@@ -168,10 +207,13 @@ def main(argv: list[str] | None = None) -> int:
         dataset_name = args.dataset,
     )
 
+    out = _summary_only(summary)
+    out["run_meta"] = _run_meta()
+
     out_path = Path(args.out_summary)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     with out_path.open("w", encoding="utf-8") as fh:
-        json.dump(_summary_only(summary), fh, ensure_ascii=False, indent=2)
+        json.dump(out, fh, ensure_ascii=False, indent=2)
 
     return 0
 

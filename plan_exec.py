@@ -204,15 +204,17 @@ def plan_entities(query: str, llm_obj) -> List[Dict[str, str]]:
 # EXECUTE — route each mention to tool(s), retrieve candidate values
 # ──────────────────────────────────────────────────────────────────────────────
 
-def _route_tools(descriptor: str, kind: str, fetch: int = 8) -> List[str]:
+def _route_tools(descriptor: str, kind: str, node_only: bool = False,
+                 fetch: int = 8) -> List[str]:
     """Return up to ``PLAN_EXEC_TOOLS_PER_ENTITY`` ``func_name``s for *descriptor*,
     preferring tools whose kind matches *kind*. Falls back to any kind if the
-    preferred kind yields nothing."""
+    preferred kind yields nothing. When *node_only*, routing uses the node-only
+    tool index (relation tools are out of scope)."""
     # Lazy import: ner_agent_auto pulls in the live Neo4j graph at import time.
     from ner_agent_auto import _get_vectorstore
     from tools.tool_search import search_tools
 
-    vs = _get_vectorstore(mode="full")
+    vs = _get_vectorstore(mode="react_node_only" if node_only else "react_node_rel")
     hits = search_tools(vs, user_query=descriptor, top_l=fetch)
     meta = _tool_meta()
 
@@ -227,7 +229,8 @@ def _route_tools(descriptor: str, kind: str, fetch: int = 8) -> List[str]:
     return chosen[:PLAN_EXEC_TOOLS_PER_ENTITY]
 
 
-def execute_entity(entity: Dict[str, str], verbose: bool = False) -> Dict[str, Any]:
+def execute_entity(entity: Dict[str, str], node_only: bool = False,
+                   verbose: bool = False) -> Dict[str, Any]:
     """EXECUTE stage for one mention. Returns the structured evidence:
 
         {"mention", "kind", "candidates": [{"label","property","values":[...]}],
@@ -239,7 +242,7 @@ def execute_entity(entity: Dict[str, str], verbose: bool = False) -> Dict[str, A
     kind       = entity["kind"]
     descriptor = entity["descriptor"]
 
-    func_names = _route_tools(descriptor, kind)
+    func_names = _route_tools(descriptor, kind, node_only=node_only)
     candidates: List[Dict[str, Any]] = []
     patterns: List[str] = []
     meta = _tool_meta()
@@ -316,22 +319,27 @@ def build_injection(evidence: List[Dict[str, Any]]) -> str:
 def get_plan_exec_evidence(
     query: str,
     llm_obj,
+    node_only: bool = False,
     verbose: bool = False,
     return_structured: bool = False,
 ):
     """Run PLAN → EXECUTE → format and return the ``{relevant_entities}`` block.
 
+    *node_only* restricts tool routing to node-property tools (the
+    ``plan_exec_node_only`` mode); relation mentions then route to node tools
+    or contribute nothing, so no relationship patterns are emitted.
+
     With ``return_structured=True`` returns ``(injection_str, evidence_list)``.
     """
     if verbose:
-        print(f"\n── plan_exec: PLAN ──\n  query={query!r}")
+        print(f"\n── plan_exec: PLAN ── (node_only={node_only})\n  query={query!r}")
     plan = plan_entities(query, llm_obj)
     if verbose:
         print(f"  extracted {len(plan)} mentions: "
               f"{[(p['mention'], p['kind']) for p in plan]}")
         print("── plan_exec: EXECUTE ──")
 
-    evidence = [execute_entity(e, verbose=verbose) for e in plan]
+    evidence = [execute_entity(e, node_only=node_only, verbose=verbose) for e in plan]
     injection = build_injection(evidence)
 
     if verbose:

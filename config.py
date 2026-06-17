@@ -261,27 +261,31 @@ CAP_MULTIPLIER        = 1000    # scan cap = t * CAP_MULTIPLIER (cheap over-fetc
 # ──────────────────────────────────────────────────────────────────────────────
 # NER pipeline mode
 # ──────────────────────────────────────────────────────────────────────────────
-# Controls how (or whether) the ReAct NER agent runs in front of the Cypher
-# generator.  The same three switches drive both ``ner_agent_auto.ask_auto``
-# (the full pipeline) and the CypherBench evaluator
-# (``metrics_CypherBench.evaluate_dataset``).
+# Controls how (or whether) the grounding stage runs in front of the Cypher
+# generator.  Names follow a {grounder}_{tool-scope} scheme so the two axes are
+# explicit: the grounder (react vs plan_exec) and the tool scope (node-only vs
+# node+relation).  Drives both ``ner_agent_auto.ask_auto`` and the CypherBench
+# evaluator (``metrics_CypherBench.evaluate_dataset``).
 #
-#   "full"      — Default.  Register every generated @tool — node property,
-#                 relation property, AND structural traversal — and run the
-#                 ReAct NER agent normally.  This is the original behaviour
-#                 and produces the richest entity-filter dictionary.
+#   "no_ner"               — Bypass grounding entirely.  ``ask_auto`` feeds only
+#                            ``{schema}`` + ``{question}`` to GraphCypherQAChain.
+#                            Lower bound: what the Cypher LLM does unaided.
 #
-#   "node_only" — Register **only** the node-property tools generated in
-#                 ``generated_node_tools.py``; the relation tools in
-#                 ``generated_rel_tools.py`` are skipped entirely.  Use this
-#                 to ablate the contribution of relation-aware NER, or when
-#                 the target schema's relation tools are noisy.
+#   "rag"                  — ReAct NER agent capped at a SINGLE tool-call round
+#                            with the tool-result backfill DISABLED (node+rel
+#                            tool scope).  One retrieval round, no safety net.
 #
-#   "no_ner"    — Bypass the NER ReAct agent altogether.  ``ask_auto``
-#                 short-circuits with an empty entity dict and feeds only
-#                 ``{schema}`` + ``{question}`` to ``GraphCypherQAChain``.
-#                 Use this to measure how much the NER stage actually buys
-#                 you on a given dataset / model combination.
+#   "react_node_only"      — ReAct NER agent, node-property tools only
+#                            (``generated_node_tools.py``); relation tools
+#                            skipped.  Ablates relation-aware grounding.
+#
+#   "react_node_rel"       — ReAct NER agent, full tool set (node + relation +
+#                            structural traversal).  The richest agentic mode.
+#
+#   "plan_exec_node_only"  — Plan-and-execute grounder (see plan_exec.py),
+#                            routing restricted to node tools.
+#
+#   "plan_exec_node_rel"   — Plan-and-execute grounder, node + relation tools.
 #
 # The setting can be overridden per-call by passing ``mode=...`` to
 # ``ner_agent_auto.ask_auto`` / ``get_ner_auto`` / ``select_tools_for_query``,
@@ -289,13 +293,29 @@ CAP_MULTIPLIER        = 1000    # scan cap = t * CAP_MULTIPLIER (cheap over-fetc
 # ──────────────────────────────────────────────────────────────────────────────
 
 # Env-overridable so eval runs can switch mode without editing this file:
-#     NER_MODE=full python eval_run.py
+#     NER_MODE=react_node_rel python eval_run.py
 # Falls back to the literal default when the env var is unset.
-NER_MODE: str = os.getenv("NER_MODE", "no_ner")     # "full" | "node_only" | "no_ner"
+NER_MODE: str = os.getenv("NER_MODE", "no_ner")
 
-# Allowed values — kept centrally so callers can validate user input
-# without hard-coding the literal strings.
-NER_MODES = ("full", "node_only", "no_ner", "rag", "plan_exec")
+# Allowed (canonical) values — kept centrally so callers can validate user
+# input without hard-coding the literal strings.
+NER_MODES = (
+    "no_ner",
+    "rag",
+    "react_node_only",
+    "react_node_rel",
+    "plan_exec_node_only",
+    "plan_exec_node_rel",
+)
+
+# Back-compat aliases: legacy mode names → canonical names.  Existing eval
+# scripts / NER_MODE env values / saved logs keep working; ``_resolve_mode``
+# maps these to the canonical name before validation.
+NER_MODE_ALIASES = {
+    "full":      "react_node_rel",
+    "node_only": "react_node_only",
+    "plan_exec": "plan_exec_node_rel",
+}
 
 # RAG baseline: the ReAct NER agent restricted to a SINGLE tool-call round and
 # with the tool-result backfill DISABLED. It uses the same (node + relation)

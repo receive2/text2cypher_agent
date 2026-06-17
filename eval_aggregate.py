@@ -118,33 +118,92 @@ def _fmt_metric(v: Any) -> str:
         return str(v)
 
 
-def _print_dataset_table(
+def _render_dataset_table(
     dataset:      str,
     cells:        Dict[str, Dict[str, Any]],
     graphs:       List[str],
     bucket_order: tuple = _BUCKET_ORDER,
     axis:         str   = "difficulty",
-) -> None:
-    header = (
-        f"{axis:<8}  {'EA':>7}  {'EM':>7}  {'PSJS':>7}  "
-        f"{'n':>5}  {'n_err':>5}"
-    )
-    print(f"\n══ {dataset} — by {axis} ══")
-    print(header)
-    print("─" * len(header))
+) -> List[str]:
+    """Render one dataset table as Markdown lines (readable in a terminal too)."""
+    lines: List[str] = [
+        f"\n### {dataset} — by {axis}",
+        "",
+        f"| {axis} | EA | EM | PSJS | n | n_err |",
+        "|---|---|---|---|---|---|",
+    ]
     for b in bucket_order:
         cell = cells.get(b)
         if not cell or cell.get("n", 0) == 0:
             continue
-        print(
-            f"{b:<8}  "
-            f"{_fmt_metric(cell.get('ea')):>7}  "
-            f"{_fmt_metric(cell.get('em')):>7}  "
-            f"{_fmt_metric(cell.get('psjs')):>7}  "
-            f"{cell.get('n', 0):>5}  "
-            f"{cell.get('n_errors', 0):>5}"
+        lines.append(
+            f"| {b} | {_fmt_metric(cell.get('ea'))} | {_fmt_metric(cell.get('em'))} "
+            f"| {_fmt_metric(cell.get('psjs'))} | {cell.get('n', 0)} "
+            f"| {cell.get('n_errors', 0)} |"
         )
-    print(f"  (aggregated from {len(graphs)} graph{'s' if len(graphs) != 1 else ''}: {graphs})")
+    lines.append("")
+    lines.append(
+        f"_aggregated from {len(graphs)} graph"
+        f"{'s' if len(graphs) != 1 else ''}: {', '.join(graphs)}_"
+    )
+    return lines
+
+
+def _load_run_meta(summary_path: Path) -> Dict[str, Any]:
+    """Return the ``run_meta`` block from a summary.json (``{}`` if absent)."""
+    try:
+        data = json.loads(summary_path.read_text(encoding="utf-8"))
+        rm = data.get("run_meta")
+        return rm if isinstance(rm, dict) else {}
+    except Exception:  # noqa: BLE001
+        return {}
+
+
+def _render_meta_header(
+    metas:    List[Dict[str, Any]],
+    datasets: List[str],
+    graphs:   List[str],
+    out_dir:  Path,
+    generated_at: str,
+) -> List[str]:
+    """Build the report's metadata header: modes, graphs, and key config so the
+    table is self-describing (which mode produced these numbers, on which
+    graphs, under what model / retrieval settings)."""
+    def _distinct(key: str) -> List[str]:
+        seen: List[str] = []
+        for m in metas:
+            v = m.get(key)
+            if v is not None and str(v) not in seen:
+                seen.append(str(v))
+        return seen
+
+    modes = _distinct("ner_mode") or _distinct("ner_mode_env") or ["(unknown)"]
+    lines = [
+        "# Experiment Report",
+        "",
+        f"- **Generated:** {generated_at}",
+        f"- **Source:** `{out_dir}`",
+        f"- **NER mode(s):** {', '.join(modes)}",
+        f"- **Datasets:** {', '.join(datasets)}",
+        f"- **Graphs:** {', '.join(graphs)}",
+    ]
+    # Key config — only emit rows we actually captured.
+    cfg_fields = [
+        ("ner_llm",                    "NER LLM"),
+        ("cypher_llm",                 "Cypher LLM"),
+        ("qa_llm",                     "QA LLM"),
+        ("tool_retrieval_mode",        "Tool retrieval"),
+        ("hybrid_strategy",            "Hybrid strategy"),
+        ("tool_select_top_k",          "Tool-select top-k"),
+        ("values_per_tool",            "Values/tool (ReAct)"),
+        ("plan_exec_tools_per_entity", "plan_exec tools/entity"),
+        ("plan_exec_values_per_tool",  "plan_exec values/tool"),
+    ]
+    for key, label in cfg_fields:
+        vals = _distinct(key)
+        if vals:
+            lines.append(f"- **{label}:** {', '.join(vals)}")
+    return lines
 
 
 def _has_strategy_rows(by_strategy: Dict[str, Dict[str, Any]]) -> bool:
@@ -179,6 +238,7 @@ def main() -> int:
 
     # dataset -> [(graph, records_path), ...]
     by_dataset: dict[str, list[tuple[str, Path]]] = defaultdict(list)
+    metas: List[Dict[str, Any]] = []
     for sp in summaries:
         parsed = _parse_pair_from_summary(sp)
         if parsed is None:
@@ -191,10 +251,25 @@ def main() -> int:
         dataset, graph = parsed
         records_path = sp.with_name(f"{dataset}__{graph}{_RECORDS_SUFFIX}")
         by_dataset[dataset].append((graph, records_path))
+        rm = _load_run_meta(sp)
+        if rm:
+            metas.append(rm)
 
     if not by_dataset:
         print("[eval_aggregate] No recognisable summaries to aggregate.", file=sys.stderr)
         return 1
+
+    # Timestamp the report (filename + header). Prefer the run's own timestamp
+    # when all summaries agree; otherwise stamp at aggregation time.
+    from datetime import datetime
+    now = datetime.now().astimezone()
+    generated_at = now.isoformat(timespec="seconds")
+    stamp = now.strftime("%Y%m%d_%H%M%S")
+
+    all_graphs = sorted({g for ds in by_dataset.values() for g, _ in ds})
+    report: List[str] = _render_meta_header(
+        metas, sorted(by_dataset), all_graphs, out_dir, generated_at
+    )
 
     for dataset in sorted(by_dataset):
         pairs = sorted(by_dataset[dataset])
@@ -205,25 +280,27 @@ def main() -> int:
             records.extend(_load_records(rp))
 
         if not records:
-            # Defensive: summaries existed but records files were empty
-            # or missing.  Still print a header so the user can see the
-            # state.
-            print(f"\n══ {dataset} ══")
-            print(f"  (no records loaded; graphs scanned: {graphs})")
+            report.append(f"\n### {dataset}")
+            report.append(f"\n_(no records loaded; graphs scanned: {graphs})_")
             continue
 
         by_diff = aggregate_by_difficulty(records)
-        _print_dataset_table(dataset, by_diff, graphs,
-                             bucket_order=_BUCKET_ORDER, axis="difficulty")
+        report += _render_dataset_table(dataset, by_diff, graphs,
+                                        bucket_order=_BUCKET_ORDER, axis="difficulty")
 
         # Per-strategy table — only for augmented datasets (records carry a
         # non-null "strategy"). Skipped silently for the base/non-augmented sets.
         by_strategy = aggregate_by_strategy(records)
         if _has_strategy_rows(by_strategy):
-            _print_dataset_table(dataset, by_strategy, graphs,
-                                 bucket_order=_STRATEGY_ORDER, axis="strategy")
+            report += _render_dataset_table(dataset, by_strategy, graphs,
+                                            bucket_order=_STRATEGY_ORDER, axis="strategy")
 
-    print()
+    text = "\n".join(report) + "\n"
+    print(text)
+
+    report_path = out_dir / f"report_{stamp}.md"
+    report_path.write_text(text, encoding="utf-8")
+    print(f"[eval_aggregate] wrote report → {report_path}")
     return 0
 
 
