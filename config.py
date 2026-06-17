@@ -295,7 +295,16 @@ NER_MODE: str = os.getenv("NER_MODE", "no_ner")     # "full" | "node_only" | "no
 
 # Allowed values — kept centrally so callers can validate user input
 # without hard-coding the literal strings.
-NER_MODES = ("full", "node_only", "no_ner")
+NER_MODES = ("full", "node_only", "no_ner", "rag")
+
+# RAG baseline: the ReAct NER agent restricted to a SINGLE tool-call round and
+# with the tool-result backfill DISABLED. It uses the same (node + relation)
+# tool set as `full`, but the agent gets one think→act→observe cycle and must
+# then answer — no iterative refinement, no safety net. This isolates "what one
+# retrieval round of an LLM agent recovers" as a lower-effort baseline against
+# the full agentic `full` / `node_only` modes (which loop + backfill).
+# RAG_RECURSION_LIMIT caps the LangGraph supersteps: agent → tools → agent ≈ 3.
+RAG_RECURSION_LIMIT = 3
 
 #  python ner_agent_auto.py "Who played neo in matrix?"  --verbose
 #  python ner_agent_auto.py "Who played Neo or Morpheus in The Matrix?" " --verbose
