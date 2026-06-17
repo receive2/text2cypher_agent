@@ -518,6 +518,33 @@ Offline unit tests for the normaliser:
 python -m pytest tests/test_cypher_eval_normalize.py
 ```
 
+#### NER modes & the FCAV baseline
+
+The grounding stage is selected via the `NER_MODE` env var (read by `config.py`). Every mode emits the **same** record / summary format, so `eval_aggregate.py` tabulates them identically (overall + by query-difficulty + by perturbation-strategy):
+
+| `NER_MODE` | grounding |
+|---|---|
+| `no_ner` | none — the perturbed surface form is used as-is (lower-bound baseline) |
+| `node_only` | NER ReAct agent, node-property tools only |
+| `full` | NER ReAct agent, node + relation tools |
+| `fcav` | **FCAV baseline** — one whole-query similarity search over a VectorDB of real `(value, label, key)` triples; the top-k hits are injected into the Cypher prompt |
+
+Run an agent mode with e.g. `NER_MODE=full python eval_run.py`.
+
+**FCAV** has dedicated setup + run scripts (the Cypher LLM is definable per run; the VectorDB embedding backend is definable at setup):
+
+```bash
+# 1. Build the per-graph value VectorDB for every pair in EVAL_PAIRS
+#    (archived per graph; swap_in restores the right index automatically)
+python setup_fcav.py                      # --embedding-model NAME | --include-descriptions
+# 2. Run the eval in FCAV mode
+python run_fcav.py --cypher-llm gpt-4.1 --out-dir logs/eval_fcav
+# 3. Same bucketed table as every other mode
+python eval_aggregate.py
+```
+
+By default FCAV indexes only name-like string values (drops free-text descriptions to keep the index small); embedding defaults to `text-embedding-3-small` (matches the agent modes; configurable). See `fcav.py`.
+
 #### Typical workflows
 
 **Add one new graph and re-run the full table:**
@@ -614,6 +641,9 @@ If you prefer to run each step individually or need to debug a specific stage:
 | `vector_config.py` | Retrieval mode (`fuzzy`/`vector`/`hybrid`), embedding backend + dim, `EMBEDDABLE_PROPERTIES` |
 | `paths.py` | Centralized filesystem-layout constants for every generated artifact |
 | `ner_agent_auto.py` | NER agent with automatic FAISS tool selection (main entrypoint) |
+| `fcav.py` | **FCAV baseline** — build (`build_fcav_index`) + query (`get_fcav_entities`) the whole-query value VectorDB |
+| `setup_fcav.py` | Build the per-graph FCAV VectorDB over `EVAL_PAIRS` (archived per graph) |
+| `run_fcav.py` | Run the eval in `NER_MODE=fcav` (`--cypher-llm` / `--out-dir`) |
 | `agent/prompts.py` | **Auto-generated** system prompts (`NER_SP`, `TEXT2CYPHER_SP`, `QA_SP`, `PROMPT_ALIGNER_SP`) + schema constants |
 | `schema/gen_schema_csv.py` | Export full schema to `schema_data/schema_nodes.csv` + `schema_relations.csv` |
 | `schema/gen_schema_meta.py` | LLM-infer `id_property`, topics, descriptions → `schema_data/schema_meta.json` |

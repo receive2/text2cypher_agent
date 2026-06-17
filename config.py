@@ -210,6 +210,16 @@ CYPHER_LLM_CONFIG: dict = {
    "temperature": 0,
 }
 
+# Per-run override of the Cypher-generation model without editing this file.
+# ``run_fcav.py`` (and any other runner) can set these env vars so the choice
+# propagates into the eval worker subprocesses. Unset → use the literal above.
+_CYPHER_PROVIDER_OVERRIDE = os.getenv("CYPHER_LLM_PROVIDER")
+_CYPHER_MODEL_OVERRIDE    = os.getenv("CYPHER_LLM_MODEL")
+if _CYPHER_MODEL_OVERRIDE:
+    CYPHER_LLM_CONFIG = dict(CYPHER_LLM_CONFIG, model=_CYPHER_MODEL_OVERRIDE)
+if _CYPHER_PROVIDER_OVERRIDE:
+    CYPHER_LLM_CONFIG = dict(CYPHER_LLM_CONFIG, provider=_CYPHER_PROVIDER_OVERRIDE)
+
 # CYPHER_LLM_CONFIG: dict = {
 #     "provider":    "hf_compatible",
 #     "model":       "llama-8b-hf",   # MODEL_REGISTRY key
@@ -295,7 +305,7 @@ NER_MODE: str = os.getenv("NER_MODE", "no_ner")     # "full" | "node_only" | "no
 
 # Allowed values — kept centrally so callers can validate user input
 # without hard-coding the literal strings.
-NER_MODES = ("full", "node_only", "no_ner")
+NER_MODES = ("full", "node_only", "no_ner", "fcav")
 
 #  python ner_agent_auto.py "Who played neo in matrix?"  --verbose
 #  python ner_agent_auto.py "Who played Neo or Morpheus in The Matrix?" " --verbose

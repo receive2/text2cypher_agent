@@ -1335,6 +1335,15 @@ def ask_auto(
                 "\n── Extracted entities ──────────────────────────────────────────────"
             )
             print(f"  {entities}  (NER skipped — mode='no_ner')")
+    elif effective_mode == "fcav":
+        # FCAV baseline: one whole-query similarity search over a VectorDB of
+        # real (value, label, key) triples — no ReAct agent, no @tools. Returns
+        # the same JSON entity-dict shape the Cypher prompt consumes.
+        from fcav import get_fcav_entities
+        entities = get_fcav_entities(prompt, top_k=top_k, verbose=verbose)
+        if verbose:
+            print(f"\n── Extracted entities (FCAV) ───────────────────────────────────────")
+            print(f"  {entities}")
     else:
         entities = get_ner_auto(
             prompt    = prompt,
