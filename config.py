@@ -295,7 +295,7 @@ NER_MODE: str = os.getenv("NER_MODE", "no_ner")     # "full" | "node_only" | "no
 
 # Allowed values — kept centrally so callers can validate user input
 # without hard-coding the literal strings.
-NER_MODES = ("full", "node_only", "no_ner", "rag")
+NER_MODES = ("full", "node_only", "no_ner", "rag", "plan_exec")
 
 # RAG baseline: the ReAct NER agent restricted to a SINGLE tool-call round and
 # with the tool-result backfill DISABLED. It uses the same (node + relation)
@@ -305,6 +305,21 @@ NER_MODES = ("full", "node_only", "no_ner", "rag")
 # the full agentic `full` / `node_only` modes (which loop + backfill).
 # RAG_RECURSION_LIMIT caps the LangGraph supersteps: agent → tools → agent ≈ 3.
 RAG_RECURSION_LIMIT = 3
+
+# plan_exec baseline: a deterministic plan-and-execute grounder (no ReAct loop).
+#   PLAN     — one LLM call decomposes the question into entity mentions, each
+#              tagged node|relation + a short type descriptor.
+#   EXECUTE  — per mention: route to the matching tool via the tool-VectorDB
+#              (by descriptor), then search_tool(mention) for the top-K
+#              canonical values (node mentions) / emit the relationship pattern
+#              (relation mentions). No per-tool get_entity re-extraction.
+#   GENERATE — the per-mention candidate lists are handed verbatim to the
+#              Cypher LLM, which does the value-linking while writing Cypher.
+# Contrasts with `full`: per-entity tool routing (no top-k tool crowding), no
+# get_entity intermediate layer, and candidates (not a single forced pick) are
+# given to the generator. Retrieval stays fuzzy (no value-embedding index).
+PLAN_EXEC_TOOLS_PER_ENTITY = 2    # tools routed per extracted mention
+PLAN_EXEC_VALUES_PER_TOOL  = 10   # top-K canonical values searched per tool
 
 #  python ner_agent_auto.py "Who played neo in matrix?"  --verbose
 #  python ner_agent_auto.py "Who played Neo or Morpheus in The Matrix?" " --verbose

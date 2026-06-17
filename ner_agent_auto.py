@@ -1353,6 +1353,10 @@ def ask_auto(
         print(f"  {effective_mode}")
 
     # ── Step 1: entity extraction (NER) ───────────────────────────────────────
+    # ``plan_exec`` produces a free-text candidate block (per-mention top-K
+    # values) rather than a ``{Label.prop: value}`` JSON dict, so it bypasses
+    # the JSON normalisation below and is injected verbatim.
+    plan_exec_block: Optional[str] = None
     if effective_mode == "no_ner":
         entities = "{}"
         if verbose:
@@ -1360,6 +1364,13 @@ def ask_auto(
                 "\n── Extracted entities ──────────────────────────────────────────────"
             )
             print(f"  {entities}  (NER skipped — mode='no_ner')")
+    elif effective_mode == "plan_exec":
+        from plan_exec import get_plan_exec_evidence
+        plan_exec_block = get_plan_exec_evidence(prompt, llm_obj=ner_llm_eff, verbose=verbose)
+        entities = plan_exec_block
+        if verbose:
+            print(f"\n── Extracted entities (plan_exec candidate block) ──")
+            print(f"  {entities}")
     else:
         entities = get_ner_auto(
             prompt    = prompt,
@@ -1380,8 +1391,10 @@ def ask_auto(
     # already does this for outputs that pass through it, but this second pass
     # is a belt-and-suspenders guarantee that the Cypher LLM never sees a
     # stray wrapper such as ``["Inception"]`` (which it would otherwise be
-    # tempted to copy verbatim into the query).
-    entities = _normalize_for_injection(entities)
+    # tempted to copy verbatim into the query).  Skipped for ``plan_exec``,
+    # whose block is free text, not a JSON entity dict.
+    if plan_exec_block is None:
+        entities = _normalize_for_injection(entities)
     if verbose:
         print(f"\n── Entities (post-normalisation, injected to Cypher LLM) ──")
         print(f"  {entities}")
