@@ -1,4 +1,4 @@
-# Query-Difficulty Classification — Redesign Plan
+# Query-Difficulty Classification — Design
 
 **Status:** implemented. The current `eval/difficulty.py` replaced the
 degenerate presence-cascade with a graded rubric per this document; tests
@@ -82,7 +82,7 @@ Override conditions that would have been "extra" markers (nested subqueries,
 UNION + multi-hop) **collapse into "hard"** with a `hard-override:` reason
 prefix preserved so callers can still filter for them.
 
-## 3. Redesign
+## 3. Design
 
 ### 3.1 Canonical complexity score (uniform, global thresholds)
 

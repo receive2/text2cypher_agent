@@ -4,7 +4,7 @@
 difficulty.py
 =============
 Per-example query-difficulty bucketing for the text-to-Cypher evaluation
-harness. **Graded rubric per docs/DIFFICULTY_REDESIGN.md.**
+harness. **Graded rubric per docs/DIFFICULTY_DESIGN.md.**
 
 Public API
 ----------

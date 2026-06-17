@@ -8,7 +8,7 @@ Offline validation for the redesigned difficulty classifier (`eval/difficulty.py
 Runs on ``~/datasets/{cypherbench,mindthequery,zograscope}_augmented_v2/test.json``
 and prints:
   1. Per-dataset bucket distribution + the pooled distribution.
-  2. Pre-registered mapping cross-check (§3.2 of docs/DIFFICULTY_REDESIGN.md):
+  2. Pre-registered mapping cross-check (§3.2 of docs/DIFFICULTY_DESIGN.md):
        - CypherBench  `from_template.match_category` → expected bucket(s)
        - ZOGRASCOPE   `num_nodes` × `type`            → expected dim scores
   3. §4 acceptance status: per-dataset (no tier < 5%, no tier > 70%);
@@ -314,7 +314,7 @@ def main() -> int:
         return 0
     if not overall_ok:
         print("  ✗ Distribution acceptance failed. See §6 contingency in "
-              "docs/DIFFICULTY_REDESIGN.md: add a 4th dimension (Return-shape) "
+              "docs/DIFFICULTY_DESIGN.md: add a 4th dimension (Return-shape) "
               "rather than re-tuning thresholds.")
     if not xcheck_ok:
         print(f"  ✗ Cross-check failed (CB ok={cb_ok}, ZG ok={zg_ok}). "

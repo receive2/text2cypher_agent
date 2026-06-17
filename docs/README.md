@@ -20,7 +20,7 @@ Current, canonical documents. Superseded / historical drafts live in
 
 | doc | role |
 |---|---|
-| [DIFFICULTY_REDESIGN.md](DIFFICULTY_REDESIGN.md) | Design-of-record for `eval/difficulty.py` (graded query-difficulty rubric). Status: implemented. |
+| [DIFFICULTY_DESIGN.md](DIFFICULTY_DESIGN.md) | Design-of-record for `eval/difficulty.py` (graded query-difficulty rubric). Status: implemented. |
 | [NER_ABLATION_HEAD_BASELINE.md](NER_ABLATION_HEAD_BASELINE.md) | Clean HEAD 3-mode ablation (`full` / `node_only` / `no_ner`) on movie · geography · politics. Supersedes the gated-integration-era `NER_ABLATION_REPORT.md`. |
 | [NER_GROUNDING_RETENTION_STUDY.md](NER_GROUNDING_RETENTION_STUDY.md) | Funnel diagnosis + tool-result **backfill** fix + retrieval-mode ablation (fuzzy / vector / RRF / cascade) on flight_accident. |
 

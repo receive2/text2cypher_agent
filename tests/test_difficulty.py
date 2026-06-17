@@ -3,7 +3,7 @@
 tests/test_difficulty.py
 ========================
 Golden test cases anchoring the redesigned `eval/difficulty.py` rubric
-(docs/DIFFICULTY_REDESIGN.md). Each case is a deliberate boundary marker
+(docs/DIFFICULTY_DESIGN.md). Each case is a deliberate boundary marker
 in the §3.1 detector table — together they pin the rubric so future edits
 to the parser can't silently regress a tier.
 """
