@@ -3,6 +3,8 @@
 A natural-language-to-Cypher pipeline for Neo4j graph databases.  
 Ask questions in plain English → the agent extracts entities, generates Cypher, runs it, and returns a human-readable answer.
 
+> **New here? Start with [QUICKSTART.md](QUICKSTART.md)** — clone → run → experiments in ~10 minutes. This README is the full reference.
+
 ---
 
 ## How it works
