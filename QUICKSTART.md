@@ -24,7 +24,7 @@ pip install faiss-cpu          # or faiss-gpu for CUDA
 
 ## 2. Point it at your Neo4j + OpenAI
 
-Create a `.env` in the repo root:
+`.env` holds **credentials + the embedding model** only. Create it in the repo root:
 
 ```dotenv
 NEO4J_URI=bolt://localhost:7687
@@ -33,9 +33,16 @@ NEO4J_PASSWORD=your-password
 NEO4J_DATABASE=neo4j
 
 OPENAI_API_KEY=sk-...
-OPENAI_MODEL=gpt-4.1
 OPENAI_EMBEDDING_MODEL=text-embedding-3-small
 ```
+
+> **The three pipeline LLMs are chosen in `config.py`, not in `.env`.** Each
+> stage has its own freely-configurable model: `NER_LLM_CONFIG` (the ReAct
+> entity-grounding agent), `CYPHER_LLM_CONFIG` (Cypher generation), and
+> `QA_LLM_CONFIG` (final answer). Mix providers freely (OpenAI / Azure /
+> Anthropic / any OpenAI-compatible endpoint) — see the examples at the top of
+> `config.py`. (`.env`'s optional `OPENAI_MODEL` is only a fallback default for
+> an OpenAI stage that leaves `model` unset.)
 
 ## 3. One-click setup
 
