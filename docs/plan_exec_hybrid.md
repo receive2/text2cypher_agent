@@ -42,7 +42,7 @@ question
    │   decompose into entity mentions: {mention, kind(node|relation), descriptor}
    ▼  ② EXECUTE       (per mention; no agent loop, deterministic control)
    │   a. route descriptor → top-2 fields via the tool FAISS index
-   │   b. initial hybrid retrieval: 10 fuzzy ∪ 5 vector per field
+   │   b. initial hybrid retrieval: top-Kf fuzzy ∪ top-Kv vector per field
    │   c. corrective loop (≤3 rounds): an LLM judge returns
    │        done | value (deepen) | <Label.property> (add a field it picks)
    ▼  ③ GENERATE
@@ -97,19 +97,20 @@ mention. The tool index is the small per-tool index that `react` already builds
 Each routed field is searched **both ways** and the results unioned
 (`plan_exec._retrieve_values`, `hybrid=True`):
 
-| source | size knob | what it is |
-|---|---|---|
-| fuzzy | `PLAN_EXEC_HYBRID_FUZZY_K` = 10 | BM25 / Lucene full-text (`search_tool(mode="fuzzy")`) |
-| vector | `PLAN_EXEC_HYBRID_VECTOR_K` = 5 | in-graph Neo4j vector index (`search_tool(mode="vector")`) |
+| source | size param | default | what it is |
+|---|---|---|---|
+| fuzzy | `PLAN_EXEC_HYBRID_FUZZY_K` (= Kf) | 10 | BM25 / Lucene full-text (`search_tool(mode="fuzzy")`) |
+| vector | `PLAN_EXEC_HYBRID_VECTOR_K` (= Kv) | 5 | in-graph Neo4j vector index (`search_tool(mode="vector")`) |
 
-Fuzzy hits come first, then the vector hits not already present (dedup). Vector
-recall is the lever for **aliases** ("TWA" → "Trans World Airlines") that share no
-characters with the canonical value; fuzzy covers casing / typo / partial.
+i.e. **top-Kf fuzzy ∪ top-Kv vector** per field. Fuzzy hits come first, then the
+vector hits not already present (dedup). Vector recall is the lever for
+**aliases** ("TWA" → "Trans World Airlines") that share no characters with the
+canonical value; fuzzy covers casing / typo / partial.
 
-The initial vector budget is deliberately small (5): a static 10 fuzzy + **10**
-vector was measured to be *worse* than 10 + 5 (extra vector candidates add noise
-the Cypher LLM must wade through). The corrective loop adds more vector **only
-when needed** (next).
+The initial vector budget Kv is deliberately small relative to Kf: a static
+Kf + Kf vector (10 + 10) was measured to be *worse* than the default Kf + Kv
+(10 + 5) — extra vector candidates add noise the Cypher LLM must wade through.
+The corrective loop adds more vector **only when needed** (next).
 
 Relation mentions do not value-search; they emit the structural pattern
 `(:A)-[:rel]->(:B)` for the Cypher LLM.
@@ -131,12 +132,13 @@ exactly one token:
 * A **fast path** short-circuits to `done` (no LLM call) when a normalised
   substring already matches — cheap for the easy cases.
 * `value` deepening for hybrid (`plan_exec._escalate_fetch`, `hybrid=True`) pulls
-  **more fuzzy AND more vector** at a growing depth (`k = depth + budget`, budget
-  shrinking `5 → 3 → 1` across rounds). Because the initial vector budget was only
-  5, the first deepen jumps vector ~5 → 15 — i.e. vector gets the biggest boost
-  exactly when grounding failed.
+  **more fuzzy AND more vector** at a growing depth (`k = depth + budget`, where
+  `budget` walks `PLAN_EXEC_ESCALATE_BUDGET` = `(5, 3, 1)` across rounds). Because
+  the initial vector depth is only Kv, the first deepen lifts vector to `Kf +
+  budget` (default 10 + 5 = 15) — i.e. vector gets the biggest boost exactly when
+  grounding failed.
 * `<Label.property>` adds the LLM's chosen field with a **full** initial-style
-  hybrid fetch (10 fuzzy ∪ 5 vector). The LLM picks the field by reasoning about
+  hybrid fetch (top-Kf fuzzy ∪ top-Kv vector). The LLM picks the field by reasoning about
   the candidate types (e.g. "the candidates are airport names but the mention is
   an airline → search `Operator.name`"), which beats walking a fixed routing rank.
 
@@ -204,7 +206,7 @@ by a few points (0.774 vs 0.792 EA). See
 1. **PLAN** → mention `"TWA"`, kind `node`, descriptor `"airline operator name"`.
 2. **Route** → top-2 fields, say `AircraftModel.name`, `Airport.name` (routing
    guessed wrong — "TWA" looks generic).
-3. **Initial hybrid** → 10 fuzzy + 5 vector on each; none is "Trans World Airlines".
+3. **Initial hybrid** → top-Kf fuzzy ∪ top-Kv vector on each; none is "Trans World Airlines".
 4. **Round 1** judge sees candidates are *aircraft/airport* names, mention is an
    airline → returns `Operator.name`. → full hybrid fetch on `Operator.name`;
    vector surfaces "Trans World Airlines".
