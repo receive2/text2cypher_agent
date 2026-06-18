@@ -118,6 +118,32 @@ def _fmt_metric(v: Any) -> str:
         return str(v)
 
 
+def _aligned_table(headers: List[str], rows: List[List[str]], right: set) -> List[str]:
+    """Render a Markdown table with padded, fixed-width columns — text columns
+    left-justified, columns in *right* right-justified (numbers) — so the raw
+    text is aligned and viewers honour the ``---:`` alignment markers."""
+    cols = len(headers)
+    width = [len(str(headers[i])) for i in range(cols)]
+    for r in rows:
+        for i in range(cols):
+            width[i] = max(width[i], len(str(r[i])))
+
+    def cell(value: Any, i: int) -> str:
+        s = str(value)
+        return s.rjust(width[i]) if i in right else s.ljust(width[i])
+
+    out = ["| " + " | ".join(cell(headers[i], i) for i in range(cols)) + " |"]
+    out.append(
+        "| " + " | ".join(
+            ("-" * (width[i] - 1) + ":") if i in right else ("-" * width[i])
+            for i in range(cols)
+        ) + " |"
+    )
+    for r in rows:
+        out.append("| " + " | ".join(cell(r[i], i) for i in range(cols)) + " |")
+    return out
+
+
 def _render_dataset_table(
     dataset:      str,
     cells:        Dict[str, Dict[str, Any]],
@@ -125,22 +151,21 @@ def _render_dataset_table(
     bucket_order: tuple = _BUCKET_ORDER,
     axis:         str   = "difficulty",
 ) -> List[str]:
-    """Render one dataset table as Markdown lines (readable in a terminal too)."""
-    lines: List[str] = [
-        f"\n### {dataset} — by {axis}",
-        "",
-        f"| {axis} | EA | EM | PSJS | n | n_err |",
-        "|---|---|---|---|---|---|",
-    ]
+    """Render one dataset table as aligned Markdown (readable in a terminal too)."""
+    headers = [axis, "EA", "EM", "PSJS", "n", "n_err"]
+    rows: List[List[str]] = []
     for b in bucket_order:
-        cell = cells.get(b)
-        if not cell or cell.get("n", 0) == 0:
+        c = cells.get(b)
+        if not c or c.get("n", 0) == 0:
             continue
-        lines.append(
-            f"| {b} | {_fmt_metric(cell.get('ea'))} | {_fmt_metric(cell.get('em'))} "
-            f"| {_fmt_metric(cell.get('psjs'))} | {cell.get('n', 0)} "
-            f"| {cell.get('n_errors', 0)} |"
-        )
+        rows.append([
+            b,
+            _fmt_metric(c.get("ea")), _fmt_metric(c.get("em")), _fmt_metric(c.get("psjs")),
+            str(c.get("n", 0)), str(c.get("n_errors", 0)),
+        ])
+
+    lines: List[str] = [f"\n### {dataset} — by {axis}", ""]
+    lines += _aligned_table(headers, rows, right={1, 2, 3, 4, 5})
     lines.append("")
     lines.append(
         f"_aggregated from {len(graphs)} graph"
