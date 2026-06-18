@@ -543,6 +543,53 @@ def index_name_for(label: str, prop: str) -> str:
     return f"{vc.VECTOR_INDEX_PREFIX}_{label.lower()}_{prop.lower()}"
 
 
+def value_range_index_name_for(label: str, prop: str) -> str:
+    """Deterministic name for the RANGE index backing backfill value lookups."""
+    return f"t2c_valrange_{label.lower()}_{prop.lower()}"
+
+
+def ensure_value_range_indexes(
+    driver,
+    database: Optional[str],
+    spec: List[Dict[str, str]],
+) -> List[str]:
+    """
+    Create a RANGE index on every embeddable ``(label, property)`` before
+    backfill, returning the index names ensured.
+
+    Why this matters: the backfill write matches nodes by VALUE
+    (``MATCH (n:Label) WHERE n.prop = $value``). Without a range index on
+    ``prop`` that equality is an *all-nodes scan per value* — on a ~450k-node
+    graph that is ~230 ms/value (measured), i.e. tens of hours for a large
+    graph like ``movie``. A range index turns each lookup into a
+    ``NodeIndexSeek`` (~2 dbHits), making the backfill embedding-API-bound
+    instead of Neo4j-scan-bound. The ``.name`` properties in particular carry
+    only a FULLTEXT index (for BM25 fuzzy), which an equality predicate cannot
+    use — so this step is what makes hybrid setup feasible on big graphs.
+
+    Idempotent (``IF NOT EXISTS``); blocks until the indexes are online.
+    """
+    sess_kwargs = {"database": database} if database else {}
+    names: List[str] = []
+    with driver.session(**sess_kwargs) as session:
+        for entry in spec:
+            if entry.get("entity_type", "node") != "node":
+                continue  # relationship-property embedding is deferred (v2)
+            label = entry["label"]
+            prop  = entry["property"]
+            iname = value_range_index_name_for(label, prop)
+            safe_label = label.replace("`", "``")
+            safe_prop  = prop.replace("`", "``")
+            session.run(
+                f"CREATE RANGE INDEX `{iname}` IF NOT EXISTS "
+                f"FOR (n:`{safe_label}`) ON (n.`{safe_prop}`)"
+            ).consume()
+            names.append(iname)
+        if names:
+            session.run("CALL db.awaitIndexes(600)").consume()
+    return names
+
+
 # ──────────────────────────────────────────────────────────────────────────────
 # Backfill
 # ──────────────────────────────────────────────────────────────────────────────

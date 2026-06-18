@@ -461,9 +461,9 @@ def step_backfill_embeddings(
     from neo4j import GraphDatabase
     from embedding.embedding_helper import (
         backfill_embeddings, discover_embeddable_properties,
-        drop_vector_indexes, estimate_distinct_values,
-        null_embedding_properties, reset_caches, sample_avg_lengths,
-        verify_backend,
+        drop_vector_indexes, ensure_value_range_indexes,
+        estimate_distinct_values, null_embedding_properties, reset_caches,
+        sample_avg_lengths, verify_backend,
     )
 
     reset_caches()
@@ -582,6 +582,16 @@ def step_backfill_embeddings(
                      device, est_s, total_distinct)
         else:
             _warn_console(f"Unknown EMBEDDING_BACKEND: {vc.EMBEDDING_BACKEND!r}")
+
+        # ── Range indexes for fast value-equality backfill writes ─────────
+        # The backfill matches nodes by value (n.prop = $value); without a
+        # range index that is an all-nodes scan per value (~230 ms/value on a
+        # 450k-node graph → tens of hours). Create them first so the backfill
+        # is embedding-API-bound, not Neo4j-scan-bound. The .name props carry
+        # only a FULLTEXT index, which equality cannot use.
+        idx_names = ensure_value_range_indexes(driver, database, spec)
+        s.detail("ensured %d value range index(es) for fast backfill: %s",
+                 len(idx_names), ", ".join(idx_names) or "(none)")
 
         # ── Backfill ──────────────────────────────────────────────────────
         summary = backfill_embeddings(driver, database, spec)
