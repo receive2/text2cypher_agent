@@ -780,14 +780,16 @@ def step_build_faiss(s: Step) -> None:
     """
     from ner_agent_auto import rebuild_tools_faiss
 
+    # Build BOTH tool-scope FAISS indexes (node+rel and node-only) regardless of
+    # the user's grounding mode, so the archive works for every mode.
     built: list[tuple[str, int]] = []
-    for mode in ("full", "node_only"):
+    for mode in ("react_node_rel", "react_node_only"):
         try:
             n = rebuild_tools_faiss(mode=mode)
         except RuntimeError as exc:  # raised for "no_ner" — not applicable here
             s.detail("skipped mode=%s: %s", mode, exc)
             continue
-        suffix = "" if mode == "full" else "_node_only"
+        suffix = "" if mode == "react_node_rel" else "_node_only"
         s.detail("%d tools indexed → faiss/tools_auto%s/", n, suffix)
         built.append((mode, n))
 
