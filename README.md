@@ -1,7 +1,9 @@
 # Text-to-Cypher Agent
 
 A natural-language-to-Cypher pipeline for Neo4j graph databases.  
-Ask questions in plain English → the agent extracts entities, generates Cypher, runs it, and returns a human-readable answer.
+Ask questions in plain English → it **grounds** the (possibly perturbed)
+entities to canonical database values, generates Cypher, runs it, and returns a
+human-readable answer.
 
 > **New here? Start with [QUICKSTART.md](QUICKSTART.md)** — clone → run → experiments in ~10 minutes. This README is the full reference.
 
@@ -14,20 +16,20 @@ User question
      │
      ▼
 ┌─────────────────────────────────────────────────────┐
-│ 1. NER Agent  (ner_agent_auto.py)                   │
-│    • FAISS selects the most relevant @tools         │
-│    • Tools run fulltext search to get canonical     │
-│      entity values from the graph                   │
-│    • Tool-result backfill re-attaches canonical     │
-│      values the agent recovered but dropped         │
-│    • Output: {"Movie.title": ["The Matrix"], ...}   │
+│ 1. Value linking  (ner_agent_auto.py → plan_exec.py)│
+│    • Ground the entities in the question to the      │
+│      canonical DB values the WHERE clause needs      │
+│    • Default = Plan&Exec: decompose the question →   │
+│      route each mention to a field → retrieve        │
+│      (fuzzy ∪ vector) with an LLM corrective loop     │
+│    • Output: candidate canonical values per mention  │
 └──────────────────┬──────────────────────────────────┘
-                   │ entity values
+                   │ candidate canonical values
                    ▼
 ┌─────────────────────────────────────────────────────┐
-│ 2. Cypher Generator  (GraphCypherQAChain)           │
-│    • LLM generates a Cypher query using the         │
-│      graph schema + extracted entity filters        │
+│ 2. Cypher generation  (GraphCypherQAChain)          │
+│    • LLM writes Cypher from the graph schema + the   │
+│      candidate values (it does the value-linking)    │
 └──────────────────┬──────────────────────────────────┘
                    │ Cypher query
                    ▼
@@ -38,6 +40,12 @@ User question
 │      answer                                         │
 └─────────────────────────────────────────────────────┘
 ```
+
+The value-linking stage is selected by four config axes — `VAL_LINK_MODE`,
+`AGENT_TYPE`, `RETRIEVAL_TYPE`, `TOOL_TYPE` (see [Value-linking modes](#value-linking-modes)).
+The shipped method is **Plan&Exec** (`plan_exec`); `No Val Link`, `FCAV` (a
+retrieve-then-generate RAG baseline) and `ReAct` are the baselines.
+Full method writeup: [docs/plan_exec_hybrid.md](docs/plan_exec_hybrid.md).
 
 ---
 
@@ -164,9 +172,42 @@ python setup_project.py --verbose               # show full tracebacks on errors
 
 ---
 
+## Value-linking modes
+
+The value-linking stage is chosen by four orthogonal config axes in `config.py`
+(each env-overridable), resolved into a `GroundingSpec`:
+
+| axis | values |
+|---|---|
+| `VAL_LINK_MODE` | `no_val_link` · `fcav` · `val_link` |
+| `AGENT_TYPE` | `react` · `plan_exec`  (when `val_link`) |
+| `RETRIEVAL_TYPE` | `fuzzy` · `hybrid`  (when `val_link`) |
+| `TOOL_TYPE` | `node` · `node_rel`  (when `val_link`) |
+
+- **`no_val_link`** — grounding bypassed; only schema + question reach the Cypher LLM.
+- **`fcav`** — retrieve-then-generate RAG baseline (embed question → retrieve values
+  from a self-built value index → LLM generates the entity JSON). Build the index
+  with `setup_fcav.py` first.
+- **`val_link`** — the grounder. `AGENT_TYPE=react` is the ReAct NER agent;
+  `AGENT_TYPE=plan_exec` is **Plan&Exec**, the shipped method (decompose the
+  question → route each mention to a field → retrieve with an LLM corrective loop
+  → hand candidates to the Cypher LLM). `RETRIEVAL_TYPE` = `fuzzy` (BM25, zero
+  embeddings) or `hybrid` (BM25 ∪ in-graph vector); `TOOL_TYPE` = `node` or `node_rel`.
+
+Example — the shipped Plan&Exec Hybrid (Node + Rel):
+
+```bash
+VAL_LINK_MODE=val_link AGENT_TYPE=plan_exec RETRIEVAL_TYPE=hybrid TOOL_TYPE=node_rel python eval_run.py
+```
+
+Method writeup: [docs/plan_exec_hybrid.md](docs/plan_exec_hybrid.md) ·
+results: [docs/ablation_flight_accident.md](docs/ablation_flight_accident.md).
+
+---
+
 ## Hybrid retrieval (vector + fuzzy)
 
-Each value-lookup tool corresponds to one `(node_label, property)` pair (e.g. `Movie.title`, `Person.name`). v1 adds vector retrieval to **node** value-lookup tools while keeping relationship-property tools and structural-traversal tools on the legacy fuzzy code path. The hybrid pipeline is opt-in via a single config switch — defaults preserve existing behavior bit-identically.
+Each value-lookup tool corresponds to one `(node_label, property)` pair (e.g. `Movie.title`, `Person.name`). Vector retrieval is available on **node** value-lookup tools while relationship-property and structural-traversal tools stay on the fuzzy code path. The hybrid pipeline is what `RETRIEVAL_TYPE=hybrid` drives; defaults preserve fuzzy behavior bit-identically.
 
 ### One-command setup on a fresh Neo4j database
 
@@ -340,13 +381,13 @@ driver.close()
 ### 4 — Ask a question
 
 ```bash
-# Full pipeline: NER → Cypher → Neo4j → answer
+# Full pipeline: value linking → Cypher → Neo4j → answer
 python ner_agent_auto.py "Who acted in The Matrix?"
 
-# Show tool selection, agent trace, and generated Cypher
+# Show value-linking spec, retrieval/judge trace, and generated Cypher
 python ner_agent_auto.py "How many movies were released before 2000?" --verbose
 
-# NER step only (skip Cypher generation)
+# Grounding step only (skip Cypher generation)
 python ner_agent_auto.py "movies by Tom Hanks" --ner-only
 ```
 
@@ -610,10 +651,12 @@ If you prefer to run each step individually or need to debug a specific stage:
 | `requirements.txt` | Python dependencies |
 | `setup_project.py` | **One-click setup** — runs all 10 setup steps automatically |
 | `switch_embedding_backend.py` | **One-click backend swap** — re-embeds + rebuilds vector indexes after editing `EMBEDDING_BACKEND` in `vector_config.py`; does NOT regenerate tools / system prompt / FAISS |
-| `config.py` | **User-managed** runtime settings — LLM configs per stage, NER mode, sampling/validation knobs. **Not** auto-generated; safe to edit by hand |
+| `config.py` | **User-managed** runtime settings — LLM configs per stage, value-linking axes (`VAL_LINK_MODE`/`AGENT_TYPE`/`RETRIEVAL_TYPE`/`TOOL_TYPE`), plan_exec + sampling/validation knobs. **Not** auto-generated; safe to edit by hand |
 | `vector_config.py` | Retrieval mode (`fuzzy`/`vector`/`hybrid`), embedding backend + dim, `EMBEDDABLE_PROPERTIES` |
 | `paths.py` | Centralized filesystem-layout constants for every generated artifact |
-| `ner_agent_auto.py` | NER agent with automatic FAISS tool selection (main entrypoint) |
+| `ner_agent_auto.py` | Value-linking → Cypher pipeline (main entrypoint); `ask_auto` dispatches to the grounding mode and runs `GraphCypherQAChain` |
+| `plan_exec.py` | **Plan&Exec** grounder (the shipped method): decompose → route → retrieve (fuzzy/hybrid) with the LLM corrective loop |
+| `fcav.py` | `fcav` mode — retrieve-then-generate RAG baseline over a self-built value index (built by `setup_fcav.py`) |
 | `agent/prompts.py` | **Auto-generated** system prompts (`NER_SP`, `TEXT2CYPHER_SP`, `QA_SP`, `PROMPT_ALIGNER_SP`) + schema constants |
 | `schema/gen_schema_csv.py` | Export full schema to `schema_data/schema_nodes.csv` + `schema_relations.csv` |
 | `schema/gen_schema_meta.py` | LLM-infer `id_property`, topics, descriptions → `schema_data/schema_meta.json` |

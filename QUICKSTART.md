@@ -104,7 +104,9 @@ python eval_aggregate.py              # print per-difficulty + per-strategy tabl
 
 `eval_aggregate.py` prints, per dataset, an **EA / EM / PSJS** table bucketed by
 **difficulty** (easy/medium/hard) and — for the perturbed `*_augmented` sets —
-by **perturbation strategy** (casing/typo/partial/abbrev/alias).
+by **perturbation strategy** (casing/typo/partial/abbrev/alias). It also writes a
+self-describing, timestamped `report_<timestamp>.md` into `OUT_DIR` (the run's
+mode + config in the header).
 
 ### Experiment knobs
 
@@ -113,7 +115,7 @@ env-overridable):
 
 | axis | env var | values |
 |---|---|---|
-| value-link mode | `VAL_LINK_MODE` | `no_val_link` · `rag` · `val_link` |
+| value-link mode | `VAL_LINK_MODE` | `no_val_link` · `fcav` · `val_link` |
 | grounder | `AGENT_TYPE` | `react` · `plan_exec` (when `val_link`) |
 | retrieval | `RETRIEVAL_TYPE` | `fuzzy` · `hybrid` (when `val_link`) |
 | tool scope | `TOOL_TYPE` | `node` · `node_rel` (when `val_link`) |
