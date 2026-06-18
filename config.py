@@ -266,10 +266,13 @@ CAP_MULTIPLIER        = 1000    # scan cap = t * CAP_MULTIPLIER (cheap over-fetc
 # How (or whether) the grounding stage runs in front of the Cypher generator.
 # Four independent choices, each env-overridable, resolved into a GroundingSpec:
 #
-#   VAL_LINK_MODE   no_val_link | rag | val_link
+#   VAL_LINK_MODE   no_val_link | fcav | val_link
 #                     no_val_link — feed only {schema}+{question} to the Cypher LLM
 #                                   (lower bound: the Cypher LLM unaided).
-#                     rag         — single-round agent baseline (no backfill).
+#                     fcav        — standard retrieve-then-generate RAG baseline:
+#                                   embed the question, retrieve candidate values
+#                                   from a self-built value index, LLM generates
+#                                   the entity JSON (see fcav.py; needs setup_fcav.py).
 #                     val_link    — run the value-linking grounder (axes below apply).
 #   AGENT_TYPE      react | plan_exec        (only when VAL_LINK_MODE=val_link)
 #   RETRIEVAL_TYPE  fuzzy | hybrid           (only when VAL_LINK_MODE=val_link)
@@ -281,12 +284,12 @@ CAP_MULTIPLIER        = 1000    # scan cap = t * CAP_MULTIPLIER (cheap over-fetc
 # plan-and-execute, hybrid retrieval, node+relation tools:
 #   VAL_LINK_MODE=val_link AGENT_TYPE=plan_exec RETRIEVAL_TYPE=hybrid TOOL_TYPE=node_rel python eval_run.py
 # ──────────────────────────────────────────────────────────────────────────────
-VAL_LINK_MODE:  str = os.getenv("VAL_LINK_MODE",  "no_val_link")  # no_val_link | rag | val_link
+VAL_LINK_MODE:  str = os.getenv("VAL_LINK_MODE",  "no_val_link")  # no_val_link | fcav | val_link
 AGENT_TYPE:     str = os.getenv("AGENT_TYPE",     "plan_exec")    # react | plan_exec
 RETRIEVAL_TYPE: str = os.getenv("RETRIEVAL_TYPE", "fuzzy")        # fuzzy | hybrid
 TOOL_TYPE:      str = os.getenv("TOOL_TYPE",      "node_rel")     # node | node_rel
 
-_VAL_LINK_MODES  = ("no_val_link", "rag", "val_link")
+_VAL_LINK_MODES  = ("no_val_link", "fcav", "val_link")
 _AGENT_TYPES     = ("react", "plan_exec")
 _RETRIEVAL_TYPES = ("fuzzy", "hybrid")
 _TOOL_TYPES      = ("node", "node_rel")
@@ -303,13 +306,12 @@ class GroundingSpec:
 
     @property
     def canonical(self) -> str:
-        """Legacy flat-name equivalent (so existing string-keyed code is
-        unchanged): no_val_link→'no_ner', rag→'rag', else
-        '<agent>_<tool-suffix>[ _hybrid]' where tool 'node'→'node_only'."""
+        """Compact internal name the pipeline keys on: no_val_link→'no_ner',
+        fcav→'fcav', else '<agent>_<tool-suffix>[ _hybrid]' (tool 'node'→'node_only')."""
         if self.val_link == "no_val_link":
             return "no_ner"
-        if self.val_link == "rag":
-            return "rag"
+        if self.val_link == "fcav":
+            return "fcav"
         suffix = "node_only" if self.tool == "node" else "node_rel"
         name = f"{self.agent}_{suffix}"
         return name + "_hybrid" if self.retrieval == "hybrid" else name
@@ -339,8 +341,8 @@ def _spec_from_canonical(name: str) -> GroundingSpec:
     n = (name or "").strip().lower()
     if n in ("", "no_ner"):
         return GroundingSpec("no_val_link")
-    if n == "rag":
-        return GroundingSpec("rag")
+    if n == "fcav":
+        return GroundingSpec("fcav")
     hybrid = n.endswith("_hybrid")
     core = n[: -len("_hybrid")] if hybrid else n
     for ag in ("plan_exec", "react"):
@@ -403,7 +405,7 @@ PLAN_EXEC_HYBRID_VECTOR_K = 5     # embedding (vector-index) candidates per tool
 # the budget is spent. Only fires on a miss, so well-grounded entities pay just
 # one judge call and no extra retrieval (avoids the candidate-noise penalty of
 # blanket top-K increases).
-PLAN_EXEC_ESCALATE        = os.getenv("PLAN_EXEC_ESCALATE", "0").lower() in ("1", "true", "yes")
+PLAN_EXEC_ESCALATE        = os.getenv("PLAN_EXEC_ESCALATE", "1").lower() in ("1", "true", "yes")
 PLAN_EXEC_MAX_ITER        = 3           # max escalation rounds per mention
 PLAN_EXEC_ESCALATE_BUDGET = (5, 3, 1)   # values added per successive round (deepen step)
 PLAN_EXEC_ROUTE_FETCH     = 6           # tools FAISS-routed per mention (initial + escalation pool)

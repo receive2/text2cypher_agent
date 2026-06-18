@@ -81,7 +81,12 @@ SWAP_DIRS: list[str] = [
     "generated/faiss/tools_auto_node_only",
 ]
 
-SWAP_DIRS_OPTIONAL: list[str] = []
+SWAP_DIRS_OPTIONAL: list[str] = [
+    # Per-graph FCAV value index (VAL_LINK_MODE=fcav). Present only once
+    # ``setup_fcav.py`` has built + archived it for that graph; absent archives
+    # leave the live directory untouched.
+    "generated/fcav",
+]
 
 # vector_config.py is partially swapped: only the EMBEDDABLE_PROPERTIES
 # block.  At archive time, we extract that block and write it to

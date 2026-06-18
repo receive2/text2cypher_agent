@@ -1392,6 +1392,15 @@ def ask_auto(
                 "\n── Extracted entities ──────────────────────────────────────────────"
             )
             print(f"  {entities}  (NER skipped — mode='no_ner')")
+    elif effective_mode == "fcav":
+        # Standard retrieve-then-generate RAG baseline: embed the question,
+        # retrieve candidate values from the self-built FCAV value index, and
+        # let an LLM generate the {Label.prop: value} entity JSON (see fcav.py).
+        from fcav import get_fcav_entities
+        entities = get_fcav_entities(prompt, verbose=verbose)
+        if verbose:
+            print(f"\n── Extracted entities (FCAV retrieve→generate) ──")
+            print(f"  {entities}")
     elif _is_plan_exec(effective_mode):
         from plan_exec import get_plan_exec_evidence
         import config as _config
