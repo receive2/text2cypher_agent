@@ -45,7 +45,7 @@ EMBEDDING_MODELS = {
 _active = EMBEDDING_MODELS[EMBEDDING_BACKEND]
 EMBEDDING_MODEL_NAME = _active["model_name"]
 EMBEDDING_DIMENSIONS = _active["dimensions"]
-EMBEDDING_BATCH_SIZE = 100   # rows sent per embeddings API call
+EMBEDDING_BATCH_SIZE = 500   # rows sent per embeddings API call
 
 # Decoupled from EMBEDDING_BATCH_SIZE on purpose: bumping the embedding
 # batch to optimise throughput must NOT balloon the Neo4j write transaction
