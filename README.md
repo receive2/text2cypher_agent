@@ -380,15 +380,35 @@ driver.close()
 
 ### 4 — Ask a question
 
+`--mode` selects the value-linking mode by its canonical name (or set the four
+axes — see [Value-linking modes](#value-linking-modes)).
+
+**Plan&Exec** — the shipped method:
+
 ```bash
 # Full pipeline: value linking → Cypher → Neo4j → answer
-python ner_agent_auto.py "Who acted in The Matrix?"
+python ner_agent_auto.py "Who acted in The Matrix?" --mode plan_exec_node_rel_hybrid
 
-# Show value-linking spec, retrieval/judge trace, and generated Cypher
-python ner_agent_auto.py "How many movies were released before 2000?" --verbose
+# --verbose shows the intermediate steps:
+#   PLAN     entity mentions decomposed from the question
+#   EXECUTE  per-mention field routing, retrieved candidates, and the
+#            LLM corrective-loop decisions (done / deepen / pick a field)
+#   GENERATE the candidate block + the generated Cypher
+python ner_agent_auto.py "How many movies were released before 2000?" \
+    --mode plan_exec_node_rel_hybrid --verbose
+```
+
+> `plan_exec_node_rel_hybrid` uses the in-graph vector index; on a graph without
+> one it falls back to fuzzy. `plan_exec_node_rel` is the zero-embedding (fuzzy) variant.
+
+**ReAct** agent — baseline (also shows its agent trace under `--verbose`):
+
+```bash
+python ner_agent_auto.py "How many movies were released before 2000?" \
+    --mode react_node_rel --verbose
 
 # Grounding step only (skip Cypher generation)
-python ner_agent_auto.py "movies by Tom Hanks" --ner-only
+python ner_agent_auto.py "movies by Tom Hanks" --mode react_node_rel --ner-only
 ```
 
 Or call from Python:
@@ -396,7 +416,8 @@ Or call from Python:
 ```python
 from ner_agent_auto import ask_auto
 
-result = ask_auto("What movies did Keanu Reeves star in?")
+result = ask_auto("What movies did Keanu Reeves star in?",
+                  mode="plan_exec_node_rel_hybrid")   # or omit to use the config axes
 print(result["cypher"])   # the generated Cypher query
 print(result["result"])   # natural-language answer
 print(result["context"])  # raw rows returned by Neo4j

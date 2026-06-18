@@ -1662,8 +1662,11 @@ if __name__ == "__main__":
     print(f"rebuild: {args.rebuild}\n")
 
     # ── Step 1: show which tools were selected ────────────────────────────────
-    if effective_mode == "no_ner":
-        print("── Tool selection skipped (mode='no_ner') ──────────────────────────")
+    # Top-k tool selection is the ReAct path only. no_ner skips grounding; fcav
+    # uses its own value index; plan_exec routes per-entity inside ask_auto
+    # (shown under --verbose), so the up-front selection display doesn't apply.
+    if effective_mode == "no_ner" or effective_mode == "fcav" or _is_plan_exec(effective_mode):
+        print(f"── Top-k tool selection not used in mode '{effective_mode}' ─────────")
     else:
         print("── Selected tools (after connectivity filter) ──────────────────────")
         tools = select_tools_for_query(
