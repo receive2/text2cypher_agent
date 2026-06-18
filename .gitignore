@@ -97,3 +97,9 @@ datasets/
 !data_augmentation/datasets/
 !data_augmentation/datasets/**
 verification/
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Released perturbed benchmarks (shared with auditors / for reproducibility)
+# ──────────────────────────────────────────────────────────────────────────────
+!benchmarks/
+!benchmarks/**

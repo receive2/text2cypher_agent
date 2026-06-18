@@ -1,0 +1,103 @@
+{
+  "bloom": {
+    "rows": 58,
+    "kept": 40,
+    "realized_pct": {
+      "casing": 10.0,
+      "typo": 50.0,
+      "partial": 27.5,
+      "abbrev": 12.5,
+      "alias": 0.0
+    },
+    "reasons": {
+      "typo:committed": 20,
+      "drop:no_entity": 18,
+      "casing:committed": 4,
+      "abbrev:committed": 5,
+      "partial:committed": 11
+    },
+    "needs_verification": 6
+  },
+  "covid": {
+    "rows": 438,
+    "kept": 342,
+    "realized_pct": {
+      "casing": 10.2,
+      "typo": 63.5,
+      "partial": 20.2,
+      "abbrev": 0.0,
+      "alias": 6.1
+    },
+    "reasons": {
+      "typo:committed": 217,
+      "drop:no_entity": 96,
+      "alias:committed": 21,
+      "casing:committed": 35,
+      "partial:committed": 69
+    },
+    "needs_verification": 22
+  },
+  "er": {
+    "rows": 421,
+    "kept": 202,
+    "realized_pct": {
+      "casing": 10.4,
+      "typo": 37.6,
+      "partial": 17.8,
+      "abbrev": 34.2,
+      "alias": 0.0
+    },
+    "reasons": {
+      "drop:no_entity": 219,
+      "typo:committed": 76,
+      "casing:committed": 21,
+      "abbrev:committed": 69,
+      "partial:committed": 36,
+      "typo:margin": 2
+    },
+    "needs_verification": 30
+  },
+  "healthcare": {
+    "rows": 460,
+    "kept": 439,
+    "realized_pct": {
+      "casing": 10.0,
+      "typo": 26.9,
+      "partial": 26.4,
+      "abbrev": 10.0,
+      "alias": 26.7
+    },
+    "reasons": {
+      "typo:committed": 118,
+      "alias:committed": 117,
+      "casing:committed": 44,
+      "partial:committed": 116,
+      "drop:no_entity": 21,
+      "abbrev:committed": 44,
+      "alias:collision": 27,
+      "abbrev:collision": 2,
+      "typo:margin": 1
+    },
+    "needs_verification": 174
+  },
+  "wwc": {
+    "rows": 452,
+    "kept": 275,
+    "realized_pct": {
+      "casing": 10.2,
+      "typo": 33.5,
+      "partial": 33.1,
+      "abbrev": 2.5,
+      "alias": 20.7
+    },
+    "reasons": {
+      "drop:no_entity": 177,
+      "partial:committed": 91,
+      "typo:committed": 92,
+      "casing:committed": 28,
+      "alias:committed": 57,
+      "abbrev:committed": 7
+    },
+    "needs_verification": 60
+  }
+}

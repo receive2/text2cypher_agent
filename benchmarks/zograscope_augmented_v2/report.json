@@ -1,0 +1,24 @@
+{
+  "pole": {
+    "rows": 2117,
+    "kept": 1441,
+    "realized_pct": {
+      "casing": 10.0,
+      "typo": 54.0,
+      "partial": 30.0,
+      "abbrev": 6.0,
+      "alias": 0.0
+    },
+    "reasons": {
+      "typo:committed": 778,
+      "casing:committed": 144,
+      "drop:all_candidates_failed": 170,
+      "drop:no_entity": 506,
+      "partial:committed": 433,
+      "typo:margin": 36,
+      "abbrev:committed": 86,
+      "typo:collision": 6
+    },
+    "needs_verification": 91
+  }
+}

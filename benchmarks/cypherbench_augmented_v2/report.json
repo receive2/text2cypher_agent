@@ -1,0 +1,158 @@
+{
+  "nba": {
+    "rows": 270,
+    "kept": 258,
+    "realized_pct": {
+      "casing": 10.1,
+      "typo": 22.9,
+      "partial": 22.1,
+      "abbrev": 22.1,
+      "alias": 22.9
+    },
+    "reasons": {
+      "abbrev:committed": 57,
+      "alias:committed": 59,
+      "partial:committed": 57,
+      "typo:committed": 59,
+      "casing:committed": 26,
+      "drop:no_entity": 12
+    },
+    "needs_verification": 75
+  },
+  "flight_accident": {
+    "rows": 189,
+    "kept": 170,
+    "realized_pct": {
+      "casing": 10.0,
+      "typo": 22.4,
+      "partial": 22.4,
+      "abbrev": 22.4,
+      "alias": 22.9
+    },
+    "reasons": {
+      "typo:committed": 38,
+      "partial:committed": 38,
+      "alias:committed": 39,
+      "abbrev:committed": 38,
+      "casing:committed": 17,
+      "drop:no_entity": 19
+    },
+    "needs_verification": 24
+  },
+  "fictional_character": {
+    "rows": 385,
+    "kept": 326,
+    "realized_pct": {
+      "casing": 10.1,
+      "typo": 29.4,
+      "partial": 28.5,
+      "abbrev": 2.8,
+      "alias": 29.1
+    },
+    "reasons": {
+      "typo:committed": 96,
+      "alias:committed": 95,
+      "drop:no_entity": 57,
+      "partial:committed": 93,
+      "casing:committed": 33,
+      "abbrev:committed": 9,
+      "typo:margin": 6,
+      "drop:all_candidates_failed": 2,
+      "alias:collision": 7
+    },
+    "needs_verification": 88
+  },
+  "company": {
+    "rows": 347,
+    "kept": 308,
+    "realized_pct": {
+      "casing": 10.1,
+      "typo": 22.7,
+      "partial": 22.4,
+      "abbrev": 22.1,
+      "alias": 22.7
+    },
+    "reasons": {
+      "abbrev:committed": 68,
+      "drop:no_entity": 39,
+      "alias:committed": 70,
+      "typo:committed": 70,
+      "casing:committed": 31,
+      "partial:committed": 69,
+      "alias:collision": 9,
+      "abbrev:collision": 5,
+      "typo:margin": 4
+    },
+    "needs_verification": 42
+  },
+  "geography": {
+    "rows": 366,
+    "kept": 339,
+    "realized_pct": {
+      "casing": 10.0,
+      "typo": 23.0,
+      "partial": 23.0,
+      "abbrev": 20.9,
+      "alias": 23.0
+    },
+    "reasons": {
+      "typo:committed": 78,
+      "drop:no_entity": 23,
+      "partial:committed": 78,
+      "abbrev:committed": 71,
+      "alias:committed": 78,
+      "casing:committed": 34,
+      "alias:collision": 7,
+      "typo:margin": 6,
+      "drop:all_candidates_failed": 4,
+      "abbrev:splice_failed": 2
+    },
+    "needs_verification": 87
+  },
+  "movie": {
+    "rows": 401,
+    "kept": 370,
+    "realized_pct": {
+      "casing": 10.0,
+      "typo": 22.7,
+      "partial": 22.2,
+      "abbrev": 22.4,
+      "alias": 22.7
+    },
+    "reasons": {
+      "alias:committed": 84,
+      "typo:committed": 84,
+      "partial:committed": 82,
+      "abbrev:committed": 83,
+      "casing:committed": 37,
+      "alias:collision": 6,
+      "drop:no_entity": 29,
+      "typo:collision": 2,
+      "drop:all_candidates_failed": 2,
+      "typo:margin": 3
+    },
+    "needs_verification": 78
+  },
+  "politics": {
+    "rows": 390,
+    "kept": 365,
+    "realized_pct": {
+      "casing": 10.1,
+      "typo": 22.5,
+      "partial": 22.5,
+      "abbrev": 22.5,
+      "alias": 22.5
+    },
+    "reasons": {
+      "typo:committed": 82,
+      "partial:committed": 82,
+      "alias:committed": 82,
+      "casing:committed": 37,
+      "abbrev:committed": 82,
+      "drop:no_entity": 25,
+      "alias:collision": 1,
+      "abbrev:collision": 1
+    },
+    "needs_verification": 37
+  }
+}
