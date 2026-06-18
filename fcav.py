@@ -49,6 +49,13 @@ _INDEX_PATH:   Path = FCAV_DIR / "index.faiss"
 _META_PATH:    Path = FCAV_DIR / "meta.json"        # [[value, label, key], ...] aligned to index rows
 _MANIFEST_PATH: Path = FCAV_DIR / "manifest.json"
 
+# Index type: exact (IndexFlatIP) up to FCAV_EXACT_MAX values, then approximate
+# HNSW (high recall, fast query) for graphs too large for exact retrieval.
+FCAV_EXACT_MAX            = int(os.getenv("FCAV_EXACT_MAX", "1000000"))
+FCAV_HNSW_M               = 32
+FCAV_HNSW_EF_CONSTRUCTION = 200
+FCAV_HNSW_EF_SEARCH       = 64
+
 # Default value-selection policy: keep identifying / name-like string
 # properties (the values a user actually mentions), drop free-text
 # descriptions and structured identifiers. Mirrors the cost/coverage
@@ -164,7 +171,19 @@ def build_fcav_index(
     dim = vecs.shape[1]
     vecs = _normalize(vecs)
 
-    index = faiss.IndexFlatIP(dim)   # cosine via normalized inner product
+    # Exact (IndexFlatIP) search is O(N) per query and stores full vectors; past
+    # FCAV_EXACT_MAX values that becomes impractical, so fall back to an
+    # approximate HNSW index (high recall, O(log N) query). Both use normalized
+    # inner product (= cosine).
+    n = vecs.shape[0]
+    if n > FCAV_EXACT_MAX:
+        index = faiss.IndexHNSWFlat(dim, FCAV_HNSW_M, faiss.METRIC_INNER_PRODUCT)
+        index.hnsw.efConstruction = FCAV_HNSW_EF_CONSTRUCTION
+        index_type = "hnsw"
+        logger.info("FCAV: %d > %d values → approximate HNSW index", n, FCAV_EXACT_MAX)
+    else:
+        index = faiss.IndexFlatIP(dim)
+        index_type = "flat"
     index.add(vecs)
 
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -175,6 +194,7 @@ def build_fcav_index(
     manifest = {
         "count":                len(triples),
         "dimensions":           dim,
+        "index_type":           index_type,
         "embedding_backend":    vc.EMBEDDING_BACKEND,
         "embedding_model":      vc.EMBEDDING_MODEL_NAME,
         "include_descriptions": include_descriptions,
@@ -205,6 +225,9 @@ def _load(out_dir: Path = FCAV_DIR):
             f"FCAV index not found at {out_dir}. Run `python setup_fcav.py` first."
         )
     index = faiss.read_index(str(out_dir / "index.faiss"))
+    # HNSW indexes need efSearch set at query time to control recall.
+    if hasattr(index, "hnsw"):
+        index.hnsw.efSearch = FCAV_HNSW_EF_SEARCH
     meta  = json.loads((out_dir / "meta.json").read_text(encoding="utf-8"))
     manifest = json.loads((out_dir / "manifest.json").read_text(encoding="utf-8"))
     if manifest.get("embedding_model") and manifest["embedding_model"] != vc.EMBEDDING_MODEL_NAME:
