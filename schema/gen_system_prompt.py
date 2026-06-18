@@ -7,7 +7,7 @@ Introspects a live Neo4j database and generates ``prompts.py`` from scratch —
 system prompts and schema constants tailored to the actual graph.
 
 ⚠ This script ONLY writes ``prompts.py``.  It never touches ``config.py``,
-which is user-managed and holds hyperparameters (LLM configs, NER_MODE,
+which is user-managed and holds hyperparameters (LLM configs, VAL_LINK_MODE,
 SAMPLE_T, …).  The split prevents user-edited settings from being clobbered
 each time the schema is re-derived.
 
@@ -32,7 +32,7 @@ What is generated
   3. **Index Constants**  (fulltext index names discovered from the graph)
 
 Runtime hyperparameters (MAX_THREAD, DEFAULT_TOP_K, TOOL_TOP_K, STABILITY_K,
-MAX_VALIDATION_ROUNDS, SAMPLE_T, CAP_MULTIPLIER, NER_MODE, *_LLM_CONFIG)
+MAX_VALIDATION_ROUNDS, SAMPLE_T, CAP_MULTIPLIER, VAL_LINK_MODE, *_LLM_CONFIG)
 live in ``config.py`` and are NOT regenerated.
 
 Usage
@@ -1154,7 +1154,7 @@ def generate_prompts_py(
         "#   • System prompts (NER_SP, TEXT2CYPHER_SP, QA_SP, PROMPT_ALIGNER_SP)\n"
         "#   • Schema constants derived from the live Neo4j graph\n"
         "#\n"
-        "# User-managed hyperparameters (LLM configs, NER_MODE, SAMPLE_T, …) live\n"
+        "# User-managed hyperparameters (LLM configs, VAL_LINK_MODE, SAMPLE_T, …) live\n"
         "# in ``config.py`` and are NEVER overwritten by gen_system_prompt.\n"
     )
 

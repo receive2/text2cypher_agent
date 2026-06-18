@@ -108,17 +108,21 @@ by **perturbation strategy** (casing/typo/partial/abbrev/alias).
 
 ### Experiment knobs
 
-| what | where | values |
+Value linking is selected by four orthogonal axes in `config.py` (each
+env-overridable):
+
+| axis | env var | values |
 |---|---|---|
-| NER mode | `NER_MODE` env var | `full` (node+relation tools) · `node_only` · `no_ner` |
-| retrieval mode | `TOOL_RETRIEVAL_MODE` in `vector_config.py` | `fuzzy` (default) · `vector` · `hybrid` |
-| hybrid fusion | `HYBRID_STRATEGY` in `vector_config.py` | `cascade` (default) · `rrf` · `weighted` |
+| value-link mode | `VAL_LINK_MODE` | `no_val_link` · `rag` · `val_link` |
+| grounder | `AGENT_TYPE` | `react` · `plan_exec` (when `val_link`) |
+| retrieval | `RETRIEVAL_TYPE` | `fuzzy` · `hybrid` (when `val_link`) |
+| tool scope | `TOOL_TYPE` | `node` · `node_rel` (when `val_link`) |
 | examples per pair | `LIMIT` in `eval_config.py` | int · `None` (all) |
 
-Example — run `full` mode in hybrid retrieval:
+Example — plan-and-execute, hybrid retrieval, node+relation tools:
 
 ```bash
-NER_MODE=full python eval_run.py
+VAL_LINK_MODE=val_link AGENT_TYPE=plan_exec RETRIEVAL_TYPE=hybrid TOOL_TYPE=node_rel python eval_run.py
 ```
 
 Re-running is incremental: each pair overwrites only its own two files in

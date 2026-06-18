@@ -150,20 +150,20 @@ def _run_meta() -> Dict[str, Any]:
 
     meta: Dict[str, Any] = {
         "generated_at": datetime.now().astimezone().isoformat(timespec="seconds"),
-        "ner_mode_env": os.environ.get("NER_MODE"),
     }
     try:
         import config as _c
-        # Resolve the four-axis value-linking spec (maps legacy aliases / env).
+        # Resolve the active four-axis value-linking spec (from the config axes /
+        # their env overrides).
         try:
-            spec = _c.resolve_spec(os.environ.get("NER_MODE"))
+            spec = _c.resolve_spec()
             meta["ner_mode"]       = spec.canonical
             meta["val_link_mode"]  = spec.val_link
             meta["agent_type"]     = spec.agent
             meta["retrieval_type"] = spec.retrieval
             meta["tool_type"]      = spec.tool
         except Exception:  # noqa: BLE001
-            meta["ner_mode"] = os.environ.get("NER_MODE")
+            pass
         meta["ner_llm"]    = _c.NER_LLM_CONFIG.get("model")
         meta["cypher_llm"] = _c.CYPHER_LLM_CONFIG.get("model")
         meta["qa_llm"]     = _c.QA_LLM_CONFIG.get("model")

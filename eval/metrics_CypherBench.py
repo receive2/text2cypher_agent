@@ -85,7 +85,7 @@ from loguru import logger
 
 from agent.agent_helper import neo4j_graph
 from ner_agent_auto import ask_auto
-from config import DEFAULT_TOP_K, NER_MODE, NER_MODES
+from config import DEFAULT_TOP_K, resolve_spec
 from .cypher_eval_normalize import (
     normalize_result_set,
     column_counts_match,
@@ -464,7 +464,7 @@ def evaluate_one_legacy(
         "gold_error":       None,
         "execution_accuracy": False,
         "execution_match":    False,
-        "ner_mode":         mode or NER_MODE,
+        "ner_mode":         resolve_spec(mode).canonical,
         "elapsed_sec":      0.0,
     }
 
@@ -548,7 +548,7 @@ def evaluate_dataset_legacy(
     verbose       : Stream agent traces and per-example logs.
     mode          : Optional NER pipeline mode override —
                     ``"full"`` / ``"node_only"`` / ``"no_ner"``.
-                    Defaults to :data:`config.NER_MODE`.
+                    Defaults to the value-linking config axes.
 
     Returns
     -------
@@ -563,10 +563,8 @@ def evaluate_dataset_legacy(
             "elapsed_sec":        float,
         }``
     """
-    if mode is not None and mode not in NER_MODES:
-        raise ValueError(
-            f"Unknown NER mode {mode!r}. Expected one of {NER_MODES}."
-        )
+    # mode is validated by config.resolve_spec() downstream; a bad canonical
+    # name raises there.
 
     if limit is not None:
         examples = examples[:limit]
@@ -633,7 +631,7 @@ def evaluate_dataset_legacy(
         "em_correct":          n_em,
         "agent_errors":        agent_errs,
         "gold_errors":         gold_errs,
-        "ner_mode":            mode or NER_MODE,
+        "ner_mode":            resolve_spec(mode).canonical,
         "strict_cypherbench":  strict_cypherbench,
         "elapsed_sec":         elapsed,
     }
@@ -1306,12 +1304,10 @@ def main(argv: Optional[List[str]] = None) -> int:
                     help="Evaluate only the first N examples.")
     ap.add_argument("--top-k", type=int, default=DEFAULT_TOP_K,
                     help=f"Tool-selection top-k for ask_auto (default {DEFAULT_TOP_K}).")
-    ap.add_argument("--ner-mode", "--mode", dest="mode",
-                    choices=NER_MODES, default=None,
-                    help=f"NER pipeline mode (overrides config.NER_MODE={NER_MODE!r}). "
-                         f"One of {NER_MODES}.  "
-                         "'full' uses all tools, 'node_only' drops relation "
-                         "tools, 'no_ner' bypasses the agent entirely.")
+    ap.add_argument("--ner-mode", "--mode", dest="mode", default=None,
+                    help="Canonical grounding mode (e.g. plan_exec_node_rel). "
+                         "Defaults to the VAL_LINK_MODE/AGENT_TYPE/RETRIEVAL_TYPE/"
+                         "TOOL_TYPE config axes.")
     ap.add_argument("--skip-failures", action="store_true",
                     help="Exclude errored examples from the denominator "
                          "(default counts them as misses).")

@@ -17,7 +17,7 @@ Steps executed (in order):
    8  Generate @tool functions  (generated_node_tools.py, generated_rel_tools.py)
    9  Generate prompts.py from scratch (system prompts + schema constants).
       ``config.py`` is NOT regenerated — it's user-managed and holds
-      hyperparameters (LLM configs, NER_MODE, SAMPLE_T, …).
+      hyperparameters (LLM configs, VAL_LINK_MODE, SAMPLE_T, …).
   10  Build the FAISS tool-selection index (faiss_tools_auto/)
 
 Console output is bounded — one summary line per step regardless of schema
@@ -761,14 +761,14 @@ def step_generate_config(s: Step, database: str) -> None:
 def step_build_faiss(s: Step) -> None:
     """
     Build BOTH ``full`` and ``node_only`` FAISS tool-selection indexes
-    unconditionally, regardless of the current ``config.NER_MODE``.
+    unconditionally, regardless of the selected value-linking mode.
 
     Rationale
     ---------
     Setup is mode-agnostic on purpose: the resulting artifact archive
     must be a complete snapshot that works for every NER mode any
     downstream user might pick.  Coupling setup to a single user's
-    ``NER_MODE`` choice means a stranger who clones the repo and flips
+    value-linking mode choice means a stranger who clones the repo and flips
     the mode would silently get an archive missing the index they need.
 
     Cost is negligible — both indexes embed the same ~55 tool docstrings

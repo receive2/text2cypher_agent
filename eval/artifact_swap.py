@@ -72,7 +72,7 @@ SWAP_FILES_OPTIONAL: list[str] = [
 #
 # Both FAISS index directories are REQUIRED because ``step_build_faiss``
 # in ``setup_project.py`` builds both unconditionally — the archive is a
-# mode-agnostic snapshot, so any downstream NER_MODE flip just works
+# mode-agnostic snapshot, so any downstream value-linking-mode flip just works
 # without re-running setup.  See the docstring of ``step_build_faiss``
 # for the rationale (cost is negligible: ~100 embedding calls + a few
 # MB on disk per graph).

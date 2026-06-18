@@ -51,6 +51,7 @@ from config import (
     PLAN_EXEC_HYBRID_VECTOR_K,
     PLAN_EXEC_ESCALATE_BUDGET,
     PLAN_EXEC_ROUTE_FETCH,
+    PLAN_EXEC_MAX_ITER,
 )
 from paths import REPO_ROOT
 
@@ -104,11 +105,15 @@ def _parse_module(path: Path, kind: str, out: Dict[str, Dict[str, str]]) -> None
         label, prop = _search_tool_args(node)
         doc = ast.get_docstring(node) or ""
         m = _REL_PATTERN_RE.search(doc)
+        # First sentence of the docstring, trimmed — a short hint for the field
+        # menu the escalation judge chooses from.
+        desc = re.split(r"(?<=[.!?])\s", doc.strip())[0] if doc.strip() else ""
         out[node.name] = {
             "label":       label,
             "property":    prop,
             "kind":        kind,
             "rel_pattern": m.group(0).replace(" ", "") if m else "",
+            "desc":        desc[:140],
         }
 
 
@@ -291,14 +296,25 @@ def _norm(s) -> str:
 
 
 def _escalate_fetch(mention: str, label: str, prop: str, hybrid: bool, k: int) -> List[str]:
-    """Escalation retrieval for one (label, property): deepen the modality that
-    is this mode's recall edge — **vector** for hybrid (the lever for aliases /
-    abbreviations that share no characters with the canonical), **fuzzy**
-    otherwise. Returns up to *k* candidates (dedup against existing is done by
-    the caller)."""
+    """Deeper retrieval for one (label, property) during escalation. Fuzzy mode
+    deepens fuzzy; hybrid deepens **both** fuzzy and vector (vector is the lever
+    for aliases that share no characters with the canonical; fuzzy still catches
+    deeper abbrev/partial hits). Returns up to *k* per modality; the caller
+    de-dups against what it already has."""
     from neo4j_lib.neo4j_search import search_tool  # lazy import
-    mode = "vector" if hybrid else "fuzzy"
-    return search_tool(phrase=mention, node_label=label, property_name=prop, k=k, mode=mode)
+    fuzzy = search_tool(phrase=mention, node_label=label, property_name=prop, k=k, mode="fuzzy")
+    if not hybrid:
+        return fuzzy
+    try:
+        vector = search_tool(phrase=mention, node_label=label, property_name=prop, k=k, mode="vector")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("plan_exec: vector deepen failed for %s.%s: %s", label, prop, exc)
+        vector = []
+    out = list(fuzzy)
+    for v in vector:
+        if v not in out:
+            out.append(v)
+    return out
 
 
 def _judge_grounded(question: str, mention: str, values: List[str], llm_obj) -> bool:
@@ -326,51 +342,84 @@ def _judge_grounded(question: str, mention: str, values: List[str], llm_obj) -> 
         return False
 
 
-_ACTION_PROMPT = """A question mentions an entity, and a value-linking step has \
-retrieved candidate database values for it. Decide the next retrieval action.
+_NAME_LIKE = {"name", "title", "aliases", "alias", "label"}
+
+
+def _name_like(prop: str) -> bool:
+    p = (prop or "").lower()
+    return p in _NAME_LIKE or p.endswith("name") or p.endswith("title")
+
+
+def _field_menu(used: set) -> List[Tuple[str, str, str]]:
+    """Available node name-like fields the judge may add, as (label, property,
+    desc), excluding the ones already searched for this mention. Entities are
+    grounded by name/alias fields, so id / description / numeric fields are
+    omitted to keep the menu focused."""
+    meta = _tool_meta()
+    seen, menu = set(), []
+    for info in meta.values():
+        if info.get("kind") != "node":
+            continue
+        l, p = info.get("label", ""), info.get("property", "")
+        if not (l and p) or (l, p) in used or (l, p) in seen or not _name_like(p):
+            continue
+        seen.add((l, p))
+        menu.append((l, p, info.get("desc", "")))
+    return menu
+
+
+_STEP_PROMPT = """A question mentions an entity and a value-linking step has \
+retrieved candidate database values for it. Decide the single best next action.
 
 Question: {question}
 Entity mention: "{mention}"
-Retrieved candidates (each tagged Label.property):
+Retrieved candidates so far (each tagged Label.property):
 {candidates}
 
-Choose ONE action:
-- done       : the mention is already grounded — one candidate is its canonical value (allowing for typos, casing, abbreviations, partial names, or aliases), OR no further retrieval could plausibly help.
-- value      : the candidates are the RIGHT KIND of thing for the mention but none matches — retrieve MORE values from the same field.
-- tool       : the candidates are the WRONG KIND for the mention — search a DIFFERENT field/tool.
-- tool_value : do both — broaden to other fields AND pull more values.
+Other database fields you could search instead (Label.property — description):
+{menu}
 
-Answer with exactly one word: done, value, tool, or tool_value."""
+Choose ONE:
+- done  : one candidate already IS the mention's canonical value (allowing for typos, casing, abbreviations, partial names, or aliases), OR no field could plausibly hold it.
+- value : the candidates are the RIGHT KIND of thing but none matches — pull MORE values from the SAME field(s).
+- <Label.property> : the mention belongs in a DIFFERENT field — copy ONE field name verbatim from the menu above to search it next.
 
-_ACTIONS = ("tool_value", "done", "value", "tool")   # order matters: check 'tool_value' before 'tool'/'value'
+Answer with exactly one token: done, value, or a Label.property from the menu."""
 
 
-def _judge_action(question: str, mention: str, values: List[str], llm_obj) -> str:
-    """Return the next escalation action — one of ``done`` / ``value`` / ``tool``
-    / ``tool_value``. Fast path: a normalised substring match is treated as
-    ``done`` without an LLM call. Falls back to ``done`` on any parse/LLM failure
-    (safe: stop rather than loop)."""
+def _judge_step(question: str, mention: str, values: List[str],
+                menu: List[Tuple[str, str, str]], llm_obj):
+    """Return the next escalation step: ``"done"`` | ``"value"`` | ``(label,
+    property)`` (a field the LLM chose to add). Fast path: a normalised
+    substring match is ``done`` without an LLM call. Falls back to ``done`` on
+    any parse/LLM failure (stop rather than loop)."""
     if not values:
-        return "tool"          # nothing retrieved yet → try a different tool
+        return (menu[0][0], menu[0][1]) if menu else "done"
     nm = _norm(mention)
     if nm and any(nm in _norm(v) or _norm(v) in nm for v in values):
         return "done"
     if llm_obj is None:
         return "done"
+    menu_lines = "\n".join(f"- {l}.{p}  —  {d}" for l, p, d in menu) or "(none)"
     cand_lines = "\n".join(f'- "{v}"' for v in values)
-    prompt = _ACTION_PROMPT.format(question=question, mention=mention, candidates=cand_lines)
+    prompt = _STEP_PROMPT.format(question=question, mention=mention,
+                                 candidates=cand_lines, menu=menu_lines)
     try:
         resp = llm_obj.invoke(prompt)
         raw = getattr(resp, "content", resp)
         if isinstance(raw, list):
             raw = " ".join(str(p) for p in raw)
-        text = re.sub(r"[^a-z_]", "", str(raw).strip().lower())
-        for a in _ACTIONS:
-            if a in text:
-                return a
+        text = str(raw).strip()
+        low = text.lower()
+        # A chosen field is the most specific match — check the menu first.
+        for l, p, _d in menu:
+            if f"{l}.{p}".lower() in low or _norm(f"{l}{p}") in _norm(text):
+                return (l, p)
+        if "value" in low:
+            return "value"
         return "done"
     except Exception as exc:  # noqa: BLE001
-        logger.warning("plan_exec: action judge failed for %r: %s", mention, exc)
+        logger.warning("plan_exec: step judge failed for %r: %s", mention, exc)
         return "done"
 
 
@@ -382,21 +431,19 @@ def execute_entity(entity: Dict[str, str], node_only: bool = False,
         {"mention", "kind", "candidates": [{"label","property","values":[...]}],
          "patterns": ["(:A)-[:rel]->(:B)", ...]}
 
-    When *escalate*, after the initial retrieval an LLM judge picks the next
-    action each round — done / value (deepen the used tool[s]) / tool (bring in
-    the next-ranked tool) / tool_value (both) — applying a diminishing budget
-    (``PLAN_EXEC_ESCALATE_BUDGET``, e.g. 5→3→1, which also caps the rounds) and
-    stopping on ``done`` or budget exhaustion. 'value' deepens fuzzy in the fuzzy
-    mode and vector in hybrid (see :func:`_escalate_fetch`).
+    When *escalate*, after the initial retrieval an LLM judge picks the next step
+    each round — done / value (deepen the used field[s]) / a specific
+    Label.property field it chooses from a menu to ADD — for up to
+    ``PLAN_EXEC_MAX_ITER`` rounds, stopping on ``done``. 'value' deepens fuzzy in
+    the fuzzy mode and both fuzzy+vector in hybrid (see :func:`_escalate_fetch`);
+    a newly chosen field gets a full initial-style fetch.
     """
     mention    = entity["mention"]
     kind       = entity["kind"]
     descriptor = entity["descriptor"]
 
-    n_route = PLAN_EXEC_ROUTE_FETCH if escalate else PLAN_EXEC_TOOLS_PER_ENTITY
-    func_names = _route_tools(descriptor, kind, node_only=node_only, n=n_route)
-    init_tools = func_names[:PLAN_EXEC_TOOLS_PER_ENTITY]
-    rest_tools = func_names[PLAN_EXEC_TOOLS_PER_ENTITY:]
+    init_tools = _route_tools(descriptor, kind, node_only=node_only,
+                              n=PLAN_EXEC_TOOLS_PER_ENTITY)
     meta = _tool_meta()
     patterns: List[str] = []
 
@@ -436,19 +483,21 @@ def execute_entity(entity: Dict[str, str], node_only: bool = False,
     def _flat() -> List[str]:
         return [v for vals in by_target.values() for v in vals]
 
-    # ── Corrective escalation: an LLM judge picks the next action each round ───
-    # Each round the judge returns done | value | tool | tool_value (one word,
-    # no JSON). 'value' deepens the already-used tool(s) — fuzzy for the fuzzy
-    # mode, vector for hybrid; 'tool' brings in the next-ranked tool; 'tool_value'
-    # does both. The diminishing budget (5→3→1) also caps the loop at 3 rounds.
+    # ── Corrective escalation: an LLM judge picks the next step each round ─────
+    # Each round the judge returns done | value | a specific Label.property field
+    # to ADD (chosen from a menu of available name-like node fields). 'value'
+    # deepens the already-used field(s) — fuzzy for the fuzzy mode, fuzzy+vector
+    # for hybrid; a chosen field gets a full initial-style fetch. Capped at
+    # PLAN_EXEC_MAX_ITER rounds.
     n_escalations = 0
     if escalate and kind != "relation" and by_target:
-        rest = list(rest_tools)
-        for budget in PLAN_EXEC_ESCALATE_BUDGET:
-            action = _judge_action(question, mention, _flat(), llm_obj)
-            if action == "done":
+        for i in range(PLAN_EXEC_MAX_ITER):
+            budget = PLAN_EXEC_ESCALATE_BUDGET[min(i, len(PLAN_EXEC_ESCALATE_BUDGET) - 1)]
+            menu = _field_menu(set(by_target.keys()))
+            step = _judge_step(question, mention, _flat(), menu, llm_obj)
+            if step == "done":
                 break
-            if action in ("value", "tool_value"):
+            if step == "value":                       # deepen the used field(s)
                 for (label, prop) in list(by_target.keys()):
                     newk = depth[(label, prop)] + budget
                     try:
@@ -456,25 +505,22 @@ def execute_entity(entity: Dict[str, str], node_only: bool = False,
                     except Exception:  # noqa: BLE001
                         vals = []
                     depth[(label, prop)] = newk
-                    _add(label, prop, vals)       # dedup keeps only the new tail
-            if action in ("tool", "tool_value") and rest:
-                fn = rest.pop(0)
-                info = meta.get(fn, {})
-                label, prop = info.get("label", ""), info.get("property", "")
-                if label and prop:
-                    try:
-                        vals = _escalate_fetch(mention, label, prop, hybrid, k=budget)
-                    except Exception:  # noqa: BLE001
-                        vals = []
-                    depth[(label, prop)] = max(depth.get((label, prop), 0), budget)
-                    _add(label, prop, vals)
+                    _add(label, prop, vals)            # dedup keeps only the new tail
+            else:                                      # (label, prop): add the chosen field
+                label, prop = step
+                try:
+                    vals = _retrieve_values(mention, label, prop, hybrid=hybrid)
+                except Exception:  # noqa: BLE001
+                    vals = []
+                depth[(label, prop)] = PLAN_EXEC_HYBRID_FUZZY_K if hybrid else PLAN_EXEC_VALUES_PER_TOOL
+                _add(label, prop, vals)
             n_escalations += 1
 
     candidates = [{"label": l, "property": p, "values": v}
                   for (l, p), v in by_target.items() if v]
 
     if verbose:
-        print(f"  · {kind:8s} {mention!r}  →  tools={func_names}  "
+        print(f"  · {kind:8s} {mention!r}  →  init_tools={init_tools}  "
               f"candidates={[(c['label']+'.'+c['property'], len(c['values'])) for c in candidates]}"
               f"{f'  escalations={n_escalations}' if escalate else ''}"
               f"{'  patterns='+str(patterns) if patterns else ''}")
