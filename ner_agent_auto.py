@@ -111,38 +111,26 @@ load_dotenv(".env", override=False)
 FAISS_AUTO_DIR: str = str(_FAISS_AUTO_DIR_PATH)
 # DEFAULT_TOP_K is imported from config.py so it can be tuned in one place.
 
-# Per-mode FAISS index directories.  Each mode caches its registry-specific
-# vectorstore in its own directory so switching the grounding mode (or passing
-# ``mode=...`` at call time) doesn't invalidate the index for the other mode.
 # The FAISS tool index depends only on the tool SCOPE (node-only vs node+rel),
-# so modes sharing a scope share an index directory: the two node-only modes
-# use the ``_node_only`` index, everything else uses the full index.
+# so modes sharing a scope share an index directory: node-only modes use the
+# ``_node_only`` index, everything else uses the full index. ``_faiss_dir``
+# (defined after the scope helpers below) maps any mode to its directory.
 _FULL_FAISS_DIR: str = str(_FAISS_AUTO_DIR_PATH)
 _NODE_ONLY_FAISS_DIR: str = str(
     _FAISS_AUTO_DIR_PATH.with_name(_FAISS_AUTO_DIR_PATH.name + "_node_only")
 )
-_FAISS_DIR_BY_MODE: Dict[str, str] = {
-    "react_node_rel":      _FULL_FAISS_DIR,
-    "react_node_only":     _NODE_ONLY_FAISS_DIR,
-    "plan_exec_node_rel":  _FULL_FAISS_DIR,
-    "plan_exec_node_only": _NODE_ONLY_FAISS_DIR,
-    "rag":                 _FULL_FAISS_DIR,   # rag uses the node+rel tool set
-    # "no_ner" never touches FAISS, but we register a placeholder so
-    # ``_FAISS_DIR_BY_MODE[mode]`` never raises a KeyError.
-    "no_ner":              _FULL_FAISS_DIR,
-}
 
 
 def _is_node_only(mode: str) -> bool:
-    """True for modes whose tool scope is node-property tools only."""
-    return mode in ("react_node_only", "plan_exec_node_only")
+    """True for modes whose tool scope is node-property tools only. Structural
+    check so it holds for every suffix variant (e.g. ``*_node_only_hybrid``)."""
+    return "node_only" in mode
 
 
 def _is_plan_exec(mode: str) -> bool:
-    """True for the plan-and-execute grounder modes."""
-    return mode in (
-        "plan_exec_node_only", "plan_exec_node_rel", "plan_exec_node_rel_hybrid",
-    )
+    """True for the plan-and-execute grounder modes (any tool-scope / retrieval
+    suffix, e.g. ``plan_exec_node_only_hybrid``)."""
+    return mode.startswith("plan_exec")
 
 
 def _faiss_scope(mode: str) -> str:
@@ -153,6 +141,12 @@ def _faiss_scope(mode: str) -> str:
     legacy scope labels (``"node_only"`` / ``"full"``) so indexes built before
     the mode rename stay valid (no rebuild required)."""
     return "node_only" if _is_node_only(mode) else "full"
+
+
+def _faiss_dir(mode: str) -> str:
+    """FAISS tool-index directory for *mode* — by tool scope, so every retrieval
+    suffix (e.g. ``*_hybrid``) maps to the right directory."""
+    return _NODE_ONLY_FAISS_DIR if _is_node_only(mode) else _FULL_FAISS_DIR
 
 
 def _resolve_mode(mode: Optional[str]) -> str:
@@ -276,7 +270,7 @@ def _get_vectorstore(
 ):
     """Return the FAISS vectorstore for *mode*, building / loading on first call.
 
-    Each mode has its own FAISS directory (``_FAISS_DIR_BY_MODE``) so the
+    Each tool scope has its own FAISS directory (see ``_faiss_dir``) so the
     indexes for ``"full"`` and ``"node_only"`` never collide.
 
     The ``"no_ner"`` mode never touches FAISS — callers must guard against
@@ -289,7 +283,7 @@ def _get_vectorstore(
             "the ReAct agent is bypassed entirely."
         )
 
-    target_dir = faiss_dir or _FAISS_DIR_BY_MODE[effective]
+    target_dir = faiss_dir or _faiss_dir(effective)
 
     cached = _vectorstore_by_mode.get(effective)
     if cached is None or rebuild:
@@ -1598,7 +1592,7 @@ def rebuild_tools_faiss(
             "rebuild_tools_faiss() is not callable in NER mode 'no_ner'."
         )
 
-    target_dir = faiss_dir or _FAISS_DIR_BY_MODE[effective]
+    target_dir = faiss_dir or _faiss_dir(effective)
 
     # Step 1 — purge any prior on-disk index BEFORE building the new one.
     # See _purge_faiss_dir for the full rationale.
