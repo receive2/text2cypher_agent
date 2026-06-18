@@ -171,6 +171,7 @@ def _run_meta() -> Dict[str, Any]:
         meta["values_per_tool"]    = getattr(_c, "TOOL_TOP_K", None)
         meta["plan_exec_tools_per_entity"] = getattr(_c, "PLAN_EXEC_TOOLS_PER_ENTITY", None)
         meta["plan_exec_values_per_tool"]  = getattr(_c, "PLAN_EXEC_VALUES_PER_TOOL", None)
+        meta["plan_exec_escalate"]         = getattr(_c, "PLAN_EXEC_ESCALATE", None)
     except Exception:  # noqa: BLE001
         pass
     try:

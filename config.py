@@ -463,6 +463,19 @@ PLAN_EXEC_VALUES_PER_TOOL  = 10   # top-K canonical values searched per tool (fu
 PLAN_EXEC_HYBRID_FUZZY_K  = 10    # fuzzy candidates per tool
 PLAN_EXEC_HYBRID_VECTOR_K = 5     # embedding (vector-index) candidates per tool
 
+# plan_exec corrective-retrieval escalation (orthogonal to fuzzy/hybrid):
+# after the initial retrieval, an LLM judge checks whether the entity mention
+# is actually grounded in the candidates retrieved so far. If not, retrieval is
+# escalated with a diminishing budget — FIRST deeper into the already-used
+# tool(s) (the canonical value may rank below the initial top-K), THEN to the
+# next-ranked tools — re-judging after each step and stopping once grounded or
+# the budget is spent. Only fires on a miss, so well-grounded entities pay just
+# one judge call and no extra retrieval (avoids the candidate-noise penalty of
+# blanket top-K increases).
+PLAN_EXEC_ESCALATE        = os.getenv("PLAN_EXEC_ESCALATE", "0").lower() in ("1", "true", "yes")
+PLAN_EXEC_ESCALATE_BUDGET = (5, 3, 1)   # values pulled per successive escalation step
+PLAN_EXEC_ROUTE_FETCH     = 6           # tools to route per mention when escalating
+
 #  python ner_agent_auto.py "Who played neo in matrix?"  --verbose
 #  python ner_agent_auto.py "Who played Neo or Morpheus in The Matrix?" " --verbose
 #  python ner_agent_auto.py "Who act  in matrix?"  --verbose

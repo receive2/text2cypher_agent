@@ -40,6 +40,7 @@ import ast
 import json
 import logging
 import re
+from collections import OrderedDict
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -48,6 +49,8 @@ from config import (
     PLAN_EXEC_VALUES_PER_TOOL,
     PLAN_EXEC_HYBRID_FUZZY_K,
     PLAN_EXEC_HYBRID_VECTOR_K,
+    PLAN_EXEC_ESCALATE_BUDGET,
+    PLAN_EXEC_ROUTE_FETCH,
 )
 from paths import REPO_ROOT
 
@@ -210,17 +213,19 @@ def plan_entities(query: str, llm_obj) -> List[Dict[str, str]]:
 # ──────────────────────────────────────────────────────────────────────────────
 
 def _route_tools(descriptor: str, kind: str, node_only: bool = False,
-                 fetch: int = 8) -> List[str]:
-    """Return up to ``PLAN_EXEC_TOOLS_PER_ENTITY`` ``func_name``s for *descriptor*,
-    preferring tools whose kind matches *kind*. Falls back to any kind if the
-    preferred kind yields nothing. When *node_only*, routing uses the node-only
-    tool index (relation tools are out of scope)."""
+                 n: int = PLAN_EXEC_TOOLS_PER_ENTITY, fetch: int = 10) -> List[str]:
+    """Return up to *n* ranked ``func_name``s for *descriptor*, preferring tools
+    whose kind matches *kind* (falls back to any kind if the preferred kind
+    yields nothing). The returned list is rank-ordered so callers can use the
+    first few for the initial retrieval and keep the rest for escalation. When
+    *node_only*, routing uses the node-only tool index (relation tools are out
+    of scope)."""
     # Lazy import: ner_agent_auto pulls in the live Neo4j graph at import time.
     from ner_agent_auto import _get_vectorstore
     from tools.tool_search import search_tools
 
     vs = _get_vectorstore(mode="react_node_only" if node_only else "react_node_rel")
-    hits = search_tools(vs, user_query=descriptor, top_l=fetch)
+    hits = search_tools(vs, user_query=descriptor, top_l=max(fetch, n))
     meta = _tool_meta()
 
     preferred, other = [], []
@@ -231,22 +236,24 @@ def _route_tools(descriptor: str, kind: str, node_only: bool = False,
         (preferred if meta[fn]["kind"] == kind else other).append(fn)
 
     chosen = preferred or other
-    return chosen[:PLAN_EXEC_TOOLS_PER_ENTITY]
+    return chosen[:n]
 
 
-def _retrieve_values(mention: str, label: str, prop: str, hybrid: bool) -> List[str]:
+def _retrieve_values(mention: str, label: str, prop: str, hybrid: bool,
+                     k: Optional[int] = None) -> List[str]:
     """Canonical-value lookup for one (label, property) target.
 
-    Fuzzy modes: a single fuzzy ``search_tool`` of size ``PLAN_EXEC_VALUES_PER_TOOL``.
-    Hybrid mode: union fuzzy top-``PLAN_EXEC_HYBRID_FUZZY_K`` with vector
-    top-``PLAN_EXEC_HYBRID_VECTOR_K`` (fuzzy first, vector fills the tail,
-    de-duplicated) so in-graph embedding recall can surface alias/abbrev hits
-    that BM25 fuzzy misses."""
+    Fuzzy modes: a single fuzzy ``search_tool`` of size *k* (default
+    ``PLAN_EXEC_VALUES_PER_TOOL``). Hybrid mode: union fuzzy
+    top-``PLAN_EXEC_HYBRID_FUZZY_K`` with vector top-``PLAN_EXEC_HYBRID_VECTOR_K``
+    (fuzzy first, vector fills the tail, de-duplicated) so in-graph embedding
+    recall can surface alias/abbrev hits that BM25 fuzzy misses. Escalation
+    passes an explicit *k* for a deeper fuzzy fetch (hybrid is ignored there)."""
     from neo4j_lib.neo4j_search import search_tool  # lazy import
 
-    if not hybrid:
+    if not hybrid or k is not None:
         return search_tool(phrase=mention, node_label=label, property_name=prop,
-                           k=PLAN_EXEC_VALUES_PER_TOOL, mode="fuzzy")
+                           k=k or PLAN_EXEC_VALUES_PER_TOOL, mode="fuzzy")
 
     fuzzy = search_tool(phrase=mention, node_label=label, property_name=prop,
                         k=PLAN_EXEC_HYBRID_FUZZY_K, mode="fuzzy")
@@ -263,47 +270,213 @@ def _retrieve_values(mention: str, label: str, prop: str, hybrid: bool) -> List[
     return merged
 
 
+_JUDGE_PROMPT = """A question mentions an entity, and a value-linking step has \
+retrieved candidate database values for it. Decide whether the mentioned entity \
+is GROUNDED — i.e. whether one of the candidates is the canonical database value \
+for that mention, allowing for typos, casing, abbreviations, partial names, or \
+aliases.
+
+Question: {question}
+Entity mention: "{mention}"
+Retrieved candidates:
+{candidates}
+
+Is the mention grounded in one of these candidates? Answer with exactly YES or NO."""
+
+
+def _norm(s) -> str:
+    if isinstance(s, (list, tuple)):
+        s = " ".join(str(x) for x in s)
+    return re.sub(r"\W+", "", str(s or "").lower())
+
+
+def _escalate_fetch(mention: str, label: str, prop: str, hybrid: bool, k: int) -> List[str]:
+    """Escalation retrieval for one (label, property): deepen the modality that
+    is this mode's recall edge — **vector** for hybrid (the lever for aliases /
+    abbreviations that share no characters with the canonical), **fuzzy**
+    otherwise. Returns up to *k* candidates (dedup against existing is done by
+    the caller)."""
+    from neo4j_lib.neo4j_search import search_tool  # lazy import
+    mode = "vector" if hybrid else "fuzzy"
+    return search_tool(phrase=mention, node_label=label, property_name=prop, k=k, mode=mode)
+
+
+def _judge_grounded(question: str, mention: str, values: List[str], llm_obj) -> bool:
+    """True if *mention* is grounded in *values*. Fast path: a normalised
+    substring match counts as grounded without an LLM call (covers casing /
+    typo / partial). Otherwise an LLM judge decides (covers abbreviations /
+    aliases, where the surface form shares no characters with the canonical)."""
+    if not values:
+        return False
+    nm = _norm(mention)
+    if nm and any(nm in _norm(v) or _norm(v) in nm for v in values):
+        return True
+    if llm_obj is None:
+        return False
+    cand_lines = "\n".join(f'- "{v}"' for v in values)
+    prompt = _JUDGE_PROMPT.format(question=question, mention=mention, candidates=cand_lines)
+    try:
+        resp = llm_obj.invoke(prompt)
+        raw = getattr(resp, "content", resp)
+        if isinstance(raw, list):
+            raw = " ".join(str(p) for p in raw)
+        return str(raw).strip().upper().startswith("YES")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("plan_exec: judge failed for %r: %s", mention, exc)
+        return False
+
+
+_ACTION_PROMPT = """A question mentions an entity, and a value-linking step has \
+retrieved candidate database values for it. Decide the next retrieval action.
+
+Question: {question}
+Entity mention: "{mention}"
+Retrieved candidates (each tagged Label.property):
+{candidates}
+
+Choose ONE action:
+- done       : the mention is already grounded — one candidate is its canonical value (allowing for typos, casing, abbreviations, partial names, or aliases), OR no further retrieval could plausibly help.
+- value      : the candidates are the RIGHT KIND of thing for the mention but none matches — retrieve MORE values from the same field.
+- tool       : the candidates are the WRONG KIND for the mention — search a DIFFERENT field/tool.
+- tool_value : do both — broaden to other fields AND pull more values.
+
+Answer with exactly one word: done, value, tool, or tool_value."""
+
+_ACTIONS = ("tool_value", "done", "value", "tool")   # order matters: check 'tool_value' before 'tool'/'value'
+
+
+def _judge_action(question: str, mention: str, values: List[str], llm_obj) -> str:
+    """Return the next escalation action — one of ``done`` / ``value`` / ``tool``
+    / ``tool_value``. Fast path: a normalised substring match is treated as
+    ``done`` without an LLM call. Falls back to ``done`` on any parse/LLM failure
+    (safe: stop rather than loop)."""
+    if not values:
+        return "tool"          # nothing retrieved yet → try a different tool
+    nm = _norm(mention)
+    if nm and any(nm in _norm(v) or _norm(v) in nm for v in values):
+        return "done"
+    if llm_obj is None:
+        return "done"
+    cand_lines = "\n".join(f'- "{v}"' for v in values)
+    prompt = _ACTION_PROMPT.format(question=question, mention=mention, candidates=cand_lines)
+    try:
+        resp = llm_obj.invoke(prompt)
+        raw = getattr(resp, "content", resp)
+        if isinstance(raw, list):
+            raw = " ".join(str(p) for p in raw)
+        text = re.sub(r"[^a-z_]", "", str(raw).strip().lower())
+        for a in _ACTIONS:
+            if a in text:
+                return a
+        return "done"
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("plan_exec: action judge failed for %r: %s", mention, exc)
+        return "done"
+
+
 def execute_entity(entity: Dict[str, str], node_only: bool = False,
-                   hybrid: bool = False, verbose: bool = False) -> Dict[str, Any]:
+                   hybrid: bool = False, escalate: bool = False,
+                   question: str = "", llm_obj=None, verbose: bool = False) -> Dict[str, Any]:
     """EXECUTE stage for one mention. Returns the structured evidence:
 
         {"mention", "kind", "candidates": [{"label","property","values":[...]}],
          "patterns": ["(:A)-[:rel]->(:B)", ...]}
+
+    When *escalate*, after the initial retrieval an LLM judge picks the next
+    action each round — done / value (deepen the used tool[s]) / tool (bring in
+    the next-ranked tool) / tool_value (both) — applying a diminishing budget
+    (``PLAN_EXEC_ESCALATE_BUDGET``, e.g. 5→3→1, which also caps the rounds) and
+    stopping on ``done`` or budget exhaustion. 'value' deepens fuzzy in the fuzzy
+    mode and vector in hybrid (see :func:`_escalate_fetch`).
     """
     mention    = entity["mention"]
     kind       = entity["kind"]
     descriptor = entity["descriptor"]
 
-    func_names = _route_tools(descriptor, kind, node_only=node_only)
-    candidates: List[Dict[str, Any]] = []
-    patterns: List[str] = []
+    n_route = PLAN_EXEC_ROUTE_FETCH if escalate else PLAN_EXEC_TOOLS_PER_ENTITY
+    func_names = _route_tools(descriptor, kind, node_only=node_only, n=n_route)
+    init_tools = func_names[:PLAN_EXEC_TOOLS_PER_ENTITY]
+    rest_tools = func_names[PLAN_EXEC_TOOLS_PER_ENTITY:]
     meta = _tool_meta()
-    seen_lp: set = set()
+    patterns: List[str] = []
 
-    for fn in func_names:
+    # Candidate values grouped by (label, property), insertion-ordered, deduped.
+    by_target: "OrderedDict[Tuple[str, str], List[str]]" = OrderedDict()
+    depth: Dict[Tuple[str, str], int] = {}
+
+    def _add(label: str, prop: str, vals: List[str]) -> None:
+        lst = by_target.setdefault((label, prop), [])
+        for v in vals:
+            # StringArray properties (e.g. aliases) can come back as a nested
+            # list — flatten to individual string values so candidates are
+            # always plain strings (for the judge and the injection block).
+            items = v if isinstance(v, (list, tuple)) else [v]
+            for item in items:
+                sv = str(item).strip()
+                if sv and sv not in lst:
+                    lst.append(sv)
+
+    # ── Initial retrieval over the first PLAN_EXEC_TOOLS_PER_ENTITY tools ──────
+    for fn in init_tools:
         info = meta.get(fn, {})
         label, prop = info.get("label", ""), info.get("property", "")
         if info.get("kind") == "relation" and info.get("rel_pattern"):
             if info["rel_pattern"] not in patterns:
                 patterns.append(info["rel_pattern"])
-        # Value lookup: skip for relation mentions (the phrase is not a value),
-        # and de-dup repeated (label, property) targets.
-        if kind == "relation" or not (label and prop):
+        if kind == "relation" or not (label and prop) or (label, prop) in depth:
             continue
-        if (label, prop) in seen_lp:
-            continue
-        seen_lp.add((label, prop))
         try:
-            values = _retrieve_values(mention, label, prop, hybrid=hybrid)
+            vals = _retrieve_values(mention, label, prop, hybrid=hybrid)
         except Exception as exc:  # noqa: BLE001
             logger.warning("plan_exec: value lookup failed for %s.%s: %s", label, prop, exc)
-            values = []
-        if values:
-            candidates.append({"label": label, "property": prop, "values": values})
+            vals = []
+        depth[(label, prop)] = PLAN_EXEC_HYBRID_FUZZY_K if hybrid else PLAN_EXEC_VALUES_PER_TOOL
+        _add(label, prop, vals)
+
+    def _flat() -> List[str]:
+        return [v for vals in by_target.values() for v in vals]
+
+    # ── Corrective escalation: an LLM judge picks the next action each round ───
+    # Each round the judge returns done | value | tool | tool_value (one word,
+    # no JSON). 'value' deepens the already-used tool(s) — fuzzy for the fuzzy
+    # mode, vector for hybrid; 'tool' brings in the next-ranked tool; 'tool_value'
+    # does both. The diminishing budget (5→3→1) also caps the loop at 3 rounds.
+    n_escalations = 0
+    if escalate and kind != "relation" and by_target:
+        rest = list(rest_tools)
+        for budget in PLAN_EXEC_ESCALATE_BUDGET:
+            action = _judge_action(question, mention, _flat(), llm_obj)
+            if action == "done":
+                break
+            if action in ("value", "tool_value"):
+                for (label, prop) in list(by_target.keys()):
+                    newk = depth[(label, prop)] + budget
+                    try:
+                        vals = _escalate_fetch(mention, label, prop, hybrid, k=newk)
+                    except Exception:  # noqa: BLE001
+                        vals = []
+                    depth[(label, prop)] = newk
+                    _add(label, prop, vals)       # dedup keeps only the new tail
+            if action in ("tool", "tool_value") and rest:
+                fn = rest.pop(0)
+                info = meta.get(fn, {})
+                label, prop = info.get("label", ""), info.get("property", "")
+                if label and prop:
+                    try:
+                        vals = _escalate_fetch(mention, label, prop, hybrid, k=budget)
+                    except Exception:  # noqa: BLE001
+                        vals = []
+                    depth[(label, prop)] = max(depth.get((label, prop), 0), budget)
+                    _add(label, prop, vals)
+            n_escalations += 1
+
+    candidates = [{"label": l, "property": p, "values": v}
+                  for (l, p), v in by_target.items() if v]
 
     if verbose:
         print(f"  · {kind:8s} {mention!r}  →  tools={func_names}  "
               f"candidates={[(c['label']+'.'+c['property'], len(c['values'])) for c in candidates]}"
+              f"{f'  escalations={n_escalations}' if escalate else ''}"
               f"{'  patterns='+str(patterns) if patterns else ''}")
     return {"mention": mention, "kind": kind, "candidates": candidates, "patterns": patterns}
 
@@ -350,6 +523,7 @@ def get_plan_exec_evidence(
     llm_obj,
     node_only: bool = False,
     hybrid: bool = False,
+    escalate: bool = False,
     verbose: bool = False,
     return_structured: bool = False,
 ):
@@ -362,17 +536,23 @@ def get_plan_exec_evidence(
     *hybrid* unions fuzzy + vector candidates per tool (the
     ``plan_exec_node_rel_hybrid`` mode).
 
+    *escalate* enables the corrective LLM-judge retrieval loop (see
+    :func:`execute_entity`); *llm_obj* is reused as the judge.
+
     With ``return_structured=True`` returns ``(injection_str, evidence_list)``.
     """
     if verbose:
-        print(f"\n── plan_exec: PLAN ── (node_only={node_only}, hybrid={hybrid})\n  query={query!r}")
+        print(f"\n── plan_exec: PLAN ── (node_only={node_only}, hybrid={hybrid}, "
+              f"escalate={escalate})\n  query={query!r}")
     plan = plan_entities(query, llm_obj)
     if verbose:
         print(f"  extracted {len(plan)} mentions: "
               f"{[(p['mention'], p['kind']) for p in plan]}")
         print("── plan_exec: EXECUTE ──")
 
-    evidence = [execute_entity(e, node_only=node_only, hybrid=hybrid, verbose=verbose)
+    evidence = [execute_entity(e, node_only=node_only, hybrid=hybrid,
+                               escalate=escalate, question=query, llm_obj=llm_obj,
+                               verbose=verbose)
                 for e in plan]
     injection = build_injection(evidence)
 

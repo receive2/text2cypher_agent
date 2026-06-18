@@ -1398,10 +1398,12 @@ def ask_auto(
             print(f"  {entities}  (NER skipped — mode='no_ner')")
     elif _is_plan_exec(effective_mode):
         from plan_exec import get_plan_exec_evidence
+        import config as _config
         plan_exec_block = get_plan_exec_evidence(
             prompt, llm_obj=ner_llm_eff,
             node_only=(spec.tool == "node"),
             hybrid=(spec.retrieval == "hybrid"),
+            escalate=_config.PLAN_EXEC_ESCALATE,
             verbose=verbose,
         )
         entities = plan_exec_block
