@@ -35,6 +35,7 @@ Current, canonical documents. Superseded / historical drafts live in
 
 | doc | role |
 |---|---|
+| [RUNNING_EXPERIMENTS.md](RUNNING_EXPERIMENTS.md) | **Operational guide for collaborators** — how to run multi-dataset / multi-graph eval batches safely. The single-live-tree swap trap, the `verify_setup.py` pre-flight, and how to recognise + fix a contaminated archive. Read before running a batch. |
 | [GRAPHS.md](GRAPHS.md) | Live reference for the deployed Neo4j graphs (labels, rel types, ports). |
 | [DEPLOY_LOG.md](DEPLOY_LOG.md) | GCP VM / Neo4j deployment record. |
 

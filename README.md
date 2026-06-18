@@ -480,13 +480,21 @@ scripts/setup_and_archive.py        (no args — reads EVAL_PAIRS)
        │     that graph's Neo4j
        │   • Archives schema_data/, generated/, agent/prompts.py,
        │     FAISS index, EMBEDDABLE_PROPERTIES → setup_artifacts/<dataset>__<graph>/
+       │   • REFUSES to archive if the live tools don't match the graph
+       ▼
+verify_setup.py                     (pre-flight — run before every eval batch)
+       │   • For each pair, connects to its graph and confirms the
+       │     archive's node tools search labels that actually have nodes
+       │   • Green/red table; red = contaminated archive, do not evaluate
        ▼
 eval_run.py
        │   • For each pair in EVAL_PAIRS:
        │       1. swap_in archived artifacts into the live repo
-       │       2. spawn `python -m eval._worker <dataset> <graph> ...`
+       │       2. graph-identity guard — skip the pair if the live tools
+       │          don't match the graph (same check as verify_setup.py)
+       │       3. spawn `python -m eval._worker <dataset> <graph> ...`
        │          with EVAL_NEO4J_* env vars pointing at that container
-       │       3. write logs/eval/<dataset>__<graph>.records.jsonl
+       │       4. write logs/eval/<dataset>__<graph>.records.jsonl
        │                   logs/eval/<dataset>__<graph>.summary.json
        ▼
 eval_aggregate.py
@@ -545,6 +553,20 @@ The run is **fail-fast**: if any pair fails (subprocess non-zero, archive/round-
 
 > The legacy `python scripts/setup_and_archive.py <dataset> <graph>` positional-args form is intentionally rejected with a non-zero exit — drive everything through `EVAL_PAIRS`.
 
+#### 2½ — Verify each archive matches its graph (pre-flight)
+
+```bash
+python verify_setup.py          # checks every pair in EVAL_PAIRS
+python verify_setup.py --all    # checks every pair in GRAPH_CONNS
+python verify_setup.py --live   # checks the live tree vs .current_setup
+```
+
+**Why this matters for multi-graph runs.** The harness keeps a *single live copy* of each graph's artifacts (node tools, schema, prompts, FAISS / FCAV indexes) and swaps the right archive in per pair. If the wrong artifacts are live — an interrupted swap, a failed tool regen, a hand recovery — value linking runs against the wrong tools and **silently scores at the no-link floor with no error**. (Tell-tale sign: ReAct / Plan&Exec collapse to ≈ the `no_val_link` score while **FCAV still works**, because FCAV uses the schema + prompts, which stay correct, not the per-graph tools.)
+
+`verify_setup.py` connects to each graph and confirms the archive's node tools search labels that **actually have nodes** there — a count check, not just `db.labels()`, because Neo4j keeps emptied labels in the registry as ghosts. Green = safe to run; red names the offending labels and the fix. Full procedure for collaborators: [docs/RUNNING_EXPERIMENTS.md](docs/RUNNING_EXPERIMENTS.md).
+
+> Reaching the graphs needs the corporate VPN **disconnected**; an `UNREACH` row is a connection issue, not a contaminated archive.
+
 #### 3 — Run the evaluation
 
 ```bash
@@ -554,9 +576,10 @@ python eval_run.py
 For each pair in `EVAL_PAIRS` the driver:
 
 1. Calls `eval.artifact_swap.swap_in(dataset, graph)` to copy the archived setup outputs into the live repo locations (so `agent/`, `generated/`, `schema_data/`, FAISS index all match that graph).
-2. Looks up the `GraphConn`, builds the worker env (`EVAL_NEO4J_URI` / `_USER` / `_PASSWORD` / `_DATABASE`).
-3. Spawns `python -m eval._worker <dataset> <graph> <test_path> <records_out> <summary_out>` as a fresh subprocess so each pair gets a clean Python interpreter.
-4. Writes:
+2. **Graph-identity guard** — connects to the pair's graph and confirms the live node tools search labels that have nodes there. A mismatch (contaminated archive) is **skipped with a loud reason**, not silently mis-scored. This is the same check as `verify_setup.py`; bypass with `EVAL_SKIP_GRAPH_GUARD=1` only if you know what you're doing.
+3. Looks up the `GraphConn`, builds the worker env (`EVAL_NEO4J_URI` / `_USER` / `_PASSWORD` / `_DATABASE`).
+4. Spawns `python -m eval._worker <dataset> <graph> <test_path> <records_out> <summary_out>` as a fresh subprocess so each pair gets a clean Python interpreter.
+5. Writes:
    - `logs/eval/<dataset>__<graph>.records.jsonl` — one line per example (gold cypher, predicted cypher, EA / EM verdict, normalised result-sets, error info)
    - `logs/eval/<dataset>__<graph>.summary.json` — aggregate summary for that pair
 
@@ -589,7 +612,8 @@ python -m pytest tests/test_cypher_eval_normalize.py
 # 2. Add ("cypherbench", "fictional_university") to EVAL_PAIRS
 # 3. Set up + archive every pair in EVAL_PAIRS:
 python scripts/setup_and_archive.py
-# 4. Run + aggregate:
+# 4. Pre-flight, then run + aggregate:
+python verify_setup.py
 python eval_run.py
 python eval_aggregate.py
 ```

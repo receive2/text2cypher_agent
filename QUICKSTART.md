@@ -94,13 +94,23 @@ LIMIT   = 20                                 # cap per pair while smoke-testing;
 OUT_DIR = "logs/eval"
 ```
 
-Then, three steps:
+Then, four steps:
 
 ```bash
 python scripts/setup_and_archive.py   # one-time per graph: setup + archive artifacts
+python verify_setup.py                # pre-flight: confirm each archive matches its graph
 python eval_run.py                    # run the agent over every pair in EVAL_PAIRS
 python eval_aggregate.py              # print per-difficulty + per-strategy tables
 ```
+
+> **Always run `verify_setup.py` before evaluating, especially across many
+> graphs.** The harness keeps a single live copy of each graph's artifacts and
+> swaps the right one in per pair; if the wrong artifacts are live, value linking
+> silently scores at the no-link floor with no error. `verify_setup.py` connects
+> to each graph and confirms the archive's tools actually match it (green/red
+> table). `eval_run.py` runs the same check automatically and skips any
+> contaminated pair, but the pre-flight catches problems before you spend run
+> time. See [docs/RUNNING_EXPERIMENTS.md](docs/RUNNING_EXPERIMENTS.md).
 
 `eval_aggregate.py` prints, per dataset, an **EA / EM / PSJS** table bucketed by
 **difficulty** (easy/medium/hard) and — for the perturbed `*_augmented` sets —

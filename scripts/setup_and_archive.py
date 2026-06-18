@@ -628,6 +628,22 @@ def _run_one_pair(dataset: str, graph: str) -> None:
             "see stdout/stderr above for details."
         )
 
+    # ── Guard: never freeze a contaminated live tree into an archive ───────
+    # setup_project.py just regenerated the live tools from THIS graph's
+    # schema, but a partial/stale run could leave the previous graph's tools
+    # behind. Cross-check against the database before archiving so a poisoned
+    # archive can never sit on disk looking valid.
+    from eval.graph_guard import check_tools_match_graph
+    ok, detail = check_tools_match_graph(
+        _REPO_ROOT / "generated" / "generated_node_tools.py",
+        conn.uri, conn.user, conn.password, conn.database,
+    )
+    if not ok:
+        raise PairFailure(
+            f"refusing to archive {dataset}__{graph}: live tools do not "
+            f"match the graph — {detail}"
+        )
+
     # ── Archive ────────────────────────────────────────────────────────────
     archive = archive_dir_for(dataset, graph)
     logger.info(f"setup_and_archive: archiving to {archive} ...")

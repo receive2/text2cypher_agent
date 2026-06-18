@@ -44,6 +44,7 @@ from typing import List, Tuple
 
 import eval_config as cfg
 from eval.artifact_swap import swap_in
+from paths import REPO_ROOT
 
 
 # Mapping of dataset name → ``eval_config`` attribute that holds its
@@ -117,6 +118,24 @@ def _run_pair(
         conn = cfg.conn_for(dataset, graph)
     except KeyError as exc:
         return False, f"conn_for: {exc}"
+
+    # ── Step 2.5: graph-identity guard ──────────────────────────────────────
+    # The swap copies artifacts into a single shared live tree; nothing else
+    # checks that those artifacts belong to THIS graph. Ask the database
+    # directly whether the live node tools search labels that exist here. A
+    # mismatch means a contaminated archive — fail loud instead of silently
+    # scoring at the no-val-link floor. Bypass with EVAL_SKIP_GRAPH_GUARD=1.
+    if os.environ.get("EVAL_SKIP_GRAPH_GUARD") != "1":
+        try:
+            from eval.graph_guard import check_tools_match_graph
+            ok, detail = check_tools_match_graph(
+                REPO_ROOT / "generated" / "generated_node_tools.py",
+                conn.uri, conn.user, conn.password, conn.database,
+            )
+        except Exception as exc:  # noqa: BLE001
+            return False, f"graph_guard: {type(exc).__name__}: {exc}"
+        if not ok:
+            return False, f"graph_guard: {detail}"
 
     # ── Step 3: resolve test path ───────────────────────────────────────────
     try:
