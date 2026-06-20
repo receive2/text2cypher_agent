@@ -561,6 +561,34 @@ def build_injection(evidence: List[Dict[str, Any]]) -> str:
 
 
 # ──────────────────────────────────────────────────────────────────────────────
+# Method-specific Cypher-generation guidance (plan_exec ONLY)
+# ──────────────────────────────────────────────────────────────────────────────
+# Appended to the plan_exec injection block, so it reaches ONLY the Cypher prompt
+# for VAL_LINK_MODE=val_link/plan_exec. The baselines (no_val_link, fcav, react)
+# and the graphrag baseline keep the faithful, unmodified TEXT2CYPHER_SP — they
+# never go through get_plan_exec_evidence. This is a STATIC, schema-independent
+# improvement, so it lives in code (works on every graph, setup stays one-click,
+# no per-graph prompt regeneration). Single braces below; ask_auto brace-escapes
+# the whole injection before PromptTemplate.format, so they render as `{` / `}`.
+_UNION_GUIDANCE = """
+
+Cypher structure for "either A or B" (disjunction) — get this right:
+- COUNT ("how many ... A or B"): put each value's MATCH ... RETURN n INSIDE one
+  CALL { ... UNION ... } subquery, then a SINGLE outer WITH DISTINCT n / RETURN
+  count(n). NEVER write one count(n) per branch joined by UNION (that returns one
+  row per branch and double-counts nodes matching both values). Example:
+    CALL {
+      MATCH (n:Movie)-[:hasGenre]->(:Genre {name: "Drama"}) RETURN n
+      UNION
+      MATCH (n:Movie)-[:hasGenre]->(:Genre {name: "Comedy"}) RETURN n
+    }
+    WITH DISTINCT n
+    RETURN count(n)
+- LISTING ("list / which / who ... A or B"): parallel MATCH ... RETURN blocks
+  joined by top-level UNION, one per value (each block ends RETURN n.<prop>)."""
+
+
+# ──────────────────────────────────────────────────────────────────────────────
 # Public entry point
 # ──────────────────────────────────────────────────────────────────────────────
 
@@ -600,8 +628,164 @@ def get_plan_exec_evidence(
                                escalate=escalate, question=query, llm_obj=llm_obj,
                                verbose=verbose)
                 for e in plan]
-    injection = build_injection(evidence)
+    # Append plan_exec-only Cypher-generation guidance (union/disjunction). This
+    # stays inside the plan_exec injection so baselines never see it.
+    injection = build_injection(evidence) + _UNION_GUIDANCE
 
     if verbose:
         print(f"── plan_exec: injection block ──\n{injection}\n")
     return (injection, evidence) if return_structured else injection
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# VALUE-SNAP — post-generation grounding guard for the SELECTION error
+# ──────────────────────────────────────────────────────────────────────────────
+# The Cypher LLM sometimes copies the question's perturbed surface form into a
+# WHERE clause even though the canonical value was retrieved into the candidate
+# list. This guard fixes exactly that, safely:
+#   1. EXISTENCE GATE — a value that EXISTS in the DB is never touched (so
+#      correct/normal queries can't be harmed; they use real values).
+#   2. For a value that does NOT exist (predicate provably matches 0 rows), one
+#      LLM call picks the matching candidate (from plan_exec's already-retrieved
+#      candidates) or NONE — a closed-list discriminative task, far more reliable
+#      than Cypher generation. The pick is validated to be in the list.
+# ──────────────────────────────────────────────────────────────────────────────
+
+_SNAP_SELECT_PROMPT = """\
+A Cypher query used entity values that do NOT exist in the graph database — most
+likely because the question's wording was perturbed (typo, abbreviation, alias,
+partial name, or casing). For each item, choose the candidate value that refers
+to the SAME entity the question means, or "NONE" if none of the candidates is
+that entity.
+
+Question: {question}
+
+Items (used value · field · real database candidates to choose from):
+{items}
+
+Reply with ONLY a JSON object mapping each used value to your chosen candidate
+(verbatim from its candidate list) or "NONE". Example:
+{{"Tmo Hooper": "Tom Hooper", "some unknown thing": "NONE"}}"""
+
+# alias.prop = 'val'  — EXACT equality only (not =~, <=, >=, <>).
+_SNAP_EQ_RE = re.compile(r"(\w+)\.`?(\w+)`?\s*=\s*(?![~<>=])(['\"])(.*?)\3")
+# (:Label {prop: 'val', ...})  inline-map literals.
+_SNAP_MAP_RE = re.compile(r"\(\s*\w*\s*:\s*`?(\w+)`?\s*\{([^}]*)\}")
+_SNAP_MAP_KV_RE = re.compile(r"`?(\w+)`?\s*:\s*(['\"])(.*?)\2")
+_SNAP_ALIAS_RE = re.compile(r"\(\s*(\w+)\s*:\s*`?(\w+)`?")
+
+
+def _snap_value_targets(cypher: str) -> List[Tuple[str, str, str]]:
+    """Extract (label, prop, value) for ``=``/inline-map STRING literals. Skips
+    ``=~`` / ``CONTAINS`` / ``STARTS WITH`` (intentional partial matches)."""
+    c = cypher or ""
+    alias2lab = dict(_SNAP_ALIAS_RE.findall(c))
+    out: List[Tuple[str, str, str]] = []
+    for al, prop, _q, val in _SNAP_EQ_RE.findall(c):
+        out.append((alias2lab.get(al, ""), prop, val))
+    for lab, body in _SNAP_MAP_RE.findall(c):
+        for prop, _q, val in _SNAP_MAP_KV_RE.findall(body):
+            out.append((lab, prop, val))
+    return out
+
+
+def _value_exists(label: str, prop: str, value: str) -> bool:
+    """True iff some ``(:label)`` node has ``prop == value`` (exact). On any
+    failure returns True (unknown → don't touch — fail safe)."""
+    from neo4j_lib.neo4j_search import get_neo4j_graph  # lazy import
+    try:
+        rows = get_neo4j_graph().query(
+            f"MATCH (n:`{label}`) WHERE n.`{prop}` = $v RETURN count(n) > 0 AS ok LIMIT 1",
+            params={"v": value},
+        )
+        return bool(rows and rows[0].get("ok"))
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("plan_exec snap: existence check failed %s.%s: %s", label, prop, exc)
+        return True
+
+
+def snap_values_to_candidates(cypher: str, evidence: List[Dict[str, Any]],
+                              llm_obj, question: str, verbose: bool = False
+                              ) -> Tuple[str, List[Tuple[str, str, str]]]:
+    """Existence-gated candidate snapping (the SELECTION-error fix).
+
+    For each ``=``/inline-map entity value in *cypher* that does NOT exist in the
+    DB but has retrieved candidates for its ``(label, property)``, one LLM call
+    picks the matching candidate (or NONE); a validated pick is substituted.
+    Returns ``(new_cypher, snaps)`` where ``snaps`` is ``[(old, new, "L.p"), …]``
+    (empty list ⇒ nothing changed).
+    """
+    if not cypher:
+        return cypher, []
+
+    # Candidate pool per (label, property), from plan_exec's retrieval (optional —
+    # snap also does a fresh retrieval keyed on the generator's value+field).
+    pool: Dict[Tuple[str, str], List[str]] = {}
+    for ev in (evidence or []):
+        for c in ev.get("candidates", []):
+            key = (c.get("label", ""), c.get("property", ""))
+            lst = pool.setdefault(key, [])
+            for v in c.get("values", []):
+                if v not in lst:
+                    lst.append(v)
+
+    from neo4j_lib.neo4j_search import search_tool  # lazy import
+
+    # Broken values: don't exist in the DB. Candidates are keyed on the value AND
+    # field the GENERATOR actually used (robust to plan_exec routing the mention
+    # to a different field), via a fresh fuzzy retrieval, unioned with plan_exec's
+    # already-retrieved candidates for that field.
+    broken: List[Tuple[str, str, str, List[str]]] = []
+    seen = set()
+    for label, prop, val in _snap_value_targets(cypher):
+        if not (label and prop) or (label, prop, val) in seen:
+            continue
+        seen.add((label, prop, val))
+        if _value_exists(label, prop, val):
+            continue                              # value exists → never touch (safety)
+        try:
+            cands = list(search_tool(val, node_label=label, property_name=prop,
+                                     k=10, mode="fuzzy"))
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("plan_exec snap: retrieval failed %s.%s: %s", label, prop, exc)
+            cands = []
+        for v in pool.get((label, prop), []):
+            if v not in cands:
+                cands.append(v)
+        if not cands:
+            continue                              # nothing similar exists → leave it
+        broken.append((val, label, prop, cands))
+
+    if not broken:
+        return cypher, []
+
+    items = "\n".join(
+        f'- "{v}"  ·  {l}.{p}  ·  {cands}' for (v, l, p, cands) in broken
+    )
+    try:
+        resp = llm_obj.invoke(_SNAP_SELECT_PROMPT.format(question=question, items=items))
+        raw = getattr(resp, "content", resp)
+        if isinstance(raw, list):
+            raw = "".join(str(x) for x in raw)
+        m = re.search(r"\{.*\}", str(raw), re.DOTALL)
+        picks = json.loads(m.group(0)) if m else {}
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("plan_exec snap: selector call failed: %s", exc)
+        return cypher, []
+
+    new_cypher = cypher
+    snaps: List[Tuple[str, str, str]] = []
+    for (v, l, p, cands) in broken:
+        chosen = picks.get(v)
+        # Validate: must be a real candidate (guards hallucination), not NONE/same.
+        if not chosen or chosen == "NONE" or chosen == v or chosen not in cands:
+            continue
+        for qch in ('"', "'"):
+            new_cypher = new_cypher.replace(f"{qch}{v}{qch}", f"{qch}{chosen}{qch}")
+        snaps.append((v, chosen, f"{l}.{p}"))
+
+    if verbose and snaps:
+        print("── plan_exec value-snap ──")
+        for o, n, fld in snaps:
+            print(f"  {fld}: {o!r} → {n!r}")
+    return new_cypher, snaps

@@ -179,7 +179,7 @@ The value-linking stage is chosen by four orthogonal config axes in `config.py`
 
 | axis | values |
 |---|---|
-| `VAL_LINK_MODE` | `no_val_link` · `fcav` · `val_link` |
+| `VAL_LINK_MODE` | `no_val_link` · `fcav` · `graphrag` · `val_link` |
 | `AGENT_TYPE` | `react` · `plan_exec`  (when `val_link`) |
 | `RETRIEVAL_TYPE` | `fuzzy` · `hybrid`  (when `val_link`) |
 | `TOOL_TYPE` | `node` · `node_rel`  (when `val_link`) |
@@ -188,6 +188,13 @@ The value-linking stage is chosen by four orthogonal config axes in `config.py`
 - **`fcav`** — retrieve-then-generate RAG baseline (embed question → retrieve values
   from a self-built value index → LLM generates the entity JSON). Build the index
   with `setup_fcav.py` first.
+- **`graphrag`** — Multi-Agent GraphRAG baseline: **no pre-grounding** — generate
+  Cypher → execute → an LLM evaluator classifies (accept / semantic-defect /
+  error-or-empty); on error/empty it extracts the query's labels, property–value
+  pairs and relationships, validates them against the DB, proposes normalized-
+  Levenshtein replacements for invalid values, and regenerates — up to
+  `GRAPHRAG_MAX_ITER` rounds. Knobs: `GRAPHRAG_*` in `config.py`. Writeup:
+  [docs/multi_agent_graphrag.md](docs/multi_agent_graphrag.md).
 - **`val_link`** — the grounder. `AGENT_TYPE=react` is the ReAct NER agent;
   `AGENT_TYPE=plan_exec` is **Plan&Exec**, the shipped method (decompose the
   question → route each mention to a field → retrieve with an LLM corrective loop
@@ -198,6 +205,12 @@ Example — the shipped Plan&Exec Hybrid (Node + Rel):
 
 ```bash
 VAL_LINK_MODE=val_link AGENT_TYPE=plan_exec RETRIEVAL_TYPE=hybrid TOOL_TYPE=node_rel python eval_run.py
+```
+
+Example — the Multi-Agent GraphRAG baseline:
+
+```bash
+VAL_LINK_MODE=graphrag python eval_run.py
 ```
 
 Method writeup: [docs/plan_exec_hybrid.md](docs/plan_exec_hybrid.md) ·

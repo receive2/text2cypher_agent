@@ -125,16 +125,27 @@ env-overridable):
 
 | axis | env var | values |
 |---|---|---|
-| value-link mode | `VAL_LINK_MODE` | `no_val_link` · `fcav` · `val_link` |
+| value-link mode | `VAL_LINK_MODE` | `no_val_link` · `fcav` · `graphrag` · `val_link` |
 | grounder | `AGENT_TYPE` | `react` · `plan_exec` (when `val_link`) |
 | retrieval | `RETRIEVAL_TYPE` | `fuzzy` · `hybrid` (when `val_link`) |
 | tool scope | `TOOL_TYPE` | `node` · `node_rel` (when `val_link`) |
 | examples per pair | `LIMIT` in `eval_config.py` | int · `None` (all) |
 
+`graphrag` is the Multi-Agent GraphRAG baseline (no pre-grounding; generate →
+execute → evaluate → repair loop). See
+[docs/multi_agent_graphrag.md](docs/multi_agent_graphrag.md) and the README
+"Value-linking modes" table for all modes.
+
 Example — plan-and-execute, hybrid retrieval, node+relation tools:
 
 ```bash
 VAL_LINK_MODE=val_link AGENT_TYPE=plan_exec RETRIEVAL_TYPE=hybrid TOOL_TYPE=node_rel python eval_run.py
+```
+
+Example — the Multi-Agent GraphRAG baseline:
+
+```bash
+VAL_LINK_MODE=graphrag python eval_run.py
 ```
 
 Re-running is incremental: each pair overwrites only its own two files in

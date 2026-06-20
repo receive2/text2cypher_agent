@@ -266,13 +266,18 @@ CAP_MULTIPLIER        = 1000    # scan cap = t * CAP_MULTIPLIER (cheap over-fetc
 # How (or whether) the grounding stage runs in front of the Cypher generator.
 # Four independent choices, each env-overridable, resolved into a GroundingSpec:
 #
-#   VAL_LINK_MODE   no_val_link | fcav | val_link
+#   VAL_LINK_MODE   no_val_link | fcav | graphrag | val_link
 #                     no_val_link — feed only {schema}+{question} to the Cypher LLM
 #                                   (lower bound: the Cypher LLM unaided).
 #                     fcav        — standard retrieve-then-generate RAG baseline:
 #                                   embed the question, retrieve candidate values
 #                                   from a self-built value index, LLM generates
 #                                   the entity JSON (see fcav.py; needs setup_fcav.py).
+#                     graphrag    — Multi-Agent GraphRAG baseline: generate→execute→
+#                                   LLM-evaluate; on a semantic miss feed feedback back
+#                                   to the generator, on error/empty extract+verify the
+#                                   Cypher's labels/values/rels and propose Levenshtein
+#                                   replacements; iterate up to GRAPHRAG_MAX_ITER (see graphrag.py).
 #                     val_link    — run the value-linking grounder (axes below apply).
 #   AGENT_TYPE      react | plan_exec        (only when VAL_LINK_MODE=val_link)
 #   RETRIEVAL_TYPE  fuzzy | hybrid           (only when VAL_LINK_MODE=val_link)
@@ -284,12 +289,12 @@ CAP_MULTIPLIER        = 1000    # scan cap = t * CAP_MULTIPLIER (cheap over-fetc
 # plan-and-execute, hybrid retrieval, node+relation tools:
 #   VAL_LINK_MODE=val_link AGENT_TYPE=plan_exec RETRIEVAL_TYPE=hybrid TOOL_TYPE=node_rel python eval_run.py
 # ──────────────────────────────────────────────────────────────────────────────
-VAL_LINK_MODE:  str = os.getenv("VAL_LINK_MODE",  "no_val_link")  # no_val_link | fcav | val_link
+VAL_LINK_MODE:  str = os.getenv("VAL_LINK_MODE",  "no_val_link")  # no_val_link | fcav | graphrag | val_link
 AGENT_TYPE:     str = os.getenv("AGENT_TYPE",     "plan_exec")    # react | plan_exec
 RETRIEVAL_TYPE: str = os.getenv("RETRIEVAL_TYPE", "fuzzy")        # fuzzy | hybrid
 TOOL_TYPE:      str = os.getenv("TOOL_TYPE",      "node_rel")     # node | node_rel
 
-_VAL_LINK_MODES  = ("no_val_link", "fcav", "val_link")
+_VAL_LINK_MODES  = ("no_val_link", "fcav", "graphrag", "val_link")
 _AGENT_TYPES     = ("react", "plan_exec")
 _RETRIEVAL_TYPES = ("fuzzy", "hybrid")
 _TOOL_TYPES      = ("node", "node_rel")
@@ -307,11 +312,14 @@ class GroundingSpec:
     @property
     def canonical(self) -> str:
         """Compact internal name the pipeline keys on: no_val_link→'no_ner',
-        fcav→'fcav', else '<agent>_<tool-suffix>[ _hybrid]' (tool 'node'→'node_only')."""
+        fcav→'fcav', graphrag→'graphrag', else
+        '<agent>_<tool-suffix>[ _hybrid]' (tool 'node'→'node_only')."""
         if self.val_link == "no_val_link":
             return "no_ner"
         if self.val_link == "fcav":
             return "fcav"
+        if self.val_link == "graphrag":
+            return "graphrag"
         suffix = "node_only" if self.tool == "node" else "node_rel"
         name = f"{self.agent}_{suffix}"
         return name + "_hybrid" if self.retrieval == "hybrid" else name
@@ -343,6 +351,8 @@ def _spec_from_canonical(name: str) -> GroundingSpec:
         return GroundingSpec("no_val_link")
     if n == "fcav":
         return GroundingSpec("fcav")
+    if n == "graphrag":
+        return GroundingSpec("graphrag")
     hybrid = n.endswith("_hybrid")
     core = n[: -len("_hybrid")] if hybrid else n
     for ag in ("plan_exec", "react"):
@@ -413,6 +423,90 @@ PLAN_EXEC_ROUTE_FETCH     = 6           # tools FAISS-routed per mention (initia
 # the used field) | a specific Label.property field to ADD (chosen from the menu
 # of available node fields). 'value' deepens fuzzy in the fuzzy mode and BOTH
 # fuzzy+vector in hybrid. A newly chosen field gets a full initial-style fetch.
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Multi-Agent GraphRAG baseline  (VAL_LINK_MODE=graphrag — see graphrag.py)
+# ──────────────────────────────────────────────────────────────────────────────
+# A self-correcting generate→execute→evaluate loop (NO pre-grounding stage):
+#
+#   GENERATE  — the Cypher LLM writes a query from {schema}+{question} (round 1
+#               has no entity hints; later rounds get the aggregated feedback).
+#   EXECUTE   — run the query; classify (error | empty | rows).
+#   EVALUATE  — an LLM judge labels the outcome:
+#                 accept                        → format & return the answer.
+#                 incorrect|illogical|incomplete→ hand the semantic/logical
+#                                                 feedback straight to GENERATE.
+#                 error|empty                   → STRUCTURAL repair: extract the
+#                   query's node labels, property–value pairs and relationship
+#                   patterns, verify each against the DB, retrieve normalized-
+#                   Levenshtein candidate replacements for the invalid values,
+#                   aggregate execution+semantic+validation feedback, regenerate.
+#   …iterate up to GRAPHRAG_MAX_ITER rounds, then return the best attempt.
+#
+# Generator reuses CYPHER_LLM_CONFIG; evaluator/selector reuse NER_LLM_CONFIG.
+# Selection is purely env-driven, like the other baselines:
+#   VAL_LINK_MODE=graphrag python eval_run.py
+GRAPHRAG_MAX_ITER       = 4     # generate→execute→correct rounds (paper = 4)
+GRAPHRAG_CANDIDATE_K    = 10    # Levenshtein candidates retrieved per invalid value
+GRAPHRAG_LEV_THRESHOLD  = 0.0   # min normalized-Levenshtein sim to keep a candidate (0 = keep all)
+# Candidate replacements are ranked by normalized Levenshtein over the (label,
+# property) value set — server-side via APOC (apoc.text.levenshteinSimilarity);
+# if APOC is unavailable we scan distinct values in Python, capped at this many.
+GRAPHRAG_SCAN_CAP       = 50000
+GRAPHRAG_EMPTY_IS_WRONG = os.getenv("GRAPHRAG_EMPTY_IS_WRONG", "1").lower() in ("1", "true", "yes")
+GRAPHRAG_LLM_EVALUATOR  = os.getenv("GRAPHRAG_LLM_EVALUATOR", "1").lower() in ("1", "true", "yes")
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Cypher execution-error retry  (applies to the val_link Cypher stage only)
+# ──────────────────────────────────────────────────────────────────────────────
+# After value-linking finishes and the Cypher LLM has written a query, if that
+# query FAILS TO EXECUTE (syntax/runtime error), feed the Neo4j error message
+# back to the Cypher LLM and have it rewrite the query — up to
+# CYPHER_RETRY_MAX_ROUNDS total attempts. This is error-driven only: an empty
+# result is NOT a retry trigger (there is no error message to act on).
+#
+# Scope: only the value-linking pipeline (VAL_LINK_MODE=val_link, i.e. the
+# ReAct / Plan&Exec grounders). The baselines (no_val_link, fcav) keep using
+# GraphCypherQAChain unchanged; graphrag has its own loop.
+# On a DB execution error the repair is a SINGLE error-message-informed CoT pass
+# (reason about the error + required structure, then rewrite) — NOT N blind
+# retries (blind re-rolls reproduce the same structural mistake; one CoT repair
+# corrects more per round at far lower latency).
+#   0 = use the legacy GraphCypherQAChain path (reproduce pre-retry ablations).
+#   1 = single attempt, NO repair (transparent manual generate→execute path —
+#       a clean A/B control).
+#   2 = 1 generate + 1 CoT repair on error (default).
+#   N = 1 generate + up to N-1 CoT repairs.
+# NOTE: val_link with this knob uses a direct cypher_llm.invoke path (not
+# GraphCypherQAChain). The recorded movie/flight ablations predate it and went
+# through GraphCypherQAChain — re-measure the val_link rows for a clean compare.
+CYPHER_RETRY_MAX_ROUNDS = int(os.getenv("CYPHER_RETRY_MAX_ROUNDS", "2"))
+# Retry is error-driven only — an empty result does NOT trigger a rewrite. An
+# empty result is not evidence of a wrong query (the answer may legitimately be
+# empty), and on this benchmark the dominant failure is "wrong-but-non-empty"
+# grounding, which execution feedback can't detect anyway. (Measured: empty-retry
+# had 2/20 opportunities, fixed 0, and risks fabricating answers on zero-count
+# questions.) The real lever there is semantic verification of the grounded value.
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Plan&Exec value-snap  (post-generation grounding guard for the SELECTION error)
+# ──────────────────────────────────────────────────────────────────────────────
+# Targets the "retrieved-but-not-used" grounding failure: plan_exec DID retrieve
+# the canonical value, but the Cypher LLM copied the question's perturbed surface
+# form into the WHERE clause (e.g. WHERE p.name = "Tmo Hooper" while "Tom Hooper"
+# sat in the candidate list). After generation, for each entity value the query
+# uses:
+#   • EXISTENCE GATE — if the value EXISTS in the DB, never touch it (so correct/
+#     normal queries are structurally safe — they use real values).
+#   • if it does NOT exist (the predicate provably matches 0 rows), one batched
+#     LLM call picks the matching candidate from plan_exec's already-retrieved
+#     candidates, or NONE. The pick is validated to be in the candidate list
+#     (guards hallucination); NONE → no snap (recall misses are left for richer
+#     retrieval, never fabricated).
+# Only `=` / inline-map string literals are considered (not =~ / CONTAINS, which
+# are intentional partials). plan_exec only; fires only on non-existent values,
+# so the extra LLM call is rare. Set to 0 to disable.
+PLAN_EXEC_VALUE_SNAP = os.getenv("PLAN_EXEC_VALUE_SNAP", "1").lower() in ("1", "true", "yes")
 
 #  python ner_agent_auto.py "Who played neo in matrix?"  --verbose
 #  python ner_agent_auto.py "Who played Neo or Morpheus in The Matrix?" " --verbose
