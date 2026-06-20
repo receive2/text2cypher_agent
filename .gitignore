@@ -91,6 +91,11 @@ eval_config.py
 # Per-graph archived setup outputs — large, machine-generated, and
 # tied to private database contents; recreate via scripts/setup_and_archive.py.
 setup_artifacts/
+# Quarantined / stale artifact snapshots (never ship these).
+setup_artifacts.*
+# Conversation/session exports and stray run logs — never commit.
+exported_conversation*
+*.log
 cypherbench/
 datasets/
 # Tracked source package — exempt from the broad datasets/ ignore above.
