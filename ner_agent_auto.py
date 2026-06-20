@@ -1565,6 +1565,15 @@ def ask_auto(
     safe_entities = entities.replace("{", "{{").replace("}", "}}")
     filled = CYPHER_TEMPLATE.replace("{relevant_entities}", safe_entities)
 
+    # ── Fair comparison: append the either/or-UNION guidance for EVERY mode ────
+    # All modes (no_val_link / fcav / react / plan_exec) must see the IDENTICAL
+    # system prompt, so the union guidance goes here on the shared `filled` path.
+    # (graphrag appends the same block in its own generator.) Brace-escaped
+    # because {schema}/{question} are still placeholders and PromptTemplate.format
+    # runs next; it renders to the same text graphrag appends post-format.
+    from plan_exec import _UNION_GUIDANCE
+    filled = filled + _UNION_GUIDANCE.replace("{", "{{").replace("}", "}}")
+
     # ── Step 3: generate + execute Cypher ─────────────────────────────────────
     # For the value-linking pipeline, optionally wrap generation in an
     # execution-error retry loop (config.CYPHER_RETRY_MAX_ROUNDS > 1): on a DB

@@ -575,15 +575,15 @@ def build_injection(evidence: List[Dict[str, Any]]) -> str:
 
 
 # ──────────────────────────────────────────────────────────────────────────────
-# Method-specific Cypher-generation guidance (plan_exec ONLY)
+# Shared Cypher-generation guidance (either/or-UNION) — given to ALL modes
 # ──────────────────────────────────────────────────────────────────────────────
-# Appended to the plan_exec injection block, so it reaches ONLY the Cypher prompt
-# for VAL_LINK_MODE=val_link/plan_exec. The baselines (no_val_link, fcav, react)
-# and the graphrag baseline keep the faithful, unmodified TEXT2CYPHER_SP — they
-# never go through get_plan_exec_evidence. This is a STATIC, schema-independent
-# improvement, so it lives in code (works on every graph, setup stays one-click,
-# no per-graph prompt regeneration). Single braces below; ask_auto brace-escapes
-# the whole injection before PromptTemplate.format, so they render as `{` / `}`.
+# FAIR-COMPARISON policy: every mode sees the IDENTICAL system prompt. This block
+# is appended to the shared Cypher prompt for all ask_auto modes (no_val_link,
+# fcav, react, plan_exec) in ner_agent_auto.ask_auto, and for graphrag in its own
+# generator (graphrag._generate_cypher) — NOT inside the plan_exec injection.
+# It is a STATIC, schema-independent improvement, so it lives in code (works on
+# every graph, setup stays one-click, no per-graph prompt regeneration). Single
+# braces below; the appenders brace-escape as needed so they render as `{` / `}`.
 _UNION_GUIDANCE = """
 
 Cypher structure for "either A or B" (disjunction) — get this right:
@@ -659,9 +659,10 @@ def get_plan_exec_evidence(
         import concurrent.futures as _cf
         with _cf.ThreadPoolExecutor(max_workers=workers) as _ex:
             evidence = list(_ex.map(_exec, plan))      # map preserves input order
-    # Append plan_exec-only Cypher-generation guidance (union/disjunction). This
-    # stays inside the plan_exec injection so baselines never see it.
-    injection = build_injection(evidence) + _UNION_GUIDANCE
+    # Union/disjunction guidance is NOT appended here — it is added to the shared
+    # Cypher prompt for every mode in ask_auto (fair comparison). Keep the
+    # injection block to just the retrieved candidates.
+    injection = build_injection(evidence)
 
     if verbose:
         print(f"── plan_exec: injection block ──\n{injection}\n")
