@@ -52,6 +52,9 @@ from config import (
     PLAN_EXEC_ESCALATE_BUDGET,
     PLAN_EXEC_ROUTE_FETCH,
     PLAN_EXEC_MAX_ITER,
+    PLAN_EXEC_SKIP_GROUNDED,
+    PLAN_EXEC_PARALLEL_MENTIONS,
+    MAX_THREAD,
 )
 from paths import REPO_ROOT
 
@@ -317,6 +320,14 @@ def _escalate_fetch(mention: str, label: str, prop: str, hybrid: bool, k: int) -
     return out
 
 
+def _cheap_grounded(mention: str, values: List[str]) -> bool:
+    """The FREE (no-LLM) part of grounding: a candidate exact/substring-matches
+    the mention (covers casing / typo / partial). Used to skip escalation for
+    mentions that are already cleanly grounded (latency, ~EA-neutral)."""
+    nm = _norm(mention)
+    return bool(nm) and any(nm in _norm(v) or _norm(v) in nm for v in values)
+
+
 def _judge_grounded(question: str, mention: str, values: List[str], llm_obj) -> bool:
     """True if *mention* is grounded in *values*. Fast path: a normalised
     substring match counts as grounded without an LLM call (covers casing /
@@ -490,7 +501,10 @@ def execute_entity(entity: Dict[str, str], node_only: bool = False,
     # for hybrid; a chosen field gets a full initial-style fetch. Capped at
     # PLAN_EXEC_MAX_ITER rounds.
     n_escalations = 0
-    if escalate and kind != "relation" and by_target:
+    # #4: skip escalation entirely when the mention is already cleanly grounded
+    # (a candidate exact/substring-matches it) — escalation wouldn't improve it.
+    _already = PLAN_EXEC_SKIP_GROUNDED and _cheap_grounded(mention, _flat())
+    if escalate and kind != "relation" and by_target and not _already:
         for i in range(PLAN_EXEC_MAX_ITER):
             budget = PLAN_EXEC_ESCALATE_BUDGET[min(i, len(PLAN_EXEC_ESCALATE_BUDGET) - 1)]
             menu = _field_menu(set(by_target.keys()))
@@ -624,10 +638,27 @@ def get_plan_exec_evidence(
               f"{[(p['mention'], p['kind']) for p in plan]}")
         print("── plan_exec: EXECUTE ──")
 
-    evidence = [execute_entity(e, node_only=node_only, hybrid=hybrid,
-                               escalate=escalate, question=query, llm_obj=llm_obj,
-                               verbose=verbose)
-                for e in plan]
+    # #1: mentions are independent — run their EXECUTE/escalation concurrently
+    # (same calls, same results, order preserved). Prewarm shared caches first so
+    # the threads only read them.
+    def _exec(e):
+        return execute_entity(e, node_only=node_only, hybrid=hybrid,
+                              escalate=escalate, question=query, llm_obj=llm_obj,
+                              verbose=verbose)
+
+    workers = min(max(1, len(plan)), MAX_THREAD)
+    if not PLAN_EXEC_PARALLEL_MENTIONS or workers <= 1:
+        evidence = [_exec(e) for e in plan]
+    else:
+        _tool_meta()                                   # prewarm tool-meta cache
+        try:                                            # prewarm tool vectorstore
+            from ner_agent_auto import _get_vectorstore
+            _get_vectorstore(mode="react_node_only" if node_only else "react_node_rel")
+        except Exception:  # noqa: BLE001
+            pass
+        import concurrent.futures as _cf
+        with _cf.ThreadPoolExecutor(max_workers=workers) as _ex:
+            evidence = list(_ex.map(_exec, plan))      # map preserves input order
     # Append plan_exec-only Cypher-generation guidance (union/disjunction). This
     # stays inside the plan_exec injection so baselines never see it.
     injection = build_injection(evidence) + _UNION_GUIDANCE

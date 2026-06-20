@@ -508,6 +508,16 @@ CYPHER_RETRY_MAX_ROUNDS = int(os.getenv("CYPHER_RETRY_MAX_ROUNDS", "2"))
 # so the extra LLM call is rare. Set to 0 to disable.
 PLAN_EXEC_VALUE_SNAP = os.getenv("PLAN_EXEC_VALUE_SNAP", "1").lower() in ("1", "true", "yes")
 
+# Latency: skip the escalation loop for a mention that is ALREADY cleanly
+# grounded — i.e. a retrieved candidate exact/substring-matches the mention
+# (the free, no-LLM check from _judge_grounded's fast path). Only skips work
+# that escalation would not have improved, so it's ~EA-neutral. Set 0 to ablate.
+PLAN_EXEC_SKIP_GROUNDED = os.getenv("PLAN_EXEC_SKIP_GROUNDED", "1").lower() in ("1", "true", "yes")
+# Latency: run the per-mention EXECUTE/escalation concurrently (mentions are
+# independent — same calls, same results, just not serialized). Capped by
+# MAX_THREAD. Set 0 to force serial.
+PLAN_EXEC_PARALLEL_MENTIONS = os.getenv("PLAN_EXEC_PARALLEL_MENTIONS", "1").lower() in ("1", "true", "yes")
+
 #  python ner_agent_auto.py "Who played neo in matrix?"  --verbose
 #  python ner_agent_auto.py "Who played Neo or Morpheus in The Matrix?" " --verbose
 #  python ner_agent_auto.py "Who act  in matrix?"  --verbose

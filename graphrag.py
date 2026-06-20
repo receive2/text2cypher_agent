@@ -448,6 +448,13 @@ def _generate_cypher(question: str, schema: str, feedback: str, llm) -> str:
     filled = TEXT2CYPHER_SP.replace("{relevant_entities}", safe_feedback)
     tmpl = PromptTemplate(input_variables=["schema", "question"], template=filled)
     prompt_text = tmpl.format(schema=schema, question=question)
+    # Fairness experiment: optionally give GraphRAG the same union/either-or
+    # few-shot guidance plan_exec injects (env-gated, default off). Appended after
+    # PromptTemplate.format so its braces need no escaping.
+    import os as _os
+    if _os.getenv("GRAPHRAG_UNION") == "1":
+        from plan_exec import _UNION_GUIDANCE
+        prompt_text = prompt_text + "\n" + _UNION_GUIDANCE
     return _clean_cypher(_llm_text(llm.invoke(prompt_text)))
 
 
