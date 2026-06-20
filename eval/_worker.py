@@ -153,15 +153,16 @@ def _run_meta() -> Dict[str, Any]:
     }
     try:
         import config as _c
-        # Resolve the active four-axis value-linking spec (from the config axes /
-        # their env overrides).
+        # Resolve the active method spec (from METHOD + the RETRIEVAL_*/TOOL_TYPE
+        # env overrides).
         try:
             spec = _c.resolve_spec()
-            meta["ner_mode"]       = spec.canonical
-            meta["val_link_mode"]  = spec.val_link
-            meta["agent_type"]     = spec.agent
-            meta["retrieval_type"] = spec.retrieval
-            meta["tool_type"]      = spec.tool
+            meta["ner_mode"]   = spec.canonical
+            meta["method"]     = spec.method
+            meta["label"]      = spec.label
+            meta["tool_type"]  = spec.tool
+            meta["retrieval"]  = "+".join(a for a, on in (("fuzzy", spec.fuzzy),
+                                          ("vector", spec.vector), ("lev", spec.lev)) if on) or None
         except Exception:  # noqa: BLE001
             pass
         meta["ner_llm"]    = _c.NER_LLM_CONFIG.get("model")

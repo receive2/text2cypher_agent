@@ -232,10 +232,17 @@ class TestRunGraphragLoop(unittest.TestCase):
 
 class TestConfigResolution(unittest.TestCase):
     def test_graphrag_spec_roundtrip(self):
-        spec = config._spec_from_axes("graphrag", "", "", "")
-        self.assertEqual(spec.val_link, "graphrag")
+        spec = config.GroundingSpec("graphrag")
+        self.assertEqual(spec.method, "graphrag")
         self.assertEqual(spec.canonical, "graphrag")
-        self.assertEqual(config.resolve_spec("graphrag").val_link, "graphrag")
+        self.assertEqual(config.resolve_spec("graphrag").method, "graphrag")
+
+    def test_cyanchor_canonical_roundtrip(self):
+        spec = config.GroundingSpec("cyanchor", tool="node_rel", fuzzy=True, vector=False, lev=True)
+        self.assertEqual(spec.canonical, "cyanchor_fl_node_rel")
+        rt = config._spec_from_canonical("cyanchor_fl_node_rel")
+        self.assertEqual((rt.method, rt.tool, rt.fuzzy, rt.vector, rt.lev),
+                         ("cyanchor", "node_rel", True, False, True))
 
 
 if __name__ == "__main__":

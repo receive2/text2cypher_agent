@@ -261,105 +261,132 @@ CAP_MULTIPLIER        = 1000    # scan cap = t * CAP_MULTIPLIER (cheap over-fetc
 
 
 # ──────────────────────────────────────────────────────────────────────────────
-# Value-linking configuration — four orthogonal axes
+# Method selection — ONE axis names the method directly
 # ──────────────────────────────────────────────────────────────────────────────
-# How (or whether) the grounding stage runs in front of the Cypher generator.
-# Four independent choices, each env-overridable, resolved into a GroundingSpec:
+# METHOD picks the whole pipeline. Five peer methods:
+#   no_val_link — feed only {schema}+{question} to the Cypher LLM (lower bound).
+#   fcav        — retrieve-then-generate RAG baseline (fcav.py; needs setup_fcav.py).
+#   react       — ReAct NER-agent grounder (baseline). Retrieval fixed = fuzzy.
+#   graphrag    — Multi-Agent GraphRAG baseline (graphrag.py): generate→execute→
+#                 evaluate→repair loop.
+#   cyanchor    — OUR method (plan-and-execute grounder; the code internally still
+#                 lives in plan_exec.py). Its retrieval is ablatable via the three
+#                 RETRIEVAL_* switches below.
 #
-#   VAL_LINK_MODE   no_val_link | fcav | graphrag | val_link
-#                     no_val_link — feed only {schema}+{question} to the Cypher LLM
-#                                   (lower bound: the Cypher LLM unaided).
-#                     fcav        — standard retrieve-then-generate RAG baseline:
-#                                   embed the question, retrieve candidate values
-#                                   from a self-built value index, LLM generates
-#                                   the entity JSON (see fcav.py; needs setup_fcav.py).
-#                     graphrag    — Multi-Agent GraphRAG baseline: generate→execute→
-#                                   LLM-evaluate; on a semantic miss feed feedback back
-#                                   to the generator, on error/empty extract+verify the
-#                                   Cypher's labels/values/rels and propose Levenshtein
-#                                   replacements; iterate up to GRAPHRAG_MAX_ITER (see graphrag.py).
-#                     val_link    — run the value-linking grounder (axes below apply).
-#   AGENT_TYPE      react | plan_exec        (only when VAL_LINK_MODE=val_link)
-#   RETRIEVAL_TYPE  fuzzy | hybrid           (only when VAL_LINK_MODE=val_link)
-#                     drives both grounders: react via vector_config.TOOL_RETRIEVAL_MODE,
-#                     plan_exec unions fuzzy+vector candidates per tool.
-#   TOOL_TYPE       node | node_rel          (only when VAL_LINK_MODE=val_link)
+# RETRIEVAL_* — CyANCHOR's retrieval arms, independently toggleable (≥1 must be on).
+# Baselines keep their own FIXED retrieval (react = fuzzy) and IGNORE these switches.
+#   RETRIEVAL_FUZZY        BM25 / Lucene full-text        (default on)
+#   RETRIEVAL_VECTOR       in-graph embedding kNN          (default off — needs embeddings)
+#   RETRIEVAL_LEVENSHTEIN  APOC normalized edit-distance   (default on)
 #
-# These four variables are the SOLE way to select the pipeline. Example —
-# plan-and-execute, hybrid retrieval, node+relation tools:
-#   VAL_LINK_MODE=val_link AGENT_TYPE=plan_exec RETRIEVAL_TYPE=hybrid TOOL_TYPE=node_rel python eval_run.py
+# TOOL_TYPE — react/cyanchor tool scope: node | node_rel.
+#
+# Examples:
+#   METHOD=cyanchor RETRIEVAL_VECTOR=1 python eval_run.py     # CyANCHOR, all 3 arms
+#   METHOD=cyanchor RETRIEVAL_VECTOR=0 python eval_run.py     # CyANCHOR, fuzzy+lev
+#   METHOD=graphrag python eval_run.py                        # baseline
+# Back-compat: the legacy VAL_LINK_MODE / AGENT_TYPE / RETRIEVAL_TYPE still work
+# (val_link+plan_exec → cyanchor, val_link+react → react, hybrid → +vector).
 # ──────────────────────────────────────────────────────────────────────────────
-VAL_LINK_MODE:  str = os.getenv("VAL_LINK_MODE",  "no_val_link")  # no_val_link | fcav | graphrag | val_link
-AGENT_TYPE:     str = os.getenv("AGENT_TYPE",     "plan_exec")    # react | plan_exec
-RETRIEVAL_TYPE: str = os.getenv("RETRIEVAL_TYPE", "fuzzy")        # fuzzy | hybrid
-TOOL_TYPE:      str = os.getenv("TOOL_TYPE",      "node_rel")     # node | node_rel
+METHOD:    str = os.getenv("METHOD", os.getenv("VAL_LINK_MODE", "no_val_link")).strip().lower()
+TOOL_TYPE: str = os.getenv("TOOL_TYPE", "node_rel").strip().lower()
+RETRIEVAL_FUZZY       = os.getenv("RETRIEVAL_FUZZY",       "1").lower() in ("1", "true", "yes")
+RETRIEVAL_VECTOR      = os.getenv("RETRIEVAL_VECTOR",      "0").lower() in ("1", "true", "yes")
+RETRIEVAL_LEVENSHTEIN = os.getenv("RETRIEVAL_LEVENSHTEIN", "1").lower() in ("1", "true", "yes")
 
-_VAL_LINK_MODES  = ("no_val_link", "fcav", "graphrag", "val_link")
-_AGENT_TYPES     = ("react", "plan_exec")
-_RETRIEVAL_TYPES = ("fuzzy", "hybrid")
-_TOOL_TYPES      = ("node", "node_rel")
+_METHODS    = ("no_val_link", "fcav", "react", "graphrag", "cyanchor")
+_TOOL_TYPES = ("node", "node_rel")
 
 
 @dataclass(frozen=True)
 class GroundingSpec:
-    """Resolved value-linking configuration. ``agent`` / ``retrieval`` / ``tool``
-    are ``None`` unless ``val_link == "val_link"``."""
-    val_link:  str
-    agent:     Optional[str] = None
-    retrieval: Optional[str] = None
-    tool:      Optional[str] = None
+    """Resolved method configuration. ``tool`` applies to react/cyanchor; the arm
+    flags (``fuzzy``/``vector``/``lev``) apply to cyanchor only."""
+    method: str
+    tool:   Optional[str] = None
+    fuzzy:  bool = True
+    vector: bool = False
+    lev:    bool = False
 
     @property
     def canonical(self) -> str:
-        """Compact internal name the pipeline keys on: no_val_link→'no_ner',
-        fcav→'fcav', graphrag→'graphrag', else
-        '<agent>_<tool-suffix>[ _hybrid]' (tool 'node'→'node_only')."""
-        if self.val_link == "no_val_link":
+        """Internal flat name the pipeline keys on. NOTE: no_val_link maps to the
+        legacy ``"no_ner"`` sentinel and react to ``"react_<suffix>"`` because those
+        strings are load-bearing (dispatch checks + FAISS index dirs). cyanchor gets
+        its own ``"cyanchor_<arms>_<suffix>"`` (arms = f/v/l)."""
+        if self.method == "no_val_link":
             return "no_ner"
-        if self.val_link == "fcav":
-            return "fcav"
-        if self.val_link == "graphrag":
-            return "graphrag"
+        if self.method in ("fcav", "graphrag"):
+            return self.method
         suffix = "node_only" if self.tool == "node" else "node_rel"
-        name = f"{self.agent}_{suffix}"
-        return name + "_hybrid" if self.retrieval == "hybrid" else name
+        if self.method == "react":
+            return f"react_{suffix}"
+        arms = "".join(a for a, on in (("f", self.fuzzy), ("v", self.vector), ("l", self.lev)) if on) or "none"
+        return f"cyanchor_{arms}_{suffix}"
+
+    @property
+    def label(self) -> str:
+        """Human-readable name for eval records / reports."""
+        if self.method == "no_val_link":
+            return "No Val Link"
+        if self.method == "fcav":
+            return "FCAV"
+        if self.method == "graphrag":
+            return "GraphRAG"
+        tl = "Node" if self.tool == "node" else "Node + Rel"
+        if self.method == "react":
+            return f"ReAct ({tl})"
+        arms = "+".join(a for a, on in (("fuzzy", self.fuzzy), ("vector", self.vector), ("lev", self.lev)) if on)
+        return f"CyANCHOR [{arms}] ({tl})"
 
 
-def _spec_from_axes(val_link: str, agent: str, retrieval: str, tool: str) -> GroundingSpec:
-    vl = (val_link or "no_val_link").strip().lower()
-    if vl not in _VAL_LINK_MODES:
-        raise ValueError(f"VAL_LINK_MODE must be one of {_VAL_LINK_MODES}, got {val_link!r}.")
-    if vl != "val_link":
-        return GroundingSpec(vl)
-    ag, rt, tl = (agent or "").strip().lower(), (retrieval or "").strip().lower(), (tool or "").strip().lower()
-    for label, val, allowed in (("AGENT_TYPE", ag, _AGENT_TYPES),
-                                ("RETRIEVAL_TYPE", rt, _RETRIEVAL_TYPES),
-                                ("TOOL_TYPE", tl, _TOOL_TYPES)):
-        if val not in allowed:
-            raise ValueError(
-                f"{label} must be one of {allowed} when VAL_LINK_MODE='val_link', got {val!r}."
-            )
-    return GroundingSpec("val_link", ag, rt, tl)
+def _spec_from_env() -> GroundingSpec:
+    m = METHOD
+    # ── Back-compat with the old four-axis scheme ────────────────────────────
+    if m == "val_link":
+        ag = os.getenv("AGENT_TYPE", "plan_exec").strip().lower()
+        m = "cyanchor" if ag in ("plan_exec", "cyanchor") else "react"
+    elif m == "plan_exec":
+        m = "cyanchor"
+    if m not in _METHODS:
+        raise ValueError(f"METHOD must be one of {_METHODS}, got {METHOD!r}.")
+    if m in ("no_val_link", "fcav", "graphrag"):
+        return GroundingSpec(m)
+    tool = TOOL_TYPE if TOOL_TYPE in _TOOL_TYPES else "node_rel"
+    if m == "react":
+        return GroundingSpec("react", tool=tool)
+    # cyanchor: read the three retrieval arms (legacy RETRIEVAL_TYPE=hybrid → +vector)
+    fuzzy, vector, lev = RETRIEVAL_FUZZY, RETRIEVAL_VECTOR, RETRIEVAL_LEVENSHTEIN
+    if os.getenv("RETRIEVAL_TYPE", "").strip().lower() == "hybrid":
+        vector = True
+    if not (fuzzy or vector or lev):
+        raise ValueError("CyANCHOR needs at least one RETRIEVAL_* arm enabled.")
+    return GroundingSpec("cyanchor", tool=tool, fuzzy=fuzzy, vector=vector, lev=lev)
 
 
 def _spec_from_canonical(name: str) -> GroundingSpec:
-    """Parse a canonical internal name (the :attr:`GroundingSpec.canonical` form)
-    back into a spec. Used by internal callers that thread the flat string (e.g.
-    the per-mode FAISS index selection); NOT a user-facing entry point."""
+    """Parse a canonical internal name back into a spec. Used by internal callers
+    that thread the flat string (e.g. per-mode FAISS index selection)."""
     n = (name or "").strip().lower()
-    if n in ("", "no_ner"):
+    if n in ("", "no_ner", "no_val_link"):
         return GroundingSpec("no_val_link")
-    if n == "fcav":
-        return GroundingSpec("fcav")
-    if n == "graphrag":
-        return GroundingSpec("graphrag")
-    hybrid = n.endswith("_hybrid")
-    core = n[: -len("_hybrid")] if hybrid else n
-    for ag in ("plan_exec", "react"):
-        if core.startswith(ag + "_"):
-            suffix = core[len(ag) + 1:]
-            tool = "node" if suffix == "node_only" else suffix   # flat 'node_only' → axis 'node'
-            return _spec_from_axes("val_link", ag, "hybrid" if hybrid else "fuzzy", tool)
+    if n in ("fcav", "graphrag"):
+        return GroundingSpec(n)
+    if n.startswith("react_"):
+        suf = n[len("react_"):]
+        return GroundingSpec("react", tool="node" if suf == "node_only" else "node_rel")
+    if n.startswith("cyanchor_") or n.startswith("plan_exec_"):
+        rest = n.split("_", 1)[1] if n.startswith("cyanchor_") else n[len("plan_exec_"):]
+        hybrid = rest.endswith("_hybrid")          # legacy plan_exec_..._hybrid
+        rest = rest[: -len("_hybrid")] if hybrid else rest
+        for suf in ("node_only", "node_rel"):
+            if rest.endswith(suf):
+                tool = "node" if suf == "node_only" else "node_rel"
+                arms = rest[: -(len(suf) + 1)]      # leading f/v/l, or "" for legacy
+                if n.startswith("plan_exec_"):      # legacy: fuzzy + (vector if hybrid)
+                    return GroundingSpec("cyanchor", tool=tool, fuzzy=True, vector=hybrid, lev=False)
+                return GroundingSpec("cyanchor", tool=tool,
+                                     fuzzy="f" in arms, vector="v" in arms, lev="l" in arms)
     raise ValueError(f"Unknown grounding mode {name!r}.")
 
 
@@ -367,14 +394,13 @@ def resolve_spec(mode=None) -> GroundingSpec:
     """Resolve the active :class:`GroundingSpec`.
 
     *mode* may be a :class:`GroundingSpec` (returned as-is), a canonical internal
-    name string (parsed — used by internal callers), or ``None`` (read from the
-    four axis variables — the user-facing entry point).
-    """
+    name string (parsed — internal callers), or ``None`` (read from METHOD + the
+    RETRIEVAL_*/TOOL_TYPE env vars — the user-facing entry point)."""
     if isinstance(mode, GroundingSpec):
         return mode
     if mode:
         return _spec_from_canonical(mode)
-    return _spec_from_axes(VAL_LINK_MODE, AGENT_TYPE, RETRIEVAL_TYPE, TOOL_TYPE)
+    return _spec_from_env()
 
 # RAG baseline: the ReAct NER agent restricted to a SINGLE tool-call round and
 # with the tool-result backfill DISABLED. It uses the same (node + relation)
@@ -518,22 +544,12 @@ PLAN_EXEC_SKIP_GROUNDED = os.getenv("PLAN_EXEC_SKIP_GROUNDED", "1").lower() in (
 # MAX_THREAD. Set 0 to force serial.
 PLAN_EXEC_PARALLEL_MENTIONS = os.getenv("PLAN_EXEC_PARALLEL_MENTIONS", "1").lower() in ("1", "true", "yes")
 
-# ── Retrieval arm: normalized Levenshtein (for ablation) ─────────────────────
-# Adds a third retrieval arm to plan_exec's INITIAL per-(label,property) lookup:
-# a server-side APOC normalized-Levenshtein scan (apoc.text.levenshteinSimilarity),
-# unioned in after fuzzy (and after vector when RETRIEVAL_TYPE=hybrid). Catches
-# char-level perturbations fuzzy misses (abbrev codes FRA->France, typos). Handles
-# scalar AND array (e.g. aliases) properties. Default OFF so the shipped behavior
-# is unchanged; toggle per arm for ablation:
-#   fuzzy             : RETRIEVAL_TYPE=fuzzy  PLAN_EXEC_LEVENSHTEIN=0
-#   fuzzy+lev         : RETRIEVAL_TYPE=fuzzy  PLAN_EXEC_LEVENSHTEIN=1
-#   fuzzy+vec         : RETRIEVAL_TYPE=hybrid PLAN_EXEC_LEVENSHTEIN=0
-#   fuzzy+lev+vec     : RETRIEVAL_TYPE=hybrid PLAN_EXEC_LEVENSHTEIN=1
-# NOTE: it is a full per-(label,prop) scan — cheap on small graphs (flight ~1.7k
-# values), but O(N) per mention on large graphs (movie ~218k); gate before using
-# it at movie scale.
-PLAN_EXEC_LEVENSHTEIN   = os.getenv("PLAN_EXEC_LEVENSHTEIN", "0").lower() in ("1", "true", "yes")
-PLAN_EXEC_LEVENSHTEIN_K = int(os.getenv("PLAN_EXEC_LEVENSHTEIN_K", "10"))
+# CyANCHOR retrieval arms are the three RETRIEVAL_FUZZY / RETRIEVAL_VECTOR /
+# RETRIEVAL_LEVENSHTEIN switches (defined in the Method-selection block above).
+# The Levenshtein arm is a server-side APOC scan (apoc.text.levenshteinSimilarity)
+# over each (label,property) value set; cheap on small graphs (flight ~1.7k), but
+# O(N) per mention on large graphs (movie ~218k) — gate at movie scale.
+RETRIEVAL_LEVENSHTEIN_K = int(os.getenv("RETRIEVAL_LEVENSHTEIN_K", "10"))  # candidates from the Lev arm
 
 #  python ner_agent_auto.py "Who played neo in matrix?"  --verbose
 #  python ner_agent_auto.py "Who played Neo or Morpheus in The Matrix?" " --verbose

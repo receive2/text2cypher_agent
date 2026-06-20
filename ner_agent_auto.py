@@ -128,9 +128,10 @@ def _is_node_only(mode: str) -> bool:
 
 
 def _is_plan_exec(mode: str) -> bool:
-    """True for the plan-and-execute grounder modes (any tool-scope / retrieval
-    suffix, e.g. ``plan_exec_node_only_hybrid``)."""
-    return mode.startswith("plan_exec")
+    """True for the CyANCHOR grounder (plan-and-execute), any tool-scope / arm
+    suffix, e.g. ``cyanchor_fl_node_rel``. Also matches the legacy ``plan_exec_*``
+    canonical for back-compat."""
+    return mode.startswith("cyanchor") or mode.startswith("plan_exec")
 
 
 def _faiss_scope(mode: str) -> str:
@@ -1473,13 +1474,12 @@ def ask_auto(
     # ── Resolve value-linking spec (four axes) ────────────────────────────────
     spec = resolve_spec(mode)
     effective_mode = spec.canonical   # flat name the rest of this fn keys on
-    # RETRIEVAL_TYPE drives the react grounder's retrieval backend via the
-    # vector_config global the generated node tools read at call time. (plan_exec
-    # selects fuzzy/hybrid explicitly per search_tool call; rag / no_ner leave
-    # the global untouched.)
-    if spec.val_link == "val_link" and spec.agent == "react":
+    # ReAct (baseline) retrieval is fixed = fuzzy, driven by the vector_config
+    # global the generated node tools read at call time. (CyANCHOR selects its
+    # arms explicitly per search_tool call; graphrag / no_ner leave it untouched.)
+    if spec.method == "react":
         import vector_config as _vc
-        _vc.TOOL_RETRIEVAL_MODE = spec.retrieval
+        _vc.TOOL_RETRIEVAL_MODE = "fuzzy"
     if verbose:
         print(f"\n── value-linking spec ──────────────────────────────────────────────")
         print(f"  {spec}  (canonical={effective_mode})")
@@ -1488,7 +1488,7 @@ def ask_auto(
     # Distinct from every other mode: it does NO pre-grounding and owns Cypher
     # generation + execution + repair itself, so it short-circuits the one-shot
     # GraphCypherQAChain path below and returns the standard result dict.
-    if spec.val_link == "graphrag":
+    if spec.method == "graphrag":
         from graphrag import run_graphrag
         return run_graphrag(
             prompt, verbose=verbose,
@@ -1523,7 +1523,7 @@ def ask_auto(
         plan_exec_block, plan_exec_evidence = get_plan_exec_evidence(
             prompt, llm_obj=ner_llm_eff,
             node_only=(spec.tool == "node"),
-            hybrid=(spec.retrieval == "hybrid"),
+            hybrid=spec.vector,
             escalate=_config.PLAN_EXEC_ESCALATE,
             verbose=verbose,
             return_structured=True,
@@ -1580,7 +1580,7 @@ def ask_auto(
     # error the message is fed back to the Cypher LLM to rewrite, up to N times.
     # Baselines (no_ner / fcav) and graphrag are unaffected — they stay
     # single-shot via GraphCypherQAChain (graphrag returned earlier).
-    if spec.val_link == "val_link" and CYPHER_RETRY_MAX_ROUNDS >= 1:
+    if spec.method in ("react", "cyanchor") and CYPHER_RETRY_MAX_ROUNDS >= 1:
         # Always use the transparent manual generate→execute path for val_link so
         # CYPHER_RETRY_MAX_ROUNDS is the ONLY variable: 1 = single attempt (no
         # retry), N>1 = up to N-1 corrective rewrites on a DB error. (If it stayed

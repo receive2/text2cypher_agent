@@ -54,8 +54,9 @@ from config import (
     PLAN_EXEC_MAX_ITER,
     PLAN_EXEC_SKIP_GROUNDED,
     PLAN_EXEC_PARALLEL_MENTIONS,
-    PLAN_EXEC_LEVENSHTEIN,
-    PLAN_EXEC_LEVENSHTEIN_K,
+    RETRIEVAL_FUZZY,
+    RETRIEVAL_LEVENSHTEIN,
+    RETRIEVAL_LEVENSHTEIN_K,
     MAX_THREAD,
 )
 from paths import REPO_ROOT
@@ -276,25 +277,27 @@ def _levenshtein_fetch(mention: str, label: str, prop: str, k: int) -> List[str]
 
 def _retrieve_values(mention: str, label: str, prop: str, hybrid: bool,
                      k: Optional[int] = None) -> List[str]:
-    """Canonical-value lookup for one (label, property) target — up to three
-    retrieval arms unioned (fuzzy first, then vector, then Levenshtein; deduped):
+    """Canonical-value lookup for one (label, property) target — CyANCHOR's three
+    retrieval arms, each independently toggleable, unioned (fuzzy, then vector,
+    then Levenshtein; deduped):
 
-      * fuzzy        : always (BM25/Lucene).
-      * vector       : when ``hybrid`` (in-graph embedding recall).
-      * Levenshtein  : when ``PLAN_EXEC_LEVENSHTEIN`` (APOC edit-distance scan).
+      * fuzzy        : when ``RETRIEVAL_FUZZY``        (BM25/Lucene).
+      * vector       : when ``hybrid`` (= ``RETRIEVAL_VECTOR``; in-graph embeddings).
+      * Levenshtein  : when ``RETRIEVAL_LEVENSHTEIN``  (APOC edit-distance scan).
 
-    Each arm is independently toggleable for ablation. Escalation passes an
-    explicit *k* for a deeper fuzzy-only fetch (the extra arms are skipped there;
-    they belong to the initial retrieval)."""
+    Escalation passes an explicit *k* for a deeper fuzzy-only fetch (the extra arms
+    are skipped there; they belong to the initial retrieval)."""
     from neo4j_lib.neo4j_search import search_tool  # lazy import
 
     if k is not None:                       # escalation deepen — fuzzy only
         return search_tool(phrase=mention, node_label=label, property_name=prop,
                            k=k, mode="fuzzy")
 
-    merged = list(search_tool(phrase=mention, node_label=label, property_name=prop,
-                              k=PLAN_EXEC_HYBRID_FUZZY_K if hybrid else PLAN_EXEC_VALUES_PER_TOOL,
-                              mode="fuzzy"))
+    merged: List[str] = []
+    if RETRIEVAL_FUZZY:
+        merged = list(search_tool(phrase=mention, node_label=label, property_name=prop,
+                                  k=PLAN_EXEC_HYBRID_FUZZY_K if hybrid else PLAN_EXEC_VALUES_PER_TOOL,
+                                  mode="fuzzy"))
     if hybrid:
         try:
             vector = search_tool(phrase=mention, node_label=label, property_name=prop,
@@ -305,8 +308,8 @@ def _retrieve_values(mention: str, label: str, prop: str, hybrid: bool,
         for v in vector:
             if v not in merged:
                 merged.append(v)
-    if PLAN_EXEC_LEVENSHTEIN:
-        for v in _levenshtein_fetch(mention, label, prop, PLAN_EXEC_LEVENSHTEIN_K):
+    if RETRIEVAL_LEVENSHTEIN:
+        for v in _levenshtein_fetch(mention, label, prop, RETRIEVAL_LEVENSHTEIN_K):
             if v not in merged:
                 merged.append(v)
     return merged
