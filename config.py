@@ -518,6 +518,23 @@ PLAN_EXEC_SKIP_GROUNDED = os.getenv("PLAN_EXEC_SKIP_GROUNDED", "1").lower() in (
 # MAX_THREAD. Set 0 to force serial.
 PLAN_EXEC_PARALLEL_MENTIONS = os.getenv("PLAN_EXEC_PARALLEL_MENTIONS", "1").lower() in ("1", "true", "yes")
 
+# ── Retrieval arm: normalized Levenshtein (for ablation) ─────────────────────
+# Adds a third retrieval arm to plan_exec's INITIAL per-(label,property) lookup:
+# a server-side APOC normalized-Levenshtein scan (apoc.text.levenshteinSimilarity),
+# unioned in after fuzzy (and after vector when RETRIEVAL_TYPE=hybrid). Catches
+# char-level perturbations fuzzy misses (abbrev codes FRA->France, typos). Handles
+# scalar AND array (e.g. aliases) properties. Default OFF so the shipped behavior
+# is unchanged; toggle per arm for ablation:
+#   fuzzy             : RETRIEVAL_TYPE=fuzzy  PLAN_EXEC_LEVENSHTEIN=0
+#   fuzzy+lev         : RETRIEVAL_TYPE=fuzzy  PLAN_EXEC_LEVENSHTEIN=1
+#   fuzzy+vec         : RETRIEVAL_TYPE=hybrid PLAN_EXEC_LEVENSHTEIN=0
+#   fuzzy+lev+vec     : RETRIEVAL_TYPE=hybrid PLAN_EXEC_LEVENSHTEIN=1
+# NOTE: it is a full per-(label,prop) scan — cheap on small graphs (flight ~1.7k
+# values), but O(N) per mention on large graphs (movie ~218k); gate before using
+# it at movie scale.
+PLAN_EXEC_LEVENSHTEIN   = os.getenv("PLAN_EXEC_LEVENSHTEIN", "0").lower() in ("1", "true", "yes")
+PLAN_EXEC_LEVENSHTEIN_K = int(os.getenv("PLAN_EXEC_LEVENSHTEIN_K", "10"))
+
 #  python ner_agent_auto.py "Who played neo in matrix?"  --verbose
 #  python ner_agent_auto.py "Who played Neo or Morpheus in The Matrix?" " --verbose
 #  python ner_agent_auto.py "Who act  in matrix?"  --verbose

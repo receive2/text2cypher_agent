@@ -54,6 +54,8 @@ from config import (
     PLAN_EXEC_MAX_ITER,
     PLAN_EXEC_SKIP_GROUNDED,
     PLAN_EXEC_PARALLEL_MENTIONS,
+    PLAN_EXEC_LEVENSHTEIN,
+    PLAN_EXEC_LEVENSHTEIN_K,
     MAX_THREAD,
 )
 from paths import REPO_ROOT
@@ -247,34 +249,66 @@ def _route_tools(descriptor: str, kind: str, node_only: bool = False,
     return chosen[:n]
 
 
+def _levenshtein_fetch(mention: str, label: str, prop: str, k: int) -> List[str]:
+    """Normalized-Levenshtein candidates over the full ``(label, prop)`` value
+    set via APOC ``apoc.text.levenshteinSimilarity`` (server-side), best-first.
+    Catches char-level perturbations fuzzy misses (abbrev codes, typos). Handles
+    BOTH scalar and array (e.g. ``aliases``) properties: the scalar query is
+    tried first; on a type error (array property) it retries with UNWIND. Returns
+    [] on any failure (e.g. APOC missing) so it only ever adds recall."""
+    from neo4j_lib.neo4j_search import get_neo4j_graph  # lazy import
+    g = get_neo4j_graph()
+    base = f"MATCH (n:`{label}`) WHERE n.`{prop}` IS NOT NULL "
+    tail = (" WITH DISTINCT v "
+            "WITH v, apoc.text.levenshteinSimilarity(toLower(v), toLower($m)) AS s "
+            "RETURN v ORDER BY s DESC LIMIT $k")
+    scalar = base + f"WITH toString(n.`{prop}`) AS v" + tail          # name, eid, …
+    array  = base + f"UNWIND n.`{prop}` AS x WITH toString(x) AS v" + tail  # aliases, …
+    for cypher in (scalar, array):
+        try:
+            rows = g.query(cypher, params={"m": mention, "k": k})
+            return [str(r["v"]) for r in rows if r.get("v") is not None]
+        except Exception:  # noqa: BLE001 — scalar fails on array props → try UNWIND
+            continue
+    logger.warning("plan_exec: levenshtein fetch failed for %s.%s", label, prop)
+    return []
+
+
 def _retrieve_values(mention: str, label: str, prop: str, hybrid: bool,
                      k: Optional[int] = None) -> List[str]:
-    """Canonical-value lookup for one (label, property) target.
+    """Canonical-value lookup for one (label, property) target — up to three
+    retrieval arms unioned (fuzzy first, then vector, then Levenshtein; deduped):
 
-    Fuzzy modes: a single fuzzy ``search_tool`` of size *k* (default
-    ``PLAN_EXEC_VALUES_PER_TOOL``). Hybrid mode: union fuzzy
-    top-``PLAN_EXEC_HYBRID_FUZZY_K`` with vector top-``PLAN_EXEC_HYBRID_VECTOR_K``
-    (fuzzy first, vector fills the tail, de-duplicated) so in-graph embedding
-    recall can surface alias/abbrev hits that BM25 fuzzy misses. Escalation
-    passes an explicit *k* for a deeper fuzzy fetch (hybrid is ignored there)."""
+      * fuzzy        : always (BM25/Lucene).
+      * vector       : when ``hybrid`` (in-graph embedding recall).
+      * Levenshtein  : when ``PLAN_EXEC_LEVENSHTEIN`` (APOC edit-distance scan).
+
+    Each arm is independently toggleable for ablation. Escalation passes an
+    explicit *k* for a deeper fuzzy-only fetch (the extra arms are skipped there;
+    they belong to the initial retrieval)."""
     from neo4j_lib.neo4j_search import search_tool  # lazy import
 
-    if not hybrid or k is not None:
+    if k is not None:                       # escalation deepen — fuzzy only
         return search_tool(phrase=mention, node_label=label, property_name=prop,
-                           k=k or PLAN_EXEC_VALUES_PER_TOOL, mode="fuzzy")
+                           k=k, mode="fuzzy")
 
-    fuzzy = search_tool(phrase=mention, node_label=label, property_name=prop,
-                        k=PLAN_EXEC_HYBRID_FUZZY_K, mode="fuzzy")
-    try:
-        vector = search_tool(phrase=mention, node_label=label, property_name=prop,
-                             k=PLAN_EXEC_HYBRID_VECTOR_K, mode="vector")
-    except Exception as exc:  # noqa: BLE001
-        logger.warning("plan_exec: vector search failed for %s.%s: %s", label, prop, exc)
-        vector = []
-    merged = list(fuzzy)
-    for v in vector:
-        if v not in merged:
-            merged.append(v)
+    merged = list(search_tool(phrase=mention, node_label=label, property_name=prop,
+                              k=PLAN_EXEC_HYBRID_FUZZY_K if hybrid else PLAN_EXEC_VALUES_PER_TOOL,
+                              mode="fuzzy"))
+    if hybrid:
+        try:
+            vector = search_tool(phrase=mention, node_label=label, property_name=prop,
+                                 k=PLAN_EXEC_HYBRID_VECTOR_K, mode="vector")
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("plan_exec: vector search failed for %s.%s: %s", label, prop, exc)
+            vector = []
+        for v in vector:
+            if v not in merged:
+                merged.append(v)
+    if PLAN_EXEC_LEVENSHTEIN:
+        for v in _levenshtein_fetch(mention, label, prop, PLAN_EXEC_LEVENSHTEIN_K):
+            if v not in merged:
+                merged.append(v)
     return merged
 
 
