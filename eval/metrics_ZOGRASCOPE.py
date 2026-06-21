@@ -160,18 +160,51 @@ def _resolve_csv_path(p: Path) -> Path:
     )
 
 
+def _load_json_rows(p: Path) -> List[Dict[str, Any]]:
+    """Read example rows from a JSON array (or ``{'data': [...]}``) / JSONL file."""
+    if p.suffix.lower() == ".jsonl":
+        rows: List[Dict[str, Any]] = []
+        with p.open("r", encoding="utf-8") as fh:
+            for line in fh:
+                line = line.strip()
+                if not line:
+                    continue
+                obj = json.loads(line)
+                if isinstance(obj, dict):
+                    rows.append(obj)
+        return rows
+    with p.open("r", encoding="utf-8") as fh:
+        obj = json.load(fh)
+    if isinstance(obj, list):
+        return [r for r in obj if isinstance(r, dict)]
+    if isinstance(obj, dict) and isinstance(obj.get("data"), list):
+        return [r for r in obj["data"] if isinstance(r, dict)]
+    raise ValueError(
+        f"Unexpected JSON layout in {p}: expected a list of rows "
+        f"or {{'data': [...]}} but got {type(obj).__name__}"
+    )
+
+
 def load_dataset(path: str) -> List[Dict[str, Any]]:
     """
     Load a ZOGRASCOPE test set from *path*.
 
-    *path* may point at a CSV file directly, or at a directory containing
-    ``zograscope_test_v1.csv`` (or any ``*_test*.csv`` fallback).
+    *path* may point at:
+
+    * a CSV file directly, or a directory containing
+      ``zograscope_test_v1.csv`` (or any ``*_test*.csv`` fallback) — the
+      upstream ZOGRASCOPE format; or
+    * a ``*.json`` / ``*.jsonl`` file — the perturbed ``zograscope_augmented``
+      format (a JSON array of rows carrying ``nl`` / ``gold_cypher`` / ``id`` /
+      ``graph`` / ``_aug_meta`` keys).
 
     Returns
     -------
     list[dict]
         Each example has at minimum ``qid``, ``question``, ``cypher``,
-        plus the original CSV row under ``raw``.
+        ``graph``, plus the original row under ``raw`` (so
+        :func:`eval.difficulty.strategy_of` can recover the perturbation tier
+        for the augmented sets).
     """
     p = Path(path)
     if not p.exists():
@@ -179,31 +212,39 @@ def load_dataset(path: str) -> List[Dict[str, Any]]:
             f"ZOGRASCOPE dataset path does not exist: {path}\n"
             "Clone https://github.com/interact-erc/ZOGRASCOPE and point "
             "eval_config.ZOGRASCOPE_PATH at data/zograscope_test_v1.csv "
-            "(or the parent directory)."
+            "(or the parent directory) — or point ZOGRASCOPE_AUGMENTED_PATH at "
+            "the augmented test.json."
         )
 
-    csv_path = _resolve_csv_path(p)
+    # Read raw rows: JSON(L) for the augmented sets, CSV for the upstream set.
+    if p.is_file() and p.suffix.lower() in (".json", ".jsonl"):
+        rows = _load_json_rows(p)
+        source = str(p)
+    else:
+        source = str(_resolve_csv_path(p))
+        with open(source, "r", encoding="utf-8", newline="") as fh:
+            rows = list(csv.DictReader(fh))
+
+    # Normalise rows → example dicts (shared by both formats).
     examples: List[Dict[str, Any]] = []
+    for i, row in enumerate(rows):
+        question = _first_present_col(row, _QUESTION_COLS)
+        cypher   = _first_present_col(row, _CYPHER_COLS)
+        if not question or not cypher:
+            logger.warning(
+                f"ZOGRASCOPE row #{i} missing nl/mr columns — skipping. "
+                f"Columns present: {list(row.keys())}"
+            )
+            continue
+        examples.append({
+            "qid":      str(_first_present_col(row, _ID_COLS) or f"zg_{i}"),
+            "question": str(question),
+            "cypher":   str(cypher),
+            "graph":    row.get("graph", "pole"),
+            "raw":      row,
+        })
 
-    with csv_path.open("r", encoding="utf-8", newline="") as fh:
-        reader = csv.DictReader(fh)
-        for i, row in enumerate(reader):
-            question = _first_present_col(row, _QUESTION_COLS)
-            cypher   = _first_present_col(row, _CYPHER_COLS)
-            if not question or not cypher:
-                logger.warning(
-                    f"ZOGRASCOPE row #{i} missing nl/mr columns — skipping. "
-                    f"Columns present: {list(row.keys())}"
-                )
-                continue
-            examples.append({
-                "qid":      str(_first_present_col(row, _ID_COLS) or f"zg_{i}"),
-                "question": str(question),
-                "cypher":   str(cypher),
-                "raw":      row,
-            })
-
-    logger.info(f"Loaded {len(examples)} ZOGRASCOPE examples from {csv_path}")
+    logger.info(f"Loaded {len(examples)} ZOGRASCOPE examples from {source}")
     return examples
 
 
