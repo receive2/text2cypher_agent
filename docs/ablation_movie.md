@@ -2,88 +2,75 @@
 
 **Metrics.** EA = execution accuracy (predicted Cypher's result set matches gold).
 PSJS = Provenance-Subgraph Jaccard Similarity (partial-credit subgraph overlap).
-Higher is better; both over each mode's successfully-scored rows. Generated 2026-06-18.
+Higher is better; both over each method's successfully-executed rows. Generated 2026-06-21.
 
-**Setup.** CypherBench `movie` (~459k nodes: Movie 218,828 · Person 234,309 · plus
-Award/Genre/Country/FilmSeries/ProductionCompany), 200 entity-perturbed test questions
-(strategies: casing · typo · partial · abbrev · alias). LLMs: gpt-4.1 for grounding and
-Cypher generation. Each mode is scored over its own successfully-executed rows (per-mode `n`).
+**Setup.** CypherBench `movie`, 200 entity-perturbed test questions
+(strategies: casing · typo · partial · abbrev · alias). LLMs: gpt-4.1 for grounding
+and Cypher generation. **All methods share the identical Cypher system prompt** (the
+either/or-UNION guidance is given to every method — a fair comparison). Each method
+is scored over its own successfully-executed rows (per-method `n`).
 
-> **Retrieval is fuzzy-only here.** Hybrid (BM25 ∪ in-graph vector) needs a per-graph
-> vector index; building it on movie was previously ~tens of hours due to a missing
-> range index on the `.name` properties — now fixed in `setup_project.py`
-> (`ensure_value_range_indexes`), making hybrid setup ~30 min. The **Plan&Exec Hybrid**
-> row is pending that build.
-
-**Modes.**
+**Methods.**
 - **No Val Link** — grounding bypassed (the perturbed surface form is used as-is).
-- **FCAV (RAG)** — retrieve-then-generate baseline: embed the question, retrieve candidate
-  values from a self-built value index, an LLM generates the entity JSON.
-- **ReAct Fuzzy (Node + Rel)** — ReAct NER agent (BM25/fuzzy retrieval) over node + relation tools.
-- **Plan&Exec Fuzzy (Node + Rel)** — plan-and-execute grounder: decompose the question into
+- **FCAV (RAG)** — retrieve-then-generate baseline: embed the question, retrieve
+  candidate values from a self-built value index, an LLM generates the entity JSON.
+- **ReAct (Node + Rel)** — ReAct NER agent (fuzzy/BM25 retrieval) over node + relation tools.
+- **GraphRAG** — Multi-Agent GraphRAG baseline: generate→execute→evaluate→repair; on
+  error/empty it extracts the query's labels/values/rels, validates them, and proposes
+  normalized-Levenshtein replacements, iterating the generator.
+- **CyANCHOR (Node + Rel)** — our plan-and-execute grounder: decompose the question into
   entity mentions, route each to a database field, retrieve candidates with an LLM-judge
-  corrective loop (adds the right field / more values when a mention is not yet grounded),
-  then the Cypher LLM value-links. Fuzzy = BM25 only (zero embeddings).
+  corrective loop, then the Cypher LLM value-links. Retrieval is the union of independently
+  toggleable arms — **fuzzy** (BM25) · **lev** (APOC normalized Levenshtein) · **vector**
+  (in-graph embeddings).
 
 ---
 
 ## Overall
 
-| mode                          | retrieval |    EA |  PSJS |   n | err |
-| ----------------------------- | --------- | ----: | ----: | --: | --: |
-| No Val Link                   | —         | 0.030 | 0.115 | 200 |   6 |
-| FCAV (RAG)                    | vector    | 0.200 | 0.381 | 200 |   4 |
-| ReAct Fuzzy (Node + Rel)      | fuzzy     | 0.240 | 0.464 | 200 |   5 |
-| Plan&Exec Fuzzy (Node + Rel)  | fuzzy     | 0.310 | 0.561 | 200 |   5 |
-| Plan&Exec Hybrid (Node + Rel) | hybrid    |   _pending_ |   _–_ |   _–_ |   _–_ |
+| method               | retrieval |    EA |  PSJS |   n | err |
+| -------------------- | --------- | ----: | ----: | --: | --: |
+| No Val Link          | —         | 0.052 | 0.111 | 194 |   6 |
+| FCAV                 | vector    | 0.276 | 0.375 | 196 |   4 |
+| ReAct (Node + Rel)   | fuzzy     | 0.376 | 0.415 | 197 |   3 |
+| GraphRAG             | norm-Lev  | 0.467 | 0.537 | 199 |   1 |
+| CyANCHOR (fuzzy+lev) | fuzzy+lev | 0.569 | 0.622 | 197 |   3 |
 
 ## By perturbation strategy — EA
 
-| mode                          | casing |  typo | partial | abbrev | alias |
-| ----------------------------- | -----: | ----: | ------: | -----: | ----: |
-| No Val Link                   |  0.250 | 0.022 |   0.000 |  0.000 | 0.000 |
-| FCAV (RAG)                    |  0.550 | 0.326 |   0.174 |  0.048 | 0.087 |
-| ReAct Fuzzy (Node + Rel)      |  0.700 | 0.348 |   0.217 |  0.143 | 0.043 |
-| Plan&Exec Fuzzy (Node + Rel)  |  0.550 | 0.478 |   0.370 |  0.143 | 0.130 |
+| method               | casing |  typo | partial | abbrev | alias |
+| -------------------- | -----: | ----: | ------: | -----: | ----: |
+| No Val Link          |  0.316 | 0.000 |   0.043 |  0.025 | 0.023 |
+| FCAV                 |  0.667 | 0.326 |   0.304 |  0.095 | 0.205 |
+| ReAct (Node + Rel)   |  0.737 | 0.478 |   0.422 |  0.341 | 0.109 |
+| GraphRAG             |  0.895 | 0.761 |   0.478 |  0.262 | 0.174 |
+| CyANCHOR (fuzzy+lev) |  0.947 | 0.733 |   0.756 |  0.286 | 0.326 |
 
 ## By query-difficulty — EA
 
-| mode                          |  easy | medium |  hard |
-| ----------------------------- | ----: | -----: | ----: |
-| No Val Link                   | 0.000 |  0.057 | 0.000 |
-| FCAV (RAG)                    | 0.200 |  0.248 | 0.129 |
-| ReAct Fuzzy (Node + Rel)      | 0.240 |  0.352 | 0.071 |
-| Plan&Exec Fuzzy (Node + Rel)  | 0.440 |  0.400 | 0.129 |
+| method               |  easy | medium |  hard |
+| -------------------- | ----: | -----: | ----: |
+| No Val Link          | 0.000 |  0.060 | 0.058 |
+| FCAV                 | 0.240 |  0.272 | 0.294 |
+| ReAct (Node + Rel)   | 0.440 |  0.379 | 0.348 |
+| GraphRAG             | 0.520 |  0.538 | 0.343 |
+| CyANCHOR (fuzzy+lev) | 0.600 |  0.573 | 0.551 |
 
 ## By perturbation strategy — PSJS
 
-| mode                          | casing |  typo | partial | abbrev | alias |
-| ----------------------------- | -----: | ----: | ------: | -----: | ----: |
-| No Val Link                   |  0.392 | 0.066 |   0.141 |  0.067 | 0.061 |
-| FCAV (RAG)                    |  0.800 | 0.431 |   0.455 |  0.204 | 0.236 |
-| ReAct Fuzzy (Node + Rel)      |  0.952 | 0.533 |   0.485 |  0.395 | 0.224 |
-| Plan&Exec Fuzzy (Node + Rel)  |  0.801 | 0.640 |   0.755 |  0.325 | 0.400 |
+| method               | casing |  typo | partial | abbrev | alias |
+| -------------------- | -----: | ----: | ------: | -----: | ----: |
+| No Val Link          |  0.360 | 0.068 |   0.139 |  0.071 | 0.055 |
+| FCAV                 |  0.743 | 0.413 |   0.478 |  0.159 | 0.285 |
+| ReAct (Node + Rel)   |  0.740 | 0.474 |   0.508 |  0.395 | 0.146 |
+| GraphRAG             |  0.886 | 0.883 |   0.549 |  0.316 | 0.234 |
+| CyANCHOR (fuzzy+lev) |  0.896 | 0.779 |   0.858 |  0.324 | 0.397 |
 
 ---
 
 ## Findings
 
-1. **Monotone gain from grounding quality.** No Val Link 0.030 → FCAV 0.200 → ReAct Fuzzy
-   0.240 → **Plan&Exec Fuzzy 0.310**. Plan&Exec beats both the ReAct agent and the
-   retrieve-then-generate RAG baseline, consistent with flight_accident.
-2. **The advantage is real but smaller than on flight_accident** (where Plan&Exec hit 0.77).
-   On movie the residual failures are dominated by **Cypher-generation** errors, not
-   grounding: in the both-fail set, ~41% of cases have the entities grounded *correctly* but
-   the generated query is structurally wrong (e.g. count-then-UNION instead of UNION-then-
-   count on "either/or" questions). No grounding method can recover those.
-3. **Remaining grounding misses are the hardest perturbations** — abbreviations (`LOTR:TTT`)
-   and semantic substitutions (`Jason's ship` → `Argo`) that BM25 fuzzy cannot match. These
-   are where **Hybrid** (in-graph vector) is expected to help; that row is pending.
-4. **PSJS tracks EA** (0.115 → 0.381 → 0.464 → 0.561): even when EA fails, Plan&Exec's
-   partial subgraph overlap is highest, i.e. its queries are closest to gold.
-5. **One reversal: ReAct edges Plan&Exec on `casing`** (0.700 vs 0.550, small n). On the
-   easiest perturbation, Plan&Exec's PLAN stage occasionally over-decomposes — treating
-   schema words (`"movies"`, `"cast members"`) as groundable mentions and routing the real
-   entity to a non-`name` field — adding noise the simpler ReAct path avoids. A natural
-   improvement target (constrain PLAN mentions; prefer `*.name` routing), orthogonal to the
-   Cypher-generation ceiling in (2).
+1. **CyANCHOR is the strongest method** — EA 0.569 vs GraphRAG 0.467, ReAct 0.376, FCAV 0.276, No Val Link 0.052 — under an identical, shared Cypher system prompt. The ranking is identical to flight_accident; movie's larger, more ambiguous value space (~218k node values) lowers the absolute ceiling for every method but does not change the order.
+2. **`fuzzy+lev` (no embeddings) already beats every baseline, including GraphRAG's Levenshtein repair.** GraphRAG and CyANCHOR share the *same* APOC normalized-Levenshtein primitive (server-side scan over the full value set); the +0.102 EA gap is the *architecture* — CyANCHOR grounds every mention proactively via the union of arms, GraphRAG only repairs values reactively, one at a time, after a generated query fails validation — not the retrieval primitive.
+3. **Gains concentrate on `partial`** (0.756 vs GraphRAG 0.478, +0.278) and on `alias` / `casing`. On `typo`, GraphRAG's reactive single-value repair is on par (0.761 vs 0.733, within noise) — single-character typos are exactly what edit-distance repair nails. `abbrev` stays hard for every method (≤0.34): contractions are not recoverable by edit distance alone, and here token-fuzzy ReAct (0.341) edges the Lev-based methods.
+4. **CyANCHOR degrades most gracefully with query difficulty** (hard 0.551 vs GraphRAG 0.343, FCAV 0.294): decomposing the question per entity mention helps most on multi-entity hard queries, where a single reactive repair pass tends to leave residual ungrounded mentions.
