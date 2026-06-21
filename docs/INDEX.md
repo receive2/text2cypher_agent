@@ -22,8 +22,8 @@ Current, canonical documents. Superseded / historical drafts live in
 |---|---|
 | [plan_exec_hybrid.md](plan_exec_hybrid.md) | **Method writeup** — how *Plan&Exec Hybrid (Node + Rel)*, the shipped value-linking grounder, works end to end (PLAN → EXECUTE with the LLM corrective loop → GENERATE). |
 | [multi_agent_graphrag.md](multi_agent_graphrag.md) | **Method writeup** — the Multi-Agent GraphRAG baseline (`VAL_LINK_MODE=graphrag`): no pre-grounding; generate → execute → evaluate → structural/semantic repair loop with normalized-Levenshtein value replacement. |
-| [ablation_flight_accident.md](ablation_flight_accident.md) | **Current results** — all modes on flight_accident: No Val Link, FCAV (RAG), ReAct Fuzzy (Node / Node + Rel), Plan&Exec Fuzzy / Hybrid. Aligned tables. |
-| [ablation_movie.md](ablation_movie.md) | **Current results** — all modes on movie (~459k nodes): No Val Link 0.030 → FCAV 0.200 → ReAct Fuzzy 0.240 → Plan&Exec Fuzzy 0.310. Fuzzy-only (Hybrid row pending the vector-index build). Notes the Cypher-generation ceiling that compresses the gap vs flight. |
+| [flight_accident.md](../report/CypherBench/flight_accident.md) | **Current results** — all modes on flight_accident: No Val Link, FCAV (RAG), ReAct Fuzzy (Node / Node + Rel), Plan&Exec Fuzzy / Hybrid. Aligned tables. |
+| [movie.md](../report/CypherBench/movie.md) | **Current results** — all modes on movie (~459k nodes): No Val Link 0.030 → FCAV 0.200 → ReAct Fuzzy 0.240 → Plan&Exec Fuzzy 0.310. Fuzzy-only (Hybrid row pending the vector-index build). Notes the Cypher-generation ceiling that compresses the gap vs flight. |
 | [DIFFICULTY_DESIGN.md](DIFFICULTY_DESIGN.md) | Design-of-record for `eval/difficulty.py` (graded query-difficulty rubric). Status: implemented. |
 
 ## Earlier studies (pre-Plan&Exec; ReAct-agent era)

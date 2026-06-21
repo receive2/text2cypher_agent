@@ -131,7 +131,7 @@ CyANCHOR's retrieval/tool sub-axes:
 | examples per pair | `LIMIT` in `eval_config.py` | int · `None` (all) |
 
 `cyanchor` is **CyANCHOR**, the shipped method; `no_val_link` / `fcav` / `react` /
-`graphrag` are baselines. See [docs/ablation_flight_accident.md](docs/ablation_flight_accident.md)
+`graphrag` are baselines. See [report/CypherBench/flight_accident.md](report/CypherBench/flight_accident.md)
 for the ablation and the README "Methods" table for details.
 
 Example — CyANCHOR `fuzzy+lev` (no embeddings), node + relation tools:

@@ -108,3 +108,10 @@ verification/
 # ──────────────────────────────────────────────────────────────────────────────
 !benchmarks/
 !benchmarks/**
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Ablation reports — always tracked (override the cypherbench/ dir-name ignore
+# above, which otherwise matches report/CypherBench/ on a case-insensitive FS).
+# ──────────────────────────────────────────────────────────────────────────────
+!report/
+!report/**

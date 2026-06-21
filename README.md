@@ -44,7 +44,7 @@ User question
 The method is selected by the `METHOD` axis — `no_val_link` · `fcav` · `react` ·
 `graphrag` · `cyanchor` (see [Methods](#value-linking-modes)). The shipped method is
 **CyANCHOR** (`cyanchor`); `No Val Link`, `FCAV`, `ReAct`, and `GraphRAG` are the
-baselines. Ablation: [docs/ablation_flight_accident.md](docs/ablation_flight_accident.md).
+baselines. Ablation: [report/CypherBench/flight_accident.md](report/CypherBench/flight_accident.md).
 
 ---
 
@@ -217,7 +217,7 @@ METHOD=graphrag python eval_run.py
 > resolve (`val_link`+`plan_exec` → `cyanchor`, `hybrid` → `+vector`).
 
 Method writeup: [docs/multi_agent_graphrag.md](docs/multi_agent_graphrag.md) ·
-results: [docs/ablation_flight_accident.md](docs/ablation_flight_accident.md).
+results: [report/CypherBench/flight_accident.md](report/CypherBench/flight_accident.md).
 
 ---
 
