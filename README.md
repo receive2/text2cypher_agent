@@ -41,11 +41,10 @@ User question
 └─────────────────────────────────────────────────────┘
 ```
 
-The value-linking stage is selected by four config axes — `VAL_LINK_MODE`,
-`AGENT_TYPE`, `RETRIEVAL_TYPE`, `TOOL_TYPE` (see [Value-linking modes](#value-linking-modes)).
-The shipped method is **Plan&Exec** (`plan_exec`); `No Val Link`, `FCAV` (a
-retrieve-then-generate RAG baseline) and `ReAct` are the baselines.
-Full method writeup: [docs/plan_exec_hybrid.md](docs/plan_exec_hybrid.md).
+The method is selected by the `METHOD` axis — `no_val_link` · `fcav` · `react` ·
+`graphrag` · `cyanchor` (see [Methods](#value-linking-modes)). The shipped method is
+**CyANCHOR** (`cyanchor`); `No Val Link`, `FCAV`, `ReAct`, and `GraphRAG` are the
+baselines. Ablation: [docs/ablation_flight_accident.md](docs/ablation_flight_accident.md).
 
 ---
 
@@ -174,20 +173,21 @@ python setup_project.py --verbose               # show full tracebacks on errors
 
 ## Value-linking modes
 
-The value-linking stage is chosen by four orthogonal config axes in `config.py`
-(each env-overridable), resolved into a `GroundingSpec`:
+The method is chosen by a single `METHOD` axis in `config.py` (env-overridable),
+plus CyANCHOR's retrieval/tool sub-axes, resolved into a `GroundingSpec`:
 
 | axis | values |
 |---|---|
-| `VAL_LINK_MODE` | `no_val_link` · `fcav` · `graphrag` · `val_link` |
-| `AGENT_TYPE` | `react` · `plan_exec`  (when `val_link`) |
-| `RETRIEVAL_TYPE` | `fuzzy` · `hybrid`  (when `val_link`) |
-| `TOOL_TYPE` | `node` · `node_rel`  (when `val_link`) |
+| `METHOD` | `no_val_link` · `fcav` · `react` · `graphrag` · `cyanchor` |
+| `RETRIEVAL_FUZZY` / `RETRIEVAL_VECTOR` / `RETRIEVAL_LEVENSHTEIN` | `0`/`1` each — CyANCHOR's retrieval arms (≥1 on; defaults `1`/`0`/`1`) |
+| `TOOL_TYPE` | `node` · `node_rel`  (react / cyanchor) |
 
 - **`no_val_link`** — grounding bypassed; only schema + question reach the Cypher LLM.
 - **`fcav`** — retrieve-then-generate RAG baseline (embed question → retrieve values
   from a self-built value index → LLM generates the entity JSON). Build the index
   with `setup_fcav.py` first.
+- **`react`** — ReAct NER-agent grounder (baseline); fixed fuzzy/BM25 retrieval over
+  `TOOL_TYPE` tools.
 - **`graphrag`** — Multi-Agent GraphRAG baseline: **no pre-grounding** — generate
   Cypher → execute → an LLM evaluator classifies (accept / semantic-defect /
   error-or-empty); on error/empty it extracts the query's labels, property–value
@@ -195,25 +195,28 @@ The value-linking stage is chosen by four orthogonal config axes in `config.py`
   Levenshtein replacements for invalid values, and regenerates — up to
   `GRAPHRAG_MAX_ITER` rounds. Knobs: `GRAPHRAG_*` in `config.py`. Writeup:
   [docs/multi_agent_graphrag.md](docs/multi_agent_graphrag.md).
-- **`val_link`** — the grounder. `AGENT_TYPE=react` is the ReAct NER agent;
-  `AGENT_TYPE=plan_exec` is **Plan&Exec**, the shipped method (decompose the
-  question → route each mention to a field → retrieve with an LLM corrective loop
-  → hand candidates to the Cypher LLM). `RETRIEVAL_TYPE` = `fuzzy` (BM25, zero
-  embeddings) or `hybrid` (BM25 ∪ in-graph vector); `TOOL_TYPE` = `node` or `node_rel`.
+- **`cyanchor`** — **CyANCHOR**, the shipped method: decompose the question → route each
+  mention to a field → retrieve candidates with an LLM corrective loop → hand candidates
+  to the Cypher LLM. Retrieval is the **union of three independently-toggleable arms**:
+  `RETRIEVAL_FUZZY` (BM25), `RETRIEVAL_LEVENSHTEIN` (APOC normalized edit-distance — no
+  embeddings, high-ROI), `RETRIEVAL_VECTOR` (in-graph embeddings). `TOOL_TYPE` = `node` | `node_rel`.
 
-Example — the shipped Plan&Exec Hybrid (Node + Rel):
-
-```bash
-VAL_LINK_MODE=val_link AGENT_TYPE=plan_exec RETRIEVAL_TYPE=hybrid TOOL_TYPE=node_rel python eval_run.py
-```
-
-Example — the Multi-Agent GraphRAG baseline:
+Example — CyANCHOR `fuzzy+lev` (no embeddings needed), node + relation tools:
 
 ```bash
-VAL_LINK_MODE=graphrag python eval_run.py
+METHOD=cyanchor RETRIEVAL_VECTOR=0 TOOL_TYPE=node_rel python eval_run.py
 ```
 
-Method writeup: [docs/plan_exec_hybrid.md](docs/plan_exec_hybrid.md) ·
+Example — a baseline (Multi-Agent GraphRAG):
+
+```bash
+METHOD=graphrag python eval_run.py
+```
+
+> Back-compat: the legacy `VAL_LINK_MODE` / `AGENT_TYPE` / `RETRIEVAL_TYPE` axes still
+> resolve (`val_link`+`plan_exec` → `cyanchor`, `hybrid` → `+vector`).
+
+Method writeup: [docs/multi_agent_graphrag.md](docs/multi_agent_graphrag.md) ·
 results: [docs/ablation_flight_accident.md](docs/ablation_flight_accident.md).
 
 ---
@@ -393,14 +396,14 @@ driver.close()
 
 ### 4 — Ask a question
 
-`--mode` selects the value-linking mode by its canonical name (or set the four
-axes — see [Value-linking modes](#value-linking-modes)).
+`--mode` selects the method by its canonical name (or set `METHOD` + the retrieval
+switches — see [Methods](#value-linking-modes)).
 
-**Plan&Exec** — the shipped method:
+**CyANCHOR** — the shipped method:
 
 ```bash
 # Full pipeline: value linking → Cypher → Neo4j → answer
-python ner_agent_auto.py "Who acted in The Matrix?" --mode plan_exec_node_rel_hybrid
+python ner_agent_auto.py "Who acted in The Matrix?" --mode cyanchor_fl_node_rel
 
 # --verbose shows the intermediate steps:
 #   PLAN     entity mentions decomposed from the question
@@ -408,11 +411,13 @@ python ner_agent_auto.py "Who acted in The Matrix?" --mode plan_exec_node_rel_hy
 #            LLM corrective-loop decisions (done / deepen / pick a field)
 #   GENERATE the candidate block + the generated Cypher
 python ner_agent_auto.py "How many movies were released before 2000?" \
-    --mode plan_exec_node_rel_hybrid --verbose
+    --mode cyanchor_fl_node_rel --verbose
 ```
 
-> `plan_exec_node_rel_hybrid` uses the in-graph vector index; on a graph without
-> one it falls back to fuzzy. `plan_exec_node_rel` is the zero-embedding (fuzzy) variant.
+> Canonical names encode the arms: `cyanchor_fl_node_rel` = fuzzy+lev (no embeddings),
+> `cyanchor_fvl_node_rel` = fuzzy+lev+vector (needs an in-graph vector index;
+> falls back gracefully if absent). Or just set `METHOD=cyanchor` + the
+> `RETRIEVAL_*` switches and omit `--mode`.
 
 **ReAct** agent — baseline (also shows its agent trace under `--verbose`):
 
@@ -709,11 +714,11 @@ If you prefer to run each step individually or need to debug a specific stage:
 | `requirements.txt` | Python dependencies |
 | `setup_project.py` | **One-click setup** — runs all 10 setup steps automatically |
 | `switch_embedding_backend.py` | **One-click backend swap** — re-embeds + rebuilds vector indexes after editing `EMBEDDING_BACKEND` in `vector_config.py`; does NOT regenerate tools / system prompt / FAISS |
-| `config.py` | **User-managed** runtime settings — LLM configs per stage, value-linking axes (`VAL_LINK_MODE`/`AGENT_TYPE`/`RETRIEVAL_TYPE`/`TOOL_TYPE`), plan_exec + sampling/validation knobs. **Not** auto-generated; safe to edit by hand |
+| `config.py` | **User-managed** runtime settings — LLM configs per stage, the `METHOD` axis + CyANCHOR's `RETRIEVAL_FUZZY`/`RETRIEVAL_VECTOR`/`RETRIEVAL_LEVENSHTEIN`/`TOOL_TYPE`, + sampling/validation knobs. **Not** auto-generated; safe to edit by hand |
 | `vector_config.py` | Retrieval mode (`fuzzy`/`vector`/`hybrid`), embedding backend + dim, `EMBEDDABLE_PROPERTIES` |
 | `paths.py` | Centralized filesystem-layout constants for every generated artifact |
 | `ner_agent_auto.py` | Value-linking → Cypher pipeline (main entrypoint); `ask_auto` dispatches to the grounding mode and runs `GraphCypherQAChain` |
-| `plan_exec.py` | **Plan&Exec** grounder (the shipped method): decompose → route → retrieve (fuzzy/hybrid) with the LLM corrective loop |
+| `plan_exec.py` | **CyANCHOR** grounder (the shipped method, `METHOD=cyanchor`): decompose → route → retrieve (3 toggleable arms: fuzzy / Levenshtein / vector) with the LLM corrective loop |
 | `fcav.py` | `fcav` mode — retrieve-then-generate RAG baseline over a self-built value index (built by `setup_fcav.py`) |
 | `agent/prompts.py` | **Auto-generated** system prompts (`NER_SP`, `TEXT2CYPHER_SP`, `QA_SP`, `PROMPT_ALIGNER_SP`) + schema constants |
 | `schema/gen_schema_csv.py` | Export full schema to `schema_data/schema_nodes.csv` + `schema_relations.csv` |

@@ -120,33 +120,33 @@ mode + config in the header).
 
 ### Experiment knobs
 
-Value linking is selected by four orthogonal axes in `config.py` (each
-env-overridable):
+The method is selected by `METHOD` in `config.py` (env-overridable), plus
+CyANCHOR's retrieval/tool sub-axes:
 
 | axis | env var | values |
 |---|---|---|
-| value-link mode | `VAL_LINK_MODE` | `no_val_link` · `fcav` · `graphrag` · `val_link` |
-| grounder | `AGENT_TYPE` | `react` · `plan_exec` (when `val_link`) |
-| retrieval | `RETRIEVAL_TYPE` | `fuzzy` · `hybrid` (when `val_link`) |
-| tool scope | `TOOL_TYPE` | `node` · `node_rel` (when `val_link`) |
+| method | `METHOD` | `no_val_link` · `fcav` · `react` · `graphrag` · `cyanchor` |
+| CyANCHOR arms | `RETRIEVAL_FUZZY` / `RETRIEVAL_VECTOR` / `RETRIEVAL_LEVENSHTEIN` | `0`/`1` each (≥1 on; defaults `1`/`0`/`1`) |
+| tool scope | `TOOL_TYPE` | `node` · `node_rel` (react / cyanchor) |
 | examples per pair | `LIMIT` in `eval_config.py` | int · `None` (all) |
 
-`graphrag` is the Multi-Agent GraphRAG baseline (no pre-grounding; generate →
-execute → evaluate → repair loop). See
-[docs/multi_agent_graphrag.md](docs/multi_agent_graphrag.md) and the README
-"Value-linking modes" table for all modes.
+`cyanchor` is **CyANCHOR**, the shipped method; `no_val_link` / `fcav` / `react` /
+`graphrag` are baselines. See [docs/ablation_flight_accident.md](docs/ablation_flight_accident.md)
+for the ablation and the README "Methods" table for details.
 
-Example — plan-and-execute, hybrid retrieval, node+relation tools:
+Example — CyANCHOR `fuzzy+lev` (no embeddings), node + relation tools:
 
 ```bash
-VAL_LINK_MODE=val_link AGENT_TYPE=plan_exec RETRIEVAL_TYPE=hybrid TOOL_TYPE=node_rel python eval_run.py
+METHOD=cyanchor RETRIEVAL_VECTOR=0 TOOL_TYPE=node_rel python eval_run.py
 ```
 
 Example — the Multi-Agent GraphRAG baseline:
 
 ```bash
-VAL_LINK_MODE=graphrag python eval_run.py
+METHOD=graphrag python eval_run.py
 ```
+
+> Back-compat: the legacy `VAL_LINK_MODE` / `AGENT_TYPE` / `RETRIEVAL_TYPE` still resolve.
 
 Re-running is incremental: each pair overwrites only its own two files in
 `OUT_DIR`; `eval_aggregate.py` re-reads everything on disk, so a partial re-run
