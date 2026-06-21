@@ -135,6 +135,7 @@ def _clean_cypher(text: str) -> str:
 # ──────────────────────────────────────────────────────────────────────────────
 _LABELS_CACHE: Optional[set] = None
 _RELTYPES_CACHE: Optional[set] = None
+_EDGE_PATTERNS_CACHE: Optional[set] = None
 
 
 def _db_labels() -> set:
@@ -164,6 +165,43 @@ def _db_rel_types() -> set:
     return _RELTYPES_CACHE
 
 
+def _allowed_edge_patterns() -> set:
+    """Schema-allowed directed edge patterns as ``(from_label, rel_type, to_label)``
+    triples. Primary source is ``schema_data/schema_relations.csv`` (computed at
+    setup, exactly matching the live graph); falls back to the live schema graph.
+    An empty set means "unknown" → edge-pattern validation is skipped (fail-safe,
+    never flags a valid edge as invalid)."""
+    global _EDGE_PATTERNS_CACHE
+    if _EDGE_PATTERNS_CACHE is None:
+        import csv as _csv
+        pats: set = set()
+        try:
+            with open("schema_data/schema_relations.csv", newline="", encoding="utf-8") as fh:
+                for r in _csv.DictReader(fh):
+                    f, t, d = r.get("from_label"), r.get("rel_type"), r.get("to_label")
+                    if f and t and d:
+                        pats.add((f, t, d))
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("graphrag: reading schema_relations.csv failed (%s); "
+                           "trying live schema graph", exc)
+        if not pats:  # fallback: query the live schema graph (metadata, not a scan)
+            try:
+                rows = neo4j_graph.query(
+                    "CALL apoc.meta.data() YIELD label, property, type, other "
+                    "WHERE type = 'RELATIONSHIP' "
+                    "RETURN label AS src, property AS rel, other AS dst"
+                )
+                for r in rows:
+                    dst = r.get("dst")
+                    dst = dst[0] if isinstance(dst, list) and dst else dst
+                    if r.get("src") and r.get("rel") and dst:
+                        pats.add((r["src"], r["rel"], dst))
+            except Exception as exc:  # noqa: BLE001
+                logger.warning("graphrag: edge-pattern schema lookup failed: %s", exc)
+        _EDGE_PATTERNS_CACHE = pats
+    return _EDGE_PATTERNS_CACHE
+
+
 # ──────────────────────────────────────────────────────────────────────────────
 # Component extraction from a generated Cypher query
 # ──────────────────────────────────────────────────────────────────────────────
@@ -184,6 +222,21 @@ _PROP_RE = re.compile(
 # Inline map properties in a node pattern: (x:Label {name: 'v', year: "w"}).
 _MAP_RE = re.compile(r"\(\s*\w*\s*:\s*`?(\w+)`?\s*\{([^{}]*)\}")
 _KV_RE = re.compile(r"`?(\w+)`?\s*:\s*(['\"])(.*?)\2")
+# (leftNode) <-|- [ :REL ] -|-> (rightNode) — captures both endpoints + direction.
+_EDGE_RE = re.compile(
+    r"\(([^()]*)\)\s*(<-|-)\s*\[[^\]]*?:\s*`?(\w+)`?[^\]]*\]\s*(->|-)\s*\(([^()]*)\)"
+)
+
+
+def _label_of(node_body: str, alias_to_label: Dict[str, str]) -> Optional[str]:
+    """Resolve a MATCH node's interior (``alias:Label`` / ``:Label`` / bare alias)
+    to its label, using the alias→label map for bare aliases."""
+    m = re.search(r":\s*`?(\w+)`?", node_body)
+    if m:
+        return m.group(1)
+    tok = node_body.strip().split()[0] if node_body.strip() else ""
+    tok = re.split(r"[ {]", tok)[0]
+    return alias_to_label.get(tok)
 
 
 def _extract_components(cypher: str) -> Dict[str, Any]:
@@ -218,10 +271,20 @@ def _extract_components(cypher: str) -> Dict[str, Any]:
             seen.add(p)
             uniq.append(p)
 
+    # (c) directed edge patterns (src_label, rel_type, dst_label), aliases resolved
+    edges: List[Tuple[str, str, str]] = []
+    for ln, d1, rel, _d2, rn in _EDGE_RE.findall(cypher):
+        L, R = _label_of(ln, alias_to_label), _label_of(rn, alias_to_label)
+        if not L or not R:
+            continue
+        edges.append((R, rel, L) if d1 == "<-" else (L, rel, R))
+    edges = list(dict.fromkeys(edges))        # dedup, preserve order
+
     return {
         "labels": sorted(set(labels)),
         "rel_types": sorted(set(rel_types)),
         "props": uniq,                        # [(label|None, prop, value), ...]
+        "edges": edges,                       # [(src_label, rel_type, dst_label), ...]
         "alias_to_label": alias_to_label,
     }
 
@@ -313,10 +376,23 @@ def _validate(components: Dict[str, Any]) -> Dict[str, Any]:
             "candidates": _candidate_replacements(label, prop, value),
         })
 
+    # Invalid pairwise edge patterns: a rel that does not connect those two labels
+    # in the schema (in either direction). Only checked when the schema's allowed
+    # patterns are known (empty → skip, fail-safe).
+    allowed_edges = _allowed_edge_patterns()
+    bad_edges: List[Tuple[str, str, str]] = []
+    if allowed_edges:
+        for (s, rel, d) in components.get("edges", []):
+            if s in bad_labels or d in bad_labels or rel in bad_rels:
+                continue                      # already reported as a bad component
+            if (s, rel, d) not in allowed_edges and (d, rel, s) not in allowed_edges:
+                bad_edges.append((s, rel, d))
+
     return {
         "bad_labels": bad_labels,
         "bad_rels": bad_rels,
         "bad_values": bad_values,
+        "bad_edges": bad_edges,
         "valid_labels": sorted(valid_labels),
         "valid_rels": sorted(valid_rels),
     }
@@ -391,6 +467,13 @@ def _build_structural_feedback(
         lines.append(
             f"- Relationship type `{rel}` is not in the schema. "
             f"Valid relationship types: {validation['valid_rels']}."
+        )
+    for (s, rel, d) in validation.get("bad_edges", []):
+        reported = True
+        lines.append(
+            f"- Edge pattern (:{s})-[:{rel}]->(:{d}) is not in the schema — "
+            f"`{rel}` does not connect those labels. Use a valid relationship/path "
+            f"between :{s} and :{d}."
         )
     for bv in validation["bad_values"]:
         reported = True
