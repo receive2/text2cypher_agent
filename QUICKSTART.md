@@ -71,6 +71,10 @@ python ner_agent_auto.py "Who directed The Matrix?" --verbose
 You should see: entities resolved → Cypher generated → rows → a natural-language
 answer. That's the whole pipeline.
 
+> Out of the box this runs **CyANCHOR** (the shipped grounder — `METHOD=cyanchor`
+> is the default). To run a baseline instead, set `METHOD=no_val_link` (no
+> grounding) / `fcav` / `react` / `graphrag`.
+
 ---
 
 ## 5. Run experiments (the evaluation harness)
@@ -111,6 +115,12 @@ python eval_aggregate.py              # print per-difficulty + per-strategy tabl
 > table). `eval_run.py` runs the same check automatically and skips any
 > contaminated pair, but the pre-flight catches problems before you spend run
 > time. See [docs/RUNNING_EXPERIMENTS.md](docs/RUNNING_EXPERIMENTS.md).
+
+> **Only for the `fcav` baseline:** after `setup_and_archive.py`, also run
+> `python setup_fcav.py` once — it builds the FCAV value index (per graph in
+> `eval_config.EVAL_PAIRS`) that the retrieve-then-generate baseline needs.
+> The other four methods (`no_val_link` / `react` / `graphrag` / `cyanchor`)
+> need no extra step.
 
 `eval_aggregate.py` prints, per dataset, an **EA / EM / PSJS** table bucketed by
 **difficulty** (easy/medium/hard) and — for the perturbed `*_augmented` sets —

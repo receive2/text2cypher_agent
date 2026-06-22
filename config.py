@@ -288,7 +288,7 @@ CAP_MULTIPLIER        = 1000    # scan cap = t * CAP_MULTIPLIER (cheap over-fetc
 # Back-compat: the legacy VAL_LINK_MODE / AGENT_TYPE / RETRIEVAL_TYPE still work
 # (val_link+plan_exec → cyanchor, val_link+react → react, hybrid → +vector).
 # ──────────────────────────────────────────────────────────────────────────────
-METHOD:    str = os.getenv("METHOD", os.getenv("VAL_LINK_MODE", "no_val_link")).strip().lower()
+METHOD:    str = os.getenv("METHOD", os.getenv("VAL_LINK_MODE", "cyanchor")).strip().lower()
 TOOL_TYPE: str = os.getenv("TOOL_TYPE", "node_rel").strip().lower()
 RETRIEVAL_FUZZY       = os.getenv("RETRIEVAL_FUZZY",       "1").lower() in ("1", "true", "yes")
 RETRIEVAL_VECTOR      = os.getenv("RETRIEVAL_VECTOR",      "0").lower() in ("1", "true", "yes")

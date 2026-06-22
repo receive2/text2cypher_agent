@@ -19,9 +19,9 @@ User question
 │ 1. Value linking  (ner_agent_auto.py → plan_exec.py)│
 │    • Ground the entities in the question to the      │
 │      canonical DB values the WHERE clause needs      │
-│    • Default = Plan&Exec: decompose the question →   │
+│    • Default = CyANCHOR: decompose the question →    │
 │      route each mention to a field → retrieve        │
-│      (fuzzy ∪ vector) with an LLM corrective loop     │
+│      (fuzzy ∪ lev ∪ vec) with an LLM corrective loop  │
 │    • Output: candidate canonical values per mention  │
 └──────────────────┬──────────────────────────────────┘
                    │ candidate canonical values
@@ -435,7 +435,7 @@ Or call from Python:
 from ner_agent_auto import ask_auto
 
 result = ask_auto("What movies did Keanu Reeves star in?",
-                  mode="plan_exec_node_rel_hybrid")   # or omit to use the config axes
+                  mode="cyanchor_fl_node_rel")   # or omit to use the config axes
 print(result["cypher"])   # the generated Cypher query
 print(result["result"])   # natural-language answer
 print(result["context"])  # raw rows returned by Neo4j
@@ -579,7 +579,7 @@ python verify_setup.py --all    # checks every pair in GRAPH_CONNS
 python verify_setup.py --live   # checks the live tree vs .current_setup
 ```
 
-**Why this matters for multi-graph runs.** The harness keeps a *single live copy* of each graph's artifacts (node tools, schema, prompts, FAISS / FCAV indexes) and swaps the right archive in per pair. If the wrong artifacts are live — an interrupted swap, a failed tool regen, a hand recovery — value linking runs against the wrong tools and **silently scores at the no-link floor with no error**. (Tell-tale sign: ReAct / Plan&Exec collapse to ≈ the `no_val_link` score while **FCAV still works**, because FCAV uses the schema + prompts, which stay correct, not the per-graph tools.)
+**Why this matters for multi-graph runs.** The harness keeps a *single live copy* of each graph's artifacts (node tools, schema, prompts, FAISS / FCAV indexes) and swaps the right archive in per pair. If the wrong artifacts are live — an interrupted swap, a failed tool regen, a hand recovery — value linking runs against the wrong tools and **silently scores at the no-link floor with no error**. (Tell-tale sign: ReAct / CyANCHOR collapse to ≈ the `no_val_link` score while **FCAV still works**, because FCAV uses the schema + prompts, which stay correct, not the per-graph tools.)
 
 `verify_setup.py` connects to each graph and confirms the archive's node tools search labels that **actually have nodes** there — a count check, not just `db.labels()`, because Neo4j keeps emptied labels in the registry as ghosts. Green = safe to run; red names the offending labels and the fix. Full procedure for collaborators: [docs/RUNNING_EXPERIMENTS.md](docs/RUNNING_EXPERIMENTS.md).
 
