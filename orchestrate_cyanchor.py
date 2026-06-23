@@ -99,6 +99,11 @@ def _set_arms(vector: bool) -> None:
     os.environ["RETRIEVAL_FUZZY"]       = "1"
     os.environ["RETRIEVAL_LEVENSHTEIN"] = "1"
     os.environ["RETRIEVAL_VECTOR"]      = "1" if vector else "0"
+    # Generous per-example cap: CyANCHOR is the most LLM-call-heavy method (PLAN +
+    # per-mention retrieval/escalation/abstain + Cypher gen + QA), so the 60s
+    # default truncates its hardest multi-entity questions while lighter baselines
+    # finish — unfair. 600s lets every example complete (the slow ones are ~70-120s).
+    os.environ["EVAL_PER_EXAMPLE_TIMEOUT"] = "600"
 
 
 def run_cyanchor(aug_dataset: str, conn_graph: str, dest_dir: Path, vector: bool) -> bool:
