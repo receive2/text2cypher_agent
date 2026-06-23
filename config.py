@@ -507,6 +507,19 @@ GRAPHRAG_LLM_EVALUATOR  = os.getenv("GRAPHRAG_LLM_EVALUATOR", "1").lower() in ("
 # GraphCypherQAChain). The recorded movie/flight ablations predate it and went
 # through GraphCypherQAChain — re-measure the val_link rows for a clean compare.
 CYPHER_RETRY_MAX_ROUNDS = int(os.getenv("CYPHER_RETRY_MAX_ROUNDS", "2"))
+# ── CyANCHOR-only semantic repair (generate→execute→EVALUATE-result→repair) ──
+# Extends CyANCHOR's existing error-driven CoT retry with a GraphRAG-style
+# semantic check on a SUCCESSFULLY-EXECUTED result: an LLM evaluator judges
+# accept / incorrect / illogical / incomplete (empty counts as wrong when
+# CYPHER_EMPTY_IS_WRONG), and on a defect CyANCHOR regenerates — keeping its
+# grounding injection + CoT, plus the semantic feedback. CyANCHOR ONLY (the
+# shared helper is gated by a per-call flag); react/graphrag/baselines untouched.
+# Anti-oscillation: the final query is the first ACCEPTED attempt, else the first
+# executable attempt (so it can only match-or-beat the no-repair result, never
+# silently drift below it). Default on (finished optimizations ship default-on).
+CYPHER_SEMANTIC_REPAIR  = os.getenv("CYPHER_SEMANTIC_REPAIR", "1").lower() in ("1", "true", "yes")
+CYPHER_REPAIR_MAX_ROUNDS = int(os.getenv("CYPHER_REPAIR_MAX_ROUNDS", "4"))
+CYPHER_EMPTY_IS_WRONG    = os.getenv("CYPHER_EMPTY_IS_WRONG", "1").lower() in ("1", "true", "yes")
 # Retry is error-driven only — an empty result does NOT trigger a rewrite. An
 # empty result is not evidence of a wrong query (the answer may legitimately be
 # empty), and on this benchmark the dominant failure is "wrong-but-non-empty"
