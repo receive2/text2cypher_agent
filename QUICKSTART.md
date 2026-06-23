@@ -139,6 +139,14 @@ CyANCHOR's retrieval/tool sub-axes:
 | CyANCHOR arms | `RETRIEVAL_FUZZY` / `RETRIEVAL_VECTOR` / `RETRIEVAL_LEVENSHTEIN` | `0`/`1` each (≥1 on; defaults `1`/`0`/`1`) |
 | tool scope | `TOOL_TYPE` | `node` · `node_rel` (react / cyanchor) |
 | examples per pair | `LIMIT` in `eval_config.py` | int · `None` (all) |
+| intra-graph parallelism | `SHARDS` in `eval_config.py` | int (default `4`; `1` = single process) |
+
+`SHARDS` splits each graph's examples into N stride-shards run as N parallel
+worker processes against the same container, then merges them — wall-clock ≈
+1/N. Graphs still run **sequentially** (one shared live artifact tree is swapped
+per graph), so only the examples *within* a graph parallelise. `SHARDS=1`
+reproduces the original single-process coverage exactly. Lower it if you hit LLM
+rate limits.
 
 `cyanchor` is **CyANCHOR**, the shipped method; `no_val_link` / `fcav` / `react` /
 `graphrag` are baselines. See [report/CypherBench/flight_accident.md](report/CypherBench/flight_accident.md)

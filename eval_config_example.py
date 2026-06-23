@@ -112,6 +112,16 @@ LIMIT: int | None = None
 # Verbose per-example log lines.
 VERBOSE: bool = False
 
+# Intra-graph parallelism: split each graph's examples into SHARDS stride-shards
+# run as SHARDS parallel worker processes against the same container, merged
+# afterwards (wall-clock ≈ 1/SHARDS). Graphs still run sequentially (one shared
+# live artifact tree swapped per graph). SHARDS=1 = single-process (identical
+# coverage). Lower if you hit LLM rate limits.
+SHARDS: int = 4
+
+# Where generated reports are written: REPORT_DIR/<dataset>/<graph>.md and _summary.md.
+REPORT_DIR: str = "report"
+
 
 # ── Helpers ──────────────────────────────────────────────────────────────────
 

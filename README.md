@@ -547,9 +547,17 @@ EVAL_PAIRS: list[tuple[str, str]] = [
 
 LIMIT:   int | None = None      # cap examples per pair (None = all)
 VERBOSE: bool       = False     # per-example log lines
+SHARDS:  int        = 4         # intra-graph parallelism (1 = single process)
 OUT_DIR              = "logs/eval"
 SETUP_ARTIFACTS_ROOT = "setup_artifacts"
 ```
+
+> **`SHARDS`** splits each graph's examples into N stride-shards run as N
+> parallel worker processes against the same container, merged afterwards
+> (wall-clock ≈ 1/N). Graphs still run **sequentially** — a single shared live
+> artifact tree is swapped per graph, so only the examples *within* a graph
+> parallelise. `SHARDS=1` is the original single-process behaviour (identical
+> coverage). This supersedes the old movie-only `_run_sharded.py` script.
 
 #### 2 — Set up + archive each graph (one-time per graph)
 

@@ -198,6 +198,10 @@ def main(argv: list[str] | None = None) -> int:
                     help="Optional cap on examples (None = all).")
     ap.add_argument("--verbose", action="store_true",
                     help="Per-example log lines.")
+    ap.add_argument("--shard",   type=int, default=0,
+                    help="This worker's shard index (0..shards-1).")
+    ap.add_argument("--shards",  type=int, default=1,
+                    help="Total shards; >1 runs only this worker's stride of examples.")
     args = ap.parse_args(argv)
 
     _bridge_env()
@@ -211,6 +215,8 @@ def main(argv: list[str] | None = None) -> int:
         verbose      = args.verbose,
         graph_filter = args.graph,
         dataset_name = args.dataset,
+        shard        = args.shard,
+        shards       = args.shards,
     )
 
     out = _summary_only(summary)

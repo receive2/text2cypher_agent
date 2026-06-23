@@ -159,10 +159,7 @@ def main() -> int:
         f"Higher is better; both over each method's successfully-executed rows. Generated {gen}.\n")
     parts.append(
         f"**Setup.** {ds} `{g}`, {n_q} entity-perturbed test questions\n"
-        f"(strategies: {snote}). LLMs: {llm} for grounding\n"
-        "and Cypher generation. **All methods share the identical Cypher system prompt** (the\n"
-        "either/or-UNION guidance is given to every method — a fair comparison). Each method\n"
-        "is scored over its own successfully-executed rows (per-method `n`).\n")
+        f"(strategies: {snote}). LLMs: {llm} for grounding and Cypher generation.\n")
     parts.append(
         "**Methods.**\n"
         "- **No Val Link** — grounding bypassed (the perturbed surface form is used as-is).\n"
