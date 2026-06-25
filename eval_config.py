@@ -259,7 +259,7 @@ CYPHER_EMPTY_IS_WRONG: bool = True
 # python eval_run.py
 # python eval_aggregate.py
 
-#tail -f logs/eval/cypherbench_augmented__movie.records.jsonl | jq -c '{i:1,qid:.qid[:8],ea,psjs,t:.elapsed_total_sec}'
+#tail -f logs/runs/cypherbench_augmented__movie__cyanchor_fl/records.jsonl | jq -c '{i:1,qid:.qid[:8],ea,psjs,t:.elapsed_total_sec}'
 
 # ── Helpers ──────────────────────────────────────────────────────────────────
 
