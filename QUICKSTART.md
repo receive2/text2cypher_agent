@@ -140,6 +140,8 @@ CyANCHOR's retrieval/tool sub-axes:
 | tool scope | `TOOL_TYPE` | `node` · `node_rel` (react / cyanchor) |
 | examples per pair | `LIMIT` in `eval_config.py` | int · `None` (all) |
 | intra-graph parallelism | `SHARDS` in `eval_config.py` | int (default `4`; `1` = single process) |
+| CyANCHOR self-correction | `CYPHER_SEMANTIC_REPAIR` / `CYPHER_REPAIR_MAX_ROUNDS` / `CYPHER_EMPTY_IS_WRONG` | defaults `1` / `4` / `1` |
+| report location | `REPORT_DIR` in `eval_config.py` | path (default `report`) |
 
 `SHARDS` splits each graph's examples into N stride-shards run as N parallel
 worker processes against the same container, then merges them — wall-clock ≈
@@ -149,7 +151,12 @@ reproduces the original single-process coverage exactly. Lower it if you hit LLM
 rate limits.
 
 `cyanchor` is **CyANCHOR**, the shipped method; `no_val_link` / `fcav` / `react` /
-`graphrag` are baselines. See [report/CypherBench/flight_accident.md](report/CypherBench/flight_accident.md)
+`graphrag` are baselines. CyANCHOR grounds the mentions, then the Cypher LLM
+**self-corrects**: a DB error → CoT error-repair; a wrong-but-executable result
+(LLM evaluator: incorrect/illogical/incomplete/empty) → grounding-aware
+regeneration (keeps the candidates + adds feedback), up to `CYPHER_REPAIR_MAX_ROUNDS`,
+keeping the first accepted (else first executable) attempt. See
+[report/CypherBench/flight_accident.md](report/CypherBench/flight_accident.md)
 for the ablation and the README "Methods" table for details.
 
 Example — CyANCHOR `fuzzy+lev` (no embeddings), node + relation tools:

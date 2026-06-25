@@ -181,6 +181,7 @@ plus CyANCHOR's retrieval/tool sub-axes, resolved into a `GroundingSpec`:
 | `METHOD` | `no_val_link` · `fcav` · `react` · `graphrag` · `cyanchor` |
 | `RETRIEVAL_FUZZY` / `RETRIEVAL_VECTOR` / `RETRIEVAL_LEVENSHTEIN` | `0`/`1` each — CyANCHOR's retrieval arms (≥1 on; defaults `1`/`0`/`1`) |
 | `TOOL_TYPE` | `node` · `node_rel`  (react / cyanchor) |
+| `CYPHER_SEMANTIC_REPAIR` / `CYPHER_REPAIR_MAX_ROUNDS` / `CYPHER_EMPTY_IS_WRONG` | CyANCHOR-only result-level self-correction (defaults `1` / `4` / `1`) |
 
 - **`no_val_link`** — grounding bypassed; only schema + question reach the Cypher LLM.
 - **`fcav`** — retrieve-then-generate RAG baseline (embed question → retrieve values
@@ -197,7 +198,14 @@ plus CyANCHOR's retrieval/tool sub-axes, resolved into a `GroundingSpec`:
   [docs/multi_agent_graphrag.md](docs/multi_agent_graphrag.md).
 - **`cyanchor`** — **CyANCHOR**, the shipped method: decompose the question → route each
   mention to a field → retrieve candidates with an LLM corrective loop → hand candidates
-  to the Cypher LLM. Retrieval is the **union of three independently-toggleable arms**:
+  to the Cypher LLM, which generates, executes, and **self-corrects** on the result: a DB
+  error triggers a CoT error-repair, and a successfully-executed but semantically wrong
+  result (an LLM evaluator judges *incorrect / illogical / incomplete / empty*) triggers a
+  **grounding-aware regeneration** — the candidate grounding is kept and the semantic
+  feedback + CoT are added (anti-oscillation: the final query is the first *accepted*
+  attempt, else the first executable one, so repair can only match-or-beat the no-repair
+  result). Knobs: `CYPHER_SEMANTIC_REPAIR` / `CYPHER_REPAIR_MAX_ROUNDS` /
+  `CYPHER_EMPTY_IS_WRONG`. Retrieval is the **union of three independently-toggleable arms**:
   `RETRIEVAL_FUZZY` (BM25), `RETRIEVAL_LEVENSHTEIN` (APOC normalized edit-distance — no
   embeddings, high-ROI), `RETRIEVAL_VECTOR` (in-graph embeddings). `TOOL_TYPE` = `node` | `node_rel`.
 
@@ -549,6 +557,7 @@ LIMIT:   int | None = None      # cap examples per pair (None = all)
 VERBOSE: bool       = False     # per-example log lines
 SHARDS:  int        = 4         # intra-graph parallelism (1 = single process)
 OUT_DIR              = "logs/eval"
+REPORT_DIR           = "report" # where gen_*_report.py write report/<dataset>/<graph>.md + _summary.md
 SETUP_ARTIFACTS_ROOT = "setup_artifacts"
 ```
 
