@@ -140,7 +140,7 @@ GRAPH_CONNS.update({
 
 
 EVAL_PAIRS: list[tuple[str, str]] = [
-    ("cypherbench_augmented", "movie"),
+    ("zograscope_augmented", "pole"),
 ]
 
 _FULL_EVAL_PAIRS_13: list[tuple[str, str]] = [
@@ -207,7 +207,7 @@ ZOGRASCOPE_AUGMENTED_PATH   = "/Users/q0w01lh/datasets/zograscope_augmented_v2/t
 # Per-(dataset, graph) records + summary live here.  File naming:
 #     <dataset>__<graph>.records.jsonl
 #     <dataset>__<graph>.summary.json
-OUT_DIR = "logs/header5_movie"
+OUT_DIR = "logs/pole_run"
 
 # Archived per-graph setup outputs (one subdir per (dataset, graph) pair).
 SETUP_ARTIFACTS_ROOT = "setup_artifacts"
@@ -218,10 +218,10 @@ SETUP_ARTIFACTS_ROOT = "setup_artifacts"
 # Per-dataset cap on examples (None = all).  Applied independently for
 # each (dataset, graph) pair after the graph filter.
 #LIMIT: int | None = 100
-LIMIT: int | None = 100
+LIMIT: int | None = None
 
 # Verbose per-example log lines.
-VERBOSE: bool = True
+VERBOSE: bool = False
 
 # Intra-graph parallelism. Each (dataset, graph) pair's examples are split into
 # SHARDS stride-shards run as SHARDS parallel worker processes against the same
@@ -230,11 +230,27 @@ VERBOSE: bool = True
 # sequentially (a single shared live artifact tree is swapped per graph), so
 # only the examples WITHIN a graph parallelise. Raise/lower per your CPU + LLM
 # rate limits.
-SHARDS: int = 8
+SHARDS: int = 1
 
 # Where generated reports are written: REPORT_DIR/<dataset>/<graph>.md and
 # REPORT_DIR/<dataset>/_summary.md. Default "report".
 REPORT_DIR: str = "report"
+
+# ── Method + CyANCHOR sub-axes (single source of truth) ──────────────────────
+# eval_run injects these into each worker's environment, where config.py reads
+# them (config.py stays the resolver). Precedence: an explicitly-set shell env
+# var wins (the documented `METHOD=… python eval_run.py` override and the batch
+# orchestrators still work); otherwise these eval_config values are used; config.py
+# defaults apply only if a field is missing here. So for the normal flow
+# (`python eval_run.py`) THIS is where the method/config lives.
+METHOD: str = "cyanchor"            # no_val_link | fcav | react | graphrag | cyanchor
+TOOL_TYPE: str = "node_rel"         # node | node_rel  (react / cyanchor)
+RETRIEVAL_FUZZY: bool = True        # CyANCHOR retrieval arms (≥1 on)
+RETRIEVAL_VECTOR: bool = False      #   vector needs in-graph embeddings
+RETRIEVAL_LEVENSHTEIN: bool = True
+CYPHER_SEMANTIC_REPAIR: bool = True   # CyANCHOR result-level self-correction (cyanchor-only)
+CYPHER_REPAIR_MAX_ROUNDS: int = 4
+CYPHER_EMPTY_IS_WRONG: bool = True
 
 
 

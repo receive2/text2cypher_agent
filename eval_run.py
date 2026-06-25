@@ -81,12 +81,35 @@ def _resolve_test_path(dataset: str) -> str:
 
 
 def _build_env(uri: str, user: str, password: str, database: str) -> dict[str, str]:
-    """Copy the parent env and overlay the worker's connection vars."""
+    """Copy the parent env and overlay the worker's connection vars + the run
+    config from eval_config (single source of truth — the worker's config.py reads
+    these). Precedence: an explicitly-set shell env var wins (so `METHOD=… python
+    eval_run.py` and the batch orchestrators that set os.environ still override);
+    eval_config fills any var the shell did not set; config.py defaults apply only
+    if eval_config omits the field too."""
     env = dict(os.environ)
     env["EVAL_NEO4J_URI"]      = uri
     env["EVAL_NEO4J_USER"]     = user
     env["EVAL_NEO4J_PASSWORD"] = password
     env["EVAL_NEO4J_DATABASE"] = database
+
+    # ── run config from eval_config (shell env wins → only fill what's unset) ──
+    _STR  = ("METHOD", "TOOL_TYPE")
+    _BOOL = ("RETRIEVAL_FUZZY", "RETRIEVAL_VECTOR", "RETRIEVAL_LEVENSHTEIN",
+             "CYPHER_SEMANTIC_REPAIR", "CYPHER_EMPTY_IS_WRONG")
+    _INT  = ("CYPHER_REPAIR_MAX_ROUNDS",)
+    for name in _STR:
+        v = getattr(cfg, name, None)
+        if name not in os.environ and v is not None:
+            env[name] = str(v)
+    for name in _BOOL:
+        v = getattr(cfg, name, None)
+        if name not in os.environ and v is not None:
+            env[name] = "1" if v else "0"
+    for name in _INT:
+        v = getattr(cfg, name, None)
+        if name not in os.environ and v is not None:
+            env[name] = str(int(v))
     return env
 
 
