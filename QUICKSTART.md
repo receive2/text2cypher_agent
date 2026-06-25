@@ -24,7 +24,8 @@ pip install faiss-cpu          # or faiss-gpu for CUDA
 
 ## 2. Point it at your Neo4j + OpenAI
 
-`.env` holds **credentials + the embedding model** only. Create it in the repo root:
+`.env` holds **credentials only** (API keys + the Neo4j connection). Create it in
+the repo root:
 
 ```dotenv
 NEO4J_URI=bolt://localhost:7687
@@ -33,8 +34,12 @@ NEO4J_PASSWORD=your-password
 NEO4J_DATABASE=neo4j
 
 OPENAI_API_KEY=sk-...
-OPENAI_EMBEDDING_MODEL=text-embedding-3-small
 ```
+
+> The **embedding model** is not a credential — it lives in `vector_config.py`
+> (`EMBEDDING_MODEL_NAME`, default `text-embedding-3-small`), the single source
+> setup, FCAV, and the live agent all read. Change it there, then rebuild the
+> index (`python ner_agent_auto.py --rebuild "test"`).
 
 > **The three pipeline LLMs are chosen in `config.py`, not in `.env`.** Each
 > stage has its own freely-configurable model: `NER_LLM_CONFIG` (the ReAct

@@ -88,7 +88,6 @@ NEO4J_DATABASE=neo4j                # the database name inside Neo4j
 OPENAI_API_KEY=sk-...
 OPENAI_MODEL=gpt-4.1                # or gpt-4o, gpt-4-turbo, etc.
 OPENAI_BASE_URL=                    # leave blank for api.openai.com
-OPENAI_EMBEDDING_MODEL=text-embedding-3-small
 
 # ── Azure OpenAI (optional — replaces OpenAI when all three are set) ──────────
 AZURE_OPENAI_ENDPOINT=
@@ -98,6 +97,11 @@ AZURE_OPENAI_API_VERSION=2024-05-01-preview
 ```
 
 > **AuraDB note:** URI format is `neo4j+s://<id>.databases.neo4j.io`, database name is usually `neo4j`.
+
+> **Embedding model:** not a credential — it lives in `vector_config.py`
+> (`EMBEDDING_MODEL_NAME`, default `text-embedding-3-small`), the single source
+> that setup, FCAV, and the live agent all read. Change it there (not via env),
+> then rebuild the index.
 
 ### 3 — Run the one-click setup
 

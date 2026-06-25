@@ -297,23 +297,25 @@ def build_embeddings() -> OpenAIEmbeddings:
     """
     Build an OpenAI embeddings client.
 
-    Model defaults to ``text-embedding-3-small``; override with
-    ``OPENAI_EMBEDDING_MODEL`` env var.
+    The model name is the setup-config single source ``vector_config.EMBEDDING_MODEL_NAME``
+    (the same value setup_project / fcav build their indexes with) — not an env var,
+    so the live agent and the index it queries can never disagree on the model.
 
     NOTE: switching the embedding model invalidates any FAISS index built
     with a different model — even when dimensions match (3-small and ada-002
     are both 1536-dim, but live in different vector spaces).  Rebuild the
-    index after changing this default::
+    index after changing ``vector_config.py``::
 
         python ner_agent_auto.py --rebuild "test"
     """
+    import vector_config as vc  # noqa: WPS433
     trust_env = os.getenv("TRUST_ENV", "1") != "0"
     http_client = httpx.Client(
         timeout=httpx.Timeout(60.0, connect=10.0),
         trust_env=trust_env,
     )
     return OpenAIEmbeddings(
-        model=os.getenv("OPENAI_EMBEDDING_MODEL", "text-embedding-3-small"),
+        model=vc.EMBEDDING_MODEL_NAME,
         api_key=_require_env("OPENAI_API_KEY"),
         base_url=os.getenv("OPENAI_BASE_URL") or None,
         http_client=http_client,
