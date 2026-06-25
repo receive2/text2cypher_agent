@@ -61,13 +61,10 @@ DATASETS = [
     ]),
     ("MindTheQuery", "MindTheQuery", "mindthequery_augmented", [
         ("bloom",      "bloom",      "mtq_bloom_",      False),
-        ("covid",      "covid",      "cov_full_",       True),   # also fuzzy+lev+vec
+        ("covid",      "covid",      "cov_full_",       False),  # vec skipped per request
         ("er",         "er",         "mtq_er_",         False),
         ("healthcare", "healthcare", "mtq_healthcare_", False),
         ("wwc",        "wwc",        "mtq_wwc_",        False),
-    ]),
-    ("ZOGRASCOPE", "ZOGRASCOPE", "zograscope_augmented", [
-        ("pole", "pole", "pol_", False),
     ]),
 ]
 

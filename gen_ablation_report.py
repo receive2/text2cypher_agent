@@ -142,6 +142,7 @@ def main() -> int:
     by_strat_ea = bucket_table("strategy", strategies, _ea)
     by_diff_ea = bucket_table("difficulty", difficulties, _ea)
     by_strat_psjs = bucket_table("strategy", strategies, _psjs)
+    by_diff_psjs = bucket_table("difficulty", difficulties, _psjs)
 
     # ── header / prose ───────────────────────────────────────────────────────
     n_q = spec.get("n_questions")
@@ -179,6 +180,7 @@ def main() -> int:
     parts.append("## By perturbation strategy — EA\n\n" + by_strat_ea + "\n")
     parts.append("## By query-difficulty — EA\n\n" + by_diff_ea + "\n")
     parts.append("## By perturbation strategy — PSJS\n\n" + by_strat_psjs + "\n")
+    parts.append("## By query-difficulty — PSJS\n\n" + by_diff_psjs + "\n")
 
     if spec.get("findings"):
         parts.append("---\n")
