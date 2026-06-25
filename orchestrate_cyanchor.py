@@ -9,12 +9,12 @@ reports — the operational driver for a full CyANCHOR refresh.
 Per graph:
   * run CyANCHOR (fuzzy+lev, SHARDS-parallel) via eval_run.main(), with up to
     MAX_TRIES attempts; after MAX_TRIES consecutive failures, SKIP to the next.
-  * on success, copy the merged records into logs/<prefix>cyanchor_fl/records.jsonl
-    (the dir the report generator reads) and regenerate report/<folder>/<graph>.md
-    (combining the freshly-run CyANCHOR row with the existing baseline rows —
-    baselines are NOT re-run).
+  * eval_run writes the canonical run dir
+    logs/runs/<aug_dataset>__<graph>__cyanchor_fl/ directly (no copy step); on
+    success regenerate report/<folder>/<graph>.md (combining the freshly-run
+    CyANCHOR row with the existing baseline rows — baselines are NOT re-run).
 After each dataset's graphs finish, regenerate REPORT_DIR/<folder>/_summary.md.
-covid additionally gets a fuzzy+lev+vec run (-> cov_full_cyanchor_fvl), and its
+covid additionally gets a fuzzy+lev+vec run (-> ...__covid__cyanchor_fvl), and its
 report carries both the fuzzy+lev and fuzzy+lev+vec CyANCHOR rows.
 
 State is journalled to logs/orchestrate_state.json so a restart skips finished
@@ -34,6 +34,7 @@ import time
 from pathlib import Path
 
 import eval_config as cfg
+import eval_paths
 
 REPO = Path(__file__).resolve().parent
 STATE_PATH = REPO / "logs" / "orchestrate_state.json"
@@ -48,23 +49,24 @@ _BASELINES = [
     ("GraphRAG",           "norm-Lev", "graphrag"),
 ]
 
-# (report_graph, conn_graph, prefix, vec?) per dataset.
+# (report_graph, conn_graph, vec?) per dataset. Run-dir locations are resolved
+# through eval_paths from (aug_dataset, conn_graph, method) — no prefix map.
 DATASETS = [
     ("CypherBench", "CypherBench", "cypherbench_augmented", [
-        ("company",             "company",             "cb_company_",             False),
-        ("fictional_character", "fictional_character", "cb_fictional_character_", False),
-        ("flight_accident",     "flight_accident",     "fl2_",                    False),
-        ("geography",           "geography",           "cb_geography_",           False),
-        ("movie",               "movie",               "cb_movie_",               False),
-        ("nba",                 "nba",                 "cb_nba_",                 False),
-        ("politics",            "politics",            "cb_politics_",            False),
+        ("company",             "company",             False),
+        ("fictional_character", "fictional_character", False),
+        ("flight_accident",     "flight_accident",     False),
+        ("geography",           "geography",           False),
+        ("movie",               "movie",               False),
+        ("nba",                 "nba",                 False),
+        ("politics",            "politics",            False),
     ]),
     ("MindTheQuery", "MindTheQuery", "mindthequery_augmented", [
-        ("bloom",      "bloom",      "mtq_bloom_",      False),
-        ("covid",      "covid",      "cov_full_",       False),  # vec skipped per request
-        ("er",         "er",         "mtq_er_",         False),
-        ("healthcare", "healthcare", "mtq_healthcare_", False),
-        ("wwc",        "wwc",        "mtq_wwc_",        False),
+        ("bloom",      "bloom",      False),
+        ("covid",      "covid",      False),  # vec skipped per request
+        ("er",         "er",         False),
+        ("healthcare", "healthcare", False),
+        ("wwc",        "wwc",        False),
     ]),
 ]
 
@@ -103,50 +105,47 @@ def _set_arms(vector: bool) -> None:
     os.environ["EVAL_PER_EXAMPLE_TIMEOUT"] = "600"
 
 
-def run_cyanchor(aug_dataset: str, conn_graph: str, dest_dir: Path, vector: bool) -> bool:
-    """Run CyANCHOR for one pair with retry; on success copy merged records into
-    dest_dir/records.jsonl (+summary.json). Returns True iff records were produced."""
+def run_cyanchor(aug_dataset: str, conn_graph: str, vector: bool) -> bool:
+    """Run CyANCHOR for one pair with retry. eval_run writes the canonical run dir
+    (logs/runs/<aug_dataset>__<conn_graph>__cyanchor_{fl,fvl}/) directly — no copy.
+    Returns True iff records were produced."""
     import eval_run
 
     _set_arms(vector)
-    out_file = TMP_OUT / f"{aug_dataset}__{conn_graph}.records.jsonl"
-    sum_file = TMP_OUT / f"{aug_dataset}__{conn_graph}.summary.json"
+    tag_seg  = eval_paths.method_tag("cyanchor", fuzzy=True, vector=vector, lev=True)
+    run_path = eval_paths.run_dir(aug_dataset, conn_graph, tag_seg)  # under logs/runs
+    rec_file = run_path / "records.jsonl"
 
     for attempt in range(1, MAX_TRIES + 1):
-        if TMP_OUT.exists():
-            shutil.rmtree(TMP_OUT, ignore_errors=True)
-        TMP_OUT.mkdir(parents=True, exist_ok=True)
         cfg.EVAL_PAIRS = [(aug_dataset, conn_graph)]
-        cfg.OUT_DIR    = str(TMP_OUT)
+        cfg.OUT_DIR    = eval_paths.RUNS_ROOT
         cfg.LIMIT      = None
         cfg.VERBOSE    = False
         tag = f"{aug_dataset}__{conn_graph}{' +vec' if vector else ''} (try {attempt}/{MAX_TRIES})"
-        log(f"  run {tag} SHARDS={getattr(cfg,'SHARDS',1)} ...")
+        log(f"  run {tag} SHARDS={getattr(cfg,'SHARDS',1)} -> {run_path} ...")
         try:
             rc = eval_run.main()
         except Exception as exc:  # noqa: BLE001
             log(f"  eval_run raised: {type(exc).__name__}: {exc}")
             rc = 99
-        n = sum(1 for _ in out_file.open()) if out_file.exists() else 0
+        n = sum(1 for _ in rec_file.open()) if rec_file.exists() else 0
         log(f"  -> rc={rc}, records={n}")
         if rc == 0 and n > 0:
-            dest_dir.mkdir(parents=True, exist_ok=True)
-            shutil.copyfile(out_file, dest_dir / "records.jsonl")
-            if sum_file.exists():
-                shutil.copyfile(sum_file, dest_dir / "summary.json")
             return True
         log(f"  attempt {attempt} failed for {tag}")
     return False
 
 
-def gen_graph_report(report_graph: str, folder: str, label: str, prefix: str, vec: bool) -> None:
-    methods = [{"label": l, "retrieval": r, "dir": f"logs/{prefix}{c}"}
+def gen_graph_report(report_graph: str, conn_graph: str, dataset_key: str,
+                     folder: str, label: str, vec: bool) -> None:
+    methods = [{"label": l, "retrieval": r,
+                "dir": str(eval_paths.run_dir(dataset_key, conn_graph, c))}
                for l, r, c in _BASELINES]
     methods.append({"label": "CyANCHOR (fuzzy+lev)", "retrieval": "fuzzy+lev",
-                    "dir": f"logs/{prefix}cyanchor_fl"})
+                    "dir": str(eval_paths.run_dir(dataset_key, conn_graph, "cyanchor_fl"))})
     if vec:
         methods.append({"label": "CyANCHOR (fuzzy+lev+vec)", "retrieval": "fuzzy+lev+vec",
-                        "dir": f"logs/{prefix}cyanchor_fvl"})
+                        "dir": str(eval_paths.run_dir(dataset_key, conn_graph, "cyanchor_fvl"))})
     methods = [m for m in methods if (REPO / m["dir"] / "records.jsonl").exists()]
     n = max((sum(1 for _ in (REPO / m["dir"] / "records.jsonl").open()) for m in methods),
             default=0)
@@ -164,11 +163,11 @@ def gen_graph_report(report_graph: str, folder: str, label: str, prefix: str, ve
     log(f"  report updated: {spec['out']}")
 
 
-def gen_summary(folder: str, label: str, prefixes: list[str]) -> None:
+def gen_summary(folder: str, label: str, dataset_key: str, graphs: list[str]) -> None:
     out = f"{cfg.REPORT_DIR}/{folder}/_summary.md"
     title = f"Report — {label} (all graphs pooled)"
-    subprocess.run([sys.executable, "gen_pooled_report.py", out, label, title, *prefixes],
-                   check=True, cwd=REPO)
+    subprocess.run([sys.executable, "gen_pooled_report.py", out, label, title,
+                    dataset_key, *graphs], check=True, cwd=REPO)
     log(f"  summary updated: {out}")
 
 
@@ -178,16 +177,16 @@ def main() -> int:
     log(f"=== orchestrate start  (done={len(st['done'])} skipped={len(st['skipped'])}) ===")
 
     for label, folder, aug_dataset, graphs in DATASETS:
-        for report_graph, conn_graph, prefix, vec in graphs:
+        for report_graph, conn_graph, vec in graphs:
             key = f"{aug_dataset}__{report_graph}"
             if key in st["done"] or key in st["skipped"]:
                 log(f"skip (already {('done' if key in st['done'] else 'skipped')}): {key}")
                 continue
-            log(f"GRAPH {key}  prefix={prefix}  vec={vec}")
+            log(f"GRAPH {key}  vec={vec}")
 
-            ok = run_cyanchor(aug_dataset, conn_graph, REPO / "logs" / f"{prefix}cyanchor_fl", False)
+            ok = run_cyanchor(aug_dataset, conn_graph, False)
             if ok and vec:
-                okv = run_cyanchor(aug_dataset, conn_graph, REPO / "logs" / f"{prefix}cyanchor_fvl", True)
+                okv = run_cyanchor(aug_dataset, conn_graph, True)
                 if not okv:
                     log(f"  WARN vec pass failed for {key}; report will omit the vec row")
             if not ok:
@@ -196,17 +195,17 @@ def main() -> int:
                 continue
 
             try:
-                gen_graph_report(report_graph, folder, label, prefix, vec)
+                gen_graph_report(report_graph, conn_graph, aug_dataset, folder, label, vec)
             except Exception as exc:  # noqa: BLE001
                 log(f"  report gen failed for {key}: {type(exc).__name__}: {exc}")
             st["done"].append(key); save_state(st)
 
         # dataset complete -> refresh summary over the graphs we have records for
-        prefixes = [p for _, _, p, _ in graphs
-                    if (REPO / "logs" / f"{p}cyanchor_fl" / "records.jsonl").exists()]
-        if prefixes:
+        have = [cg for _, cg, _ in graphs
+                if (eval_paths.run_dir(aug_dataset, cg, "cyanchor_fl") / "records.jsonl").exists()]
+        if have:
             try:
-                gen_summary(folder, label, prefixes)
+                gen_summary(folder, label, aug_dataset, have)
             except Exception as exc:  # noqa: BLE001
                 log(f"  summary gen failed for {label}: {type(exc).__name__}: {exc}")
 

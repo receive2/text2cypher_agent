@@ -21,10 +21,15 @@ this script:
 
 Per-pair output files
 ---------------------
-For each pair it writes::
+For each pair it writes a canonical per-run directory (see :mod:`eval_paths`)::
 
-    <OUT_DIR>/<dataset>__<graph>.records.jsonl   — one record per example
-    <OUT_DIR>/<dataset>__<graph>.summary.json    — aggregate summary
+    <OUT_DIR>/<dataset>__<graph>__<method>/records.jsonl   — one record per example
+    <OUT_DIR>/<dataset>__<graph>__<method>/summary.json    — aggregate summary
+
+The ``<method>`` segment (e.g. ``graphrag`` or ``cyanchor_fl``) is derived from
+the resolved run config, so a five-method sweep into one ``OUT_DIR`` keeps each
+method separate and ``eval_aggregate`` / the report generators can read them
+back without any external prefix map.
 
 Records and summaries from previous runs persist on disk; re-running
 ``eval_run.py`` for a different slice of ``EVAL_PAIRS`` adds new files
@@ -46,6 +51,7 @@ from pathlib import Path
 from typing import List, Tuple
 
 import eval_config as cfg
+import eval_paths
 from eval.artifact_swap import swap_in
 from paths import REPO_ROOT
 
@@ -188,10 +194,13 @@ def _run_pair(
     On any failure (archive missing, subprocess non-zero, exception
     during swap_in) returns ``(False, "<reason>")`` and does not raise.
     The caller logs the reason and moves on.
-    """
-    out_records = out_dir / f"{dataset}__{graph}.records.jsonl"
-    out_summary = out_dir / f"{dataset}__{graph}.summary.json"
 
+    Output lands in the canonical per-run dir
+    ``<out_dir>/<dataset>__<graph>__<method>/{records.jsonl,summary.json}`` —
+    the method segment is derived (below) from the resolved run config so a
+    five-method sweep into one ``out_dir`` keeps each method's records separate
+    and self-describing (see :mod:`eval_paths`).
+    """
     # ── Step 1: swap in archived artifacts ──────────────────────────────────
     try:
         swap_in(dataset, graph)
@@ -233,6 +242,20 @@ def _run_pair(
     # ── Step 4: subprocess launch ───────────────────────────────────────────
     env = _build_env(conn.uri, conn.user, conn.password, conn.database)
     shards = int(getattr(cfg, "SHARDS", 1) or 1)
+
+    # Canonical per-run output dir. The method + arms come from the resolved env
+    # (_build_env has already overlaid eval_config / shell), so the dir name is a
+    # faithful label of what actually ran.
+    _tag = eval_paths.method_tag(
+        env.get("METHOD", "cyanchor"),
+        fuzzy  = env.get("RETRIEVAL_FUZZY", "1") == "1",
+        vector = env.get("RETRIEVAL_VECTOR", "0") == "1",
+        lev    = env.get("RETRIEVAL_LEVENSHTEIN", "1") == "1",
+    )
+    pair_dir = eval_paths.run_dir(dataset, graph, _tag, root=out_dir)
+    pair_dir.mkdir(parents=True, exist_ok=True)
+    out_records = pair_dir / "records.jsonl"
+    out_summary = pair_dir / "summary.json"
 
     # ── Outer subprocess timeout ────────────────────────────────────────────
     # The per-example wall-clock cap lives inside the worker (see
@@ -302,7 +325,7 @@ def _run_pair(
     # only differ in which stride of examples they run. Merged afterwards.
     per_proc = None if limit is None else max(1, -(-limit // shards))  # ceil
     outer_timeout = _outer_timeout(per_proc)
-    shard_dir = out_dir / f".shards_{dataset}__{graph}"
+    shard_dir = pair_dir / ".shards"
     if shard_dir.exists():
         shutil.rmtree(shard_dir, ignore_errors=True)
     shard_dir.mkdir(parents=True, exist_ok=True)

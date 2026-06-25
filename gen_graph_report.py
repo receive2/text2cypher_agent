@@ -1,17 +1,24 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-gen_graph_report.py  <graph> <dataset_dir> <dataset_label> [dir_prefix] [date]
+gen_graph_report.py  <graph> <dataset_dir> <dataset_label> <dataset_key> [date]
 ============================================================================
 Generate report/<dataset_dir>/<graph>.md (flight-format tables, no hand
-findings) from the per-config eval dirs ``logs/<prefix><config>/`` for the
-5-config set. Thin wrapper that builds a spec and calls gen_ablation_report.py.
+findings) from the canonical per-run dirs
+``logs/runs/<dataset_key>__<graph>__<method>/`` for the 5-config set. Thin
+wrapper that builds a spec and calls gen_ablation_report.py.
+
+``dataset_key`` is the data dataset name eval_run uses (e.g.
+``cypherbench_augmented``); the run-dir locations are resolved through
+``eval_paths`` — no per-graph prefix map.
 
 Example:
-  python gen_graph_report.py geography CypherBench CypherBench cb_geography_ 2026-06-22
+  python gen_graph_report.py geography CypherBench CypherBench cypherbench_augmented 2026-06-22
 """
 import json, sys, subprocess
 from pathlib import Path
+
+import eval_paths
 
 try:
     from eval_config import REPORT_DIR
@@ -21,7 +28,7 @@ except Exception:
 graph        = sys.argv[1]
 dataset_dir  = sys.argv[2]
 dataset_lab  = sys.argv[3]
-prefix       = sys.argv[4] if len(sys.argv) > 4 else f"cb_{graph}_"
+dataset_key  = sys.argv[4]
 date         = sys.argv[5] if len(sys.argv) > 5 else ""
 
 _METHODS = [
@@ -34,7 +41,7 @@ _METHODS = [
 
 methods, n = [], 0
 for label, ret, cfg in _METHODS:
-    d = f"logs/{prefix}{cfg}"
+    d = str(eval_paths.run_dir(dataset_key, graph, cfg))
     rj = Path(d) / "records.jsonl"
     if rj.exists():
         methods.append({"label": label, "retrieval": ret, "dir": d})

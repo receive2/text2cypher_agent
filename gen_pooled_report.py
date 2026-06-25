@@ -1,27 +1,30 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-gen_pooled_report.py  <out> <dataset_label> <title> <dir_prefix> [<dir_prefix> ...]
-==================================================================================
+gen_pooled_report.py  <out> <dataset_label> <title> <dataset_key> <graph> [<graph> ...]
+======================================================================================
 Pool the 5-config per-graph eval records across several graphs and render ONE
 flight-format report (Overall + by perturbation strategy + by difficulty, EA &
 PSJS) over the pooled set — i.e. the dataset-wide categorized breakdown, not a
 per-graph table.
 
-Each <dir_prefix> is a graph's log-dir prefix; the 5 configs are appended:
-  <prefix>{no_val_link,fcav,react,graphrag,cyanchor_fl}
+Records are read from the canonical per-run dirs (see ``eval_paths``):
+  logs/runs/<dataset_key>__<graph>__{no_val_link,fcav,react,graphrag,cyanchor_fl}/
 
 Example (MindTheQuery, covid + 4 driver graphs):
   python gen_pooled_report.py report/MindTheQuery/_summary.md MindTheQuery \
     "Ablation — MindTheQuery (all graphs pooled)" \
-    cov_full_ mtq_er_ mtq_wwc_ mtq_healthcare_ mtq_bloom_
+    mindthequery_augmented covid er wwc healthcare bloom
 """
 import json, sys, re
 from pathlib import Path
 import subprocess
 
+import eval_paths
+
 out, ds_label, title = sys.argv[1], sys.argv[2], sys.argv[3]
-prefixes = sys.argv[4:]
+dataset_key = sys.argv[4]
+graphs = sys.argv[5:]
 tag = re.sub(r"\W+", "", ds_label.lower())
 
 _METHODS = [
@@ -34,11 +37,11 @@ _METHODS = [
 
 methods, n = [], 0
 for label, ret, cfg in _METHODS:
-    pooled = Path(f"logs/_pooled_{tag}_{cfg}")
+    pooled = Path(f"logs/_pooled_runs/{tag}_{cfg}")
     pooled.mkdir(parents=True, exist_ok=True)
     lines = []
-    for p in prefixes:
-        rj = Path(f"logs/{p}{cfg}/records.jsonl")
+    for g in graphs:
+        rj = eval_paths.run_dir(dataset_key, g, cfg) / "records.jsonl"
         if rj.exists():
             lines += [l for l in rj.read_text().splitlines() if l.strip()]
     (pooled / "records.jsonl").write_text("\n".join(lines) + ("\n" if lines else ""))

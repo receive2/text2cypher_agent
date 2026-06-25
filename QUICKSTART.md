@@ -122,11 +122,15 @@ python eval_aggregate.py              # print per-difficulty + per-strategy tabl
 > The other four methods (`no_val_link` / `react` / `graphrag` / `cyanchor`)
 > need no extra step.
 
-`eval_aggregate.py` prints, per dataset, an **EA / EM / PSJS** table bucketed by
-**difficulty** (easy/medium/hard) and — for the perturbed `*_augmented` sets —
-by **perturbation strategy** (casing/typo/partial/abbrev/alias). It also writes a
-self-describing, timestamped `report_<timestamp>.md` into `OUT_DIR` (the run's
-mode + config in the header).
+Each run writes a canonical per-run directory
+`OUT_DIR/<dataset>__<graph>__<method>/` (`records.jsonl` + `summary.json`) — the
+method is part of the path, so a five-method sweep into one `OUT_DIR` keeps each
+method's records separate (see `eval_paths.py`, the single source of truth for
+this layout). `eval_aggregate.py` reads those dirs and prints, per
+`(dataset, method)`, an **EA / EM / PSJS** table bucketed by **difficulty**
+(easy/medium/hard) and — for the perturbed `*_augmented` sets — by **perturbation
+strategy** (casing/typo/partial/abbrev/alias). It also writes a self-describing,
+timestamped `report_<timestamp>.md` into `OUT_DIR`.
 
 ### Experiment knobs
 
@@ -173,9 +177,9 @@ METHOD=graphrag python eval_run.py
 
 > Back-compat: the legacy `VAL_LINK_MODE` / `AGENT_TYPE` / `RETRIEVAL_TYPE` still resolve.
 
-Re-running is incremental: each pair overwrites only its own two files in
-`OUT_DIR`; `eval_aggregate.py` re-reads everything on disk, so a partial re-run
-still prints the full table.
+Re-running is incremental: each `(dataset, graph, method)` overwrites only its own
+run directory under `OUT_DIR`; `eval_aggregate.py` re-reads everything on disk, so
+a partial re-run still prints the full table.
 
 ---
 

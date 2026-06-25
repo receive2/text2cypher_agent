@@ -204,10 +204,11 @@ ZOGRASCOPE_AUGMENTED_PATH   = "/Users/q0w01lh/datasets/zograscope_augmented_v2/t
 
 # ── Output dirs ──────────────────────────────────────────────────────────────
 
-# Per-(dataset, graph) records + summary live here.  File naming:
-#     <dataset>__<graph>.records.jsonl
-#     <dataset>__<graph>.summary.json
-OUT_DIR = "logs/pole_run"
+# Root for the canonical per-run artifact dirs (see eval_paths.py):
+#     <OUT_DIR>/<dataset>__<graph>__<method>/records.jsonl
+#     <OUT_DIR>/<dataset>__<graph>__<method>/summary.json
+# eval_run writes here; eval_aggregate + the report generators read here.
+OUT_DIR = "logs/runs"
 
 # Archived per-graph setup outputs (one subdir per (dataset, graph) pair).
 SETUP_ARTIFACTS_ROOT = "setup_artifacts"
