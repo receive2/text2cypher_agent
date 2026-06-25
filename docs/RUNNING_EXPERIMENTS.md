@@ -129,19 +129,19 @@ examples *within* a graph parallelise. Lower it if you hit LLM rate limits; rais
 for a big graph on a fast box. Heavily contended single containers can deadlock at
 high `SHARDS` — if a run hangs, drop to `SHARDS=1`.
 
-## Config precedence (and the one footgun)
+## `eval_config.py` is authoritative — there is no second surface
 
-Precedence is **shell env > `eval_config.py` > `config.py` default**. eval_config
-fills any field the shell didn't set; `config.py` only supplies a default the
-other two omit. This lets a one-off `METHOD=graphrag python eval_run.py` override
-without editing the file, and lets `orchestrate_cyanchor.py` flip arms per pass.
+There are **no environment variables in the normal flow**. `eval_config.py` is the
+one document you edit before a run; `eval_run` propagates its settings to the
+worker and they **override anything inherited from the shell**, so a stale
+`export METHOD=…` left over from some earlier session can *not* silently change
+what you run — the file you edited always wins. (A field you leave unset in
+eval_config falls through to `config.py`'s shipped default, which is CyANCHOR
+`fuzzy+lev`.)
 
-> **Footgun:** a *persistently exported* shell var (`export METHOD=graphrag`) wins
-> over `eval_config.py` silently, every run. If your results don't match what
-> eval_config says, check `env | grep -E 'METHOD|RETRIEVAL_|TOOL_TYPE'`. (The
-> output is still correctly labeled — it lands in `…__graphrag/` and `run_meta`
-> records `graphrag` — so you get correctly-tagged data for a method you didn't
-> intend, never mislabeled data.)
+The batch drivers (`orchestrate_cyanchor.py` and the pole completion scripts)
+sweep across methods by setting `cfg.METHOD` / `cfg.RETRIEVAL_*` **in-process** —
+the same single surface, not a parallel env channel.
 
 ## Safety nets already in place (you don't have to do anything)
 

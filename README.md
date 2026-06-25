@@ -173,8 +173,11 @@ python setup_project.py --verbose               # show full tracebacks on errors
 
 ## Value-linking modes
 
-The method is chosen by a single `METHOD` axis in `config.py` (env-overridable),
-plus CyANCHOR's retrieval/tool sub-axes, resolved into a `GroundingSpec`:
+The method is a single `METHOD` axis (plus CyANCHOR's retrieval/tool sub-axes),
+resolved into a `GroundingSpec`. **For eval runs, set these in `eval_config.py`** —
+it is the authoritative single surface (`eval_run` propagates it to the workers and
+it overrides any inherited shell env). `config.py` holds the resolver + shipped
+defaults; the standalone `ner_agent_auto.py` CLI reads it directly (env-overridable).
 
 | axis | values |
 |---|---|
@@ -209,20 +212,14 @@ plus CyANCHOR's retrieval/tool sub-axes, resolved into a `GroundingSpec`:
   `RETRIEVAL_FUZZY` (BM25), `RETRIEVAL_LEVENSHTEIN` (APOC normalized edit-distance — no
   embeddings, high-ROI), `RETRIEVAL_VECTOR` (in-graph embeddings). `TOOL_TYPE` = `node` | `node_rel`.
 
-Example — CyANCHOR `fuzzy+lev` (no embeddings needed), node + relation tools:
-
-```bash
-METHOD=cyanchor RETRIEVAL_VECTOR=0 TOOL_TYPE=node_rel python eval_run.py
-```
-
-Example — a baseline (Multi-Agent GraphRAG):
-
-```bash
-METHOD=graphrag python eval_run.py
-```
+To run a given configuration, set it in `eval_config.py` and run `python eval_run.py`
+— e.g. `METHOD = "cyanchor"` with `RETRIEVAL_VECTOR = False`, `TOOL_TYPE = "node_rel"`
+for CyANCHOR `fuzzy+lev`, or `METHOD = "graphrag"` for the Multi-Agent GraphRAG
+baseline. The batch drivers (`orchestrate_cyanchor.py`, …) sweep methods by setting
+`cfg.METHOD` in-process — same surface, no env channel.
 
 > Back-compat: the legacy `VAL_LINK_MODE` / `AGENT_TYPE` / `RETRIEVAL_TYPE` axes still
-> resolve (`val_link`+`plan_exec` → `cyanchor`, `hybrid` → `+vector`).
+> resolve in `config.py` (`val_link`+`plan_exec` → `cyanchor`, `hybrid` → `+vector`).
 
 Method writeup: [docs/multi_agent_graphrag.md](docs/multi_agent_graphrag.md) ·
 results: [report/CypherBench/flight_accident.md](report/CypherBench/flight_accident.md).

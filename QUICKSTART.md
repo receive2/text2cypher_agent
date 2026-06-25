@@ -134,18 +134,19 @@ timestamped `report_<timestamp>.md` into `OUT_DIR`.
 
 ### Experiment knobs
 
-The method is selected by `METHOD` in `config.py` (env-overridable), plus
-CyANCHOR's retrieval/tool sub-axes:
+Everything that selects *what runs* lives in **`eval_config.py`** — it is the one
+document you edit before a run, and it is **authoritative** (its values override
+anything left in your shell environment, so there is no second place to look):
 
-| axis | env var | values |
-|---|---|---|
-| method | `METHOD` | `no_val_link` · `fcav` · `react` · `graphrag` · `cyanchor` |
-| CyANCHOR arms | `RETRIEVAL_FUZZY` / `RETRIEVAL_VECTOR` / `RETRIEVAL_LEVENSHTEIN` | `0`/`1` each (≥1 on; defaults `1`/`0`/`1`) |
-| tool scope | `TOOL_TYPE` | `node` · `node_rel` (react / cyanchor) |
-| examples per pair | `LIMIT` in `eval_config.py` | int · `None` (all) |
-| intra-graph parallelism | `SHARDS` in `eval_config.py` | int (default `4`; `1` = single process) |
-| CyANCHOR self-correction | `CYPHER_SEMANTIC_REPAIR` / `CYPHER_REPAIR_MAX_ROUNDS` / `CYPHER_EMPTY_IS_WRONG` | defaults `1` / `4` / `1` |
-| report location | `REPORT_DIR` in `eval_config.py` | path (default `report`) |
+| field (in `eval_config.py`) | values |
+|---|---|
+| `METHOD` | `no_val_link` · `fcav` · `react` · `graphrag` · `cyanchor` |
+| `RETRIEVAL_FUZZY` / `RETRIEVAL_VECTOR` / `RETRIEVAL_LEVENSHTEIN` (CyANCHOR arms) | `True`/`False` each (≥1 on; defaults `True`/`False`/`True`) |
+| `TOOL_TYPE` (tool scope) | `node` · `node_rel` (react / cyanchor) |
+| `LIMIT` (examples per pair) | int · `None` (all) |
+| `SHARDS` (intra-graph parallelism) | int (`1` = single process) |
+| `CYPHER_SEMANTIC_REPAIR` / `CYPHER_REPAIR_MAX_ROUNDS` / `CYPHER_EMPTY_IS_WRONG` | defaults `True` / `4` / `True` |
+| `REPORT_DIR` (report location) | path (default `report`) |
 
 `SHARDS` splits each graph's examples into N stride-shards run as N parallel
 worker processes against the same container, then merges them — wall-clock ≈
@@ -163,19 +164,14 @@ keeping the first accepted (else first executable) attempt. See
 [report/CypherBench/flight_accident.md](report/CypherBench/flight_accident.md)
 for the ablation and the README "Methods" table for details.
 
-Example — CyANCHOR `fuzzy+lev` (no embeddings), node + relation tools:
+To run a different method or arm set, **edit `eval_config.py` and re-run** — e.g.
+`METHOD = "graphrag"` for the Multi-Agent GraphRAG baseline, or
+`RETRIEVAL_VECTOR = True` to add the in-graph-embedding arm to CyANCHOR. Then:
 
 ```bash
-METHOD=cyanchor RETRIEVAL_VECTOR=0 TOOL_TYPE=node_rel python eval_run.py
+python eval_run.py        # uses whatever eval_config.py now says
+python eval_aggregate.py
 ```
-
-Example — the Multi-Agent GraphRAG baseline:
-
-```bash
-METHOD=graphrag python eval_run.py
-```
-
-> Back-compat: the legacy `VAL_LINK_MODE` / `AGENT_TYPE` / `RETRIEVAL_TYPE` still resolve.
 
 Re-running is incremental: each `(dataset, graph, method)` overwrites only its own
 run directory under `OUT_DIR`; `eval_aggregate.py` re-reads everything on disk, so

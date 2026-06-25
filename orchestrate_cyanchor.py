@@ -92,16 +92,18 @@ def save_state(st: dict) -> None:
 
 
 def _set_arms(vector: bool) -> None:
-    """Pin the CyANCHOR method + retrieval arms via env (propagated to workers
-    by eval_run._build_env). fuzzy+lev always; vector only for the vec pass."""
-    os.environ["METHOD"]                = "cyanchor"
-    os.environ["RETRIEVAL_FUZZY"]       = "1"
-    os.environ["RETRIEVAL_LEVENSHTEIN"] = "1"
-    os.environ["RETRIEVAL_VECTOR"]      = "1" if vector else "0"
+    """Pin the CyANCHOR method + retrieval arms on eval_config (the authoritative
+    surface; eval_run._build_env propagates cfg to the workers). fuzzy+lev always;
+    vector only for the vec pass."""
+    cfg.METHOD                = "cyanchor"
+    cfg.RETRIEVAL_FUZZY       = True
+    cfg.RETRIEVAL_LEVENSHTEIN = True
+    cfg.RETRIEVAL_VECTOR      = vector
     # Generous per-example cap: CyANCHOR is the most LLM-call-heavy method (PLAN +
     # per-mention retrieval/escalation/abstain + Cypher gen + QA), so the 60s
     # default truncates its hardest multi-entity questions while lighter baselines
     # finish — unfair. 600s lets every example complete (the slow ones are ~70-120s).
+    # This is a worker watchdog knob, not a run-config field, so it stays in env.
     os.environ["EVAL_PER_EXAMPLE_TIMEOUT"] = "600"
 
 
