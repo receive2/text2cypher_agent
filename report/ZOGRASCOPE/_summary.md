@@ -1,10 +1,10 @@
-# Report — pole (entity-perturbed ZOGRASCOPE)
+# Report — ZOGRASCOPE (all graphs pooled)
 
 **Metrics.** EA = execution accuracy (predicted Cypher's result set matches gold).
 PSJS = Provenance-Subgraph Jaccard Similarity (partial-credit subgraph overlap).
-Higher is better; both over each method's successfully-executed rows. Generated 2026-06-25.
+Higher is better; both over each method's successfully-executed rows. Generated 2026-06-22.
 
-**Setup.** ZOGRASCOPE `pole`, 1441 entity-perturbed test questions
+**Setup.** ZOGRASCOPE `all graphs pooled`, 1441 entity-perturbed test questions
 (strategies: casing · typo · partial · abbrev). LLMs: gpt-4.1 for grounding and Cypher generation.
 
 **Methods.**

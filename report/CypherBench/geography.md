@@ -1,10 +1,10 @@
-# Report — movie (entity-perturbed CypherBench)
+# Report — geography (entity-perturbed CypherBench)
 
 **Metrics.** EA = execution accuracy (predicted Cypher's result set matches gold).
 PSJS = Provenance-Subgraph Jaccard Similarity (partial-credit subgraph overlap).
 Higher is better; both over each method's successfully-executed rows. Generated 2026-06-25.
 
-**Setup.** CypherBench `movie`, 370 entity-perturbed test questions
+**Setup.** CypherBench `geography`, 339 entity-perturbed test questions
 (strategies: casing · typo · partial · abbrev · alias). LLMs: gpt-4.1 for grounding and Cypher generation.
 
 **Methods.**
@@ -27,48 +27,48 @@ Higher is better; both over each method's successfully-executed rows. Generated 
 
 | method               | retrieval |    EA |  PSJS |   n | err |
 | -------------------- | --------- | ----: | ----: | --: | --: |
-| No Val Link          | —         | 0.044 | 0.109 | 364 |   6 |
-| FCAV                 | vector    | 0.259 | 0.378 | 359 |  11 |
-| ReAct (Node + Rel)   | fuzzy     | 0.380 | 0.449 | 366 |   4 |
-| GraphRAG             | norm-Lev  | 0.501 | 0.574 | 367 |   3 |
-| CyANCHOR (fuzzy+lev) | fuzzy+lev | 0.626 | 0.662 | 364 |   6 |
+| No Val Link          | —         | 0.075 | 0.107 | 335 |   4 |
+| FCAV                 | vector    | 0.189 | 0.287 | 328 |  11 |
+| ReAct (Node + Rel)   | fuzzy     | 0.392 | 0.433 | 339 |   0 |
+| GraphRAG             | norm-Lev  | 0.496 | 0.544 | 339 |   0 |
+| CyANCHOR (fuzzy+lev) | fuzzy+lev | 0.722 | 0.773 | 334 |   5 |
 
 ## By perturbation strategy — EA
 
 | method               | casing |  typo | partial | abbrev | alias |
 | -------------------- | -----: | ----: | ------: | -----: | ----: |
-| No Val Link          |  0.278 | 0.012 |   0.013 |  0.037 | 0.012 |
-| FCAV                 |  0.556 | 0.329 |   0.296 |  0.087 | 0.188 |
-| ReAct (Node + Rel)   |  0.583 | 0.482 |   0.444 |  0.354 | 0.155 |
-| GraphRAG             |  0.861 | 0.771 |   0.537 |  0.305 | 0.238 |
-| CyANCHOR (fuzzy+lev) |  0.833 | 0.790 |   0.793 |  0.390 | 0.446 |
+| No Val Link          |  0.147 | 0.052 |   0.128 |  0.000 | 0.079 |
+| FCAV                 |  0.469 | 0.197 |   0.244 |  0.059 | 0.122 |
+| ReAct (Node + Rel)   |  0.618 | 0.538 |   0.385 |  0.338 | 0.205 |
+| GraphRAG             |  0.647 | 0.692 |   0.462 |  0.366 | 0.385 |
+| CyANCHOR (fuzzy+lev) |  0.912 | 0.870 |   0.671 |  0.757 | 0.506 |
 
 ## By query-difficulty — EA
 
 | method               |  easy | medium |  hard |
 | -------------------- | ----: | -----: | ----: |
-| No Val Link          | 0.020 |  0.048 | 0.048 |
-| FCAV                 | 0.180 |  0.266 | 0.281 |
-| ReAct (Node + Rel)   | 0.440 |  0.398 | 0.328 |
-| GraphRAG             | 0.580 |  0.560 | 0.381 |
-| CyANCHOR (fuzzy+lev) | 0.660 |  0.626 | 0.613 |
+| No Val Link          | 0.055 |  0.035 | 0.147 |
+| FCAV                 | 0.255 |  0.153 | 0.214 |
+| ReAct (Node + Rel)   | 0.291 |  0.402 | 0.427 |
+| GraphRAG             | 0.491 |  0.477 | 0.527 |
+| CyANCHOR (fuzzy+lev) | 0.709 |  0.725 | 0.722 |
 
 ## By perturbation strategy — PSJS
 
 | method               | casing |  typo | partial | abbrev | alias |
 | -------------------- | -----: | ----: | ------: | -----: | ----: |
-| No Val Link          |  0.317 | 0.087 |   0.102 |  0.092 | 0.063 |
-| FCAV                 |  0.675 | 0.457 |   0.482 |  0.167 | 0.266 |
-| ReAct (Node + Rel)   |  0.637 | 0.510 |   0.574 |  0.419 | 0.219 |
-| GraphRAG             |  0.872 | 0.858 |   0.604 |  0.409 | 0.297 |
-| CyANCHOR (fuzzy+lev) |  0.834 | 0.841 |   0.835 |  0.422 | 0.479 |
+| No Val Link          |  0.223 | 0.084 |   0.123 |  0.082 | 0.083 |
+| FCAV                 |  0.557 | 0.291 |   0.347 |  0.114 | 0.261 |
+| ReAct (Node + Rel)   |  0.647 | 0.580 |   0.477 |  0.395 | 0.181 |
+| GraphRAG             |  0.694 | 0.724 |   0.502 |  0.467 | 0.412 |
+| CyANCHOR (fuzzy+lev) |  0.930 | 0.890 |   0.762 |  0.816 | 0.558 |
 
 ## By query-difficulty — PSJS
 
 | method               |  easy | medium |  hard |
 | -------------------- | ----: | -----: | ----: |
-| No Val Link          | 0.043 |  0.048 | 0.227 |
-| FCAV                 | 0.220 |  0.345 | 0.493 |
-| ReAct (Node + Rel)   | 0.479 |  0.419 | 0.485 |
-| GraphRAG             | 0.618 |  0.584 | 0.542 |
-| CyANCHOR (fuzzy+lev) | 0.719 |  0.637 | 0.677 |
+| No Val Link          | 0.055 |  0.077 | 0.180 |
+| FCAV                 | 0.289 |  0.281 | 0.296 |
+| ReAct (Node + Rel)   | 0.330 |  0.413 | 0.515 |
+| GraphRAG             | 0.512 |  0.520 | 0.598 |
+| CyANCHOR (fuzzy+lev) | 0.737 |  0.772 | 0.792 |
