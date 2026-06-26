@@ -234,6 +234,25 @@ results: [report/CypherBench/flight_accident.md](report/CypherBench/flight_accid
 
 Each value-lookup tool corresponds to one `(node_label, property)` pair (e.g. `Movie.title`, `Person.name`). Vector retrieval is available on **node** value-lookup tools while relationship-property and structural-traversal tools stay on the fuzzy code path. The hybrid pipeline is what `RETRIEVAL_TYPE=hybrid` drives; defaults preserve fuzzy behavior bit-identically.
 
+> **Two "vector" switches — don't mix them up.** This section's
+> `TOOL_RETRIEVAL_MODE` (`fuzzy`/`vector`/`hybrid`) is the **ReAct baseline's**
+> per-tool retrieval mode. **CyANCHOR** (the shipped method) instead uses three
+> independent arms, and its vector arm is toggled by **`eval_config.RETRIEVAL_VECTOR`**
+> — *not* `TOOL_RETRIEVAL_MODE`. To run CyANCHOR with embeddings you need all three
+> layers (build → model → arm):
+>
+> 1. **Build** the embeddings into the graph: `python setup_project.py` **without**
+>    `--skip-embeddings` (steps 6–7; needs Neo4j 5.18+). Auto-discovered properties
+>    land in `vector_config.EMBEDDABLE_PROPERTIES`.
+> 2. **Model/backend** *(optional; defaults fine)*: `vector_config.py`
+>    (`EMBEDDING_BACKEND` / `EMBEDDING_MODEL_NAME`) — the only home for the model.
+> 3. **Arm on**: `eval_config.py` → `RETRIEVAL_VECTOR = True` (run lands in
+>    `…__cyanchor_fvl/`).
+>
+> **Prerequisite:** step 3 is a no-op on a graph built with `--skip-embeddings` —
+> the vector arm has no index to search. For the shipped `fuzzy+lev` default,
+> build with `--skip-embeddings` (Neo4j 4.4+ OK) and leave `RETRIEVAL_VECTOR = False`.
+
 ### One-command setup on a fresh Neo4j database
 
 ```bash
@@ -732,8 +751,9 @@ If you prefer to run each step individually or need to debug a specific stage:
 | `requirements.txt` | Python dependencies |
 | `setup_project.py` | **One-click setup** — runs all 10 setup steps automatically |
 | `switch_embedding_backend.py` | **One-click backend swap** — re-embeds + rebuilds vector indexes after editing `EMBEDDING_BACKEND` in `vector_config.py`; does NOT regenerate tools / system prompt / FAISS |
-| `config.py` | **User-managed** runtime settings — LLM configs per stage, the `METHOD` axis + CyANCHOR's `RETRIEVAL_FUZZY`/`RETRIEVAL_VECTOR`/`RETRIEVAL_LEVENSHTEIN`/`TOOL_TYPE`, + sampling/validation knobs. **Not** auto-generated; safe to edit by hand |
-| `vector_config.py` | Retrieval mode (`fuzzy`/`vector`/`hybrid`), embedding backend + dim, `EMBEDDABLE_PROPERTIES` |
+| `config.py` | **User-managed** runtime settings — LLM configs per stage, sampling/validation knobs, and the **resolver + shipped defaults** for the `METHOD` axis + CyANCHOR's `RETRIEVAL_FUZZY`/`RETRIEVAL_VECTOR`/`RETRIEVAL_LEVENSHTEIN`/`TOOL_TYPE`. **For eval runs these are set in `eval_config.py`** (the authoritative surface); `config.py` supplies the standalone-agent default. Not auto-generated; safe to edit by hand |
+| `eval_config.py` | **The eval run config** (authoritative) — `GRAPH_CONNS`, `EVAL_PAIRS`, `METHOD` + the CyANCHOR arms, `LIMIT`, `SHARDS`, `OUT_DIR`. Committed (the eval Neo4j connection is public for reviewers) |
+| `vector_config.py` | Embedding **backend + model + dim**, ReAct retrieval mode (`TOOL_RETRIEVAL_MODE`: `fuzzy`/`vector`/`hybrid`), hybrid params, `EMBEDDABLE_PROPERTIES`. The single home for the embedding model — never an env var |
 | `paths.py` | Centralized filesystem-layout constants for every generated artifact |
 | `ner_agent_auto.py` | Value-linking → Cypher pipeline (main entrypoint); `ask_auto` dispatches to the grounding mode and runs `GraphCypherQAChain` |
 | `plan_exec.py` | **CyANCHOR** grounder (the shipped method, `METHOD=cyanchor`): decompose → route → retrieve (3 toggleable arms: fuzzy / Levenshtein / vector) with the LLM corrective loop |

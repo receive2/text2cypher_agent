@@ -85,6 +85,24 @@ This block in `eval_config.py` is the single source of truth for *what runs*:
 The baselines (`no_val_link` / `fcav` / `react` / `graphrag`) ignore the
 CyANCHOR sub-axes — set `METHOD` and go.
 
+### Running CyANCHOR with the vector arm (embeddings)
+
+`RETRIEVAL_VECTOR` spans three layers — flipping the toggle alone is the common
+mistake (you get an empty arm). To run *with* embeddings:
+
+1. **Build them into the graph:** `python setup_project.py` **without**
+   `--skip-embeddings` (needs Neo4j 5.18+; auto-discovered props → `vector_config.EMBEDDABLE_PROPERTIES`).
+2. **Model/backend** *(optional; defaults fine):* `vector_config.py`
+   (`EMBEDDING_BACKEND` / `EMBEDDING_MODEL_NAME`) — the only home for the embedding model.
+3. **Toggle the arm:** `eval_config.py` → `RETRIEVAL_VECTOR = True` → runs land in `…__cyanchor_fvl/`.
+
+**Prerequisite:** step 3 is a no-op on a graph built with `--skip-embeddings`. For
+the shipped `fuzzy+lev` default, build with `--skip-embeddings` and leave
+`RETRIEVAL_VECTOR = False`.
+
+> Not the same as `vector_config.TOOL_RETRIEVAL_MODE` (`fuzzy`/`vector`/`hybrid`) —
+> that is the **ReAct baseline's** retrieval mode, unrelated to CyANCHOR's arm.
+
 ## Where results land
 
 Each run writes a **canonical per-run directory** (see `eval_paths.py`, the single

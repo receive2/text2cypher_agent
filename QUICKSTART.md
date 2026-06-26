@@ -178,6 +178,38 @@ python eval_run.py        # uses whatever eval_config.py now says
 python eval_aggregate.py
 ```
 
+#### Embeddings — what to set where (and what *not* to touch)
+
+CyANCHOR's **vector arm** spans three layers. They are separate on purpose; the
+common mistake is flipping the run-time arm without first building the graph's
+embeddings, which silently gives you an empty arm.
+
+**To run *with* embeddings (CyANCHOR `fuzzy+lev+vector`):**
+
+1. **Build them into the graph** — `python setup_project.py` **without**
+   `--skip-embeddings` (steps 6–7 embed the values + create the native vector
+   index; the auto-discovered properties are written to
+   `vector_config.EMBEDDABLE_PROPERTIES`). Needs Neo4j 5.18+.
+2. **Pick the model/backend** *(optional — defaults are fine)* — `vector_config.py`
+   (`EMBEDDING_BACKEND`, `EMBEDDING_MODEL_NAME`). This is the **only** place the
+   embedding model lives; never an env var.
+3. **Turn on the arm** — `eval_config.py`: `RETRIEVAL_VECTOR = True`. The run lands
+   in `…__cyanchor_fvl/`.
+
+> **Prerequisite:** step 3 only does something on a graph that had step 1 run on
+> it. Set `RETRIEVAL_VECTOR = True` on a graph built with `--skip-embeddings` and
+> the vector arm has no index to search — it contributes nothing.
+
+**To run *without* embeddings (the shipped default, `fuzzy+lev`):**
+
+- Build with `python setup_project.py --skip-embeddings` (fuzzy-only, no vector
+  index — works on Neo4j 4.4+), and leave `eval_config.RETRIEVAL_VECTOR = False`.
+
+> **Don't confuse the two "vector" switches.** `vector_config.TOOL_RETRIEVAL_MODE`
+> (`fuzzy` / `vector` / `hybrid`) is the **ReAct baseline's** per-tool retrieval
+> mode — it is *not* how you enable CyANCHOR's vector arm. For CyANCHOR, the arm
+> toggle is `eval_config.RETRIEVAL_VECTOR`; leave `TOOL_RETRIEVAL_MODE` alone.
+
 Re-running is incremental: each `(dataset, graph, method)` overwrites only its own
 run directory under `OUT_DIR`; `eval_aggregate.py` re-reads everything on disk, so
 a partial re-run still prints the full table.
