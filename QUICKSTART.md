@@ -87,21 +87,31 @@ answer. That's the whole pipeline.
 The harness runs the agent over one or more `(dataset, graph)` pairs and reports
 bucketed metrics. It is driven entirely by **`eval_config.py`** — no CLI.
 
-```bash
-cp eval_config_example.py eval_config.py     # gitignored; credentials live here
-```
+`eval_config.py` is **already in the repo and committed** — the eval Neo4j
+connection (host/password) is intentionally public so reviewers can reproduce.
+**Edit it in place; do _not_ `cp eval_config_example.py` over it** (that would wipe
+the shared `GRAPH_CONNS`). `eval_config_example.py` is only a reference for the
+field shapes when you wire up your own graphs.
 
-Edit `eval_config.py`:
+Open `eval_config.py` and set the fields for your run:
 
 ```python
-GRAPH_CONNS = {                              # one Neo4j per graph
+GRAPH_CONNS = {                              # one Neo4j per graph (shared registry)
     ("cypherbench", "movie"): GraphConn(uri="bolt://localhost:7687", user="neo4j", password="..."),
 }
-EVAL_PAIRS = [("cypherbench", "movie")]      # which pairs to run next
-CYPHERBENCH_PATH = "/path/to/cypherbench/test.json"
-LIMIT   = 20                                 # cap per pair while smoke-testing; None = all
-OUT_DIR = "logs/eval"
+EVAL_PAIRS = [("cypherbench", "movie")]      # ← YOUR slice for this run
+METHOD     = "cyanchor"                       # ← which method (see the knobs table below)
+LIMIT      = 20                               # cap per pair while smoke-testing; None = all
+OUT_DIR    = "logs/runs"
 ```
+
+> **Multi-person discipline (important).** `eval_config.py` is a *committed, shared*
+> file, but `EVAL_PAIRS` / `METHOD` / `LIMIT` / `SHARDS` are **your per-run scratch**.
+> The values you pull are just whatever the last person ran — **not** a meaningful
+> default. Always set them to *your* slice before running, and **don't commit those
+> edits** (`git checkout eval_config.py` when done, or just don't stage it). Only
+> commit `eval_config.py` when you deliberately update the shared `GRAPH_CONNS`
+> registry — otherwise you silently change everyone else's next run.
 
 Then, four steps:
 

@@ -46,10 +46,25 @@ Red = contaminated; do not evaluate until fixed. Example red line:
 > disconnected** (see the env-vpn-proxy note). An `UNREACH` row means a
 > connection problem, not a contaminated archive.
 
+## First time on a fresh checkout (one-time, per graph)
+
+`eval_config.py` is **already committed** (the eval Neo4j connection is public for
+reviewers) — open and edit it, do **not** `cp eval_config_example.py` over it. The
+harness needs each graph's artifacts archived before it can swap them in:
+
+```bash
+python scripts/setup_and_archive.py     # build + archive artifacts for the graphs you'll run
+```
+
+Without this, `verify_setup.py` and `eval_run.py` have nothing to swap in and every
+pair fails the pre-flight. (The `fcav` baseline additionally needs `python
+setup_fcav.py` once per graph.)
+
 ## Standard run procedure
 
 ```bash
 # 1. Pick the slice + method — edit eval_config.py (EVAL_PAIRS + METHOD; see below).
+#    These are YOUR per-run scratch — don't commit them (see "Multi-person" below).
 
 # 2. Pre-flight. Stop here and fix anything that is not green.
 python verify_setup.py
@@ -60,6 +75,15 @@ python eval_run.py
 # 4. Aggregate.
 python eval_aggregate.py
 ```
+
+> **Multi-person discipline.** `eval_config.py` is committed and shared, but
+> `EVAL_PAIRS` / `METHOD` / `LIMIT` / `SHARDS` are per-run scratch — the values you
+> pull are just the last person's run, not a default. Set them to *your* slice
+> before running and **don't commit those edits** (`git checkout eval_config.py`
+> when done). Commit `eval_config.py` only to update the shared `GRAPH_CONNS`
+> registry. Two people running `eval_run.py` on the **same checkout/machine** at
+> once will corrupt each other's live tree — coordinate, or work on separate
+> checkouts.
 
 To run the **five methods** for a comparison, change `METHOD` in `eval_config.py`
 and re-run `eval_run.py` once per method (the records land in separate dirs — see
@@ -157,9 +181,9 @@ what you run — the file you edited always wins. (A field you leave unset in
 eval_config falls through to `config.py`'s shipped default, which is CyANCHOR
 `fuzzy+lev`.)
 
-The batch drivers (`orchestrate_cyanchor.py` and the pole completion scripts)
-sweep across methods by setting `cfg.METHOD` / `cfg.RETRIEVAL_*` **in-process** —
-the same single surface, not a parallel env channel.
+The batch driver `orchestrate_cyanchor.py` sweeps methods/arms by setting
+`cfg.METHOD` / `cfg.RETRIEVAL_*` **in-process** — the same single surface, not a
+parallel env channel.
 
 ## Safety nets already in place (you don't have to do anything)
 
@@ -187,7 +211,8 @@ python verify_setup.py
   `generated/`, `schema_data/`, or the `setup_artifacts/` archives.
 - **Do** use `SHARDS` for intra-graph parallelism instead of launching
   concurrent `eval_run.py` processes — the live tree is shared, so two
-  `eval_run.py` runs on different graphs will fight over it.
+  `eval_run.py` runs (different graphs, **or two people on the same
+  checkout/machine**) will fight over it and corrupt each other's scores.
 - **Don't** hand-edit or hand-copy archive files. Use
   `setup_and_archive.py`, which validates before writing.
 - **Don't** trust a low score at face value. If value-linking looks dead

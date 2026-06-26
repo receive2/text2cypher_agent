@@ -540,17 +540,17 @@ eval_run.py
        │          don't match the graph (same check as verify_setup.py)
        │       3. spawn `python -m eval._worker <dataset> <graph> ...`
        │          with EVAL_NEO4J_* env vars pointing at that container
-       │       4. write logs/eval/<dataset>__<graph>.records.jsonl
-       │                   logs/eval/<dataset>__<graph>.summary.json
+       │       4. write logs/runs/<dataset>__<graph>__<method>/records.jsonl
+       │                   logs/runs/<dataset>__<graph>__<method>/summary.json
        ▼
 eval_aggregate.py
-           • Re-aggregates every records.jsonl on disk by difficulty
-             bucket and prints one table per dataset
+           • Re-aggregates every run dir on disk by difficulty
+             bucket and prints one table per (dataset, method)
 ```
 
 #### 1 — Configure `eval_config.py`
 
-The repo ships an `eval_config_example.py`. Copy it to `eval_config.py` (gitignored — credentials live here, not in `.env`) and fill in:
+`eval_config.py` is **committed** — the eval Neo4j connection (host/password) is intentionally public so reviewers can reproduce. **Edit it in place; do not `cp eval_config_example.py` over it** (that wipes the shared `GRAPH_CONNS`). The example file is a field-shape reference only. `EVAL_PAIRS` / `METHOD` / `LIMIT` / `SHARDS` are per-run scratch — set them to your slice and don't commit those edits; commit `eval_config.py` only to update the shared `GRAPH_CONNS`. Key fields:
 
 ```python
 # Per-(dataset, graph) Neo4j connection registry.  Each graph runs in
@@ -576,7 +576,7 @@ EVAL_PAIRS: list[tuple[str, str]] = [
 LIMIT:   int | None = None      # cap examples per pair (None = all)
 VERBOSE: bool       = False     # per-example log lines
 SHARDS:  int        = 4         # intra-graph parallelism (1 = single process)
-OUT_DIR              = "logs/eval"
+OUT_DIR              = "logs/runs"
 REPORT_DIR           = "report" # where gen_*_report.py write report/<dataset>/<graph>.md + _summary.md
 SETUP_ARTIFACTS_ROOT = "setup_artifacts"
 ```
@@ -634,9 +634,9 @@ For each pair in `EVAL_PAIRS` the driver:
 2. **Graph-identity guard** — connects to the pair's graph and confirms the live node tools search labels that have nodes there. A mismatch (contaminated archive) is **skipped with a loud reason**, not silently mis-scored. This is the same check as `verify_setup.py`; bypass with `EVAL_SKIP_GRAPH_GUARD=1` only if you know what you're doing.
 3. Looks up the `GraphConn`, builds the worker env (`EVAL_NEO4J_URI` / `_USER` / `_PASSWORD` / `_DATABASE`).
 4. Spawns `python -m eval._worker <dataset> <graph> <test_path> <records_out> <summary_out>` as a fresh subprocess so each pair gets a clean Python interpreter.
-5. Writes:
-   - `logs/eval/<dataset>__<graph>.records.jsonl` — one line per example (gold cypher, predicted cypher, EA / EM verdict, normalised result-sets, error info)
-   - `logs/eval/<dataset>__<graph>.summary.json` — aggregate summary for that pair
+5. Writes the canonical per-run dir (method derived from the resolved config; see `eval_paths.py`):
+   - `logs/runs/<dataset>__<graph>__<method>/records.jsonl` — one line per example (gold cypher, predicted cypher, EA / EM verdict, normalised result-sets, error info)
+   - `logs/runs/<dataset>__<graph>__<method>/summary.json` — aggregate summary for that pair
 
 A failure on one pair (missing archive, worker crash, etc.) is logged and skipped — the rest of `EVAL_PAIRS` still runs. The driver only exits non-zero if **every** pair failed.
 
@@ -646,7 +646,7 @@ A failure on one pair (missing archive, worker crash, etc.) is logged and skippe
 python eval_aggregate.py
 ```
 
-Scans `logs/eval/` for every `*.summary.json`, groups by dataset (parsed from the `<dataset>__<graph>` filename prefix), re-aggregates the underlying `.records.jsonl` files via `eval.difficulty.aggregate_by_difficulty`, and prints one bucketed table per dataset (rows: `all` / `easy` / `medium` / `hard` / `extra`) with a footer naming the graphs that contributed. Records persist on disk across runs, so partial re-evals just overwrite the affected pair's two files and leave everything else untouched.
+Scans `logs/runs/` for every `*/summary.json`, groups by `(dataset, method)` (parsed from the `<dataset>__<graph>__<method>` run-dir name), re-aggregates the underlying `records.jsonl` files via `eval.difficulty.aggregate_by_difficulty`, and prints one bucketed table per `(dataset, method)` (rows: `all` / `easy` / `medium` / `hard` / `extra`) with a footer naming the graphs that contributed. Records persist on disk across runs, so partial re-evals just overwrite the affected run dir and leave everything else untouched.
 
 #### Metrics & normalisation
 
