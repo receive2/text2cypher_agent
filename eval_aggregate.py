@@ -133,7 +133,7 @@ def _render_dataset_table(
     axis:         str   = "difficulty",
 ) -> List[str]:
     """Render one dataset table as aligned Markdown (readable in a terminal too)."""
-    headers = [axis, "EA", "EM", "PSJS", "n", "n_err"]
+    headers = [axis, "EA", "EM", "PSJS", "n", "err"]
     rows: List[List[str]] = []
     for b in bucket_order:
         c = cells.get(b)

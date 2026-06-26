@@ -10,10 +10,11 @@ Each method's ``records.jsonl`` is the source of truth; metrics are
 recomputed the same way the worker's ``summary.json`` does it
 (verified to reproduce it exactly):
 
-* scored rows  = records whose ``ea`` is not ``None`` (executed OK)
-* EA           = mean(1.0 if ea else 0.0) over scored
-* PSJS         = mean(psjs) over rows whose ``psjs`` is not ``None``
-* n            = #scored,  err = #(ea is None)  (execution errors)
+* denominator  = ALL examples (no exclusions; the harness assumes nothing about
+  dataset quality — a query that doesn't run is a wrong answer)
+* EA           = mean(1.0 if ea is True else 0.0) over all rows
+* PSJS         = mean(psjs or 0.0) over all rows
+* n            = #examples (the denominator);  err = #errored (scored 0, NOT excluded)
 
 Buckets (perturbation ``strategy`` / ``difficulty``) are discovered
 from the data; known buckets are emitted in canonical order, any extra
@@ -54,17 +55,21 @@ def _load(d: str) -> List[Dict[str, Any]]:
 
 
 def _ea(rows: List[Dict[str, Any]]) -> Optional[float]:
-    s = [r for r in rows if r.get("ea") is not None]
-    if not s:
+    """EA over ALL rows: True→1, everything else (False / error / None)→0. No
+    exclusions — a query that doesn't run is a wrong answer. Curating broken golds
+    is a dataset-audit job, not an eval one (see audit_gold_errors.py)."""
+    if not rows:
         return None
-    return sum(1.0 if r["ea"] else 0.0 for r in s) / len(s)
+    return sum(1.0 if r.get("ea") is True else 0.0 for r in rows) / len(rows)
 
 
 def _psjs(rows: List[Dict[str, Any]]) -> Optional[float]:
-    v = [r["psjs"] for r in rows if r.get("psjs") is not None]
-    if not v:
+    """PSJS over ALL rows: a numeric psjs counts, anything else (error/None)→0."""
+    if not rows:
         return None
-    return sum(v) / len(v)
+    return sum(float(r["psjs"]) if isinstance(r.get("psjs"), (int, float))
+               and not isinstance(r.get("psjs"), bool) else 0.0
+               for r in rows) / len(rows)
 
 
 def _order(values: set, known: List[str]) -> List[str]:
@@ -117,12 +122,11 @@ def main() -> int:
     overall_rows = []
     for m in methods:
         rows = data[m["label"]]
-        scored = [r for r in rows if r.get("ea") is not None]
-        err = sum(1 for r in rows if r.get("ea") is None)
+        err = sum(1 for r in rows if r.get("ea") is None)         # errored (scored 0, NOT excluded)
         overall_rows.append([
             m["label"], m["retrieval"],
             _fmt(_ea(rows)), _fmt(_psjs(rows)),
-            str(len(scored)), str(err),
+            str(len(rows)), str(err),
         ])
     overall = _table(
         ["method", "retrieval", "EA", "PSJS", "n", "err"],
@@ -157,7 +161,8 @@ def main() -> int:
     parts.append(
         "**Metrics.** EA = execution accuracy (predicted Cypher's result set matches gold).\n"
         "PSJS = Provenance-Subgraph Jaccard Similarity (partial-credit subgraph overlap).\n"
-        f"Higher is better; both over each method's successfully-executed rows. Generated {gen}.\n")
+        "Higher is better. Denominator = ALL examples; any failure (agent error, "
+        f"empty/wrong result, or a non-executing gold) scores 0. Generated {gen}.\n")
     parts.append(
         f"**Setup.** {ds} `{g}`, {n_q} entity-perturbed test questions\n"
         f"(strategies: {snote}). LLMs: {llm} for grounding and Cypher generation.\n")
