@@ -54,6 +54,29 @@ def _load(d: str) -> List[Dict[str, Any]]:
     return [json.loads(l) for l in p.read_text().splitlines() if l.strip()]
 
 
+def _load_run_meta(d: str) -> Dict[str, Any]:
+    """Read the ``run_meta`` block from a method dir's sibling ``summary.json``
+    (the harness captures the resolved config + a real timestamp there). Returns
+    ``{}`` if absent, so the report degrades gracefully to spec values."""
+    p = Path(d) / "summary.json"
+    if not p.is_file():
+        return {}
+    try:
+        data = json.loads(p.read_text())
+        rm = data.get("run_meta")
+        return rm if isinstance(rm, dict) else {}
+    except Exception:  # noqa: BLE001
+        return {}
+
+
+def _onoff(v: Any) -> Optional[str]:
+    if v is None:
+        return None
+    if isinstance(v, bool):
+        return "on" if v else "off"
+    return str(v)
+
+
 def _ea(rows: List[Dict[str, Any]]) -> Optional[float]:
     """EA over ALL rows: True→1, everything else (False / error / None)→0. No
     exclusions — a query that doesn't run is a wrong answer. Curating broken golds
@@ -108,6 +131,9 @@ def main() -> int:
     methods = spec["methods"]
 
     data = {m["label"]: _load(m["dir"]) for m in methods}
+    # run_meta (resolved config + real timestamp) captured by the harness in each
+    # method dir's summary.json — used to make the report self-describing.
+    metas = {m["label"]: _load_run_meta(m["dir"]) for m in methods}
 
     # discover buckets across all methods
     strat_vals: set = set()
@@ -156,16 +182,59 @@ def main() -> int:
     llm = spec.get("llm", "gpt-4.1")
     snote = spec.get("strategies_note", " · ".join(strategies))
 
+    # Resolve real provenance from the harness-captured run_meta; fall back to the
+    # spec when summary.json is missing (older runs / hand-built specs).
+    _meta_list = [m for m in metas.values() if m]
+
+    def _first_meta(key: str):
+        for m in _meta_list:
+            v = m.get(key)
+            if v not in (None, ""):
+                return v
+        return None
+
+    _ts_all = sorted({str(m["generated_at"]) for m in _meta_list if m.get("generated_at")})
+    ts = _ts_all[-1] if _ts_all else (gen or "(unrecorded)")   # latest run time
+    ner_llm = _first_meta("ner_llm") or llm
+    cyp_llm = _first_meta("cypher_llm") or llm
+    qa_llm  = _first_meta("qa_llm") or llm
+    cy_meta = next((m for m in _meta_list if m.get("method") == "cyanchor"), {})
+
+    cy_bits: List[str] = []
+    if cy_meta:
+        if cy_meta.get("retrieval"):
+            cy_bits.append(f"retrieval `{cy_meta['retrieval']}`")
+        if cy_meta.get("tool_type"):
+            cy_bits.append(f"tool `{cy_meta['tool_type']}`")
+        _esc = _onoff(cy_meta.get("plan_exec_escalate"))
+        if _esc:
+            mi = cy_meta.get("plan_exec_max_iter")
+            cy_bits.append(f"escalate `{_esc}`" + (f" (≤{mi})" if _esc == "on" and mi else ""))
+        _sr = _onoff(cy_meta.get("cypher_semantic_repair"))
+        if _sr:
+            rr = cy_meta.get("cypher_repair_max_rounds")
+            cy_bits.append(f"semantic_repair `{_sr}`" + (f" (≤{rr})" if _sr == "on" and rr else ""))
+        _eiw = _onoff(cy_meta.get("cypher_empty_is_wrong"))
+        if _eiw:
+            cy_bits.append(f"empty_is_wrong `{_eiw}`")
+        _vs = _onoff(cy_meta.get("plan_exec_value_snap"))
+        if _vs:
+            cy_bits.append(f"value_snap `{_vs}`")
+
     parts: List[str] = []
     parts.append(f"# {spec['title']}\n")
     parts.append(
         "**Metrics.** EA = execution accuracy (predicted Cypher's result set matches gold).\n"
         "PSJS = Provenance-Subgraph Jaccard Similarity (partial-credit subgraph overlap).\n"
         "Higher is better. Denominator = ALL examples; any failure (agent error, "
-        f"empty/wrong result, or a non-executing gold) scores 0. Generated {gen}.\n")
+        "empty/wrong result, or a non-executing gold) scores 0.\n")
     parts.append(
         f"**Setup.** {ds} `{g}`, {n_q} entity-perturbed test questions\n"
-        f"(strategies: {snote}). LLMs: {llm} for grounding and Cypher generation.\n")
+        f"(strategies: {snote}).\n")
+    parts.append(
+        f"**Run config.** Generated {ts}. "
+        f"LLMs: NER `{ner_llm}` · Cypher `{cyp_llm}` · QA `{qa_llm}`.\n"
+        + ("CyANCHOR knobs: " + " · ".join(cy_bits) + ".\n" if cy_bits else ""))
     parts.append(
         "**Methods.**\n"
         "- **No Val Link** — grounding bypassed (the perturbed surface form is used as-is).\n"

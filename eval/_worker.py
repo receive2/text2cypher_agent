@@ -173,6 +173,14 @@ def _run_meta() -> Dict[str, Any]:
         meta["plan_exec_tools_per_entity"] = getattr(_c, "PLAN_EXEC_TOOLS_PER_ENTITY", None)
         meta["plan_exec_values_per_tool"]  = getattr(_c, "PLAN_EXEC_VALUES_PER_TOOL", None)
         meta["plan_exec_escalate"]         = getattr(_c, "PLAN_EXEC_ESCALATE", None)
+        meta["plan_exec_max_iter"]         = getattr(_c, "PLAN_EXEC_MAX_ITER", None)
+        meta["retrieval_levenshtein_k"]    = getattr(_c, "RETRIEVAL_LEVENSHTEIN_K", None)
+        # CyANCHOR result-level self-correction + value-snap (key for provenance).
+        meta["cypher_semantic_repair"]     = getattr(_c, "CYPHER_SEMANTIC_REPAIR", None)
+        meta["cypher_repair_max_rounds"]   = getattr(_c, "CYPHER_REPAIR_MAX_ROUNDS", None)
+        meta["cypher_empty_is_wrong"]      = getattr(_c, "CYPHER_EMPTY_IS_WRONG", None)
+        meta["cypher_retry_max_rounds"]    = getattr(_c, "CYPHER_RETRY_MAX_ROUNDS", None)
+        meta["plan_exec_value_snap"]       = getattr(_c, "PLAN_EXEC_VALUE_SNAP", None)
     except Exception:  # noqa: BLE001
         pass
     try:
