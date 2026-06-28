@@ -2,10 +2,13 @@
 
 **Metrics.** EA = execution accuracy (predicted Cypher's result set matches gold).
 PSJS = Provenance-Subgraph Jaccard Similarity (partial-credit subgraph overlap).
-Higher is better; both over each method's successfully-executed rows. Generated 2026-06-25.
+Higher is better. Denominator = ALL examples; any failure (agent error, empty/wrong result, or a non-executing gold) scores 0.
 
 **Setup.** MindTheQuery `bloom`, 40 entity-perturbed test questions
-(strategies: casing · typo · partial · abbrev). LLMs: gpt-4.1 for grounding and Cypher generation.
+(strategies: casing · typo · partial · abbrev).
+
+**Run config.** Generated 2026-06-24T06:39:04+02:00. LLMs: NER `gpt-4.1` · Cypher `gpt-4.1` · QA `gpt-4.1`.
+CyANCHOR knobs: retrieval `fuzzy+lev` · tool `node_rel` · escalate `on`.
 
 **Methods.**
 - **No Val Link** — grounding bypassed (the perturbed surface form is used as-is).
@@ -27,8 +30,8 @@ Higher is better; both over each method's successfully-executed rows. Generated 
 
 | method               | retrieval |    EA |  PSJS |   n | err |
 | -------------------- | --------- | ----: | ----: | --: | --: |
-| No Val Link          | —         | 0.282 | 0.384 |  39 |   1 |
-| FCAV                 | vector    | 0.308 | 0.409 |  39 |   1 |
+| No Val Link          | —         | 0.275 | 0.374 |  40 |   1 |
+| FCAV                 | vector    | 0.300 | 0.399 |  40 |   1 |
 | ReAct (Node + Rel)   | fuzzy     | 0.525 | 0.500 |  40 |   0 |
 | GraphRAG             | norm-Lev  | 0.525 | 0.649 |  40 |   0 |
 | CyANCHOR (fuzzy+lev) | fuzzy+lev | 0.550 | 0.620 |  40 |   0 |
@@ -37,8 +40,8 @@ Higher is better; both over each method's successfully-executed rows. Generated 
 
 | method               | casing |  typo | partial | abbrev |
 | -------------------- | -----: | ----: | ------: | -----: |
-| No Val Link          |  0.500 | 0.263 |   0.364 |  0.000 |
-| FCAV                 |  0.500 | 0.316 |   0.364 |  0.000 |
+| No Val Link          |  0.500 | 0.250 |   0.364 |  0.000 |
+| FCAV                 |  0.500 | 0.300 |   0.364 |  0.000 |
 | ReAct (Node + Rel)   |  0.750 | 0.650 |   0.364 |  0.200 |
 | GraphRAG             |  0.750 | 0.500 |   0.455 |  0.600 |
 | CyANCHOR (fuzzy+lev) |  0.750 | 0.550 |   0.545 |  0.400 |
@@ -47,8 +50,8 @@ Higher is better; both over each method's successfully-executed rows. Generated 
 
 | method               |  easy | medium |  hard |
 | -------------------- | ----: | -----: | ----: |
-| No Val Link          | 1.000 |  0.250 | 0.500 |
-| FCAV                 | 1.000 |  0.278 | 0.500 |
+| No Val Link          | 1.000 |  0.243 | 0.500 |
+| FCAV                 | 1.000 |  0.270 | 0.500 |
 | ReAct (Node + Rel)   | 1.000 |  0.514 | 0.500 |
 | GraphRAG             | 1.000 |  0.514 | 0.500 |
 | CyANCHOR (fuzzy+lev) | 1.000 |  0.541 | 0.500 |
@@ -57,8 +60,8 @@ Higher is better; both over each method's successfully-executed rows. Generated 
 
 | method               | casing |  typo | partial | abbrev |
 | -------------------- | -----: | ----: | ------: | -----: |
-| No Val Link          |  0.500 | 0.524 |   0.273 |  0.000 |
-| FCAV                 |  0.500 | 0.577 |   0.273 |  0.000 |
+| No Val Link          |  0.500 | 0.498 |   0.273 |  0.000 |
+| FCAV                 |  0.500 | 0.548 |   0.273 |  0.000 |
 | ReAct (Node + Rel)   |  0.500 | 0.700 |   0.273 |  0.200 |
 | GraphRAG             |  0.750 | 0.598 |   0.727 |  0.600 |
 | CyANCHOR (fuzzy+lev) |  0.750 | 0.630 |   0.727 |  0.242 |
@@ -67,8 +70,8 @@ Higher is better; both over each method's successfully-executed rows. Generated 
 
 | method               |  easy | medium |  hard |
 | -------------------- | ----: | -----: | ----: |
-| No Val Link          | 1.000 |  0.360 | 0.500 |
-| FCAV                 | 1.000 |  0.388 | 0.500 |
+| No Val Link          | 1.000 |  0.350 | 0.500 |
+| FCAV                 | 1.000 |  0.377 | 0.500 |
 | ReAct (Node + Rel)   | 1.000 |  0.486 | 0.500 |
 | GraphRAG             | 1.000 |  0.648 | 0.500 |
 | CyANCHOR (fuzzy+lev) | 1.000 |  0.616 | 0.500 |
