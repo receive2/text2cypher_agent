@@ -99,12 +99,18 @@ def _set_arms(vector: bool) -> None:
     cfg.RETRIEVAL_FUZZY       = True
     cfg.RETRIEVAL_LEVENSHTEIN = True
     cfg.RETRIEVAL_VECTOR      = vector
-    # Generous per-example cap: CyANCHOR is the most LLM-call-heavy method (PLAN +
-    # per-mention retrieval/escalation/abstain + Cypher gen + QA), so the 60s
-    # default truncates its hardest multi-entity questions while lighter baselines
-    # finish — unfair. 600s lets every example complete (the slow ones are ~70-120s).
-    # This is a worker watchdog knob, not a run-config field, so it stays in env.
-    os.environ["EVAL_PER_EXAMPLE_TIMEOUT"] = "600"
+    # SHARDS=1 for CyANCHOR — REQUIRED, not just a speed knob. CyANCHOR is the most
+    # LLM-call-heavy method (PLAN + per-mention escalation/abstain judges + Cypher
+    # gen + the ≤4-round semantic-repair loop + value-snap = 10+ gpt-4.1 calls/ex).
+    # At SHARDS>1 the parallel workers burst the LLM API → rate-limit backoff → a
+    # single example's call chain stalls for hundreds of seconds and trips the
+    # per-example watchdog. Under the all-examples-denominator eval those timeouts
+    # score 0, spuriously depressing CyANCHOR (verified: a question that took 622s
+    # at SHARDS=4 ran 17s in isolation). SHARDS=1 = ~17s/ex, no contention.
+    cfg.SHARDS = 1
+    # Generous per-example cap as a second safety net (slowest legit examples ~70-120s).
+    # Worker watchdog knob, not a run-config field, so it stays in env.
+    os.environ["EVAL_PER_EXAMPLE_TIMEOUT"] = "900"
 
 
 def run_cyanchor(aug_dataset: str, conn_graph: str, vector: bool) -> bool:

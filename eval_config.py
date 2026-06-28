@@ -231,6 +231,13 @@ VERBOSE: bool = False
 # sequentially (a single shared live artifact tree is swapped per graph), so
 # only the examples WITHIN a graph parallelise. Raise/lower per your CPU + LLM
 # rate limits.
+#
+# ⚠️ CyANCHOR must run at SHARDS=1. It is the most LLM-call-heavy method, and at
+# SHARDS>1 the concurrent workers trigger LLM-API rate-limit backoff that stalls
+# individual examples past the per-example watchdog → those time out and (under the
+# all-examples-denominator eval) score 0, unfairly depressing CyANCHOR. The
+# orchestrate_cyanchor.py driver forces SHARDS=1 for this reason; for manual
+# CyANCHOR runs keep SHARDS=1. Baselines are light and may use higher SHARDS.
 SHARDS: int = 1
 
 # Where generated reports are written: REPORT_DIR/<dataset>/<graph>.md and
