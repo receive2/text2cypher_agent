@@ -181,6 +181,10 @@ def _run_meta() -> Dict[str, Any]:
         meta["cypher_empty_is_wrong"]      = getattr(_c, "CYPHER_EMPTY_IS_WRONG", None)
         meta["cypher_retry_max_rounds"]    = getattr(_c, "CYPHER_RETRY_MAX_ROUNDS", None)
         meta["plan_exec_value_snap"]       = getattr(_c, "PLAN_EXEC_VALUE_SNAP", None)
+        meta["plan_exec_skip_grounded"]    = getattr(_c, "PLAN_EXEC_SKIP_GROUNDED", None)
+        meta["plan_exec_parallel_mentions"] = getattr(_c, "PLAN_EXEC_PARALLEL_MENTIONS", None)
+        meta["graphrag_empty_is_wrong"]    = getattr(_c, "GRAPHRAG_EMPTY_IS_WRONG", None)
+        meta["graphrag_llm_evaluator"]     = getattr(_c, "GRAPHRAG_LLM_EVALUATOR", None)
     except Exception:  # noqa: BLE001
         pass
     try:

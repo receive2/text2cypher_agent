@@ -254,10 +254,6 @@ MAX_THREAD            = 5    # parallel tool calls in the NER agent
 # token usage materially.
 DEFAULT_TOP_K         = 15   # FAISS tool-selection top-k
 TOOL_TOP_K            = 10   # fulltext search top-k per tool call
-STABILITY_K           = 3    # consecutive stable validation rounds before stopping
-MAX_VALIDATION_ROUNDS = 20   # hard cap on validation rounds per property pair
-SAMPLE_T              = 20   # sample size t per round (sample_property_values)
-CAP_MULTIPLIER        = 1000    # scan cap = t * CAP_MULTIPLIER (cheap over-fetch for random sampling)
 
 
 # ──────────────────────────────────────────────────────────────────────────────

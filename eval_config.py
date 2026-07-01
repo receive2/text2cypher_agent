@@ -38,6 +38,59 @@ import os
 from dataclasses import dataclass
 
 
+# ╔══════════════════════════════════════════════════════════════════════════╗
+# ║  ★  EXPERIMENT PARAMETERS — EDIT THESE  ★                                  ║
+# ║                                                                            ║
+# ║  Everything you change to run an experiment or an ablation lives HERE.     ║
+# ║  Edit a value, save, then:  python eval_run.py                             ║
+# ║                                                                            ║
+# ║  You never set environment variables — eval_run injects these into the     ║
+# ║  worker, and every run's report records the exact values used, so an       ║
+# ║  ablation is self-describing and reproducible.                             ║
+# ║                                                                            ║
+# ║  WHICH graphs to run → EVAL_PAIRS (next to GRAPH_CONNS, further down).      ║
+# ╚══════════════════════════════════════════════════════════════════════════╝
+
+# ── Method ────────────────────────────────────────────────────────────────────
+METHOD:    str = "cyanchor"     # no_val_link | fcav | react | graphrag | cyanchor
+TOOL_TYPE: str = "node_rel"     # node | node_rel   (applies to react / cyanchor)
+
+# ── CyANCHOR retrieval arms  (≥1 must be on; unioned per field) ───────────────
+RETRIEVAL_FUZZY:         bool = True    # BM25 / Lucene full-text
+RETRIEVAL_VECTOR:        bool = False   # in-graph embedding kNN (needs setup embeddings)
+RETRIEVAL_LEVENSHTEIN:   bool = True    # APOC normalized edit-distance scan
+RETRIEVAL_LEVENSHTEIN_K: int  = 10      # # candidates the Levenshtein arm returns
+
+# ── CyANCHOR result self-correction  (cyanchor only) ─────────────────────────
+CYPHER_SEMANTIC_REPAIR:   bool = True   # result-level evaluate → regenerate loop
+CYPHER_REPAIR_MAX_ROUNDS: int  = 4      # max semantic-repair rounds
+CYPHER_EMPTY_IS_WRONG:    bool = True   # treat a 0-row result as a defect
+
+# ── CyANCHOR ablation toggles  (default ON = the shipped method) ─────────────
+PLAN_EXEC_ESCALATE:          bool = True   # corrective LLM-judge retrieval loop
+PLAN_EXEC_VALUE_SNAP:        bool = True   # post-generation existence-gated value-snap guard
+PLAN_EXEC_SKIP_GROUNDED:     bool = True   # skip escalation for already-grounded mentions (latency)
+PLAN_EXEC_PARALLEL_MENTIONS: bool = True   # run mentions in parallel threads (latency;
+                                           #   ↑ raises peak LLM concurrency — see SHARDS note)
+
+# ── Cypher error-retry  (react baseline / when semantic repair is off) ───────
+CYPHER_RETRY_MAX_ROUNDS: int = 2   # 0=legacy chain · 1=no repair (A/B control) · 2=1 gen + 1 CoT repair
+
+# ── GraphRAG baseline toggles  (a baseline — leave as-is unless ablating it) ──
+GRAPHRAG_EMPTY_IS_WRONG: bool = True   # 0 rows counts as a defect
+GRAPHRAG_LLM_EVALUATOR:  bool = True   # use the LLM evaluator (else accept any non-empty)
+
+# ── Run size / parallelism ───────────────────────────────────────────────────
+LIMIT:   int | None = None    # examples per (dataset, graph); None = all; e.g. 20 to smoke-test
+SHARDS:  int        = 1        # intra-graph parallelism. ⚠ keep 1 for CyANCHOR (rate-limit timeouts)
+VERBOSE: bool       = False    # per-example log lines
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# Below this line is INFRASTRUCTURE (connections, dataset paths, output dirs) —
+# edit once when you add a graph or move data; not per-experiment.
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
 # ── Connection registry ──────────────────────────────────────────────────────
 
 @dataclass
@@ -131,14 +184,10 @@ GRAPH_CONNS.update({
 })
 
 
-# Which (dataset, graph) pairs to evaluate on the next run of eval_run.py.
-# Edit this between runs to do partial evals; existing on-disk records
-# persist and are picked up by ``eval_aggregate.py``.
-#
-# Default: every registered pair.  Comment out / shrink to do a partial
-# eval; aggregation reads everything on disk regardless of what ran last.
-
-
+# ★ EDIT: WHICH GRAPHS TO RUN ★ — the (dataset, graph) pairs for the next
+# `python eval_run.py`. (The method/knobs are in the control panel at the top.)
+# Shrink for a partial eval; on-disk records persist and aggregation reads them all.
+# Use `*_augmented` for the perturbed set, the bare name for the original (clean) set.
 EVAL_PAIRS: list[tuple[str, str]] = [
     ("zograscope_augmented", "pole"),
 ]
@@ -214,51 +263,13 @@ OUT_DIR = "logs/runs"
 SETUP_ARTIFACTS_ROOT = "setup_artifacts"
 
 
-# ── Run-time switches ────────────────────────────────────────────────────────
-
-# Per-dataset cap on examples (None = all).  Applied independently for
-# each (dataset, graph) pair after the graph filter.
-#LIMIT: int | None = 100
-LIMIT: int | None = None
-
-# Verbose per-example log lines.
-VERBOSE: bool = False
-
-# Intra-graph parallelism. Each (dataset, graph) pair's examples are split into
-# SHARDS stride-shards run as SHARDS parallel worker processes against the same
-# container, then merged — wall-clock ≈ 1/SHARDS. SHARDS=1 is the original
-# single-process behaviour (byte-identical coverage). Graphs are still run
-# sequentially (a single shared live artifact tree is swapped per graph), so
-# only the examples WITHIN a graph parallelise. Raise/lower per your CPU + LLM
-# rate limits.
-#
-# ⚠️ CyANCHOR must run at SHARDS=1. It is the most LLM-call-heavy method, and at
-# SHARDS>1 the concurrent workers trigger LLM-API rate-limit backoff that stalls
-# individual examples past the per-example watchdog → those time out and (under the
-# all-examples-denominator eval) score 0, unfairly depressing CyANCHOR. The
-# orchestrate_cyanchor.py driver forces SHARDS=1 for this reason; for manual
-# CyANCHOR runs keep SHARDS=1. Baselines are light and may use higher SHARDS.
-SHARDS: int = 1
-
 # Where generated reports are written: REPORT_DIR/<dataset>/<graph>.md and
 # REPORT_DIR/<dataset>/_summary.md. Default "report".
 REPORT_DIR: str = "report"
 
-# ── Method + CyANCHOR sub-axes (single source of truth) ──────────────────────
-# eval_run injects these into each worker's environment, where config.py reads
-# them (config.py stays the resolver). Precedence: an explicitly-set shell env
-# var wins (the documented `METHOD=… python eval_run.py` override and the batch
-# orchestrators still work); otherwise these eval_config values are used; config.py
-# defaults apply only if a field is missing here. So for the normal flow
-# (`python eval_run.py`) THIS is where the method/config lives.
-METHOD: str = "cyanchor"            # no_val_link | fcav | react | graphrag | cyanchor
-TOOL_TYPE: str = "node_rel"         # node | node_rel  (react / cyanchor)
-RETRIEVAL_FUZZY: bool = True        # CyANCHOR retrieval arms (≥1 on)
-RETRIEVAL_VECTOR: bool = False      #   vector needs in-graph embeddings
-RETRIEVAL_LEVENSHTEIN: bool = True
-CYPHER_SEMANTIC_REPAIR: bool = True   # CyANCHOR result-level self-correction (cyanchor-only)
-CYPHER_REPAIR_MAX_ROUNDS: int = 4
-CYPHER_EMPTY_IS_WRONG: bool = True
+# (Method / retrieval arms / ablation toggles / LIMIT / SHARDS / VERBOSE all live
+#  in the ★ EXPERIMENT PARAMETERS ★ control panel at the TOP of this file.
+#  eval_run injects them into the worker; config.py stays the resolver + defaults.)
 
 
 

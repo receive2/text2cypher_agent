@@ -106,8 +106,11 @@ def _build_env(uri: str, user: str, password: str, database: str) -> dict[str, s
     # ── run config from eval_config (cfg wins → overwrite, don't just fill) ──
     _STR  = ("METHOD", "TOOL_TYPE")
     _BOOL = ("RETRIEVAL_FUZZY", "RETRIEVAL_VECTOR", "RETRIEVAL_LEVENSHTEIN",
-             "CYPHER_SEMANTIC_REPAIR", "CYPHER_EMPTY_IS_WRONG")
-    _INT  = ("CYPHER_REPAIR_MAX_ROUNDS",)
+             "CYPHER_SEMANTIC_REPAIR", "CYPHER_EMPTY_IS_WRONG",
+             # ablation toggles (eval_config control panel) — config.py reads each
+             "PLAN_EXEC_ESCALATE", "PLAN_EXEC_VALUE_SNAP", "PLAN_EXEC_SKIP_GROUNDED",
+             "PLAN_EXEC_PARALLEL_MENTIONS", "GRAPHRAG_EMPTY_IS_WRONG", "GRAPHRAG_LLM_EVALUATOR")
+    _INT  = ("CYPHER_REPAIR_MAX_ROUNDS", "CYPHER_RETRY_MAX_ROUNDS", "RETRIEVAL_LEVENSHTEIN_K")
     for name in _STR:
         v = getattr(cfg, name, None)
         if v is not None:
