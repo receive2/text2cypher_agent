@@ -284,6 +284,16 @@ TOOL_TOP_K            = 10   # fulltext search top-k per tool call
 # Back-compat: the legacy VAL_LINK_MODE / AGENT_TYPE / RETRIEVAL_TYPE still work
 # (val_link+plan_exec → cyanchor, val_link+react → react, hybrid → +vector).
 # ──────────────────────────────────────────────────────────────────────────────
+# ┌──────────────────────────────────────────────────────────────────────────┐
+# │ ⚙ THE EXPERIMENT KNOBS BELOW ARE RECEIVERS — edit them in eval_config.      │
+# │   Every `os.getenv("X", <literal>)` experiment knob in this file (METHOD,   │
+# │   TOOL_TYPE, RETRIEVAL_*, PLAN_EXEC_*, CYPHER_*, GRAPHRAG_*) is read from    │
+# │   an env var that eval_run injects from the eval_config control panel.       │
+# │   To change what an EVAL run does, edit the ★ EXPERIMENT PARAMETERS ★ panel  │
+# │   in eval_config.py — NOT the literal here. The literal is only the fallback │
+# │   for the bare `ner_agent_auto.py` demo/CLI (a shell env var may override    │
+# │   it there, which is a CLI convenience). Do not treat it as a 2nd knob.      │
+# └──────────────────────────────────────────────────────────────────────────┘
 METHOD:    str = os.getenv("METHOD", os.getenv("VAL_LINK_MODE", "cyanchor")).strip().lower()
 TOOL_TYPE: str = os.getenv("TOOL_TYPE", "node_rel").strip().lower()
 RETRIEVAL_FUZZY       = os.getenv("RETRIEVAL_FUZZY",       "1").lower() in ("1", "true", "yes")
@@ -437,6 +447,7 @@ PLAN_EXEC_HYBRID_VECTOR_K = 5     # embedding (vector-index) candidates per tool
 # the budget is spent. Only fires on a miss, so well-grounded entities pay just
 # one judge call and no extra retrieval (avoids the candidate-noise penalty of
 # blanket top-K increases).
+# ⚙ eval receiver — edit in the eval_config panel, not here (literal = demo/CLI fallback).
 PLAN_EXEC_ESCALATE        = os.getenv("PLAN_EXEC_ESCALATE", "1").lower() in ("1", "true", "yes")
 PLAN_EXEC_MAX_ITER        = 3           # max escalation rounds per mention
 PLAN_EXEC_ESCALATE_BUDGET = (5, 3, 1)   # values added per successive round (deepen step)
@@ -475,6 +486,7 @@ GRAPHRAG_LEV_THRESHOLD  = 0.0   # min normalized-Levenshtein sim to keep a candi
 # property) value set — server-side via APOC (apoc.text.levenshteinSimilarity);
 # if APOC is unavailable we scan distinct values in Python, capped at this many.
 GRAPHRAG_SCAN_CAP       = 50000
+# ⚙ eval receiver — edit in the eval_config panel, not here (literal = demo/CLI fallback).
 GRAPHRAG_EMPTY_IS_WRONG = os.getenv("GRAPHRAG_EMPTY_IS_WRONG", "1").lower() in ("1", "true", "yes")
 GRAPHRAG_LLM_EVALUATOR  = os.getenv("GRAPHRAG_LLM_EVALUATOR", "1").lower() in ("1", "true", "yes")
 
@@ -502,6 +514,7 @@ GRAPHRAG_LLM_EVALUATOR  = os.getenv("GRAPHRAG_LLM_EVALUATOR", "1").lower() in ("
 # NOTE: val_link with this knob uses a direct cypher_llm.invoke path (not
 # GraphCypherQAChain). The recorded movie/flight ablations predate it and went
 # through GraphCypherQAChain — re-measure the val_link rows for a clean compare.
+# ⚙ eval receiver — edit in the eval_config panel, not here (literal = demo/CLI fallback).
 CYPHER_RETRY_MAX_ROUNDS = int(os.getenv("CYPHER_RETRY_MAX_ROUNDS", "2"))
 # ── CyANCHOR-only semantic repair (generate→execute→EVALUATE-result→repair) ──
 # Extends CyANCHOR's existing error-driven CoT retry with a GraphRAG-style
@@ -513,6 +526,7 @@ CYPHER_RETRY_MAX_ROUNDS = int(os.getenv("CYPHER_RETRY_MAX_ROUNDS", "2"))
 # Anti-oscillation: the final query is the first ACCEPTED attempt, else the first
 # executable attempt (so it can only match-or-beat the no-repair result, never
 # silently drift below it). Default on (finished optimizations ship default-on).
+# ⚙ eval receiver — edit in the eval_config panel, not here (literal = demo/CLI fallback).
 CYPHER_SEMANTIC_REPAIR  = os.getenv("CYPHER_SEMANTIC_REPAIR", "1").lower() in ("1", "true", "yes")
 CYPHER_REPAIR_MAX_ROUNDS = int(os.getenv("CYPHER_REPAIR_MAX_ROUNDS", "4"))
 CYPHER_EMPTY_IS_WRONG    = os.getenv("CYPHER_EMPTY_IS_WRONG", "1").lower() in ("1", "true", "yes")
@@ -541,16 +555,19 @@ CYPHER_EMPTY_IS_WRONG    = os.getenv("CYPHER_EMPTY_IS_WRONG", "1").lower() in ("
 # Only `=` / inline-map string literals are considered (not =~ / CONTAINS, which
 # are intentional partials). plan_exec only; fires only on non-existent values,
 # so the extra LLM call is rare. Set to 0 to disable.
+# ⚙ eval receiver — edit in the eval_config panel, not here (literal = demo/CLI fallback).
 PLAN_EXEC_VALUE_SNAP = os.getenv("PLAN_EXEC_VALUE_SNAP", "1").lower() in ("1", "true", "yes")
 
 # Latency: skip the escalation loop for a mention that is ALREADY cleanly
 # grounded — i.e. a retrieved candidate exact/substring-matches the mention
 # (the free, no-LLM check from _judge_grounded's fast path). Only skips work
 # that escalation would not have improved, so it's ~EA-neutral. Set 0 to ablate.
+# ⚙ eval receiver — edit in the eval_config panel, not here (literal = demo/CLI fallback).
 PLAN_EXEC_SKIP_GROUNDED = os.getenv("PLAN_EXEC_SKIP_GROUNDED", "1").lower() in ("1", "true", "yes")
 # Latency: run the per-mention EXECUTE/escalation concurrently (mentions are
 # independent — same calls, same results, just not serialized). Capped by
 # MAX_THREAD. Set 0 to force serial.
+# ⚙ eval receiver — edit in the eval_config panel, not here (literal = demo/CLI fallback).
 PLAN_EXEC_PARALLEL_MENTIONS = os.getenv("PLAN_EXEC_PARALLEL_MENTIONS", "1").lower() in ("1", "true", "yes")
 
 # CyANCHOR retrieval arms are the three RETRIEVAL_FUZZY / RETRIEVAL_VECTOR /
@@ -558,6 +575,7 @@ PLAN_EXEC_PARALLEL_MENTIONS = os.getenv("PLAN_EXEC_PARALLEL_MENTIONS", "1").lowe
 # The Levenshtein arm is a server-side APOC scan (apoc.text.levenshteinSimilarity)
 # over each (label,property) value set; cheap on small graphs (flight ~1.7k), but
 # O(N) per mention on large graphs (movie ~218k) — gate at movie scale.
+# ⚙ eval receiver — edit in the eval_config panel, not here (literal = demo/CLI fallback).
 RETRIEVAL_LEVENSHTEIN_K = int(os.getenv("RETRIEVAL_LEVENSHTEIN_K", "10"))  # candidates from the Lev arm
 
 #  python ner_agent_auto.py "Who played neo in matrix?"  --verbose
