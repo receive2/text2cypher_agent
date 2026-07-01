@@ -18,13 +18,20 @@ Each evaluated graph lives in its own Docker container with its own URI
 and credentials; ``GRAPH_CONNS`` is the registry.  ``EVAL_PAIRS`` is the
 slice of that registry to actually run on the next ``python eval_run.py``.
 
-Privacy note
-------------
-``GRAPH_CONNS`` is the **single source of truth for connection info**.
-Credentials live here, not in ``.env``.  This file is gitignored
-(see ``.gitignore``); if it was already committed you must
-``git rm --cached eval_config.py`` to untrack the live copy without
-deleting it from disk.
+Where to edit
+-------------
+All per-experiment / per-ablation knobs live in the boxed
+``★ EXPERIMENT PARAMETERS — EDIT THESE ★`` block at the top of this file
+(method, CyANCHOR sub-axes, run size).  ``GRAPH_CONNS`` / ``EVAL_PAIRS``
+below it choose *which* graphs to run.  ``config.py`` holds the deeper
+structural defaults (LLM per stage, retrieval widths) — see its header.
+
+Connection note
+---------------
+``GRAPH_CONNS`` is the **single source of truth for connection info** — not
+``.env``.  This file is **committed on purpose**: the eval Neo4j host and
+password are intentionally public so reviewers can reproduce the numbers.
+Do **not** gitignore it or treat the password as a secret.
 
 Edit, save, then run::
 
@@ -119,9 +126,8 @@ class GraphConn:
 # container distinguished by bolt port.  See ``docs/GRAPHS.md`` for the
 # canonical schema (node labels, rel types) and node/relation counts.
 #
-# All graphs share the same Neo4j credentials.  Replace ``_NEO4J_PASSWORD``
-# with the real password before running the harness — this file is
-# gitignored so the live secret stays off the repo.
+# All graphs share the same Neo4j credentials, committed here on purpose so
+# reviewers can reproduce (this is a throwaway eval VM, not a secret store).
 # The VM's external IP is ephemeral (it drifts on every stop/start). Override
 # without editing this file via:  export EVAL_NEO4J_HOST=<current-ip>
 # (Reaching this VM requires the corporate VPN DISCONNECTED — see the

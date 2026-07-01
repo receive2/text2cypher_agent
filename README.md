@@ -178,10 +178,14 @@ python setup_project.py --verbose               # show full tracebacks on errors
 ## Value-linking modes
 
 The method is a single `METHOD` axis (plus CyANCHOR's retrieval/tool sub-axes),
-resolved into a `GroundingSpec`. **For eval runs, set these in `eval_config.py`** —
-it is the authoritative single surface (`eval_run` propagates it to the workers and
-it overrides any inherited shell env). `config.py` holds the resolver + shipped
-defaults; the standalone `ner_agent_auto.py` CLI reads it directly (env-overridable).
+resolved into a `GroundingSpec`. **For eval runs, edit the boxed
+`★ EXPERIMENT PARAMETERS — EDIT THESE ★` block at the top of `eval_config.py`** —
+that one place holds every method/ablation knob, each annotated inline. It is the
+authoritative single surface (`eval_run` propagates it to the workers and it
+overrides any inherited shell env; every report records the exact values used).
+`config.py` holds the resolver, shipped defaults, and the deeper structural knobs
+(LLM per stage, retrieval widths); the standalone `ner_agent_auto.py` CLI reads it
+directly (env-overridable). You never set environment variables in the normal flow.
 
 | axis | values |
 |---|---|
@@ -550,7 +554,7 @@ eval_aggregate.py
 
 #### 1 — Configure `eval_config.py`
 
-`eval_config.py` is **committed** — the eval Neo4j connection (host/password) is intentionally public so reviewers can reproduce. **Edit it in place; do not `cp eval_config_example.py` over it** (that wipes the shared `GRAPH_CONNS`). The example file is a field-shape reference only. `EVAL_PAIRS` / `METHOD` / `LIMIT` / `SHARDS` are per-run scratch — set them to your slice and don't commit those edits; commit `eval_config.py` only to update the shared `GRAPH_CONNS`. Key fields:
+`eval_config.py` is **committed** — the eval Neo4j connection (host/password) is intentionally public so reviewers can reproduce. **Edit it in place; do not `cp eval_config_example.py` over it** (that wipes the shared `GRAPH_CONNS`). The example file is a field-shape reference only. Everything you tune for a run lives in the boxed **`★ EXPERIMENT PARAMETERS — EDIT THESE ★`** block at the top of the file (method + CyANCHOR ablation toggles + run size, each annotated inline); `GRAPH_CONNS` / `EVAL_PAIRS` below it choose which graphs. `EVAL_PAIRS` / `METHOD` / `LIMIT` / `SHARDS` are per-run scratch — set them to your slice and don't commit those edits; commit `eval_config.py` only to update the shared `GRAPH_CONNS`. Key fields:
 
 ```python
 # Per-(dataset, graph) Neo4j connection registry.  Each graph runs in

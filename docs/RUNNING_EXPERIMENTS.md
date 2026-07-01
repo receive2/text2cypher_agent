@@ -5,9 +5,12 @@ several datasets and graphs. You do **not** need to understand the
 internals — edit `eval_config.py`, run the four commands, and read the
 pre-flight table.
 
-The whole run is driven by **one file, `eval_config.py`** — the method, the
-CyANCHOR sub-axes, which `(dataset, graph)` pairs to run, the example cap, and
-the parallelism all live there. No environment variables in the normal flow.
+The whole run is driven by **one file, `eval_config.py`**. Everything you touch to
+run an experiment or an ablation is in the boxed **`★ EXPERIMENT PARAMETERS — EDIT
+THESE ★`** block at the top of that file — the method, the CyANCHOR sub-axes and
+ablation toggles, the example cap, and the parallelism, each annotated inline.
+`GRAPH_CONNS` / `EVAL_PAIRS` (just below) choose *which* graphs. No environment
+variables in the normal flow.
 
 ## The one thing to understand
 
@@ -92,19 +95,53 @@ one table block per `(dataset, method)`.
 
 ## Where the config lives (`eval_config.py`)
 
-This block in `eval_config.py` is the single source of truth for *what runs*:
+The `★ EXPERIMENT PARAMETERS ★` block at the top of `eval_config.py` is the single
+source of truth for *what runs*. Every knob below is in that block; `EVAL_PAIRS`
+(which graphs) sits just under it, next to `GRAPH_CONNS`.
+
+**Method**
 
 | Field | Values | Meaning |
 |---|---|---|
 | `METHOD` | `no_val_link` · `fcav` · `react` · `graphrag` · `cyanchor` | The method. `cyanchor` is the shipped grounder; the other four are baselines. |
 | `TOOL_TYPE` | `node` · `node_rel` | Tool scope (applies to `react` / `cyanchor`). |
-| `RETRIEVAL_FUZZY` / `RETRIEVAL_VECTOR` / `RETRIEVAL_LEVENSHTEIN` | `True`/`False` each | CyANCHOR retrieval arms (≥1 on). Default `fuzzy+lev` (vector needs in-graph embeddings). |
-| `CYPHER_SEMANTIC_REPAIR` | `True`/`False` | CyANCHOR result-level self-correction loop (cyanchor-only). |
+
+**CyANCHOR retrieval arms** (≥1 on; unioned per field; baselines ignore these)
+
+| Field | Values | Meaning |
+|---|---|---|
+| `RETRIEVAL_FUZZY` / `RETRIEVAL_VECTOR` / `RETRIEVAL_LEVENSHTEIN` | `True`/`False` each | The three arms. Default `fuzzy+lev` (vector needs in-graph embeddings). |
+| `RETRIEVAL_LEVENSHTEIN_K` | int | Candidates the Levenshtein arm returns (default `10`). |
+
+**CyANCHOR result self-correction + ablation toggles** (default ON = shipped method)
+
+| Field | Values | Meaning |
+|---|---|---|
+| `CYPHER_SEMANTIC_REPAIR` | `True`/`False` | Result-level evaluate → regenerate loop. |
 | `CYPHER_REPAIR_MAX_ROUNDS` | int | Max semantic-repair rounds (default `4`). |
-| `EVAL_PAIRS` | `[(dataset, graph), …]` | Which pairs to run. |
+| `CYPHER_EMPTY_IS_WRONG` | `True`/`False` | Treat a 0-row result as a defect. |
+| `PLAN_EXEC_ESCALATE` | `True`/`False` | Corrective LLM-judge retrieval loop. |
+| `PLAN_EXEC_VALUE_SNAP` | `True`/`False` | Post-generation existence-gated value-snap guard. |
+| `PLAN_EXEC_SKIP_GROUNDED` | `True`/`False` | Skip escalation for already-grounded mentions (latency). |
+| `PLAN_EXEC_PARALLEL_MENTIONS` | `True`/`False` | Run mentions in parallel threads (latency; raises peak LLM concurrency). |
+| `CYPHER_RETRY_MAX_ROUNDS` | int | Exec-error retry (react / when semantic repair off): `0` legacy · `1` no-repair control · `2` gen+CoT-repair. |
+
+**GraphRAG baseline toggles** (leave as-is unless ablating GraphRAG)
+
+| Field | Values | Meaning |
+|---|---|---|
+| `GRAPHRAG_EMPTY_IS_WRONG` | `True`/`False` | 0 rows counts as a defect. |
+| `GRAPHRAG_LLM_EVALUATOR` | `True`/`False` | Use the LLM evaluator (else accept any non-empty). |
+
+**Run size / parallelism**
+
+| Field | Values | Meaning |
+|---|---|---|
 | `LIMIT` | int · `None` | Examples per pair (`None` = all; set e.g. `20` to smoke-test). |
-| `SHARDS` | int | Intra-graph parallelism (see "Parallelism"). |
-| `OUT_DIR` | path | Run-dir root. Default `logs/runs`. |
+| `SHARDS` | int | Intra-graph parallelism (see "Parallelism"). ⚠ keep `1` for CyANCHOR. |
+| `VERBOSE` | `True`/`False` | Per-example log lines. |
+| `EVAL_PAIRS` | `[(dataset, graph), …]` | Which pairs to run (below `GRAPH_CONNS`). |
+| `OUT_DIR` | path | Run-dir root (infra section). Default `logs/runs`. |
 
 The baselines (`no_val_link` / `fcav` / `react` / `graphrag`) ignore the
 CyANCHOR sub-axes — set `METHOD` and go.
