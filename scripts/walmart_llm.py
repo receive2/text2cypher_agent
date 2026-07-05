@@ -1,68 +1,72 @@
 """
 walmart_llm.py
 ==============
-Minimal Walmart LLM Gateway client using native cryptography (no external
-walmart_gpa_peopleai_core package required).
+Generic OpenAI-compatible LLM client for the text2cypher verification pipeline.
 
-Auth format reverse-engineered from:
-  walmart_gpa_peopleai_core/auth_sig/__init__.py  (v0.34.0)
+Configuration (via environment variables or a .env file)
+---------------------------------------------------------
+  OPENAI_API_KEY      required  Your OpenAI API key (or Azure key — see below).
+  OPENAI_MODEL        optional  Model name (default: gpt-4o-mini).
+  OPENAI_BASE_URL     optional  Override the API base URL (e.g. a local proxy).
 
-String signed: f"{consumer_id}\\n{epoch_ms}\\n{key_version}\\n"
-Algorithm:     RSA-PKCS1v15-SHA256, base64-encoded
+Azure OpenAI (all four must be set to activate Azure mode)
+----------------------------------------------------------
+  AZURE_OPENAI_ENDPOINT    e.g. https://<resource>.openai.azure.com/
+  AZURE_OPENAI_API_KEY     Your Azure API key.
+  AZURE_OPENAI_DEPLOYMENT  Deployment / model name.
+  AZURE_OPENAI_API_VERSION API version string (e.g. 2024-02-01).
+
+Usage
+-----
+  from scripts.walmart_llm import ask_llm
+  reply = ask_llm("Summarise this in one sentence.", system="You are concise.")
 """
 
 from __future__ import annotations
 
-import base64
-import json
-import time
+import os
 from pathlib import Path
 
-import requests
-from cryptography.hazmat.primitives import hashes, serialization
-from cryptography.hazmat.primitives.asymmetric import padding
+from openai import AzureOpenAI, OpenAI
+
+# ── .env support (optional) ───────────────────────────────────────────────────
+# If python-dotenv is installed, load a .env file from the repo root so that
+# OPENAI_API_KEY etc. can be set there instead of in the shell environment.
+try:
+    from dotenv import load_dotenv
+    load_dotenv(Path(__file__).resolve().parent.parent / ".env")
+except ImportError:
+    pass  # python-dotenv not installed — use shell environment only
 
 # ── Config ────────────────────────────────────────────────────────────────────
-CONSUMER_ID    = "2482b985-d804-4741-aceb-a063522c3186"
-LLM_ENV        = "stage"
-LLM_GATEWAY_URL = "https://wmtllmgateway.stage.walmart.com/wmtllmgateway/v1/openai"
-DEFAULT_MODEL  = "gpt-5.4-mini"
-API_VERSION    = "2025-01-01-preview"
-# gpt-5.4-mini uses max_completion_tokens (not max_tokens)
-_MAX_TOKENS_PARAM = "max_completion_tokens"
-KEY_VERSION    = "1"
+DEFAULT_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 
-_REPO_ROOT = Path(__file__).resolve().parent.parent
-PRIVATE_KEY_PATH = _REPO_ROOT / "keys" / "genai-ingestion-llmgateway-key.pem"
+# ── Client factory ────────────────────────────────────────────────────────────
 
+def _make_client() -> OpenAI:
+    """Return an Azure or standard OpenAI client based on environment variables."""
+    azure_endpoint   = os.getenv("AZURE_OPENAI_ENDPOINT")
+    azure_key        = os.getenv("AZURE_OPENAI_API_KEY")
+    azure_deployment = os.getenv("AZURE_OPENAI_DEPLOYMENT")
+    azure_version    = os.getenv("AZURE_OPENAI_API_VERSION")
 
-# ── Auth ──────────────────────────────────────────────────────────────────────
+    if all([azure_endpoint, azure_key, azure_deployment, azure_version]):
+        return AzureOpenAI(
+            azure_endpoint=azure_endpoint,
+            api_key=azure_key,
+            api_version=azure_version,
+        )
 
-def _load_private_key():
-    with open(PRIVATE_KEY_PATH, "rb") as f:
-        return serialization.load_pem_private_key(f.read(), password=None)
+    api_key  = os.getenv("OPENAI_API_KEY")
+    base_url = os.getenv("OPENAI_BASE_URL")
 
+    kwargs: dict = {}
+    if api_key:
+        kwargs["api_key"] = api_key
+    if base_url:
+        kwargs["base_url"] = base_url
 
-def _generate_headers() -> dict:
-    private_key = _load_private_key()
-    epoch_ms = int(time.time()) * 1000
-    to_sign  = f"{CONSUMER_ID}\n{epoch_ms}\n{KEY_VERSION}\n"
-    sig      = private_key.sign(to_sign.encode(), padding.PKCS1v15(), hashes.SHA256())
-    auth_sig = base64.b64encode(sig).decode()
-
-    return {
-        "Content-Type":              "application/json",
-        "WM_CONSUMER.ID":            CONSUMER_ID,
-        "WM_CONSUMER.INTIMESTAMP":   str(epoch_ms),
-        "WM_SEC.AUTH_SIGNATURE":     auth_sig,
-        "WM_SEC.KEY_VERSION":        KEY_VERSION,
-        "WM_SVC.ENV":                LLM_ENV,
-        "WM_SVC.NAME":               "WMTLLMGATEWAY",
-        "WM_LLM_GW.USER_TYPE":       "NO_END_USER",
-        "WM_LLM_GW.USER_NAME":       "UNKNOWN",
-        "WM_LLM_GW.USER_AGENT":      "text2cypher-verifier",
-        "WM_LLM_GW.USER_IP":         "UNKNOWN",
-    }
+    return OpenAI(**kwargs)
 
 
 # ── Public API ────────────────────────────────────────────────────────────────
@@ -75,37 +79,36 @@ def ask_llm(
     temperature: float = 0.0,
     timeout: int = 60,
 ) -> str:
-    """Call the Walmart LLM Gateway and return the assistant's reply as a string."""
-    headers = _generate_headers()
-    payload = json.dumps({
-        "model":       model,
-        "task":        "chat/completions",
-        "api-version": API_VERSION,
-        "model-params": {
-            "messages": [
-                {"role": "system", "content": system},
-                {"role": "user",   "content": prompt},
-            ],
-            _MAX_TOKENS_PARAM: max_tokens,
-            "temperature": temperature,
-        },
-    })
+    """Call the configured LLM and return the assistant's reply as a string.
 
-    resp = requests.post(
-        LLM_GATEWAY_URL,
-        headers=headers,
-        data=payload,
-        verify=False,
+    Parameters
+    ----------
+    prompt      : User message.
+    system      : System prompt (default: "You are a helpful assistant.").
+    model       : Model name; falls back to OPENAI_MODEL env var or gpt-4o-mini.
+    max_tokens  : Maximum tokens in the completion.
+    temperature : Sampling temperature (0 = deterministic).
+    timeout     : HTTP timeout in seconds.
+    """
+    # Azure deployments use the deployment name set in the env, not the model arg.
+    azure_deployment = os.getenv("AZURE_OPENAI_DEPLOYMENT")
+    effective_model  = azure_deployment if azure_deployment else model
+
+    client = _make_client()
+
+    response = client.chat.completions.create(
+        model=effective_model,
+        messages=[
+            {"role": "system", "content": system},
+            {"role": "user",   "content": prompt},
+        ],
+        max_tokens=max_tokens,
+        temperature=temperature,
         timeout=timeout,
     )
 
-    if resp.status_code != 200:
-        raise RuntimeError(f"LLM gateway {resp.status_code}: {resp.text}")
-
-    return resp.json()["choices"][0]["message"]["content"]
+    return response.choices[0].message.content
 
 
 if __name__ == "__main__":
-    import warnings
-    warnings.filterwarnings("ignore")
     print(ask_llm("Say hello in 3 words."))

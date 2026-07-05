@@ -6,10 +6,10 @@ End-to-end orchestrator for the needs-verification human-review workflow.
 
 Pipeline
 --------
-  1. Preflight       Check that the PEM key + required packages are present.
+  1. Preflight       Check that OPENAI_API_KEY is set and packages are installed.
   2. Auto-verify     For each needs_verification row across all 3 benchmarks:
                        a) DuckDuckGo search for the from->to entity rewrite
-                       b) Walmart LLM Gateway (gpt-5.4-mini) assigns
+                       b) LLM (default: gpt-4o-mini) assigns
                           low/medium/high confidence + a reason
                        c) Checkpoint to verification_progress.jsonl (resume-safe)
   3. Build Excel     Render benchmarks/needs_verification_review.xlsx with:
@@ -29,7 +29,7 @@ Usage
 
 Architecture
 ------------
-  scripts/walmart_llm.py            : LLM Gateway client (PEM-signed auth)
+  scripts/walmart_llm.py            : Generic OpenAI-compatible LLM client
   scripts/auto_verify.py            : DDG search + LLM + checkpoint + Excel
   scripts/run_verification_pipeline : THIS FILE - orchestrates the above
 
@@ -37,7 +37,7 @@ Inputs
 ------
   benchmarks/<dataset>/needs_verification.jsonl   (3 datasets, 814 rows total)
   benchmarks/<dataset>/test.json                  (for original_nl lookup)
-  keys/genai-ingestion-llmgateway-key.pem         (PEM private key)
+  OPENAI_API_KEY env var (or .env file)
 
 Outputs
 -------
@@ -57,11 +57,9 @@ from pathlib import Path
 REPO_ROOT  = Path(__file__).resolve().parent.parent
 SCRIPTS    = REPO_ROOT / "scripts"
 BENCHMARKS = REPO_ROOT / "benchmarks"
-KEYS       = REPO_ROOT / "keys"
 
 CHECKPOINT  = BENCHMARKS / "verification_progress.jsonl"
 OUTPUT_XLSX = BENCHMARKS / "needs_verification_review.xlsx"
-PEM_KEY     = KEYS / "genai-ingestion-llmgateway-key.pem"
 
 DATASETS = [
     "cypherbench_augmented_v2",
@@ -79,14 +77,20 @@ def _preflight() -> None:
 
     errors = []
 
-    # PEM key
-    if not PEM_KEY.exists():
-        errors.append(f"Missing PEM key: {PEM_KEY}")
+    # OPENAI_API_KEY check
+    import os
+    if not os.getenv("OPENAI_API_KEY") and not (
+        os.getenv("AZURE_OPENAI_ENDPOINT") and os.getenv("AZURE_OPENAI_API_KEY")
+    ):
+        errors.append(
+            "Missing API key: set OPENAI_API_KEY (or AZURE_OPENAI_ENDPOINT + "
+            "AZURE_OPENAI_API_KEY for Azure) in your environment or .env file."
+        )
     else:
-        print(f"  OK  PEM key present: {PEM_KEY.name}")
+        print("  OK  LLM API key found in environment")
 
     # Required Python packages
-    required = ["requests", "openpyxl", "cryptography"]
+    required = ["openai", "openpyxl"]
     for pkg in required:
         try:
             __import__(pkg)
