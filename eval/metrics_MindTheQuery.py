@@ -387,6 +387,8 @@ def evaluate_dataset(
     verbose:      bool          = False,
     graph_filter: Optional[str] = None,
     dataset_name: Optional[str] = None,
+    shard:        int           = 0,
+    shards:       int           = 1,
 ) -> Dict[str, Any]:
     """
     Run :func:`evaluate_one` over the Mind-the-Query examples at *path*.
@@ -433,6 +435,12 @@ def evaluate_dataset(
 
     if limit is not None:
         examples = examples[:limit]
+
+    # Intra-graph sharding: this worker runs only its stride of the examples.
+    # shards=1 (default) is a no-op; the strides partition the set exactly.
+    if shards > 1:
+        examples = examples[shard::shards]
+        logger.info(f"shard {shard}/{shards}: running {len(examples)} examples.")
 
     records: List[Dict[str, Any]] = []
 

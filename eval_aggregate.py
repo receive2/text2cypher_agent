@@ -7,18 +7,17 @@ Print the bucketed per-dataset metric table over every per-pair record
 file currently sitting in :data:`eval_config.OUT_DIR`.
 
 This script is the *reader* half of the per-graph eval harness.  The
-*writer* half — :mod:`eval_run` — produces one
-``<dataset>__<graph>.records.jsonl`` + ``<dataset>__<graph>.summary.json``
-pair per ``(dataset, graph)`` it evaluates.  This script:
+*writer* half — :mod:`eval_run` — produces one canonical run directory
+``<dataset>__<graph>__<method>/`` (records.jsonl + summary.json) per
+``(dataset, graph, method)`` it evaluates (see :mod:`eval_paths`).  This script:
 
-    1. Scans :data:`eval_config.OUT_DIR` for ``*.summary.json`` files.
-    2. Groups them by dataset (the ``<dataset>__<graph>`` filename
-       prefix carries both pieces).
-    3. For each dataset, loads every ``.records.jsonl`` file that
-       contributed and recomputes the bucketed table by re-aggregating
-       the records with :func:`eval.difficulty.aggregate_by_difficulty`.
-    4. Prints one table per dataset and a footer naming the graphs that
-       contributed.
+    1. Scans :data:`eval_config.OUT_DIR` for ``*/summary.json`` run dirs.
+    2. Groups them by ``(dataset, method)`` (parsed from the run-dir name).
+    3. For each group, loads every ``records.jsonl`` that contributed and
+       recomputes the bucketed table by re-aggregating the records with
+       :func:`eval.difficulty.aggregate_by_difficulty`.
+    4. Prints one table block per ``(dataset, method)`` and a footer naming the
+       graphs that contributed.
 
 Why re-aggregate from records and not from summaries?
 -----------------------------------------------------
@@ -43,6 +42,7 @@ from pathlib import Path
 from typing import Any, Dict, List
 
 import eval_config as cfg
+import eval_paths
 from eval.difficulty import (
     aggregate_by_difficulty,
     aggregate_by_strategy,
@@ -57,28 +57,9 @@ _STRATEGY_ORDER = ("all",) + STRATEGY_BUCKETS
 
 
 # ──────────────────────────────────────────────────────────────────────────────
-# 1. Filename parsing
+# Run-dir parsing lives in eval_paths.parse_run_dir (single source of truth for
+# the <dataset>__<graph>__<method>/ convention).
 # ──────────────────────────────────────────────────────────────────────────────
-
-_SUMMARY_SUFFIX = ".summary.json"
-_RECORDS_SUFFIX = ".records.jsonl"
-
-
-def _parse_pair_from_summary(path: Path) -> tuple[str, str] | None:
-    """
-    Return ``(dataset, graph)`` parsed from a ``<dataset>__<graph>.summary.json``
-    filename.  Returns ``None`` if the filename doesn't match the layout.
-    """
-    name = path.name
-    if not name.endswith(_SUMMARY_SUFFIX):
-        return None
-    stem = name[: -len(_SUMMARY_SUFFIX)]
-    if "__" not in stem:
-        return None
-    dataset, _, graph = stem.partition("__")
-    if not dataset or not graph:
-        return None
-    return dataset, graph
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -152,7 +133,7 @@ def _render_dataset_table(
     axis:         str   = "difficulty",
 ) -> List[str]:
     """Render one dataset table as aligned Markdown (readable in a terminal too)."""
-    headers = [axis, "EA", "EM", "PSJS", "n", "n_err"]
+    headers = [axis, "EA", "EM", "PSJS", "n", "err"]
     rows: List[List[str]] = []
     for b in bucket_order:
         c = cells.get(b)
@@ -263,36 +244,40 @@ def main() -> int:
         )
         return 1
 
-    summaries = sorted(out_dir.glob(f"*{_SUMMARY_SUFFIX}"))
+    # Canonical layout (eval_paths): one dir per run, named
+    # <dataset>__<graph>__<method>/ holding records.jsonl + summary.json.
+    summaries = sorted(out_dir.glob(f"*/summary.json"))
     if not summaries:
         print(
-            f"[eval_aggregate] No *{_SUMMARY_SUFFIX} files found under "
-            f"{out_dir}. Run `python eval_run.py` first.",
+            f"[eval_aggregate] No */summary.json found under {out_dir}. "
+            "Run `python eval_run.py` first.",
             file=sys.stderr,
         )
         return 1
 
-    # dataset -> [(graph, records_path), ...]
-    by_dataset: dict[str, list[tuple[str, Path]]] = defaultdict(list)
+    # (dataset, method) -> [(graph, records_path), ...]. Method is part of the
+    # group key so a five-method sweep in one OUT_DIR prints one table block per
+    # (dataset, method) instead of silently pooling different methods together.
+    by_group: dict[tuple[str, str], list[tuple[str, Path]]] = defaultdict(list)
     metas: List[Dict[str, Any]] = []
     for sp in summaries:
-        parsed = _parse_pair_from_summary(sp)
+        parsed = eval_paths.parse_run_dir(sp.parent)
         if parsed is None:
             print(
-                f"[eval_aggregate] WARN: skipping unrecognised filename "
-                f"{sp.name} (expected <dataset>__<graph>.summary.json).",
+                f"[eval_aggregate] WARN: skipping unrecognised run dir "
+                f"{sp.parent.name} (expected <dataset>__<graph>__<method>/).",
                 file=sys.stderr,
             )
             continue
-        dataset, graph = parsed
-        records_path = sp.with_name(f"{dataset}__{graph}{_RECORDS_SUFFIX}")
-        by_dataset[dataset].append((graph, records_path))
+        dataset, graph, method = parsed
+        records_path = sp.with_name("records.jsonl")
+        by_group[(dataset, method)].append((graph, records_path))
         rm = _load_run_meta(sp)
         if rm:
             metas.append(rm)
 
-    if not by_dataset:
-        print("[eval_aggregate] No recognisable summaries to aggregate.", file=sys.stderr)
+    if not by_group:
+        print("[eval_aggregate] No recognisable run dirs to aggregate.", file=sys.stderr)
         return 1
 
     # Timestamp the report (filename + header). Prefer the run's own timestamp
@@ -302,13 +287,15 @@ def main() -> int:
     generated_at = now.isoformat(timespec="seconds")
     stamp = now.strftime("%Y%m%d_%H%M%S")
 
-    all_graphs = sorted({g for ds in by_dataset.values() for g, _ in ds})
+    all_graphs = sorted({g for grp in by_group.values() for g, _ in grp})
+    all_datasets = sorted({ds for ds, _ in by_group})
     report: List[str] = _render_meta_header(
-        metas, sorted(by_dataset), all_graphs, out_dir, generated_at
+        metas, all_datasets, all_graphs, out_dir, generated_at
     )
 
-    for dataset in sorted(by_dataset):
-        pairs = sorted(by_dataset[dataset])
+    for dataset, method in sorted(by_group):
+        label = f"{dataset} [{method}]"
+        pairs = sorted(by_group[(dataset, method)])
         records: List[Dict[str, Any]] = []
         graphs: List[str] = []
         for graph, rp in pairs:
@@ -316,19 +303,19 @@ def main() -> int:
             records.extend(_load_records(rp))
 
         if not records:
-            report.append(f"\n### {dataset}")
+            report.append(f"\n### {label}")
             report.append(f"\n_(no records loaded; graphs scanned: {graphs})_")
             continue
 
         by_diff = aggregate_by_difficulty(records)
-        report += _render_dataset_table(dataset, by_diff, graphs,
+        report += _render_dataset_table(label, by_diff, graphs,
                                         bucket_order=_BUCKET_ORDER, axis="difficulty")
 
         # Per-strategy table — only for augmented datasets (records carry a
         # non-null "strategy"). Skipped silently for the base/non-augmented sets.
         by_strategy = aggregate_by_strategy(records)
         if _has_strategy_rows(by_strategy):
-            report += _render_dataset_table(dataset, by_strategy, graphs,
+            report += _render_dataset_table(label, by_strategy, graphs,
                                             bucket_order=_STRATEGY_ORDER, axis="strategy")
 
     text = "\n".join(report) + "\n"

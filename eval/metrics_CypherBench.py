@@ -1086,6 +1086,8 @@ def evaluate_dataset(
     graph_filter:          Optional[str] = None,
     dataset_name:          Optional[str] = None,
     per_example_timeout:   Optional[int] = None,
+    shard:                 int           = 0,
+    shards:                int           = 1,
 ) -> Dict[str, Any]:
     """
     Run :func:`evaluate_one` over the CypherBench test set at *path* and
@@ -1139,6 +1141,13 @@ def evaluate_dataset(
 
     if limit is not None:
         examples = examples[:limit]
+
+    # Intra-graph sharding: this worker runs only its stride of the examples.
+    # shards=1 (default) is a no-op; the strides partition the set exactly
+    # (disjoint, complete), so merging K shards reproduces full coverage.
+    if shards > 1:
+        examples = examples[shard::shards]
+        logger.info(f"shard {shard}/{shards}: running {len(examples)} examples.")
 
     # Resolve the per-example hard timeout. Priority:
     #   1. explicit ``per_example_timeout`` arg (None → env default)

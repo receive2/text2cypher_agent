@@ -245,5 +245,40 @@ class TestConfigResolution(unittest.TestCase):
                          ("cyanchor", "node_rel", True, False, True))
 
 
+class TestEdgePatternValidation(unittest.TestCase):
+    """Pairwise edge-pattern validation (faithful to Multi-Agent GraphRAG Alg.1)."""
+
+    def setUp(self):
+        self._e = graphrag._EDGE_PATTERNS_CACHE
+        self._l = graphrag._LABELS_CACHE
+        self._r = graphrag._RELTYPES_CACHE
+        graphrag._EDGE_PATTERNS_CACHE = {("Movie", "directedBy", "Person")}
+        graphrag._LABELS_CACHE = {"Movie", "Person", "Genre"}
+        graphrag._RELTYPES_CACHE = {"directedBy"}
+
+    def tearDown(self):
+        graphrag._EDGE_PATTERNS_CACHE = self._e
+        graphrag._LABELS_CACHE = self._l
+        graphrag._RELTYPES_CACHE = self._r
+
+    def test_valid_edge_not_flagged(self):
+        comp = graphrag._extract_components('MATCH (m:Movie)-[:directedBy]->(p:Person) RETURN p')
+        self.assertEqual(graphrag._validate(comp)["bad_edges"], [])
+
+    def test_impossible_edge_flagged(self):
+        comp = graphrag._extract_components('MATCH (m:Movie)-[:directedBy]->(g:Genre) RETURN g')
+        self.assertIn(("Movie", "directedBy", "Genre"), graphrag._validate(comp)["bad_edges"])
+
+    def test_reverse_direction_not_flagged(self):
+        # (Person)<-[:directedBy]-(Movie) resolves to (Movie,directedBy,Person) — valid.
+        comp = graphrag._extract_components('MATCH (p:Person)<-[:directedBy]-(m:Movie) RETURN p')
+        self.assertEqual(graphrag._validate(comp)["bad_edges"], [])
+
+    def test_unknown_schema_skips_validation(self):
+        graphrag._EDGE_PATTERNS_CACHE = set()   # unknown → fail-safe, never flag
+        comp = graphrag._extract_components('MATCH (m:Movie)-[:directedBy]->(g:Genre) RETURN g')
+        self.assertEqual(graphrag._validate(comp)["bad_edges"], [])
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

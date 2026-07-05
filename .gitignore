@@ -78,12 +78,8 @@ generated/faiss/
 # Per-graph eval harness (2026-04-30)
 # ──────────────────────────────────────────────────────────────────────────────
 
-# eval_config.py holds Neo4j credentials in GRAPH_CONNS — must NOT be
-# committed.  This explicit entry overrides the !*.py whitelist above.
-# NOTE: if eval_config.py is currently tracked by git, you must run
-#   git rm --cached eval_config.py
-# to untrack the live copy without deleting it from disk.
-eval_config.py
+# eval_config.py IS committed: the eval Neo4j connection (host/port/password) is
+# intentionally public — reviewers need it to reproduce the benchmark. Not a secret.
 
 # Live "which (dataset, graph) is currently swapped in" sentinel,
 # written by eval/artifact_swap.py.
@@ -111,3 +107,10 @@ verification/
 !benchmarks/**
 
 .early.coverage
+=======
+# ──────────────────────────────────────────────────────────────────────────────
+# Ablation reports — always tracked (override the cypherbench/ dir-name ignore
+# above, which otherwise matches report/CypherBench/ on a case-insensitive FS).
+# ──────────────────────────────────────────────────────────────────────────────
+!report/
+!report/**

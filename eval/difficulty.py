@@ -493,21 +493,21 @@ def aggregate_by_difficulty(records: List[Dict[str, Any]]) -> Dict[str, Dict[str
               "ea":    float | None,
               "em":    float | None,
               "psjs":  float | None,
-              "n":     int,
-              "n_scored": {"ea": int, "em": int, "psjs": int},
-              "n_errors": int,
+              "n":     int,                                  # all examples in bucket (= denominator)
+              "n_scored": {"ea": int, "em": int, "psjs": int},  # == n (kept for back-compat)
+              "n_errors": int,                               # informational: #errored (scored 0)
             }
 
     Aggregation rule
     ----------------
-    ``ea`` / ``em`` / ``psjs`` are the **mean** of the metric over
-    examples where (a) the example falls in that bucket (``"all"``
-    counts everything) and (b) the metric value is not ``None``.
-    A bucket cell's metric is ``None`` when no examples scored it
-    (n_scored[metric] == 0).
+    ``ea`` / ``em`` / ``psjs`` are the **mean** of the metric over **all**
+    examples in the bucket (``"all"`` counts everything).  Every error —
+    agent failure, broken gold, or scoring exception — counts as 0; nothing
+    is excluded (the harness assumes nothing about dataset quality).  Thus
+    ``n == n_scored`` and a cell's metric is ``None`` only when the bucket is
+    empty.
 
-    Errored examples count toward ``n`` but contribute to no metric
-    mean.  Examples whose ``difficulty`` is ``None`` (no gold Cypher)
+    Examples whose ``difficulty`` is ``None`` (e.g. unparseable gold)
     contribute to ``"all"`` but to no individual bucket.
     """
     return _aggregate_by(records, "difficulty", _BUCKETS)
@@ -554,6 +554,19 @@ def aggregate_by_strategy(records: List[Dict[str, Any]]) -> Dict[str, Dict[str, 
     return _aggregate_by(records, "strategy", STRATEGY_BUCKETS)
 
 
+def _metric_value(k: str, v: Any) -> float:
+    """Numeric contribution of metric *k* for one example. ``ea`` / ``em`` are
+    booleans (True→1.0, False/None→0.0); ``psjs`` is a float (None→0.0). A ``None``
+    means the example errored (agent OR gold OR scoring) — it is counted as 0, not
+    skipped: the example stays in the denominator. The harness makes **no judgement
+    about the dataset** — a gold that fails to execute is scored exactly like any
+    other failure. Curating broken golds is a dataset-audit task (see
+    ``audit_gold_errors.py`` / docs/GOLD_ERROR_AUDIT.md), not an eval-time exclusion."""
+    if k == "psjs":
+        return float(v) if isinstance(v, (int, float)) and not isinstance(v, bool) else 0.0
+    return 1.0 if v is True else 0.0
+
+
 def _aggregate_by(
     records: List[Dict[str, Any]],
     field:   str,
@@ -564,13 +577,20 @@ def _aggregate_by(
     and :func:`aggregate_by_strategy`.  Buckets each record by ``rec[field]``;
     a value not in *buckets* (including ``None``) contributes to ``"all"`` only.
     Returns the standard cell shape (see :func:`aggregate_by_difficulty`).
+
+    Denominator policy: the metric mean is over **all examples in the bucket**.
+    Every error — agent failure, broken gold, or scoring exception — counts as 0
+    (a query that doesn't run is a wrong answer). Nothing is excluded; the harness
+    assumes nothing about dataset quality. Thus ``n == n_scored`` and a cell's
+    metric is ``None`` only when the bucket is empty. ``n_errors`` is informational
+    (how many of those examples errored, all already scored 0).
     """
     cells = {
         name: {
             "ea": None, "em": None, "psjs": None,
             "n": 0,
             "n_scored": {"ea": 0, "em": 0, "psjs": 0},
-            "n_errors": 0,
+            "n_errors": 0,            # informational: #errored (all scored 0, NOT excluded)
         }
         for name in ("all",) + buckets
     }
@@ -587,13 +607,10 @@ def _aggregate_by(
             cell = cells[name]
             cell["n"] += 1
             if rec.get("error"):
-                cell["n_errors"] += 1
+                cell["n_errors"] += 1             # informational only — still scored 0
             for k in ("ea", "em", "psjs"):
-                v = rec.get(k)
-                if v is None:
-                    continue
-                cell["n_scored"][k] += 1
-                sums[name][k] += float(v)
+                cell["n_scored"][k] += 1          # denominator = ALL examples
+                sums[name][k] += _metric_value(k, rec.get(k))
 
     for name in ("all",) + buckets:
         for k in ("ea", "em", "psjs"):

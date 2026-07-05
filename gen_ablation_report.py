@@ -10,10 +10,11 @@ Each method's ``records.jsonl`` is the source of truth; metrics are
 recomputed the same way the worker's ``summary.json`` does it
 (verified to reproduce it exactly):
 
-* scored rows  = records whose ``ea`` is not ``None`` (executed OK)
-* EA           = mean(1.0 if ea else 0.0) over scored
-* PSJS         = mean(psjs) over rows whose ``psjs`` is not ``None``
-* n            = #scored,  err = #(ea is None)  (execution errors)
+* denominator  = ALL examples (no exclusions; the harness assumes nothing about
+  dataset quality — a query that doesn't run is a wrong answer)
+* EA           = mean(1.0 if ea is True else 0.0) over all rows
+* PSJS         = mean(psjs or 0.0) over all rows
+* n            = #examples (the denominator);  err = #errored (scored 0, NOT excluded)
 
 Buckets (perturbation ``strategy`` / ``difficulty``) are discovered
 from the data; known buckets are emitted in canonical order, any extra
@@ -53,18 +54,45 @@ def _load(d: str) -> List[Dict[str, Any]]:
     return [json.loads(l) for l in p.read_text().splitlines() if l.strip()]
 
 
-def _ea(rows: List[Dict[str, Any]]) -> Optional[float]:
-    s = [r for r in rows if r.get("ea") is not None]
-    if not s:
+def _load_run_meta(d: str) -> Dict[str, Any]:
+    """Read the ``run_meta`` block from a method dir's sibling ``summary.json``
+    (the harness captures the resolved config + a real timestamp there). Returns
+    ``{}`` if absent, so the report degrades gracefully to spec values."""
+    p = Path(d) / "summary.json"
+    if not p.is_file():
+        return {}
+    try:
+        data = json.loads(p.read_text())
+        rm = data.get("run_meta")
+        return rm if isinstance(rm, dict) else {}
+    except Exception:  # noqa: BLE001
+        return {}
+
+
+def _onoff(v: Any) -> Optional[str]:
+    if v is None:
         return None
-    return sum(1.0 if r["ea"] else 0.0 for r in s) / len(s)
+    if isinstance(v, bool):
+        return "on" if v else "off"
+    return str(v)
+
+
+def _ea(rows: List[Dict[str, Any]]) -> Optional[float]:
+    """EA over ALL rows: True→1, everything else (False / error / None)→0. No
+    exclusions — a query that doesn't run is a wrong answer. Curating broken golds
+    is a dataset-audit job, not an eval one (see audit_gold_errors.py)."""
+    if not rows:
+        return None
+    return sum(1.0 if r.get("ea") is True else 0.0 for r in rows) / len(rows)
 
 
 def _psjs(rows: List[Dict[str, Any]]) -> Optional[float]:
-    v = [r["psjs"] for r in rows if r.get("psjs") is not None]
-    if not v:
+    """PSJS over ALL rows: a numeric psjs counts, anything else (error/None)→0."""
+    if not rows:
         return None
-    return sum(v) / len(v)
+    return sum(float(r["psjs"]) if isinstance(r.get("psjs"), (int, float))
+               and not isinstance(r.get("psjs"), bool) else 0.0
+               for r in rows) / len(rows)
 
 
 def _order(values: set, known: List[str]) -> List[str]:
@@ -103,6 +131,9 @@ def main() -> int:
     methods = spec["methods"]
 
     data = {m["label"]: _load(m["dir"]) for m in methods}
+    # run_meta (resolved config + real timestamp) captured by the harness in each
+    # method dir's summary.json — used to make the report self-describing.
+    metas = {m["label"]: _load_run_meta(m["dir"]) for m in methods}
 
     # discover buckets across all methods
     strat_vals: set = set()
@@ -117,12 +148,11 @@ def main() -> int:
     overall_rows = []
     for m in methods:
         rows = data[m["label"]]
-        scored = [r for r in rows if r.get("ea") is not None]
-        err = sum(1 for r in rows if r.get("ea") is None)
+        err = sum(1 for r in rows if r.get("ea") is None)         # errored (scored 0, NOT excluded)
         overall_rows.append([
             m["label"], m["retrieval"],
             _fmt(_ea(rows)), _fmt(_psjs(rows)),
-            str(len(scored)), str(err),
+            str(len(rows)), str(err),
         ])
     overall = _table(
         ["method", "retrieval", "EA", "PSJS", "n", "err"],
@@ -142,6 +172,7 @@ def main() -> int:
     by_strat_ea = bucket_table("strategy", strategies, _ea)
     by_diff_ea = bucket_table("difficulty", difficulties, _ea)
     by_strat_psjs = bucket_table("strategy", strategies, _psjs)
+    by_diff_psjs = bucket_table("difficulty", difficulties, _psjs)
 
     # ── header / prose ───────────────────────────────────────────────────────
     n_q = spec.get("n_questions")
@@ -151,18 +182,59 @@ def main() -> int:
     llm = spec.get("llm", "gpt-4.1")
     snote = spec.get("strategies_note", " · ".join(strategies))
 
+    # Resolve real provenance from the harness-captured run_meta; fall back to the
+    # spec when summary.json is missing (older runs / hand-built specs).
+    _meta_list = [m for m in metas.values() if m]
+
+    def _first_meta(key: str):
+        for m in _meta_list:
+            v = m.get(key)
+            if v not in (None, ""):
+                return v
+        return None
+
+    _ts_all = sorted({str(m["generated_at"]) for m in _meta_list if m.get("generated_at")})
+    ts = _ts_all[-1] if _ts_all else (gen or "(unrecorded)")   # latest run time
+    ner_llm = _first_meta("ner_llm") or llm
+    cyp_llm = _first_meta("cypher_llm") or llm
+    qa_llm  = _first_meta("qa_llm") or llm
+    cy_meta = next((m for m in _meta_list if m.get("method") == "cyanchor"), {})
+
+    cy_bits: List[str] = []
+    if cy_meta:
+        if cy_meta.get("retrieval"):
+            cy_bits.append(f"retrieval `{cy_meta['retrieval']}`")
+        if cy_meta.get("tool_type"):
+            cy_bits.append(f"tool `{cy_meta['tool_type']}`")
+        _esc = _onoff(cy_meta.get("plan_exec_escalate"))
+        if _esc:
+            mi = cy_meta.get("plan_exec_max_iter")
+            cy_bits.append(f"escalate `{_esc}`" + (f" (≤{mi})" if _esc == "on" and mi else ""))
+        _sr = _onoff(cy_meta.get("cypher_semantic_repair"))
+        if _sr:
+            rr = cy_meta.get("cypher_repair_max_rounds")
+            cy_bits.append(f"semantic_repair `{_sr}`" + (f" (≤{rr})" if _sr == "on" and rr else ""))
+        _eiw = _onoff(cy_meta.get("cypher_empty_is_wrong"))
+        if _eiw:
+            cy_bits.append(f"empty_is_wrong `{_eiw}`")
+        _vs = _onoff(cy_meta.get("plan_exec_value_snap"))
+        if _vs:
+            cy_bits.append(f"value_snap `{_vs}`")
+
     parts: List[str] = []
     parts.append(f"# {spec['title']}\n")
     parts.append(
         "**Metrics.** EA = execution accuracy (predicted Cypher's result set matches gold).\n"
         "PSJS = Provenance-Subgraph Jaccard Similarity (partial-credit subgraph overlap).\n"
-        f"Higher is better; both over each method's successfully-executed rows. Generated {gen}.\n")
+        "Higher is better. Denominator = ALL examples; any failure (agent error, "
+        "empty/wrong result, or a non-executing gold) scores 0.\n")
     parts.append(
         f"**Setup.** {ds} `{g}`, {n_q} entity-perturbed test questions\n"
-        f"(strategies: {snote}). LLMs: {llm} for grounding\n"
-        "and Cypher generation. **All methods share the identical Cypher system prompt** (the\n"
-        "either/or-UNION guidance is given to every method — a fair comparison). Each method\n"
-        "is scored over its own successfully-executed rows (per-method `n`).\n")
+        f"(strategies: {snote}).\n")
+    parts.append(
+        f"**Run config.** Generated {ts}. "
+        f"LLMs: NER `{ner_llm}` · Cypher `{cyp_llm}` · QA `{qa_llm}`.\n"
+        + ("CyANCHOR knobs: " + " · ".join(cy_bits) + ".\n" if cy_bits else ""))
     parts.append(
         "**Methods.**\n"
         "- **No Val Link** — grounding bypassed (the perturbed surface form is used as-is).\n"
@@ -182,6 +254,7 @@ def main() -> int:
     parts.append("## By perturbation strategy — EA\n\n" + by_strat_ea + "\n")
     parts.append("## By query-difficulty — EA\n\n" + by_diff_ea + "\n")
     parts.append("## By perturbation strategy — PSJS\n\n" + by_strat_psjs + "\n")
+    parts.append("## By query-difficulty — PSJS\n\n" + by_diff_psjs + "\n")
 
     if spec.get("findings"):
         parts.append("---\n")

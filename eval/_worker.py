@@ -173,6 +173,18 @@ def _run_meta() -> Dict[str, Any]:
         meta["plan_exec_tools_per_entity"] = getattr(_c, "PLAN_EXEC_TOOLS_PER_ENTITY", None)
         meta["plan_exec_values_per_tool"]  = getattr(_c, "PLAN_EXEC_VALUES_PER_TOOL", None)
         meta["plan_exec_escalate"]         = getattr(_c, "PLAN_EXEC_ESCALATE", None)
+        meta["plan_exec_max_iter"]         = getattr(_c, "PLAN_EXEC_MAX_ITER", None)
+        meta["retrieval_levenshtein_k"]    = getattr(_c, "RETRIEVAL_LEVENSHTEIN_K", None)
+        # CyANCHOR result-level self-correction + value-snap (key for provenance).
+        meta["cypher_semantic_repair"]     = getattr(_c, "CYPHER_SEMANTIC_REPAIR", None)
+        meta["cypher_repair_max_rounds"]   = getattr(_c, "CYPHER_REPAIR_MAX_ROUNDS", None)
+        meta["cypher_empty_is_wrong"]      = getattr(_c, "CYPHER_EMPTY_IS_WRONG", None)
+        meta["cypher_retry_max_rounds"]    = getattr(_c, "CYPHER_RETRY_MAX_ROUNDS", None)
+        meta["plan_exec_value_snap"]       = getattr(_c, "PLAN_EXEC_VALUE_SNAP", None)
+        meta["plan_exec_skip_grounded"]    = getattr(_c, "PLAN_EXEC_SKIP_GROUNDED", None)
+        meta["plan_exec_parallel_mentions"] = getattr(_c, "PLAN_EXEC_PARALLEL_MENTIONS", None)
+        meta["graphrag_empty_is_wrong"]    = getattr(_c, "GRAPHRAG_EMPTY_IS_WRONG", None)
+        meta["graphrag_llm_evaluator"]     = getattr(_c, "GRAPHRAG_LLM_EVALUATOR", None)
     except Exception:  # noqa: BLE001
         pass
     try:
@@ -198,6 +210,10 @@ def main(argv: list[str] | None = None) -> int:
                     help="Optional cap on examples (None = all).")
     ap.add_argument("--verbose", action="store_true",
                     help="Per-example log lines.")
+    ap.add_argument("--shard",   type=int, default=0,
+                    help="This worker's shard index (0..shards-1).")
+    ap.add_argument("--shards",  type=int, default=1,
+                    help="Total shards; >1 runs only this worker's stride of examples.")
     args = ap.parse_args(argv)
 
     _bridge_env()
@@ -211,6 +227,8 @@ def main(argv: list[str] | None = None) -> int:
         verbose      = args.verbose,
         graph_filter = args.graph,
         dataset_name = args.dataset,
+        shard        = args.shard,
+        shards       = args.shards,
     )
 
     out = _summary_only(summary)

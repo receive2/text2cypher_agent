@@ -21,10 +21,15 @@ this script:
 
 Per-pair output files
 ---------------------
-For each pair it writes::
+For each pair it writes a canonical per-run directory (see :mod:`eval_paths`)::
 
-    <OUT_DIR>/<dataset>__<graph>.records.jsonl   — one record per example
-    <OUT_DIR>/<dataset>__<graph>.summary.json    — aggregate summary
+    <OUT_DIR>/<dataset>__<graph>__<method>/records.jsonl   — one record per example
+    <OUT_DIR>/<dataset>__<graph>__<method>/summary.json    — aggregate summary
+
+The ``<method>`` segment (e.g. ``graphrag`` or ``cyanchor_fl``) is derived from
+the resolved run config, so a five-method sweep into one ``OUT_DIR`` keeps each
+method separate and ``eval_aggregate`` / the report generators can read them
+back without any external prefix map.
 
 Records and summaries from previous runs persist on disk; re-running
 ``eval_run.py`` for a different slice of ``EVAL_PAIRS`` adds new files
@@ -36,13 +41,17 @@ This script has no CLI flags.  Edit :mod:`eval_config` and re-run.
 
 from __future__ import annotations
 
+import json
 import os
+import shutil
 import subprocess
 import sys
+import time
 from pathlib import Path
 from typing import List, Tuple
 
 import eval_config as cfg
+import eval_paths
 from eval.artifact_swap import swap_in
 from paths import REPO_ROOT
 
@@ -78,13 +87,104 @@ def _resolve_test_path(dataset: str) -> str:
 
 
 def _build_env(uri: str, user: str, password: str, database: str) -> dict[str, str]:
-    """Copy the parent env and overlay the worker's connection vars."""
+    """Copy the parent env and overlay the worker's connection vars + the run
+    config from eval_config — the single, authoritative source for what runs.
+
+    eval_config is authoritative: for every run-config field it sets, it
+    *overrides* anything inherited from the shell, so a stale `export METHOD=…`
+    can never silently win over the file you edited. A field eval_config leaves
+    unset (``None``) falls through to config.py's default in the worker. The batch
+    drivers (orchestrate_cyanchor / run_pole_baselines / complete_pole_1441) drive
+    a sweep by mutating ``cfg.METHOD`` etc. in-process — same single surface, not a
+    parallel env channel."""
     env = dict(os.environ)
     env["EVAL_NEO4J_URI"]      = uri
     env["EVAL_NEO4J_USER"]     = user
     env["EVAL_NEO4J_PASSWORD"] = password
     env["EVAL_NEO4J_DATABASE"] = database
+
+    # ── run config from eval_config (cfg wins → overwrite, don't just fill) ──
+    _STR  = ("METHOD", "TOOL_TYPE")
+    _BOOL = ("RETRIEVAL_FUZZY", "RETRIEVAL_VECTOR", "RETRIEVAL_LEVENSHTEIN",
+             "CYPHER_SEMANTIC_REPAIR", "CYPHER_EMPTY_IS_WRONG",
+             # ablation toggles (eval_config control panel) — config.py reads each
+             "PLAN_EXEC_ESCALATE", "PLAN_EXEC_VALUE_SNAP", "PLAN_EXEC_SKIP_GROUNDED",
+             "PLAN_EXEC_PARALLEL_MENTIONS", "GRAPHRAG_EMPTY_IS_WRONG", "GRAPHRAG_LLM_EVALUATOR")
+    _INT  = ("CYPHER_REPAIR_MAX_ROUNDS", "CYPHER_RETRY_MAX_ROUNDS", "RETRIEVAL_LEVENSHTEIN_K")
+    for name in _STR:
+        v = getattr(cfg, name, None)
+        if v is not None:
+            env[name] = str(v)
+    for name in _BOOL:
+        v = getattr(cfg, name, None)
+        if v is not None:
+            env[name] = "1" if v else "0"
+    for name in _INT:
+        v = getattr(cfg, name, None)
+        if v is not None:
+            env[name] = str(int(v))
     return env
+
+
+def _summarize_records(recs: list[dict], dataset: str) -> dict:
+    """Recompute the headline summary from merged shard records, so the merged
+    summary.json matches exactly what the report generators derive from the
+    records (they read records.jsonl, not summary.json). ``err`` = #(ea is None),
+    consistent with gen_ablation_report."""
+    def _mean(key: str) -> float:
+        vals = [r[key] for r in recs if r.get(key) is not None]
+        if not vals:
+            return 0.0
+        nums = [1.0 if v is True else (0.0 if v is False else float(v)) for v in vals]
+        return sum(nums) / len(nums)
+
+    return {
+        "dataset":   dataset,
+        "n":         len(recs),
+        "n_scored":  {k: sum(1 for r in recs if r.get(k) is not None)
+                      for k in ("ea", "em", "psjs")},
+        "n_errors":  sum(1 for r in recs if r.get("ea") is None),
+        "ea":        _mean("ea"),
+        "em":        _mean("em"),
+        "psjs":      _mean("psjs"),
+    }
+
+
+def _merge_shard_outputs(dataset: str, shard_recs: list[Path], shard_sums: list[Path],
+                         out_records: Path, out_summary: Path, elapsed: float) -> Tuple[bool, str]:
+    """Concatenate shard record files into the standard ``out_records`` and write
+    a recomputed ``out_summary`` (headline metrics from the merged records +
+    run_meta carried from the first shard). Stride shards partition the example
+    set exactly, so the concatenation reproduces full single-process coverage."""
+    lines: list[str] = []
+    for rp in shard_recs:
+        if rp.exists():
+            lines += [l for l in rp.read_text(encoding="utf-8").splitlines() if l.strip()]
+    out_records.parent.mkdir(parents=True, exist_ok=True)
+    out_records.write_text(("\n".join(lines) + "\n") if lines else "", encoding="utf-8")
+
+    run_meta: dict = {}
+    for sp in shard_sums:
+        if sp.exists():
+            try:
+                run_meta = json.loads(sp.read_text(encoding="utf-8")).get("run_meta", {})
+                break
+            except Exception:  # noqa: BLE001
+                pass
+
+    recs = []
+    for l in lines:
+        try:
+            recs.append(json.loads(l))
+        except Exception:  # noqa: BLE001
+            pass
+    summary = _summarize_records(recs, dataset)
+    summary["elapsed_sec"] = round(elapsed, 2)
+    summary["shards"]      = len(shard_recs)
+    summary["run_meta"]    = run_meta
+    out_summary.parent.mkdir(parents=True, exist_ok=True)
+    out_summary.write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
+    return True, "ok"
 
 
 def _run_pair(
@@ -101,10 +201,13 @@ def _run_pair(
     On any failure (archive missing, subprocess non-zero, exception
     during swap_in) returns ``(False, "<reason>")`` and does not raise.
     The caller logs the reason and moves on.
-    """
-    out_records = out_dir / f"{dataset}__{graph}.records.jsonl"
-    out_summary = out_dir / f"{dataset}__{graph}.summary.json"
 
+    Output lands in the canonical per-run dir
+    ``<out_dir>/<dataset>__<graph>__<method>/{records.jsonl,summary.json}`` —
+    the method segment is derived (below) from the resolved run config so a
+    five-method sweep into one ``out_dir`` keeps each method's records separate
+    and self-describing (see :mod:`eval_paths`).
+    """
     # ── Step 1: swap in archived artifacts ──────────────────────────────────
     try:
         swap_in(dataset, graph)
@@ -144,97 +247,149 @@ def _run_pair(
         return False, f"test path: {exc}"
 
     # ── Step 4: subprocess launch ───────────────────────────────────────────
-    cmd: List[str] = [
-        sys.executable, "-m", "eval._worker",
-        dataset, graph, str(test_path),
-        str(out_records), str(out_summary),
-    ]
-    if limit is not None:
-        cmd += ["--limit", str(limit)]
-    if verbose:
-        cmd += ["--verbose"]
-
     env = _build_env(conn.uri, conn.user, conn.password, conn.database)
+    shards = int(getattr(cfg, "SHARDS", 1) or 1)
+
+    # Canonical per-run output dir. The method + arms come from the resolved env
+    # (_build_env has already overlaid eval_config / shell), so the dir name is a
+    # faithful label of what actually ran.
+    _tag = eval_paths.method_tag(
+        env.get("METHOD", "cyanchor"),
+        fuzzy  = env.get("RETRIEVAL_FUZZY", "1") == "1",
+        vector = env.get("RETRIEVAL_VECTOR", "0") == "1",
+        lev    = env.get("RETRIEVAL_LEVENSHTEIN", "1") == "1",
+    )
+    pair_dir = eval_paths.run_dir(dataset, graph, _tag, root=out_dir)
+    pair_dir.mkdir(parents=True, exist_ok=True)
+    out_records = pair_dir / "records.jsonl"
+    out_summary = pair_dir / "summary.json"
 
     # ── Outer subprocess timeout ────────────────────────────────────────────
     # The per-example wall-clock cap lives inside the worker (see
     # ``EVAL_PER_EXAMPLE_TIMEOUT`` / the watchdog in
-    # ``metrics_CypherBench.evaluate_dataset``).  This subprocess timeout
-    # is the *outer* safety net — sized to comfortably hold ``limit``
-    # examples at the per-example cap plus startup overhead (FAISS load
-    # + Neo4j connect + dataset parse ≈ 30–60 s).
-    #
-    # When ``limit is None`` we don't know how many examples a graph will
-    # produce (e.g. cypherbench_augmented/movie has 372). The old default
-    # of ``limit or 100`` undersized the cap (6620 s) for those large
-    # pairs. Use the env var ``EVAL_WORKER_TIMEOUT_SEC`` for an explicit
-    # override, otherwise budget 4 h — well beyond any healthy
-    # 200–500-example pair at ~10 s/example and bounded enough to fire
-    # before a real wedge consumes the full CI window.
+    # ``metrics_CypherBench.evaluate_dataset``).  This subprocess timeout is the
+    # *outer* safety net — sized to comfortably hold a process's example count
+    # at the per-example cap plus startup overhead (FAISS load + Neo4j connect
+    # + dataset parse ≈ 30–60 s). Under sharding each worker runs ~limit/shards
+    # examples, so the cap is sized per shard. ``EVAL_WORKER_TIMEOUT_SEC``
+    # overrides; ``limit is None`` falls back to a 4 h ceiling.
     per_example_sec = int(os.environ.get("EVAL_PER_EXAMPLE_TIMEOUT", "60")) + 5
     explicit_outer  = os.environ.get("EVAL_WORKER_TIMEOUT_SEC")
-    if explicit_outer:
-        outer_timeout = float(explicit_outer)
-    elif limit is not None:
-        outer_timeout = limit * per_example_sec + 120
-    else:
-        # 4-hour ceiling for an entire-graph pass.
-        outer_timeout = 4 * 60 * 60
 
+    def _outer_timeout(n_per_proc: int | None) -> float:
+        if explicit_outer:
+            return float(explicit_outer)
+        if n_per_proc is not None:
+            return n_per_proc * per_example_sec + 120
+        return 4 * 60 * 60
+
+    if shards <= 1:
+        # ── single-process path (original behaviour, byte-identical) ─────────
+        cmd: List[str] = [
+            sys.executable, "-m", "eval._worker",
+            dataset, graph, str(test_path), str(out_records), str(out_summary),
+        ]
+        if limit is not None:
+            cmd += ["--limit", str(limit)]
+        if verbose:
+            cmd += ["--verbose"]
+        outer_timeout = _outer_timeout(limit)
+        print(
+            f"\n[eval_run] ▶ {dataset}__{graph}  uri={conn.uri}  db={conn.database}  "
+            f"outer_timeout={int(outer_timeout)}s"
+        )
+        try:
+            proc = subprocess.run(cmd, env=env, check=False, capture_output=True,
+                                  text=True, timeout=outer_timeout)
+        except subprocess.TimeoutExpired as exc:
+            partial_stdout = exc.stdout if isinstance(exc.stdout, str) else (
+                exc.stdout.decode("utf-8", errors="replace") if exc.stdout else "")
+            partial_stderr = exc.stderr if isinstance(exc.stderr, str) else (
+                exc.stderr.decode("utf-8", errors="replace") if exc.stderr else "")
+            if partial_stdout:
+                sys.stdout.write(partial_stdout)
+            if partial_stderr:
+                sys.stderr.write(partial_stderr)
+            print(
+                f"[eval_run] ⚠ TIMEOUT after {exc.timeout}s on "
+                f"{dataset}__{graph}. Worker killed; moving on to the next EVAL_PAIR.",
+                file=sys.stderr,
+            )
+            return False, (
+                f"worker timed out after {exc.timeout}s (dataset={dataset}, graph={graph})"
+            )
+        if proc.stdout:
+            sys.stdout.write(proc.stdout)
+        if proc.stderr:
+            sys.stderr.write(proc.stderr)
+        if proc.returncode != 0:
+            stderr_tail = "\n".join((proc.stderr or "").splitlines()[-20:])
+            return False, f"worker exited {proc.returncode}; stderr tail:\n{stderr_tail}"
+        return True, "ok"
+
+    # ── sharded path (SHARDS > 1): K parallel workers over example strides ───
+    # All shards target the same already-swapped live tree + container; they
+    # only differ in which stride of examples they run. Merged afterwards.
+    per_proc = None if limit is None else max(1, -(-limit // shards))  # ceil
+    outer_timeout = _outer_timeout(per_proc)
+    shard_dir = pair_dir / ".shards"
+    if shard_dir.exists():
+        shutil.rmtree(shard_dir, ignore_errors=True)
+    shard_dir.mkdir(parents=True, exist_ok=True)
     print(
         f"\n[eval_run] ▶ {dataset}__{graph}  uri={conn.uri}  db={conn.database}  "
-        f"outer_timeout={int(outer_timeout)}s"
+        f"shards={shards}  per-shard outer_timeout={int(outer_timeout)}s"
     )
-    try:
-        proc = subprocess.run(
-            cmd,
-            env=env,
-            check=False,
-            capture_output=True,
-            text=True,
-            timeout=outer_timeout,
-        )
-    except subprocess.TimeoutExpired as exc:
-        # Surface whatever the worker managed to emit before being killed.
-        partial_stdout = exc.stdout if isinstance(exc.stdout, str) else (
-            exc.stdout.decode("utf-8", errors="replace") if exc.stdout else ""
-        )
-        partial_stderr = exc.stderr if isinstance(exc.stderr, str) else (
-            exc.stderr.decode("utf-8", errors="replace") if exc.stderr else ""
-        )
-        if partial_stdout:
-            sys.stdout.write(partial_stdout)
-        if partial_stderr:
-            sys.stderr.write(partial_stderr)
-        limit_val = env.get("EVAL_LIMIT") or (
-            cmd[cmd.index("--limit") + 1] if "--limit" in cmd else "<all>"
-        )
-        print(
-            f"[eval_run] ⚠ TIMEOUT after {exc.timeout}s on "
-            f"{dataset}__{graph} (uri={conn.uri} db={conn.database} "
-            f"test_path={test_path} limit={limit_val}). "
-            f"Worker subprocess killed; moving on to the next EVAL_PAIR.",
-            file=sys.stderr,
-        )
-        # Do NOT raise — let the outer loop continue.
-        return False, (
-            f"worker timed out after {exc.timeout}s "
-            f"(dataset={dataset}, graph={graph}, limit={limit_val})"
-        )
+    shard_recs: list[Path] = []
+    shard_sums: list[Path] = []
+    procs: list[subprocess.Popen] = []
+    for k in range(shards):
+        rec_k = shard_dir / f"shard_{k}.records.jsonl"
+        sum_k = shard_dir / f"shard_{k}.summary.json"
+        shard_recs.append(rec_k)
+        shard_sums.append(sum_k)
+        cmd = [
+            sys.executable, "-m", "eval._worker",
+            dataset, graph, str(test_path), str(rec_k), str(sum_k),
+            "--shard", str(k), "--shards", str(shards),
+        ]
+        if limit is not None:
+            cmd += ["--limit", str(limit)]
+        if verbose:
+            cmd += ["--verbose"]
+        procs.append(subprocess.Popen(cmd, env=env, stdout=subprocess.PIPE,
+                                      stderr=subprocess.PIPE, text=True))
 
-    # Always echo stdout (the worker may have streamed verbose lines there).
-    if proc.stdout:
-        sys.stdout.write(proc.stdout)
-    if proc.stderr:
-        sys.stderr.write(proc.stderr)
+    start = time.monotonic()
+    deadline = start + outer_timeout
+    errors: list[str] = []
+    for k, p in enumerate(procs):
+        remaining = max(1.0, deadline - time.monotonic())
+        try:
+            stdout, stderr = p.communicate(timeout=remaining)
+        except subprocess.TimeoutExpired:
+            p.kill()
+            stdout, stderr = p.communicate()
+            errors.append(f"shard {k}: timeout after {int(outer_timeout)}s")
+        if stdout:
+            sys.stdout.write(stdout)
+        if stderr:
+            sys.stderr.write(stderr)
+        if p.returncode not in (0, None) and not any(f"shard {k}:" in e for e in errors):
+            tail = "\n".join((stderr or "").splitlines()[-10:])
+            errors.append(f"shard {k}: exit {p.returncode}; {tail}")
+    elapsed = time.monotonic() - start
 
-    if proc.returncode != 0:
-        # Tail the last ~20 stderr lines for the status print.
-        stderr_tail = "\n".join((proc.stderr or "").splitlines()[-20:])
-        return False, (
-            f"worker exited {proc.returncode}; stderr tail:\n{stderr_tail}"
-        )
-    return True, "ok"
+    if errors:
+        for p in procs:                       # kill any stragglers
+            if p.poll() is None:
+                p.kill()
+        return False, "sharded run failed: " + " | ".join(errors)
+
+    ok, msg = _merge_shard_outputs(dataset, shard_recs, shard_sums,
+                                   out_records, out_summary, elapsed)
+    shutil.rmtree(shard_dir, ignore_errors=True)
+    return ok, msg
 
 
 def main() -> int:

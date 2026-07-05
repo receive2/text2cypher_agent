@@ -390,6 +390,59 @@ def _judge_grounded(question: str, mention: str, values: List[str], llm_obj) -> 
         return False
 
 
+_SELECT_PROMPT = """A question mentions an entity, and a value-linking step retrieved \
+candidate database values for it. Decide whether any candidate is the ACTUAL \
+database value the question refers to — allowing for typos, casing, abbreviations, \
+partial names, or aliases.
+
+Question: {question}
+Entity mention: "{mention}"
+Retrieved candidates:
+{candidates}
+
+Rules:
+- If one candidate is the value the mention refers to, answer with that candidate \
+copied VERBATIM (if several fit, pick the single best).
+- If NONE of the candidates is the value the mention refers to, answer exactly NONE. \
+Do not force a choice, and do not invent or guess a value that is not in the list.
+
+Answer with one candidate copied verbatim from the list, or NONE."""
+
+
+def _judge_select(question: str, mention: str, values: List[str], llm_obj):
+    """Pre-generation ABSTAIN judge. Returns one of:
+
+        ("select", value)  — the candidate (verbatim from *values*) the mention means
+        ("abstain", None)  — no candidate matches → caller SUPPRESSES the evidence
+        ("keep",    None)  — transient failure / nothing to judge → keep current list
+
+    A NONE or non-listed answer maps to ``abstain`` (never to a fabricated value —
+    the judge can only pick from *values* or abstain). Errors map to ``keep`` so a
+    flaky LLM call degrades to today's behaviour rather than dropping grounding."""
+    if not values or llm_obj is None:
+        return ("keep", None)
+    cand_lines = "\n".join(f'- "{v}"' for v in values)
+    prompt = _SELECT_PROMPT.format(question=question, mention=mention, candidates=cand_lines)
+    try:
+        resp = llm_obj.invoke(prompt)
+        raw = getattr(resp, "content", resp)
+        if isinstance(raw, list):
+            raw = " ".join(str(p) for p in raw)
+        text = str(raw).strip().strip('"').strip("'").strip()
+        if not text or text.upper() == "NONE":
+            return ("abstain", None)
+        for v in values:                       # exact, then normalised, verbatim match
+            if text == v:
+                return ("select", v)
+        for v in values:
+            if _norm(text) == _norm(v):
+                return ("select", v)
+        return ("abstain", None)               # not in list → no fabricated value
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("plan_exec: select judge failed for %r: %s", mention, exc)
+        return ("keep", None)
+
+
 _NAME_LIKE = {"name", "title", "aliases", "alias", "label"}
 
 
@@ -567,6 +620,27 @@ def execute_entity(entity: Dict[str, str], node_only: bool = False,
                 _add(label, prop, vals)
             n_escalations += 1
 
+    # ── Pre-generation ABSTAIN judge ─────────────────────────────────────────
+    # For a node mention that is NOT cheaply grounded (no candidate exact/
+    # substring-matches it — the abbrev/alias/misroute region), an LLM picks the
+    # single candidate the mention refers to, or abstains. Abstain SUPPRESSES the
+    # evidence so the Cypher LLM free-generates (no forced pick, no fabricated
+    # value). Cheaply-grounded mentions are left untouched (free, zero regression).
+    abstain_decision = ""
+    if (kind != "relation" and by_target
+            and llm_obj is not None and not _cheap_grounded(mention, _flat())):
+        decision, chosen = _judge_select(question, mention, _flat(), llm_obj)
+        abstain_decision = decision
+        if decision == "abstain":
+            by_target = OrderedDict()                  # suppress → free-generate
+        elif decision == "select":
+            filtered: "OrderedDict[Tuple[str, str], List[str]]" = OrderedDict()
+            for (label, prop), vals in by_target.items():
+                if chosen in vals:
+                    filtered[(label, prop)] = [chosen]
+                    break
+            by_target = filtered
+
     candidates = [{"label": l, "property": p, "values": v}
                   for (l, p), v in by_target.items() if v]
 
@@ -574,6 +648,7 @@ def execute_entity(entity: Dict[str, str], node_only: bool = False,
         print(f"  · {kind:8s} {mention!r}  →  init_tools={init_tools}  "
               f"candidates={[(c['label']+'.'+c['property'], len(c['values'])) for c in candidates]}"
               f"{f'  escalations={n_escalations}' if escalate else ''}"
+              f"{f'  abstain={abstain_decision}' if abstain_decision else ''}"
               f"{'  patterns='+str(patterns) if patterns else ''}")
     return {"mention": mention, "kind": kind, "candidates": candidates, "patterns": patterns}
 
@@ -603,10 +678,13 @@ def build_injection(evidence: List[Dict[str, Any]]) -> str:
 
     header = (
         "Retrieved candidate values for each entity mention in the question "
-        "(best-first; copied verbatim from the database). For each mention, "
-        "choose the SINGLE best-matching canonical value for the WHERE clause "
-        "(or use the given relationship pattern for a relation) — these lists "
-        "are retrieval candidates to pick from, NOT filters to all apply:"
+        "(copied verbatim from the database). These are retrieval SUGGESTIONS, "
+        "not a closed set. For each mention: if one of its candidates is the "
+        "value the question refers to, use that value in the WHERE clause; if "
+        "NONE of the listed candidates fits the mention, IGNORE them and write "
+        "the predicate yourself from the question and schema. Use the given "
+        "relationship pattern for a relation. Do not apply all candidates as "
+        "filters — use at most one value per mention:"
     )
     return header + "\n" + "\n".join(lines)
 

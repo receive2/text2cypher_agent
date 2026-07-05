@@ -20,10 +20,12 @@ Current, canonical documents. Superseded / historical drafts live in
 
 | doc | role |
 |---|---|
-| [plan_exec_hybrid.md](plan_exec_hybrid.md) | **Method writeup** — how *Plan&Exec Hybrid (Node + Rel)*, the shipped value-linking grounder, works end to end (PLAN → EXECUTE with the LLM corrective loop → GENERATE). |
-| [multi_agent_graphrag.md](multi_agent_graphrag.md) | **Method writeup** — the Multi-Agent GraphRAG baseline (`VAL_LINK_MODE=graphrag`): no pre-grounding; generate → execute → evaluate → structural/semantic repair loop with normalized-Levenshtein value replacement. |
-| [ablation_flight_accident.md](ablation_flight_accident.md) | **Current results** — all modes on flight_accident: No Val Link, FCAV (RAG), ReAct Fuzzy (Node / Node + Rel), Plan&Exec Fuzzy / Hybrid. Aligned tables. |
-| [ablation_movie.md](ablation_movie.md) | **Current results** — all modes on movie (~459k nodes): No Val Link 0.030 → FCAV 0.200 → ReAct Fuzzy 0.240 → Plan&Exec Fuzzy 0.310. Fuzzy-only (Hybrid row pending the vector-index build). Notes the Cypher-generation ceiling that compresses the gap vs flight. |
+| [plan_exec_hybrid.md](plan_exec_hybrid.md) | **Method writeup** — how *CyANCHOR* (`METHOD=cyanchor`; lives in `plan_exec.py`), the shipped value-linking grounder, works end to end (PLAN → EXECUTE with the LLM corrective loop → GENERATE). |
+| [CYANCHOR_IMPLEMENTATION.md](CYANCHOR_IMPLEMENTATION.md) | **Code-level implementation reference** for CyANCHOR — every stage traced to file/line (PLAN, EXECUTE's 3 retrieval arms + escalation + abstain judge, GENERATE injection, Cypher gen/error-retry/semantic repair, value-snap), the full config surface, safety/fairness invariants, and ablation axes. Read alongside the conceptual writeup when working in the code. |
+| [multi_agent_graphrag.md](multi_agent_graphrag.md) | **Method writeup** — the Multi-Agent GraphRAG baseline (`METHOD=graphrag`): no pre-grounding; generate → execute → evaluate → structural/semantic repair loop, validating node labels, property values **and pairwise edge patterns** with normalized-Levenshtein value replacement. |
+| [report/](../report/) | **Current results** — per-graph entity-perturbation ablations at `report/<dataset>/<graph>.md` (flight format: Overall + by perturbation strategy + by difficulty, EA & PSJS) over the 5 methods (No Val Link · FCAV · ReAct · GraphRAG · CyANCHOR), plus per-dataset cross-graph summaries. CyANCHOR leads on every clean-schema graph. |
+| [CLEAN_VS_PERTURBED.md](CLEAN_VS_PERTURBED.md) | **Robustness snapshot** — clean (original) vs entity-perturbed EA/PSJS for all 5 methods on CypherBench `flight_accident` + Mind-the-Query `bloom50`. Clean benchmarks overestimate robustness; CyANCHOR loses the least under perturbation (highest "retained %"). |
+| [GOLD_ERROR_AUDIT.md](GOLD_ERROR_AUDIT.md) | **Dataset-audit guide** — eval scores broken golds as failures (no assumptions); `audit_gold_errors.py` lists them + step-by-step fix/remove workflow. |
 | [DIFFICULTY_DESIGN.md](DIFFICULTY_DESIGN.md) | Design-of-record for `eval/difficulty.py` (graded query-difficulty rubric). Status: implemented. |
 
 ## Earlier studies (pre-Plan&Exec; ReAct-agent era)

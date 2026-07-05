@@ -45,15 +45,13 @@ def main() -> int:
                     help="override eval_config.OUT_DIR for this run")
     args = ap.parse_args()
 
-    # Must be set BEFORE eval workers (subprocesses) are spawned so they
-    # inherit it — config.py reads these env vars at import.
-    os.environ["VAL_LINK_MODE"] = "fcav"
+    import eval_config as cfg
+    # eval_config is the authoritative surface; eval_run injects cfg → each worker.
+    cfg.METHOD = "fcav"
     if args.cypher_llm:
         os.environ["CYPHER_LLM_MODEL"] = args.cypher_llm
     if args.cypher_provider:
         os.environ["CYPHER_LLM_PROVIDER"] = args.cypher_provider
-
-    import eval_config as cfg
     if args.out_dir:
         cfg.OUT_DIR = args.out_dir
 

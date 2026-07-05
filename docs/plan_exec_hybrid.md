@@ -197,7 +197,7 @@ All in [`config.py`](../config.py):
 Fuzzy mode (`RETRIEVAL_TYPE=fuzzy`) is identical except retrieval is BM25-only
 (no vector, zero embedding infrastructure); on flight_accident it trails hybrid
 by a few points (0.774 vs 0.792 EA). See
-[`ablation_flight_accident.md`](ablation_flight_accident.md).
+[`flight_accident.md`](../report/CypherBench/flight_accident.md).
 
 ---
 

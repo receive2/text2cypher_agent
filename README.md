@@ -19,9 +19,9 @@ User question
 │ 1. Value linking  (ner_agent_auto.py → plan_exec.py)│
 │    • Ground the entities in the question to the      │
 │      canonical DB values the WHERE clause needs      │
-│    • Default = Plan&Exec: decompose the question →   │
+│    • Default = CyANCHOR: decompose the question →    │
 │      route each mention to a field → retrieve        │
-│      (fuzzy ∪ vector) with an LLM corrective loop     │
+│      (fuzzy ∪ lev ∪ vec) with an LLM corrective loop  │
 │    • Output: candidate canonical values per mention  │
 └──────────────────┬──────────────────────────────────┘
                    │ candidate canonical values
@@ -44,7 +44,7 @@ User question
 The method is selected by the `METHOD` axis — `no_val_link` · `fcav` · `react` ·
 `graphrag` · `cyanchor` (see [Methods](#value-linking-modes)). The shipped method is
 **CyANCHOR** (`cyanchor`); `No Val Link`, `FCAV`, `ReAct`, and `GraphRAG` are the
-baselines. Ablation: [docs/ablation_flight_accident.md](docs/ablation_flight_accident.md).
+baselines. Ablation: [report/CypherBench/flight_accident.md](report/CypherBench/flight_accident.md).
 
 ---
 
@@ -88,7 +88,6 @@ NEO4J_DATABASE=neo4j                # the database name inside Neo4j
 OPENAI_API_KEY=sk-...
 OPENAI_MODEL=gpt-4.1                # or gpt-4o, gpt-4-turbo, etc.
 OPENAI_BASE_URL=                    # leave blank for api.openai.com
-OPENAI_EMBEDDING_MODEL=text-embedding-3-small
 
 # ── Azure OpenAI (optional — replaces OpenAI when all three are set) ──────────
 AZURE_OPENAI_ENDPOINT=
@@ -98,6 +97,11 @@ AZURE_OPENAI_API_VERSION=2024-05-01-preview
 ```
 
 > **AuraDB note:** URI format is `neo4j+s://<id>.databases.neo4j.io`, database name is usually `neo4j`.
+
+> **Embedding model:** not a credential — it lives in `vector_config.py`
+> (`EMBEDDING_MODEL_NAME`, default `text-embedding-3-small`), the single source
+> that setup, FCAV, and the live agent all read. Change it there (not via env),
+> then rebuild the index.
 
 ### 3 — Run the one-click setup
 
@@ -173,14 +177,22 @@ python setup_project.py --verbose               # show full tracebacks on errors
 
 ## Value-linking modes
 
-The method is chosen by a single `METHOD` axis in `config.py` (env-overridable),
-plus CyANCHOR's retrieval/tool sub-axes, resolved into a `GroundingSpec`:
+The method is a single `METHOD` axis (plus CyANCHOR's retrieval/tool sub-axes),
+resolved into a `GroundingSpec`. **For eval runs, edit the boxed
+`★ EXPERIMENT PARAMETERS — EDIT THESE ★` block at the top of `eval_config.py`** —
+that one place holds every method/ablation knob, each annotated inline. It is the
+authoritative single surface (`eval_run` propagates it to the workers and it
+overrides any inherited shell env; every report records the exact values used).
+`config.py` holds the resolver, shipped defaults, and the deeper structural knobs
+(LLM per stage, retrieval widths); the standalone `ner_agent_auto.py` CLI reads it
+directly (env-overridable). You never set environment variables in the normal flow.
 
 | axis | values |
 |---|---|
 | `METHOD` | `no_val_link` · `fcav` · `react` · `graphrag` · `cyanchor` |
 | `RETRIEVAL_FUZZY` / `RETRIEVAL_VECTOR` / `RETRIEVAL_LEVENSHTEIN` | `0`/`1` each — CyANCHOR's retrieval arms (≥1 on; defaults `1`/`0`/`1`) |
 | `TOOL_TYPE` | `node` · `node_rel`  (react / cyanchor) |
+| `CYPHER_SEMANTIC_REPAIR` / `CYPHER_REPAIR_MAX_ROUNDS` / `CYPHER_EMPTY_IS_WRONG` | CyANCHOR-only result-level self-correction (defaults `1` / `4` / `1`) |
 
 - **`no_val_link`** — grounding bypassed; only schema + question reach the Cypher LLM.
 - **`fcav`** — retrieve-then-generate RAG baseline (embed question → retrieve values
@@ -197,33 +209,53 @@ plus CyANCHOR's retrieval/tool sub-axes, resolved into a `GroundingSpec`:
   [docs/multi_agent_graphrag.md](docs/multi_agent_graphrag.md).
 - **`cyanchor`** — **CyANCHOR**, the shipped method: decompose the question → route each
   mention to a field → retrieve candidates with an LLM corrective loop → hand candidates
-  to the Cypher LLM. Retrieval is the **union of three independently-toggleable arms**:
+  to the Cypher LLM, which generates, executes, and **self-corrects** on the result: a DB
+  error triggers a CoT error-repair, and a successfully-executed but semantically wrong
+  result (an LLM evaluator judges *incorrect / illogical / incomplete / empty*) triggers a
+  **grounding-aware regeneration** — the candidate grounding is kept and the semantic
+  feedback + CoT are added (anti-oscillation: the final query is the first *accepted*
+  attempt, else the first executable one, so repair can only match-or-beat the no-repair
+  result). Knobs: `CYPHER_SEMANTIC_REPAIR` / `CYPHER_REPAIR_MAX_ROUNDS` /
+  `CYPHER_EMPTY_IS_WRONG`. Retrieval is the **union of three independently-toggleable arms**:
   `RETRIEVAL_FUZZY` (BM25), `RETRIEVAL_LEVENSHTEIN` (APOC normalized edit-distance — no
   embeddings, high-ROI), `RETRIEVAL_VECTOR` (in-graph embeddings). `TOOL_TYPE` = `node` | `node_rel`.
 
-Example — CyANCHOR `fuzzy+lev` (no embeddings needed), node + relation tools:
-
-```bash
-METHOD=cyanchor RETRIEVAL_VECTOR=0 TOOL_TYPE=node_rel python eval_run.py
-```
-
-Example — a baseline (Multi-Agent GraphRAG):
-
-```bash
-METHOD=graphrag python eval_run.py
-```
+To run a given configuration, set it in `eval_config.py` and run `python eval_run.py`
+— e.g. `METHOD = "cyanchor"` with `RETRIEVAL_VECTOR = False`, `TOOL_TYPE = "node_rel"`
+for CyANCHOR `fuzzy+lev`, or `METHOD = "graphrag"` for the Multi-Agent GraphRAG
+baseline. The batch drivers (`orchestrate_cyanchor.py`, …) sweep methods by setting
+`cfg.METHOD` in-process — same surface, no env channel.
 
 > Back-compat: the legacy `VAL_LINK_MODE` / `AGENT_TYPE` / `RETRIEVAL_TYPE` axes still
-> resolve (`val_link`+`plan_exec` → `cyanchor`, `hybrid` → `+vector`).
+> resolve in `config.py` (`val_link`+`plan_exec` → `cyanchor`, `hybrid` → `+vector`).
 
 Method writeup: [docs/multi_agent_graphrag.md](docs/multi_agent_graphrag.md) ·
-results: [docs/ablation_flight_accident.md](docs/ablation_flight_accident.md).
+results: [report/CypherBench/flight_accident.md](report/CypherBench/flight_accident.md).
 
 ---
 
 ## Hybrid retrieval (vector + fuzzy)
 
 Each value-lookup tool corresponds to one `(node_label, property)` pair (e.g. `Movie.title`, `Person.name`). Vector retrieval is available on **node** value-lookup tools while relationship-property and structural-traversal tools stay on the fuzzy code path. The hybrid pipeline is what `RETRIEVAL_TYPE=hybrid` drives; defaults preserve fuzzy behavior bit-identically.
+
+> **Two "vector" switches — don't mix them up.** This section's
+> `TOOL_RETRIEVAL_MODE` (`fuzzy`/`vector`/`hybrid`) is the **ReAct baseline's**
+> per-tool retrieval mode. **CyANCHOR** (the shipped method) instead uses three
+> independent arms, and its vector arm is toggled by **`eval_config.RETRIEVAL_VECTOR`**
+> — *not* `TOOL_RETRIEVAL_MODE`. To run CyANCHOR with embeddings you need all three
+> layers (build → model → arm):
+>
+> 1. **Build** the embeddings into the graph: `python setup_project.py` **without**
+>    `--skip-embeddings` (steps 6–7; needs Neo4j 5.18+). Auto-discovered properties
+>    land in `vector_config.EMBEDDABLE_PROPERTIES`.
+> 2. **Model/backend** *(optional; defaults fine)*: `vector_config.py`
+>    (`EMBEDDING_BACKEND` / `EMBEDDING_MODEL_NAME`) — the only home for the model.
+> 3. **Arm on**: `eval_config.py` → `RETRIEVAL_VECTOR = True` (run lands in
+>    `…__cyanchor_fvl/`).
+>
+> **Prerequisite:** step 3 is a no-op on a graph built with `--skip-embeddings` —
+> the vector arm has no index to search. For the shipped `fuzzy+lev` default,
+> build with `--skip-embeddings` (Neo4j 4.4+ OK) and leave `RETRIEVAL_VECTOR = False`.
 
 ### One-command setup on a fresh Neo4j database
 
@@ -435,7 +467,7 @@ Or call from Python:
 from ner_agent_auto import ask_auto
 
 result = ask_auto("What movies did Keanu Reeves star in?",
-                  mode="plan_exec_node_rel_hybrid")   # or omit to use the config axes
+                  mode="cyanchor_fl_node_rel")   # or omit to use the config axes
 print(result["cypher"])   # the generated Cypher query
 print(result["result"])   # natural-language answer
 print(result["context"])  # raw rows returned by Neo4j
@@ -512,17 +544,17 @@ eval_run.py
        │          don't match the graph (same check as verify_setup.py)
        │       3. spawn `python -m eval._worker <dataset> <graph> ...`
        │          with EVAL_NEO4J_* env vars pointing at that container
-       │       4. write logs/eval/<dataset>__<graph>.records.jsonl
-       │                   logs/eval/<dataset>__<graph>.summary.json
+       │       4. write logs/runs/<dataset>__<graph>__<method>/records.jsonl
+       │                   logs/runs/<dataset>__<graph>__<method>/summary.json
        ▼
 eval_aggregate.py
-           • Re-aggregates every records.jsonl on disk by difficulty
-             bucket and prints one table per dataset
+           • Re-aggregates every run dir on disk by difficulty
+             bucket and prints one table per (dataset, method)
 ```
 
 #### 1 — Configure `eval_config.py`
 
-The repo ships an `eval_config_example.py`. Copy it to `eval_config.py` (gitignored — credentials live here, not in `.env`) and fill in:
+`eval_config.py` is **committed** — the eval Neo4j connection (host/password) is intentionally public so reviewers can reproduce. **Edit it in place; do not `cp eval_config_example.py` over it** (that wipes the shared `GRAPH_CONNS`). The example file is a field-shape reference only. Everything you tune for a run lives in the boxed **`★ EXPERIMENT PARAMETERS — EDIT THESE ★`** block at the top of the file (method + CyANCHOR ablation toggles + run size, each annotated inline); `GRAPH_CONNS` / `EVAL_PAIRS` below it choose which graphs. `EVAL_PAIRS` / `METHOD` / `LIMIT` / `SHARDS` are per-run scratch — set them to your slice and don't commit those edits; commit `eval_config.py` only to update the shared `GRAPH_CONNS`. Key fields:
 
 ```python
 # Per-(dataset, graph) Neo4j connection registry.  Each graph runs in
@@ -547,9 +579,18 @@ EVAL_PAIRS: list[tuple[str, str]] = [
 
 LIMIT:   int | None = None      # cap examples per pair (None = all)
 VERBOSE: bool       = False     # per-example log lines
-OUT_DIR              = "logs/eval"
+SHARDS:  int        = 4         # intra-graph parallelism (1 = single process)
+OUT_DIR              = "logs/runs"
+REPORT_DIR           = "report" # where gen_*_report.py write report/<dataset>/<graph>.md + _summary.md
 SETUP_ARTIFACTS_ROOT = "setup_artifacts"
 ```
+
+> **`SHARDS`** splits each graph's examples into N stride-shards run as N
+> parallel worker processes against the same container, merged afterwards
+> (wall-clock ≈ 1/N). Graphs still run **sequentially** — a single shared live
+> artifact tree is swapped per graph, so only the examples *within* a graph
+> parallelise. `SHARDS=1` is the original single-process behaviour (identical
+> coverage). This supersedes the old movie-only `_run_sharded.py` script.
 
 #### 2 — Set up + archive each graph (one-time per graph)
 
@@ -579,7 +620,7 @@ python verify_setup.py --all    # checks every pair in GRAPH_CONNS
 python verify_setup.py --live   # checks the live tree vs .current_setup
 ```
 
-**Why this matters for multi-graph runs.** The harness keeps a *single live copy* of each graph's artifacts (node tools, schema, prompts, FAISS / FCAV indexes) and swaps the right archive in per pair. If the wrong artifacts are live — an interrupted swap, a failed tool regen, a hand recovery — value linking runs against the wrong tools and **silently scores at the no-link floor with no error**. (Tell-tale sign: ReAct / Plan&Exec collapse to ≈ the `no_val_link` score while **FCAV still works**, because FCAV uses the schema + prompts, which stay correct, not the per-graph tools.)
+**Why this matters for multi-graph runs.** The harness keeps a *single live copy* of each graph's artifacts (node tools, schema, prompts, FAISS / FCAV indexes) and swaps the right archive in per pair. If the wrong artifacts are live — an interrupted swap, a failed tool regen, a hand recovery — value linking runs against the wrong tools and **silently scores at the no-link floor with no error**. (Tell-tale sign: ReAct / CyANCHOR collapse to ≈ the `no_val_link` score while **FCAV still works**, because FCAV uses the schema + prompts, which stay correct, not the per-graph tools.)
 
 `verify_setup.py` connects to each graph and confirms the archive's node tools search labels that **actually have nodes** there — a count check, not just `db.labels()`, because Neo4j keeps emptied labels in the registry as ghosts. Green = safe to run; red names the offending labels and the fix. Full procedure for collaborators: [docs/RUNNING_EXPERIMENTS.md](docs/RUNNING_EXPERIMENTS.md).
 
@@ -597,9 +638,9 @@ For each pair in `EVAL_PAIRS` the driver:
 2. **Graph-identity guard** — connects to the pair's graph and confirms the live node tools search labels that have nodes there. A mismatch (contaminated archive) is **skipped with a loud reason**, not silently mis-scored. This is the same check as `verify_setup.py`; bypass with `EVAL_SKIP_GRAPH_GUARD=1` only if you know what you're doing.
 3. Looks up the `GraphConn`, builds the worker env (`EVAL_NEO4J_URI` / `_USER` / `_PASSWORD` / `_DATABASE`).
 4. Spawns `python -m eval._worker <dataset> <graph> <test_path> <records_out> <summary_out>` as a fresh subprocess so each pair gets a clean Python interpreter.
-5. Writes:
-   - `logs/eval/<dataset>__<graph>.records.jsonl` — one line per example (gold cypher, predicted cypher, EA / EM verdict, normalised result-sets, error info)
-   - `logs/eval/<dataset>__<graph>.summary.json` — aggregate summary for that pair
+5. Writes the canonical per-run dir (method derived from the resolved config; see `eval_paths.py`):
+   - `logs/runs/<dataset>__<graph>__<method>/records.jsonl` — one line per example (gold cypher, predicted cypher, EA / EM verdict, normalised result-sets, error info)
+   - `logs/runs/<dataset>__<graph>__<method>/summary.json` — aggregate summary for that pair
 
 A failure on one pair (missing archive, worker crash, etc.) is logged and skipped — the rest of `EVAL_PAIRS` still runs. The driver only exits non-zero if **every** pair failed.
 
@@ -609,7 +650,7 @@ A failure on one pair (missing archive, worker crash, etc.) is logged and skippe
 python eval_aggregate.py
 ```
 
-Scans `logs/eval/` for every `*.summary.json`, groups by dataset (parsed from the `<dataset>__<graph>` filename prefix), re-aggregates the underlying `.records.jsonl` files via `eval.difficulty.aggregate_by_difficulty`, and prints one bucketed table per dataset (rows: `all` / `easy` / `medium` / `hard` / `extra`) with a footer naming the graphs that contributed. Records persist on disk across runs, so partial re-evals just overwrite the affected pair's two files and leave everything else untouched.
+Scans `logs/runs/` for every `*/summary.json`, groups by `(dataset, method)` (parsed from the `<dataset>__<graph>__<method>` run-dir name), re-aggregates the underlying `records.jsonl` files via `eval.difficulty.aggregate_by_difficulty`, and prints one bucketed table per `(dataset, method)` (rows: `all` / `easy` / `medium` / `hard` / `extra`) with a footer naming the graphs that contributed. Records persist on disk across runs, so partial re-evals just overwrite the affected run dir and leave everything else untouched.
 
 #### Metrics & normalisation
 
@@ -714,8 +755,9 @@ If you prefer to run each step individually or need to debug a specific stage:
 | `requirements.txt` | Python dependencies |
 | `setup_project.py` | **One-click setup** — runs all 10 setup steps automatically |
 | `switch_embedding_backend.py` | **One-click backend swap** — re-embeds + rebuilds vector indexes after editing `EMBEDDING_BACKEND` in `vector_config.py`; does NOT regenerate tools / system prompt / FAISS |
-| `config.py` | **User-managed** runtime settings — LLM configs per stage, the `METHOD` axis + CyANCHOR's `RETRIEVAL_FUZZY`/`RETRIEVAL_VECTOR`/`RETRIEVAL_LEVENSHTEIN`/`TOOL_TYPE`, + sampling/validation knobs. **Not** auto-generated; safe to edit by hand |
-| `vector_config.py` | Retrieval mode (`fuzzy`/`vector`/`hybrid`), embedding backend + dim, `EMBEDDABLE_PROPERTIES` |
+| `config.py` | **User-managed** runtime settings — LLM configs per stage, sampling/validation knobs, and the **resolver + shipped defaults** for the `METHOD` axis + CyANCHOR's `RETRIEVAL_FUZZY`/`RETRIEVAL_VECTOR`/`RETRIEVAL_LEVENSHTEIN`/`TOOL_TYPE`. **For eval runs these are set in `eval_config.py`** (the authoritative surface); `config.py` supplies the standalone-agent default. Not auto-generated; safe to edit by hand |
+| `eval_config.py` | **The eval run config** (authoritative) — `GRAPH_CONNS`, `EVAL_PAIRS`, `METHOD` + the CyANCHOR arms, `LIMIT`, `SHARDS`, `OUT_DIR`. Committed (the eval Neo4j connection is public for reviewers) |
+| `vector_config.py` | Embedding **backend + model + dim**, ReAct retrieval mode (`TOOL_RETRIEVAL_MODE`: `fuzzy`/`vector`/`hybrid`), hybrid params, `EMBEDDABLE_PROPERTIES`. The single home for the embedding model — never an env var |
 | `paths.py` | Centralized filesystem-layout constants for every generated artifact |
 | `ner_agent_auto.py` | Value-linking → Cypher pipeline (main entrypoint); `ask_auto` dispatches to the grounding mode and runs `GraphCypherQAChain` |
 | `plan_exec.py` | **CyANCHOR** grounder (the shipped method, `METHOD=cyanchor`): decompose → route → retrieve (3 toggleable arms: fuzzy / Levenshtein / vector) with the LLM corrective loop |
