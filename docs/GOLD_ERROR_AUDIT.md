@@ -111,8 +111,7 @@ The count for that graph should drop toward 0. Regenerate the report; EA will ri
 naturally for the recovered/removed examples — **with no change to the eval code**.
 
 **5. Record it (reviewer transparency).** Log every fixed/removed `qid` and the
-reason in the datasheet ([DATASHEET.md](DATASHEET.md)) / the augmentation work log
-([DATASET_WORK.md](DATASET_WORK.md)): how many golds were broken, how many
+reason in the datasheet ([DATASHEET.md](DATASHEET.md)): how many golds were broken, how many
 transpiled vs removed, and why. Dataset-track reviewers will expect this; silent
 removal of inconvenient examples is not defensible, documented curation is.
 

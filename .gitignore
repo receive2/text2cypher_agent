@@ -116,3 +116,9 @@ verification/
 # Paper working directory (drafts, LaTeX, scaffolds) — not part of the code release
 # ──────────────────────────────────────────────────────────────────────────────
 paper/
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Internal working documents (dev logs, superseded designs, ops scripts) —
+# not part of the reviewer-facing release
+# ──────────────────────────────────────────────────────────────────────────────
+internal/

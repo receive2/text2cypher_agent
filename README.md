@@ -278,7 +278,7 @@ TOOL_RETRIEVAL_MODE = "fuzzy"     # "fuzzy" | "vector" | "hybrid"
 |---|---|
 | `fuzzy` | Legacy Lucene fulltext (default; bit-identical to pre-hybrid behavior) |
 | `vector` | Embed query → `db.index.vector.queryNodes` → top `HYBRID_FINAL_TOP_K` |
-| `hybrid` | Run both, fuse via `HYBRID_STRATEGY` (`cascade` default — fuzzy-first, vector fills the tail; `rrf` / `weighted` available). On the perturbed benchmark `cascade` is strictly ≥ `fuzzy` and avoids RRF's "semantic-neighbour displaces the exact match" failure — see `docs/NER_GROUNDING_RETENTION_STUDY.md`. |
+| `hybrid` | Run both, fuse via `HYBRID_STRATEGY` (`cascade` default — fuzzy-first, vector fills the tail; `rrf` / `weighted` available). On the perturbed benchmark `cascade` is strictly ≥ `fuzzy` and avoids RRF's "semantic-neighbour displaces the exact match" failure. |
 
 **No regeneration of `generated_*_tools.py` is needed** — the node value-lookup tools read `TOOL_RETRIEVAL_MODE` at call time. Just edit the config and re-run:
 

@@ -21,8 +21,10 @@ needs to *ground* anything; perturbation exposes the gap, and value grounding
 - **clean** = original un-augmented questions (entities verbatim); **perturbed** =
   entity-perturbed questions (casing / typo / partial name / abbreviation / alias).
 - **CyANCHOR** here is `fuzzy+lev`, run at `SHARDS=1` so LLM rate-limit timeouts are
-  not miscounted as failures (it is the most LLM-call-heavy method; see
-  [memory: neweval-shards-timeout]).
+  not miscounted as failures (it is the most LLM-call-heavy method; running it
+  sharded raises peak LLM concurrency past provider rate limits, and the
+  resulting per-example timeouts would score 0 under the all-examples
+  denominator).
 
 ## CypherBench — `flight_accident`  (clean n=189 · perturbed n=170)
 
