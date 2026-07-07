@@ -145,9 +145,11 @@ Key prompt rules ([plan_exec.py:143-172](../plan_exec.py#L143)):
 prose around the JSON array, and defaults a missing/invalid kind to `node`. A
 PLAN failure returns `[]` (the question then free-generates with no grounding).
 
-This is the design's first deliberate departure from the `react` baseline:
-**the mention IS the search phrase** — there is no per-tool `get_entity`
-re-extraction LLM layer, which is where ReAct empirically drops groundings.
+Design note: **the mention IS the search phrase** — grounding is lossless
+between stages. The verbatim span extracted here is exactly the string the
+retrieval arms will match; there is no intermediate re-extraction or
+normalization step through which a mention could be silently rewritten or
+dropped before it reaches retrieval.
 
 ---
 

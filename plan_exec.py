@@ -3,13 +3,9 @@
 """
 plan_exec.py
 ============
-Plan-and-execute grounding — a deterministic, non-agentic alternative to the
-ReAct NER agent (``ner_agent_auto.get_ner_auto``).
-
-Where the ``full`` mode lets a LangGraph ReAct agent freely pick tools from a
-top-k tool shortlist and synthesise a single ``{Label.prop: value}`` dict
-(which empirically drops groundings in the final-JSON synthesis step), this
-module makes every stage explicit and hands the *candidates* to the Cypher LLM:
+The CyANCHOR grounder: deterministic PLAN → EXECUTE → GENERATE value
+grounding. Every stage is explicit, and the retrieved *candidates* are handed
+to the Cypher LLM, which does the final value linking while writing Cypher:
 
   1. PLAN     :func:`plan_entities` — one LLM call decomposes the question into
                 a list of entity mentions, each tagged ``node`` | ``relation``
@@ -17,17 +13,18 @@ module makes every stage explicit and hands the *candidates* to the Cypher LLM:
   2. EXECUTE  :func:`execute_entity` — for each mention, route to the matching
                 tool(s) via the tool-VectorDB (searching by ``descriptor``,
                 filtered by kind), then:
-                  • node mention     → ``search_tool(mention)`` → top-K values
+                  • node mention     → retrieval arms → top-K candidate values
                   • relation mention → emit the ``(:A)-[:rel]->(:B)`` pattern
-                No per-tool ``get_entity`` re-extraction: the mention is the
-                search phrase directly (one fewer lossy LLM layer than ``full``).
+                The mention itself is the search phrase, verbatim: there is no
+                intermediate re-extraction or normalization step, so the
+                (possibly corrupted) surface form reaches retrieval unchanged.
   3. GENERATE :func:`build_injection` formats the per-mention candidate lists
                 into the ``{relevant_entities}`` block; the Cypher LLM does the
                 value-linking while writing Cypher.
 
-Retrieval stays fuzzy (``search_tool(..., mode="fuzzy")``), so this needs no
-per-graph value-embedding index; the only vector index is the small
-one-doc-per-tool routing index that ``full`` already builds.
+The default retrieval arms (fuzzy BM25 + Levenshtein scan) need no per-graph
+value-embedding index; the only vector index is the small one-doc-per-tool
+routing index. The vector arm is config-gated (``RETRIEVAL_VECTOR``).
 
 The public entry point is :func:`get_plan_exec_evidence`, which returns the
 ready-to-inject ``{relevant_entities}`` string (and, optionally, the structured
