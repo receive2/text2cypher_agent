@@ -564,6 +564,11 @@ PLAN_EXEC_VALUE_SNAP = os.getenv("PLAN_EXEC_VALUE_SNAP", "1").lower() in ("1", "
 # that escalation would not have improved, so it's ~EA-neutral. Set 0 to ablate.
 # ⚙ eval receiver — edit in the eval_config panel, not here (literal = demo/CLI fallback).
 PLAN_EXEC_SKIP_GROUNDED = os.getenv("PLAN_EXEC_SKIP_GROUNDED", "1").lower() in ("1", "true", "yes")
+# Pre-generation select-or-abstain judge on non-cheaply-grounded node mentions
+# (plan_exec._judge_select). Default ON = the shipped method; exposed as a knob
+# so the ablation can toggle it like every other CyANCHOR component.
+# ⚙ eval receiver — edit in the eval_config panel, not here (literal = demo/CLI fallback).
+PLAN_EXEC_SELECT_JUDGE = os.getenv("PLAN_EXEC_SELECT_JUDGE", "1").lower() in ("1", "true", "yes")
 # Latency: run the per-mention EXECUTE/escalation concurrently (mentions are
 # independent — same calls, same results, just not serialized). Capped by
 # MAX_THREAD. Set 0 to force serial.

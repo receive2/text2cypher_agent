@@ -16,361 +16,361 @@ from config import TOOL_TOP_K
 
 
 @tool
-def get_aircraftmodel_eid(user_query: str) -> List[str]:
-    """Look up canonical AircraftModel.eid values. ONLY call this when the question contains a literal machine identifier (e.g. a Wikidata 'Q12345' / 'wd:Q12345' code, an IMDb 'tt0000000' code, a UUID, or a similar opaque ID string) that refers to an aircraftmodel. NEVER call this for human-readable aircraftmodel names — use the corresponding name lookup tool (get_aircraftmodel_name if present) instead."""
+def get_person_eid(user_query: str) -> List[str]:
+    """Look up canonical Person.eid values. ONLY call this when the question contains a literal machine identifier (e.g. a Wikidata 'Q12345' / 'wd:Q12345' code, an IMDb 'tt0000000' code, a UUID, or a similar opaque ID string) that refers to a person. NEVER call this for human-readable person names — use the corresponding name lookup tool (get_person_name if present) instead."""
     search_term = get_entity(user_query, topic="external identifier")
     # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
-    return search_tool(phrase=search_term, node_label="AircraftModel", property_name="eid", k=TOOL_TOP_K, verbose=True)
+    return search_tool(phrase=search_term, node_label="Person", property_name="eid", k=TOOL_TOP_K, verbose=True)
 
 
 @tool
-def get_aircraftmodel_aliases(user_query: str) -> List[str]:
-    """Look up canonical AircraftModel.aliases values. Call this whenever the question mentions a aircraftmodel's aliases — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
-    search_term = get_entity(user_query, topic="aircraft model aliases")
+def get_person_aliases(user_query: str) -> List[str]:
+    """Look up canonical Person.aliases values. Call this whenever the question mentions a person's aliases — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
+    search_term = get_entity(user_query, topic="person aliases")
     # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
-    return search_tool(phrase=search_term, node_label="AircraftModel", property_name="aliases", k=TOOL_TOP_K, verbose=True)
+    return search_tool(phrase=search_term, node_label="Person", property_name="aliases", k=TOOL_TOP_K, verbose=True)
 
 
 @tool
-def get_aircraftmodel_provenance(user_query: str) -> List[str]:
-    """Look up canonical AircraftModel.provenance values. Call this whenever the question mentions a aircraftmodel's provenance — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
-    search_term = get_entity(user_query, topic="information sources")
+def get_person_provenance(user_query: str) -> List[str]:
+    """Look up canonical Person.provenance values. Call this whenever the question mentions a person's provenance — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
+    search_term = get_entity(user_query, topic="data provenance")
     # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
-    return search_tool(phrase=search_term, node_label="AircraftModel", property_name="provenance", k=TOOL_TOP_K, verbose=True)
+    return search_tool(phrase=search_term, node_label="Person", property_name="provenance", k=TOOL_TOP_K, verbose=True)
 
 
 @tool
-def get_aircraftmodel_name(user_query: str) -> List[str]:
-    """Look up canonical AircraftModel.name values. This is the PRIMARY tool for resolving an aircraftmodel entity by name. Call this whenever the question references an aircraftmodel BY NAME — including lowercase, abbreviated, partial, paraphrased, or possessive mentions (e.g. 'matrix' → 'The Matrix', 'Foreign Feature Film' → 'Amanda Award for Best Foreign Feature Film'). When in doubt between this and a *_eid tool, prefer this one."""
-    search_term = get_entity(user_query, topic="aircraft model name")
+def get_person_name(user_query: str) -> List[str]:
+    """Look up canonical Person.name values. This is the PRIMARY tool for resolving a person entity by name. Call this whenever the question references a person BY NAME — including lowercase, abbreviated, partial, paraphrased, or possessive mentions (e.g. 'matrix' → 'The Matrix', 'Foreign Feature Film' → 'Amanda Award for Best Foreign Feature Film'). Often invoked via relational phrasings like 'directed by X', 'has cast member X', 'written by X' — call this tool whenever the question references a person through such a phrasing, not only when it literally says the word 'person'. When in doubt between this and a *_eid tool, prefer this one."""
+    search_term = get_entity(user_query, topic="person name")
     # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
-    return search_tool(phrase=search_term, node_label="AircraftModel", property_name="name", k=TOOL_TOP_K, verbose=True)
+    return search_tool(phrase=search_term, node_label="Person", property_name="name", k=TOOL_TOP_K, verbose=True)
 
 
 @tool
-def get_aircraftmodel_description(user_query: str) -> List[str]:
-    """Look up canonical AircraftModel.description values. Call this when the question paraphrases or summarises the aircraftmodel's content (themes, topics, plot points, biographical details) rather than naming it directly. For name-based references, prefer the name-lookup tool (get_aircraftmodel_name if present) instead."""
-    search_term = get_entity(user_query, topic="aircraft model summary")
+def get_person_description(user_query: str) -> List[str]:
+    """Look up canonical Person.description values. Call this when the question paraphrases or summarises the person's content (themes, topics, plot points, biographical details) rather than naming it directly. For name-based references, prefer the name-lookup tool (get_person_name if present) instead."""
+    search_term = get_entity(user_query, topic="person description")
     # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
-    return search_tool(phrase=search_term, node_label="AircraftModel", property_name="description", k=TOOL_TOP_K, verbose=True)
+    return search_tool(phrase=search_term, node_label="Person", property_name="description", k=TOOL_TOP_K, verbose=True)
 
 
 @tool
-def get_aircraftmodel_height_metre(user_query: str) -> List[str]:
-    """Look up canonical AircraftModel.height_metre values. Call this whenever the question mentions a aircraftmodel's height_metre — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
-    search_term = get_entity(user_query, topic="aircraft height")
+def get_person_place_of_birth(user_query: str) -> List[str]:
+    """Look up canonical Person.place_of_birth values. Call this when the question paraphrases or summarises the person's content (themes, topics, plot points, biographical details) rather than naming it directly. For name-based references, prefer the name-lookup tool (get_person_name if present) instead."""
+    search_term = get_entity(user_query, topic="birthplace")
     # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
-    return search_tool(phrase=search_term, node_label="AircraftModel", property_name="height_metre", k=TOOL_TOP_K, verbose=True)
+    return search_tool(phrase=search_term, node_label="Person", property_name="place_of_birth", k=TOOL_TOP_K, verbose=True)
 
 
 @tool
-def get_aircraftmodel_length_metre(user_query: str) -> List[str]:
-    """Look up canonical AircraftModel.length_metre values. Call this whenever the question mentions a aircraftmodel's length_metre — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
-    search_term = get_entity(user_query, topic="aircraft length")
+def get_person_date_of_death(user_query: str) -> List[str]:
+    """Look up canonical Person.date_of_death values. Call this whenever the question mentions a person's date_of_death — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
+    search_term = get_entity(user_query, topic="death date")
     # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
-    return search_tool(phrase=search_term, node_label="AircraftModel", property_name="length_metre", k=TOOL_TOP_K, verbose=True)
+    return search_tool(phrase=search_term, node_label="Person", property_name="date_of_death", k=TOOL_TOP_K, verbose=True)
 
 
 @tool
-def get_aircraftmodel_wingspan_metre(user_query: str) -> List[str]:
-    """Look up canonical AircraftModel.wingspan_metre values. Call this whenever the question mentions a aircraftmodel's wingspan_metre — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
-    search_term = get_entity(user_query, topic="aircraft wingspan")
+def get_person_gender(user_query: str) -> List[str]:
+    """Look up canonical Person.gender values. Call this whenever the question mentions a person's gender — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
+    search_term = get_entity(user_query, topic="person gender")
     # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
-    return search_tool(phrase=search_term, node_label="AircraftModel", property_name="wingspan_metre", k=TOOL_TOP_K, verbose=True)
+    return search_tool(phrase=search_term, node_label="Person", property_name="gender", k=TOOL_TOP_K, verbose=True)
 
 
 @tool
-def get_aircraftmodel_first_flight(user_query: str) -> List[str]:
-    """Look up canonical AircraftModel.first_flight values. Call this whenever the question mentions a aircraftmodel's first_flight — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
-    search_term = get_entity(user_query, topic="first flight date")
+def get_person_date_of_birth(user_query: str) -> List[str]:
+    """Look up canonical Person.date_of_birth values. Call this whenever the question mentions a person's date_of_birth — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
+    search_term = get_entity(user_query, topic="birth date")
     # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
-    return search_tool(phrase=search_term, node_label="AircraftModel", property_name="first_flight", k=TOOL_TOP_K, verbose=True)
+    return search_tool(phrase=search_term, node_label="Person", property_name="date_of_birth", k=TOOL_TOP_K, verbose=True)
 
 
 @tool
-def get_aircraftmodel_range_km(user_query: str) -> List[str]:
-    """Look up canonical AircraftModel.range_km values. Call this whenever the question mentions a aircraftmodel's range_km — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
-    search_term = get_entity(user_query, topic="maximum range")
+def get_person_country_of_citizenship(user_query: str) -> List[str]:
+    """Look up canonical Person.country_of_citizenship values. Call this whenever the question mentions a person's country_of_citizenship — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
+    search_term = get_entity(user_query, topic="citizenship country")
     # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
-    return search_tool(phrase=search_term, node_label="AircraftModel", property_name="range_km", k=TOOL_TOP_K, verbose=True)
+    return search_tool(phrase=search_term, node_label="Person", property_name="country_of_citizenship", k=TOOL_TOP_K, verbose=True)
 
 
 @tool
-def get_aircraftmodel_service_entry(user_query: str) -> List[str]:
-    """Look up canonical AircraftModel.service_entry values. Call this whenever the question mentions a aircraftmodel's service_entry — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
-    search_term = get_entity(user_query, topic="service entry date")
-    # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
-    return search_tool(phrase=search_term, node_label="AircraftModel", property_name="service_entry", k=TOOL_TOP_K, verbose=True)
-
-
-@tool
-def get_operator_eid(user_query: str) -> List[str]:
-    """Look up canonical Operator.eid values. ONLY call this when the question contains a literal machine identifier (e.g. a Wikidata 'Q12345' / 'wd:Q12345' code, an IMDb 'tt0000000' code, a UUID, or a similar opaque ID string) that refers to an operator. NEVER call this for human-readable operator names — use the corresponding name lookup tool (get_operator_name if present) instead."""
-    search_term = get_entity(user_query, topic="operator external id")
-    # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
-    return search_tool(phrase=search_term, node_label="Operator", property_name="eid", k=TOOL_TOP_K, verbose=True)
-
-
-@tool
-def get_operator_aliases(user_query: str) -> List[str]:
-    """Look up canonical Operator.aliases values. Call this whenever the question mentions a operator's aliases — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
-    search_term = get_entity(user_query, topic="operator alternative names")
-    # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
-    return search_tool(phrase=search_term, node_label="Operator", property_name="aliases", k=TOOL_TOP_K, verbose=True)
-
-
-@tool
-def get_operator_provenance(user_query: str) -> List[str]:
-    """Look up canonical Operator.provenance values. Call this whenever the question mentions a operator's provenance — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
-    search_term = get_entity(user_query, topic="operator data sources")
-    # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
-    return search_tool(phrase=search_term, node_label="Operator", property_name="provenance", k=TOOL_TOP_K, verbose=True)
-
-
-@tool
-def get_operator_name(user_query: str) -> List[str]:
-    """Look up canonical Operator.name values. This is the PRIMARY tool for resolving an operator entity by name. Call this whenever the question references an operator BY NAME — including lowercase, abbreviated, partial, paraphrased, or possessive mentions (e.g. 'matrix' → 'The Matrix', 'Foreign Feature Film' → 'Amanda Award for Best Foreign Feature Film'). When in doubt between this and a *_eid tool, prefer this one."""
-    search_term = get_entity(user_query, topic="operator name")
-    # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
-    return search_tool(phrase=search_term, node_label="Operator", property_name="name", k=TOOL_TOP_K, verbose=True)
-
-
-@tool
-def get_operator_description(user_query: str) -> List[str]:
-    """Look up canonical Operator.description values. Call this when the question paraphrases or summarises the operator's content (themes, topics, plot points, biographical details) rather than naming it directly. For name-based references, prefer the name-lookup tool (get_operator_name if present) instead."""
-    search_term = get_entity(user_query, topic="operator summary")
-    # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
-    return search_tool(phrase=search_term, node_label="Operator", property_name="description", k=TOOL_TOP_K, verbose=True)
-
-
-@tool
-def get_operator_country(user_query: str) -> List[str]:
-    """Look up canonical Operator.country values. This is the PRIMARY tool for resolving an operator entity by name. Call this whenever the question references an operator BY NAME — including lowercase, abbreviated, partial, paraphrased, or possessive mentions (e.g. 'matrix' → 'The Matrix', 'Foreign Feature Film' → 'Amanda Award for Best Foreign Feature Film'). When in doubt between this and a *_eid tool, prefer this one."""
-    search_term = get_entity(user_query, topic="operator country")
-    # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
-    return search_tool(phrase=search_term, node_label="Operator", property_name="country", k=TOOL_TOP_K, verbose=True)
-
-
-@tool
-def get_operator_launch_year(user_query: str) -> List[str]:
-    """Look up canonical Operator.launch_year values. Call this whenever the question mentions a operator's launch_year — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
-    search_term = get_entity(user_query, topic="operator founding year")
-    # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
-    return search_tool(phrase=search_term, node_label="Operator", property_name="launch_year", k=TOOL_TOP_K, verbose=True)
-
-
-@tool
-def get_airport_eid(user_query: str) -> List[str]:
-    """Look up canonical Airport.eid values. ONLY call this when the question contains a literal machine identifier (e.g. a Wikidata 'Q12345' / 'wd:Q12345' code, an IMDb 'tt0000000' code, a UUID, or a similar opaque ID string) that refers to an airport. NEVER call this for human-readable airport names — use the corresponding name lookup tool (get_airport_name if present) instead."""
-    search_term = get_entity(user_query, topic="external airport identifier")
-    # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
-    return search_tool(phrase=search_term, node_label="Airport", property_name="eid", k=TOOL_TOP_K, verbose=True)
-
-
-@tool
-def get_airport_aliases(user_query: str) -> List[str]:
-    """Look up canonical Airport.aliases values. Call this whenever the question mentions a airport's aliases — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
-    search_term = get_entity(user_query, topic="airport alternate names")
-    # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
-    return search_tool(phrase=search_term, node_label="Airport", property_name="aliases", k=TOOL_TOP_K, verbose=True)
-
-
-@tool
-def get_airport_provenance(user_query: str) -> List[str]:
-    """Look up canonical Airport.provenance values. Call this whenever the question mentions a airport's provenance — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
-    search_term = get_entity(user_query, topic="data source URLs")
-    # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
-    return search_tool(phrase=search_term, node_label="Airport", property_name="provenance", k=TOOL_TOP_K, verbose=True)
-
-
-@tool
-def get_airport_name(user_query: str) -> List[str]:
-    """Look up canonical Airport.name values. This is the PRIMARY tool for resolving an airport entity by name. Call this whenever the question references an airport BY NAME — including lowercase, abbreviated, partial, paraphrased, or possessive mentions (e.g. 'matrix' → 'The Matrix', 'Foreign Feature Film' → 'Amanda Award for Best Foreign Feature Film'). When in doubt between this and a *_eid tool, prefer this one."""
-    search_term = get_entity(user_query, topic="airport name")
-    # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
-    return search_tool(phrase=search_term, node_label="Airport", property_name="name", k=TOOL_TOP_K, verbose=True)
-
-
-@tool
-def get_airport_description(user_query: str) -> List[str]:
-    """Look up canonical Airport.description values. Call this when the question paraphrases or summarises the airport's content (themes, topics, plot points, biographical details) rather than naming it directly. For name-based references, prefer the name-lookup tool (get_airport_name if present) instead."""
-    search_term = get_entity(user_query, topic="airport description")
-    # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
-    return search_tool(phrase=search_term, node_label="Airport", property_name="description", k=TOOL_TOP_K, verbose=True)
-
-
-@tool
-def get_airport_location(user_query: str) -> List[str]:
-    """Look up canonical Airport.location values. Call this when the question paraphrases or summarises the airport's content (themes, topics, plot points, biographical details) rather than naming it directly. For name-based references, prefer the name-lookup tool (get_airport_name if present) instead."""
-    search_term = get_entity(user_query, topic="airport location")
-    # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
-    return search_tool(phrase=search_term, node_label="Airport", property_name="location", k=TOOL_TOP_K, verbose=True)
-
-
-@tool
-def get_airport_country(user_query: str) -> List[str]:
-    """Look up canonical Airport.country values. Call this whenever the question mentions a airport's country — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
-    search_term = get_entity(user_query, topic="country name")
-    # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
-    return search_tool(phrase=search_term, node_label="Airport", property_name="country", k=TOOL_TOP_K, verbose=True)
-
-
-@tool
-def get_airport_icao_code(user_query: str) -> List[str]:
-    """Look up canonical Airport.icao_code values. This is the PRIMARY tool for resolving an airport entity by name. Call this whenever the question references an airport BY NAME — including lowercase, abbreviated, partial, paraphrased, or possessive mentions (e.g. 'matrix' → 'The Matrix', 'Foreign Feature Film' → 'Amanda Award for Best Foreign Feature Film'). When in doubt between this and a *_eid tool, prefer this one."""
-    search_term = get_entity(user_query, topic="ICAO airport code")
-    # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
-    return search_tool(phrase=search_term, node_label="Airport", property_name="icao_code", k=TOOL_TOP_K, verbose=True)
-
-
-@tool
-def get_airport_iata_code(user_query: str) -> List[str]:
-    """Look up canonical Airport.iata_code values. This is the PRIMARY tool for resolving an airport entity by name. Call this whenever the question references an airport BY NAME — including lowercase, abbreviated, partial, paraphrased, or possessive mentions (e.g. 'matrix' → 'The Matrix', 'Foreign Feature Film' → 'Amanda Award for Best Foreign Feature Film'). When in doubt between this and a *_eid tool, prefer this one."""
-    search_term = get_entity(user_query, topic="IATA airport code")
-    # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
-    return search_tool(phrase=search_term, node_label="Airport", property_name="iata_code", k=TOOL_TOP_K, verbose=True)
-
-
-@tool
-def get_aircraftmanufacturer_eid(user_query: str) -> List[str]:
-    """Look up canonical AircraftManufacturer.eid values. ONLY call this when the question contains a literal machine identifier (e.g. a Wikidata 'Q12345' / 'wd:Q12345' code, an IMDb 'tt0000000' code, a UUID, or a similar opaque ID string) that refers to an aircraftmanufacturer. NEVER call this for human-readable aircraftmanufacturer names — use the corresponding name lookup tool (get_aircraftmanufacturer_name if present) instead."""
+def get_productioncompany_eid(user_query: str) -> List[str]:
+    """Look up canonical ProductionCompany.eid values. ONLY call this when the question contains a literal machine identifier (e.g. a Wikidata 'Q12345' / 'wd:Q12345' code, an IMDb 'tt0000000' code, a UUID, or a similar opaque ID string) that refers to a productioncompany. NEVER call this for human-readable productioncompany names — use the corresponding name lookup tool (get_productioncompany_name if present) instead."""
     search_term = get_entity(user_query, topic="external identifier")
     # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
-    return search_tool(phrase=search_term, node_label="AircraftManufacturer", property_name="eid", k=TOOL_TOP_K, verbose=True)
+    return search_tool(phrase=search_term, node_label="ProductionCompany", property_name="eid", k=TOOL_TOP_K, verbose=True)
 
 
 @tool
-def get_aircraftmanufacturer_aliases(user_query: str) -> List[str]:
-    """Look up canonical AircraftManufacturer.aliases values. Call this whenever the question mentions a aircraftmanufacturer's aliases — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
-    search_term = get_entity(user_query, topic="organization alternate names")
+def get_productioncompany_aliases(user_query: str) -> List[str]:
+    """Look up canonical ProductionCompany.aliases values. Call this whenever the question mentions a productioncompany's aliases — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
+    search_term = get_entity(user_query, topic="company alternate names")
     # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
-    return search_tool(phrase=search_term, node_label="AircraftManufacturer", property_name="aliases", k=TOOL_TOP_K, verbose=True)
+    return search_tool(phrase=search_term, node_label="ProductionCompany", property_name="aliases", k=TOOL_TOP_K, verbose=True)
 
 
 @tool
-def get_aircraftmanufacturer_provenance(user_query: str) -> List[str]:
-    """Look up canonical AircraftManufacturer.provenance values. Call this whenever the question mentions a aircraftmanufacturer's provenance — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
+def get_productioncompany_provenance(user_query: str) -> List[str]:
+    """Look up canonical ProductionCompany.provenance values. Call this whenever the question mentions a productioncompany's provenance — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
     search_term = get_entity(user_query, topic="data provenance sources")
     # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
-    return search_tool(phrase=search_term, node_label="AircraftManufacturer", property_name="provenance", k=TOOL_TOP_K, verbose=True)
+    return search_tool(phrase=search_term, node_label="ProductionCompany", property_name="provenance", k=TOOL_TOP_K, verbose=True)
 
 
 @tool
-def get_aircraftmanufacturer_name(user_query: str) -> List[str]:
-    """Look up canonical AircraftManufacturer.name values. This is the PRIMARY tool for resolving an aircraftmanufacturer entity by name. Call this whenever the question references an aircraftmanufacturer BY NAME — including lowercase, abbreviated, partial, paraphrased, or possessive mentions (e.g. 'matrix' → 'The Matrix', 'Foreign Feature Film' → 'Amanda Award for Best Foreign Feature Film'). When in doubt between this and a *_eid tool, prefer this one."""
-    search_term = get_entity(user_query, topic="organization name")
+def get_productioncompany_name(user_query: str) -> List[str]:
+    """Look up canonical ProductionCompany.name values. This is the PRIMARY tool for resolving a productioncompany entity by name. Call this whenever the question references a productioncompany BY NAME — including lowercase, abbreviated, partial, paraphrased, or possessive mentions (e.g. 'matrix' → 'The Matrix', 'Foreign Feature Film' → 'Amanda Award for Best Foreign Feature Film'). Often invoked via relational phrasings like 'produced by X' — call this tool whenever the question references a productioncompany through such a phrasing, not only when it literally says the word 'productioncompany'. When in doubt between this and a *_eid tool, prefer this one."""
+    search_term = get_entity(user_query, topic="company name")
     # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
-    return search_tool(phrase=search_term, node_label="AircraftManufacturer", property_name="name", k=TOOL_TOP_K, verbose=True)
+    return search_tool(phrase=search_term, node_label="ProductionCompany", property_name="name", k=TOOL_TOP_K, verbose=True)
 
 
 @tool
-def get_aircraftmanufacturer_description(user_query: str) -> List[str]:
-    """Look up canonical AircraftManufacturer.description values. Call this when the question paraphrases or summarises the aircraftmanufacturer's content (themes, topics, plot points, biographical details) rather than naming it directly. For name-based references, prefer the name-lookup tool (get_aircraftmanufacturer_name if present) instead."""
-    search_term = get_entity(user_query, topic="organization description")
+def get_productioncompany_description(user_query: str) -> List[str]:
+    """Look up canonical ProductionCompany.description values. Call this when the question paraphrases or summarises the productioncompany's content (themes, topics, plot points, biographical details) rather than naming it directly. For name-based references, prefer the name-lookup tool (get_productioncompany_name if present) instead."""
+    search_term = get_entity(user_query, topic="company description")
     # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
-    return search_tool(phrase=search_term, node_label="AircraftManufacturer", property_name="description", k=TOOL_TOP_K, verbose=True)
+    return search_tool(phrase=search_term, node_label="ProductionCompany", property_name="description", k=TOOL_TOP_K, verbose=True)
 
 
 @tool
-def get_aircraftmanufacturer_country(user_query: str) -> List[str]:
-    """Look up canonical AircraftManufacturer.country values. Call this whenever the question mentions a aircraftmanufacturer's country — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
-    search_term = get_entity(user_query, topic="country of origin")
+def get_productioncompany_country(user_query: str) -> List[str]:
+    """Look up canonical ProductionCompany.country values. Call this whenever the question mentions a productioncompany's country — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
+    search_term = get_entity(user_query, topic="company country")
     # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
-    return search_tool(phrase=search_term, node_label="AircraftManufacturer", property_name="country", k=TOOL_TOP_K, verbose=True)
+    return search_tool(phrase=search_term, node_label="ProductionCompany", property_name="country", k=TOOL_TOP_K, verbose=True)
 
 
 @tool
-def get_aircraftmanufacturer_launch_year(user_query: str) -> List[str]:
-    """Look up canonical AircraftManufacturer.launch_year values. Call this whenever the question mentions a aircraftmanufacturer's launch_year — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
-    search_term = get_entity(user_query, topic="organization founding year")
+def get_country_eid(user_query: str) -> List[str]:
+    """Look up canonical Country.eid values. ONLY call this when the question contains a literal machine identifier (e.g. a Wikidata 'Q12345' / 'wd:Q12345' code, an IMDb 'tt0000000' code, a UUID, or a similar opaque ID string) that refers to a country. NEVER call this for human-readable country names — use the corresponding name lookup tool (get_country_name if present) instead."""
+    search_term = get_entity(user_query, topic="external country identifier")
     # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
-    return search_tool(phrase=search_term, node_label="AircraftManufacturer", property_name="launch_year", k=TOOL_TOP_K, verbose=True)
+    return search_tool(phrase=search_term, node_label="Country", property_name="eid", k=TOOL_TOP_K, verbose=True)
 
 
 @tool
-def get_flightaccident_date(user_query: str) -> List[str]:
-    """Look up canonical FlightAccident.date values. Call this whenever the question mentions a flightaccident's date — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
-    search_term = get_entity(user_query, topic="accident date")
+def get_country_aliases(user_query: str) -> List[str]:
+    """Look up canonical Country.aliases values. Call this whenever the question mentions a country's aliases — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
+    search_term = get_entity(user_query, topic="country alternate names")
     # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
-    return search_tool(phrase=search_term, node_label="FlightAccident", property_name="date", k=TOOL_TOP_K, verbose=True)
+    return search_tool(phrase=search_term, node_label="Country", property_name="aliases", k=TOOL_TOP_K, verbose=True)
 
 
 @tool
-def get_flightaccident_eid(user_query: str) -> List[str]:
-    """Look up canonical FlightAccident.eid values. ONLY call this when the question contains a literal machine identifier (e.g. a Wikidata 'Q12345' / 'wd:Q12345' code, an IMDb 'tt0000000' code, a UUID, or a similar opaque ID string) that refers to a flightaccident. NEVER call this for human-readable flightaccident names — use the corresponding name lookup tool (get_flightaccident_name if present) instead."""
+def get_country_provenance(user_query: str) -> List[str]:
+    """Look up canonical Country.provenance values. Call this whenever the question mentions a country's provenance — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
+    search_term = get_entity(user_query, topic="country data sources")
+    # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
+    return search_tool(phrase=search_term, node_label="Country", property_name="provenance", k=TOOL_TOP_K, verbose=True)
+
+
+@tool
+def get_country_name(user_query: str) -> List[str]:
+    """Look up canonical Country.name values. This is the PRIMARY tool for resolving a country entity by name. Call this whenever the question references a country BY NAME — including lowercase, abbreviated, partial, paraphrased, or possessive mentions (e.g. 'matrix' → 'The Matrix', 'Foreign Feature Film' → 'Amanda Award for Best Foreign Feature Film'). Often invoked via relational phrasings like 'originates from X', 'released in X' — call this tool whenever the question references a country through such a phrasing, not only when it literally says the word 'country'. When in doubt between this and a *_eid tool, prefer this one."""
+    search_term = get_entity(user_query, topic="country name")
+    # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
+    return search_tool(phrase=search_term, node_label="Country", property_name="name", k=TOOL_TOP_K, verbose=True)
+
+
+@tool
+def get_country_description(user_query: str) -> List[str]:
+    """Look up canonical Country.description values. Call this when the question paraphrases or summarises the country's content (themes, topics, plot points, biographical details) rather than naming it directly. For name-based references, prefer the name-lookup tool (get_country_name if present) instead."""
+    search_term = get_entity(user_query, topic="country summary")
+    # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
+    return search_tool(phrase=search_term, node_label="Country", property_name="description", k=TOOL_TOP_K, verbose=True)
+
+
+@tool
+def get_filmseries_eid(user_query: str) -> List[str]:
+    """Look up canonical FilmSeries.eid values. ONLY call this when the question contains a literal machine identifier (e.g. a Wikidata 'Q12345' / 'wd:Q12345' code, an IMDb 'tt0000000' code, a UUID, or a similar opaque ID string) that refers to a filmseries. NEVER call this for human-readable filmseries names — use the corresponding name lookup tool (get_filmseries_name if present) instead."""
     search_term = get_entity(user_query, topic="external identifier")
     # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
-    return search_tool(phrase=search_term, node_label="FlightAccident", property_name="eid", k=TOOL_TOP_K, verbose=True)
+    return search_tool(phrase=search_term, node_label="FilmSeries", property_name="eid", k=TOOL_TOP_K, verbose=True)
 
 
 @tool
-def get_flightaccident_number_of_deaths(user_query: str) -> List[str]:
-    """Look up canonical FlightAccident.number_of_deaths values. Call this whenever the question mentions a flightaccident's number_of_deaths — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
-    search_term = get_entity(user_query, topic="fatalities count")
+def get_filmseries_aliases(user_query: str) -> List[str]:
+    """Look up canonical FilmSeries.aliases values. Call this whenever the question mentions a filmseries's aliases — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
+    search_term = get_entity(user_query, topic="alternate series names")
     # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
-    return search_tool(phrase=search_term, node_label="FlightAccident", property_name="number_of_deaths", k=TOOL_TOP_K, verbose=True)
+    return search_tool(phrase=search_term, node_label="FilmSeries", property_name="aliases", k=TOOL_TOP_K, verbose=True)
 
 
 @tool
-def get_flightaccident_aliases(user_query: str) -> List[str]:
-    """Look up canonical FlightAccident.aliases values. Call this whenever the question mentions a flightaccident's aliases — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
-    search_term = get_entity(user_query, topic="flight accident aliases")
+def get_filmseries_provenance(user_query: str) -> List[str]:
+    """Look up canonical FilmSeries.provenance values. Call this whenever the question mentions a filmseries's provenance — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
+    search_term = get_entity(user_query, topic="source references")
     # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
-    return search_tool(phrase=search_term, node_label="FlightAccident", property_name="aliases", k=TOOL_TOP_K, verbose=True)
+    return search_tool(phrase=search_term, node_label="FilmSeries", property_name="provenance", k=TOOL_TOP_K, verbose=True)
 
 
 @tool
-def get_flightaccident_provenance(user_query: str) -> List[str]:
-    """Look up canonical FlightAccident.provenance values. Call this whenever the question mentions a flightaccident's provenance — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
-    search_term = get_entity(user_query, topic="data sources")
+def get_filmseries_name(user_query: str) -> List[str]:
+    """Look up canonical FilmSeries.name values. This is the PRIMARY tool for resolving a filmseries entity by name. Call this whenever the question references a filmseries BY NAME — including lowercase, abbreviated, partial, paraphrased, or possessive mentions (e.g. 'matrix' → 'The Matrix', 'Foreign Feature Film' → 'Amanda Award for Best Foreign Feature Film'). Often invoked via relational phrasings like 'part of series X' — call this tool whenever the question references a filmseries through such a phrasing, not only when it literally says the word 'filmseries'. When in doubt between this and a *_eid tool, prefer this one."""
+    search_term = get_entity(user_query, topic="film series name")
     # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
-    return search_tool(phrase=search_term, node_label="FlightAccident", property_name="provenance", k=TOOL_TOP_K, verbose=True)
+    return search_tool(phrase=search_term, node_label="FilmSeries", property_name="name", k=TOOL_TOP_K, verbose=True)
 
 
 @tool
-def get_flightaccident_number_of_injuries(user_query: str) -> List[str]:
-    """Look up canonical FlightAccident.number_of_injuries values. Call this whenever the question mentions a flightaccident's number_of_injuries — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
-    search_term = get_entity(user_query, topic="injuries count")
+def get_filmseries_description(user_query: str) -> List[str]:
+    """Look up canonical FilmSeries.description values. Call this when the question paraphrases or summarises the filmseries's content (themes, topics, plot points, biographical details) rather than naming it directly. For name-based references, prefer the name-lookup tool (get_filmseries_name if present) instead."""
+    search_term = get_entity(user_query, topic="series summary")
     # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
-    return search_tool(phrase=search_term, node_label="FlightAccident", property_name="number_of_injuries", k=TOOL_TOP_K, verbose=True)
+    return search_tool(phrase=search_term, node_label="FilmSeries", property_name="description", k=TOOL_TOP_K, verbose=True)
 
 
 @tool
-def get_flightaccident_flight_number(user_query: str) -> List[str]:
-    """Look up canonical FlightAccident.flight_number values. This is the PRIMARY tool for resolving a flightaccident entity by name. Call this whenever the question references a flightaccident BY NAME — including lowercase, abbreviated, partial, paraphrased, or possessive mentions (e.g. 'matrix' → 'The Matrix', 'Foreign Feature Film' → 'Amanda Award for Best Foreign Feature Film'). When in doubt between this and a *_eid tool, prefer this one."""
-    search_term = get_entity(user_query, topic="flight number")
+def get_award_eid(user_query: str) -> List[str]:
+    """Look up canonical Award.eid values. ONLY call this when the question contains a literal machine identifier (e.g. a Wikidata 'Q12345' / 'wd:Q12345' code, an IMDb 'tt0000000' code, a UUID, or a similar opaque ID string) that refers to an award. NEVER call this for human-readable award names — use the corresponding name lookup tool (get_award_name if present) instead."""
+    search_term = get_entity(user_query, topic="external award identifier")
     # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
-    return search_tool(phrase=search_term, node_label="FlightAccident", property_name="flight_number", k=TOOL_TOP_K, verbose=True)
+    return search_tool(phrase=search_term, node_label="Award", property_name="eid", k=TOOL_TOP_K, verbose=True)
 
 
 @tool
-def get_flightaccident_name(user_query: str) -> List[str]:
-    """Look up canonical FlightAccident.name values. This is the PRIMARY tool for resolving a flightaccident entity by name. Call this whenever the question references a flightaccident BY NAME — including lowercase, abbreviated, partial, paraphrased, or possessive mentions (e.g. 'matrix' → 'The Matrix', 'Foreign Feature Film' → 'Amanda Award for Best Foreign Feature Film'). When in doubt between this and a *_eid tool, prefer this one."""
-    search_term = get_entity(user_query, topic="flight accident name")
+def get_award_aliases(user_query: str) -> List[str]:
+    """Look up canonical Award.aliases values. Call this whenever the question mentions a award's aliases — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
+    search_term = get_entity(user_query, topic="award alternate names")
     # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
-    return search_tool(phrase=search_term, node_label="FlightAccident", property_name="name", k=TOOL_TOP_K, verbose=True)
+    return search_tool(phrase=search_term, node_label="Award", property_name="aliases", k=TOOL_TOP_K, verbose=True)
 
 
 @tool
-def get_flightaccident_description(user_query: str) -> List[str]:
-    """Look up canonical FlightAccident.description values. Call this when the question paraphrases or summarises the flightaccident's content (themes, topics, plot points, biographical details) rather than naming it directly. For name-based references, prefer the name-lookup tool (get_flightaccident_name if present) instead."""
-    search_term = get_entity(user_query, topic="accident summary")
+def get_award_provenance(user_query: str) -> List[str]:
+    """Look up canonical Award.provenance values. Call this whenever the question mentions a award's provenance — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
+    search_term = get_entity(user_query, topic="award data sources")
     # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
-    return search_tool(phrase=search_term, node_label="FlightAccident", property_name="description", k=TOOL_TOP_K, verbose=True)
+    return search_tool(phrase=search_term, node_label="Award", property_name="provenance", k=TOOL_TOP_K, verbose=True)
 
 
 @tool
-def get_flightaccident_location(user_query: str) -> List[str]:
-    """Look up canonical FlightAccident.location values. This is the PRIMARY tool for resolving a flightaccident entity by name. Call this whenever the question references a flightaccident BY NAME — including lowercase, abbreviated, partial, paraphrased, or possessive mentions (e.g. 'matrix' → 'The Matrix', 'Foreign Feature Film' → 'Amanda Award for Best Foreign Feature Film'). When in doubt between this and a *_eid tool, prefer this one."""
-    search_term = get_entity(user_query, topic="accident location")
+def get_award_name(user_query: str) -> List[str]:
+    """Look up canonical Award.name values. This is the PRIMARY tool for resolving an award entity by name. Call this whenever the question references an award BY NAME — including lowercase, abbreviated, partial, paraphrased, or possessive mentions (e.g. 'matrix' → 'The Matrix', 'Foreign Feature Film' → 'Amanda Award for Best Foreign Feature Film'). Often invoked via relational phrasings like 'receives award X' — call this tool whenever the question references an award through such a phrasing, not only when it literally says the word 'award'. When in doubt between this and a *_eid tool, prefer this one."""
+    search_term = get_entity(user_query, topic="award name")
     # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
-    return search_tool(phrase=search_term, node_label="FlightAccident", property_name="location", k=TOOL_TOP_K, verbose=True)
+    return search_tool(phrase=search_term, node_label="Award", property_name="name", k=TOOL_TOP_K, verbose=True)
 
 
 @tool
-def get_flightaccident_number_of_survivors(user_query: str) -> List[str]:
-    """Look up canonical FlightAccident.number_of_survivors values. Call this whenever the question mentions a flightaccident's number_of_survivors — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
-    search_term = get_entity(user_query, topic="survivors count")
+def get_award_description(user_query: str) -> List[str]:
+    """Look up canonical Award.description values. Call this when the question paraphrases or summarises the award's content (themes, topics, plot points, biographical details) rather than naming it directly. For name-based references, prefer the name-lookup tool (get_award_name if present) instead."""
+    search_term = get_entity(user_query, topic="award description")
     # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
-    return search_tool(phrase=search_term, node_label="FlightAccident", property_name="number_of_survivors", k=TOOL_TOP_K, verbose=True)
+    return search_tool(phrase=search_term, node_label="Award", property_name="description", k=TOOL_TOP_K, verbose=True)
+
+
+@tool
+def get_genre_eid(user_query: str) -> List[str]:
+    """Look up canonical Genre.eid values. ONLY call this when the question contains a literal machine identifier (e.g. a Wikidata 'Q12345' / 'wd:Q12345' code, an IMDb 'tt0000000' code, a UUID, or a similar opaque ID string) that refers to a genre. NEVER call this for human-readable genre names — use the corresponding name lookup tool (get_genre_name if present) instead."""
+    search_term = get_entity(user_query, topic="external genre identifier")
+    # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
+    return search_tool(phrase=search_term, node_label="Genre", property_name="eid", k=TOOL_TOP_K, verbose=True)
+
+
+@tool
+def get_genre_aliases(user_query: str) -> List[str]:
+    """Look up canonical Genre.aliases values. Call this whenever the question mentions a genre's aliases — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
+    search_term = get_entity(user_query, topic="genre alternate names")
+    # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
+    return search_tool(phrase=search_term, node_label="Genre", property_name="aliases", k=TOOL_TOP_K, verbose=True)
+
+
+@tool
+def get_genre_provenance(user_query: str) -> List[str]:
+    """Look up canonical Genre.provenance values. Call this whenever the question mentions a genre's provenance — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
+    search_term = get_entity(user_query, topic="genre source URLs")
+    # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
+    return search_tool(phrase=search_term, node_label="Genre", property_name="provenance", k=TOOL_TOP_K, verbose=True)
+
+
+@tool
+def get_genre_name(user_query: str) -> List[str]:
+    """Look up canonical Genre.name values. This is the PRIMARY tool for resolving a genre entity by name. Call this whenever the question references a genre BY NAME — including lowercase, abbreviated, partial, paraphrased, or possessive mentions (e.g. 'matrix' → 'The Matrix', 'Foreign Feature Film' → 'Amanda Award for Best Foreign Feature Film'). Often invoked via relational phrasings like 'has genre X' — call this tool whenever the question references a genre through such a phrasing, not only when it literally says the word 'genre'. When in doubt between this and a *_eid tool, prefer this one."""
+    search_term = get_entity(user_query, topic="genre name")
+    # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
+    return search_tool(phrase=search_term, node_label="Genre", property_name="name", k=TOOL_TOP_K, verbose=True)
+
+
+@tool
+def get_genre_description(user_query: str) -> List[str]:
+    """Look up canonical Genre.description values. Call this when the question paraphrases or summarises the genre's content (themes, topics, plot points, biographical details) rather than naming it directly. For name-based references, prefer the name-lookup tool (get_genre_name if present) instead."""
+    search_term = get_entity(user_query, topic="genre description")
+    # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
+    return search_tool(phrase=search_term, node_label="Genre", property_name="description", k=TOOL_TOP_K, verbose=True)
+
+
+@tool
+def get_movie_eid(user_query: str) -> List[str]:
+    """Look up canonical Movie.eid values. ONLY call this when the question contains a literal machine identifier (e.g. a Wikidata 'Q12345' / 'wd:Q12345' code, an IMDb 'tt0000000' code, a UUID, or a similar opaque ID string) that refers to a movie. NEVER call this for human-readable movie names — use the corresponding name lookup tool (get_movie_name if present) instead."""
+    search_term = get_entity(user_query, topic="external movie identifier")
+    # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
+    return search_tool(phrase=search_term, node_label="Movie", property_name="eid", k=TOOL_TOP_K, verbose=True)
+
+
+@tool
+def get_movie_original_language(user_query: str) -> List[str]:
+    """Look up canonical Movie.original_language values. Call this whenever the question mentions a movie's original_language — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
+    search_term = get_entity(user_query, topic="movie original languages")
+    # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
+    return search_tool(phrase=search_term, node_label="Movie", property_name="original_language", k=TOOL_TOP_K, verbose=True)
+
+
+@tool
+def get_movie_aliases(user_query: str) -> List[str]:
+    """Look up canonical Movie.aliases values. Call this whenever the question mentions a movie's aliases — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
+    search_term = get_entity(user_query, topic="movie alternate titles")
+    # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
+    return search_tool(phrase=search_term, node_label="Movie", property_name="aliases", k=TOOL_TOP_K, verbose=True)
+
+
+@tool
+def get_movie_provenance(user_query: str) -> List[str]:
+    """Look up canonical Movie.provenance values. Call this whenever the question mentions a movie's provenance — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
+    search_term = get_entity(user_query, topic="movie data sources")
+    # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
+    return search_tool(phrase=search_term, node_label="Movie", property_name="provenance", k=TOOL_TOP_K, verbose=True)
+
+
+@tool
+def get_movie_name(user_query: str) -> List[str]:
+    """Look up canonical Movie.name values. This is the PRIMARY tool for resolving a movie entity by name. Call this whenever the question references a movie BY NAME — including lowercase, abbreviated, partial, paraphrased, or possessive mentions (e.g. 'matrix' → 'The Matrix', 'Foreign Feature Film' → 'Amanda Award for Best Foreign Feature Film'). Often invoked via relational phrasings like 'directed by X', 'has cast member X', 'has genre X', 'originates from X', 'part of series X', 'produced by X' — call this tool whenever the question references a movie through such a phrasing, not only when it literally says the word 'movie'. When in doubt between this and a *_eid tool, prefer this one."""
+    search_term = get_entity(user_query, topic="movie title")
+    # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
+    return search_tool(phrase=search_term, node_label="Movie", property_name="name", k=TOOL_TOP_K, verbose=True)
+
+
+@tool
+def get_movie_description(user_query: str) -> List[str]:
+    """Look up canonical Movie.description values. Call this when the question paraphrases or summarises the movie's content (themes, topics, plot points, biographical details) rather than naming it directly. For name-based references, prefer the name-lookup tool (get_movie_name if present) instead."""
+    search_term = get_entity(user_query, topic="movie summary")
+    # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
+    return search_tool(phrase=search_term, node_label="Movie", property_name="description", k=TOOL_TOP_K, verbose=True)
+
+
+@tool
+def get_movie_runtime_minute(user_query: str) -> List[str]:
+    """Look up canonical Movie.runtime_minute values. Call this whenever the question mentions a movie's runtime_minute — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
+    search_term = get_entity(user_query, topic="movie runtime")
+    # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
+    return search_tool(phrase=search_term, node_label="Movie", property_name="runtime_minute", k=TOOL_TOP_K, verbose=True)
+
+
+@tool
+def get_movie_filming_location(user_query: str) -> List[str]:
+    """Look up canonical Movie.filming_location values. Call this whenever the question mentions a movie's filming_location — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
+    search_term = get_entity(user_query, topic="movie filming locations")
+    # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
+    return search_tool(phrase=search_term, node_label="Movie", property_name="filming_location", k=TOOL_TOP_K, verbose=True)
+
+
+@tool
+def get_movie_global_box_office_usd(user_query: str) -> List[str]:
+    """Look up canonical Movie.global_box_office_usd values. Call this whenever the question mentions a movie's global_box_office_usd — including lowercase, abbreviated, or partial mentions (e.g. 'matrix' → 'The Matrix'). When in doubt, call it."""
+    search_term = get_entity(user_query, topic="movie box office revenue")
+    # Retrieval mode resolved at call time from vector_config.TOOL_RETRIEVAL_MODE.
+    return search_tool(phrase=search_term, node_label="Movie", property_name="global_box_office_usd", k=TOOL_TOP_K, verbose=True)
 

@@ -50,6 +50,7 @@ from config import (
     PLAN_EXEC_ROUTE_FETCH,
     PLAN_EXEC_MAX_ITER,
     PLAN_EXEC_SKIP_GROUNDED,
+    PLAN_EXEC_SELECT_JUDGE,
     PLAN_EXEC_PARALLEL_MENTIONS,
     RETRIEVAL_FUZZY,
     RETRIEVAL_LEVENSHTEIN,
@@ -624,7 +625,7 @@ def execute_entity(entity: Dict[str, str], node_only: bool = False,
     # evidence so the Cypher LLM free-generates (no forced pick, no fabricated
     # value). Cheaply-grounded mentions are left untouched (free, zero regression).
     abstain_decision = ""
-    if (kind != "relation" and by_target
+    if (PLAN_EXEC_SELECT_JUDGE and kind != "relation" and by_target
             and llm_obj is not None and not _cheap_grounded(mention, _flat())):
         decision, chosen = _judge_select(question, mention, _flat(), llm_obj)
         abstain_decision = decision
