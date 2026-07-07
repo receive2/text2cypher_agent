@@ -86,6 +86,65 @@ def _resolve_test_path(dataset: str) -> str:
     return path
 
 
+# Run-config fields eval_config injects into the worker env — and, verbatim,
+# the knob set recorded into each run's summary.json ``run_config`` block
+# (module-level so _build_env and _stamp_summary stay in lockstep).
+_STR  = ("METHOD", "TOOL_TYPE")
+_BOOL = ("RETRIEVAL_FUZZY", "RETRIEVAL_VECTOR", "RETRIEVAL_LEVENSHTEIN",
+         "CYPHER_SEMANTIC_REPAIR", "CYPHER_EMPTY_IS_WRONG",
+         # ablation toggles (eval_config control panel) — config.py reads each
+         "PLAN_EXEC_ESCALATE", "PLAN_EXEC_VALUE_SNAP", "PLAN_EXEC_SKIP_GROUNDED",
+         "PLAN_EXEC_PARALLEL_MENTIONS", "GRAPHRAG_EMPTY_IS_WRONG", "GRAPHRAG_LLM_EVALUATOR")
+_INT  = ("CYPHER_REPAIR_MAX_ROUNDS", "CYPHER_RETRY_MAX_ROUNDS", "RETRIEVAL_LEVENSHTEIN_K")
+
+
+def _stamp_summary(out_summary: Path, env: dict, *, dataset: str, graph: str,
+                   method_seg: str, stamp: str, shards: int,
+                   limit: int | None) -> None:
+    """Embed the run's full configuration into ``summary.json``.
+
+    The run-dir name carries only (dataset, graph, method, timestamp); the
+    ``run_config`` block written here is what makes a run self-describing —
+    LLM per stage, embedding backend, and every injected knob — so runs with
+    different models or settings coexist and stay attributable. Best-effort:
+    a failure to stamp never fails the run."""
+    try:
+        summary = json.loads(out_summary.read_text(encoding="utf-8"))
+    except Exception:  # noqa: BLE001 — no/broken summary: nothing to stamp
+        return
+    llm: dict = {}
+    try:
+        import config as _config
+        for stage in ("NER", "CYPHER", "QA"):
+            c = getattr(_config, f"{stage}_LLM_CONFIG", None) or {}
+            llm[stage.lower()] = {k: c.get(k) for k in ("provider", "model") if k in c}
+    except Exception:  # noqa: BLE001
+        pass
+    embedding: dict = {}
+    try:
+        import vector_config as _vc
+        embedding = {"backend": getattr(_vc, "EMBEDDING_BACKEND", None),
+                     "model":   getattr(_vc, "EMBEDDING_MODEL_NAME", None)}
+    except Exception:  # noqa: BLE001
+        pass
+    summary["run_config"] = {
+        "stamp":     stamp,
+        "dataset":   dataset,
+        "graph":     graph,
+        "method":    method_seg,
+        "llm":       llm,
+        "embedding": embedding,
+        "knobs":     {k: env[k] for k in (*_STR, *_BOOL, *_INT) if k in env},
+        "shards":    shards,
+        "limit":     limit,
+    }
+    try:
+        out_summary.write_text(json.dumps(summary, ensure_ascii=False, indent=2),
+                               encoding="utf-8")
+    except Exception:  # noqa: BLE001
+        pass
+
+
 def _build_env(uri: str, user: str, password: str, database: str) -> dict[str, str]:
     """Copy the parent env and overlay the worker's connection vars + the run
     config from eval_config — the single, authoritative source for what runs.
@@ -104,13 +163,6 @@ def _build_env(uri: str, user: str, password: str, database: str) -> dict[str, s
     env["EVAL_NEO4J_DATABASE"] = database
 
     # ── run config from eval_config (cfg wins → overwrite, don't just fill) ──
-    _STR  = ("METHOD", "TOOL_TYPE")
-    _BOOL = ("RETRIEVAL_FUZZY", "RETRIEVAL_VECTOR", "RETRIEVAL_LEVENSHTEIN",
-             "CYPHER_SEMANTIC_REPAIR", "CYPHER_EMPTY_IS_WRONG",
-             # ablation toggles (eval_config control panel) — config.py reads each
-             "PLAN_EXEC_ESCALATE", "PLAN_EXEC_VALUE_SNAP", "PLAN_EXEC_SKIP_GROUNDED",
-             "PLAN_EXEC_PARALLEL_MENTIONS", "GRAPHRAG_EMPTY_IS_WRONG", "GRAPHRAG_LLM_EVALUATOR")
-    _INT  = ("CYPHER_REPAIR_MAX_ROUNDS", "CYPHER_RETRY_MAX_ROUNDS", "RETRIEVAL_LEVENSHTEIN_K")
     for name in _STR:
         v = getattr(cfg, name, None)
         if v is not None:
@@ -259,7 +311,8 @@ def _run_pair(
         vector = env.get("RETRIEVAL_VECTOR", "0") == "1",
         lev    = env.get("RETRIEVAL_LEVENSHTEIN", "1") == "1",
     )
-    pair_dir = eval_paths.run_dir(dataset, graph, _tag, root=out_dir)
+    stamp    = eval_paths.new_stamp()
+    pair_dir = eval_paths.run_dir(dataset, graph, _tag, root=out_dir, stamp=stamp)
     pair_dir.mkdir(parents=True, exist_ok=True)
     out_records = pair_dir / "records.jsonl"
     out_summary = pair_dir / "summary.json"
@@ -325,6 +378,8 @@ def _run_pair(
         if proc.returncode != 0:
             stderr_tail = "\n".join((proc.stderr or "").splitlines()[-20:])
             return False, f"worker exited {proc.returncode}; stderr tail:\n{stderr_tail}"
+        _stamp_summary(out_summary, env, dataset=dataset, graph=graph,
+                       method_seg=_tag, stamp=stamp, shards=1, limit=limit)
         return True, "ok"
 
     # ── sharded path (SHARDS > 1): K parallel workers over example strides ───
@@ -389,6 +444,9 @@ def _run_pair(
     ok, msg = _merge_shard_outputs(dataset, shard_recs, shard_sums,
                                    out_records, out_summary, elapsed)
     shutil.rmtree(shard_dir, ignore_errors=True)
+    if ok:
+        _stamp_summary(out_summary, env, dataset=dataset, graph=graph,
+                       method_seg=_tag, stamp=stamp, shards=shards, limit=limit)
     return ok, msg
 
 

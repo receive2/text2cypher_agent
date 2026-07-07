@@ -255,21 +255,32 @@ def main() -> int:
         )
         return 1
 
+    # Runs are timestamped (eval_paths): several run dirs may exist per
+    # (dataset, graph, method) triple. Aggregate ONLY the newest run of each
+    # triple — a plain max() on the stamp, where the legacy unstamped layout
+    # parses with stamp "" and therefore loses to any stamped re-run.
+    latest: dict[tuple[str, str, str], tuple[str, Path]] = {}
+    for sp in summaries:
+        parsed = eval_paths.parse_run_dir_stamped(sp.parent)
+        if parsed is None:
+            print(
+                f"[eval_aggregate] WARN: skipping unrecognised run dir "
+                f"{sp.parent.name} (expected <dataset>__<graph>__<method>"
+                f"[__<stamp>]/).",
+                file=sys.stderr,
+            )
+            continue
+        dataset, graph, method, stamp = parsed
+        key = (dataset, graph, method)
+        if key not in latest or stamp > latest[key][0]:
+            latest[key] = (stamp, sp)
+
     # (dataset, method) -> [(graph, records_path), ...]. Method is part of the
     # group key so a five-method sweep in one OUT_DIR prints one table block per
     # (dataset, method) instead of silently pooling different methods together.
     by_group: dict[tuple[str, str], list[tuple[str, Path]]] = defaultdict(list)
     metas: List[Dict[str, Any]] = []
-    for sp in summaries:
-        parsed = eval_paths.parse_run_dir(sp.parent)
-        if parsed is None:
-            print(
-                f"[eval_aggregate] WARN: skipping unrecognised run dir "
-                f"{sp.parent.name} (expected <dataset>__<graph>__<method>/).",
-                file=sys.stderr,
-            )
-            continue
-        dataset, graph, method = parsed
+    for (dataset, graph, method), (_stamp, sp) in sorted(latest.items()):
         records_path = sp.with_name("records.jsonl")
         by_group[(dataset, method)].append((graph, records_path))
         rm = _load_run_meta(sp)

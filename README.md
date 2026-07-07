@@ -544,8 +544,10 @@ eval_run.py
        │          don't match the graph (same check as verify_setup.py)
        │       3. spawn `python -m eval._worker <dataset> <graph> ...`
        │          with EVAL_NEO4J_* env vars pointing at that container
-       │       4. write logs/runs/<dataset>__<graph>__<method>/records.jsonl
-       │                   logs/runs/<dataset>__<graph>__<method>/summary.json
+       │       4. write logs/runs/<dataset>__<graph>__<method>__<stamp>/records.jsonl
+       │                   logs/runs/<dataset>__<graph>__<method>__<stamp>/summary.json
+       │          (fresh timestamped dir per invocation; summary.json carries
+       │           the run's model + knob config under `run_config`)
        ▼
 eval_aggregate.py
            • Re-aggregates every run dir on disk by difficulty

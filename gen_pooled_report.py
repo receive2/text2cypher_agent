@@ -41,8 +41,9 @@ for label, ret, cfg in _METHODS:
     pooled.mkdir(parents=True, exist_ok=True)
     lines = []
     for g in graphs:
-        rj = eval_paths.run_dir(dataset_key, g, cfg) / "records.jsonl"
-        if rj.exists():
+        d_path = eval_paths.latest_run_dir(dataset_key, g, cfg)
+        rj = (d_path / "records.jsonl") if d_path else None
+        if rj is not None and rj.exists():
             lines += [l for l in rj.read_text().splitlines() if l.strip()]
     (pooled / "records.jsonl").write_text("\n".join(lines) + ("\n" if lines else ""))
     if lines:

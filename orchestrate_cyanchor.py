@@ -113,16 +113,21 @@ def _set_arms(vector: bool) -> None:
     os.environ["EVAL_PER_EXAMPLE_TIMEOUT"] = "900"
 
 
+def _latest_records(dataset_key: str, conn_graph: str, method_seg: str):
+    """records.jsonl of the newest run for a triple, or None (eval_paths
+    resolves timestamped run dirs, falling back to the legacy layout)."""
+    p = eval_paths.latest_run_dir(dataset_key, conn_graph, method_seg)
+    return (p / "records.jsonl") if p else None
+
+
 def run_cyanchor(aug_dataset: str, conn_graph: str, vector: bool) -> bool:
-    """Run CyANCHOR for one pair with retry. eval_run writes the canonical run dir
-    (logs/runs/<aug_dataset>__<conn_graph>__cyanchor_{fl,fvl}/) directly — no copy.
-    Returns True iff records were produced."""
+    """Run CyANCHOR for one pair with retry. eval_run writes a fresh timestamped
+    run dir (logs/runs/<aug_dataset>__<conn_graph>__cyanchor_{fl,fvl}__<stamp>/)
+    directly — no copy. Returns True iff records were produced."""
     import eval_run
 
     _set_arms(vector)
-    tag_seg  = eval_paths.method_tag("cyanchor", fuzzy=True, vector=vector, lev=True)
-    run_path = eval_paths.run_dir(aug_dataset, conn_graph, tag_seg)  # under logs/runs
-    rec_file = run_path / "records.jsonl"
+    tag_seg = eval_paths.method_tag("cyanchor", fuzzy=True, vector=vector, lev=True)
 
     for attempt in range(1, MAX_TRIES + 1):
         cfg.EVAL_PAIRS = [(aug_dataset, conn_graph)]
@@ -130,13 +135,15 @@ def run_cyanchor(aug_dataset: str, conn_graph: str, vector: bool) -> bool:
         cfg.LIMIT      = None
         cfg.VERBOSE    = False
         tag = f"{aug_dataset}__{conn_graph}{' +vec' if vector else ''} (try {attempt}/{MAX_TRIES})"
-        log(f"  run {tag} SHARDS={getattr(cfg,'SHARDS',1)} -> {run_path} ...")
+        log(f"  run {tag} SHARDS={getattr(cfg,'SHARDS',1)} -> {aug_dataset}__{conn_graph}__{tag_seg} ...")
         try:
             rc = eval_run.main()
         except Exception as exc:  # noqa: BLE001
             log(f"  eval_run raised: {type(exc).__name__}: {exc}")
             rc = 99
-        n = sum(1 for _ in rec_file.open()) if rec_file.exists() else 0
+        # Resolve the dir eval_run just wrote (newest stamp for the triple).
+        rec_file = _latest_records(aug_dataset, conn_graph, tag_seg)
+        n = sum(1 for _ in rec_file.open()) if rec_file is not None and rec_file.exists() else 0
         log(f"  -> rc={rc}, records={n}")
         if rc == 0 and n > 0:
             return True
@@ -146,14 +153,14 @@ def run_cyanchor(aug_dataset: str, conn_graph: str, vector: bool) -> bool:
 
 def gen_graph_report(report_graph: str, conn_graph: str, dataset_key: str,
                      folder: str, label: str, vec: bool) -> None:
-    methods = [{"label": l, "retrieval": r,
-                "dir": str(eval_paths.run_dir(dataset_key, conn_graph, c))}
-               for l, r, c in _BASELINES]
-    methods.append({"label": "CyANCHOR (fuzzy+lev)", "retrieval": "fuzzy+lev",
-                    "dir": str(eval_paths.run_dir(dataset_key, conn_graph, "cyanchor_fl"))})
+    wanted = list(_BASELINES) + [("CyANCHOR (fuzzy+lev)", "fuzzy+lev", "cyanchor_fl")]
     if vec:
-        methods.append({"label": "CyANCHOR (fuzzy+lev+vec)", "retrieval": "fuzzy+lev+vec",
-                        "dir": str(eval_paths.run_dir(dataset_key, conn_graph, "cyanchor_fvl"))})
+        wanted.append(("CyANCHOR (fuzzy+lev+vec)", "fuzzy+lev+vec", "cyanchor_fvl"))
+    methods = []
+    for l, r, c in wanted:
+        p = eval_paths.latest_run_dir(dataset_key, conn_graph, c)
+        if p is not None:
+            methods.append({"label": l, "retrieval": r, "dir": str(p)})
     methods = [m for m in methods if (REPO / m["dir"] / "records.jsonl").exists()]
     n = max((sum(1 for _ in (REPO / m["dir"] / "records.jsonl").open()) for m in methods),
             default=0)
@@ -210,7 +217,8 @@ def main() -> int:
 
         # dataset complete -> refresh summary over the graphs we have records for
         have = [cg for _, cg, _ in graphs
-                if (eval_paths.run_dir(aug_dataset, cg, "cyanchor_fl") / "records.jsonl").exists()]
+                if (rf := _latest_records(aug_dataset, cg, "cyanchor_fl")) is not None
+                and rf.exists()]
         if have:
             try:
                 gen_summary(folder, label, aug_dataset, have)

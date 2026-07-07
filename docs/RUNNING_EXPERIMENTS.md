@@ -166,18 +166,25 @@ the shipped `fuzzy+lev` default, build with `--skip-embeddings` and leave
 
 ## Where results land
 
-Each run writes a **canonical per-run directory** (see `eval_paths.py`, the single
-source of truth for this layout):
+Each invocation writes a **fresh, timestamped per-run directory** (see
+`eval_paths.py`, the single source of truth for this layout):
 
 ```
-logs/runs/<dataset>__<graph>__<method>/records.jsonl   # one record per example
-logs/runs/<dataset>__<graph>__<method>/summary.json    # aggregate + run_meta
+logs/runs/<dataset>__<graph>__<method>__<YYYYMMDD-HHMMSS>/records.jsonl  # one record per example
+logs/runs/<dataset>__<graph>__<method>__<YYYYMMDD-HHMMSS>/summary.json   # aggregate + run_meta + run_config
 ```
 
-The method (`graphrag`, `cyanchor_fl`, …) is **part of the path**, so a five-method
-sweep into one `OUT_DIR` keeps each method separate and self-describing — changing
-`METHOD` and re-running never clobbers another method's records. `eval_aggregate.py`
-reads these dirs and groups by `(dataset, method)`.
+The method (`graphrag`, `cyanchor_fl`, …) is **part of the path** and every
+invocation gets its **own timestamp**, so re-running — with a different
+`METHOD`, a different LLM, or different knobs — never clobbers earlier
+records. The dir name deliberately carries no model/config information;
+what actually ran (LLM per stage, embedding backend, every ablation knob) is
+recorded inside `summary.json` under `run_config`, making each run dir
+self-describing. Readers resolve a triple's **newest** run via
+`eval_paths.latest_run_dir` (pre-timestamp legacy dirs
+`logs/runs/<dataset>__<graph>__<method>/` are still recognised as a
+fallback). `eval_aggregate.py` aggregates only the newest run per
+`(dataset, graph, method)` and groups by `(dataset, method)`.
 
 ## Producing the per-graph comparison reports
 

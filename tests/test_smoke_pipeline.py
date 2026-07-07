@@ -385,9 +385,24 @@ def _assert_per_pair_outputs(
     dataset: str,
     graph:   str,
 ) -> List[Dict[str, Any]]:
-    """Validate <dataset>__<graph>.records.jsonl + .summary.json exist and parse."""
-    records_path = out_dir / f"{dataset}__{graph}.records.jsonl"
-    summary_path = out_dir / f"{dataset}__{graph}.summary.json"
+    """Validate the pair's (timestamped) run dir exists and its
+    ``records.jsonl`` + ``summary.json`` parse.
+
+    Resolves the NEWEST run dir for the pair via ``eval_paths`` regardless of
+    the method segment (the rig leaves METHOD at eval_run's default), so the
+    assertion tracks the canonical layout instead of hardcoding it."""
+    sys.path.insert(0, str(REPO_ROOT))
+    import eval_paths
+
+    cands = []
+    for d in out_dir.iterdir():
+        parsed = eval_paths.parse_run_dir_stamped(d)
+        if parsed and parsed[0] == dataset and parsed[1] == graph and d.is_dir():
+            cands.append((parsed[3], d))
+    assert cands, f"no run dir for {dataset}__{graph} under {out_dir}"
+    run_dir = max(cands)[1]
+    records_path = run_dir / "records.jsonl"
+    summary_path = run_dir / "summary.json"
     assert records_path.is_file(), f"missing records file: {records_path}"
     assert summary_path.is_file(), f"missing summary file: {summary_path}"
 

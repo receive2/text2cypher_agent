@@ -41,10 +41,10 @@ _METHODS = [
 
 methods, n = [], 0
 for label, ret, cfg in _METHODS:
-    d = str(eval_paths.run_dir(dataset_key, graph, cfg))
-    rj = Path(d) / "records.jsonl"
-    if rj.exists():
-        methods.append({"label": label, "retrieval": ret, "dir": d})
+    d_path = eval_paths.latest_run_dir(dataset_key, graph, cfg)
+    rj = (d_path / "records.jsonl") if d_path else None
+    if rj is not None and rj.exists():
+        methods.append({"label": label, "retrieval": ret, "dir": str(d_path)})
         n = max(n, sum(1 for _ in rj.open()))
 
 if not methods:
