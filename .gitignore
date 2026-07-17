@@ -8,10 +8,11 @@
 # But not .gitignore itself
 !.gitignore
 
-# Whitelist .py, .md, .sh, and requirements.txt
+# Whitelist .py, .md, .sh, requirements.txt, and Jupyter notebooks
 !*.py
 !*.md
 !*.sh
+!*.ipynb
 !requirements.txt
 !.env.example
 
@@ -105,6 +106,8 @@ verification/
 !benchmarks/
 !benchmarks/**
 
+.early.coverage
+=======
 # ──────────────────────────────────────────────────────────────────────────────
 # Ablation reports — always tracked (override the cypherbench/ dir-name ignore
 # above, which otherwise matches report/CypherBench/ on a case-insensitive FS).
