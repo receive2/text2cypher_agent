@@ -138,6 +138,57 @@ the per-graph mix rather than forcing abbreviations/aliases that do not exist.
   benchmark graphs ship without those indexes); the §4 class spectrum is
   index-free.
 
+### Curation log
+
+- **2026-08-09 — unchecked-edit backfill & entity-pool leak removal.** 356 edits
+  had shipped with `validity="unchecked"` (generation-time (label, prop)
+  resolution failed, so the DB checks never ran — and, same root cause, the
+  entity-pool type filter never ran either). A post-hoc backfill
+  (`scripts/backfill_unchecked_validity.py`) re-resolved each canonical value
+  across all node/relationship scalar and array string properties on the live
+  graphs and re-ran the §5 validity checks. Outcome: **147 confirmed valid**
+  (110 passed all checks, 37 casing — `validity` flipped to `ok` with
+  `validity_backfill` provenance); **186 rows removed** — their "entities" were
+  out-of-scope pool leaks, not stored DB values (structured-ID/descriptor
+  phrases 136, schema words & common nouns 32, dates/datetimes 10,
+  CONTAINS-fragments 8); **23 held** for hand-check (suspected format/unicode
+  drift). Every check that could be resolved passed (0 hard failures).
+- **2026-08-09 — E-class hand-check (DB-assisted).** Each of the 23 held items
+  was adjudicated against the live graph and the row's gold Cypher. **4 kept**
+  (typo/alias with a uniquely recoverable referent, DB-verified — e.g.
+  `National Assembly of Armenia → Armenian Parliament`); **19 removed**:
+  6 rows whose gold contains **no string literal** (the perturbation targeted a
+  non-value word — seeding-invariant violation), 4 **quoted-spec corruptions**
+  (the question quotes a literal, so aliasing/typoing it changes the query spec
+  — e.g. `STARTS WITH 'Muller'` vs question saying `'Miller'`), 3 referent
+  breaks, 2 DB-verified ambiguities (e.g. `TEVA` collides with a distinct
+  company named `Teva`), 2 not-unique partials (63 awards contain
+  `documentary`), 2 excluded-class postcode areas, 1 value lost entirely.
+  Dataset size 4,875 → **4,670**; zero `unchecked` edits remain.
+  Row-level log: `audit/unchecked_curation_log.csv` (verdicts + reasons also in
+  `audit/unchecked_E_handcheck.csv`); method: `audit/unchecked_backfill_summary.md`.
+- **2026-08-09 — partial-rule patch (v2.1) + regeneration of algorithmic
+  partials.** A heuristic sweep had flagged 263/1,069 algorithmic partials with
+  systematic defects (bare-number outputs like `Sweden 1995 → "1995"`, generic
+  single words, dangling punctuation `→ "Event)"`, status-sentence sources).
+  Root cause: the implementation lacked the designed distinctive-token logic and
+  ranked maximal reductions first. `augmenters/partial_name.py` was patched
+  (status/sentence-shape eligibility guard; edge-punctuation tokenization;
+  bare-number/too-short/unbalanced output guards; **DB-grounded
+  distinctive-token requirement** — every reduction must retain the token with
+  the lowest document frequency across that (label, prop)'s values, and a
+  single-token reduction may BE that token when capitalized). All algorithmic
+  partials were then re-validated against the live graphs
+  (`scripts/regenerate_partials.py`): **536 already compliant (kept), 264
+  regenerated as better partials** (e.g. `"Event)" → "Important Medical Event"`,
+  `"1363" → "Ontario Flight 1363"`), **121 fell back to algorithmic typo**
+  (status values, year-only tournaments — no natural partial exists), **6
+  removed** (bad outputs with no (label,prop) metadata to re-check), 33
+  backfill-verified rows left as-is. Human-verification census unaffected
+  (algorithmic edits are Tier-2-sampled, not censused). Defect-flag rate after:
+  ~1% (from 24.6%). Dataset size → **4,664**. Log:
+  `audit/partial_regen_log.csv`; existing unit tests (50) pass unchanged.
+
 ## 8. Files
 
 ```
