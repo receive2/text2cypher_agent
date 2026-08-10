@@ -188,6 +188,27 @@ the per-graph mix rather than forcing abbreviations/aliases that do not exist.
   (algorithmic edits are Tier-2-sampled, not censused). Defect-flag rate after:
   ~1% (from 24.6%). Dataset size → **4,664**. Log:
   `audit/partial_regen_log.csv`; existing unit tests (50) pass unchanged.
+- **2026-08-09 — LLM-tier regeneration (abstention-first, claude-opus-5).** A
+  pilot annotation of the LLM-proposed tier measured ~51% invalid proposals
+  (fabricated nicknames for entities that have none). A 50-item A/B
+  (`audit/llm_proposer_ab_results.md`) showed an **abstention-first +
+  evidence-required** prompt raises proposal precision to ~85%+ on
+  claude-opus-5, which also *repairs* invalid items with genuinely attested
+  forms. All 792 LLM-proposed edits were re-proposed
+  (`scripts/regenerate_llm_tier.py`; proposer model pinned: `claude-opus-5`,
+  direct SDK): **527 proposed / 265 abstained**; after shape guards
+  (replacement-style alias, partial word-subset + distinctive token) and DB
+  validity (10 collisions and 20 contains-original caught), **455 accepted**
+  — each carrying an `evidence` string and `proposer_model` in `_aug_meta`,
+  all still routed to the human census (`needs_verification`); **293 fell back
+  to algorithmic strategies** (typo 190 / partial 98 / casing 5 — DB-gated,
+  Tier-2-sampled); **16 rows removed** (no valid perturbation); 28 kept as-is
+  (no (label,prop) metadata to re-check). Dataset size 4,664 → **4,648**;
+  LLM-tier census shrinks 792 → 483. Anti-circularity note: Claude models
+  appear in the evaluation matrix; the proposer only *proposes* — every
+  LLM-proposed form remains 100% human-verified, and the LLM-proposed vs
+  attested provenance split supports the ablation. Log:
+  `audit/llm_regen_log.csv`; raw proposals: `audit/llm_regen_proposals.jsonl`.
 
 ## 8. Files
 
