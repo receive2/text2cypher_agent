@@ -267,6 +267,32 @@ the per-graph mix rather than forcing abbreviations/aliases that do not exist.
   tables are regenerated from the data by script after adjudication — no
   hand-edited numbers.
 
+- **2026-08-22 — alias census probe, freeze decision, and reproducibility
+  manifest (FINAL generation-side state).** The 50-entity spot-check of the
+  no-alias claim (external review item #3) surfaced that the LLM probe had been
+  stratified-sampled, not exhaustive: 253 entities on alias-applicable rows had
+  never been probed. A census probe closed the gap (78/253 proposed, 31%);
+  coverage is now exhaustive (verified: zero unprobed alias-applicable rows;
+  1,278 successful probe calls total). The spot-check also confirmed three
+  DB-collision rejections were CORRECT (Coreg/Micardis/Hidden exist as other
+  values). One operational error is disclosed: an intermediate reallocation ran
+  against a stale strategy snapshot, causing redundant (but fully gated)
+  conversions before being corrected against current data. Post-census
+  reallocation converted 81 further rows. **Frozen mixture: typo 30.6 / abbrev
+  23.0 / alias 18.4 / partial 18.0 / casing 10.0** (alias = 27.2% within its
+  applicable stratum). Decision (documented): stop here — the combined
+  attested+LLM supply for abbrev+alias is 41.3% of rows vs a 45% combined
+  target; the residual gap is a measured supply ceiling, not an allocation
+  choice. The abbrev ceiling is a lower bound (rows holding attested-alias
+  forms were never abbrev-probed; immaterial as abbrev exceeds target).
+  **Reproducibility:** the release is frozen as a decision manifest
+  (`release_manifest_v2.1.jsonl`: per-row source row, unperturbed question,
+  gold, and the full edit decision incl. LLM proposals + evidence).
+  `scripts/rebuild_from_manifest.py` re-derives every perturbed question from
+  the frozen decisions and verifies canonical-hash equality with the released
+  files (verified: 6/6 files match). The manifest supersedes the per-wave
+  curation logs as the complete row-level provenance record.
+
 ## 8. Files
 
 ```
