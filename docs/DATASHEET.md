@@ -210,6 +210,17 @@ the per-graph mix rather than forcing abbreviations/aliases that do not exist.
   attested provenance split supports the ablation. Log:
   `audit/llm_regen_log.csv`; raw proposals: `audit/llm_regen_proposals.jsonl`.
 
+- **2026-08-22 — mid-word replacement repair.** The consistent-replacement
+  step matched surface strings without word boundaries, so a short value could
+  be replaced *inside another word* (`us` -> "United States" also rewrote
+  "users" into "United Statesers"). `pipeline._occurrences` is now
+  word-boundary-aware (a trailing plural `s` still counts as the same mention:
+  "shooting guards" -> "SGs"). All 4,648 question texts were recomputed from
+  `original_nl`: **4,594 unchanged, 47 repaired, 7 removed** (the surface only
+  ever occurred mid-word, so the question cannot carry the perturbation).
+  Dataset size -> **4,641**. Log: `audit/midword_fix_log.csv`; unit tests (50)
+  pass.
+
 ## 8. Files
 
 ```

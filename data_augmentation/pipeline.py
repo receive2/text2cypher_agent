@@ -124,13 +124,26 @@ def _eligible_strategies(surface: str, ctx: AugContext) -> List[str]:
 # ──────────────────────────────────────────────────────────────────────────────
 
 def _occurrences(nl: str, surface: str) -> List[Tuple[int, int]]:
+    """Case-insensitive, non-overlapping, **word-boundary-aware** occurrences.
+
+    A match must not sit inside another word ("us" must not match inside
+    "users" — the bug that produced "United Statesers").  One exception: a
+    trailing plural ``s`` right after the match is treated as the same mention
+    ("shooting guards" is an occurrence of "shooting guard"; the span excludes
+    the ``s``, so the replacement keeps it: "SGs")."""
     spans, h, n, i = [], nl.lower(), surface.lower(), 0
     while True:
         j = h.find(n, i)
         if j < 0:
             break
-        spans.append((j, j + len(surface)))
-        i = j + len(surface)        # non-overlapping
+        end = j + len(n)
+        before_ok = j == 0 or not h[j - 1].isalnum()
+        after_ok = (end >= len(h) or not h[end].isalnum()
+                    or (h[end] == "s"
+                        and (end + 1 >= len(h) or not h[end + 1].isalnum())))
+        if before_ok and after_ok:
+            spans.append((j, end))
+        i = end                      # non-overlapping
     return spans
 
 
