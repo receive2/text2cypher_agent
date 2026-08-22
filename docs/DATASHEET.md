@@ -221,6 +221,26 @@ the per-graph mix rather than forcing abbreviations/aliases that do not exist.
   Dataset size -> **4,641**. Log: `audit/midword_fix_log.csv`; unit tests (50)
   pass.
 
+- **2026-08-22 — applicability-ceiling measurement + lossless mixture
+  rebalance.** External review flagged the typo share (44.3% vs the 22.5%
+  target). We measured the **applicability ceiling** per (graph, strategy)
+  (`audit/APPLICABILITY_CEILING.md`; `scripts/measure_applicability_ceiling.py`):
+  exact attested-KB scan over all rows + a claude-opus-5 abstention probe
+  (~1,000 entities), all candidates passed through shape rules and the live-DB
+  collision gate. Finding: large **unused attested supply** (e.g. nba alias
+  ceiling 79.7% vs 20.3% realized) alongside true structural zeros (synthetic
+  graphs have no aliases by design). `scripts/rebalance_mixture.py` then
+  performed **scarcity-first lossless reallocation** (abbrev before alias;
+  donors typo -> casing -> partial with 10%/18% floors; every conversion
+  re-passed shape + DB validity + splice): **725 rows converted** (typo 541,
+  partial 157, casing 27; 327 to attested forms, 398 to LLM-proposed forms
+  with evidence, all census-bound). Mixture: typo 44.3->32.7%, abbrev
+  12.8->21.9%, alias 10.9->17.4%, partial 18.0%, casing 10.0%. Alias remains
+  below target because verified supply is exhausted (synthetic graphs = 32.5%
+  of rows have zero alias ceiling) — the ceiling table is reported as a
+  finding, and headline metrics use macro-averaging over strategies. No rows
+  deleted. Log: `audit/rebalance_log.csv`.
+
 ## 8. Files
 
 ```
