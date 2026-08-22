@@ -112,6 +112,11 @@ acceptable, **≥ 0.8** strong. (Naturalness IAA may go in an appendix.)
   form* in a second pass. State which policy was used.
 - `valid` + `natural` → **keep**.
 
+**Pre-registered rejection handling for converted rows** (fixed before
+annotation; see the datasheet curation log, 2026-08-22): a rejected edit on a
+row with a logged prior valid form reverts to that form; rows without one
+follow the rules above. Canonical dataset figures are post-adjudication.
+
 ## 7. What to report in the paper (fixed schedule)
 
 A "Human Verification" subsection with:

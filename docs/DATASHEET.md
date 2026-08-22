@@ -241,6 +241,32 @@ the per-graph mix rather than forcing abbreviations/aliases that do not exist.
   finding, and headline metrics use macro-averaging over strategies. No rows
   deleted. Log: `audit/rebalance_log.csv`.
 
+- **2026-08-22 — partial backfill to supply exhaustion + PRE-REGISTERED
+  adjudication rules (generation-side freeze).** Final mixture lever per
+  external review: every typo row whose entity admits a fully-gated partial
+  form was converted (`scripts/backfill_partial_from_typo.py`; diagnostic found
+  **95 rows**, below the 208 needed for target — all 95 converted, algorithmic
+  provenance, zero census growth). **Generation-side frozen mixture: typo
+  30.6% / abbrev 21.9% / partial 20.1% / alias 17.4% / casing 10.0%.** Every
+  deviation now has a stated mechanism: abbrev at target; partial and alias
+  filled to measured supply exhaustion (`audit/APPLICABILITY_CEILING.md`);
+  within the alias-applicable stratum (67.5% of rows; synthetic graphs are
+  alias-zero by design) alias = **25.8%**, above the 22.5% design share — the
+  global 17.4% is a composition effect, not supply shortfall. Headline metrics
+  use macro-averaging over strategies.
+  **Pre-registered adjudication rules** (canonical figures are
+  POST-adjudication; these rules are fixed before annotation begins):
+  (1) a census-rejected edit (`invalid` or `source_error`) on a row with a
+  logged prior valid form (`audit/rebalance_log.csv`,
+  `audit/llm_regen_log.csv`, `audit/partial_backfill_log.csv`) **reverts to
+  that prior form** (which passed all machine gates), with provenance updated
+  accordingly; (2) rows without a prior valid form follow protocol §6
+  (corrected_form supplied → fix + second-pass re-verify; otherwise drop and
+  log); (3) per-strategy proposal acceptance rates and IAA are auto-reported
+  post-adjudication as the generation-validation table; (4) all mixture/count
+  tables are regenerated from the data by script after adjudication — no
+  hand-edited numbers.
+
 ## 8. Files
 
 ```
