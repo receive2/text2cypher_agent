@@ -266,7 +266,15 @@ the per-graph mix rather than forcing abbreviations/aliases that do not exist.
   rebuilt deterministically from the backup snapshot chain (this supersedes
   the partially-overwritten per-wave logs). Reverting to prior LLM- or
   KB-sourced forms is prohibited (they were never human-verified);
-  `source_error` rows are always removed; (2) rows without a prior valid form follow protocol §6
+  `source_error` rows are always removed;
+  **(1b, decision confirmed 2026-08-23)** rejected rows *without* a certified
+  prior form are **removed** (no substitution — deletion preserves the mixture
+  and difficulty shares better than any fill-in, and casing back-fill is
+  explicitly prohibited per the §5 design rule). Expected loss ≈100–150 rows.
+  **Contingency (pre-registered):** if the invalid rate among no-prior census
+  rows exceeds **20%** (>2× expectation, indicating a systematic issue), the
+  fallback switches to machine-generated algorithmic perturbations (full
+  current gates), each single-verified during adjudication before retention; (2) rows without a prior valid form follow protocol §6
   (corrected_form supplied → fix + second-pass re-verify; otherwise drop and
   log); (3) per-strategy proposal acceptance rates and IAA are auto-reported
   post-adjudication as the generation-validation table; (4) all mixture/count
