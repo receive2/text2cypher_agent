@@ -260,11 +260,13 @@ the per-graph mix rather than forcing abbreviations/aliases that do not exist.
   use macro-averaging over strategies.
   **Pre-registered adjudication rules** (canonical figures are
   POST-adjudication; these rules are fixed before annotation begins):
-  (1) a census-rejected edit (`invalid` or `source_error`) on a row with a
-  logged prior valid form (`audit/rebalance_log.csv`,
-  `audit/llm_regen_log.csv`, `audit/partial_backfill_log.csv`) **reverts to
-  that prior form** (which passed all machine gates), with provenance updated
-  accordingly; (2) rows without a prior valid form follow protocol §6
+  (1) a census-rejected edit (`invalid`) on a row with a prior
+  **algorithmic, machine-gated** form **reverts to that form** (provenance
+  updated); revert targets are enumerated per row in `audit/prior_forms.csv`,
+  rebuilt deterministically from the backup snapshot chain (this supersedes
+  the partially-overwritten per-wave logs). Reverting to prior LLM- or
+  KB-sourced forms is prohibited (they were never human-verified);
+  `source_error` rows are always removed; (2) rows without a prior valid form follow protocol §6
   (corrected_form supplied → fix + second-pass re-verify; otherwise drop and
   log); (3) per-strategy proposal acceptance rates and IAA are auto-reported
   post-adjudication as the generation-validation table; (4) all mixture/count
