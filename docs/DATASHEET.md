@@ -15,19 +15,21 @@ This benchmark restores that realism by rewriting the entity mention into a
 plausible variant, creating a **grounding gap** that a value-grounding step
 must close.
 
-**Headline:** across 4,875 perturbed examples, a baseline case-insensitive
-exact-match no longer recovers the canonical entity on **89.9%** of them
-(89.8 / 89.9 / 90.0% on the three datasets independently).
+<!-- AUTOGEN:HEADLINE -->
+**Headline:** across 4,641 perturbed examples, a baseline case-insensitive exact-match no longer recovers the canonical entity on **90.0%** of them (90.9 / 89.6 / 88.9% on the three datasets independently).
+<!-- /AUTOGEN:HEADLINE -->
 
 ## 2. Composition
 
-3 datasets, 13 graphs, **4,875** perturbed examples (test split).
+<!-- AUTOGEN:COMPOSITION -->
+3 datasets, 13 graphs, **4,641** perturbed examples (test split, post-curation; see §7 curation log).
 
 | dataset | graphs | examples |
 |---|---|--:|
-| CypherBench | nba, flight_accident, fictional_character, company, geography, movie, politics | 2,136 |
-| Mind-the-Query | bloom, covid, er, healthcare, wwc | 1,298 |
-| ZOGRASCOPE | pole | 1,441 |
+| CypherBench | company, fictional_character, flight_accident, geography, movie, nba, politics | 2,115 |
+| Mind-the-Query | bloom, covid, er, healthcare, wwc | 1,227 |
+| ZOGRASCOPE | pole | 1,299 |
+<!-- /AUTOGEN:COMPOSITION -->
 
 Each example preserves the original row (`_source_row`), the unchanged
 `gold_cypher`, the perturbed question (`nl`), and `_aug_meta` recording the
@@ -55,12 +57,14 @@ poses no value-grounding challenge.)
 Each edit is classified by how the perturbed surface relates to the canonical
 value (DB- and model-free):
 
+<!-- AUTOGEN:DIFFICULTY -->
 | class | meaning | all | cypherbench | mtq | zograscope |
 |---|---|--:|--:|--:|--:|
-| `exact_ci` | case-insensitive exact still matches (trivial) | 10.1% | 10.1% | 10.2% | 10.0% |
-| `edit_distance` | within Damerau ≤2 (fuzzy-recoverable) | 38.3% | 25.5% | 41.1% | 54.7% |
-| `substring` | perturbed ⊆ canonical (fulltext-recoverable) | 30.2% | 31.6% | 27.3% | 30.7% |
-| `semantic` | no surface overlap (needs world knowledge / vector) | 21.4% | 32.8% | 21.3% | 4.6% |
+| `exact_ci` | case-insensitive exact still matches (trivial) | 10.0% | 9.1% | 10.4% | 11.1% |
+| `edit_distance` | within Damerau ≤2 (fuzzy-recoverable) | 32.1% | 15.0% | 31.5% | 60.6% |
+| `substring` | perturbed ⊆ canonical (fulltext-recoverable) | 25.6% | 29.8% | 23.2% | 21.0% |
+| `semantic` | no surface overlap (needs world knowledge / vector) | 32.2% | 46.1% | 34.8% | 7.3% |
+<!-- /AUTOGEN:DIFFICULTY -->
 
 `semantic` is the hardest tier and is where value-grounding / vector retrieval
 is required; its share tracks alias/abbrev availability per domain.
@@ -94,24 +98,28 @@ is required; its share tracks alias/abbrev availability per domain.
 
 ## 6. Realized distribution (per graph)
 
-`kept/total` examples and realized strategy %; `verify` = LLM-proposed edits
-queued for human verification.
+<!-- AUTOGEN:REALIZED -->
+Post-curation realized mix (regenerate with `scripts/render_datasheet_tables.py`; canonical figures are post-adjudication). `census` = LLM- + attested-provenance edits (all human-verified, Tier 1).
 
-| dataset | graph | kept/total | casing | typo | partial | abbrev | alias | verify |
+| dataset | graph | n | casing | typo | partial | abbrev | alias | census |
 |---|---|--:|--:|--:|--:|--:|--:|--:|
-| cypherbench | nba | 258/270 | 10.1 | 22.9 | 22.1 | 22.1 | 22.9 | 75 |
-| cypherbench | flight_accident | 170/189 | 10.0 | 22.4 | 22.4 | 22.4 | 22.9 | 24 |
-| cypherbench | fictional_character | 326/385 | 10.1 | 29.4 | 28.5 | 2.8 | 29.1 | 88 |
-| cypherbench | company | 308/347 | 10.1 | 22.7 | 22.4 | 22.1 | 22.7 | 42 |
-| cypherbench | geography | 339/366 | 10.0 | 23.0 | 23.0 | 20.9 | 23.0 | 87 |
-| cypherbench | movie | 370/401 | 10.0 | 22.7 | 22.2 | 22.4 | 22.7 | 78 |
-| cypherbench | politics | 365/390 | 10.1 | 22.5 | 22.5 | 22.5 | 22.5 | 37 |
-| mindthequery | bloom *(synthetic)* | 40/58 | 10.0 | 50.0 | 27.5 | 12.5 | 0.0 | 6 |
-| mindthequery | covid | 342/438 | 10.2 | 63.5 | 20.2 | 0.0 | 6.1 | 22 |
-| mindthequery | er *(synthetic)* | 202/421 | 10.4 | 37.6 | 17.8 | 34.2 | 0.0 | 30 |
-| mindthequery | healthcare | 439/460 | 10.0 | 26.9 | 26.4 | 10.0 | 26.7 | 174 |
-| mindthequery | wwc | 275/452 | 10.2 | 33.5 | 33.1 | 2.5 | 20.7 | 60 |
-| zograscope | pole *(synthetic)* | 1441/2117 | 10.0 | 54.0 | 30.0 | 6.0 | 0.0 | 91 |
+| cypherbench | company | 306 | 10.1 | 14.1 | 20.6 | 26.5 | 28.8 | 171 |
+| cypherbench | fictional_character | 326 | 10.7 | 23.0 | 26.1 | 9.2 | 31.0 | 152 |
+| cypherbench | flight_accident | 169 | 8.9 | 5.3 | 10.7 | 53.8 | 21.3 | 129 |
+| cypherbench | geography | 335 | 10.7 | 14.3 | 16.1 | 23.6 | 35.2 | 199 |
+| cypherbench | movie | 367 | 8.7 | 16.3 | 19.1 | 28.6 | 27.2 | 212 |
+| cypherbench | nba | 251 | 10.0 | 2.8 | 23.5 | 25.9 | 37.8 | 173 |
+| cypherbench | politics | 361 | 5.0 | 5.8 | 13.6 | 47.9 | 27.7 | 273 |
+| mindthequery | bloom *(synthetic)* | 24 | 16.7 | 16.7 | 45.8 | 20.8 | 0.0 | 5 |
+| mindthequery | covid | 327 | 10.7 | 54.4 | 11.0 | 8.9 | 15.0 | 78 |
+| mindthequery | er *(synthetic)* | 186 | 9.1 | 32.3 | 14.0 | 44.6 | 0.0 | 83 |
+| mindthequery | healthcare | 420 | 10.5 | 18.8 | 10.2 | 30.7 | 29.8 | 256 |
+| mindthequery | wwc | 270 | 10.4 | 22.6 | 30.4 | 21.5 | 15.2 | 99 |
+| zograscope | pole *(synthetic)* | 1299 | 11.1 | 59.8 | 18.5 | 10.6 | 0.0 | 138 |
+| **ALL** | | 4641 | **10.0** | **30.6** | **18.0** | **23.0** | **18.4** | 1968 |
+
+Within the alias-applicable stratum (67.5% of rows; synthetic graphs are alias-zero by design) alias = **27.2%**. Deviations from the §3 targets are supply ceilings, measured in `audit/APPLICABILITY_CEILING.md`; headline metrics macro-average over strategies.
+<!-- /AUTOGEN:REALIZED -->
 
 **Honest accounting.** `casing` is pinned at 10% everywhere. Where entities have
 abbreviations/aliases (all CypherBench except fictional_character; healthcare),
@@ -122,11 +130,7 @@ the per-graph mix rather than forcing abbreviations/aliases that do not exist.
 
 ## 7. Quality control & known limitations
 
-- **Human verification.** Every LLM-proposed edit (814 total: alias 403,
-  abbrev 225, partial 186) is queued for human verification
-  (`review_queue_ALL.csv` + `docs/REVIEW_GUIDE.md`); algorithmic and
-  attested-source edits are trusted. Verdicts (keep/fix/drop) are applied to
-  produce the released version. **This v2 is pre-verification.**
+- **Human verification.** All LLM-proposed and attested-source edits (1,968 rows) undergo a full double-annotated census; algorithmic edits are validated by a powered stratified sample (650). Queues are built blind by `scripts/verification_sample.py` (annotator sheets: `docs/ANNOTATION_SHEET.md`; methodology: `docs/VERIFICATION_PROTOCOL.md`). Adjudication rules are pre-registered (§7 curation log, 2026-08-22). **Canonical figures are post-adjudication; this v2.1 freeze is pre-verification.**
 - **Residual LLM noise** caught by verification: standings-code abbreviations
   (`the CHI`) and invented nicknames for obscure entities. Closed-set categories
   (≤30 distinct values: divisions, conferences, positions, awards) are excluded
