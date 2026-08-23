@@ -23,6 +23,23 @@ Columns you read: `original_entity` (what the DB stores), `perturbed_form` (the
 rewrite you judge), `property` (`Label.prop` context), `augmented_question` (the
 full question with the rewrite spliced in).
 
+## What has already been machine-checked (so you don't have to)
+
+Every row in your sheet has **already passed automated database checks**: the
+rewritten form does not clash with any other stored value, and (for shortened
+forms) it maps back to exactly one stored value. You cannot see the database —
+and you don't need to. Two practical consequences:
+
+- **Do not fail an item for real-world ambiguity.** "Flight 383" exists at
+  many airlines in the real world, but if it appears in your sheet, the
+  database it queries contains exactly one — the item is fine on that account.
+  Judge whether the form *means the same entity in this question's context*,
+  not whether it is globally unique.
+- **Your job is the part machines can't do**: is this nickname/abbreviation
+  a real, attested way to refer to this entity (not invented)? Does the
+  question still read like something a person would write? When you cannot
+  verify a nickname is real, mark it `invalid`.
+
 ## Fill these three labels (each independent)
 
 **1. `validity`** — *the decisive one.* Does `perturbed_form` still refer to the
