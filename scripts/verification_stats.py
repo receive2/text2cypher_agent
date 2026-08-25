@@ -185,16 +185,26 @@ def main(argv: Optional[List[str]] = None) -> int:
             resolved = valid + invalid
             p, lo, hi = wilson_ci(valid, resolved)
             kr = krippendorff_alpha_nominal({i: val[i] for i in ids})
-            out.append((g, len(ids), resolved, valid, invalid, serr, pend, p, lo, hi, kr))
+            # Raw pairwise agreement on double-annotated items. Reported
+            # ALONGSIDE alpha because alpha is deflated in high-prevalence
+            # strata (the "kappa paradox"): when ~97% of items share one
+            # label, chance agreement is already ~97%, so alpha can be near
+            # zero despite near-perfect agreement.
+            dbl_ids = [i for i in ids if len(val[i]) >= 2]
+            agree = sum(1 for i in dbl_ids if len(set(val[i].values())) == 1)
+            raw = (agree / len(dbl_ids)) if dbl_ids else None
+            out.append((g, len(ids), resolved, valid, invalid, serr, pend, p, lo, hi,
+                        kr, raw, len(dbl_ids)))
         return out
 
     def fmt_rows(rows):
-        L = ["| stratum | n | resolved | valid | invalid | src_err | pending | validity% [95% CI] | alpha |",
-             "|---|--:|--:|--:|--:|--:|--:|---|--:|"]
-        for g, n, res, v, inv, se, pe, p, lo, hi, kr in rows:
+        L = ["| stratum | n | resolved | valid | invalid | src_err | pending | validity% [95% CI] | alpha | raw agr (n_2) |",
+             "|---|--:|--:|--:|--:|--:|--:|---|--:|---|"]
+        for g, n, res, v, inv, se, pe, p, lo, hi, kr, raw, ndbl in rows:
             ci = "—" if res == 0 else f"{100*p:.1f}% [{100*lo:.1f}, {100*hi:.1f}]"
             a = "—" if kr is None else f"{kr:.3f}"
-            L.append(f"| {g} | {n} | {res} | {v} | {inv} | {se} | {pe} | {ci} | {a} |")
+            ra = "—" if raw is None else f"{100*raw:.1f}% ({ndbl})"
+            L.append(f"| {g} | {n} | {res} | {v} | {inv} | {se} | {pe} | {ci} | {a} | {ra} |")
         return "\n".join(L)
 
     # overall pairwise Cohen kappa
@@ -220,6 +230,11 @@ def main(argv: Optional[List[str]] = None) -> int:
     R.append(f"- Source-error rows (dropped): {sum(1 for f in final.values() if f=='source_error')}")
     R.append(f"- **Final retained N (valid): {final_valid}**\n")
     R.append("## Inter-annotator agreement (validity)\n")
+    R.append("> Alpha and raw agreement are both reported per stratum. In "
+             "high-prevalence strata (where nearly all items share one label) "
+             "chance agreement is already very high, so alpha is deflated by "
+             "construction and raw agreement is the more informative figure; "
+             "`n_2` is the number of double-annotated items in that stratum.\n")
     R.append(f"- Krippendorff's alpha (nominal, all items): "
              f"**{'—' if alpha_all is None else f'{alpha_all:.3f}'}**")
     R.append("- Pairwise Cohen's kappa:")

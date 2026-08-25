@@ -180,7 +180,18 @@ def _select(
             r["tier"] = "2-sample"
             tier2.append(r)
     if tier2_double:
-        dbl = set(id(r) for r in rng.sample(tier2, min(tier2_double, len(tier2))))
+        # Allocate the double-annotation budget EVENLY ACROSS STRATEGIES, not
+        # proportionally: per-stratum IAA needs comparable power in each
+        # stratum, and a proportional split starves the smallest one.
+        by_s: Dict[str, List[Dict[str, Any]]] = {}
+        for r in tier2:
+            by_s.setdefault(r["strategy"], []).append(r)
+        per = max(1, tier2_double // max(1, len(by_s)))
+        dbl = set()
+        for strat, pool in sorted(by_s.items()):
+            pool.sort(key=lambda r: r["id"])
+            dbl |= {id(r) for r in (pool if per >= len(pool)
+                                    else rng.sample(pool, per))}
         for r in tier2:
             r["n_ann"] = 2 if id(r) in dbl else 1
     else:

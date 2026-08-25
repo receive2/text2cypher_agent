@@ -112,6 +112,19 @@ acceptable, **≥ 0.8** strong. (Naturalness IAA may go in an appendix.)
   form* in a second pass. State which policy was used.
 - `valid` + `natural` → **keep**.
 
+**IAA reporting under the revised coverage (2026-08-25).** The
+double-annotation budget for the algorithmic tier is allocated **evenly across
+strategies** (not proportionally), so every stratum has comparable power for
+per-stratum agreement: abbrev 740 / alias 527 / partial 129 / typo 80 /
+casing 80 double-annotated items, plus ~155 co-annotated items per annotator
+pair for Cohen's kappa. Per-stratum tables report **raw pairwise agreement
+alongside Krippendorff's alpha**, because alpha is deflated by construction in
+high-prevalence strata: when ~97% of items share one label, chance agreement is
+already ~97%, and alpha can approach zero despite near-perfect agreement (the
+"kappa paradox"). Acceptance is judged on alpha where label variance permits and
+on raw agreement otherwise, with the stratum's `n_2` reported so readers can see
+the power behind each figure.
+
 **Coverage revision (2026-08-25, pre-annotation).** Annotator availability
 (volunteer lab members) required reducing per-person load. Revised design:
 **LLM-proposed edits keep a full double-annotated census** (916 items — the
