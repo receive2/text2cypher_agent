@@ -112,6 +112,20 @@ acceptable, **≥ 0.8** strong. (Naturalness IAA may go in an appendix.)
   form* in a second pass. State which policy was used.
 - `valid` + `natural` → **keep**.
 
+**Coverage revision (2026-08-25, pre-annotation).** Annotator availability
+(volunteer lab members) required reducing per-person load. Revised design:
+**LLM-proposed edits keep a full double-annotated census** (916 items — the
+highest-risk tier, and the basis of the anti-circularity claim); the
+**attested/KB tier moves from census to a strategy-stratified sample**
+(400 of 1,052, double-annotated) and is therefore *measured* rather than
+exhaustively cleaned — its validity rate is reported with a Wilson CI and
+un-sampled attested rows remain in the release; the **algorithmic Tier-2
+sample** is reduced to 450 items, of which 100 are double-annotated for IAA
+and the remainder single-annotated (this tier estimates a rate; it triggers no
+removals). Total 1,766 items / 3,182 judgments. This remains well above
+comparable released benchmarks (e.g. VeriTaS, ACL 2026, validated 25k claims
+with ~816 human annotations).
+
 **Pre-registered rejection handling for converted rows** (fixed before
 annotation; see the datasheet curation log, 2026-08-22): a rejected edit on a
 row with a logged prior valid form reverts to that form; rows without one

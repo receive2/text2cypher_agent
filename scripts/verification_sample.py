@@ -56,7 +56,7 @@ _BLIND_COLUMNS = [
     "validity", "naturalness", "source_error", "corrected_form", "notes",
 ]
 _KEY_COLUMNS = [
-    "id", "source_id", "dataset", "graph", "strategy", "provenance", "tier",
+    "id", "source_id", "dataset", "graph", "strategy", "provenance", "tier", "n_ann",
     "label", "prop", "original_entity", "perturbed_form",
     "augmented_question", "assigned_annotators",
 ]
@@ -132,26 +132,61 @@ def _select(
     recs: List[Dict[str, Any]],
     rng: random.Random,
     sample_sizes: Dict[str, int],
+    attested_sample: int = 0,
+    tier2_double: int = 0,
 ) -> List[Dict[str, Any]]:
-    """Tier 1 census (llm + attested) + Tier 2 sample (algorithmic)."""
+    """Tier 1 (llm census + attested census-or-sample) + Tier 2 algorithmic sample.
+
+    ``attested_sample`` > 0 switches the attested tier from census to a
+    strategy-stratified sample of that size (lean mode: the attested tier is
+    lower-risk, so it is *measured* rather than exhaustively cleaned).
+    ``tier2_double`` > 0 marks only that many Tier-2 items for double
+    annotation (the rest are single-annotated — Tier 2 exists to estimate a
+    rate, not to remove items). Each record gets ``n_ann`` (1 or 2).
+    """
     selected: List[Dict[str, Any]] = []
-    # Tier 1 — census of human/KB-mediated edits.
+    # Tier 1a — LLM proposals: always a full census, always double-annotated.
     for r in recs:
-        if r["provenance"] in ("llm", "attested"):
-            r["tier"] = "1-census"
+        if r["provenance"] == "llm":
+            r["tier"] = "1-census"; r["n_ann"] = 2
             selected.append(r)
+    # Tier 1b — attested: census, or stratified sample in lean mode.
+    att = [r for r in recs if r["provenance"] == "attested"]
+    if attested_sample and attested_sample < len(att):
+        by_s: Dict[str, List[Dict[str, Any]]] = {}
+        for r in att:
+            by_s.setdefault(r["strategy"], []).append(r)
+        att_take: List[Dict[str, Any]] = []
+        for strat, pool in sorted(by_s.items()):
+            k = max(1, round(attested_sample * len(pool) / len(att)))
+            pool.sort(key=lambda r: r["id"])
+            att_take += pool if k >= len(pool) else rng.sample(pool, k)
+        att = att_take
+    for r in att:
+        r["tier"] = "1-census" if not attested_sample else "1-sample"
+        r["n_ann"] = 2
+        selected.append(r)
     # Tier 2 — stratified sample of algorithmic edits, per strategy.
     by_strat: Dict[str, List[Dict[str, Any]]] = {}
     for r in recs:
         if r["provenance"] == "algorithmic":
             by_strat.setdefault(r["strategy"], []).append(r)
+    tier2: List[Dict[str, Any]] = []
     for strat, pool in by_strat.items():
         k = sample_sizes.get(strat, sample_sizes.get("_default", 150))
         pool_sorted = sorted(pool, key=lambda r: r["id"])  # stable before sampling
         take = pool_sorted if k >= len(pool_sorted) else rng.sample(pool_sorted, k)
         for r in take:
             r["tier"] = "2-sample"
-            selected.append(r)
+            tier2.append(r)
+    if tier2_double:
+        dbl = set(id(r) for r in rng.sample(tier2, min(tier2_double, len(tier2))))
+        for r in tier2:
+            r["n_ann"] = 2 if id(r) in dbl else 1
+    else:
+        for r in tier2:
+            r["n_ann"] = 2
+    selected += tier2
     return selected
 
 
@@ -160,12 +195,19 @@ def _assign_pairs(
     rng: random.Random,
     n_annotators: int,
 ) -> List[str]:
-    """Round-robin assign each item a rotating annotator pair (double annotation)."""
+    """Assign annotators: rotating pairs for double-annotated items, rotating
+    singles for single-annotated ones (keeps per-person load even)."""
     names = [chr(ord("A") + i) for i in range(n_annotators)]
     pairs = list(combinations(names, 2)) if n_annotators >= 2 else [(names[0],)]
     rng.shuffle(selected)  # seeded
-    for idx, r in enumerate(selected):
-        r["assigned"] = pairs[idx % len(pairs)]
+    di = si = 0
+    for r in selected:
+        if r.get("n_ann", 2) == 1:
+            r["assigned"] = (names[si % len(names)],)
+            si += 1
+        else:
+            r["assigned"] = pairs[di % len(pairs)]
+            di += 1
     return names
 
 
@@ -177,6 +219,10 @@ def main(argv: Optional[List[str]] = None) -> int:
     ap.add_argument("--sample-typo", type=int, default=300)
     ap.add_argument("--sample-partial", type=int, default=200)
     ap.add_argument("--sample-casing", type=int, default=150)
+    ap.add_argument("--attested-sample", type=int, default=0,
+                    help="lean mode: sample this many attested rows instead of a census (0 = census)")
+    ap.add_argument("--tier2-double", type=int, default=0,
+                    help="lean mode: double-annotate only this many Tier-2 items (0 = all)")
     ap.add_argument("--sample-default", type=int, default=150,
                     help="sample size for any other algorithmic strategy")
     ap.add_argument("--data", action="append", default=[],
@@ -197,7 +243,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         "typo": args.sample_typo, "partial": args.sample_partial,
         "casing": args.sample_casing, "_default": args.sample_default,
     }
-    selected = _select(recs, rng, sample_sizes)
+    selected = _select(recs, rng, sample_sizes, args.attested_sample, args.tier2_double)
     names = _assign_pairs(selected, rng, args.annotators)
 
     out = Path(args.out)
@@ -212,6 +258,7 @@ def main(argv: Optional[List[str]] = None) -> int:
                 "id": r["id"], "source_id": r.get("source_id", ""),
                 "dataset": r["dataset"], "graph": r["graph"],
                 "strategy": r["strategy"], "provenance": r["provenance"], "tier": r["tier"],
+                "n_ann": r.get("n_ann", 2),
                 "label": r["label"], "prop": r["prop"],
                 "original_entity": r["original_entity"], "perturbed_form": r["perturbed_form"],
                 "augmented_question": r["augmented_question"],
@@ -248,8 +295,11 @@ def main(argv: Optional[List[str]] = None) -> int:
     print("By strategy x provenance:")
     for (s, p), c in sorted(strat_prov.items()):
         print(f"  {s:9} {p:11} {c}")
-    print(f"\nDouble annotation -> {len(selected) * 2} judgments across "
-          f"{args.annotators} annotators (~{len(selected) * 2 // args.annotators} each).")
+    total = sum(r.get("n_ann", 2) for r in selected)
+    print(f"\n{sum(1 for r in selected if r.get('n_ann',2)==2)} double + "
+          f"{sum(1 for r in selected if r.get('n_ann',2)==1)} single "
+          f"-> {total} judgments across {args.annotators} annotators "
+          f"(~{total // args.annotators} each).")
     print(f"Wrote: {out}/verification_key.csv + verification_annotator_{{{','.join(names)}}}.csv")
     return 0
 
