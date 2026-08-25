@@ -3,7 +3,7 @@
 All graphs run on VM `34.9.85.21` (GCP, `us-central1-a`).
 **Auth:** `neo4j` / `<password>` (all graphs)
 
-**APOC:** All 13 graphs have APOC 5.20.0 installed (192 procedures).
+**APOC:** All 14 graphs have APOC 5.20.0 installed (192 procedures).
 - CypherBench — bundled in the `megagonlabs/neo4j-with-loader:2.4` image
 - Mind-the-Query + ZOGRASCOPE — JAR mounted from `/opt/apoc/apoc-5.20.0-core.jar` on the VM
 
@@ -20,6 +20,7 @@ All graphs run on VM `34.9.85.21` (GCP, `us-central1-a`).
 | movie | CypherBench | 15066 | 459,393 | 1,892,202 |
 | nba | CypherBench | 15067 | 4,327 | 18,991 |
 | politics | CypherBench | 15068 | 885,188 | 1,548,416 |
+| terrorist_attack | CypherBench | 15069 | 1,556 | 1,525 |
 | bloom | Mind-the-Query | 15071 | 30,960 | — |
 | covid | Mind-the-Query | 15072 | 5,615 | — |
 | er | Mind-the-Query | 15073 | 1,237 | — |
@@ -118,6 +119,20 @@ cypher-shell -a bolt://34.9.85.21:15068 -u neo4j -p <password> "MATCH (n) RETURN
 ```
 ```python
 driver = GraphDatabase.driver("bolt://34.9.85.21:15068", auth=("neo4j", "<password>"))
+```
+
+---
+
+### terrorist_attack — port 15069
+- **Node labels:** `Country`, `Target`, `Terrorist`, `TerroristAttack`, `Weapon`
+- **Rel types:** `employs`, `occursIn`, `perpetratedBy`, `targets`
+- **Note:** This is a CypherBench **train**-split graph, not one of the 7 test graphs. Its questions live in the train set, not `test.json`.
+
+```bash
+cypher-shell -a bolt://34.9.85.21:15069 -u neo4j -p <password> "MATCH (n) RETURN count(n);"
+```
+```python
+driver = GraphDatabase.driver("bolt://34.9.85.21:15069", auth=("neo4j", "<password>"))
 ```
 
 ---
