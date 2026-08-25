@@ -45,6 +45,15 @@ corrupted whole strata had annotation proceeded directly:
 Any future iteration of this pipeline should treat calibration as
 non-optional, and should ship BOM-marked CSVs from the start.
 
+**Lesson (added 2026-08-25):** the calibration set was re-drawn as a side
+effect of rebuilding the queue, so the two package generations carried
+different calibration sets — costing extra exclusions (70 in-queue ids
+instead of 27). Future iterations should **pin the calibration set across
+queue rebuilds**, and ideally draw it **disjoint from the measured queue** so
+feedback contamination requires no exclusions at all. (Kept as-is here:
+1,696 measured items retain per-stratum IAA power, and a third same-day
+package rebuild carried more version-confusion risk than the ~2.4% gain.)
+
 ## 4. Coverage revision (registered pre-annotation)
 
 Reduced from 2,618 items / 5,236 judgments to **1,766 items / 3,322
