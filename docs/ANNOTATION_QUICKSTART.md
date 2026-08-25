@@ -16,7 +16,11 @@ the same thing**, then fill in three cells. That's the whole task.
 
 ## Steps
 
-**Step 1.** Open the CSV in Excel / Google Sheets / Numbers.
+**Step 1.** Open the CSV — **Google Sheets is recommended** (it reads the
+file correctly by default). If you use Excel: don't double-click the file;
+use *Data → From Text/CSV* and pick **UTF-8**, otherwise accented names
+(e.g. `Dòngtíng Hú`, `Caché`) will display as garbage like `DÃ²ngtÃ­ng`
+and be impossible to judge.
 
 **Step 2.** Do `2_calibration_50.csv` first (48 rows). Send it back. Wait for
 the short alignment call before starting the big file.
@@ -43,6 +47,8 @@ Examples:
 | Central Division | Midwest Division | `invalid` | a **different** division |
 | George Lehmann | Stormin' George | `invalid` | can't confirm this nickname is real |
 | CLOZAPINE | Clozaril | `valid` | real brand name of this drug (quick web search confirms) |
+| Pontiac | Pontiaac | `valid` | an intentional typo — still clearly the same thing |
+| Muller | Miller | `invalid` | the typo turned it into a *different* real name |
 
 Three judging rules:
 
@@ -50,7 +56,11 @@ Three judging rules:
    abbreviations, and drug names you don't recognize.
 2. **If you can't confirm a nickname/name is real → `invalid`.** When torn
    between valid and invalid, choose `invalid`.
-3. **Judge within the question's context only.** Don't mark `invalid` just
+3. **Misspellings are intentional.** Many rewrites are deliberate typos
+   (`Pontiac` → `Pontiaac`). A typo is `valid` as long as you can still
+   clearly tell what it refers to; it is `invalid` only when the typo turns
+   it into a *different* real name (`Muller` → `Miller`).
+4. **Judge within the question's context only.** Don't mark `invalid` just
    because the name could mean other things elsewhere in the world (many
    airlines have a "Flight 383" — that alone is not a reason to reject).
 
@@ -60,7 +70,7 @@ Type exactly one of: `natural` / `awkward` / `unnatural` (lowercase).
 
 | type | when |
 |---|---|
-| `natural` | a real person could write this in a question |
+| `natural` | a real person could write this in a question — incl. casual all-lowercase typing (`myers`, `france 2019`) and typos |
 | `awkward` | understandable but stilted or odd in a sentence |
 | `unnatural` | no one would write this; or the sentence reads broken |
 
