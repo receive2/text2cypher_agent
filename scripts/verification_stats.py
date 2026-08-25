@@ -71,6 +71,65 @@ def cohen_kappa(pairs: List[Tuple[str, str]]) -> Optional[float]:
     return 1.0 if pe >= 1.0 else (po - pe) / (1 - pe)
 
 
+def gwet_ac1(ratings_by_item: Dict[str, Dict[str, str]],
+             categories: Optional[List[str]] = None) -> Optional[float]:
+    """Gwet's AC1 (nominal) — a chance-corrected agreement coefficient that,
+    unlike kappa/alpha, stays stable when one label dominates.
+
+    Alpha/kappa estimate chance agreement from the observed marginals, so in a
+    stratum where ~98% of items share a label the chance term approaches the
+    observed agreement and the coefficient collapses toward zero (the
+    "kappa paradox": high agreement, near-zero kappa). AC1 instead estimates
+    chance agreement as the probability that a rater assigns a category *at
+    random* among the categories in play, which does not degenerate under high
+    prevalence.
+
+    Formula (Gwet 2008), r raters per item, K categories:
+        p_a = mean_i  sum_k r_ik(r_ik - 1) / (r_i(r_i - 1))
+        pi_k = mean_i r_ik / r_i
+        p_e = 1/(K-1) * sum_k pi_k(1 - pi_k)
+        AC1 = (p_a - p_e) / (1 - p_e)
+
+    **Caveat (report alongside alpha, never instead of it).** AC1's chance
+    model assumes raters guess only on genuinely ambiguous items, so it is
+    permissive in the opposite direction: annotators guessing at random on a
+    high-prevalence stratum still score high (empirically ~0.94 on simulated
+    random labels at 97% prevalence, where alpha correctly reports ~0). Alpha
+    and AC1 therefore bracket reliability from below and above; neither alone
+    is sufficient, and evidence that annotators were *engaged* must come from
+    the strata where labels genuinely vary (there alpha is well-behaved) and
+    from the calibration round.
+
+    Items rated by fewer than 2 annotators are skipped. Returns None when
+    fewer than two categories are in play or no item has >= 2 ratings.
+    """
+    items = [d for d in ratings_by_item.values() if len(d) >= 2]
+    if not items:
+        return None
+    cats = list(categories) if categories else sorted(
+        {v for d in items for v in d.values()})
+    K = len(cats)
+    if K < 2:
+        return None
+    n = len(items)
+    p_a = 0.0
+    pi = {c: 0.0 for c in cats}
+    for d in items:
+        labels = list(d.values())
+        r_i = len(labels)
+        for c in cats:
+            r_ik = labels.count(c)
+            p_a += r_ik * (r_ik - 1) / (r_i * (r_i - 1))
+            pi[c] += r_ik / r_i
+    p_a /= n
+    for c in cats:
+        pi[c] /= n
+    p_e = sum(pi[c] * (1 - pi[c]) for c in cats) / (K - 1)
+    if p_e >= 1:
+        return None
+    return (p_a - p_e) / (1 - p_e)
+
+
 def krippendorff_alpha_nominal(ratings_by_item: Dict[str, Dict[str, str]]) -> Optional[float]:
     """
     Nominal Krippendorff's alpha over items with >=2 ratings.
@@ -151,6 +210,8 @@ def main(argv: Optional[List[str]] = None) -> int:
         for row in csv.DictReader(open(args.adjudicated, encoding="utf-8")):
             adjudicated[row["id"]] = _norm(row.get("validity"))
 
+    _CATS = sorted({v for d in val.values() for v in d.values()}) or ["valid", "invalid"]
+
     # ── final per-item label ─────────────────────────────────────────────────
     final: Dict[str, str] = {}     # id -> valid/invalid/source_error/pending
     n_double = n_disagree = 0
@@ -184,7 +245,9 @@ def main(argv: Optional[List[str]] = None) -> int:
             pend = sum(1 for i in ids if final[i] == "pending")
             resolved = valid + invalid
             p, lo, hi = wilson_ci(valid, resolved)
-            kr = krippendorff_alpha_nominal({i: val[i] for i in ids})
+            sub = {i: val[i] for i in ids}
+            kr = krippendorff_alpha_nominal(sub)
+            ac1 = gwet_ac1(sub, _CATS)
             # Raw pairwise agreement on double-annotated items. Reported
             # ALONGSIDE alpha because alpha is deflated in high-prevalence
             # strata (the "kappa paradox"): when ~97% of items share one
@@ -194,17 +257,18 @@ def main(argv: Optional[List[str]] = None) -> int:
             agree = sum(1 for i in dbl_ids if len(set(val[i].values())) == 1)
             raw = (agree / len(dbl_ids)) if dbl_ids else None
             out.append((g, len(ids), resolved, valid, invalid, serr, pend, p, lo, hi,
-                        kr, raw, len(dbl_ids)))
+                        kr, ac1, raw, len(dbl_ids)))
         return out
 
     def fmt_rows(rows):
-        L = ["| stratum | n | resolved | valid | invalid | src_err | pending | validity% [95% CI] | alpha | raw agr (n_2) |",
-             "|---|--:|--:|--:|--:|--:|--:|---|--:|---|"]
-        for g, n, res, v, inv, se, pe, p, lo, hi, kr, raw, ndbl in rows:
+        L = ["| stratum | n | resolved | valid | invalid | src_err | pending | validity% [95% CI] | alpha | AC1 | raw agr (n_2) |",
+             "|---|--:|--:|--:|--:|--:|--:|---|--:|--:|---|"]
+        for g, n, res, v, inv, se, pe, p, lo, hi, kr, ac1, raw, ndbl in rows:
             ci = "—" if res == 0 else f"{100*p:.1f}% [{100*lo:.1f}, {100*hi:.1f}]"
             a = "—" if kr is None else f"{kr:.3f}"
+            g1 = "—" if ac1 is None else f"{ac1:.3f}"
             ra = "—" if raw is None else f"{100*raw:.1f}% ({ndbl})"
-            L.append(f"| {g} | {n} | {res} | {v} | {inv} | {se} | {pe} | {ci} | {a} | {ra} |")
+            L.append(f"| {g} | {n} | {res} | {v} | {inv} | {se} | {pe} | {ci} | {a} | {g1} | {ra} |")
         return "\n".join(L)
 
     # overall pairwise Cohen kappa
@@ -216,6 +280,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         kappa_lines.append(f"  - {a}–{b}: kappa={k:.3f} (n={len(pairs)})" if k is not None
                            else f"  - {a}–{b}: (no co-rated items)")
     alpha_all = krippendorff_alpha_nominal(val)
+    ac1_all = gwet_ac1(val, _CATS)
 
     total = len(val)
     final_valid = sum(1 for f in final.values() if f == "valid")
@@ -233,10 +298,18 @@ def main(argv: Optional[List[str]] = None) -> int:
     R.append("> Alpha and raw agreement are both reported per stratum. In "
              "high-prevalence strata (where nearly all items share one label) "
              "chance agreement is already very high, so alpha is deflated by "
-             "construction and raw agreement is the more informative figure; "
+             "construction. **Gwet's AC1** is chance-corrected but does not "
+             "degenerate under high prevalence; it is however permissive in the "
+             "opposite direction (random labelling of a highly skewed stratum "
+             "still scores high). Read alpha and AC1 as a lower and upper "
+             "bracket on reliability: alpha is the primary figure wherever "
+             "labels genuinely vary, AC1 documents agreement where alpha is "
+             "degenerate, and raw agreement is reported for transparency. "
              "`n_2` is the number of double-annotated items in that stratum.\n")
     R.append(f"- Krippendorff's alpha (nominal, all items): "
              f"**{'—' if alpha_all is None else f'{alpha_all:.3f}'}**")
+    R.append(f"- Gwet's AC1 (nominal, all items): "
+             f"**{'—' if ac1_all is None else f'{ac1_all:.3f}'}**")
     R.append("- Pairwise Cohen's kappa:")
     R.extend(kappa_lines)
     R.append("\n## Validity by strategy\n")
