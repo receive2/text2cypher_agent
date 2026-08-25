@@ -98,7 +98,7 @@ def _load_examples(datasets: Dict[str, str]) -> List[Dict[str, Any]]:
         if not os.path.exists(path):
             print(f"  ! dataset path missing, skipping: {ds_name} -> {path}", file=sys.stderr)
             continue
-        rows = json.load(open(path, encoding="utf-8"))
+        rows = json.load(open(path, encoding="utf-8-sig"))
         for i, x in enumerate(rows):
             meta = x.get("_aug_meta") or {}
             edits = meta.get("edits") or []

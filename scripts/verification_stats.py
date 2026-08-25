@@ -171,7 +171,7 @@ def _annotator_name(path: str) -> str:
 
 
 def _read_key(path: str) -> Dict[str, Dict[str, str]]:
-    return {r["id"]: r for r in csv.DictReader(open(path, encoding="utf-8"))}
+    return {r["id"]: r for r in csv.DictReader(open(path, encoding="utf-8-sig"))}
 
 
 def _norm(v: str) -> str:
@@ -197,7 +197,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     src_err: Dict[str, bool] = defaultdict(bool)
     for f in files:
         ann = _annotator_name(f)
-        for row in csv.DictReader(open(f, encoding="utf-8")):
+        for row in csv.DictReader(open(f, encoding="utf-8-sig")):
             rid = row["id"]
             v = _norm(row.get("validity"))
             if v in _VALID_CATS:
@@ -207,7 +207,7 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     adjudicated: Dict[str, str] = {}
     if args.adjudicated and os.path.exists(args.adjudicated):
-        for row in csv.DictReader(open(args.adjudicated, encoding="utf-8")):
+        for row in csv.DictReader(open(args.adjudicated, encoding="utf-8-sig")):
             adjudicated[row["id"]] = _norm(row.get("validity"))
 
     _CATS = sorted({v for d in val.values() for v in d.values()}) or ["valid", "invalid"]
