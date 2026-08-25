@@ -122,10 +122,10 @@ acceptable, **≥ 0.8** strong. (Naturalness IAA may go in an appendix.)
 double-annotation budget for the algorithmic tier is allocated **evenly across
 strategies** (not proportionally), so every stratum has comparable power for
 per-stratum agreement: abbrev 740 / alias 527 / partial 129 / typo 80 /
-casing 80 double-annotated items in the shipped queue (abbrev 720 / alias 509 /
-partial 114 / typo 79 / casing 73 **measured**, after the pre-registered
-exclusion of calibration items from both rounds — see below), plus ~155
-co-annotated items per annotator pair for Cohen's kappa. Per-stratum tables report **raw pairwise agreement
+casing 80 double-annotated items in the shipped queue (abbrev 728 / alias 520 /
+partial 122 / typo 80 / casing 79 **measured**, after the pre-registered
+exclusion of calibration items — see below), plus ~155 co-annotated items per
+annotator pair for Cohen's kappa. Per-stratum tables report **raw pairwise agreement
 alongside Krippendorff's alpha**, because alpha is deflated by construction in
 high-prevalence strata: when ~97% of items share one label, chance agreement is
 already ~97%, and alpha can approach zero despite near-perfect agreement (the
@@ -149,18 +149,21 @@ shipped queue: **1,766 items / 3,322 judgments** (1,556 double + 210 single;
 benchmarks (e.g. VeriTaS, ACL 2026, validated 25k claims with ~816 human
 annotations).
 
-**Calibration exclusion (pre-registered).** Calibration items overlap the
+**Calibration exclusion (pre-registered).** Calibration items may overlap the
 main queue, and annotators receive guideline feedback on them before the main
-pass, so their main-queue labels are not independent first judgments. Two
-calibration sets exist: the current 48-item set
-(`verification/calibration_50.csv`; 39 double + 9 single in the queue) and the
-48-item **legacy set** shipped in the retired 2026-08-22/23 packages
-(`verification/calibration_legacy_ids.csv`), which every annotator received —
-27 of its items sit in the current queue, 26 with the identical perturbation.
-`verification_stats.py` excludes the union (91 ids, 70 in-queue) from **all**
-reported measurements automatically, leaving **1,696 measured items / 3,191
-judgments**. Excluded items' main-queue labels are retained only as an
-informal intra-annotator consistency check, never in any reported figure.
+pass, so their main-queue labels are not independent first judgments. All
+annotators share a **single 48-item calibration set** (the set from the first
+package generation, retained across rebuilds — see the process log for why);
+27 of its items sit in the main queue. `verification_stats.py` excludes these
+ids from **all** reported measurements automatically (auto-detected from
+`verification/calibration_50.csv` / `calibration_legacy_ids.csv`, which now
+list the same set), leaving **1,739 measured items / 3,268 judgments**.
+Excluded items' main-queue labels are retained only as an informal
+intra-annotator consistency check, never in any reported figure. A
+transiently used alternative calibration set (drawn 2026-08-25, packaged but
+**never sent to anyone**) was retired the same day; having reached no
+annotator, it requires no exclusion
+(`verification/retired_newset_2026-08-25/`).
 
 **Pre-registered rejection handling for converted rows** (fixed before
 annotation; see the datasheet curation log, 2026-08-22): a rejected edit on a

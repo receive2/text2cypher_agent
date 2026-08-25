@@ -19,7 +19,8 @@ Annotator-facing instructions: `docs/ANNOTATION_QUICKSTART.md`.
 | 2026-08-25 | First calibration file returned. Review surfaced three systematic issues (§3) → instructions revised, packages rebuilt. |
 | 2026-08-25 | Volunteer response rate low; deadlines not enforceable for unpaid lab volunteers → **coverage revised** (§4) to cut per-person load to ~664 judgments (~3–4 h). Token gift-card honorarium introduced. |
 | 2026-08-25 | Pre-collection audit: calibration items found to overlap the main queue → exclusion implemented in `verification_stats.py`; registered counts corrected (3,322 shipped judgments); instruction wording fixed → packages rebuilt as LEAN v2.1 (CSVs byte-identical to v2); calibration answer key frozen (`verification/calibration_key.csv`, organizer-only). |
-| 2026-08-25 | First returned calibration file identified as the **legacy** calibration set (retired 08-22/23 packages). 27 legacy items overlap the current queue (26 identical) → exclusion extended to the union of both calibration rounds (91 ids, 70 in-queue) → **1,696 measured items / 3,191 judgments**. Row-level review of the return: 9 of 12 `invalid` labels trace to the three known §3 issues; 2–3 flag genuinely weak algorithmic partials (`List`, `World Jurassic Park`) — real signal the Tier-2 sample is designed to measure. |
+| 2026-08-25 | First returned calibration file identified as the **original** (08-22/23) calibration set — the rebuilt packages had silently re-drawn a different one. Row-level review of the return: 9 of 12 `invalid` labels trace to known §3 issues (plus one new: world-ambiguity, added as feedback point 4); 2–3 flag genuinely weak algorithmic partials (`List`, `World Jurassic Park`) — real signal the Tier-2 sample is designed to measure. |
+| 2026-08-25 | **Package v2.2:** since no new-set package had been sent, the calibration file was reverted to the original 48-item set for all five annotators (main CSVs unchanged). Single shared calibration set; 27 in-queue ids excluded → **1,739 measured items / 3,268 judgments**. Answer key frozen for this set (`verification/calibration_key.csv`, organizer-only; 2 ref-invalid teaching items). |
 
 ## 2. Recruitment context
 
@@ -46,13 +47,14 @@ Any future iteration of this pipeline should treat calibration as
 non-optional, and should ship BOM-marked CSVs from the start.
 
 **Lesson (added 2026-08-25):** the calibration set was re-drawn as a side
-effect of rebuilding the queue, so the two package generations carried
-different calibration sets — costing extra exclusions (70 in-queue ids
-instead of 27). Future iterations should **pin the calibration set across
-queue rebuilds**, and ideally draw it **disjoint from the measured queue** so
-feedback contamination requires no exclusions at all. (Kept as-is here:
-1,696 measured items retain per-stratum IAA power, and a third same-day
-package rebuild carried more version-confusion risk than the ~2.4% gain.)
+effect of rebuilding the queue, so two package generations transiently
+carried different calibration sets — which would have cost extra exclusions
+(70 in-queue ids instead of 27). Caught before any new-set package was sent:
+the shipped set was reverted to the original 48-item set for everyone
+(package v2.2), restoring 43 items to measurement and giving all five
+annotators an identical calibration set. Future iterations should **pin the
+calibration set across queue rebuilds**, and ideally draw it **disjoint from
+the measured queue** so feedback contamination requires no exclusions at all.
 
 ## 4. Coverage revision (registered pre-annotation)
 
@@ -71,11 +73,9 @@ judgments** (1,556 double + 210 single; ~664 per person):
 - **Calibration exclusion (pre-registered):** calibration items overlap the
   main queue; since annotators receive feedback on them before the main pass,
   `verification_stats.py` drops these ids from all reported measurements
-  automatically. The exclusion covers **both** the current 48-item set and the
-  48-item legacy set from the retired 2026-08-22/23 packages (all five
-  annotators received those packages; 27 legacy items sit in the current
-  queue, 26 with the identical perturbation) → union 91 ids, 70 in-queue →
-  **1,696 measured items / 3,191 judgments**.
+  automatically. All five annotators share the single 48-item calibration set
+  first shipped on 2026-08-22/23 (27 of its items sit in the current queue) →
+  **1,739 measured items / 3,268 judgments**.
 
 Comparable released benchmarks validate far less (e.g. VeriTaS, ACL 2026 Best
 Resource Paper: ~816 human annotations for 25,000 claims), so the revised
