@@ -119,9 +119,15 @@ design remains substantially above the field norm.
 > 3. **Open the file in Google Sheets** (or Excel via *Data → From Text/CSV*,
 >    UTF-8). Your file showed `Dòngtíng Hú` as garbled text — an encoding
 >    issue; the refreshed files fix this.
+> 4. **Judge within the question, not the world.** A shortened name like
+>    "the 'Canada' tournament" is fine — inside this question it clearly
+>    means one specific tournament, even though many things are called
+>    "Canada" out in the world. Mark such rows **`valid`**. (Your calls on
+>    rows like "List" were good — that one really is too little to go on.)
 >
-> Attached is the updated instruction sheet. Everything else — go ahead exactly
-> as you did.
+> Attached is the updated instruction sheet. Since you've already done the
+> warm-up, **skip the calibration file in the new package and start directly
+> with the main file.** Everything else — go ahead exactly as you did.
 
 ### 5.3 Follow-up for non-responders
 
