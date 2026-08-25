@@ -18,7 +18,8 @@ Annotator-facing instructions: `docs/ANNOTATION_QUICKSTART.md`.
 | 2026-08-23 | A 5th volunteer became available → queue re-cut 5 ways (~1,047 each). Packages shipped as per-person zips. |
 | 2026-08-25 | First calibration file returned. Review surfaced three systematic issues (§3) → instructions revised, packages rebuilt. |
 | 2026-08-25 | Volunteer response rate low; deadlines not enforceable for unpaid lab volunteers → **coverage revised** (§4) to cut per-person load to ~664 judgments (~3–4 h). Token gift-card honorarium introduced. |
-| 2026-08-25 | Pre-collection audit: calibration items found to overlap the main queue → exclusion implemented in `verification_stats.py` (1,718 measured items); registered counts corrected (3,322 shipped judgments); instruction wording fixed → packages rebuilt as LEAN v2.1 (CSVs byte-identical to v2); calibration answer key frozen (`verification/calibration_key.csv`, organizer-only). |
+| 2026-08-25 | Pre-collection audit: calibration items found to overlap the main queue → exclusion implemented in `verification_stats.py`; registered counts corrected (3,322 shipped judgments); instruction wording fixed → packages rebuilt as LEAN v2.1 (CSVs byte-identical to v2); calibration answer key frozen (`verification/calibration_key.csv`, organizer-only). |
+| 2026-08-25 | First returned calibration file identified as the **legacy** calibration set (retired 08-22/23 packages). 27 legacy items overlap the current queue (26 identical) → exclusion extended to the union of both calibration rounds (91 ids, 70 in-queue) → **1,696 measured items / 3,191 judgments**. Row-level review of the return: 9 of 12 `invalid` labels trace to the three known §3 issues; 2–3 flag genuinely weak algorithmic partials (`List`, `World Jurassic Park`) — real signal the Tier-2 sample is designed to measure. |
 
 ## 2. Recruitment context
 
@@ -58,10 +59,14 @@ judgments** (1,556 double + 210 single; ~664 per person):
 - **Algorithmic Tier-2: 650 → 450 items**, 240 double-annotated (evenly
   weighted across strategies so per-stratum IAA is computable), 210
   single-annotated. This tier estimates a rate and triggers no removals.
-- **Calibration exclusion (pre-registered):** the 48 calibration items also
-  appear in the main queue; since annotators receive feedback on them before
-  the main pass, `verification_stats.py` drops these ids from all reported
-  measurements automatically → **1,718 measured items / 3,235 judgments**.
+- **Calibration exclusion (pre-registered):** calibration items overlap the
+  main queue; since annotators receive feedback on them before the main pass,
+  `verification_stats.py` drops these ids from all reported measurements
+  automatically. The exclusion covers **both** the current 48-item set and the
+  48-item legacy set from the retired 2026-08-22/23 packages (all five
+  annotators received those packages; 27 legacy items sit in the current
+  queue, 26 with the identical perturbation) → union 91 ids, 70 in-queue →
+  **1,696 measured items / 3,191 judgments**.
 
 Comparable released benchmarks validate far less (e.g. VeriTaS, ACL 2026 Best
 Resource Paper: ~816 human annotations for 25,000 claims), so the revised
