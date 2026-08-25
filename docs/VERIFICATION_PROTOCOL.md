@@ -50,6 +50,12 @@ cleanly and separately.
   rule-generated) and **blind to any system output** (never show model
   predictions). The sampler enforces this — provenance lives only in the key
   file, never in the annotator CSVs.
+  *Disclosure:* the annotator CSVs do show the **intended strategy**
+  (typo/alias/abbrev/partial/casing). This is deliberate and load-bearing — the
+  typo rule ("a deliberate misspelling is `valid` if still recognizable")
+  cannot be applied without knowing the row is a typo. Strategy does not reveal
+  the generation provenance that the anti-circularity claim depends on
+  (LLM vs KB vs rule for alias/abbrev/partial stays hidden).
 
 ## 3. Coverage — what gets verified (all provenance classes)
 
@@ -116,8 +122,10 @@ acceptable, **≥ 0.8** strong. (Naturalness IAA may go in an appendix.)
 double-annotation budget for the algorithmic tier is allocated **evenly across
 strategies** (not proportionally), so every stratum has comparable power for
 per-stratum agreement: abbrev 740 / alias 527 / partial 129 / typo 80 /
-casing 80 double-annotated items, plus ~155 co-annotated items per annotator
-pair for Cohen's kappa. Per-stratum tables report **raw pairwise agreement
+casing 80 double-annotated items in the shipped queue (abbrev 728 / alias 515 /
+partial 121 / typo 79 / casing 74 **measured**, after the pre-registered
+exclusion of calibration items — see below), plus ~155 co-annotated items per
+annotator pair for Cohen's kappa. Per-stratum tables report **raw pairwise agreement
 alongside Krippendorff's alpha**, because alpha is deflated by construction in
 high-prevalence strata: when ~97% of items share one label, chance agreement is
 already ~97%, and alpha can approach zero despite near-perfect agreement (the
@@ -133,11 +141,22 @@ highest-risk tier, and the basis of the anti-circularity claim); the
 (400 of 1,052, double-annotated) and is therefore *measured* rather than
 exhaustively cleaned — its validity rate is reported with a Wilson CI and
 un-sampled attested rows remain in the release; the **algorithmic Tier-2
-sample** is reduced to 450 items, of which 100 are double-annotated for IAA
-and the remainder single-annotated (this tier estimates a rate; it triggers no
-removals). Total 1,766 items / 3,182 judgments. This remains well above
-comparable released benchmarks (e.g. VeriTaS, ACL 2026, validated 25k claims
-with ~816 human annotations).
+sample** is reduced to 450 items, of which 240 are double-annotated (weighted
+evenly across strategies for per-stratum IAA) and the remaining 210
+single-annotated (this tier estimates a rate; it triggers no removals). Total
+shipped queue: **1,766 items / 3,322 judgments** (1,556 double + 210 single;
+~664 judgments per annotator). This remains well above comparable released
+benchmarks (e.g. VeriTaS, ACL 2026, validated 25k claims with ~816 human
+annotations).
+
+**Calibration exclusion (pre-registered).** The 48 calibration items also
+appear in the main queue (39 double + 9 single). Because annotators receive
+guideline feedback on them before the main pass, their main-queue labels are
+not independent first judgments: `verification_stats.py` excludes these ids
+from **all** reported measurements automatically (auto-detected from
+`verification/calibration_50.csv`), leaving **1,718 measured items / 3,235
+judgments**. Their main-queue labels are retained only as an informal
+intra-annotator consistency check, never in any reported figure.
 
 **Pre-registered rejection handling for converted rows** (fixed before
 annotation; see the datasheet curation log, 2026-08-22): a rejected edit on a

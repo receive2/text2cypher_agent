@@ -17,7 +17,8 @@ Annotator-facing instructions: `docs/ANNOTATION_QUICKSTART.md`.
 | 2026-08-22 | Generation side frozen (4,641 rows). First queue built: 4 annotators, 2,618 items, full double annotation → **1,309 judgments/person (~1.5–2 days)**. |
 | 2026-08-23 | A 5th volunteer became available → queue re-cut 5 ways (~1,047 each). Packages shipped as per-person zips. |
 | 2026-08-25 | First calibration file returned. Review surfaced three systematic issues (§3) → instructions revised, packages rebuilt. |
-| 2026-08-25 | Volunteer response rate low; deadlines not enforceable for unpaid lab volunteers → **coverage revised** (§4) to cut per-person load to ~636 judgments (~3–4 h). Token gift-card honorarium introduced. |
+| 2026-08-25 | Volunteer response rate low; deadlines not enforceable for unpaid lab volunteers → **coverage revised** (§4) to cut per-person load to ~664 judgments (~3–4 h). Token gift-card honorarium introduced. |
+| 2026-08-25 | Pre-collection audit: calibration items found to overlap the main queue → exclusion implemented in `verification_stats.py` (1,718 measured items); registered counts corrected (3,322 shipped judgments); instruction wording fixed → packages rebuilt as LEAN v2.1 (CSVs byte-identical to v2); calibration answer key frozen (`verification/calibration_key.csv`, organizer-only). |
 
 ## 2. Recruitment context
 
@@ -45,8 +46,8 @@ non-optional, and should ship BOM-marked CSVs from the start.
 
 ## 4. Coverage revision (registered pre-annotation)
 
-Reduced from 2,618 items / 5,236 judgments to **1,766 items / 3,182
-judgments** (~636 per person):
+Reduced from 2,618 items / 5,236 judgments to **1,766 items / 3,322
+judgments** (1,556 double + 210 single; ~664 per person):
 
 - **LLM-proposed tier (916): full double-annotated census — unchanged.**
   Highest-risk tier and the basis of the anti-circularity argument; not
@@ -54,8 +55,13 @@ judgments** (~636 per person):
 - **Attested/KB tier: census → 400-item stratified sample**, double-annotated.
   Validity is now *measured* (reported with a Wilson CI) rather than
   exhaustively cleaned; un-sampled attested rows remain in the release.
-- **Algorithmic Tier-2: 650 → 450 items**, 100 double-annotated for IAA, the
-  rest single-annotated. This tier estimates a rate and triggers no removals.
+- **Algorithmic Tier-2: 650 → 450 items**, 240 double-annotated (evenly
+  weighted across strategies so per-stratum IAA is computable), 210
+  single-annotated. This tier estimates a rate and triggers no removals.
+- **Calibration exclusion (pre-registered):** the 48 calibration items also
+  appear in the main queue; since annotators receive feedback on them before
+  the main pass, `verification_stats.py` drops these ids from all reported
+  measurements automatically → **1,718 measured items / 3,235 judgments**.
 
 Comparable released benchmarks validate far less (e.g. VeriTaS, ACL 2026 Best
 Resource Paper: ~816 human annotations for 25,000 claims), so the revised
@@ -151,4 +157,11 @@ design remains substantially above the field norm.
 - **Calibration and guideline freeze:** documented in §3–§4 above; guidelines
   frozen before the measured annotation began.
 - **Blinding:** annotators saw no provenance information (LLM / KB / rule) and
-  no system outputs.
+  no system outputs. They did see the intended perturbation *strategy*
+  (typo/alias/…), which is required to apply the typo rule; strategy does not
+  identify the generator, so the anti-circularity blinding is preserved.
+- **Calibration handling:** the 48 calibration items also appear in the main
+  queue; they are excluded from all reported measurements
+  (`verification_stats.py` does this automatically). Organizer-only reference
+  answers with rationales: `verification/calibration_key.csv` (frozen with the
+  guidelines; **never shipped to annotators**).

@@ -22,8 +22,8 @@ use *Data → From Text/CSV* and pick **UTF-8**, otherwise accented names
 (e.g. `Dòngtíng Hú`, `Caché`) will display as garbage like `DÃ²ngtÃ­ng`
 and be impossible to judge.
 
-**Step 2.** Do `2_calibration_50.csv` first (48 rows). Send it back. Wait for
-the short alignment call before starting the big file.
+**Step 2.** Do `2_calibration_50.csv` first (48 rows). Send it back and wait
+for my short feedback email before starting the big file.
 
 **Step 3.** For each row, read `original_entity`, `perturbed_form`, and the
 `augmented_question` sentence. Then fill:
@@ -50,7 +50,7 @@ Examples:
 | Pontiac | Pontiaac | `valid` | an intentional typo — still clearly the same thing |
 | Muller | Miller | `invalid` | the typo turned it into a *different* real name |
 
-Three judging rules:
+Four judging rules:
 
 1. **A quick web search is allowed and encouraged** for nicknames,
    abbreviations, and drug names you don't recognize.

@@ -19,6 +19,13 @@ Final per-item label:
   value when all raters concur, else "pending" (needs adjudication). An item is
   excluded as `source_error` if any rater flagged it.
 
+Calibration exclusion (pre-registered):
+  items that appeared in the calibration round are excluded from ALL reported
+  measurements — annotators received guideline feedback on them, so their
+  main-queue labels are not independent. By default the calibration file is
+  auto-detected next to --key (calibration_50.csv); override with
+  --calibration PATH, or pass --calibration "" to disable (not recommended).
+
 Usage
 -----
     python scripts/verification_stats.py \
@@ -184,10 +191,27 @@ def main(argv: Optional[List[str]] = None) -> int:
     ap.add_argument("--annotations", nargs="+", required=True,
                     help="filled annotator CSVs (globs allowed)")
     ap.add_argument("--adjudicated", default=None, help="optional id,validity CSV")
+    ap.add_argument("--calibration", default=None,
+                    help="calibration CSV whose ids are excluded from all "
+                         "measurements (default: calibration_50.csv next to "
+                         "--key, if present; pass \"\" to disable)")
     ap.add_argument("--out", default=None, help="write the markdown report here (else stdout)")
     args = ap.parse_args(argv)
 
     key = _read_key(args.key)
+
+    # Pre-registered: calibration items are excluded from all measurements.
+    cal_path = args.calibration
+    if cal_path is None:
+        candidate = os.path.join(os.path.dirname(os.path.abspath(args.key)),
+                                 "calibration_50.csv")
+        cal_path = candidate if os.path.exists(candidate) else ""
+    cal_ids: set = set()
+    if cal_path:
+        if not os.path.exists(cal_path):
+            sys.exit(f"--calibration file not found: {cal_path}")
+        cal_ids = {r["id"] for r in
+                   csv.DictReader(open(cal_path, encoding="utf-8-sig"))}
     files: List[str] = []
     for patt in args.annotations:
         files.extend(sorted(glob.glob(patt)) or [patt])
@@ -195,10 +219,14 @@ def main(argv: Optional[List[str]] = None) -> int:
     # ratings[id][annotator] = validity ; plus naturalness / source_error flags
     val: Dict[str, Dict[str, str]] = defaultdict(dict)
     src_err: Dict[str, bool] = defaultdict(bool)
+    n_cal_excluded = 0
     for f in files:
         ann = _annotator_name(f)
         for row in csv.DictReader(open(f, encoding="utf-8-sig")):
             rid = row["id"]
+            if rid in cal_ids:
+                n_cal_excluded += 1
+                continue
             v = _norm(row.get("validity"))
             if v in _VALID_CATS:
                 val[rid][ann] = v
@@ -289,6 +317,10 @@ def main(argv: Optional[List[str]] = None) -> int:
     R = []
     R.append("# Human Verification — Results\n")
     R.append(f"- Items annotated: **{total}** ({len(anns)} annotators: {', '.join(anns)})")
+    if cal_ids:
+        R.append(f"- Calibration items excluded from all measurements "
+                 f"(pre-registered): {len(cal_ids)} ids "
+                 f"({n_cal_excluded} judgments dropped)")
     R.append(f"- Double-annotated: {n_double}; disagreements: {n_disagree} "
              f"({100*n_disagree/max(n_double,1):.1f}% of double-annotated) → adjudication")
     R.append(f"- Still **pending** adjudication: {sum(1 for f in final.values() if f=='pending')}")
