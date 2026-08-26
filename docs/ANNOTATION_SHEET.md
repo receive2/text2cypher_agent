@@ -101,8 +101,10 @@ perturbation corruption — flag them, don't try to fix them.
 
 ## What happens to your labels
 
-Each item is labeled by **two** annotators. `scripts/verification_stats.py`
-computes inter-annotator agreement (Krippendorff's α, Cohen's κ), resolves
+Most items are labeled by **two** annotators (a minority of algorithmic-tier
+rows are single-annotated — that tier only estimates a rate and triggers no
+removals). `scripts/verification_stats.py` computes inter-annotator agreement
+(Krippendorff's α, Gwet's AC1, Cohen's κ), resolves
 disagreements via adjudication, drops `invalid`/`source_error`, and reports the
 validity rate with a 95% CI per stratum and the final retained N — the numbers
 that go in the paper's datasheet.

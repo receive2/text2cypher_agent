@@ -59,22 +59,28 @@ cleanly and separately.
 
 ## 3. Coverage — what gets verified (all provenance classes)
 
-The benchmark (4,875 perturbations) splits by **provenance**, which determines
-how each part is verified:
+The benchmark (4,641 perturbations) splits by **provenance**, which determines
+how each part is verified. Counts are for the v2.1 freeze and already reflect
+the coverage revision of 2026-08-25 (§6):
 
-| provenance | count | how verified |
-|---|--:|---|
-| **LLM-proposed** (alias/abbrev/partial) | 814 | **Full census** (every item) |
-| **Attested / KB** (alias/abbrev from a knowledge base) | 693 | **Full census** |
-| **Algorithmic / rule** (casing, typo, rule-based partial) | 3,368 | **Powered stratified sample** |
+| provenance | in release | verified | how |
+|---|--:|--:|---|
+| **LLM-proposed** (alias/abbrev/partial) | 916 | **916 (100%)** | **Full census** — every item, double-annotated |
+| **Attested / KB** (alias/abbrev from a knowledge base) | 1,052 | 400 (38%) | Stratified sample, double-annotated |
+| **Algorithmic / rule** (casing, typo, rule-based partial) | 2,673 | 450 (17%) | Powered stratified sample |
 
-- **Tier 1 — full census of the 1,507 human/KB-mediated edits.** This is where
-  corruption is most plausible; verify all.
-- **Tier 2 — powered sample of the 3,368 purely-algorithmic edits.** "Trusted by
-  construction" is an assumption; *measure* it. Default sample (for ±2.5–3% Wilson
-  margin at an expected validity ≈ 0.97): **typo 300, rule-partial 200, casing
-  150** (≈ 650). Typo is the largest strategy (1,808) **and** the most
-  collision-prone, so it gets the tightest target.
+- **Tier 1 — full census of all 916 LLM-proposed edits.** Non-negotiable: this
+  tier carries the highest corruption risk and underpins the anti-circularity
+  claim (no model judges its own proposals). A census *cleans* — every invalid
+  item is identified and removed, which sampling cannot do.
+- **Tier 1b — stratified sample of the 1,052 attested/KB edits.** These carry
+  external provenance and are lower-risk, so their validity is *measured*
+  (reported with a Wilson CI) rather than exhaustively cleaned; un-sampled
+  attested rows remain in the release.
+- **Tier 2 — powered sample of the 2,673 purely-algorithmic edits.** "Trusted by
+  construction" is an assumption; *measure* it. This tier estimates a rate and
+  triggers no removals. Typo is the largest strategy (1,422) **and** the most
+  collision-prone, so it carries the largest share of the sample.
 
 Stratify (and report) on three axes: **strategy × provenance × source dataset**
 (CypherBench / Mind-the-Query / ZOGRASCOPE) — corruption risk differs by domain.
@@ -179,8 +185,9 @@ A "Human Verification" subsection with:
 3. **IAA**: validity α (and κ), **overall + per strategy + per dataset**.
 4. **Validity (and corruption = 1−validity) rate**: overall + per stratum, each
    with a **Wilson 95% CI** (e.g. `alias valid 96.5% [94.8, 97.8]`).
-5. **Algorithmic-tier sampled validity rate + CI** (justifies trusting the
-   un-censused 3,368).
+5. **Sampled validity rate + CI for the attested and algorithmic tiers**
+   (justifies trusting the 652 un-sampled attested and 2,223 un-sampled
+   algorithmic rows).
 6. **Disagreement rate** + adjudication method.
 7. **Final released N** after dropping invalid / source-error rows.
 
