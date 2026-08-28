@@ -20,6 +20,7 @@ Annotator-facing instructions: `docs/ANNOTATION_QUICKSTART.md`.
 | 2026-08-25 | Volunteer response rate low; deadlines not enforceable for unpaid lab volunteers → **coverage revised** (§4) to cut per-person load to ~664 judgments (~3–4 h). Token gift-card honorarium introduced. |
 | 2026-08-25 | Pre-collection audit: calibration items found to overlap the main queue → exclusion implemented in `verification_stats.py`; registered counts corrected (3,322 shipped judgments); instruction wording fixed → packages rebuilt as LEAN v2.1 (CSVs byte-identical to v2); calibration answer key frozen (`verification/calibration_key.csv`, organizer-only). |
 | 2026-08-25 | First returned calibration file identified as the **original** (08-22/23) calibration set — the rebuilt packages had silently re-drawn a different one. Row-level review of the return: 9 of 12 `invalid` labels trace to known §3 issues (plus one new: world-ambiguity, added as feedback point 4); 2–3 flag genuinely weak algorithmic partials (`List`, `World Jurassic Park`) — real signal the Tier-2 sample is designed to measure. |
+| 2026-08-28 | All 5 warm-ups returned (one attribution pending). Graded against the key: judge-in-context 15/15 miss, typo intent 22/30 miss, casing naturalness 4/5 — all strict-direction. Guide updated with warm-up-mistakes box and **frozen**; **package v2.3** (per-annotator calibration filenames + `annotator` column; `identify_return.py` files returns automatically). Main CSVs still byte-identical to v2. |
 | 2026-08-25 | **Package v2.2:** since no new-set package had been sent, the calibration file was reverted to the original 48-item set for all five annotators (main CSVs unchanged). Single shared calibration set; 27 in-queue ids excluded → **1,739 measured items / 3,268 judgments**. Answer key frozen for this set (`verification/calibration_key.csv`, organizer-only; 2 ref-invalid teaching items). |
 
 ## 2. Recruitment context
@@ -55,6 +56,44 @@ the shipped set was reverted to the original 48-item set for everyone
 annotators an identical calibration set. Future iterations should **pin the
 calibration set across queue rebuilds**, and ideally draw it **disjoint from
 the measured queue** so feedback contamination requires no exclusions at all.
+
+## 3b. Warm-up round 2 — all five annotators returned (2026-08-28)
+
+All five warm-up files came back (the shared 48-item set; one annotator's
+attribution pending sender confirmation). Graded against the frozen organizer
+key (`verification/calibration_key.csv`):
+
+| annotator | validity agreement with key | signature issues |
+|---|---|---|
+| A | 43/48 | judge-in-context (3), 2 typo rejections |
+| B | 39/48 | all 6 typos rejected; judge-in-context (3); found a genuine source-grammar error (good catch) |
+| C | 39/48 | all 6 typos rejected; judge-in-context (3); excellent evidence notes on 29 rows; self-fixed the encoding issue |
+| D | 40/48 | judge-in-context (3); over-lenient on 2 degenerate partials; researched an acronym to a *different* referent |
+| E* | 38/48 | all 6 typos rejected; judge-in-context (3); encoding victim (pre-BOM package) |
+
+*attribution presumed by elimination; confirming via sender.
+
+**Systematic findings (drove the guideline update, then freeze):**
+
+1. **Judge-in-context failed 15/15** — every annotator rejected the three
+   machine-verified partial forms (`Canada`, `Zoo`) as "ambiguous in the
+   world". The guide now leads with a warm-up-mistakes box using these exact
+   items, and states that every row already passed a DB-uniqueness check.
+2. **Typo intent failed 22/30** — deliberate misspellings were treated as
+   errors by 3 annotators fully and 2 partially.
+3. **Re-casing naturalness** — lowercase/all-caps still judged
+   awkward/unnatural by 4 of 5.
+4. Disagreement is *directional*, not random: annotators are uniformly
+   stricter than the guideline, which is the safe failure mode for a
+   benchmark (false rejections cost coverage, not correctness).
+
+Instructions updated accordingly (warm-up-mistakes box; rule 4 strengthened
+with the DB-uniqueness statement) and **frozen**; packages rebuilt as **LEAN
+v2.3**. From v2.3 the calibration file is per-annotator
+(`2_calibration_50_X.csv` with an `annotator` id column), and
+`scripts/identify_return.py` auto-identifies and files any returned CSV
+(annotator column -> id-set match -> filename letter -> optional local name
+map kept out of git), eliminating hand-renaming of email attachments.
 
 ## 4. Coverage revision (registered pre-annotation)
 

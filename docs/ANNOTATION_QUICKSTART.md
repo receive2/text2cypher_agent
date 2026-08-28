@@ -1,5 +1,25 @@
 # Annotation Task — Step-by-Step Guide
 
+> **Updated after the warm-up round — please read this box even if you read
+> the guide before.** The three things almost everyone got caught by:
+>
+> 1. **Misspellings are intentional.** `Pontiac → Pontiaac`, `Sandra → Sancra`,
+>    `Expedition → Expeditio` are deliberate typos — that's the point of the
+>    dataset, not an error. They are **`valid`** as long as you can still tell
+>    what they mean. Only mark a typo `invalid` when it lands on a *different*
+>    real name (`Muller → Miller`).
+> 2. **Judge within the question, not the world.** "the 'Canada' tournament"
+>    is **`valid`**: inside that question it clearly means one specific
+>    tournament, even though "Canada" alone could mean many things out in the
+>    world. Every row has already passed an automated database check — the
+>    shortened name matches exactly one thing in the database. Your job is the
+>    question as written, not global uniqueness. (A bare rewrite like "List"
+>    for *Schindler's List* is still `invalid` — there the sentence gives you
+>    nothing to go on.)
+> 3. **Lowercase/uppercase is natural.** `myers`, `france 2019`,
+>    `JEWELRY INDUSTRY` are how people casually type — plain re-casing is
+>    **`valid` + `natural`** unless the sentence itself reads broken.
+
 ## What you will do
 
 Each row of the spreadsheet shows:
@@ -22,8 +42,10 @@ use *Data → From Text/CSV* and pick **UTF-8**, otherwise accented names
 (e.g. `Dòngtíng Hú`, `Caché`) will display as garbage like `DÃ²ngtÃ­ng`
 and be impossible to judge.
 
-**Step 2.** Do `2_calibration_50.csv` first (48 rows). Send it back and wait
-for my short feedback email before starting the big file.
+**Step 2.** If you have not already done the warm-up: do the
+`2_calibration_...csv` file first (48 rows), send it back, and wait for my
+short feedback email before starting the big file. If you already did the
+warm-up from the earlier package, skip this step.
 
 **Step 3.** For each row, read `original_entity`, `perturbed_form`, and the
 `augmented_question` sentence. Then fill:
@@ -62,7 +84,10 @@ Four judging rules:
    it into a *different* real name (`Muller` → `Miller`).
 4. **Judge within the question's context only.** Don't mark `invalid` just
    because the name could mean other things elsewhere in the world (many
-   airlines have a "Flight 383" — that alone is not a reason to reject).
+   airlines have a "Flight 383"; many things are called "Canada" — that alone
+   is not a reason to reject). Every row has already passed an automated
+   check that the rewritten name matches **exactly one** thing in the
+   database.
 
 ### Cell 2 — `naturalness`
 
