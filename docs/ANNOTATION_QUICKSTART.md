@@ -110,8 +110,15 @@ broken regardless of the rewrite (nonsense question, gibberish entity).
   form, write it here (e.g. rewrite "the CHI" → you suggest "the Bulls").
 - `notes`: anything you want to flag.
 
-**Step 4.** When done: save as **CSV**, **keep the original file name**, send
-it back.
+**Step 4.** When done, **keep the original file name** and send the file back.
+
+> **How to save — this matters.** In Excel, *File → Save As* and pick
+> **“CSV UTF-8 (Comma delimited)”**, not plain “CSV”. Plain “CSV” silently
+> replaces any character it can't handle with `?` (Cyrillic, Greek, accented
+> and Asian names, emoji) and strips leading zeros (`007` becomes `7`).
+> In Google Sheets, *File → Download → Comma-separated values* is always
+> correct. Your labels survive either way — this just keeps the rest of the
+> file intact.
 
 ## Rules
 

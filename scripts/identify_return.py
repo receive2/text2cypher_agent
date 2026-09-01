@@ -34,12 +34,28 @@ import sys
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 VDIR = os.path.join(REPO, "verification")
 SCHEMA_HEAD = {"id", "strategy", "original_entity", "perturbed_form", "validity"}
+_ENC_WARN: dict = {}
+
+
+ENCODINGS = ("utf-8-sig", "cp1252", "latin-1")
+
+
+def _decode(raw):
+    """Returned files come back in whatever Excel felt like using. Try UTF-8
+    first, then the Windows/Mac single-byte fallbacks. Returns (text, encoding)."""
+    for enc in ENCODINGS:
+        try:
+            return raw.decode(enc), enc
+        except UnicodeDecodeError:
+            continue
+    return raw.decode("utf-8", "replace"), "utf-8/replace"
 
 
 def _read(path):
     with open(path, "rb") as fh:
         raw = fh.read()
-    return list(csv.DictReader(io.StringIO(raw.decode("utf-8-sig")))), raw
+    text, enc = _decode(raw)
+    return list(csv.DictReader(io.StringIO(text))), raw, enc
 
 
 def _load_context():
@@ -65,11 +81,13 @@ def _load_context():
 def identify(path, queues, cal, names):
     """-> (letter or None, kind, how)  kind: 'main'|'calibration'|'other'"""
     try:
-        rows, raw = _read(path)
+        rows, raw, enc = _read(path)
     except Exception as e:
-        return None, "other", f"unreadable ({e})"
+        return None, "unreadable", f"UNREADABLE ({e})"
     if not rows or not SCHEMA_HEAD.issubset(rows[0].keys()):
         return None, "other", "not an annotation CSV"
+    if enc != "utf-8-sig":
+        _ENC_WARN[path] = enc
     ids = {r["id"] for r in rows}
     kind = "calibration" if ids == cal or len(rows) < 100 else "main"
     # 1. annotator column
@@ -116,6 +134,9 @@ def main(argv=None):
         letter, kind, how = identify(t, queues, cal, names)
         if kind == "other":
             continue
+        if kind == "unreadable":
+            print(f"  {os.path.basename(t):45s} -> !! {how}")
+            continue
         digest = hashlib.sha256(open(t, "rb").read()).hexdigest()[:12]
         dup = seen_digests.get(digest)
         tag = f"annotator {letter}" if letter else "??"
@@ -138,6 +159,10 @@ def main(argv=None):
                 print(f"      !! different file already filed; saved as {os.path.basename(dest)}")
             shutil.copy2(t, dest)
             print(f"      filed -> {os.path.relpath(dest, REPO)}")
+    if _ENC_WARN:
+        print("\n  NOTE: not UTF-8 (decoded with a fallback; verify the text columns):")
+        for p_, e_ in _ENC_WARN.items():
+            print(f"    {os.path.basename(p_):45s} {e_}")
     return 0
 
 
