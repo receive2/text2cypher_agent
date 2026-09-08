@@ -14,7 +14,10 @@ recomputed the same way the worker's ``summary.json`` does it
   dataset quality — a query that doesn't run is a wrong answer)
 * EA           = mean(1.0 if ea is True else 0.0) over all rows
 * PSJS         = mean(psjs or 0.0) over all rows
-* n            = #examples (the denominator);  err = #errored (scored 0, NOT excluded)
+* n            = #examples (the denominator);  all errors score 0, none excluded
+* err          = method failures (bad generated Cypher / timeout)
+* gold err     = examples whose GOLD query does not execute (dataset defect,
+                 scores 0 for every method; per-method count is a lower bound)
 
 Buckets (perturbation ``strategy`` / ``difficulty``) are discovered
 from the data; known buckets are emitted in canonical order, any extra
@@ -43,7 +46,7 @@ from __future__ import annotations
 import json
 import sys
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 _STRAT_ORDER = ["casing", "typo", "partial", "abbrev", "alias"]
 _DIFF_ORDER = ["easy", "medium", "hard"]
@@ -93,6 +96,24 @@ def _psjs(rows: List[Dict[str, Any]]) -> Optional[float]:
     return sum(float(r["psjs"]) if isinstance(r.get("psjs"), (int, float))
                and not isinstance(r.get("psjs"), bool) else 0.0
                for r in rows) / len(rows)
+
+
+def _err_is_gold(r: Dict[str, Any]) -> bool:
+    """True when the example failed because the **gold** query does not execute.
+
+    A broken gold is a dataset defect, not a method failure: no prediction can
+    match a gold that errors, so every method scores 0 on that row. It is only
+    *observed* once a method emits runnable Cypher and the harness reaches gold
+    execution — a method that fails earlier masks it behind its own error, which
+    is why weaker methods report fewer gold failures, not fewer broken golds."""
+    return str(r.get("error") or "").startswith("gold:")
+
+
+def _errs(rows: List[Dict[str, Any]]) -> Tuple[int, int]:
+    """(method failures, gold-side failures) among errored rows."""
+    errored = [r for r in rows if r.get("ea") is None]
+    gold = sum(1 for r in errored if _err_is_gold(r))
+    return len(errored) - gold, gold
 
 
 def _order(values: set, known: List[str]) -> List[str]:
@@ -148,15 +169,27 @@ def main() -> int:
     overall_rows = []
     for m in methods:
         rows = data[m["label"]]
-        err = sum(1 for r in rows if r.get("ea") is None)         # errored (scored 0, NOT excluded)
+        m_err, g_err = _errs(rows)     # both scored 0, NOT excluded
         overall_rows.append([
             m["label"], m["retrieval"],
             _fmt(_ea(rows)), _fmt(_psjs(rows)),
-            str(len(rows)), str(err),
+            str(len(rows)), str(m_err), str(g_err),
         ])
     overall = _table(
-        ["method", "retrieval", "EA", "PSJS", "n", "err"],
-        overall_rows, ["l", "l", "r", "r", "r", "r"])
+        ["method", "retrieval", "EA", "PSJS", "n", "err", "gold err"],
+        overall_rows, ["l", "l", "r", "r", "r", "r", "r"])
+    _g_max = max((int(r[-1]) for r in overall_rows), default=0)
+    if _g_max:
+        overall += (
+            f"\n\n> `err` = examples the **method** failed on (unrunnable "
+            f"generated Cypher, timeouts). `gold err` = examples whose **gold "
+            f"query itself** does not execute — a dataset defect that scores 0 "
+            f"for every method, not a property of the method. Both are scored 0 "
+            f"and kept in the denominator. At least {_g_max} of the "
+            f"{len(overall_rows) and len(data[methods[0]['label']])} examples "
+            f"have a broken gold; a method that fails earlier masks some of "
+            f"them behind its own error, so the per-method count is a lower "
+            f"bound.\n")
 
     # ── By strategy — EA ─────────────────────────────────────────────────────
     def bucket_table(field: str, buckets: List[str], metric) -> str:

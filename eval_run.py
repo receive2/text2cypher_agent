@@ -96,7 +96,12 @@ _BOOL = ("RETRIEVAL_FUZZY", "RETRIEVAL_VECTOR", "RETRIEVAL_LEVENSHTEIN",
          "PLAN_EXEC_ESCALATE", "PLAN_EXEC_VALUE_SNAP", "PLAN_EXEC_SKIP_GROUNDED",
          "PLAN_EXEC_SELECT_JUDGE",
          "PLAN_EXEC_PARALLEL_MENTIONS", "GRAPHRAG_EMPTY_IS_WRONG", "GRAPHRAG_LLM_EVALUATOR")
-_INT  = ("CYPHER_REPAIR_MAX_ROUNDS", "CYPHER_RETRY_MAX_ROUNDS", "RETRIEVAL_LEVENSHTEIN_K")
+_INT  = ("CYPHER_REPAIR_MAX_ROUNDS", "CYPHER_RETRY_MAX_ROUNDS", "RETRIEVAL_LEVENSHTEIN_K",
+         # plan_exec retrieval-budget knobs (tuned on the dev graph)
+         "PLAN_EXEC_TOOLS_PER_ENTITY", "PLAN_EXEC_VALUES_PER_TOOL",
+         "PLAN_EXEC_MAX_ITER", "PLAN_EXEC_ROUTE_FETCH")
+# tuple-valued knob, passed through as a comma string
+_TUPLE = ("PLAN_EXEC_ESCALATE_BUDGET",)
 
 
 def _stamp_summary(out_summary: Path, env: dict, *, dataset: str, graph: str,
@@ -135,7 +140,7 @@ def _stamp_summary(out_summary: Path, env: dict, *, dataset: str, graph: str,
         "method":    method_seg,
         "llm":       llm,
         "embedding": embedding,
-        "knobs":     {k: env[k] for k in (*_STR, *_BOOL, *_INT) if k in env},
+        "knobs":     {k: env[k] for k in (*_STR, *_BOOL, *_INT, *_TUPLE) if k in env},
         "shards":    shards,
         "limit":     limit,
     }
@@ -176,6 +181,10 @@ def _build_env(uri: str, user: str, password: str, database: str) -> dict[str, s
         v = getattr(cfg, name, None)
         if v is not None:
             env[name] = str(int(v))
+    for name in _TUPLE:
+        v = getattr(cfg, name, None)
+        if v is not None:
+            env[name] = ",".join(str(int(x)) for x in v)
     return env
 
 
@@ -185,11 +194,23 @@ def _summarize_records(recs: list[dict], dataset: str) -> dict:
     records (they read records.jsonl, not summary.json). ``err`` = #(ea is None),
     consistent with gen_ablation_report."""
     def _mean(key: str) -> float:
-        vals = [r[key] for r in recs if r.get(key) is not None]
-        if not vals:
+        """Denominator is ALL records: an example that errored scored 0, it is not
+        excluded. This is the convention documented in gen_ablation_report and
+        used by every report table — a query that does not run is a wrong
+        answer. Excluding errors here would silently inflate the summary
+        relative to the reports (~+0.01 EA measured)."""
+        if not recs:
             return 0.0
-        nums = [1.0 if v is True else (0.0 if v is False else float(v)) for v in vals]
-        return sum(nums) / len(nums)
+        total = 0.0
+        for r in recs:
+            v = r.get(key)
+            if v is True:
+                total += 1.0
+            elif v is None or v is False:
+                continue
+            else:
+                total += float(v)
+        return total / len(recs)
 
     return {
         "dataset":   dataset,
