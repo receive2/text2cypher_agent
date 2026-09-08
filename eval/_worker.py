@@ -161,8 +161,7 @@ def _run_meta() -> Dict[str, Any]:
             meta["method"]     = spec.method
             meta["label"]      = spec.label
             meta["tool_type"]  = spec.tool
-            meta["retrieval"]  = "+".join(a for a, on in (("fuzzy", spec.fuzzy),
-                                          ("vector", spec.vector), ("lev", spec.lev)) if on) or None
+            meta["retrieval"]  = spec.retrieval
         except Exception:  # noqa: BLE001
             pass
         meta["ner_llm"]    = _c.NER_LLM_CONFIG.get("model")

@@ -331,6 +331,25 @@ class GroundingSpec:
         return f"cyanchor_{arms}_{suffix}"
 
     @property
+    def retrieval(self) -> Optional[str]:
+        """The retrieval mechanism this method actually uses.
+
+        The arm flags are cyanchor-only; the baselines each have their own FIXED
+        retrieval and never read them. Deriving this string from the raw flags
+        would report the dataclass default (``fuzzy=True``) for fcav/graphrag,
+        which is simply wrong — hence the explicit per-method mapping."""
+        if self.method == "no_val_link":
+            return None                      # grounding bypassed entirely
+        if self.method == "fcav":
+            return "vector"                  # FAISS over embedded values
+        if self.method == "graphrag":
+            return "norm-Lev"                # APOC levenshteinSimilarity scan
+        if self.method == "react":
+            return "fuzzy"                   # fixed BM25/Lucene
+        return "+".join(a for a, on in (("fuzzy", self.fuzzy), ("vector", self.vector),
+                                        ("lev", self.lev)) if on) or None
+
+    @property
     def label(self) -> str:
         """Human-readable name for eval records / reports."""
         if self.method == "no_val_link":
@@ -429,8 +448,8 @@ RAG_RECURSION_LIMIT = 1
 # Contrasts with `full`: per-entity tool routing (no top-k tool crowding), no
 # get_entity intermediate layer, and candidates (not a single forced pick) are
 # given to the generator. Retrieval stays fuzzy (no value-embedding index).
-PLAN_EXEC_TOOLS_PER_ENTITY = 2    # tools routed per extracted mention
-PLAN_EXEC_VALUES_PER_TOOL  = 10   # top-K canonical values searched per tool (fuzzy modes)
+PLAN_EXEC_TOOLS_PER_ENTITY = int(os.getenv("PLAN_EXEC_TOOLS_PER_ENTITY", "2"))    # tools routed per extracted mention
+PLAN_EXEC_VALUES_PER_TOOL  = int(os.getenv("PLAN_EXEC_VALUES_PER_TOOL", "10"))   # top-K canonical values searched per tool (fuzzy modes)
 
 # plan_exec_node_rel_hybrid: per tool, union fuzzy top-K with vector top-K
 # candidates (fuzzy first, vector fills the tail). Tests whether in-graph
@@ -449,9 +468,9 @@ PLAN_EXEC_HYBRID_VECTOR_K = 5     # embedding (vector-index) candidates per tool
 # blanket top-K increases).
 # ⚙ eval receiver — edit in the eval_config panel, not here (literal = demo/CLI fallback).
 PLAN_EXEC_ESCALATE        = os.getenv("PLAN_EXEC_ESCALATE", "1").lower() in ("1", "true", "yes")
-PLAN_EXEC_MAX_ITER        = 3           # max escalation rounds per mention
-PLAN_EXEC_ESCALATE_BUDGET = (5, 3, 1)   # values added per successive round (deepen step)
-PLAN_EXEC_ROUTE_FETCH     = 6           # tools FAISS-routed per mention (initial + escalation pool)
+PLAN_EXEC_MAX_ITER        = int(os.getenv("PLAN_EXEC_MAX_ITER", "3"))           # max escalation rounds per mention
+PLAN_EXEC_ESCALATE_BUDGET = tuple(int(x) for x in os.getenv("PLAN_EXEC_ESCALATE_BUDGET", "5,3,1").split(","))   # values added per successive round (deepen step)
+PLAN_EXEC_ROUTE_FETCH     = int(os.getenv("PLAN_EXEC_ROUTE_FETCH", "6"))           # tools FAISS-routed per mention (initial + escalation pool)
 # In escalation the LLM judge picks the next action from: done | value (deepen
 # the used field) | a specific Label.property field to ADD (chosen from the menu
 # of available node fields). 'value' deepens fuzzy in the fuzzy mode and BOTH
