@@ -249,13 +249,19 @@ CYPHERBENCH_PATH  = "/Users/q0w01lh/datasets/cypherbench/test.json"
 MINDTHEQUERY_PATH = "/Users/q0w01lh/datasets/mindthequery/Train_Test_Splits/Manual"
 ZOGRASCOPE_PATH   = "/Users/q0w01lh/datasets/zograscope/data/zograscope_test_v1.csv"
 
-# Augmented test-set paths — populated by ``run_data_augmentation.py``.
-# Each augmented dataset mirrors the source layout under a sibling
-# ``<dataset>_augmented/`` directory.  The eval harness picks these up
-# when an ``EVAL_PAIRS`` entry uses an ``*_augmented`` dataset name.
-CYPHERBENCH_AUGMENTED_PATH  = "/Users/q0w01lh/datasets/cypherbench_augmented_v2/test.json"
-MINDTHEQUERY_AUGMENTED_PATH = "/Users/q0w01lh/datasets/mindthequery_augmented_v2/test.json"
-ZOGRASCOPE_AUGMENTED_PATH   = "/Users/q0w01lh/datasets/zograscope_augmented_v2/test.json"
+# Augmented (entity-perturbed) test-set paths — the v2.1 release, versioned in
+# this repo under ``benchmarks/``.  Repo-relative on purpose: a fresh clone runs
+# without editing anything, and everyone evaluates the same bytes, which is what
+# makes results poolable.  Verify before running:  python benchmarks/verify.py
+#
+# Override only to test a different build:  T2C_BENCHMARKS_DIR=/path/to/dir
+_BENCHMARKS_DIR = os.environ.get(
+    "T2C_BENCHMARKS_DIR",
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), "benchmarks"),
+)
+CYPHERBENCH_AUGMENTED_PATH  = os.path.join(_BENCHMARKS_DIR, "cypherbench_augmented_v2",  "test.json")
+MINDTHEQUERY_AUGMENTED_PATH = os.path.join(_BENCHMARKS_DIR, "mindthequery_augmented_v2", "test.json")
+ZOGRASCOPE_AUGMENTED_PATH   = os.path.join(_BENCHMARKS_DIR, "zograscope_augmented_v2",   "test.json")
 
 
 # ── Output dirs ──────────────────────────────────────────────────────────────

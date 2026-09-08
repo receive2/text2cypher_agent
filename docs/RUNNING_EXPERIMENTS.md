@@ -28,6 +28,23 @@ collapse to roughly the `no_val_link` score, while **FCAV still scores
 normally**. That asymmetry = contaminated tools (the schema and prompts
 that FCAV uses were fine; the per-graph tools were not).
 
+## Step 0: verify you have the right dataset
+
+```bash
+python benchmarks/verify.py     # must print VERIFIED
+```
+
+The perturbed benchmarks live in `benchmarks/` in this repo and
+`eval_config.py` reads them from there, so a fresh clone is already correct
+and everyone evaluates the same bytes — which is what makes separate people's
+results poolable. The release is the **v2.1 freeze: 4,641 questions**
+(cypherbench 2,115 · mindthequery 1,227 · zograscope 1,299).
+
+> A checkout from before 2026-09 carried the *pre-curation* set (4,875 rows).
+> Numbers from that copy are not comparable with anything produced now — if
+> `verify.py` does not print VERIFIED, `git pull` and check again before you
+> run anything.
+
 ## Golden rule: verify before you evaluate
 
 ```bash
@@ -42,7 +59,7 @@ Red = contaminated; do not evaluate until fixed. Example red line:
 ```
 ✗ cypherbench__movie  CONTAM   ARTIFACT/GRAPH MISMATCH: the node tools search
   labels ['Airport', 'FlightAccident'] that have ZERO nodes in this graph …
-  Re-run `python scripts/setup_and_archive.py <dataset> <graph> --force`.
+  Re-run the setup for that pair (see "If a pair is contaminated").
 ```
 
 > Network note: reaching the graphs requires the corporate **VPN
@@ -140,7 +157,7 @@ source of truth for *what runs*. Every knob below is in that block; `EVAL_PAIRS`
 | `LIMIT` | int · `None` | Examples per pair (`None` = all; set e.g. `20` to smoke-test). |
 | `SHARDS` | int | Intra-graph parallelism (see "Parallelism"). ⚠ keep `1` for CyANCHOR. |
 | `VERBOSE` | `True`/`False` | Per-example log lines. |
-| `EVAL_PAIRS` | `[(dataset, graph), …]` | Which pairs to run (below `GRAPH_CONNS`). |
+| `EVAL_PAIRS` | `[(dataset, graph), …]` | Which pairs to run (below `GRAPH_CONNS`). ⚠ For the perturbed suite use the 13 pairs in `_FULL_EVAL_PAIRS_13`. `terrorist_attack` is a train-split/tuning graph (no perturbed questions); `bloom50` is the same graph as `bloom` — use `bloom`. |
 | `OUT_DIR` | path | Run-dir root (infra section). Default `logs/runs`. |
 
 The baselines (`no_val_link` / `fcav` / `react` / `graphrag`) ignore the
@@ -242,8 +259,10 @@ parallel env channel.
 ## If a pair is contaminated
 
 ```bash
-# Rebuild that one pair's artifacts from its schema and re-archive it.
-python scripts/setup_and_archive.py <dataset> <graph> --force
+# Shrink EVAL_PAIRS in eval_config.py to just that one pair, then:
+python scripts/setup_and_archive.py     # no arguments — it reads EVAL_PAIRS
+# (positional args are intentionally rejected, so the CLI and eval_config
+#  can never disagree about what was set up.)
 
 # Confirm it's green, then run.
 python verify_setup.py
