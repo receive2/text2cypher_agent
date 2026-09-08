@@ -18,7 +18,7 @@ Driven by a JSON spec (argv[1])::
     {
       "title": "...", "out": "docs/ablation_cypherbench_summary.md",
       "generated": "2026-06-21",
-      "methods": ["No Val Link","FCAV","ReAct (N+R)","GraphRAG","CyANCHOR (fz+lev)"],
+      "methods": ["No Val Link","FCAV","ReAct","GraphRAG","CyANCHOR"],
       "graphs": [
         {"label":"flight_accident","n":170,
          "dirs":{"No Val Link":"logs/fl2_no_val_link", ...}},

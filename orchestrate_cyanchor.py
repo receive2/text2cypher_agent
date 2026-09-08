@@ -45,7 +45,7 @@ TMP_OUT = REPO / "logs" / "_orch_tmp"
 _BASELINES = [
     ("No Val Link",        "—",        "no_val_link"),
     ("FCAV",               "vector",   "fcav"),
-    ("ReAct (Node + Rel)", "fuzzy",    "react"),
+    ("ReAct",              "fuzzy",    "react"),
     ("GraphRAG",           "norm-Lev", "graphrag"),
 ]
 
@@ -153,9 +153,9 @@ def run_cyanchor(aug_dataset: str, conn_graph: str, vector: bool) -> bool:
 
 def gen_graph_report(report_graph: str, conn_graph: str, dataset_key: str,
                      folder: str, label: str, vec: bool) -> None:
-    wanted = list(_BASELINES) + [("CyANCHOR (fuzzy+lev)", "fuzzy+lev", "cyanchor_fl")]
+    wanted = list(_BASELINES) + [("CyANCHOR", "fuzzy+lev", "cyanchor_fl")]
     if vec:
-        wanted.append(("CyANCHOR (fuzzy+lev+vec)", "fuzzy+lev+vec", "cyanchor_fvl"))
+        wanted.append(("CyANCHOR (+vector)", "fuzzy+lev+vec", "cyanchor_fvl"))
     methods = []
     for l, r, c in wanted:
         p = eval_paths.latest_run_dir(dataset_key, conn_graph, c)
