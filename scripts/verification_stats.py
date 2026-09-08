@@ -188,43 +188,49 @@ def _norm(v: str) -> str:
     return (v or "").strip().lower()
 
 
-def main(argv: Optional[List[str]] = None) -> int:
-    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--key", required=True)
-    ap.add_argument("--annotations", nargs="+", required=True,
-                    help="filled annotator CSVs (globs allowed)")
-    ap.add_argument("--adjudicated", default=None, help="optional id,validity CSV")
-    ap.add_argument("--calibration", nargs="*", default=None,
-                    help="calibration CSV(s) whose ids are excluded from all "
-                         "measurements (default: calibration_50.csv and "
-                         "calibration_legacy_ids.csv next to --key, if "
-                         "present; pass a bare --calibration to disable)")
-    ap.add_argument("--out", default=None, help="write the markdown report here (else stdout)")
-    args = ap.parse_args(argv)
+def resolve_calibration_paths(key_path: str, calibration_arg) -> List[str]:
+    """Pre-registered exclusion list. ``calibration_arg`` is argparse's value for
+    --calibration: None = auto-detect next to --key, [] = disabled, else explicit."""
+    if calibration_arg is None:
+        key_dir = os.path.dirname(os.path.abspath(key_path))
+        return [p for p in (os.path.join(key_dir, "calibration_50.csv"),
+                            os.path.join(key_dir, "calibration_legacy_ids.csv"))
+                if os.path.exists(p)]
+    return [p for p in calibration_arg if p]
 
-    key = _read_key(args.key)
 
-    # Pre-registered: calibration items (any round) are excluded from all
-    # measurements.
-    if args.calibration is None:
-        key_dir = os.path.dirname(os.path.abspath(args.key))
-        cal_paths = [p for p in
-                     (os.path.join(key_dir, "calibration_50.csv"),
-                      os.path.join(key_dir, "calibration_legacy_ids.csv"))
-                     if os.path.exists(p)]
-    else:
-        cal_paths = [p for p in args.calibration if p]
-    cal_ids: set = set()
-    for p in cal_paths:
+def load_calibration_ids(paths: List[str]) -> set:
+    ids: set = set()
+    for p in paths:
         if not os.path.exists(p):
             sys.exit(f"--calibration file not found: {p}")
-        cal_ids |= {r["id"] for r in
-                    csv.DictReader(open(p, encoding="utf-8-sig"))}
-    files: List[str] = []
-    for patt in args.annotations:
-        files.extend(sorted(glob.glob(patt)) or [patt])
+        ids |= {r["id"] for r in csv.DictReader(open(p, encoding="utf-8-sig"))}
+    return ids
 
-    # ratings[id][annotator] = validity ; plus naturalness / source_error flags
+
+def expand_paths(patterns: List[str]) -> List[str]:
+    out: List[str] = []
+    for patt in patterns:
+        out.extend(sorted(glob.glob(patt)) or [patt])
+    return out
+
+
+def collect_labels(key_path: str, annotation_patterns: List[str],
+                   adjudicated_path: Optional[str] = None,
+                   calibration_arg=None) -> dict:
+    """Single source of truth for per-item verdicts.
+
+    Both the statistics report and the metric rescoring read verdicts from here,
+    so the rows the paper says were dropped are exactly the rows the metrics
+    were recomputed without. Returns a dict with: ``val`` (id -> annotator ->
+    validity), ``src_err``, ``final`` (id -> valid/invalid/source_error/pending),
+    ``cal_ids``, ``cal_ids_seen``, ``n_cal_excluded``, ``n_double``,
+    ``n_disagree``, ``files``, ``cats``.
+    """
+    cal_paths = resolve_calibration_paths(key_path, calibration_arg)
+    cal_ids = load_calibration_ids(cal_paths)
+    files = expand_paths(annotation_patterns)
+
     val: Dict[str, Dict[str, str]] = defaultdict(dict)
     src_err: Dict[str, bool] = defaultdict(bool)
     n_cal_excluded = 0
@@ -244,14 +250,11 @@ def main(argv: Optional[List[str]] = None) -> int:
                 src_err[rid] = True
 
     adjudicated: Dict[str, str] = {}
-    if args.adjudicated and os.path.exists(args.adjudicated):
-        for row in csv.DictReader(open(args.adjudicated, encoding="utf-8-sig")):
+    if adjudicated_path and os.path.exists(adjudicated_path):
+        for row in csv.DictReader(open(adjudicated_path, encoding="utf-8-sig")):
             adjudicated[row["id"]] = _norm(row.get("validity"))
 
-    _CATS = sorted({v for d in val.values() for v in d.values()}) or ["valid", "invalid"]
-
-    # ── final per-item label ─────────────────────────────────────────────────
-    final: Dict[str, str] = {}     # id -> valid/invalid/source_error/pending
+    final: Dict[str, str] = {}
     n_double = n_disagree = 0
     for rid, raters in val.items():
         if src_err.get(rid):
@@ -267,8 +270,39 @@ def main(argv: Optional[List[str]] = None) -> int:
         elif labels and len(set(labels)) == 1 and labels[0] in ("valid", "invalid"):
             f = labels[0]
         else:
-            f = "pending"           # disagreement or agreed-unsure -> adjudicate
+            f = "pending"
         final[rid] = f
+
+    return {"val": val, "src_err": src_err, "final": final, "cal_ids": cal_ids,
+            "cal_ids_seen": cal_ids_seen, "n_cal_excluded": n_cal_excluded,
+            "n_double": n_double, "n_disagree": n_disagree, "files": files,
+            "cats": sorted({v for d in val.values() for v in d.values()}) or ["valid", "invalid"]}
+
+
+def main(argv: Optional[List[str]] = None) -> int:
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--key", required=True)
+    ap.add_argument("--annotations", nargs="+", required=True,
+                    help="filled annotator CSVs (globs allowed)")
+    ap.add_argument("--adjudicated", default=None, help="optional id,validity CSV")
+    ap.add_argument("--calibration", nargs="*", default=None,
+                    help="calibration CSV(s) whose ids are excluded from all "
+                         "measurements (default: calibration_50.csv and "
+                         "calibration_legacy_ids.csv next to --key, if "
+                         "present; pass a bare --calibration to disable)")
+    ap.add_argument("--out", default=None, help="write the markdown report here (else stdout)")
+    args = ap.parse_args(argv)
+
+    key = _read_key(args.key)
+
+    got = collect_labels(args.key, args.annotations, args.adjudicated, args.calibration)
+    cal_ids = got["cal_ids"]
+    cal_ids_seen = got["cal_ids_seen"]
+    n_cal_excluded = got["n_cal_excluded"]
+    val = got["val"]
+    final = got["final"]
+    n_double, n_disagree = got["n_double"], got["n_disagree"]
+    _CATS = got["cats"]
 
     # ── aggregation helper ───────────────────────────────────────────────────
     def stratum_rows(keyfn):
