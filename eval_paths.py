@@ -11,11 +11,18 @@ writes to a fresh, timestamped per-run directory::
     logs/runs/<dataset>__<graph>__<method>__<YYYYMMDD-HHMMSS>/records.jsonl
     logs/runs/<dataset>__<graph>__<method>__<YYYYMMDD-HHMMSS>/summary.json
 
-The directory name deliberately carries **no model or config information** —
-only the triple plus a timestamp. What actually ran (LLM per stage, embedding
-backend, every ablation knob) is recorded *inside* ``summary.json`` under the
-``run_config`` key, so each run dir is self-describing and re-running with a
-different model or knob setting can never silently overwrite earlier records.
+The method segment carries the **generator model** when one is in play
+(``cyanchor_fl@claude-sonnet-5``), because the reader resolves a triple to a
+single directory: without the model in the name, a second model's run is a
+newer stamp for the same triple and every report silently switches to it.
+Ablation knobs stay out of the name — they are recorded *inside* ``summary.json``
+under ``run_meta``, and re-running with a different knob is a deliberate
+supersede.
+
+The model segment is separated by ``@`` (never ``__``), so the component split
+below is unchanged. Untagged dirs from before model tagging are still resolved,
+but only for the model that actually produced them (verified against
+``run_meta``) — see :func:`latest_run_dir`.
 
 Readers (``eval_aggregate``, the report generators, the orchestrator) resolve
 a triple through :func:`latest_run_dir`, which returns the newest stamped run
@@ -52,20 +59,42 @@ REPORT_DIR_LABEL = {
 }
 
 
+def model_seg(model: Optional[str]) -> str:
+    """Filesystem-safe model segment. ``__`` would break the component split and
+    ``/`` would create a directory level, so both collapse to ``-``."""
+    if not model:
+        return ""
+    return re.sub(r"[^A-Za-z0-9._@-]", "-", str(model).replace("__", "_")).strip("-")
+
+
+def split_method_seg(method_seg: str) -> Tuple[str, str]:
+    """``"cyanchor_fl@claude-sonnet-5"`` -> ``("cyanchor_fl", "claude-sonnet-5")``.
+    An untagged segment yields ``(seg, "")``."""
+    head, sep, tail = method_seg.partition("@")
+    return (head, tail) if sep else (method_seg, "")
+
+
 def method_tag(method: str,
                fuzzy: bool = True,
                vector: bool = False,
-               lev: bool = True) -> str:
+               lev: bool = True,
+               model: Optional[str] = None) -> str:
     """Canonical method segment of a run dir.
 
     Baselines (``no_val_link`` / ``fcav`` / ``react`` / ``graphrag``) map to the
     method name verbatim. ``cyanchor`` additionally encodes its active retrieval
     arms in the historical fuzzy→vector→lev order, so fuzzy+lev → ``cyanchor_fl``
-    and fuzzy+vector+lev → ``cyanchor_fvl`` (matching the existing report dirs)."""
+    and fuzzy+vector+lev → ``cyanchor_fvl`` (matching the existing report dirs).
+
+    Passing ``model`` appends ``@<model>`` so runs of different generator LLMs
+    occupy different directories (and different report cells)."""
     if method != "cyanchor":
-        return method
-    arms = ("f" if fuzzy else "") + ("v" if vector else "") + ("l" if lev else "")
-    return "cyanchor_" + (arms or "none")
+        base = method
+    else:
+        arms = ("f" if fuzzy else "") + ("v" if vector else "") + ("l" if lev else "")
+        base = "cyanchor_" + (arms or "none")
+    seg = model_seg(model)
+    return f"{base}@{seg}" if seg else base
 
 
 def new_stamp() -> str:
@@ -93,23 +122,93 @@ def new_run_dir(dataset: str, graph: str, method_seg: str,
     return run_dir(dataset, graph, method_seg, root=root, stamp=new_stamp())
 
 
+def method_tag_join(base: str, model: Optional[str]) -> str:
+    """Attach a model segment to an already-built method segment."""
+    seg = model_seg(model)
+    return f"{base}@{seg}" if seg else base
+
+
+_AUTO = object()   # sentinel: resolve the model from config
+
+
+def default_model() -> str:
+    """The generator model configured for this process (``""`` if config is
+    unavailable). Readers default to it so a report never mixes models."""
+    try:
+        import config as _c
+        return _c.active_generator_model()
+    except Exception:  # noqa: BLE001
+        return ""
+
+
+def _run_meta_model(d: Path) -> Optional[str]:
+    """The generator model recorded in a run dir's ``summary.json`` (``run_meta``),
+    or ``None`` when the file is absent/unreadable or records no model."""
+    try:
+        import json
+        rm = json.loads((d / "summary.json").read_text(encoding="utf-8")).get("run_meta") or {}
+    except Exception:  # noqa: BLE001
+        return None
+    for k in ("cypher_llm", "ner_llm", "qa_llm"):
+        if rm.get(k):
+            return str(rm[k])
+    return None
+
+
 def latest_run_dir(dataset: str, graph: str, method_seg: str,
-                   root: str | Path = RUNS_ROOT) -> Optional[Path]:
+                   root: str | Path = RUNS_ROOT,
+                   model: Optional[str] = _AUTO) -> Optional[Path]:
     """The newest run dir for a triple, or ``None`` if the triple never ran.
 
     Stamped dirs win over the legacy unstamped dir (a re-run supersedes the
     pre-timestamp layout); among stamped dirs the lexically-largest stamp is
-    the newest (the format is sort-safe)."""
+    the newest (the format is sort-safe).
+
+    **Model scoping.** ``method_seg`` may already carry ``@<model>``; otherwise
+    ``model`` is appended — and it defaults to the model *this process* is
+    configured for, so a reader never picks up another model's run. Pass
+    ``model=None`` explicitly for the old "any model" behaviour (audit tools). Either way only that model's dirs match,
+    so a second generator LLM cannot take over a report cell. Dirs written
+    before model tagging carry no ``@`` segment — they are accepted only when
+    their ``run_meta`` names the requested model (unknown provenance is accepted
+    only when no model was requested), which keeps every pre-existing run
+    resolvable for the model that actually produced it.
+    """
+    if model is _AUTO:
+        model = default_model()          # scope to this process's model
     root = Path(root)
+    seg = method_seg
+    base, tagged = split_method_seg(seg)
+    if model and not tagged:
+        seg = method_tag_join(base, model)
+        tagged = model_seg(model)
+    want = tagged or ""
+
     stamped: list[tuple[str, Path]] = []
-    for p in root.glob(f"{dataset}__{graph}__{method_seg}__*"):
+    for p in root.glob(f"{dataset}__{graph}__{seg}__*"):
         parts = p.name.split("__")
         if len(parts) == 4 and _STAMP_RE.match(parts[3]) and p.is_dir():
             stamped.append((parts[3], p))
     if stamped:
         return max(stamped)[1]
-    legacy = root / f"{dataset}__{graph}__{method_seg}"
-    return legacy if legacy.is_dir() else None
+
+    # Legacy: untagged dirs predate model tagging. Accept one only if it really
+    # came from the requested model.
+    legacy_stamped: list[tuple[str, Path]] = []
+    for p in root.glob(f"{dataset}__{graph}__{base}__*"):
+        parts = p.name.split("__")
+        if len(parts) == 4 and _STAMP_RE.match(parts[3]) and p.is_dir():
+            legacy_stamped.append((parts[3], p))
+    legacy_plain = root / f"{dataset}__{graph}__{base}"
+    if legacy_plain.is_dir():
+        legacy_stamped.append(("", legacy_plain))
+    for _, d in sorted(legacy_stamped, reverse=True):
+        got = _run_meta_model(d)
+        if not want:
+            return d
+        if got is not None and model_seg(got) == want:
+            return d
+    return None
 
 
 def parse_run_dir_stamped(path: str | Path) -> Optional[Tuple[str, str, str, str]]:

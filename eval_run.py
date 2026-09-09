@@ -151,6 +151,20 @@ def _stamp_summary(out_summary: Path, env: dict, *, dataset: str, graph: str,
         pass
 
 
+def _active_model(env: dict) -> str:
+    """Generator model for the child run: the sweep override this parent will
+    pass down (``EVAL_LLM_MODEL``), else the configured Cypher-stage model.
+    Kept in one place so the dir name and the child's actual model agree."""
+    m = env.get("EVAL_LLM_MODEL") or os.environ.get("EVAL_LLM_MODEL")
+    if m:
+        return m
+    try:
+        import config as _c
+        return _c.active_generator_model()
+    except Exception:  # noqa: BLE001
+        return ""
+
+
 def _build_env(uri: str, user: str, password: str, database: str) -> dict[str, str]:
     """Copy the parent env and overlay the worker's connection vars + the run
     config from eval_config — the single, authoritative source for what runs.
@@ -327,11 +341,15 @@ def _run_pair(
     # Canonical per-run output dir. The method + arms come from the resolved env
     # (_build_env has already overlaid eval_config / shell), so the dir name is a
     # faithful label of what actually ran.
+    # The generator model is part of the dir name: readers resolve a triple to a
+    # single dir, so without it a second model's run is just a newer stamp and
+    # every report would silently switch to it.
     _tag = eval_paths.method_tag(
         env.get("METHOD", "cyanchor"),
         fuzzy  = env.get("RETRIEVAL_FUZZY", "1") == "1",
         vector = env.get("RETRIEVAL_VECTOR", "0") == "1",
         lev    = env.get("RETRIEVAL_LEVENSHTEIN", "1") == "1",
+        model  = _active_model(env),
     )
     stamp    = eval_paths.new_stamp()
     pair_dir = eval_paths.run_dir(dataset, graph, _tag, root=out_dir, stamp=stamp)

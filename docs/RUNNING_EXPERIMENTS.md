@@ -191,17 +191,47 @@ logs/runs/<dataset>__<graph>__<method>__<YYYYMMDD-HHMMSS>/records.jsonl  # one r
 logs/runs/<dataset>__<graph>__<method>__<YYYYMMDD-HHMMSS>/summary.json   # aggregate + run_meta + run_config
 ```
 
-The method (`graphrag`, `cyanchor_fl`, …) is **part of the path** and every
-invocation gets its **own timestamp**, so re-running — with a different
-`METHOD`, a different LLM, or different knobs — never clobbers earlier
-records. The dir name deliberately carries no model/config information;
-what actually ran (LLM per stage, embedding backend, every ablation knob) is
-recorded inside `summary.json` under `run_config`, making each run dir
-self-describing. Readers resolve a triple's **newest** run via
-`eval_paths.latest_run_dir` (pre-timestamp legacy dirs
-`logs/runs/<dataset>__<graph>__<method>/` are still recognised as a
-fallback). `eval_aggregate.py` aggregates only the newest run per
-`(dataset, graph, method)` and groups by `(dataset, method)`.
+The method (`graphrag`, `cyanchor_fl`, …) is **part of the path**, the
+generator model is appended to it (`cyanchor_fl@claude-sonnet-5`), and every
+invocation gets its **own timestamp**. Ablation knobs stay out of the name:
+what actually ran (LLM per stage, embedding backend, every knob) is recorded
+inside `summary.json` under `run_meta` / `run_config`, so each run dir is
+self-describing.
+
+**Why the model is in the name.** Readers resolve a triple to *one* directory —
+its newest run. Without the model in the path, a second model's run is simply a
+newer stamp for the same triple, so every report would silently switch to it
+and a sweep would end up comparing methods across mixed generators.
+`eval_paths.latest_run_dir` therefore scopes to the model the current process is
+configured for. Runs recorded before model tagging carry no `@` segment; they
+stay resolvable, but only for the model that actually produced them (proven
+against `run_meta`), so nothing on disk today is lost.
+`eval_aggregate.py` aggregates only the newest run per
+`(dataset, graph, method, model)` and groups by `(dataset, method)`.
+
+## Sweeping generator LLMs
+
+Set the model per run instead of editing `config.py` — one env var switches all
+three stages (NER / Cypher / QA), matching "all stages use the row's model":
+
+```bash
+EVAL_LLM_MODEL=claude-sonnet-5 EVAL_LLM_PROVIDER=anthropic python eval_run.py
+EVAL_LLM_MODEL=gpt-5.6-terra   EVAL_LLM_PROVIDER=openai    python eval_run.py
+```
+
+Unset, both are no-ops and `config.py`'s literals are used verbatim — existing
+runs and reports are unaffected. The same resolved value names the run dir, so
+two models can never land in one report cell. When you *read* results back
+(report generators, `eval_aggregate`), export the same `EVAL_LLM_MODEL` so the
+reader scopes to that model's runs.
+
+**Prompt caching is automatic and applies to every model.** The Cypher prompt is
+laid out static-first (task text → schema → *then* retrieved values → question),
+so OpenAI caches the ~2.8k-token prefix on its own, and a `CACHE_BREAK` marker at
+that boundary makes Anthropic cache it too (`agent/prompt_cache.py`). Providers
+that cannot use the marker have it stripped, so **the model sees byte-identical
+text either way** — caching changes cost, never results. On a Claude model a
+full sweep costs roughly half as much as it would uncached.
 
 ## Producing the per-graph comparison reports
 

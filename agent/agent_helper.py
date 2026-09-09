@@ -19,6 +19,10 @@ from langchain_core.messages import ToolMessage, AIMessage, HumanMessage
 from langchain_core.prompts import PromptTemplate
 from langchain.chat_models import init_chat_model
 
+from functools import lru_cache
+
+from agent import prompt_cache
+
 # ``langchain-anthropic`` is optional — only required when callers explicitly
 # request the "anthropic" provider.  Importing it lazily keeps the module
 # importable in environments that have not installed the extra package.
@@ -133,7 +137,7 @@ def _build_openai_llm(
     http_client: httpx.Client,
     **extra: Any,
 ) -> ChatOpenAI:
-    return ChatOpenAI(
+    return _cache_mixin(ChatOpenAI, anthropic=False)(
         model=model or os.getenv("OPENAI_MODEL", "gpt-4.1"),
         api_key=os.getenv("OPENAI_API_KEY"),
         temperature=temperature,
@@ -157,7 +161,7 @@ def _build_azure_llm(
 
     base_url = azure_endpoint.rstrip("/") + "/openai/v1/"
     try:
-        return ChatOpenAI(
+        return _cache_mixin(ChatOpenAI, anthropic=False)(
             model=azure_deployment,
             api_key=azure_key,
             base_url=base_url,
@@ -168,7 +172,7 @@ def _build_azure_llm(
             **extra,
         )
     except Exception:
-        return AzureChatOpenAI(
+        return _cache_mixin(AzureChatOpenAI, anthropic=False)(
             azure_deployment=azure_deployment,
             api_version=os.getenv("AZURE_OPENAI_API_VERSION", "2024-05-01-preview"),
             api_key=azure_key,
@@ -179,6 +183,29 @@ def _build_azure_llm(
             http_client=http_client,
             **extra,
         )
+
+
+# ── Prompt-cache plumbing ────────────────────────────────────────────────────
+# Prompts carry a CACHE_BREAK marker at the static/variable boundary (see
+# agent/prompt_cache.py). These thin subclasses resolve it at the last possible
+# moment — inside the chat model — so every call site and every LangChain chain
+# is covered without any of them knowing about caching. `_generate` is the one
+# funnel all sync paths go through; `_agenerate` mirrors it for async.
+@lru_cache(maxsize=None)
+def _cache_mixin(base, anthropic: bool):
+    class _PromptCached(base):                      # type: ignore[misc,valid-type]
+        """`base` plus CACHE_BREAK resolution. The model sees identical text."""
+
+        def _generate(self, messages, stop=None, run_manager=None, **kwargs):
+            messages = prompt_cache.prepare_messages(messages, anthropic)
+            return super()._generate(messages, stop=stop, run_manager=run_manager, **kwargs)
+
+        async def _agenerate(self, messages, stop=None, run_manager=None, **kwargs):
+            messages = prompt_cache.prepare_messages(messages, anthropic)
+            return await super()._agenerate(messages, stop=stop, run_manager=run_manager, **kwargs)
+
+    _PromptCached.__name__ = f"PromptCached{base.__name__}"
+    return _PromptCached
 
 
 def _build_anthropic_llm(
@@ -198,7 +225,10 @@ def _build_anthropic_llm(
             ".env file before requesting provider='anthropic'."
         )
 
-    return ChatAnthropic(
+    # Anthropic caching is opt-in: the static prefix must arrive as its own
+    # cache_control block, which this subclass does from the CACHE_BREAK marker.
+    _Cls = _cache_mixin(ChatAnthropic, anthropic=True)
+    return _Cls(
         model=model or os.getenv("ANTHROPIC_MODEL", DEFAULT_ANTHROPIC_MODEL),
         api_key=api_key,
         temperature=temperature,
@@ -273,7 +303,7 @@ def _build_hf_compatible_llm(
 
     # ChatOpenAI uses the openai SDK under the hood; pointing it at any
     # OpenAI-compatible base_url turns it into a client for that server.
-    return ChatOpenAI(
+    return _cache_mixin(ChatOpenAI, anthropic=False)(
         model=model_id,
         api_key=api_key,
         base_url=base_url,
@@ -815,7 +845,7 @@ RETURN count(jp) AS numberOfDataScientistJobPostingsInCA
 Schema-relevant attribute and values:
     - note: Whenever the following relevant attribute and value pairs are provided, you MUST incorporate it in the "where" clause in your output. You should use it all the time.
     - Relevant attribute and value pairs you MUST use:
-        {relevant_entities}
+        {cache_break}{relevant_entities}
 
 User question:
 {question}
@@ -833,7 +863,15 @@ if __name__ == "__main__":
     # IMPORTANT: escape braces before injecting into PromptTemplate,
     # otherwise "{" and "}" in dct will be interpreted as template placeholders.
     safe_dct = dct.replace("{", "{{").replace("}", "}}")
-    cypher_template_filled = cypher_template.replace("{relevant_entities}", safe_dct)
+    # Everything above the marker (task text + schema + worked examples) is
+    # identical for every question on this graph; everything below varies. The
+    # model sees the same bytes either way — providers that cannot use the
+    # marker have it stripped (agent/prompt_cache.py).
+    cypher_template_filled = (
+        cypher_template
+        .replace("{cache_break}", prompt_cache.CACHE_BREAK)
+        .replace("{relevant_entities}", safe_dct)
+    )
 
     cypher_prompt = PromptTemplate(
         input_variables=["schema", "question"],

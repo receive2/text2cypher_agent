@@ -177,6 +177,35 @@ MODEL_REGISTRY: dict = {
 #     "temperature": 0,
 # }
 
+# ── Generator-LLM sweep override ─────────────────────────────────────────────
+# A model sweep sets the generator LLM per run instead of editing this file:
+#
+#     EVAL_LLM_MODEL=claude-sonnet-5 EVAL_LLM_PROVIDER=anthropic python eval_run.py
+#
+# When ``EVAL_LLM_MODEL`` is set it replaces the model on all three stage
+# configs below (NER / Cypher / QA) — "all stages use the row's model", the
+# design of a cross-LLM comparison. ``EVAL_LLM_PROVIDER`` is optional and
+# defaults to whatever provider each stage already declares. Unset, both are
+# no-ops and the literals below are used verbatim, so existing runs and reports
+# are unaffected.
+#
+# ``eval_run`` reads the same resolved value to name the run directory, so a
+# sweep can never land two models in one report cell.
+EVAL_LLM_MODEL    = os.getenv("EVAL_LLM_MODEL") or None
+EVAL_LLM_PROVIDER = os.getenv("EVAL_LLM_PROVIDER") or None
+
+
+def _apply_llm_override(cfg: dict) -> dict:
+    """Overlay the sweep override onto one stage config (no-op when unset)."""
+    if not EVAL_LLM_MODEL:
+        return cfg
+    out = dict(cfg)
+    out["model"] = EVAL_LLM_MODEL
+    if EVAL_LLM_PROVIDER:
+        out["provider"] = EVAL_LLM_PROVIDER
+    return out
+
+
 NER_LLM_CONFIG: dict = {
    "provider":    "openai",
    "model":       "gpt-4.1",
@@ -606,3 +635,18 @@ RETRIEVAL_LEVENSHTEIN_K = int(os.getenv("RETRIEVAL_LEVENSHTEIN_K", "10"))  # can
 #  python ner_agent_auto.py "Who played Neo or Morpheus in The Matrix?" " --verbose
 #  python ner_agent_auto.py "Who act  in matrix?"  --verbose
 #  python ner_agent_auto.py "Who played neo or morphes in matrix?" --verbose
+
+
+# ── Apply the generator-LLM sweep override ───────────────────────────────────
+# Last word, so it wins over every literal above regardless of which stage
+# block was edited by hand.
+NER_LLM_CONFIG    = _apply_llm_override(NER_LLM_CONFIG)
+QA_LLM_CONFIG     = _apply_llm_override(QA_LLM_CONFIG)
+CYPHER_LLM_CONFIG = _apply_llm_override(CYPHER_LLM_CONFIG)
+
+
+def active_generator_model() -> str:
+    """The generator model this process actually uses — the sweep override when
+    set, else the Cypher stage's model (the stage that defines a run's
+    identity). ``eval_run`` names run dirs with this."""
+    return EVAL_LLM_MODEL or CYPHER_LLM_CONFIG.get("model") or ""
