@@ -149,3 +149,45 @@ def test_no_override_leaves_config_untouched(monkeypatch):
 
 if __name__ == "__main__":
     raise SystemExit(pytest.main([__file__, "-q"]))
+
+
+# ── fixes from the second review ─────────────────────────────────────────────
+
+def test_any_model_mode_sees_tagged_dirs_too(tmp_path):
+    """model=None is the explicit 'any model' mode: it must not go blind to
+    tagged dirs once a sweep starts writing them."""
+    _mk(tmp_path, "ds", "g", "graphrag", "20260801-090000", GPT)
+    newest = _mk(tmp_path, "ds", "g", f"graphrag@{CLAUDE}", "20260909-120000", CLAUDE)
+    assert eval_paths.latest_run_dir("ds", "g", "graphrag", root=tmp_path, model=None) == newest
+
+
+def test_default_llm_config_follows_the_override(monkeypatch):
+    """DEFAULT_LLM_CONFIG feeds the entity-extraction tool inside the NER
+    agent. It is *derived* from NER_LLM_CONFIG, so it must be derived after
+    the override or that stage silently runs the pre-override model."""
+    import importlib
+    import config
+
+    monkeypatch.setenv("EVAL_LLM_MODEL", CLAUDE)
+    monkeypatch.setenv("EVAL_LLM_PROVIDER", "anthropic")
+    try:
+        cfg = importlib.reload(config)
+        assert cfg.DEFAULT_LLM_CONFIG["model"] == CLAUDE
+        assert cfg.DEFAULT_LLM_CONFIG["provider"] == "anthropic"
+    finally:
+        monkeypatch.delenv("EVAL_LLM_MODEL", raising=False)
+        monkeypatch.delenv("EVAL_LLM_PROVIDER", raising=False)
+        importlib.reload(config)
+
+
+def test_run_meta_model_prefers_cypher_then_ner_then_qa(tmp_path):
+    d = tmp_path / "x"
+    d.mkdir()
+    (d / "summary.json").write_text(
+        json.dumps({"run_meta": {"ner_llm": "a", "qa_llm": "b"}}), encoding="utf-8")
+    assert eval_paths.run_meta_model(d) == "a"
+    (d / "summary.json").write_text(
+        json.dumps({"run_meta": {"cypher_llm": "c", "ner_llm": "a"}}), encoding="utf-8")
+    assert eval_paths.run_meta_model(d) == "c"
+    (d / "summary.json").write_text("not json", encoding="utf-8")
+    assert eval_paths.run_meta_model(d) is None

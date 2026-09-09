@@ -260,8 +260,18 @@ CYPHER_LLM_CONFIG: dict = {
 #     "max_tokens":  512,
 # }
 
+# ── Apply the generator-LLM sweep override ───────────────────────────────────
+# Must run before anything is *derived* from a stage config (DEFAULT_LLM_CONFIG
+# below): a value copied out earlier would keep the pre-override model, and the
+# stage built from it would silently run a different generator than the one the
+# run directory is named for.
+NER_LLM_CONFIG    = _apply_llm_override(NER_LLM_CONFIG)
+QA_LLM_CONFIG     = _apply_llm_override(QA_LLM_CONFIG)
+CYPHER_LLM_CONFIG = _apply_llm_override(CYPHER_LLM_CONFIG)
+
 # Legacy default — used by any code path that imports ``agent_helper.llm``
-# without specifying a stage.  Defaults to the same setup as NER.
+# without specifying a stage (the entity-extraction tool inside the NER agent
+# goes through it).  Same setup as NER, *after* the override.
 DEFAULT_LLM_CONFIG: dict = dict(NER_LLM_CONFIG)
 
 
@@ -635,14 +645,6 @@ RETRIEVAL_LEVENSHTEIN_K = int(os.getenv("RETRIEVAL_LEVENSHTEIN_K", "10"))  # can
 #  python ner_agent_auto.py "Who played Neo or Morpheus in The Matrix?" " --verbose
 #  python ner_agent_auto.py "Who act  in matrix?"  --verbose
 #  python ner_agent_auto.py "Who played neo or morphes in matrix?" --verbose
-
-
-# ── Apply the generator-LLM sweep override ───────────────────────────────────
-# Last word, so it wins over every literal above regardless of which stage
-# block was edited by hand.
-NER_LLM_CONFIG    = _apply_llm_override(NER_LLM_CONFIG)
-QA_LLM_CONFIG     = _apply_llm_override(QA_LLM_CONFIG)
-CYPHER_LLM_CONFIG = _apply_llm_override(CYPHER_LLM_CONFIG)
 
 
 def active_generator_model() -> str:

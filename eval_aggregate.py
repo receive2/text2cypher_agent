@@ -276,7 +276,7 @@ def main() -> int:
         # the *same* model collapse to one key (newest wins) instead of showing
         # up as two rows for what is one configuration.
         if "@" not in method:
-            legacy_model = _load_run_meta(sp).get("cypher_llm")
+            legacy_model = eval_paths.run_meta_model(sp.parent)
             if legacy_model:
                 method = eval_paths.method_tag_join(method, legacy_model)
         key = (dataset, graph, method)

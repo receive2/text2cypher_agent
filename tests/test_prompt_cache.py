@@ -149,3 +149,97 @@ def test_filled_cypher_template_has_a_prefix_worth_caching():
 
 if __name__ == "__main__":
     raise SystemExit(pytest.main([__file__, "-q"]))
+
+
+# ── fixes from the second review ─────────────────────────────────────────────
+
+def test_marker_at_the_very_end_yields_one_cached_block():
+    """The NER agent marks the end of its system prompt: the whole thing is
+    static, so it must become a single cached block with no empty tail."""
+    text = STATIC + pc.CACHE_BREAK
+    blocks = pc.to_anthropic_blocks(text)
+    assert len(blocks) == 1
+    assert blocks[0]["cache_control"] == {"type": "ephemeral"}
+    assert blocks[0]["text"] == STATIC
+
+
+def _import_graphrag_without_db():
+    """``import graphrag`` pulls in ``agent.agent_helper``, which opens a Neo4j
+    connection at module level. Stub that one module (same recipe as
+    ``tests/test_graphrag.py``) so this test is self-contained and does not
+    depend on collection order or on the database VM. The real
+    ``agent.prompts`` is used, so the real TEXT2CYPHER_SP is exercised."""
+    import sys
+    import types
+
+    installed = False
+    if "agent.agent_helper" not in sys.modules:
+        stub = types.ModuleType("agent.agent_helper")
+
+        class _StubGraph:
+            schema = "(:Movie)-[:directedBy]->(:Person)"
+
+            def query(self, *a, **kw):
+                return []
+
+        stub.neo4j_graph = _StubGraph()
+        stub.cypher_llm = stub.qa_llm = stub.ner_llm = object()
+        sys.modules["agent.agent_helper"] = stub
+        installed = True
+    try:
+        import graphrag
+        return graphrag
+    finally:
+        if installed:
+            del sys.modules["agent.agent_helper"]
+
+
+def test_graphrag_generator_prompt_is_cached_and_byte_identical():
+    """End-to-end through graphrag._generate_cypher with a capturing fake LLM:
+    the static prefix (task text + schema) lands in one cached block and the
+    reconstructed text equals the prompt with no marker at all."""
+    graphrag = _import_graphrag_without_db()
+
+    captured = {}
+
+    class _FakeLLM:
+        def invoke(self, prompt):
+            captured["text"] = prompt
+
+            class _R:
+                content = "MATCH (n) RETURN n"
+            return _R()
+
+    schema = "node props\n" * 250
+    graphrag._generate_cypher("who directed Alien?", schema, "", _FakeLLM())
+    sent = captured["text"]
+    assert pc.CACHE_BREAK in sent                      # marker reached the model wrapper
+
+    for anthropic in (True, False):
+        prepared = pc.prepare_content(sent, anthropic=anthropic)
+        text = prepared if isinstance(prepared, str) else "".join(b["text"] for b in prepared)
+        assert pc.CACHE_BREAK not in text
+        assert text == pc.strip_breaks(sent)
+
+    blocks = pc.prepare_content(sent, anthropic=True)
+    assert len(blocks) == 2
+    assert blocks[0]["cache_control"] == {"type": "ephemeral"}
+    assert schema.strip() in blocks[0]["text"]          # schema is inside the cached prefix
+    assert "who directed Alien?" in blocks[1]["text"]   # question is not
+
+
+def test_prepare_messages_handles_langchain_system_message():
+    """The NER agent's prompt arrives as a real LangChain SystemMessage whose
+    content must be replaced via pydantic copy, not mutated in place."""
+    from langchain_core.messages import SystemMessage
+
+    m = SystemMessage(content=STATIC + pc.CACHE_BREAK)
+    out = pc.prepare_messages([m], anthropic=True)
+    assert out[0] is not m                              # copied, original untouched
+    assert m.content == STATIC + pc.CACHE_BREAK
+    assert isinstance(out[0].content, list)
+    assert out[0].content[0]["cache_control"] == {"type": "ephemeral"}
+    assert "".join(b["text"] for b in out[0].content) == STATIC
+
+    out2 = pc.prepare_messages([m], anthropic=False)
+    assert out2[0].content == STATIC                    # stripped, plain string

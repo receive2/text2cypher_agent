@@ -204,6 +204,17 @@ def _cache_mixin(base, anthropic: bool):
             messages = prompt_cache.prepare_messages(messages, anthropic)
             return await super()._agenerate(messages, stop=stop, run_manager=run_manager, **kwargs)
 
+        # LangChain routes through _stream instead of _generate whenever a
+        # streaming callback is attached; cover that path too so the marker can
+        # never reach a provider as literal text.
+        def _stream(self, messages, stop=None, run_manager=None, **kwargs):
+            messages = prompt_cache.prepare_messages(messages, anthropic)
+            return super()._stream(messages, stop=stop, run_manager=run_manager, **kwargs)
+
+        def _astream(self, messages, stop=None, run_manager=None, **kwargs):
+            messages = prompt_cache.prepare_messages(messages, anthropic)
+            return super()._astream(messages, stop=stop, run_manager=run_manager, **kwargs)
+
     _PromptCached.__name__ = f"PromptCached{base.__name__}"
     return _PromptCached
 
@@ -660,7 +671,9 @@ def create_agent(
     agent_graph = create_react_agent(
         model=agent_llm,
         tools=tools,
-        prompt=NER_SP,
+        # The whole NER system prompt is static per graph: mark its end so the
+        # Anthropic path caches it as one block (stripped elsewhere).
+        prompt=NER_SP + prompt_cache.CACHE_BREAK,
         checkpointer=False,
     )
     return agent_graph

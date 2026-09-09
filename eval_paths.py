@@ -141,7 +141,7 @@ def default_model() -> str:
         return ""
 
 
-def _run_meta_model(d: Path) -> Optional[str]:
+def run_meta_model(d: Path) -> Optional[str]:
     """The generator model recorded in a run dir's ``summary.json`` (``run_meta``),
     or ``None`` when the file is absent/unreadable or records no model."""
     try:
@@ -165,47 +165,54 @@ def latest_run_dir(dataset: str, graph: str, method_seg: str,
     the newest (the format is sort-safe).
 
     **Model scoping.** ``method_seg`` may already carry ``@<model>``; otherwise
-    ``model`` is appended — and it defaults to the model *this process* is
-    configured for, so a reader never picks up another model's run. Pass
-    ``model=None`` explicitly for the old "any model" behaviour (audit tools). Either way only that model's dirs match,
-    so a second generator LLM cannot take over a report cell. Dirs written
-    before model tagging carry no ``@`` segment — they are accepted only when
-    their ``run_meta`` names the requested model (unknown provenance is accepted
-    only when no model was requested), which keeps every pre-existing run
-    resolvable for the model that actually produced it.
+    ``model`` is appended, and it defaults to the model *this process* is
+    configured for — so a reader never picks up another model's run and a
+    second generator LLM cannot take over a report cell.
+
+    Dirs written before model tagging carry no ``@`` segment. They are accepted
+    for a requested model only when their ``run_meta`` names that model, which
+    keeps every pre-existing run resolvable for the model that produced it and
+    for no other.
+
+    ``model=None`` is the explicit "any model" mode for audit tooling: tagged
+    and untagged dirs of the method all compete, newest stamp wins, and legacy
+    provenance is not checked.
     """
     if model is _AUTO:
-        model = default_model()          # scope to this process's model
+        model = default_model()
     root = Path(root)
-    seg = method_seg
-    base, tagged = split_method_seg(seg)
+    base, tagged = split_method_seg(method_seg)
     if model and not tagged:
-        seg = method_tag_join(base, model)
         tagged = model_seg(model)
-    want = tagged or ""
+    want = tagged                                    # "" == any model
 
-    stamped: list[tuple[str, Path]] = []
-    for p in root.glob(f"{dataset}__{graph}__{seg}__*"):
-        parts = p.name.split("__")
-        if len(parts) == 4 and _STAMP_RE.match(parts[3]) and p.is_dir():
-            stamped.append((parts[3], p))
-    if stamped:
-        return max(stamped)[1]
+    def _stamped(pattern: str) -> list[tuple[str, Path]]:
+        out = []
+        for p in root.glob(pattern):
+            parts = p.name.split("__")
+            if len(parts) == 4 and _STAMP_RE.match(parts[3]) and p.is_dir():
+                out.append((parts[3], p))
+        return out
 
-    # Legacy: untagged dirs predate model tagging. Accept one only if it really
-    # came from the requested model.
-    legacy_stamped: list[tuple[str, Path]] = []
-    for p in root.glob(f"{dataset}__{graph}__{base}__*"):
-        parts = p.name.split("__")
-        if len(parts) == 4 and _STAMP_RE.match(parts[3]) and p.is_dir():
-            legacy_stamped.append((parts[3], p))
-    legacy_plain = root / f"{dataset}__{graph}__{base}"
-    if legacy_plain.is_dir():
-        legacy_stamped.append(("", legacy_plain))
-    for _, d in sorted(legacy_stamped, reverse=True):
-        got = _run_meta_model(d)
+    if want:
+        exact = _stamped(f"{dataset}__{graph}__{base}@{want}__*")
+        if exact:
+            return max(exact)[1]
+    else:
+        any_model = _stamped(f"{dataset}__{graph}__{base}@*__*")
+        any_model += _stamped(f"{dataset}__{graph}__{base}__*")
+        if any_model:
+            return max(any_model)[1]
+
+    # Legacy: untagged dirs predate model tagging.
+    legacy = _stamped(f"{dataset}__{graph}__{base}__*")
+    plain = root / f"{dataset}__{graph}__{base}"
+    if plain.is_dir():
+        legacy.append(("", plain))
+    for _, d in sorted(legacy, reverse=True):
         if not want:
             return d
+        got = run_meta_model(d)
         if got is not None and model_seg(got) == want:
             return d
     return None
