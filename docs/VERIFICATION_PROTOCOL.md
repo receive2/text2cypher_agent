@@ -59,9 +59,10 @@ cleanly and separately.
 
 ## 3. Coverage — what gets verified (all provenance classes)
 
-The benchmark (4,641 perturbations) splits by **provenance**, which determines
-how each part is verified. Counts are for the v2.1 freeze and already reflect
-the coverage revision of 2026-08-25 (§6):
+The benchmark (4,641 perturbations at the v2.1 freeze the queue was drawn
+from; 4,611 in the verified v2.2 release — §9) splits by **provenance**, which
+determines how each part is verified. Counts are for the v2.1 freeze and
+already reflect the coverage revision of 2026-08-25 (§6):
 
 | provenance | in release | verified | how |
 |---|--:|--:|---|
@@ -200,25 +201,46 @@ A "Human Verification" subsection with:
 
 ## 9. Results and release freeze
 
-Collection completed 2026-09-09 (5/5 annotators, 3,322 judgments). Statistics,
-per-item verdicts and the blind key are released in `audit/verification/`
-(`stats.md` / `stats.json` from `verification_stats.py --json`). Pre-adjudication
-headline: 1,739 measured items, 1,524 double-annotated, 3.5% disagreement,
-α 0.354 / AC1 0.964, validity LLM 99.2% [98.3, 99.6] · attested 99.2% ·
-algorithmic 97.2%; 55 items pending adjudication (worklist:
-`scripts/adjudication_worklist.py`).
+**Collection** completed 2026-09-09: 5/5 annotators, 3,322 judgments, every
+`validity` cell filled. **Adjudication** of the 55 unresolved items (raters
+disagreed, or agreed on `unsure`) was done on 2026-09-09 by the first author
+from the worklist (`scripts/adjudication_worklist.py`; both raters' labels
+and notes visible, no model involved): 29 valid / 26 invalid (LLM 16/18,
+attested 6/3, algorithmic 7/5). Recorded in `audit/verification/adjudicated.csv`.
 
-**Applying the verdicts** is done by `scripts/freeze_verified_release.py`, which
-implements §6 and the 2026-08-22 pre-registered rules verbatim and produces the
-v2.2 manifest + `audit/verification/decisions.csv` (every v2.1 row → action).
-Policy choices the protocol leaves open, fixed here before adjudication:
-`valid` + `unnatural` is **dropped** and `valid` + `awkward` **kept** in the
-census tiers (a single rater's flag suffices — flags never co-occurred on a
-double-annotated item); Tier-2 (algorithmic) rejections are **kept** and
-reported as a rate per §3; calibration items follow the organizer reference
-answer. The new manifest verifies with `rebuild_from_manifest.py --manifest`,
-and `rescore_on_verified.py --decisions` re-derives evaluation metrics on the
-released rows without re-running any model.
+**Final figures** (1,739 measured items; `audit/verification/stats.md`):
+
+| tier | n | validity [95% CI] | α | AC1 | raw agr (n₂) |
+|---|--:|---|--:|--:|---|
+| LLM-proposed | 898 | **97.2% [95.9, 98.1]** | 0.291 | 0.961 | 96.2% (898) |
+| attested / KB | 393 | 98.5% [96.7, 99.3] | 0.390 | 0.977 | 97.7% (393) |
+| algorithmic | 448 | 96.2% [94.0, 97.6] | 0.482 | 0.956 | 95.8% (238) |
+| all | 1,739 | 97.3% | 0.354 | 0.964 | 96.5% (1,524) |
+
+By strategy: casing 100.0 · typo 99.0 · alias 98.7 · abbrev 96.7 · partial
+92.1% [87.4, 95.2]. Disagreement 3.5%; source-error flags 5. α is deflated by
+prevalence exactly as anticipated in §6; AC1 and raw agreement are the
+readable reliability figures, and the strata with real label variance (typo
+α 0.66, partial 0.44) show the annotators were engaged.
+
+**Release freeze** (`scripts/freeze_verified_release.py`, 2026-09-09, rules of
+§6 and the 2026-08-22 pre-registration applied verbatim): 4,641 → **4,611**
+rows (cypherbench 2,099 · mindthequery 1,222 · zograscope 1,290). Actions:
+20 reverted to a certified prior algorithmic form (LLM 19, attested 1), 30
+removed — 11 invalid without a prior form (LLM 6, attested 5), 5
+source-error, 12 valid-but-unnatural (LLM 9, attested 3), 2 calibration items
+judged invalid by the organizer key; 17 algorithmic-tier rejections and 12
+naturalness flags kept and reported as rates (§3). Contingency rate 1.5% (stop
+threshold 20%). Policy choices the protocol leaves open, fixed before
+adjudication: `valid`+`unnatural` **dropped**, `valid`+`awkward` **kept** in
+the census tiers (a single rater's flag suffices — flags never co-occurred on a
+double-annotated item); Tier-2 rejections **kept**; calibration items follow
+the organizer reference answer. Manifest `release_manifest_v2.2.jsonl`
+verifies against the released files with `rebuild_from_manifest.py`
+(three-way: rebuilt = frozen hash = file on disk); every v2.1 row's fate is in
+`audit/verification/decisions.csv`, and `rescore_on_verified.py --decisions`
+re-derives evaluation metrics from runs made on v2.1 without re-running any
+model.
 
 ---
 

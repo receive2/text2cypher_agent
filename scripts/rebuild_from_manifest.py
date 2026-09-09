@@ -35,7 +35,8 @@ _DATASETS = {
     "mindthequery": cfg.MINDTHEQUERY_AUGMENTED_PATH,
     "zograscope":   cfg.ZOGRASCOPE_AUGMENTED_PATH,
 }
-MANIFEST = Path.home() / "datasets" / "release_manifest_v2.1.jsonl"
+MANIFEST_V21 = Path.home() / "datasets" / "release_manifest_v2.1.jsonl"   # pre-verification freeze
+MANIFEST = _REPO / "benchmarks" / "release_manifest_v2.2.jsonl"           # verified release (in-repo)
 
 
 def canonical_hash(obj) -> str:
@@ -81,17 +82,30 @@ def build_rows(recs) -> dict:
 
 
 def verify(header, rebuilt, out=None, datasets=None) -> bool:
-    """Compare rebuilt files against the hashes frozen in the header."""
+    """Three-way check per file: the rows rebuilt from the manifest must hash
+    to (a) the hash frozen in the manifest header AND (b) the released file
+    currently on disk. (a) alone only proves the manifest is self-consistent;
+    (b) is what a reviewer actually wants — that the files they downloaded are
+    exactly what the frozen decisions produce. A missing on-disk file is
+    reported and fails the check."""
     ok = True
     for ds, path in (datasets or _DATASETS).items():
         rows, prows = rebuilt[ds]
         for name, built in (("test.json", rows), ("test.probed.json", prows)):
             want = header["released_hashes"][f"{ds}/{name}"]
             got = canonical_hash(built)
-            match = "OK " if got == want else "FAIL"
-            if got != want:
-                ok = False
-            print(f"  {match} {ds}/{name}: rebuilt={got[:16]}… released={want[:16]}…")
+            disk_path = Path(path).with_name(name)
+            try:
+                disk = canonical_hash(json.load(open(disk_path, encoding="utf-8")))
+            except (OSError, ValueError):
+                disk = None
+            good = got == want and disk == got
+            ok &= good
+            state = ("OK " if good else
+                     "FAIL(frozen)" if got != want else
+                     "FAIL(disk missing)" if disk is None else "FAIL(disk)")
+            print(f"  {state} {ds}/{name}: rebuilt={got[:16]}… frozen={want[:16]}… "
+                  f"disk={'—' if disk is None else disk[:16] + '…'}")
             if out:
                 o = Path(out) / ds
                 o.mkdir(parents=True, exist_ok=True)
@@ -104,7 +118,8 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default=None, help="also write rebuilt files here")
     ap.add_argument("--manifest", default=str(MANIFEST),
-                    help=f"decision manifest to rebuild from (default: {MANIFEST})")
+                    help=f"decision manifest to rebuild from (default: the verified release, "
+                         f"{MANIFEST}; the pre-verification freeze is {MANIFEST_V21})")
     args = ap.parse_args()
 
     header, recs = load_manifest(args.manifest)
@@ -112,8 +127,8 @@ def main() -> int:
     rebuilt = build_rows(recs)
     ok = verify(header, rebuilt, out=args.out)
     print(f"\n{len(recs)} perturbed questions re-derived from frozen decisions.")
-    print("REBUILD VERIFIED — datasets are a deterministic function of the manifest."
-          if ok else "MISMATCH — investigate before release.")
+    print("REBUILD VERIFIED — the released files are exactly what the frozen decisions produce."
+          if ok else "MISMATCH — the files on disk are not the release this manifest describes.")
     return 0 if ok else 1
 
 

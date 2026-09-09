@@ -59,6 +59,10 @@ sys.path.insert(0, str(REPO / "scripts"))
 from eval_run import _summarize_records                    # noqa: E402
 from verification_stats import collect_labels              # noqa: E402
 
+# Joins by (graph, qid) -> "<dataset>:<position>". Verdicts and decisions are
+# keyed by v2.1 positions, so runs made on the v2.1 files join through the
+# v2.1 manifest (default). Runs made on the verified v2.2 files need no
+# rescoring — every row they saw is already a released row.
 DEFAULT_MANIFEST = "~/datasets/release_manifest_v2.1.jsonl"
 DROP_LABELS = {"invalid", "source_error"}
 

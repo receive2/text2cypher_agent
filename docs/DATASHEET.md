@@ -16,19 +16,19 @@ plausible variant, creating a **grounding gap** that a value-grounding step
 must close.
 
 <!-- AUTOGEN:HEADLINE -->
-**Headline:** across 4,641 perturbed examples, a baseline case-insensitive exact-match no longer recovers the canonical entity on **90.0%** of them (90.9 / 89.6 / 88.9% on the three datasets independently).
+**Headline:** across 4,611 perturbed examples, a baseline case-insensitive exact-match no longer recovers the canonical entity on **90.0%** of them (90.9 / 89.5 / 88.9% on the three datasets independently).
 <!-- /AUTOGEN:HEADLINE -->
 
 ## 2. Composition
 
 <!-- AUTOGEN:COMPOSITION -->
-3 datasets, 13 graphs, **4,641** perturbed examples (test split, post-curation; see §7 curation log).
+3 datasets, 13 graphs, **4,611** perturbed examples (test split, post-curation; see §7 curation log).
 
 | dataset | graphs | examples |
 |---|---|--:|
-| CypherBench | company, fictional_character, flight_accident, geography, movie, nba, politics | 2,115 |
-| Mind-the-Query | bloom, covid, er, healthcare, wwc | 1,227 |
-| ZOGRASCOPE | pole | 1,299 |
+| CypherBench | company, fictional_character, flight_accident, geography, movie, nba, politics | 2,099 |
+| Mind-the-Query | bloom, covid, er, healthcare, wwc | 1,222 |
+| ZOGRASCOPE | pole | 1,290 |
 <!-- /AUTOGEN:COMPOSITION -->
 
 Each example preserves the original row (`_source_row`), the unchanged
@@ -60,10 +60,10 @@ value (DB- and model-free):
 <!-- AUTOGEN:DIFFICULTY -->
 | class | meaning | all | cypherbench | mtq | zograscope |
 |---|---|--:|--:|--:|--:|
-| `exact_ci` | case-insensitive exact still matches (trivial) | 10.0% | 9.1% | 10.4% | 11.1% |
-| `edit_distance` | within Damerau ≤2 (fuzzy-recoverable) | 32.1% | 15.0% | 31.5% | 60.6% |
-| `substring` | perturbed ⊆ canonical (fulltext-recoverable) | 25.6% | 29.8% | 23.2% | 21.0% |
-| `semantic` | no surface overlap (needs world knowledge / vector) | 32.2% | 46.1% | 34.8% | 7.3% |
+| `exact_ci` | case-insensitive exact still matches (trivial) | 10.0% | 9.1% | 10.5% | 11.1% |
+| `edit_distance` | within Damerau ≤2 (fuzzy-recoverable) | 32.8% | 15.2% | 31.7% | 62.3% |
+| `substring` | perturbed ⊆ canonical (fulltext-recoverable) | 25.7% | 30.1% | 23.2% | 20.8% |
+| `semantic` | no surface overlap (needs world knowledge / vector) | 31.5% | 45.5% | 34.6% | 5.8% |
 <!-- /AUTOGEN:DIFFICULTY -->
 
 `semantic` is the hardest tier and is where value-grounding / vector retrieval
@@ -103,22 +103,22 @@ Post-curation realized mix (regenerate with `scripts/render_datasheet_tables.py`
 
 | dataset | graph | n | casing | typo | partial | abbrev | alias | census |
 |---|---|--:|--:|--:|--:|--:|--:|--:|
-| cypherbench | company | 306 | 10.1 | 14.1 | 20.6 | 26.5 | 28.8 | 171 |
-| cypherbench | fictional_character | 326 | 10.7 | 23.0 | 26.1 | 9.2 | 31.0 | 152 |
-| cypherbench | flight_accident | 169 | 8.9 | 5.3 | 10.7 | 53.8 | 21.3 | 129 |
-| cypherbench | geography | 335 | 10.7 | 14.3 | 16.1 | 23.6 | 35.2 | 199 |
-| cypherbench | movie | 367 | 8.7 | 16.3 | 19.1 | 28.6 | 27.2 | 212 |
+| cypherbench | company | 305 | 10.2 | 14.1 | 20.7 | 26.2 | 28.9 | 170 |
+| cypherbench | fictional_character | 324 | 10.8 | 23.5 | 26.2 | 9.3 | 30.2 | 149 |
+| cypherbench | flight_accident | 168 | 8.9 | 6.0 | 10.7 | 53.0 | 21.4 | 127 |
+| cypherbench | geography | 331 | 10.9 | 14.5 | 16.6 | 23.9 | 34.1 | 194 |
+| cypherbench | movie | 360 | 8.9 | 16.7 | 18.6 | 28.1 | 27.8 | 208 |
 | cypherbench | nba | 251 | 10.0 | 2.8 | 23.5 | 25.9 | 37.8 | 173 |
-| cypherbench | politics | 361 | 5.0 | 5.8 | 13.6 | 47.9 | 27.7 | 273 |
+| cypherbench | politics | 360 | 5.0 | 5.8 | 13.6 | 48.1 | 27.5 | 272 |
 | mindthequery | bloom *(synthetic)* | 24 | 16.7 | 16.7 | 45.8 | 20.8 | 0.0 | 5 |
 | mindthequery | covid | 327 | 10.7 | 54.4 | 11.0 | 8.9 | 15.0 | 78 |
-| mindthequery | er *(synthetic)* | 186 | 9.1 | 32.3 | 14.0 | 44.6 | 0.0 | 83 |
-| mindthequery | healthcare | 420 | 10.5 | 18.8 | 10.2 | 30.7 | 29.8 | 256 |
-| mindthequery | wwc | 270 | 10.4 | 22.6 | 30.4 | 21.5 | 15.2 | 99 |
-| zograscope | pole *(synthetic)* | 1299 | 11.1 | 59.8 | 18.5 | 10.6 | 0.0 | 138 |
-| **ALL** | | 4641 | **10.0** | **30.6** | **18.0** | **23.0** | **18.4** | 1968 |
+| mindthequery | er *(synthetic)* | 185 | 9.2 | 32.4 | 14.1 | 44.3 | 0.0 | 82 |
+| mindthequery | healthcare | 419 | 10.5 | 18.9 | 10.3 | 30.8 | 29.6 | 255 |
+| mindthequery | wwc | 267 | 10.5 | 22.8 | 30.7 | 21.7 | 14.2 | 96 |
+| zograscope | pole *(synthetic)* | 1290 | 11.1 | 61.6 | 18.6 | 8.8 | 0.0 | 113 |
+| **ALL** | | 4611 | **10.0** | **31.3** | **18.1** | **22.4** | **18.2** | 1922 |
 
-Within the alias-applicable stratum (67.5% of rows; synthetic graphs are alias-zero by design) alias = **27.2%**. Deviations from the §3 targets are supply ceilings, measured in `audit/APPLICABILITY_CEILING.md`; headline metrics macro-average over strategies.
+Within the alias-applicable stratum (67.5% of rows; synthetic graphs are alias-zero by design) alias = **27.0%**. Deviations from the §3 targets are supply ceilings, measured in `audit/APPLICABILITY_CEILING.md`; headline metrics macro-average over strategies.
 <!-- /AUTOGEN:REALIZED -->
 
 **Honest accounting.** `casing` is pinned at 10% everywhere. Where entities have
@@ -133,7 +133,25 @@ the per-graph mix rather than forcing abbreviations/aliases that do not exist.
 - **Human verification.** All **916 LLM-proposed edits (100%)** undergo a full double-annotated census — the tier that underpins the anti-circularity claim, and the only tier where verification *removes* items. The lower-risk tiers are *measured* by stratified sample rather than exhaustively cleaned: **400 of 1,052** attested/KB edits (double-annotated) and **450 of 2,673** algorithmic edits, each reported as a validity rate with a Wilson 95% CI; un-sampled rows of those two tiers remain in the release. Total queue 1,766 items / 3,322 judgments across 5 annotators. Queues are built blind by `scripts/verification_sample.py` (annotator instructions: `docs/ANNOTATION_QUICKSTART.md`; internal guideline: `docs/ANNOTATION_SHEET.md`; methodology: `docs/VERIFICATION_PROTOCOL.md`). Adjudication rules are pre-registered (§7 curation log, 2026-08-22); calibration items are excluded from all reported measurements. **Canonical figures are post-adjudication; this v2.1 freeze is pre-verification.**
 
 <!-- AUTOGEN:VERIFICATION -->
-_Verification results not yet frozen — run `scripts/freeze_verified_release.py` after adjudication._
+**Release v2.2-verified-2026-09-09** — 4,641 rows in → **4,611** released (30 removed, 20 reverted to a certified prior algorithmic form, 0 pending). Naturalness policy: `drop-unnatural`. Verdicts from 5 annotators over 1,739 measured items (1,524 double-annotated; 27 calibration items excluded).
+
+Inter-annotator agreement (validity): Krippendorff's α = **0.354**, Gwet's AC1 = **0.964**, disagreement rate 3.5%.
+
+| provenance | n | validity % [95% CI] | α | AC1 | raw agr (n₂) | action |
+|---|--:|---|--:|--:|---|---|
+| algorithmic | 448 | 96.2% [94.0, 97.6] | 0.482 | 0.956 | 95.8% (238) | rate only (no removals) |
+| attested | 393 | 98.5% [96.7, 99.3] | 0.390 | 0.977 | 97.7% (393) | invalid → revert/remove |
+| llm | 898 | 97.2% [95.9, 98.1] | 0.291 | 0.961 | 96.2% (898) | invalid → revert/remove |
+
+| strategy | n | validity % [95% CI] | α | AC1 | raw agr (n₂) |
+|---|--:|---|--:|--:|---|
+| abbrev | 728 | 96.7% [95.1, 97.8] | 0.357 | 0.957 | 95.9% (728) |
+| alias | 520 | 98.7% [97.2, 99.3] | 0.178 | 0.975 | 97.5% (520) |
+| casing | 99 | 100.0% [96.2, 100.0] | 1.000 | 1.000 | 100.0% (79) |
+| partial | 192 | 92.1% [87.4, 95.2] | 0.438 | 0.921 | 92.6% (122) |
+| typo | 200 | 99.0% [96.4, 99.7] | 0.664 | 0.987 | 98.8% (80) |
+
+Per-row verdicts (anonymised annotator letters), the blind key, the calibration reference answers and the full statistics report ship in `audit/verification/`; `decisions.csv` maps every v2.1 row to its action and its position in the released files.
 <!-- /AUTOGEN:VERIFICATION -->
 - **Residual LLM noise** caught by verification: standings-code abbreviations
   (`the CHI`) and invented nicknames for obscure entities. Closed-set categories
@@ -324,20 +342,49 @@ _Verification results not yet frozen — run `scripts/freeze_verified_release.py
   Policy choices stated in `docs/VERIFICATION_PROTOCOL.md` §9. Artifacts:
   `audit/verification/`.
 
+- **2026-09-09 — adjudication complete; VERIFIED RELEASE v2.2 frozen (4,641 →
+  4,611).** The 55 pending items were adjudicated by the first author (29
+  valid / 26 invalid; no model involved). Final validity (1,739 measured
+  items): LLM 97.2% [95.9, 98.1], attested 98.5% [96.7, 99.3], algorithmic
+  96.2% [94.0, 97.6]; AC1 0.964, raw agreement 96.5%, α 0.354 (prevalence-
+  deflated, as pre-registered). Verdicts applied by
+  `scripts/freeze_verified_release.py` under the 2026-08-22 rules: 20 rows
+  reverted to certified prior algorithmic forms (LLM 19, attested 1; question
+  re-derived, difficulty class recomputed), 30 removed (11 invalid without a
+  prior form, 5 source-error, 12 valid-but-unnatural, 2 calibration items
+  judged invalid by the organizer key); algorithmic-tier rejections (17) kept
+  and reported as a rate per protocol §3. Contingency rate 1.5% vs the 20%
+  stop; loss 30 rows vs the ≈100–150 pre-registered expectation. Headline
+  unchanged at **90.0%**; mixture typo 31.3 / abbrev 22.4 / alias 18.2 /
+  partial 18.1 / casing 10.0. Manifest `release_manifest_v2.2.jsonl` (each row
+  carries its v2.1 position, the raters' labels and the action); rebuild
+  verified three-way (rebuilt = frozen = on disk, 6/6). Row-level log:
+  `audit/verification/decisions.csv`; tables above regenerated by script.
+
 ## 8. Files
 
 ```
-~/datasets/<dataset>_augmented_v2/
-  test.json              # augmented examples (+ _aug_meta, gold_cypher, _source_row)
-  test.probed.json       # + grounding_probe difficulty signals
-  report.json            # per-graph realized distribution + drop reasons
-  needs_verification.jsonl  # LLM-proposed edits for human review
-verification/verification_annotator_*.csv  # blind annotation queues (5 annotators)
-verification/verification_key.csv          # provenance key — NOT for annotators
-docs/ANNOTATION_QUICKSTART.md              # annotator-facing instructions
-~/datasets/review_queue_ALL.csv            # superseded pilot sheet (814 edits)
+benchmarks/<dataset>_augmented_v2/
+  test.json                 # released examples (nl, gold_cypher, _aug_meta, _source_row)
+  test.probed.json          # + grounding_probe difficulty signals
+benchmarks/verify.py        # pins the v2.2 hashes — run before any experiment
+benchmarks/release_manifest_v2.2.jsonl   # verified release: one record per released row
+                                         #   (source row, unperturbed question, gold, edit
+                                         #   decision, raters' labels, action, v2.1 position)
+~/datasets/release_manifest_v2.1.jsonl   # pre-verification freeze the queue was drawn from
+audit/verification/
+  decisions.csv             # every v2.1 row -> action (keep / revert / remove) + reason
+  verification_key.csv      # the blind queue key (provenance, strategy, assignment)
+  verdicts_long.csv         # every per-item judgment, annotators as letters A-E
+  adjudicated.csv           # the 55 adjudicated items
+  calibration_ids.csv, calibration_key.csv   # calibration set + organizer answers
+  stats.md, stats.json, summary.json         # IAA / validity report, freeze summary
+docs/ANNOTATION_QUICKSTART.md   # annotator-facing instructions (frozen)
 ```
 
-Generated by `scripts/generate_augmented.py`; probed by
+`scripts/rebuild_from_manifest.py` re-derives every released question from the
+manifest and checks it three ways (rebuilt = frozen hash = file on disk);
+`scripts/freeze_verified_release.py` is how v2.2 was produced from v2.1 and the
+verdicts. Generated by `scripts/generate_augmented.py`; probed by
 `scripts/grounding_probe.py`; pipeline in `data_augmentation/` (see
 `docs/archive/AUGMENTATION_REDESIGN.md`).

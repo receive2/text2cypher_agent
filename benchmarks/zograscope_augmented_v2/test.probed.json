@@ -20,13 +20,13 @@
      "prop": "address",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_backfill_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 5,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "partial_backfill_2026-08"
+     }
     }
    ],
    "query_difficulty": "hard"
@@ -180,7 +180,7 @@
   "dataset": "zograscope",
   "graph": "pole",
   "id": "2196",
-  "nl": "How many individuals are aware of a FoMoCo's phone number?",
+  "nl": "How many individuals are aware of a Flrd's phone number?",
   "gold_cypher": "MATCH (x0:Person)-[:KNOWS_PHONE]-(x1:Person WHERE x1.surname = \"Ford\")\nRETURN COUNT(DISTINCT x0)",
   "_aug_meta": {
    "augmented": true,
@@ -188,24 +188,29 @@
    "graph": "pole",
    "edits": [
     {
-     "strategy": "abbrev",
+     "strategy": "typo",
      "from": "Ford",
-     "to": "FoMoCo",
-     "source": "llm",
-     "needs_verification": true,
+     "to": "Flrd",
+     "source": "algorithmic",
+     "needs_verification": false,
      "label": "Person",
      "prop": "surname",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "verification_revert_v2.2-verified-2026-09-09",
+     "reverted_from": {
+      "strategy": "abbrev",
+      "to": "FoMoCo",
+      "source": "llm",
+      "proposer_model": "claude-opus-5",
+      "evidence": "Ford Motor Company is widely contracted to \"FoMoCo\" and nicknamed \"the Blue Oval\" after its logo."
+     },
      "grounding_probe": {
       "exact_ci": false,
-      "damerau": 4,
+      "damerau": 1,
       "substring": false,
-      "class": "semantic"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "Ford Motor Company is widely contracted to \"FoMoCo\" and nicknamed \"the Blue Oval\" after its logo."
+      "class": "edit_distance"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -244,13 +249,13 @@
      "prop": "last_outcome",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -377,15 +382,15 @@
      "prop": "make",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "rebalance_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "Toyota Motor Corporation is commonly abbreviated TMC in company filings and automotive press; no widely used nickname exists.",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 5,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "Toyota Motor Corporation is commonly abbreviated TMC in company filings and automotive press; no widely used nickname exists."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -1260,13 +1265,13 @@
      "prop": "last_outcome",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -1305,13 +1310,13 @@
      "prop": "last_outcome",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -2010,13 +2015,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 10,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -2099,13 +2104,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "llm_tier_opus5_2026-08"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -2496,13 +2501,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "easy"
@@ -2629,13 +2634,13 @@
      "prop": "last_outcome",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_backfill_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 14,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "partial_backfill_2026-08"
+     }
     }
    ],
    "query_difficulty": "hard"
@@ -2982,13 +2987,13 @@
      "prop": "last_outcome",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -3159,15 +3164,15 @@
      "prop": "name",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "rebalance_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "The given name Christopher is commonly shortened to \"Chris\" and traditionally nicknamed \"Kit\" (e.g., Kit Marlowe).",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 6,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "The given name Christopher is commonly shortened to \"Chris\" and traditionally nicknamed \"Kit\" (e.g., Kit Marlowe)."
+     }
     }
    ],
    "query_difficulty": "easy"
@@ -3206,13 +3211,13 @@
      "prop": "last_outcome",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -3471,13 +3476,13 @@
      "prop": "last_outcome",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -3780,15 +3785,15 @@
      "prop": "make",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "Common colloquial/British short form for Mercedes-Benz cars, widely used in speech and motoring press.",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 9,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "Common colloquial/British short form for Mercedes-Benz cars, widely used in speech and motoring press."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -4091,15 +4096,15 @@
      "prop": "rank",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "UK police ranks are routinely written as 'PC' before an officer's name in news reports and official force listings.",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 14,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "UK police ranks are routinely written as 'PC' before an officer's name in news reports and official force listings."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -5194,13 +5199,13 @@
      "prop": "last_outcome",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -5239,15 +5244,15 @@
      "prop": "model",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "rebalance_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "The naval rank Commander is standardly abbreviated \"Cdr\" (or \"CDR\" in US usage).",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 6,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "The naval rank Commander is standardly abbreviated \"Cdr\" (or \"CDR\" in US usage)."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -5418,13 +5423,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "llm_tier_opus5_2026-08"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -5463,13 +5468,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": true,
       "class": "edit_distance"
-     },
-     "regenerated": "llm_tier_opus5_2026-08"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -5992,13 +5997,13 @@
      "prop": "last_outcome",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "hard"
@@ -6037,13 +6042,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "llm_tier_opus5_2026-08"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -6082,13 +6087,13 @@
      "prop": "last_outcome",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -6171,15 +6176,15 @@
      "prop": "rank",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "UK police and news reports routinely style officers as 'PC' before their name (e.g., 'PC Andrew Harper').",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 14,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "UK police and news reports routinely style officers as 'PC' before their name (e.g., 'PC Andrew Harper')."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -6262,15 +6267,15 @@
      "prop": "name",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "rebalance_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "Jennifer is commonly shortened to \"Jen\" and colloquially called \"Jenny\".",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 5,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "Jennifer is commonly shortened to \"Jen\" and colloquially called \"Jenny\"."
+     }
     }
    ],
    "query_difficulty": "easy"
@@ -6397,13 +6402,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 10,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -6688,53 +6693,6 @@
  {
   "dataset": "zograscope",
   "graph": "pole",
-  "id": "83",
-  "nl": "Who are the Chriss reachable at coliver28@biblegateway.com?",
-  "gold_cypher": "MATCH (x0:Person WHERE x0.name = \"Christopher\")-[:HAS_EMAIL]-(x1:Email WHERE x1.email_address = \"coliver28@biblegateway.com\")\nRETURN x0",
-  "_aug_meta": {
-   "augmented": true,
-   "original_nl": "Who are the Christophers reachable at coliver28@biblegateway.com?",
-   "graph": "pole",
-   "edits": [
-    {
-     "strategy": "abbrev",
-     "from": "Christopher",
-     "to": "Chris",
-     "source": "llm",
-     "needs_verification": true,
-     "label": "Person",
-     "prop": "name",
-     "occurrences": 1,
-     "validity": "ok",
-     "grounding_probe": {
-      "exact_ci": false,
-      "damerau": 6,
-      "substring": true,
-      "class": "substring"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "The given name Christopher is commonly shortened to \"Chris\" and traditionally nicknamed \"Kit\" (e.g., Kit Marlowe)."
-    }
-   ],
-   "query_difficulty": "medium"
-  },
-  "_source_row": {
-   "id": "83",
-   "nl": "Who are the Christophers reachable at coliver28@biblegateway.com?",
-   "mr": "MATCH (x0:Person WHERE x0.name = \"Christopher\")-[:HAS_EMAIL]-(x1:Email WHERE x1.email_address = \"coliver28@biblegateway.com\")\nRETURN x0",
-   "nl_gold_linked": "[Person] = Christopher\n[Email] = coliver28@biblegateway.com\nWho are the Christophers reachable at coliver28@biblegateway.com?",
-   "nl_bracketed": "Who are the [x0.Person.name:Christopher] reachable at [x1.Email.email_address:coliver28@biblegateway.com]?",
-   "entities": "x0.Person.name:Christopher = Christophers\nx1.Email.email_address:coliver28@biblegateway.com = coliver28@biblegateway.com",
-   "num_nodes": "2",
-   "template_id": "10",
-   "type": "entity_set",
-   "return_count": "1"
-  }
- },
- {
-  "dataset": "zograscope",
-  "graph": "pole",
   "id": "1546",
   "nl": "Who are the individuals living with someone whose last name is Wwaver?",
   "gold_cypher": "MATCH (x0:Person)-[:KNOWS_LW]-(x1:Person WHERE x1.surname = \"Weaver\")\nRETURN x0",
@@ -6929,13 +6887,13 @@
      "prop": null,
      "occurrences": 1,
      "validity": "ok",
+     "validity_backfill": "auto_ok_casing",
      "grounding_probe": {
       "exact_ci": true,
       "damerau": 6,
       "substring": false,
       "class": "exact_ci"
-     },
-     "validity_backfill": "auto_ok_casing"
+     }
     }
    ],
    "query_difficulty": "easy"
@@ -7000,53 +6958,6 @@
  {
   "dataset": "zograscope",
   "graph": "pole",
-  "id": "1417",
-  "nl": "How many emails are associated with people named Va.?",
-  "gold_cypher": "MATCH (x0:Email)-[:HAS_EMAIL]-(x1:Person WHERE x1.name = \"Virginia\")\nRETURN COUNT(DISTINCT x0)",
-  "_aug_meta": {
-   "augmented": true,
-   "original_nl": "How many emails are associated with people named Virginia?",
-   "graph": "pole",
-   "edits": [
-    {
-     "strategy": "abbrev",
-     "from": "Virginia",
-     "to": "Va.",
-     "source": "llm",
-     "needs_verification": true,
-     "label": "Person",
-     "prop": "name",
-     "occurrences": 1,
-     "validity": "ok",
-     "grounding_probe": {
-      "exact_ci": false,
-      "damerau": 7,
-      "substring": false,
-      "class": "semantic"
-     },
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "Standard AP Stylebook/traditional abbreviation for the U.S. state of Virginia, as in datelines like 'RICHMOND, Va.'"
-    }
-   ],
-   "query_difficulty": "medium"
-  },
-  "_source_row": {
-   "id": "1417",
-   "nl": "How many emails are associated with people named Virginia?",
-   "mr": "MATCH (x0:Email)-[:HAS_EMAIL]-(x1:Person WHERE x1.name = \"Virginia\")\nRETURN COUNT(DISTINCT x0)",
-   "nl_gold_linked": "[Person] = Virginia\nHow many emails are associated with people named Virginia?",
-   "nl_bracketed": "How many emails are associated with people named [x1.Person.name:Virginia]?",
-   "entities": "x1.Person.name:Virginia = Virginia",
-   "num_nodes": "2",
-   "template_id": "187",
-   "type": "count",
-   "return_count": "1"
-  }
- },
- {
-  "dataset": "zograscope",
-  "graph": "pole",
   "id": "2575",
   "nl": "Can you provide the badge numbers of officers who deal with vwhicle crimes involving individuals surnamed Kelly and LHS model cars?",
   "gold_cypher": "MATCH (x0:Officer)-[:INVESTIGATED_BY]-(x1:Crime WHERE x1.type = \"Vehicle crime\")-[:INVOLVED_IN]-(x3:Vehicle WHERE x3.model = \"LHS\")\nMATCH (x1:Crime WHERE x1.type = \"Vehicle crime\")-[:PARTY_TO]-(x2:Person WHERE x2.surname = \"Kelly\")\nRETURN x0.badge_no",
@@ -7065,13 +6976,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "llm_tier_opus5_2026-08"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -7286,15 +7197,15 @@
      "prop": "make",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "Standard short form used in news and everyday speech for Mercedes-Benz vehicles and the company (e.g., 'he drives a Mercedes').",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 5,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "Standard short form used in news and everyday speech for Mercedes-Benz vehicles and the company (e.g., 'he drives a Mercedes')."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -7333,13 +7244,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "llm_tier_opus5_2026-08"
+     }
     }
    ],
    "query_difficulty": "hard"
@@ -7977,7 +7888,7 @@
   "dataset": "zograscope",
   "graph": "pole",
   "id": "645",
-  "nl": "Who is the senior-most person related to someone familiar with a FoMoCo's phone number?",
+  "nl": "Who is the senior-most person related to someone familiar with a Forrd's phone number?",
   "gold_cypher": "MATCH (x0:Person)-[:FAMILY_REL]-(x1:Person)-[:KNOWS_PHONE]-(x2:Person WHERE x2.surname = \"Ford\")\nRETURN x0\nORDER BY x0.age DESC\nLIMIT 1",
   "_aug_meta": {
    "augmented": true,
@@ -7985,24 +7896,29 @@
    "graph": "pole",
    "edits": [
     {
-     "strategy": "abbrev",
+     "strategy": "typo",
      "from": "Ford",
-     "to": "FoMoCo",
-     "source": "llm",
-     "needs_verification": true,
+     "to": "Forrd",
+     "source": "algorithmic",
+     "needs_verification": false,
      "label": "Person",
      "prop": "surname",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "verification_revert_v2.2-verified-2026-09-09",
+     "reverted_from": {
+      "strategy": "abbrev",
+      "to": "FoMoCo",
+      "source": "llm",
+      "proposer_model": "claude-opus-5",
+      "evidence": "Ford Motor Company is widely contracted to \"FoMoCo\" and nicknamed \"the Blue Oval\" after its logo."
+     },
      "grounding_probe": {
       "exact_ci": false,
-      "damerau": 4,
+      "damerau": 1,
       "substring": false,
-      "class": "semantic"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "Ford Motor Company is widely contracted to \"FoMoCo\" and nicknamed \"the Blue Oval\" after its logo."
+      "class": "edit_distance"
+     }
     }
    ],
    "query_difficulty": "hard"
@@ -8041,13 +7957,13 @@
      "prop": "last_outcome",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -8834,13 +8750,13 @@
      "prop": "last_outcome",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -8879,13 +8795,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -9144,13 +9060,13 @@
      "prop": "last_outcome",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -9189,13 +9105,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "easy"
@@ -9322,13 +9238,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_backfill_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 6,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "partial_backfill_2026-08"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -9394,7 +9310,7 @@
   "dataset": "zograscope",
   "graph": "pole",
   "id": "839",
-  "nl": "What's the age of the youngest individual residing with someone with surname JOR?",
+  "nl": "What's the age of the youngest individual residing with someone with surname Joradn?",
   "gold_cypher": "MATCH (x0:Person)-[:KNOWS_LW]-(x1:Person WHERE x1.surname = \"Jordan\")\nRETURN x0.age\nORDER BY x0.age ASC\nLIMIT 1",
   "_aug_meta": {
    "augmented": true,
@@ -9402,24 +9318,29 @@
    "graph": "pole",
    "edits": [
     {
-     "strategy": "abbrev",
+     "strategy": "typo",
      "from": "Jordan",
-     "to": "JOR",
-     "source": "llm",
-     "needs_verification": true,
+     "to": "Joradn",
+     "source": "algorithmic",
+     "needs_verification": false,
      "label": "Person",
      "prop": "surname",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "verification_revert_v2.2-verified-2026-09-09",
+     "reverted_from": {
+      "strategy": "abbrev",
+      "to": "JOR",
+      "source": "llm",
+      "proposer_model": "claude-opus-5",
+      "evidence": "JOR is Jordan's standard ISO 3166/IOC country code used in international sport and data listings."
+     },
      "grounding_probe": {
       "exact_ci": false,
-      "damerau": 5,
-      "substring": true,
-      "class": "substring"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "JOR is Jordan's standard ISO 3166/IOC country code used in international sport and data listings."
+      "damerau": 1,
+      "substring": false,
+      "class": "edit_distance"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -9590,15 +9511,15 @@
      "prop": "name",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "rebalance_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "The given name Stephanie is commonly shortened to \"Steph\" in everyday use.",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 4,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "The given name Stephanie is commonly shortened to \"Steph\" in everyday use."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -9664,7 +9585,7 @@
   "dataset": "zograscope",
   "graph": "pole",
   "id": "3215",
-  "nl": "How many folks are friends with someone with last name Fields who is related to someone with surname ATX?",
+  "nl": "How many folks are friends with someone with last name Fields who is related to someone with surname Austij?",
   "gold_cypher": "MATCH (x0:Person)-[:KNOWS_SN]-(x1:Person WHERE x1.surname = \"Fields\")-[:FAMILY_REL]-(x2:Person WHERE x2.surname = \"Austin\")\nRETURN COUNT(DISTINCT x0)",
   "_aug_meta": {
    "augmented": true,
@@ -9672,24 +9593,29 @@
    "graph": "pole",
    "edits": [
     {
-     "strategy": "abbrev",
+     "strategy": "typo",
      "from": "Austin",
-     "to": "ATX",
-     "source": "llm",
-     "needs_verification": true,
+     "to": "Austij",
+     "source": "algorithmic",
+     "needs_verification": false,
      "label": "Person",
      "prop": "surname",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "verification_revert_v2.2-verified-2026-09-09",
+     "reverted_from": {
+      "strategy": "abbrev",
+      "to": "ATX",
+      "source": "llm",
+      "proposer_model": "claude-opus-5",
+      "evidence": "Austin, Texas is widely abbreviated ATX and officially branded the 'Live Music Capital of the World'."
+     },
      "grounding_probe": {
       "exact_ci": false,
-      "damerau": 5,
+      "damerau": 1,
       "substring": false,
-      "class": "semantic"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "Austin, Texas is widely abbreviated ATX and officially branded the 'Live Music Capital of the World'."
+      "class": "edit_distance"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -9860,13 +9786,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 9,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -10169,15 +10095,15 @@
      "prop": "rank",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "British police ranks are routinely written as 'PC Smith' in news reports and official police communications.",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 14,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "British police ranks are routinely written as 'PC Smith' in news reports and official police communications."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -10216,15 +10142,15 @@
      "prop": "name",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "rebalance_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "Deborah is commonly shortened to \"Deb\" and familiarly called \"Debbie\" in English usage.",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 4,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "Deborah is commonly shortened to \"Deb\" and familiarly called \"Debbie\" in English usage."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -10307,13 +10233,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "llm_tier_opus5_2026-08"
+     }
     }
    ],
    "query_difficulty": "hard"
@@ -10440,15 +10366,15 @@
      "prop": "rank",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "UK police ranks are routinely written as 'PC' before an officer's name in British news reports, e.g. 'PC Andrew Harper'.",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 14,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "UK police ranks are routinely written as 'PC' before an officer's name in British news reports, e.g. 'PC Andrew Harper'."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -10751,15 +10677,15 @@
      "prop": "name",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "rebalance_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "The given name Donald is commonly shortened to \"Don\" and appears in the familiar form \"Donnie\".",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 3,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "The given name Donald is commonly shortened to \"Don\" and appears in the familiar form \"Donnie\"."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -11194,15 +11120,15 @@
      "prop": "rank",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "UK police ranks are routinely written as 'PC' before an officer's name, e.g. 'PC Smith' in BBC news reports and Home Office documents.",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 14,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "UK police ranks are routinely written as 'PC' before an officer's name, e.g. 'PC Smith' in BBC news reports and Home Office documents."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -11268,7 +11194,7 @@
   "dataset": "zograscope",
   "graph": "pole",
   "id": "2197",
-  "nl": "Who can provide the phone number for anyone with the surname FoMoCo?",
+  "nl": "Who can provide the phone number for anyone with the surname Fkrd?",
   "gold_cypher": "MATCH (x0:Person)-[:KNOWS_PHONE]-(x1:Person WHERE x1.surname = \"Ford\")\nRETURN COUNT(DISTINCT x0)",
   "_aug_meta": {
    "augmented": true,
@@ -11276,24 +11202,29 @@
    "graph": "pole",
    "edits": [
     {
-     "strategy": "abbrev",
+     "strategy": "typo",
      "from": "Ford",
-     "to": "FoMoCo",
-     "source": "llm",
-     "needs_verification": true,
+     "to": "Fkrd",
+     "source": "algorithmic",
+     "needs_verification": false,
      "label": "Person",
      "prop": "surname",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "verification_revert_v2.2-verified-2026-09-09",
+     "reverted_from": {
+      "strategy": "abbrev",
+      "to": "FoMoCo",
+      "source": "llm",
+      "proposer_model": "claude-opus-5",
+      "evidence": "Ford Motor Company is widely contracted to \"FoMoCo\" and nicknamed \"the Blue Oval\" after its logo."
+     },
      "grounding_probe": {
       "exact_ci": false,
-      "damerau": 4,
+      "damerau": 1,
       "substring": false,
-      "class": "semantic"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "Ford Motor Company is widely contracted to \"FoMoCo\" and nicknamed \"the Blue Oval\" after its logo."
+      "class": "edit_distance"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -11376,13 +11307,13 @@
      "prop": "address",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -11773,13 +11704,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "llm_tier_opus5_2026-08"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -11994,13 +11925,13 @@
      "prop": "last_outcome",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -12611,13 +12542,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 9,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -13052,13 +12983,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "llm_tier_opus5_2026-08"
+     }
     }
    ],
    "query_difficulty": "hard"
@@ -13317,15 +13248,15 @@
      "prop": "rank",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "UK police ranks are routinely written as 'PC Smith', the standard abbreviation for Police Constable in British news and police records.",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 14,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "UK police ranks are routinely written as 'PC Smith', the standard abbreviation for Police Constable in British news and police records."
+     }
     }
    ],
    "query_difficulty": "hard"
@@ -13408,13 +13339,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 9,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -13453,15 +13384,15 @@
      "prop": "rank",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "UK police forces and news reports routinely style the rank as 'PC', e.g. 'PC Andrew Harper'.",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 14,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "UK police forces and news reports routinely style the rank as 'PC', e.g. 'PC Andrew Harper'."
+     }
     }
    ],
    "query_difficulty": "hard"
@@ -13544,13 +13475,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 9,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -13633,13 +13564,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "llm_tier_opus5_2026-08"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -14074,15 +14005,15 @@
      "prop": "rank",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "UK police ranks are routinely written as \"PC Smith\" in news reports and official Home Office documents.",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 14,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "UK police ranks are routinely written as \"PC Smith\" in news reports and official Home Office documents."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -14121,13 +14052,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "llm_tier_opus5_2026-08"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -14166,13 +14097,13 @@
      "prop": "last_outcome",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -14414,7 +14345,7 @@
   "dataset": "zograscope",
   "graph": "pole",
   "id": "1540",
-  "nl": "Who are the people living with someone whose surname is JOR?",
+  "nl": "Who are the people living with someone whose surname is Jorda?",
   "gold_cypher": "MATCH (x0:Person)-[:KNOWS_LW]-(x1:Person WHERE x1.surname = \"Jordan\")\nRETURN x0",
   "_aug_meta": {
    "augmented": true,
@@ -14422,24 +14353,29 @@
    "graph": "pole",
    "edits": [
     {
-     "strategy": "abbrev",
+     "strategy": "typo",
      "from": "Jordan",
-     "to": "JOR",
-     "source": "llm",
-     "needs_verification": true,
+     "to": "Jorda",
+     "source": "algorithmic",
+     "needs_verification": false,
      "label": "Person",
      "prop": "surname",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "verification_revert_v2.2-verified-2026-09-09",
+     "reverted_from": {
+      "strategy": "abbrev",
+      "to": "JOR",
+      "source": "llm",
+      "proposer_model": "claude-opus-5",
+      "evidence": "JOR is Jordan's standard ISO 3166/IOC country code used in international sport and data listings."
+     },
      "grounding_probe": {
       "exact_ci": false,
-      "damerau": 5,
+      "damerau": 1,
       "substring": true,
-      "class": "substring"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "JOR is Jordan's standard ISO 3166/IOC country code used in international sport and data listings."
+      "class": "edit_distance"
+     }
     }
    ],
    "query_difficulty": "easy"
@@ -14874,13 +14810,13 @@
      "prop": "address",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 7,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "easy"
@@ -15667,13 +15603,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "llm_tier_opus5_2026-08"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -15756,13 +15692,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 10,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -15872,7 +15808,7 @@
   "dataset": "zograscope",
   "graph": "pole",
   "id": "1538",
-  "nl": "Who are the individuals living with someone with last name JOR?",
+  "nl": "Who are the individuals living with someone with last name Joradn?",
   "gold_cypher": "MATCH (x0:Person)-[:KNOWS_LW]-(x1:Person WHERE x1.surname = \"Jordan\")\nRETURN x0",
   "_aug_meta": {
    "augmented": true,
@@ -15880,24 +15816,29 @@
    "graph": "pole",
    "edits": [
     {
-     "strategy": "abbrev",
+     "strategy": "typo",
      "from": "Jordan",
-     "to": "JOR",
-     "source": "llm",
-     "needs_verification": true,
+     "to": "Joradn",
+     "source": "algorithmic",
+     "needs_verification": false,
      "label": "Person",
      "prop": "surname",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "verification_revert_v2.2-verified-2026-09-09",
+     "reverted_from": {
+      "strategy": "abbrev",
+      "to": "JOR",
+      "source": "llm",
+      "proposer_model": "claude-opus-5",
+      "evidence": "JOR is Jordan's standard ISO 3166/IOC country code used in international sport and data listings."
+     },
      "grounding_probe": {
       "exact_ci": false,
-      "damerau": 5,
-      "substring": true,
-      "class": "substring"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "JOR is Jordan's standard ISO 3166/IOC country code used in international sport and data listings."
+      "damerau": 1,
+      "substring": false,
+      "class": "edit_distance"
+     }
     }
    ],
    "query_difficulty": "easy"
@@ -16288,15 +16229,15 @@
      "prop": "name",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "rebalance_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "Deborah is commonly shortened to \"Deb\" and familiarly called \"Debbie\" in English usage.",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 4,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "Deborah is commonly shortened to \"Deb\" and familiarly called \"Debbie\" in English usage."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -16335,13 +16276,13 @@
      "prop": "last_outcome",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -16776,15 +16717,15 @@
      "prop": "rank",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "UK police ranks are routinely written as 'PC Smith', the standard abbreviation for Police Constable in British news and police records.",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 14,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "UK police ranks are routinely written as 'PC Smith', the standard abbreviation for Police Constable in British news and police records."
+     }
     }
    ],
    "query_difficulty": "hard"
@@ -16955,13 +16896,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 9,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -17880,13 +17821,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_backfill_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 6,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "partial_backfill_2026-08"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -17969,13 +17910,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "llm_tier_opus5_2026-08"
+     }
     }
    ],
    "query_difficulty": "hard"
@@ -18058,15 +17999,15 @@
      "prop": "name",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "rebalance_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "Jessica is commonly shortened to \"Jess\" and appears colloquially as \"Jessie\".",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 3,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "Jessica is commonly shortened to \"Jess\" and appears colloquially as \"Jessie\"."
+     }
     }
    ],
    "query_difficulty": "hard"
@@ -18369,13 +18310,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "llm_tier_opus5_2026-08"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -18414,13 +18355,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "llm_tier_opus5_2026-08"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -18503,13 +18444,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "llm_tier_opus5_2026-08"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -18768,15 +18709,15 @@
      "prop": "rank",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "Standard UK abbreviation for the police rank, as in 'PC Smith' in British news reports and police records.",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 14,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "Standard UK abbreviation for the police rank, as in 'PC Smith' in British news reports and police records."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -18991,15 +18932,15 @@
      "prop": "rank",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "UK police ranks are routinely written as 'PC' before an officer's name (e.g., 'PC John Smith') in British news and Home Office documents.",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 14,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "UK police ranks are routinely written as 'PC' before an officer's name (e.g., 'PC John Smith') in British news and Home Office documents."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -19346,13 +19287,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "llm_tier_opus5_2026-08"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -19391,13 +19332,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "llm_tier_opus5_2026-08"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -19612,13 +19553,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "llm_tier_opus5_2026-08"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -19701,15 +19642,15 @@
      "prop": "make",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "\"VW\" is the company's own logo initialism and is used widely in news and speech for Volkswagen.",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 9,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "\"VW\" is the company's own logo initialism and is used widely in news and speech for Volkswagen."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -19880,13 +19821,13 @@
      "prop": "last_outcome",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -20013,13 +19954,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 9,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -20058,13 +19999,13 @@
      "prop": "address",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_backfill_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 8,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "partial_backfill_2026-08"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -20191,13 +20132,13 @@
      "prop": null,
      "occurrences": 2,
      "validity": "ok",
+     "validity_backfill": "auto_ok_casing",
      "grounding_probe": {
       "exact_ci": true,
       "damerau": 3,
       "substring": false,
       "class": "exact_ci"
-     },
-     "validity_backfill": "auto_ok_casing"
+     }
     }
    ],
    "query_difficulty": "easy"
@@ -20588,13 +20529,13 @@
      "prop": null,
      "occurrences": 1,
      "validity": "ok",
+     "validity_backfill": "auto_ok_casing",
      "grounding_probe": {
       "exact_ci": true,
       "damerau": 3,
       "substring": false,
       "class": "exact_ci"
-     },
-     "validity_backfill": "auto_ok_casing"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -20809,13 +20750,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -20898,15 +20839,15 @@
      "prop": "make",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "VW is the company's own logo abbreviation, used widely in news and speech (e.g., 'VW Golf', 'VW emissions scandal').",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 9,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "VW is the company's own logo abbreviation, used widely in news and speech (e.g., 'VW Golf', 'VW emissions scandal')."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -20989,13 +20930,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 10,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "hard"
@@ -21122,13 +21063,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 10,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -21519,13 +21460,13 @@
      "prop": "last_outcome",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -21696,13 +21637,13 @@
      "prop": "last_outcome",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -21917,13 +21858,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 9,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "hard"
@@ -22094,15 +22035,15 @@
      "prop": "rank",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "UK police and news reports routinely style officers as 'PC Smith', the standard abbreviation for Police Constable.",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 14,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "UK police and news reports routinely style officers as 'PC Smith', the standard abbreviation for Police Constable."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -22317,13 +22258,13 @@
      "prop": null,
      "occurrences": 1,
      "validity": "ok",
+     "validity_backfill": "auto_ok_casing",
      "grounding_probe": {
       "exact_ci": true,
       "damerau": 12,
       "substring": false,
       "class": "exact_ci"
-     },
-     "validity_backfill": "auto_ok_casing"
+     }
     }
    ],
    "query_difficulty": "hard"
@@ -22345,7 +22286,7 @@
   "dataset": "zograscope",
   "graph": "pole",
   "id": "328",
-  "nl": "When was the most recent call received by a person residing with someone with surname FoMoCo?",
+  "nl": "When was the most recent call received by a person residing with someone with surname Frod?",
   "gold_cypher": "MATCH (x0:PhoneCall)-[:CALLED]-(x1:Phone)-[:HAS_PHONE]-(x2:Person)-[:KNOWS_LW]-(x3:Person WHERE x3.surname = \"Ford\")\nRETURN x0.call_date\nORDER BY x0.call_date DESC\nLIMIT 1",
   "_aug_meta": {
    "augmented": true,
@@ -22353,24 +22294,29 @@
    "graph": "pole",
    "edits": [
     {
-     "strategy": "abbrev",
+     "strategy": "typo",
      "from": "Ford",
-     "to": "FoMoCo",
-     "source": "llm",
-     "needs_verification": true,
+     "to": "Frod",
+     "source": "algorithmic",
+     "needs_verification": false,
      "label": "Person",
      "prop": "surname",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "verification_revert_v2.2-verified-2026-09-09",
+     "reverted_from": {
+      "strategy": "abbrev",
+      "to": "FoMoCo",
+      "source": "llm",
+      "proposer_model": "claude-opus-5",
+      "evidence": "Ford Motor Company is widely contracted to \"FoMoCo\" and nicknamed \"the Blue Oval\" after its logo."
+     },
      "grounding_probe": {
       "exact_ci": false,
-      "damerau": 4,
+      "damerau": 1,
       "substring": false,
-      "class": "semantic"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "Ford Motor Company is widely contracted to \"FoMoCo\" and nicknamed \"the Blue Oval\" after its logo."
+      "class": "edit_distance"
+     }
     }
    ],
    "query_difficulty": "hard"
@@ -22629,13 +22575,13 @@
      "prop": "last_outcome",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -22674,13 +22620,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 10,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "hard"
@@ -23071,15 +23017,15 @@
      "prop": "rank",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "British police ranks are routinely written as 'PC' before an officer's name in news reports and official Home Office documents.",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 14,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "British police ranks are routinely written as 'PC' before an officer's name in news reports and official Home Office documents."
+     }
     }
    ],
    "query_difficulty": "easy"
@@ -23189,7 +23135,7 @@
   "dataset": "zograscope",
   "graph": "pole",
   "id": "4959",
-  "nl": "What are the email addresses of individuals who are aware of the phone number of someone residing with a person whose last name is ATX?",
+  "nl": "What are the email addresses of individuals who are aware of the phone number of someone residing with a person whose last name is Austni?",
   "gold_cypher": "MATCH (x0:Email)-[:HAS_EMAIL]-(x1:Person)-[:KNOWS_PHONE]-(x2:Person)-[:KNOWS_LW]-(x3:Person WHERE x3.surname = \"Austin\")\nRETURN x0.email_address",
   "_aug_meta": {
    "augmented": true,
@@ -23197,24 +23143,29 @@
    "graph": "pole",
    "edits": [
     {
-     "strategy": "abbrev",
+     "strategy": "typo",
      "from": "Austin",
-     "to": "ATX",
-     "source": "llm",
-     "needs_verification": true,
+     "to": "Austni",
+     "source": "algorithmic",
+     "needs_verification": false,
      "label": "Person",
      "prop": "surname",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "verification_revert_v2.2-verified-2026-09-09",
+     "reverted_from": {
+      "strategy": "abbrev",
+      "to": "ATX",
+      "source": "llm",
+      "proposer_model": "claude-opus-5",
+      "evidence": "Austin, Texas is widely abbreviated ATX and officially branded the 'Live Music Capital of the World'."
+     },
      "grounding_probe": {
       "exact_ci": false,
-      "damerau": 5,
+      "damerau": 1,
       "substring": false,
-      "class": "semantic"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "Austin, Texas is widely abbreviated ATX and officially branded the 'Live Music Capital of the World'."
+      "class": "edit_distance"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -23561,13 +23512,13 @@
      "prop": "last_outcome",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -23606,13 +23557,13 @@
      "prop": "last_outcome",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -23783,13 +23734,13 @@
      "prop": "model",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 2,
       "substring": true,
       "class": "edit_distance"
-     },
-     "regenerated": "llm_tier_opus5_2026-08"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -24004,15 +23955,15 @@
      "prop": "name",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "rebalance_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "Deborah is commonly shortened to \"Deb\" and familiarly called \"Debbie\" in English usage.",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 4,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "Deborah is commonly shortened to \"Deb\" and familiarly called \"Debbie\" in English usage."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -24051,13 +24002,13 @@
      "prop": "last_outcome",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "hard"
@@ -24404,15 +24355,15 @@
      "prop": "name",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "rebalance_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "Jessica is commonly shortened to \"Jess\" and appears colloquially as \"Jessie\".",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 3,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "Jessica is commonly shortened to \"Jess\" and appears colloquially as \"Jessie\"."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -24539,13 +24490,13 @@
      "prop": "last_outcome",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -25156,15 +25107,15 @@
      "prop": "name",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "rebalance_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "\"Matt.\" is the standard short form/abbreviation used for Matthew (e.g., the Gospel of Matthew and the given name).",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 3,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "\"Matt.\" is the standard short form/abbreviation used for Matthew (e.g., the Gospel of Matthew and the given name)."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -25379,13 +25330,13 @@
      "prop": "last_outcome",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -25644,13 +25595,13 @@
      "prop": "address",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_backfill_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 8,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "partial_backfill_2026-08"
+     }
     }
    ],
    "query_difficulty": "hard"
@@ -25865,13 +25816,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -26042,13 +25993,13 @@
      "prop": "address",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_backfill_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 8,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "partial_backfill_2026-08"
+     }
     }
    ],
    "query_difficulty": "hard"
@@ -26747,15 +26698,15 @@
      "prop": "make",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "VW is the company's official logo initialism, used widely in news and by Volkswagen itself (e.g., 'VW Golf', 'VW Group').",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 9,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "VW is the company's official logo initialism, used widely in news and by Volkswagen itself (e.g., 'VW Golf', 'VW Group')."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -27041,7 +26992,7 @@
   "dataset": "zograscope",
   "graph": "pole",
   "id": "2642",
-  "nl": "How many emails do friends of someone with last name ATX have?",
+  "nl": "How many emails do friends of someone with last name Ausstin have?",
   "gold_cypher": "MATCH (x0:Email)-[:HAS_EMAIL]-(x1:Person)-[:KNOWS_SN]-(x2:Person WHERE x2.surname = \"Austin\")\nRETURN COUNT(DISTINCT x0)",
   "_aug_meta": {
    "augmented": true,
@@ -27049,24 +27000,29 @@
    "graph": "pole",
    "edits": [
     {
-     "strategy": "abbrev",
+     "strategy": "typo",
      "from": "Austin",
-     "to": "ATX",
-     "source": "llm",
-     "needs_verification": true,
+     "to": "Ausstin",
+     "source": "algorithmic",
+     "needs_verification": false,
      "label": "Person",
      "prop": "surname",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "verification_revert_v2.2-verified-2026-09-09",
+     "reverted_from": {
+      "strategy": "abbrev",
+      "to": "ATX",
+      "source": "llm",
+      "proposer_model": "claude-opus-5",
+      "evidence": "Austin, Texas is widely abbreviated ATX and officially branded the 'Live Music Capital of the World'."
+     },
      "grounding_probe": {
       "exact_ci": false,
-      "damerau": 5,
+      "damerau": 1,
       "substring": false,
-      "class": "semantic"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "Austin, Texas is widely abbreviated ATX and officially branded the 'Live Music Capital of the World'."
+      "class": "edit_distance"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -27237,13 +27193,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -27326,13 +27282,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "llm_tier_opus5_2026-08"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -27371,13 +27327,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 9,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "hard"
@@ -27416,13 +27372,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -27461,15 +27417,15 @@
      "prop": "rank",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "UK police forces and news reports routinely write 'PC' before an officer's name, e.g. 'PC John Smith'.",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 14,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "UK police forces and news reports routinely write 'PC' before an officer's name, e.g. 'PC John Smith'."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -27772,15 +27728,15 @@
      "prop": "name",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "rebalance_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "\"Matt.\" is the standard short form/abbreviation used for Matthew (e.g., the Gospel of Matthew and the given name).",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 3,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "\"Matt.\" is the standard short form/abbreviation used for Matthew (e.g., the Gospel of Matthew and the given name)."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -27951,13 +27907,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 10,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -27979,7 +27935,7 @@
   "dataset": "zograscope",
   "graph": "pole",
   "id": "2829",
-  "nl": "Can you find the emails of Philip who is friend with someone surnamed ATX?",
+  "nl": "Can you find the emails of Philip who is friend with someone surnamed Austinn?",
   "gold_cypher": "MATCH (x0:Email)-[:HAS_EMAIL]-(x1:Person WHERE x1.name = \"Philip\")-[:KNOWS_SN]-(x2:Person WHERE x2.surname = \"Austin\")\nRETURN x0",
   "_aug_meta": {
    "augmented": true,
@@ -27987,24 +27943,29 @@
    "graph": "pole",
    "edits": [
     {
-     "strategy": "abbrev",
+     "strategy": "typo",
      "from": "Austin",
-     "to": "ATX",
-     "source": "llm",
-     "needs_verification": true,
+     "to": "Austinn",
+     "source": "algorithmic",
+     "needs_verification": false,
      "label": "Person",
      "prop": "surname",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "verification_revert_v2.2-verified-2026-09-09",
+     "reverted_from": {
+      "strategy": "abbrev",
+      "to": "ATX",
+      "source": "llm",
+      "proposer_model": "claude-opus-5",
+      "evidence": "Austin, Texas is widely abbreviated ATX and officially branded the 'Live Music Capital of the World'."
+     },
      "grounding_probe": {
       "exact_ci": false,
-      "damerau": 5,
+      "damerau": 1,
       "substring": false,
-      "class": "semantic"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "Austin, Texas is widely abbreviated ATX and officially branded the 'Live Music Capital of the World'."
+      "class": "edit_distance"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -28175,15 +28136,15 @@
      "prop": "make",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "rebalance_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "Ford Motor Company is widely contracted to \"FoMoCo\" and nicknamed \"the Blue Oval\" after its logo.",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 4,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "Ford Motor Company is widely contracted to \"FoMoCo\" and nicknamed \"the Blue Oval\" after its logo."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -28310,13 +28271,13 @@
      "prop": null,
      "occurrences": 1,
      "validity": "ok",
+     "validity_backfill": "auto_ok_casing",
      "grounding_probe": {
       "exact_ci": true,
       "damerau": 3,
       "substring": false,
       "class": "exact_ci"
-     },
-     "validity_backfill": "auto_ok_casing"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -28332,53 +28293,6 @@
    "template_id": "70",
    "type": "count",
    "return_count": "1"
-  }
- },
- {
-  "dataset": "zograscope",
-  "graph": "pole",
-  "id": "4271",
-  "nl": "Who are the PCs who investigated crimes on where the investigation is complete but no suspect was identified that occured at the same location of a crime on 5/08/2017 involving a vehicle?",
-  "gold_cypher": "MATCH (x0:Officer WHERE x0.rank = \"Police Constable\")-[:INVESTIGATED_BY]-(x1:Crime WHERE x1.last_outcome = \"Investigation complete; no suspect identified\")-[:OCCURRED_AT]-(x2:Location)-[:OCCURRED_AT]-(x3:Crime WHERE x3.date = \"5/08/2017\")-[:INVOLVED_IN]-(x4:Vehicle)\nRETURN x0",
-  "_aug_meta": {
-   "augmented": true,
-   "original_nl": "Who are the Police Constables who investigated crimes on where the investigation is complete but no suspect was identified that occured at the same location of a crime on 5/08/2017 involving a vehicle?",
-   "graph": "pole",
-   "edits": [
-    {
-     "strategy": "abbrev",
-     "from": "Police Constable",
-     "to": "PC",
-     "source": "llm",
-     "needs_verification": true,
-     "label": "Officer",
-     "prop": "rank",
-     "occurrences": 1,
-     "validity": "ok",
-     "grounding_probe": {
-      "exact_ci": false,
-      "damerau": 14,
-      "substring": false,
-      "class": "semantic"
-     },
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "UK police ranks are routinely abbreviated as PC (e.g., 'PC Smith') in British news reports and official police documents."
-    }
-   ],
-   "query_difficulty": "medium"
-  },
-  "_source_row": {
-   "id": "4271",
-   "nl": "Who are the Police Constables who investigated crimes on where the investigation is complete but no suspect was identified that occured at the same location of a crime on 5/08/2017 involving a vehicle?",
-   "mr": "MATCH (x0:Officer WHERE x0.rank = \"Police Constable\")-[:INVESTIGATED_BY]-(x1:Crime WHERE x1.last_outcome = \"Investigation complete; no suspect identified\")-[:OCCURRED_AT]-(x2:Location)-[:OCCURRED_AT]-(x3:Crime WHERE x3.date = \"5/08/2017\")-[:INVOLVED_IN]-(x4:Vehicle)\nRETURN x0",
-   "nl_gold_linked": "[Officer] = Police Constable\n[Crime] = Investigation complete; no suspect identified\n[Crime] = 5/08/2017\nWho are the Police Constables who investigated crimes on where the investigation is complete but no suspect was identified that occured at the same location of a crime on 5/08/2017 involving a vehicle?",
-   "nl_bracketed": "Who are the [x0.Officer.rank:Police Constable] who investigated crimes on where the [x1.Crime.last_outcome:Investigation complete; no suspect identified] that occured at the same location of a crime on [x3.Crime.date:5/08/2017] involving a vehicle?",
-   "entities": "x0.Officer.rank:Police Constable = Police Constables\nx1.Crime.last_outcome:Investigation complete; no suspect identified = investigation is complete but no suspect was identified \nx3.Crime.date:5/08/2017 = 5/08/2017",
-   "num_nodes": "5",
-   "template_id": "31",
-   "type": "entity_set",
-   "return_count": "20"
   }
  },
  {
@@ -28402,13 +28316,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "llm_tier_opus5_2026-08"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -28554,53 +28468,6 @@
    "entities": "x1.Crime.date:15/08/2017 = 15th August 2017 \nx2.Person.surname:Walker = Walker",
    "num_nodes": "3",
    "template_id": "269",
-   "type": "entity_set",
-   "return_count": "1"
-  }
- },
- {
-  "dataset": "zograscope",
-  "graph": "pole",
-  "id": "289",
-  "nl": "What are the emails of Jess's friends, who has the phone number 4-(149)887-3293?",
-  "gold_cypher": "MATCH (x0:Email)-[:HAS_EMAIL]-(x1:Person)-[:KNOWS_SN]-(x2:Person WHERE x2.name = \"Jessica\")-[:HAS_PHONE]-(x3:Phone WHERE x3.phoneNo = \"4-(149)887-3293\")\nRETURN x0",
-  "_aug_meta": {
-   "augmented": true,
-   "original_nl": "What are the emails of Jessica's friends, who has the phone number 4-(149)887-3293?",
-   "graph": "pole",
-   "edits": [
-    {
-     "strategy": "abbrev",
-     "from": "Jessica",
-     "to": "Jess",
-     "source": "llm",
-     "needs_verification": true,
-     "label": "Person",
-     "prop": "name",
-     "occurrences": 1,
-     "validity": "ok",
-     "grounding_probe": {
-      "exact_ci": false,
-      "damerau": 3,
-      "substring": true,
-      "class": "substring"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "Jessica is commonly shortened to \"Jess\" and appears colloquially as \"Jessie\"."
-    }
-   ],
-   "query_difficulty": "medium"
-  },
-  "_source_row": {
-   "id": "289",
-   "nl": "What are the emails of Jessica's friends, who has the phone number 4-(149)887-3293?",
-   "mr": "MATCH (x0:Email)-[:HAS_EMAIL]-(x1:Person)-[:KNOWS_SN]-(x2:Person WHERE x2.name = \"Jessica\")-[:HAS_PHONE]-(x3:Phone WHERE x3.phoneNo = \"4-(149)887-3293\")\nRETURN x0",
-   "nl_gold_linked": "[Person] = Jessica\n[Phone] = 4-(149)887-3293\nWhat are the emails of Jessica's friends, who has the phone number 4-(149)887-3293?",
-   "nl_bracketed": "What are the emails of [x2.Person.name:Jessica]'s friends, who has the phone number [x3.Phone.phoneNo:4-(149)887-3293]?",
-   "entities": "x2.Person.name:Jessica = Jessica\nx3.Phone.phoneNo:4-(149)887-3293 = 4-(149)887-3293",
-   "num_nodes": "4",
-   "template_id": "35",
    "type": "entity_set",
    "return_count": "1"
   }
@@ -28758,13 +28625,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "llm_tier_opus5_2026-08"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -28979,15 +28846,15 @@
      "prop": "name",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "rebalance_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "Jennifer is commonly shortened to \"Jen\" and colloquially called \"Jenny\".",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 5,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "Jennifer is commonly shortened to \"Jen\" and colloquially called \"Jenny\"."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -29070,15 +28937,15 @@
      "prop": "rank",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "UK police ranks and news reports routinely abbreviate Police Constable as 'PC', e.g. 'PC John Smith'.",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 14,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "UK police ranks and news reports routinely abbreviate Police Constable as 'PC', e.g. 'PC John Smith'."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -29205,13 +29072,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 10,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "hard"
@@ -29250,13 +29117,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "llm_tier_opus5_2026-08"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -29295,15 +29162,15 @@
      "prop": "make",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "VW is the company's own logo/ticker-style abbreviation, used routinely in news and speech (e.g., 'VW emissions scandal').",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 9,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "VW is the company's own logo/ticker-style abbreviation, used routinely in news and speech (e.g., 'VW emissions scandal')."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -29386,13 +29253,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "llm_tier_opus5_2026-08"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -29431,13 +29298,13 @@
      "prop": "last_outcome",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -29476,15 +29343,15 @@
      "prop": "name",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "rebalance_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "\"Matt.\" is the standard short form/abbreviation used for Matthew (e.g., the Gospel of Matthew and the given name).",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 3,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "\"Matt.\" is the standard short form/abbreviation used for Matthew (e.g., the Gospel of Matthew and the given name)."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -29919,15 +29786,15 @@
      "prop": "name",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "rebalance_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "Jessica is commonly shortened to \"Jess\" and appears colloquially as \"Jessie\".",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 3,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "Jessica is commonly shortened to \"Jess\" and appears colloquially as \"Jessie\"."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -30098,15 +29965,15 @@
      "prop": "rank",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "UK police ranks are routinely written as 'PC' before an officer's name in news reports and official police communications.",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 14,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "UK police ranks are routinely written as 'PC' before an officer's name in news reports and official police communications."
+     }
     }
    ],
    "query_difficulty": "hard"
@@ -30365,13 +30232,13 @@
      "prop": "address",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_backfill_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 8,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "partial_backfill_2026-08"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -30630,13 +30497,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "llm_tier_opus5_2026-08"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -30807,13 +30674,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -30984,13 +30851,13 @@
      "prop": "last_outcome",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "easy"
@@ -31143,50 +31010,6 @@
  {
   "dataset": "zograscope",
   "graph": "pole",
-  "id": "1875",
-  "nl": "How were named the officers who looked into the incidents at 7 RIVERS STREET on 7/08/2017?",
-  "gold_cypher": "MATCH (x0:Officer)-[:INVESTIGATED_BY]-(x1:Crime WHERE x1.date = \"7/08/2017\")-[:OCCURRED_AT]-(x2:Location WHERE x2.address = \"7 Rivers Street\")\nRETURN x0.name",
-  "_aug_meta": {
-   "augmented": true,
-   "original_nl": "How were named the officers who looked into the incidents at 7 Rivers Street on 7/08/2017?",
-   "graph": "pole",
-   "edits": [
-    {
-     "strategy": "casing",
-     "from": "7 Rivers Street",
-     "to": "7 RIVERS STREET",
-     "source": "algorithmic",
-     "needs_verification": false,
-     "label": "Location",
-     "prop": "address",
-     "occurrences": 1,
-     "validity": "ok",
-     "grounding_probe": {
-      "exact_ci": true,
-      "damerau": 10,
-      "substring": false,
-      "class": "exact_ci"
-     }
-    }
-   ],
-   "query_difficulty": "medium"
-  },
-  "_source_row": {
-   "id": "1875",
-   "nl": "How were named the officers who looked into the incidents at 7 Rivers Street on 7/08/2017?",
-   "mr": "MATCH (x0:Officer)-[:INVESTIGATED_BY]-(x1:Crime WHERE x1.date = \"7/08/2017\")-[:OCCURRED_AT]-(x2:Location WHERE x2.address = \"7 Rivers Street\")\nRETURN x0.name",
-   "nl_gold_linked": "[Crime] = 7/08/2017\n[Location] = 7 Rivers Street\nHow were named the officers who looked into the incidents at 7 Rivers Street on 7/08/2017?",
-   "nl_bracketed": "How were named the officers who looked into the incidents at [x2.Location.address:7 Rivers Street] on [x1.Crime.date:7/08/2017]?",
-   "entities": "x1.Crime.date:7/08/2017 = 7/08/2017\nx2.Location.address:7 Rivers Street = 7 Rivers Street",
-   "num_nodes": "3",
-   "template_id": "250",
-   "type": "attribute_set",
-   "return_count": "1"
-  }
- },
- {
-  "dataset": "zograscope",
-  "graph": "pole",
   "id": "3304",
   "nl": "Can you identify places where crimes happened involving Fred, marked as 'Investigation cimplete; no suspect identified'?",
   "gold_cypher": "MATCH (x0:Location)-[:OCCURRED_AT]-(x1:Crime WHERE x1.last_outcome = \"Investigation complete; no suspect identified\")-[:PARTY_TO]-(x2:Person WHERE x2.name = \"Fred\")\nRETURN x0",
@@ -31205,13 +31028,13 @@
      "prop": "last_outcome",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -31294,13 +31117,13 @@
      "prop": "address",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 5,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "llm_tier_opus5_2026-08"
+     }
     }
    ],
    "query_difficulty": "hard"
@@ -31691,13 +31514,13 @@
      "prop": "last_outcome",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -32088,15 +31911,15 @@
      "prop": "rank",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "UK police ranks are routinely written as \"PC\" before an officer's name in news reports and official police documents (e.g., \"PC John Smith\").",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 14,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "UK police ranks are routinely written as \"PC\" before an officer's name in news reports and official police documents (e.g., \"PC John Smith\")."
+     }
     }
    ],
    "query_difficulty": "hard"
@@ -32927,15 +32750,15 @@
      "prop": "rank",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "UK police ranks are routinely written as 'PC Smith' in news reports and official police force listings.",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 14,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "UK police ranks are routinely written as 'PC Smith' in news reports and official police force listings."
+     }
     }
    ],
    "query_difficulty": "hard"
@@ -33150,13 +32973,13 @@
      "prop": null,
      "occurrences": 1,
      "validity": "ok",
+     "validity_backfill": "auto_ok_casing",
      "grounding_probe": {
       "exact_ci": true,
       "damerau": 3,
       "substring": false,
       "class": "exact_ci"
-     },
-     "validity_backfill": "auto_ok_casing"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -33371,15 +33194,15 @@
      "prop": "rank",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "UK police ranks are routinely written as 'PC' before an officer's name in news reports and official police communications.",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 14,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "UK police ranks are routinely written as 'PC' before an officer's name in news reports and official police communications."
+     }
     }
    ],
    "query_difficulty": "hard"
@@ -33401,7 +33224,7 @@
   "dataset": "zograscope",
   "graph": "pole",
   "id": "2644",
-  "nl": "How many emails belong to individuals who are friends with someone whose last name is ATX?",
+  "nl": "How many emails belong to individuals who are friends with someone whose last name is Asutin?",
   "gold_cypher": "MATCH (x0:Email)-[:HAS_EMAIL]-(x1:Person)-[:KNOWS_SN]-(x2:Person WHERE x2.surname = \"Austin\")\nRETURN COUNT(DISTINCT x0)",
   "_aug_meta": {
    "augmented": true,
@@ -33409,24 +33232,29 @@
    "graph": "pole",
    "edits": [
     {
-     "strategy": "abbrev",
+     "strategy": "typo",
      "from": "Austin",
-     "to": "ATX",
-     "source": "llm",
-     "needs_verification": true,
+     "to": "Asutin",
+     "source": "algorithmic",
+     "needs_verification": false,
      "label": "Person",
      "prop": "surname",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "verification_revert_v2.2-verified-2026-09-09",
+     "reverted_from": {
+      "strategy": "abbrev",
+      "to": "ATX",
+      "source": "llm",
+      "proposer_model": "claude-opus-5",
+      "evidence": "Austin, Texas is widely abbreviated ATX and officially branded the 'Live Music Capital of the World'."
+     },
      "grounding_probe": {
       "exact_ci": false,
-      "damerau": 5,
+      "damerau": 1,
       "substring": false,
-      "class": "semantic"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "Austin, Texas is widely abbreviated ATX and officially branded the 'Live Music Capital of the World'."
+      "class": "edit_distance"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -33861,13 +33689,13 @@
      "prop": "last_outcome",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -33906,15 +33734,15 @@
      "prop": "make",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "Common British colloquial short form for Mercedes-Benz cars, used in UK press and speech (e.g., 'he drives a Merc').",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 9,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "Common British colloquial short form for Mercedes-Benz cars, used in UK press and speech (e.g., 'he drives a Merc')."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -33953,13 +33781,13 @@
      "prop": null,
      "occurrences": 1,
      "validity": "ok",
+     "validity_backfill": "auto_ok_casing",
      "grounding_probe": {
       "exact_ci": true,
       "damerau": 3,
       "substring": false,
       "class": "exact_ci"
-     },
-     "validity_backfill": "auto_ok_casing"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -34174,13 +34002,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 10,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -34307,15 +34135,15 @@
      "prop": "name",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "rebalance_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "Jennifer is commonly shortened to \"Jen\" and colloquially called \"Jenny\".",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 5,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "Jennifer is commonly shortened to \"Jen\" and colloquially called \"Jenny\"."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -34398,13 +34226,13 @@
      "prop": null,
      "occurrences": 2,
      "validity": "ok",
+     "validity_backfill": "auto_ok_casing",
      "grounding_probe": {
       "exact_ci": true,
       "damerau": 3,
       "substring": false,
       "class": "exact_ci"
-     },
-     "validity_backfill": "auto_ok_casing"
+     }
     }
    ],
    "query_difficulty": "easy"
@@ -35367,13 +35195,13 @@
      "prop": "address",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -35412,13 +35240,13 @@
      "prop": "last_outcome",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "easy"
@@ -35501,13 +35329,13 @@
      "prop": null,
      "occurrences": 1,
      "validity": "ok",
+     "validity_backfill": "auto_ok_casing",
      "grounding_probe": {
       "exact_ci": true,
       "damerau": 3,
       "substring": false,
       "class": "exact_ci"
-     },
-     "validity_backfill": "auto_ok_casing"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -35634,13 +35462,13 @@
      "prop": "address",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 5,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "hard"
@@ -36207,13 +36035,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "llm_tier_opus5_2026-08"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -36252,13 +36080,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "llm_tier_opus5_2026-08"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -36385,15 +36213,15 @@
      "prop": "rank",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "UK police ranks are routinely written as 'PC' before an officer's name (e.g. 'PC John Smith') in news reports and official police communications.",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 14,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "UK police ranks are routinely written as 'PC' before an officer's name (e.g. 'PC John Smith') in news reports and official police communications."
+     }
     }
    ],
    "query_difficulty": "hard"
@@ -36564,15 +36392,15 @@
      "prop": "rank",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "UK police forces and media routinely style the rank as 'PC' before an officer's name, e.g. 'PC John Smith'.",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 14,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "UK police forces and media routinely style the rank as 'PC' before an officer's name, e.g. 'PC John Smith'."
+     }
     }
    ],
    "query_difficulty": "hard"
@@ -36655,13 +36483,13 @@
      "prop": "last_outcome",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -37035,7 +36863,7 @@
   "dataset": "zograscope",
   "graph": "pole",
   "id": "330",
-  "nl": "When did someone living with a FoMoCo last receive a phone call?",
+  "nl": "When did someone living with a Fodr last receive a phone call?",
   "gold_cypher": "MATCH (x0:PhoneCall)-[:CALLED]-(x1:Phone)-[:HAS_PHONE]-(x2:Person)-[:KNOWS_LW]-(x3:Person WHERE x3.surname = \"Ford\")\nRETURN x0.call_date\nORDER BY x0.call_date DESC\nLIMIT 1",
   "_aug_meta": {
    "augmented": true,
@@ -37043,24 +36871,29 @@
    "graph": "pole",
    "edits": [
     {
-     "strategy": "abbrev",
+     "strategy": "typo",
      "from": "Ford",
-     "to": "FoMoCo",
-     "source": "llm",
-     "needs_verification": true,
+     "to": "Fodr",
+     "source": "algorithmic",
+     "needs_verification": false,
      "label": "Person",
      "prop": "surname",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "verification_revert_v2.2-verified-2026-09-09",
+     "reverted_from": {
+      "strategy": "abbrev",
+      "to": "FoMoCo",
+      "source": "llm",
+      "proposer_model": "claude-opus-5",
+      "evidence": "Ford Motor Company is widely contracted to \"FoMoCo\" and nicknamed \"the Blue Oval\" after its logo."
+     },
      "grounding_probe": {
       "exact_ci": false,
-      "damerau": 4,
+      "damerau": 1,
       "substring": false,
-      "class": "semantic"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "Ford Motor Company is widely contracted to \"FoMoCo\" and nicknamed \"the Blue Oval\" after its logo."
+      "class": "edit_distance"
+     }
     }
    ],
    "query_difficulty": "hard"
@@ -37231,13 +37064,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "llm_tier_opus5_2026-08"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -37276,13 +37109,13 @@
      "prop": "last_outcome",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -37453,15 +37286,15 @@
      "prop": "name",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "rebalance_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "Jessica is commonly shortened to \"Jess\" and appears colloquially as \"Jessie\".",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 3,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "Jessica is commonly shortened to \"Jess\" and appears colloquially as \"Jessie\"."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -37676,15 +37509,15 @@
      "prop": "make",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "\"Chevy\" is the widely used colloquial short form for Chevrolet in American news, advertising, and speech.",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 5,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "\"Chevy\" is the widely used colloquial short form for Chevrolet in American news, advertising, and speech."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -38207,13 +38040,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 9,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "hard"
@@ -38384,13 +38217,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "llm_tier_opus5_2026-08"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -38561,13 +38394,13 @@
      "prop": null,
      "occurrences": 1,
      "validity": "ok",
+     "validity_backfill": "auto_ok_casing",
      "grounding_probe": {
       "exact_ci": true,
       "damerau": 7,
       "substring": false,
       "class": "exact_ci"
-     },
-     "validity_backfill": "auto_ok_casing"
+     }
     }
    ],
    "query_difficulty": "hard"
@@ -38694,15 +38527,15 @@
      "prop": "make",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "rebalance_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "Ford Motor Company is widely contracted to \"FoMoCo\" and nicknamed \"the Blue Oval\" after its logo.",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 4,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "Ford Motor Company is widely contracted to \"FoMoCo\" and nicknamed \"the Blue Oval\" after its logo."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -38961,15 +38794,15 @@
      "prop": "make",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "Common British colloquial short form for Mercedes-Benz cars, used in UK press and speech (e.g., 'he drives a Merc').",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 9,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "Common British colloquial short form for Mercedes-Benz cars, used in UK press and speech (e.g., 'he drives a Merc')."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -39140,13 +38973,13 @@
      "prop": "last_outcome",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -39405,15 +39238,15 @@
      "prop": "name",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "rebalance_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "Jessica is commonly shortened to \"Jess\" and appears colloquially as \"Jessie\".",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 3,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "Jessica is commonly shortened to \"Jess\" and appears colloquially as \"Jessie\"."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -39716,13 +39549,13 @@
      "prop": null,
      "occurrences": 1,
      "validity": "ok",
+     "validity_backfill": "auto_ok_casing",
      "grounding_probe": {
       "exact_ci": true,
       "damerau": 3,
       "substring": false,
       "class": "exact_ci"
-     },
-     "validity_backfill": "auto_ok_casing"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -39761,13 +39594,13 @@
      "prop": "last_outcome",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -39982,13 +39815,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "llm_tier_opus5_2026-08"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -40027,15 +39860,15 @@
      "prop": "make",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "Common British colloquial short form for Mercedes-Benz cars, used in UK press and speech.",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 9,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "Common British colloquial short form for Mercedes-Benz cars, used in UK press and speech."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -40426,13 +40259,13 @@
      "prop": "address",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -40806,7 +40639,7 @@
   "dataset": "zograscope",
   "graph": "pole",
   "id": "2903",
-  "nl": "How many emails do people have that know the phone number of a person with the surname FoMoCo?",
+  "nl": "How many emails do people have that know the phone number of a person with the surname Flrd?",
   "gold_cypher": "MATCH (x0:Email)-[:HAS_EMAIL]-(x1:Person)-[:KNOWS_PHONE]-(x2:Person WHERE x2.surname = \"Ford\")\nRETURN COUNT(DISTINCT x0)",
   "_aug_meta": {
    "augmented": true,
@@ -40814,24 +40647,29 @@
    "graph": "pole",
    "edits": [
     {
-     "strategy": "abbrev",
+     "strategy": "typo",
      "from": "Ford",
-     "to": "FoMoCo",
-     "source": "llm",
-     "needs_verification": true,
+     "to": "Flrd",
+     "source": "algorithmic",
+     "needs_verification": false,
      "label": "Person",
      "prop": "surname",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "verification_revert_v2.2-verified-2026-09-09",
+     "reverted_from": {
+      "strategy": "abbrev",
+      "to": "FoMoCo",
+      "source": "llm",
+      "proposer_model": "claude-opus-5",
+      "evidence": "Ford Motor Company is widely contracted to \"FoMoCo\" and nicknamed \"the Blue Oval\" after its logo."
+     },
      "grounding_probe": {
       "exact_ci": false,
-      "damerau": 4,
+      "damerau": 1,
       "substring": false,
-      "class": "semantic"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "Ford Motor Company is widely contracted to \"FoMoCo\" and nicknamed \"the Blue Oval\" after its logo."
+      "class": "edit_distance"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -41310,13 +41148,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 20,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -41399,15 +41237,15 @@
      "prop": "name",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "rebalance_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "Jessica is commonly shortened to \"Jess\" and appears colloquially as \"Jessie\".",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 3,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "Jessica is commonly shortened to \"Jess\" and appears colloquially as \"Jessie\"."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -41534,13 +41372,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "llm_tier_opus5_2026-08"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -41755,13 +41593,13 @@
      "prop": "last_outcome",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "easy"
@@ -41932,15 +41770,15 @@
      "prop": "rank",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "UK police forces and British media routinely abbreviate the rank Police Constable as 'PC', e.g. 'PC Keith Palmer'.",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 14,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "UK police forces and British media routinely abbreviate the rank Police Constable as 'PC', e.g. 'PC Keith Palmer'."
+     }
     }
    ],
    "query_difficulty": "hard"
@@ -41979,15 +41817,15 @@
      "prop": "name",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "rebalance_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "\"Matt.\" is the standard short form/abbreviation used for Matthew (e.g., the Gospel of Matthew and the given name).",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 3,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "\"Matt.\" is the standard short form/abbreviation used for Matthew (e.g., the Gospel of Matthew and the given name)."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -42070,15 +41908,15 @@
      "prop": "rank",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "UK police ranks are routinely written as 'PC Smith' in news reports and official Home Office documents.",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 14,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "UK police ranks are routinely written as 'PC Smith' in news reports and official Home Office documents."
+     }
     }
    ],
    "query_difficulty": "hard"
@@ -42117,13 +41955,13 @@
      "prop": null,
      "occurrences": 1,
      "validity": "ok",
+     "validity_backfill": "auto_ok_casing",
      "grounding_probe": {
       "exact_ci": true,
       "damerau": 8,
       "substring": false,
       "class": "exact_ci"
-     },
-     "validity_backfill": "auto_ok_casing"
+     }
     }
    ],
    "query_difficulty": "hard"
@@ -42514,13 +42352,13 @@
      "prop": "last_outcome",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -42578,53 +42416,6 @@
    "entities": "x1.Person.name:Carlos = Carlos\nx2.Crime.date:13/08/2017 = August 13, 2017",
    "num_nodes": "3",
    "template_id": "293",
-   "type": "attribute_set",
-   "return_count": "1"
-  }
- },
- {
-  "dataset": "zograscope",
-  "graph": "pole",
-  "id": "4934",
-  "nl": "Can you provide the crime dates linked to individuals acquainted with a friend of Wm.?",
-  "gold_cypher": "MATCH (x0:Crime)-[:PARTY_TO]-(x1:Person)-[:KNOWS]-(x2:Person)-[:KNOWS_SN]-(x3:Person WHERE x3.name = \"William\")\nRETURN x0.date",
-  "_aug_meta": {
-   "augmented": true,
-   "original_nl": "Can you provide the crime dates linked to individuals acquainted with a friend of William?",
-   "graph": "pole",
-   "edits": [
-    {
-     "strategy": "abbrev",
-     "from": "William",
-     "to": "Wm.",
-     "source": "llm",
-     "needs_verification": true,
-     "label": "Person",
-     "prop": "name",
-     "occurrences": 1,
-     "validity": "ok",
-     "grounding_probe": {
-      "exact_ci": false,
-      "damerau": 6,
-      "substring": false,
-      "class": "semantic"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "\"Wm.\" is the traditional written abbreviation for the name William, and \"Bill\" (also \"Will\") is its long-standing common nickname."
-    }
-   ],
-   "query_difficulty": "medium"
-  },
-  "_source_row": {
-   "id": "4934",
-   "nl": "Can you provide the crime dates linked to individuals acquainted with a friend of William?",
-   "mr": "MATCH (x0:Crime)-[:PARTY_TO]-(x1:Person)-[:KNOWS]-(x2:Person)-[:KNOWS_SN]-(x3:Person WHERE x3.name = \"William\")\nRETURN x0.date",
-   "nl_gold_linked": "[Person] = William\nCan you provide the crime dates linked to individuals acquainted with a friend of William?",
-   "nl_bracketed": "Can you provide the crime dates linked to individuals acquainted with a friend of [x3.Person.name:William]?",
-   "entities": "x3.Person.name:William = William",
-   "num_nodes": "4",
-   "template_id": "12",
    "type": "attribute_set",
    "return_count": "1"
   }
@@ -42738,13 +42529,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "llm_tier_opus5_2026-08"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -43091,15 +42882,15 @@
      "prop": "make",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "rebalance_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "Ford Motor Company is widely contracted to \"FoMoCo\" and nicknamed \"the Blue Oval\" after its logo.",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 4,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "Ford Motor Company is widely contracted to \"FoMoCo\" and nicknamed \"the Blue Oval\" after its logo."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -43138,15 +42929,15 @@
      "prop": "rank",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "UK police ranks are routinely written as 'PC' before an officer's name in news reports and official police documents (e.g., 'PC John Smith').",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 14,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "UK police ranks are routinely written as 'PC' before an officer's name in news reports and official police documents (e.g., 'PC John Smith')."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -43185,13 +42976,13 @@
      "prop": "address",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 5,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "llm_tier_opus5_2026-08"
+     }
     }
    ],
    "query_difficulty": "hard"
@@ -43230,13 +43021,13 @@
      "prop": null,
      "occurrences": 1,
      "validity": "ok",
+     "validity_backfill": "auto_ok_casing",
      "grounding_probe": {
       "exact_ci": true,
       "damerau": 3,
       "substring": false,
       "class": "exact_ci"
-     },
-     "validity_backfill": "auto_ok_casing"
+     }
     }
    ],
    "query_difficulty": "hard"
@@ -43407,13 +43198,13 @@
      "prop": "last_outcome",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "easy"
@@ -43936,15 +43727,15 @@
      "prop": "name",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "rebalance_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "\"Wm.\" is the traditional written abbreviation for the name William, and \"Bill\" (also \"Will\") is its long-standing common nickname.",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 6,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "\"Wm.\" is the traditional written abbreviation for the name William, and \"Bill\" (also \"Will\") is its long-standing common nickname."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -43983,13 +43774,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "llm_tier_opus5_2026-08"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -44275,7 +44066,7 @@
   "dataset": "zograscope",
   "graph": "pole",
   "id": "4958",
-  "nl": "Can you provide the email addresses of those who know the phone number of a person living with someone surnamed ATX?",
+  "nl": "Can you provide the email addresses of those who know the phone number of a person living with someone surnamed Ausin?",
   "gold_cypher": "MATCH (x0:Email)-[:HAS_EMAIL]-(x1:Person)-[:KNOWS_PHONE]-(x2:Person)-[:KNOWS_LW]-(x3:Person WHERE x3.surname = \"Austin\")\nRETURN x0.email_address",
   "_aug_meta": {
    "augmented": true,
@@ -44283,24 +44074,29 @@
    "graph": "pole",
    "edits": [
     {
-     "strategy": "abbrev",
+     "strategy": "typo",
      "from": "Austin",
-     "to": "ATX",
-     "source": "llm",
-     "needs_verification": true,
+     "to": "Ausin",
+     "source": "algorithmic",
+     "needs_verification": false,
      "label": "Person",
      "prop": "surname",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "verification_revert_v2.2-verified-2026-09-09",
+     "reverted_from": {
+      "strategy": "abbrev",
+      "to": "ATX",
+      "source": "llm",
+      "proposer_model": "claude-opus-5",
+      "evidence": "Austin, Texas is widely abbreviated ATX and officially branded the 'Live Music Capital of the World'."
+     },
      "grounding_probe": {
       "exact_ci": false,
-      "damerau": 5,
+      "damerau": 1,
       "substring": false,
-      "class": "semantic"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "Austin, Texas is widely abbreviated ATX and officially branded the 'Live Music Capital of the World'."
+      "class": "edit_distance"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -44365,53 +44161,6 @@
  {
   "dataset": "zograscope",
   "graph": "pole",
-  "id": "3079",
-  "nl": "How many people share a home with Matt. and have a friend whose last name is Payne?",
-  "gold_cypher": "MATCH (x0:Person)-[:KNOWS_LW]-(x1:Person WHERE x1.name = \"Matthew\")\nMATCH (x0:Person)-[:KNOWS_SN]-(x2:Person WHERE x2.surname = \"Payne\")\nRETURN COUNT(DISTINCT x0)",
-  "_aug_meta": {
-   "augmented": true,
-   "original_nl": "How many people share a home with Matthew and have a friend whose last name is Payne?",
-   "graph": "pole",
-   "edits": [
-    {
-     "strategy": "abbrev",
-     "from": "Matthew",
-     "to": "Matt.",
-     "source": "llm",
-     "needs_verification": true,
-     "label": "Person",
-     "prop": "name",
-     "occurrences": 1,
-     "validity": "ok",
-     "grounding_probe": {
-      "exact_ci": false,
-      "damerau": 3,
-      "substring": false,
-      "class": "semantic"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "\"Matt.\" is the standard short form/abbreviation used for Matthew (e.g., the Gospel of Matthew and the given name)."
-    }
-   ],
-   "query_difficulty": "medium"
-  },
-  "_source_row": {
-   "id": "3079",
-   "nl": "How many people share a home with Matthew and have a friend whose last name is Payne?",
-   "mr": "MATCH (x0:Person)-[:KNOWS_LW]-(x1:Person WHERE x1.name = \"Matthew\")\nMATCH (x0:Person)-[:KNOWS_SN]-(x2:Person WHERE x2.surname = \"Payne\")\nRETURN COUNT(DISTINCT x0)",
-   "nl_gold_linked": "[Person] = Matthew\n[Person] = Payne\nHow many people share a home with Matthew and have a friend whose last name is Payne?",
-   "nl_bracketed": "How many people share a home with [x1.Person.name:Matthew] and have a friend whose last name is [x2.Person.surname:Payne]?",
-   "entities": "x1.Person.name:Matthew = Matthew\nx2.Person.surname:Payne = Payne",
-   "num_nodes": "3",
-   "template_id": "5",
-   "type": "count",
-   "return_count": "1"
-  }
- },
- {
-  "dataset": "zograscope",
-  "graph": "pole",
   "id": "3616",
   "nl": "What are the statuses of investigations into Violence involving individuals, conducted by officers with the surname Orcott?",
   "gold_cypher": "MATCH (x0:Crime WHERE x0.type = \"Violence and sexual offences\")-[:PARTY_TO]-(x2:Person)\nMATCH (x0:Crime WHERE x0.type = \"Violence and sexual offences\")-[:INVESTIGATED_BY]-(x1:Officer WHERE x1.surname = \"Orcott\")\nRETURN x0.last_outcome",
@@ -44430,13 +44179,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 20,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -44695,15 +44444,15 @@
      "prop": "rank",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "UK police ranks are routinely written as \"PC\" before an officer's name in news reports and official police documents.",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 14,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "UK police ranks are routinely written as \"PC\" before an officer's name in news reports and official police documents."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -44786,13 +44535,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "llm_tier_opus5_2026-08"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -44831,13 +44580,13 @@
      "prop": "last_outcome",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "hard"
@@ -44876,13 +44625,13 @@
      "prop": "last_outcome",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -45388,7 +45137,7 @@
   "dataset": "zograscope",
   "graph": "pole",
   "id": "2901",
-  "nl": "How many emails belong to people who know the phone number of someone with last name FoMoCo?",
+  "nl": "How many emails belong to people who know the phone number of someone with last name Fordd?",
   "gold_cypher": "MATCH (x0:Email)-[:HAS_EMAIL]-(x1:Person)-[:KNOWS_PHONE]-(x2:Person WHERE x2.surname = \"Ford\")\nRETURN COUNT(DISTINCT x0)",
   "_aug_meta": {
    "augmented": true,
@@ -45396,24 +45145,29 @@
    "graph": "pole",
    "edits": [
     {
-     "strategy": "abbrev",
+     "strategy": "typo",
      "from": "Ford",
-     "to": "FoMoCo",
-     "source": "llm",
-     "needs_verification": true,
+     "to": "Fordd",
+     "source": "algorithmic",
+     "needs_verification": false,
      "label": "Person",
      "prop": "surname",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "verification_revert_v2.2-verified-2026-09-09",
+     "reverted_from": {
+      "strategy": "abbrev",
+      "to": "FoMoCo",
+      "source": "llm",
+      "proposer_model": "claude-opus-5",
+      "evidence": "Ford Motor Company is widely contracted to \"FoMoCo\" and nicknamed \"the Blue Oval\" after its logo."
+     },
      "grounding_probe": {
       "exact_ci": false,
-      "damerau": 4,
+      "damerau": 1,
       "substring": false,
-      "class": "semantic"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "Ford Motor Company is widely contracted to \"FoMoCo\" and nicknamed \"the Blue Oval\" after its logo."
+      "class": "edit_distance"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -46024,13 +45778,13 @@
      "prop": null,
      "occurrences": 1,
      "validity": "ok",
+     "validity_backfill": "auto_ok_casing",
      "grounding_probe": {
       "exact_ci": true,
       "damerau": 6,
       "substring": false,
       "class": "exact_ci"
-     },
-     "validity_backfill": "auto_ok_casing"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -46184,7 +45938,7 @@
   "dataset": "zograscope",
   "graph": "pole",
   "id": "2643",
-  "nl": "What is the email count for those who are friends with a person with last name ATX?",
+  "nl": "What is the email count for those who are friends with a person with last name Austn?",
   "gold_cypher": "MATCH (x0:Email)-[:HAS_EMAIL]-(x1:Person)-[:KNOWS_SN]-(x2:Person WHERE x2.surname = \"Austin\")\nRETURN COUNT(DISTINCT x0)",
   "_aug_meta": {
    "augmented": true,
@@ -46192,24 +45946,29 @@
    "graph": "pole",
    "edits": [
     {
-     "strategy": "abbrev",
+     "strategy": "typo",
      "from": "Austin",
-     "to": "ATX",
-     "source": "llm",
-     "needs_verification": true,
+     "to": "Austn",
+     "source": "algorithmic",
+     "needs_verification": false,
      "label": "Person",
      "prop": "surname",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "verification_revert_v2.2-verified-2026-09-09",
+     "reverted_from": {
+      "strategy": "abbrev",
+      "to": "ATX",
+      "source": "llm",
+      "proposer_model": "claude-opus-5",
+      "evidence": "Austin, Texas is widely abbreviated ATX and officially branded the 'Live Music Capital of the World'."
+     },
      "grounding_probe": {
       "exact_ci": false,
-      "damerau": 5,
+      "damerau": 1,
       "substring": false,
-      "class": "semantic"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "Austin, Texas is widely abbreviated ATX and officially branded the 'Live Music Capital of the World'."
+      "class": "edit_distance"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -46512,13 +46271,13 @@
      "prop": "address",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 5,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "hard"
@@ -46733,15 +46492,15 @@
      "prop": "make",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "rebalance_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "Ford Motor Company is widely contracted to \"FoMoCo\" and nicknamed \"the Blue Oval\" after its logo.",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 4,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "Ford Motor Company is widely contracted to \"FoMoCo\" and nicknamed \"the Blue Oval\" after its logo."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -46824,13 +46583,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_backfill_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 6,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "partial_backfill_2026-08"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -46913,15 +46672,15 @@
      "prop": "rank",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "UK police forces and media routinely abbreviate the rank Police Constable as 'PC' before an officer's name (e.g., 'PC Smith').",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 14,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "UK police forces and media routinely abbreviate the rank Police Constable as 'PC' before an officer's name (e.g., 'PC Smith')."
+     }
     }
    ],
    "query_difficulty": "easy"
@@ -47136,15 +46895,15 @@
      "prop": "name",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "rebalance_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "The given name Christopher is commonly shortened to \"Chris\" and traditionally nicknamed \"Kit\" (e.g., Kit Marlowe).",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 6,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "The given name Christopher is commonly shortened to \"Chris\" and traditionally nicknamed \"Kit\" (e.g., Kit Marlowe)."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -47359,15 +47118,15 @@
      "prop": "rank",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "UK police forces and British media routinely write ranks as \"PC\" (e.g., \"PC Smith\") for Police Constable.",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 14,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "UK police forces and British media routinely write ranks as \"PC\" (e.g., \"PC Smith\") for Police Constable."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -47582,13 +47341,13 @@
      "prop": "address",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_backfill_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 8,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "partial_backfill_2026-08"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -47627,13 +47386,13 @@
      "prop": null,
      "occurrences": 1,
      "validity": "ok",
+     "validity_backfill": "auto_ok_casing",
      "grounding_probe": {
       "exact_ci": true,
       "damerau": 3,
       "substring": false,
       "class": "exact_ci"
-     },
-     "validity_backfill": "auto_ok_casing"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -48024,13 +47783,13 @@
      "prop": "last_outcome",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "easy"
@@ -48485,53 +48244,6 @@
    "num_nodes": "4",
    "template_id": "58",
    "type": "count",
-   "return_count": "1"
-  }
- },
- {
-  "dataset": "zograscope",
-  "graph": "pole",
-  "id": "4935",
-  "nl": "Which crime dates involve people connected to a friend of Wm.?",
-  "gold_cypher": "MATCH (x0:Crime)-[:PARTY_TO]-(x1:Person)-[:KNOWS]-(x2:Person)-[:KNOWS_SN]-(x3:Person WHERE x3.name = \"William\")\nRETURN x0.date",
-  "_aug_meta": {
-   "augmented": true,
-   "original_nl": "Which crime dates involve people connected to a friend of William?",
-   "graph": "pole",
-   "edits": [
-    {
-     "strategy": "abbrev",
-     "from": "William",
-     "to": "Wm.",
-     "source": "llm",
-     "needs_verification": true,
-     "label": "Person",
-     "prop": "name",
-     "occurrences": 1,
-     "validity": "ok",
-     "grounding_probe": {
-      "exact_ci": false,
-      "damerau": 6,
-      "substring": false,
-      "class": "semantic"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "\"Wm.\" is the traditional written abbreviation for the name William, and \"Bill\" (also \"Will\") is its long-standing common nickname."
-    }
-   ],
-   "query_difficulty": "medium"
-  },
-  "_source_row": {
-   "id": "4935",
-   "nl": "Which crime dates involve people connected to a friend of William?",
-   "mr": "MATCH (x0:Crime)-[:PARTY_TO]-(x1:Person)-[:KNOWS]-(x2:Person)-[:KNOWS_SN]-(x3:Person WHERE x3.name = \"William\")\nRETURN x0.date",
-   "nl_gold_linked": "[Person] = William\nWhich crime dates involve people connected to a friend of William?",
-   "nl_bracketed": "Which crime dates involve people connected to a friend of [x3.Person.name:William]?",
-   "entities": "x3.Person.name:William = William",
-   "num_nodes": "4",
-   "template_id": "12",
-   "type": "attribute_set",
    "return_count": "1"
   }
  },
@@ -48996,13 +48708,13 @@
      "prop": "last_outcome",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -49745,13 +49457,13 @@
      "prop": "address",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 5,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "llm_tier_opus5_2026-08"
+     }
     }
    ],
    "query_difficulty": "hard"
@@ -49966,15 +49678,15 @@
      "prop": "name",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "rebalance_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "The given name Kenneth is commonly shortened to Ken and familiarly rendered as Kenny.",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 4,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "The given name Kenneth is commonly shortened to Ken and familiarly rendered as Kenny."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -50145,15 +49857,15 @@
      "prop": "rank",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "UK police forces and news reports routinely abbreviate the rank Police Constable as 'PC' before an officer's name (e.g., 'PC Smith').",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 14,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "UK police forces and news reports routinely abbreviate the rank Police Constable as 'PC' before an officer's name (e.g., 'PC Smith')."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -50368,13 +50080,13 @@
      "prop": null,
      "occurrences": 1,
      "validity": "ok",
+     "validity_backfill": "auto_ok_casing",
      "grounding_probe": {
       "exact_ci": true,
       "damerau": 3,
       "substring": false,
       "class": "exact_ci"
-     },
-     "validity_backfill": "auto_ok_casing"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -50609,53 +50321,6 @@
    "num_nodes": "3",
    "template_id": "109",
    "type": "entity_set",
-   "return_count": "1"
-  }
- },
- {
-  "dataset": "zograscope",
-  "graph": "pole",
-  "id": "3486",
-  "nl": "Can you provide the post codes for locations where Matt. was living and a crime took place on 18/08/2017?",
-  "gold_cypher": "MATCH (x0:Location)-[:CURRENT_ADDRESS]-(x1:Person WHERE x1.name = \"Matthew\")\nMATCH (x0:Location)-[:OCCURRED_AT]-(x2:Crime WHERE x2.date = \"18/08/2017\")\nRETURN x0.postcode",
-  "_aug_meta": {
-   "augmented": true,
-   "original_nl": "Can you provide the post codes for locations where Matthew was living and a crime took place on 18/08/2017?",
-   "graph": "pole",
-   "edits": [
-    {
-     "strategy": "abbrev",
-     "from": "Matthew",
-     "to": "Matt.",
-     "source": "llm",
-     "needs_verification": true,
-     "label": "Person",
-     "prop": "name",
-     "occurrences": 1,
-     "validity": "ok",
-     "grounding_probe": {
-      "exact_ci": false,
-      "damerau": 3,
-      "substring": false,
-      "class": "semantic"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "\"Matt.\" is the standard short form/abbreviation used for Matthew (e.g., the Gospel of Matthew and the given name)."
-    }
-   ],
-   "query_difficulty": "medium"
-  },
-  "_source_row": {
-   "id": "3486",
-   "nl": "Can you provide the post codes for locations where Matthew was living and a crime took place on 18/08/2017?",
-   "mr": "MATCH (x0:Location)-[:CURRENT_ADDRESS]-(x1:Person WHERE x1.name = \"Matthew\")\nMATCH (x0:Location)-[:OCCURRED_AT]-(x2:Crime WHERE x2.date = \"18/08/2017\")\nRETURN x0.postcode",
-   "nl_gold_linked": "[Person] = Matthew\n[Crime] = 18/08/2017\nCan you provide the post codes for locations where Matthew was living and a crime took place on 18/08/2017?",
-   "nl_bracketed": "Can you provide the post codes for locations where [x1.Person.name:Matthew] was living and a crime took place on [x2.Crime.date:18/08/2017]?",
-   "entities": "x1.Person.name:Matthew = Matthew\nx2.Crime.date:18/08/2017 = 18/08/2017",
-   "num_nodes": "3",
-   "template_id": "96",
-   "type": "attribute_set",
    "return_count": "1"
   }
  },
@@ -51120,13 +50785,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "llm_tier_opus5_2026-08"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -52441,13 +52106,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "llm_tier_opus5_2026-08"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -52838,13 +52503,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "llm_tier_opus5_2026-08"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -52883,13 +52548,13 @@
      "prop": "address",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_backfill_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 8,
       "substring": true,
       "class": "substring"
-     },
-     "regenerated": "partial_backfill_2026-08"
+     }
     }
    ],
    "query_difficulty": "hard"
@@ -53148,13 +52813,13 @@
      "prop": null,
      "occurrences": 1,
      "validity": "ok",
+     "validity_backfill": "auto_ok_casing",
      "grounding_probe": {
       "exact_ci": true,
       "damerau": 5,
       "substring": false,
       "class": "exact_ci"
-     },
-     "validity_backfill": "auto_ok_casing"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -53237,13 +52902,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "llm_tier_opus5_2026-08"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -53502,13 +53167,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "llm_tier_opus5_2026-08"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -53547,13 +53212,13 @@
      "prop": "address",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 5,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "hard"
@@ -53592,13 +53257,13 @@
      "prop": null,
      "occurrences": 1,
      "validity": "ok",
+     "validity_backfill": "auto_ok_casing",
      "grounding_probe": {
       "exact_ci": true,
       "damerau": 3,
       "substring": false,
       "class": "exact_ci"
-     },
-     "validity_backfill": "auto_ok_casing"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -54297,13 +53962,13 @@
      "prop": "last_outcome",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -54386,13 +54051,13 @@
      "prop": null,
      "occurrences": 1,
      "validity": "ok",
+     "validity_backfill": "auto_ok_casing",
      "grounding_probe": {
       "exact_ci": true,
       "damerau": 6,
       "substring": false,
       "class": "exact_ci"
-     },
-     "validity_backfill": "auto_ok_casing"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -54607,13 +54272,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "llm_tier_opus5_2026-08"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -54784,13 +54449,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "llm_tier_opus5_2026-08"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -55225,15 +54890,15 @@
      "prop": "rank",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "UK police ranks are routinely written as 'PC' before an officer's name in news reports and official police documents (e.g. 'PC Keith Palmer').",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 14,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "UK police ranks are routinely written as 'PC' before an officer's name in news reports and official police documents (e.g. 'PC Keith Palmer')."
+     }
     }
    ],
    "query_difficulty": "hard"
@@ -55272,13 +54937,13 @@
      "prop": null,
      "occurrences": 1,
      "validity": "ok",
+     "validity_backfill": "auto_ok_casing",
      "grounding_probe": {
       "exact_ci": true,
       "damerau": 3,
       "substring": false,
       "class": "exact_ci"
-     },
-     "validity_backfill": "auto_ok_casing"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -55757,13 +55422,13 @@
      "prop": "address",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -56022,15 +55687,15 @@
      "prop": "make",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "\"Chevy\" is the widely used colloquial short form for Chevrolet in American media, advertising, and speech.",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 5,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "\"Chevy\" is the widely used colloquial short form for Chevrolet in American media, advertising, and speech."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -56509,13 +56174,13 @@
      "prop": "type",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "llm_tier_opus5_2026-08"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -56730,15 +56395,15 @@
      "prop": "name",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "rebalance_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "\"Matt.\" is the standard short form/abbreviation used for Matthew (e.g., the Gospel of Matthew and the given name).",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 3,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "\"Matt.\" is the standard short form/abbreviation used for Matthew (e.g., the Gospel of Matthew and the given name)."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -56865,15 +56530,15 @@
      "prop": "rank",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "UK police ranks are routinely written as 'PC Smith', the standard abbreviation for Police Constable in British news and official police documents.",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 14,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "UK police ranks are routinely written as 'PC Smith', the standard abbreviation for Police Constable in British news and official police documents."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -57000,15 +56665,15 @@
      "prop": "make",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "\"Chevy\" is the widely used colloquial short form for Chevrolet in American media, advertising, and speech.",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 5,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "\"Chevy\" is the widely used colloquial short form for Chevrolet in American media, advertising, and speech."
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -57443,13 +57108,13 @@
      "prop": "last_outcome",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "partial_rules_v2.1",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 1,
       "substring": false,
       "class": "edit_distance"
-     },
-     "regenerated": "partial_rules_v2.1"
+     }
     }
    ],
    "query_difficulty": "medium"
@@ -57532,15 +57197,15 @@
      "prop": "rank",
      "occurrences": 1,
      "validity": "ok",
+     "regenerated": "llm_tier_opus5_2026-08",
+     "proposer_model": "claude-opus-5",
+     "evidence": "UK police and media routinely abbreviate the rank as 'PC' before an officer's name, e.g. 'PC John Smith'.",
      "grounding_probe": {
       "exact_ci": false,
       "damerau": 14,
       "substring": false,
       "class": "semantic"
-     },
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "UK police and media routinely abbreviate the rank as 'PC' before an officer's name, e.g. 'PC John Smith'."
+     }
     }
    ],
    "query_difficulty": "easy"

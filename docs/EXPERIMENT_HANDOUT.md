@@ -34,10 +34,11 @@ python benchmarks/verify.py
 
 Must print **`VERIFIED — safe to run experiments and pool results.`**
 
-This is not a formality. The benchmarks are the **v2.1 freeze, 4,641
-questions**; an earlier checkout carried a 4,875-row pre-curation set. Results
-from different copies **cannot be pooled**, and nothing downstream will warn
-you. If it fails: `git pull`, run it again, and if it still fails, ask before
+This is not a formality. The benchmarks are the **v2.2 verified release,
+4,611 questions** (the v2.1 freeze after applying the human-verification
+verdicts); earlier checkouts carried the 4,641-row pre-verification v2.1 set or
+the 4,875-row pre-curation set. Results from different copies **cannot be
+pooled**, and nothing downstream will warn you. If it fails: `git pull`, run it again, and if it still fails, ask before
 running anything.
 
 ## 2. Choose your slice — edit `eval_config.py`
@@ -136,20 +137,20 @@ run all five methods on it. These 13 pairs are the full evaluation suite
 
 | dataset | graph | questions | assigned to |
 |---|---|--:|---|
-| `cypherbench_augmented` | `movie` | 367 | |
-| `cypherbench_augmented` | `politics` | 361 | |
-| `cypherbench_augmented` | `geography` | 335 | |
-| `cypherbench_augmented` | `fictional_character` | 326 | |
-| `cypherbench_augmented` | `company` | 306 | |
+| `cypherbench_augmented` | `movie` | 360 | |
+| `cypherbench_augmented` | `politics` | 360 | |
+| `cypherbench_augmented` | `geography` | 331 | |
+| `cypherbench_augmented` | `fictional_character` | 324 | |
+| `cypherbench_augmented` | `company` | 305 | |
 | `cypherbench_augmented` | `nba` | 251 | |
-| `cypherbench_augmented` | `flight_accident` | 169 | |
-| `mindthequery_augmented` | `healthcare` | 420 | |
+| `cypherbench_augmented` | `flight_accident` | 168 | |
+| `mindthequery_augmented` | `healthcare` | 419 | |
 | `mindthequery_augmented` | `covid` | 327 | |
-| `mindthequery_augmented` | `wwc` | 270 | |
-| `mindthequery_augmented` | `er` | 186 | |
+| `mindthequery_augmented` | `wwc` | 267 | |
+| `mindthequery_augmented` | `er` | 185 | |
 | `mindthequery_augmented` | `bloom` | 24 | |
-| `zograscope_augmented` | `pole` | 1,299 | |
-| | **total** | **4,641** | |
+| `zograscope_augmented` | `pole` | 1,290 | |
+| | **total** | **4,611** | |
 
 > `zograscope/pole` is one graph but 28% of the benchmark — budget for it, or
 > split it by running with different `LIMIT`/shard settings and telling us how

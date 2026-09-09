@@ -50,7 +50,7 @@ bounds any proposer-familiarity effect.
 | Checklist item | Answer / pointer |
 |---|---|
 | Use of AI assistants disclosed? | Yes — section above; roles: proposer, supply probe, engineering |
-| Models identified? | `gpt-4.1`, `claude-opus-5` (pinned per-edit in `release_manifest_v2.1.jsonl`) |
+| Models identified? | `gpt-4.1`, `claude-opus-5` (pinned per-edit in `release_manifest_v2.1.jsonl`, carried into the verified `release_manifest_v2.2.jsonl`) |
 | Human oversight of AI-generated content? | 100% census of LLM-proposed edits, double annotation + adjudication, pre-registered rejection rules (DATASHEET §7 curation log) |
 | Contamination / circularity risk? | LLM never judges; DB + attested + human judges only; provenance ablation reported |
 | Artifacts released? | Manifest (all proposals + evidence), rebuild script, prompts (in `scripts/regenerate_llm_tier.py`, `scripts/measure_applicability_ceiling.py`) |

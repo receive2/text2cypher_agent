@@ -25,6 +25,7 @@ Annotator-facing instructions: `docs/ANNOTATION_QUICKSTART.md`.
 | 2026-09-01 | First main file returned (E). Came back cp1252 from Excel's plain "CSV" save: 10 rows' non-Latin characters replaced by `?`, labels intact — repaired by restoring source columns from the shipped queue; `identify_return.py` gained encoding fallbacks and the guide now says "CSV UTF-8". |
 | 2026-09-07 | A, B, D returned main files (UTF-8, complete). |
 | 2026-09-09 | C returned main file (UTF-8, 664/664, 0 illegal values). **Collection complete: 5/5.** Five-annotator statistics computed; 55 items pending adjudication (worklist issued); release freeze tooling ready (§7). |
+| 2026-09-09 | Adjudication of the 55 pending items by the first author (29 valid / 26 invalid). **Release frozen as v2.2:** 4,641 → 4,611 rows (20 reverted, 30 removed); manifest + decision log + anonymised verdicts released in `audit/verification/`. |
 
 ## 2. Recruitment context
 
@@ -280,3 +281,14 @@ refuses to run while 55 items await adjudication; the canonical v2.2 numbers
 follow adjudication. Raw artifacts (blind key, anonymised per-item verdicts,
 calibration set + reference answers, statistics) are in
 `audit/verification/`.
+
+**Adjudication and freeze (2026-09-09, final).** The 55 pending items were
+adjudicated by the first author from the worklist (both raters' labels and
+notes visible; no model involved): 29 valid / 26 invalid. The stricter rater
+was upheld on 26 of the 55 splits, so the adjudicated LLM-tier validity
+(97.2% [95.9, 98.1]) sits below the pre-adjudication 99.2% — the
+pre-adjudication figure counted only unanimous verdicts and was therefore
+optimistic; the final figure is the one to report. Freeze: 4,641 → 4,611
+rows; 20 reverted to certified prior algorithmic forms, 30 removed (11
+invalid, 5 source-error, 12 unnatural, 2 calibration). Final numbers and
+policy statements: `docs/VERIFICATION_PROTOCOL.md` §9.

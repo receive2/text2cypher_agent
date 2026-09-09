@@ -37,13 +37,19 @@ python benchmarks/verify.py     # must print VERIFIED
 The perturbed benchmarks live in `benchmarks/` in this repo and
 `eval_config.py` reads them from there, so a fresh clone is already correct
 and everyone evaluates the same bytes — which is what makes separate people's
-results poolable. The release is the **v2.1 freeze: 4,641 questions**
-(cypherbench 2,115 · mindthequery 1,227 · zograscope 1,299).
+results poolable. The release is the **v2.2 verified freeze: 4,611 questions**
+(cypherbench 2,099 · mindthequery 1,222 · zograscope 1,290) —
+the v2.1 freeze (4,641) after applying the human-verification verdicts
+(`docs/VERIFICATION_PROTOCOL.md` §9; every row's fate is in
+`audit/verification/decisions.csv`).
 
-> A checkout from before 2026-09 carried the *pre-curation* set (4,875 rows).
-> Numbers from that copy are not comparable with anything produced now — if
-> `verify.py` does not print VERIFIED, `git pull` and check again before you
-> run anything.
+> A checkout from before 2026-09 carried the *pre-curation* set (4,875 rows);
+> one from 2026-08-22 … 2026-09-09 carried the *pre-verification* v2.1 set
+> (4,641 rows). Numbers from those copies are not comparable with anything
+> produced now — runs made on v2.1 can be re-derived on the released rows with
+> `scripts/rescore_on_verified.py --decisions audit/verification/decisions.csv`.
+> If `verify.py` does not print VERIFIED, `git pull` and check again before
+> you run anything.
 
 ## Golden rule: verify before you evaluate
 

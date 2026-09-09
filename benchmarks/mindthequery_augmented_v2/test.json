@@ -16338,56 +16338,6 @@
  {
   "dataset": "mindthequery",
   "graph": "er",
-  "id": "Complex_Aggregation_test:1",
-  "nl": "What is the total number of movies watched by F users in each state, and what is the average year of those movies?",
-  "gold_cypher": "MATCH (u:User {gender: 'Female'})-[w:WATCHED]->(m:Movie) RETURN u.state AS state, count(m) AS totalMoviesWatched, avg(m.year) AS averageMovieYear",
-  "_aug_meta": {
-   "augmented": true,
-   "original_nl": "What is the total number of movies watched by female users in each state, and what is the average year of those movies?",
-   "graph": "er",
-   "edits": [
-    {
-     "strategy": "abbrev",
-     "from": "female",
-     "to": "F",
-     "source": "llm",
-     "needs_verification": true,
-     "label": "User",
-     "prop": "gender",
-     "occurrences": 1,
-     "validity": "ok",
-     "regenerated": "rebalance_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "Forms and records routinely abbreviate the sex value 'female' as 'F' (e.g., M/F fields), while no distinct standard colloquial nickname exists for the term itself."
-    }
-   ],
-   "query_difficulty": "medium"
-  },
-  "_source_row": {
-   "NL Question": "What is the total number of movies watched by female users in each state, and what is the average year of those movies?",
-   "Cypher": "MATCH (u:User {gender: 'Female'})-[w:WATCHED]->(m:Movie) RETURN u.state AS state, count(m) AS totalMoviesWatched, avg(m.year) AS averageMovieYear",
-   "source_dataset": "er",
-   "source_chunk": "data_3_2_2_6",
-   "original_file": "Complex_Aggregation.json",
-   "original_index": 212,
-   "unique_id": "er_data_3_2_2_6_Complex_Aggregation_212",
-   "schema_validation_result": "✅ Query is valid according to schema!",
-   "schema_validation_passed": 1,
-   "value_validation_result": "✅ All values in Cypher are consistent with the NL question.",
-   "value_validation_passed": 1,
-   "neo4j_result_validation": "Results returned successfully.",
-   "neo4j_result_passed": 1,
-   "neo4j_runtime_validation": "No runtime errors.",
-   "neo4j_runtime_passed": 1,
-   "neo4j_content_validation": "Results contain non-null values.",
-   "neo4j_content_passed": 1,
-   "logical [0/1]": "1",
-   "reason/observation [reason for why the query was not logical or was incorrect]": ""
-  }
- },
- {
-  "dataset": "mindthequery",
-  "graph": "er",
   "id": "Complex_Aggregation_test:9",
   "nl": "For each state, what is the average number of movies watched by female users compared to the average number of movies watched by MALE users?",
   "gold_cypher": "MATCH (u:User)-[w:WATCHED]->(m:Movie) WITH u.state AS state, u.gender AS gender, u, COUNT(m) AS moviesWatchedPerUser WITH state, gender, AVG(moviesWatchedPerUser) AS avgMoviesWatchedPerUser WHERE gender IN ['Male', 'Female'] WITH state, COLLECT({gender: gender, avgMoviesWatched: avgMoviesWatchedPerUser}) AS genderData UNWIND genderData AS gd WITH state, gd.gender AS gender, gd.avgMoviesWatched AS avgMoviesWatched RETURN state, gender, avgMoviesWatched",
@@ -35421,48 +35371,6 @@
  {
   "dataset": "mindthequery",
   "graph": "healthcare",
-  "id": "Complex_Retrieval_test:54",
-  "nl": "Find cases where the drug 'Jemperli' with primary substance 'Jemperli' is a primary suspect with 'Unknown' route of administration, and the age of the case is greater than 50. Return the primary IDs of these cases.",
-  "gold_cypher": "MATCH (c:Case)-[r:IS_PRIMARY_SUSPECT]->(d:Drug {name: 'Dostarlimab', primarySubstabce: 'DOSTARLIMAB'}) WHERE r.route = 'Unknown' AND c.age > 50 RETURN c.primaryid AS caseId",
-  "_aug_meta": {
-   "augmented": true,
-   "original_nl": "Find cases where the drug 'Dostarlimab' with primary substance 'DOSTARLIMAB' is a primary suspect with 'Unknown' route of administration, and the age of the case is greater than 50. Return the primary IDs of these cases.",
-   "graph": "healthcare",
-   "edits": [
-    {
-     "strategy": "alias",
-     "from": "Dostarlimab",
-     "to": "Jemperli",
-     "source": "llm",
-     "needs_verification": true,
-     "label": "Drug",
-     "prop": "name",
-     "occurrences": 2,
-     "validity": "ok",
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "Jemperli is the FDA-approved brand name under which GSK markets dostarlimab, used in news coverage of the rectal cancer trial."
-    }
-   ],
-   "query_difficulty": "medium"
-  },
-  "_source_row": {
-   "id": 614,
-   "original_index": 858,
-   "source_dataset": "healthcare",
-   "source_chunk": "data_3_1_2_6",
-   "original_file": "Complex_Retrieval.json",
-   "unique_id": "healthcare_data_3_1_2_6_Complex_Retrieval_858",
-   "NL Question": "Find cases where the drug 'Dostarlimab' with primary substance 'DOSTARLIMAB' is a primary suspect with 'Unknown' route of administration, and the age of the case is greater than 50. Return the primary IDs of these cases.",
-   "Cypher": "MATCH (c:Case)-[r:IS_PRIMARY_SUSPECT]->(d:Drug {name: 'Dostarlimab', primarySubstabce: 'DOSTARLIMAB'}) WHERE r.route = 'Unknown' AND c.age > 50 RETURN c.primaryid AS caseId",
-   "result [0/1]": "1",
-   "logical [0/1]": "1",
-   "reason/observation [reason for why the query was not logical or was incorrect]": ""
-  }
- },
- {
-  "dataset": "mindthequery",
-  "graph": "healthcare",
   "id": "Complex_Retrieval_test:55",
   "nl": "Find all cases where the reporter's occupation is 'Cnosumer' and the case resulted in an outcome of 'Life-Threatening'. Also, find the drugs that are primary suspects in these cases.",
   "gold_cypher": "MATCH (c:Case)-[:REPORTED_BY]->(r:ReportSource {name: 'Consumer'}), (c)-[:RESULTED_IN]->(o:Outcome {outcome: 'Life-Threatening'}), (c)-[:IS_PRIMARY_SUSPECT]->(d:Drug) RETURN c.primaryid AS caseId, d.name AS drugName",
@@ -45276,48 +45184,6 @@
  {
   "dataset": "mindthequery",
   "graph": "wwc",
-  "id": "Complex_Retrieval_test:2",
-  "nl": "Find all matches in which the team 'Land of the Rising Sun' played, and for each match, list the players who scored goals, along with the minute of the goal. Return the match ID, player name, and goal minute.",
-  "gold_cypher": "MATCH (t:Team {name: 'Japan'})-[:PLAYED_IN]->(m:Match), (p:Person)-[sg:SCORED_GOAL]->(m) RETURN m.id AS matchId, p.name AS playerName, sg.minute AS goalMinute",
-  "_aug_meta": {
-   "augmented": true,
-   "original_nl": "Find all matches in which the team 'Japan' played, and for each match, list the players who scored goals, along with the minute of the goal. Return the match ID, player name, and goal minute.",
-   "graph": "wwc",
-   "edits": [
-    {
-     "strategy": "alias",
-     "from": "Japan",
-     "to": "Land of the Rising Sun",
-     "source": "llm",
-     "needs_verification": true,
-     "label": "Team",
-     "prop": "name",
-     "occurrences": 1,
-     "validity": "ok",
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "Common English epithet for Japan used in news media and Wikipedia's article on Japan."
-    }
-   ],
-   "query_difficulty": "easy"
-  },
-  "_source_row": {
-   "id": 545,
-   "original_index": 545,
-   "source_dataset": "wwc",
-   "source_chunk": "data_3_3_2_6",
-   "original_file": "Complex_Retrieval.json",
-   "unique_id": "wwc_data_3_3_2_6_Complex_Retrieval_219",
-   "NL Question": "Find all matches in which the team 'Japan' played, and for each match, list the players who scored goals, along with the minute of the goal. Return the match ID, player name, and goal minute.",
-   "Cypher": "MATCH (t:Team {name: 'Japan'})-[:PLAYED_IN]->(m:Match), (p:Person)-[sg:SCORED_GOAL]->(m) RETURN m.id AS matchId, p.name AS playerName, sg.minute AS goalMinute",
-   "result [0/1]": "1",
-   "logical [0/1]": "1",
-   "reason/observation [reason for why the query was not logical or was incorrect]": ""
-  }
- },
- {
-  "dataset": "mindthequery",
-  "graph": "wwc",
   "id": "Complex_Retrieval_test:4",
   "nl": "Find all players who played in a match on '2019-06-08' and represent the team 'JPN'. List their names and the stage of the match.",
   "gold_cypher": "MATCH (p:Person)-[:PLAYED_IN]->(m:Match {date: date('2019-06-08')}), (p)-[:REPRESENTS]->(t:Team {name: 'Japan'}) RETURN p.name AS playerName, m.stage AS matchStage",
@@ -45798,48 +45664,6 @@
  {
   "dataset": "mindthequery",
   "graph": "wwc",
-  "id": "Complex_Retrieval_test:19",
-  "nl": "Find all tournaments in which a squad named 'Super Falcons' participated and retrieve the names of any coaches associated with that squad.",
-  "gold_cypher": "MATCH (s:Squad {id: 'Nigeria in 1991'})-[:FOR]->(t:Tournament)<-[:FOR]-(s) MATCH (coach:Person)-[:COACH_FOR]->(s) RETURN DISTINCT t.name AS tournamentName, coach.name AS coachName",
-  "_aug_meta": {
-   "augmented": true,
-   "original_nl": "Find all tournaments in which a squad named 'Nigeria in 1991' participated and retrieve the names of any coaches associated with that squad.",
-   "graph": "wwc",
-   "edits": [
-    {
-     "strategy": "alias",
-     "from": "Nigeria in 1991",
-     "to": "Super Falcons",
-     "source": "llm",
-     "needs_verification": true,
-     "label": "Squad",
-     "prop": "id",
-     "occurrences": 1,
-     "validity": "ok",
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "Nigeria's women's national football team, which competed at the 1991 Women's World Cup, is widely known in media as the Super Falcons."
-    }
-   ],
-   "query_difficulty": "medium"
-  },
-  "_source_row": {
-   "id": 562,
-   "original_index": 562,
-   "source_dataset": "wwc",
-   "source_chunk": "data_3_3_2_6",
-   "original_file": "Complex_Retrieval.json",
-   "unique_id": "wwc_data_3_3_2_6_Complex_Retrieval_242",
-   "NL Question": "Find all tournaments in which a squad named 'Nigeria in 1991' participated and retrieve the names of any coaches associated with that squad.",
-   "Cypher": "MATCH (s:Squad {id: 'Nigeria in 1991'})-[:FOR]->(t:Tournament)<-[:FOR]-(s) MATCH (coach:Person)-[:COACH_FOR]->(s) RETURN DISTINCT t.name AS tournamentName, coach.name AS coachName",
-   "result [0/1]": "0",
-   "logical [0/1]": "1",
-   "reason/observation [reason for why the query was not logical or was incorrect]": "The variable s is reused ambiguously in the second MATCH clause, causing incorrect self-joins and possible no results."
-  }
- },
- {
-  "dataset": "mindthequery",
-  "graph": "wwc",
   "id": "Complex_Retrieval_test:20",
   "nl": "Find all players who represented the 'Holland' team and played in matches during the 'Sweden 1995' tournament. Return their names and the dates of the matches they played in.",
   "gold_cypher": "MATCH (p:Person)-[:REPRESENTS]->(t:Team {name: 'Netherlands'})-[:PLAYED_IN]->(m:Match)-[:IN_TOURNAMENT]->(tour:Tournament {name: 'Sweden 1995'}) RETURN p.name AS playerName, m.date AS matchDate",
@@ -46314,48 +46138,6 @@
    "unique_id": "wwc_data_3_3_2_6_Complex_Retrieval_262",
    "NL Question": "Find all players who represent 'Australia' and played in matches during the 'Sweden 1995' tournament. Return the player's name and the match ID.",
    "Cypher": "MATCH (team:Team {name: 'Australia'})<-[:REPRESENTS]-(player:Person)-[:PLAYED_IN]->(match:Match)-[:IN_TOURNAMENT]->(tournament:Tournament {name: 'Sweden 1995'})\nRETURN player.name AS playerName, match.id AS matchId",
-   "result [0/1]": "1",
-   "logical [0/1]": "1",
-   "reason/observation [reason for why the query was not logical or was incorrect]": ""
-  }
- },
- {
-  "dataset": "mindthequery",
-  "graph": "wwc",
-  "id": "Complex_Retrieval_test:33",
-  "nl": "Retrieve the names of all players who are in the 'Super Falcons' squad and scored a goal in any match. Also, return the minute at which they scored.",
-  "gold_cypher": "MATCH (squad:Squad {id: 'Nigeria in 1999'})<-[:IN_SQUAD]-(player:Person)-[scored_goal:SCORED_GOAL]->(match:Match)\nRETURN player.name AS playerName, scored_goal.minute AS goalMinute",
-  "_aug_meta": {
-   "augmented": true,
-   "original_nl": "Retrieve the names of all players who are in the 'Nigeria in 1999' squad and scored a goal in any match. Also, return the minute at which they scored.",
-   "graph": "wwc",
-   "edits": [
-    {
-     "strategy": "alias",
-     "from": "Nigeria in 1999",
-     "to": "Super Falcons",
-     "source": "llm",
-     "needs_verification": true,
-     "label": "Squad",
-     "prop": "id",
-     "occurrences": 1,
-     "validity": "ok",
-     "regenerated": "llm_tier_opus5_2026-08",
-     "proposer_model": "claude-opus-5",
-     "evidence": "Nigeria's women's national football team, including its 1999 World Cup squad, is universally called the Super Falcons in media coverage."
-    }
-   ],
-   "query_difficulty": "medium"
-  },
-  "_source_row": {
-   "id": 576,
-   "original_index": 576,
-   "source_dataset": "wwc",
-   "source_chunk": "data_3_3_2_6",
-   "original_file": "Complex_Retrieval.json",
-   "unique_id": "wwc_data_3_3_2_6_Complex_Retrieval_263",
-   "NL Question": "Retrieve the names of all players who are in the 'Nigeria in 1999' squad and scored a goal in any match. Also, return the minute at which they scored.",
-   "Cypher": "MATCH (squad:Squad {id: 'Nigeria in 1999'})<-[:IN_SQUAD]-(player:Person)-[scored_goal:SCORED_GOAL]->(match:Match)\nRETURN player.name AS playerName, scored_goal.minute AS goalMinute",
    "result [0/1]": "1",
    "logical [0/1]": "1",
    "reason/observation [reason for why the query was not logical or was incorrect]": ""
