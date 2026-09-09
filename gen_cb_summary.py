@@ -18,7 +18,7 @@ Driven by a JSON spec (argv[1])::
     {
       "title": "...", "out": "docs/ablation_cypherbench_summary.md",
       "generated": "2026-06-21",
-      "methods": ["No Val Link","FCAV","ReAct (N+R)","GraphRAG","CyANCHOR (fz+lev)"],
+      "methods": ["No Val Link","FCAV","ReAct","GraphRAG","CyANCHOR"],
       "graphs": [
         {"label":"flight_accident","n":170,
          "dirs":{"No Val Link":"logs/fl2_no_val_link", ...}},
@@ -43,8 +43,9 @@ def _load(d: str) -> List[Dict[str, Any]]:
 
 
 def _ea(rows: List[Dict[str, Any]]) -> Optional[float]:
-    s = [r for r in rows if r.get("ea") is not None]
-    return sum(1.0 if r["ea"] else 0.0 for r in s) / len(s) if s else None
+    # Denominator is ALL rows (errors score 0, not excluded) — same convention
+    # as gen_ablation_report._ea and eval_run._summarize_records.
+    return sum(1.0 if r.get("ea") is True else 0.0 for r in rows) / len(rows) if rows else None
 
 
 def _psjs(rows: List[Dict[str, Any]]) -> Optional[float]:

@@ -196,8 +196,9 @@ Each edit records its `source`: `algorithmic`, `kb:curated`, `kb:simplekg`,
 construction; LLM proposals are 100% human-verified (not sampled) against two
 questions: (i) does the perturbed mention still uniquely denote the original
 entity / preserve the gold answer? (ii) is it a plausible real-user surface form?
-Verdicts (keep / fix / drop) are applied before release. (In the current build,
-814 of the edits are LLM-proposed and queued for verification.)
+Verdicts (keep / fix / drop) are applied before release. (In the v2.1 freeze,
+916 of the 4,641 edits are LLM-proposed; all 916 are queued for the
+double-annotated census.)
 
 ## A.6 On the reliability of LLM-proposed forms
 

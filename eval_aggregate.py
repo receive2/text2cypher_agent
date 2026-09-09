@@ -271,6 +271,14 @@ def main() -> int:
             )
             continue
         dataset, graph, method, stamp = parsed
+        # Runs recorded before the model became part of the method segment carry
+        # no "@model". Recover it from run_meta so a legacy run and a re-run of
+        # the *same* model collapse to one key (newest wins) instead of showing
+        # up as two rows for what is one configuration.
+        if "@" not in method:
+            legacy_model = eval_paths.run_meta_model(sp.parent)
+            if legacy_model:
+                method = eval_paths.method_tag_join(method, legacy_model)
         key = (dataset, graph, method)
         if key not in latest or stamp > latest[key][0]:
             latest[key] = (stamp, sp)

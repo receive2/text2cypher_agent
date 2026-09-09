@@ -50,25 +50,37 @@ cleanly and separately.
   rule-generated) and **blind to any system output** (never show model
   predictions). The sampler enforces this — provenance lives only in the key
   file, never in the annotator CSVs.
+  *Disclosure:* the annotator CSVs do show the **intended strategy**
+  (typo/alias/abbrev/partial/casing). This is deliberate and load-bearing — the
+  typo rule ("a deliberate misspelling is `valid` if still recognizable")
+  cannot be applied without knowing the row is a typo. Strategy does not reveal
+  the generation provenance that the anti-circularity claim depends on
+  (LLM vs KB vs rule for alias/abbrev/partial stays hidden).
 
 ## 3. Coverage — what gets verified (all provenance classes)
 
-The benchmark (4,875 perturbations) splits by **provenance**, which determines
-how each part is verified:
+The benchmark (4,641 perturbations) splits by **provenance**, which determines
+how each part is verified. Counts are for the v2.1 freeze and already reflect
+the coverage revision of 2026-08-25 (§6):
 
-| provenance | count | how verified |
-|---|--:|---|
-| **LLM-proposed** (alias/abbrev/partial) | 814 | **Full census** (every item) |
-| **Attested / KB** (alias/abbrev from a knowledge base) | 693 | **Full census** |
-| **Algorithmic / rule** (casing, typo, rule-based partial) | 3,368 | **Powered stratified sample** |
+| provenance | in release | verified | how |
+|---|--:|--:|---|
+| **LLM-proposed** (alias/abbrev/partial) | 916 | **916 (100%)** | **Full census** — every item, double-annotated |
+| **Attested / KB** (alias/abbrev from a knowledge base) | 1,052 | 400 (38%) | Stratified sample, double-annotated |
+| **Algorithmic / rule** (casing, typo, rule-based partial) | 2,673 | 450 (17%) | Powered stratified sample |
 
-- **Tier 1 — full census of the 1,507 human/KB-mediated edits.** This is where
-  corruption is most plausible; verify all.
-- **Tier 2 — powered sample of the 3,368 purely-algorithmic edits.** "Trusted by
-  construction" is an assumption; *measure* it. Default sample (for ±2.5–3% Wilson
-  margin at an expected validity ≈ 0.97): **typo 300, rule-partial 200, casing
-  150** (≈ 650). Typo is the largest strategy (1,808) **and** the most
-  collision-prone, so it gets the tightest target.
+- **Tier 1 — full census of all 916 LLM-proposed edits.** Non-negotiable: this
+  tier carries the highest corruption risk and underpins the anti-circularity
+  claim (no model judges its own proposals). A census *cleans* — every invalid
+  item is identified and removed, which sampling cannot do.
+- **Tier 1b — stratified sample of the 1,052 attested/KB edits.** These carry
+  external provenance and are lower-risk, so their validity is *measured*
+  (reported with a Wilson CI) rather than exhaustively cleaned; un-sampled
+  attested rows remain in the release.
+- **Tier 2 — powered sample of the 2,673 purely-algorithmic edits.** "Trusted by
+  construction" is an assumption; *measure* it. This tier estimates a rate and
+  triggers no removals. Typo is the largest strategy (1,422) **and** the most
+  collision-prone, so it carries the largest share of the sample.
 
 Stratify (and report) on three axes: **strategy × provenance × source dataset**
 (CypherBench / Mind-the-Query / ZOGRASCOPE) — corruption risk differs by domain.
@@ -112,6 +124,58 @@ acceptable, **≥ 0.8** strong. (Naturalness IAA may go in an appendix.)
   form* in a second pass. State which policy was used.
 - `valid` + `natural` → **keep**.
 
+**IAA reporting under the revised coverage (2026-08-25).** The
+double-annotation budget for the algorithmic tier is allocated **evenly across
+strategies** (not proportionally), so every stratum has comparable power for
+per-stratum agreement: abbrev 740 / alias 527 / partial 129 / typo 80 /
+casing 80 double-annotated items in the shipped queue (abbrev 728 / alias 520 /
+partial 122 / typo 80 / casing 79 **measured**, after the pre-registered
+exclusion of calibration items — see below), plus ~155 co-annotated items per
+annotator pair for Cohen's kappa. Per-stratum tables report **raw pairwise agreement
+alongside Krippendorff's alpha**, because alpha is deflated by construction in
+high-prevalence strata: when ~97% of items share one label, chance agreement is
+already ~97%, and alpha can approach zero despite near-perfect agreement (the
+"kappa paradox"). Acceptance is judged on alpha where label variance permits and
+on raw agreement otherwise, with the stratum's `n_2` reported so readers can see
+the power behind each figure.
+
+**Coverage revision (2026-08-25, pre-annotation).** Annotator availability
+(volunteer lab members) required reducing per-person load. Revised design:
+**LLM-proposed edits keep a full double-annotated census** (916 items — the
+highest-risk tier, and the basis of the anti-circularity claim); the
+**attested/KB tier moves from census to a strategy-stratified sample**
+(400 of 1,052, double-annotated) and is therefore *measured* rather than
+exhaustively cleaned — its validity rate is reported with a Wilson CI and
+un-sampled attested rows remain in the release; the **algorithmic Tier-2
+sample** is reduced to 450 items, of which 240 are double-annotated (weighted
+evenly across strategies for per-stratum IAA) and the remaining 210
+single-annotated (this tier estimates a rate; it triggers no removals). Total
+shipped queue: **1,766 items / 3,322 judgments** (1,556 double + 210 single;
+~664 judgments per annotator). This remains well above comparable released
+benchmarks (e.g. VeriTaS, ACL 2026, validated 25k claims with ~816 human
+annotations).
+
+**Calibration exclusion (pre-registered).** Calibration items may overlap the
+main queue, and annotators receive guideline feedback on them before the main
+pass, so their main-queue labels are not independent first judgments. All
+annotators share a **single 48-item calibration set** (the set from the first
+package generation, retained across rebuilds — see the process log for why);
+27 of its items sit in the main queue. `verification_stats.py` excludes these
+ids from **all** reported measurements automatically (auto-detected from
+`verification/calibration_50.csv` / `calibration_legacy_ids.csv`, which now
+list the same set), leaving **1,739 measured items / 3,268 judgments**.
+Excluded items' main-queue labels are retained only as an informal
+intra-annotator consistency check, never in any reported figure. A
+transiently used alternative calibration set (drawn 2026-08-25, packaged but
+**never sent to anyone**) was retired the same day; having reached no
+annotator, it requires no exclusion
+(`verification/retired_newset_2026-08-25/`).
+
+**Pre-registered rejection handling for converted rows** (fixed before
+annotation; see the datasheet curation log, 2026-08-22): a rejected edit on a
+row with a logged prior valid form reverts to that form; rows without one
+follow the rules above. Canonical dataset figures are post-adjudication.
+
 ## 7. What to report in the paper (fixed schedule)
 
 A "Human Verification" subsection with:
@@ -121,8 +185,9 @@ A "Human Verification" subsection with:
 3. **IAA**: validity α (and κ), **overall + per strategy + per dataset**.
 4. **Validity (and corruption = 1−validity) rate**: overall + per stratum, each
    with a **Wilson 95% CI** (e.g. `alias valid 96.5% [94.8, 97.8]`).
-5. **Algorithmic-tier sampled validity rate + CI** (justifies trusting the
-   un-censused 3,368).
+5. **Sampled validity rate + CI for the attested and algorithmic tiers**
+   (justifies trusting the 652 un-sampled attested and 2,223 un-sampled
+   algorithmic rows).
 6. **Disagreement rate** + adjudication method.
 7. **Final released N** after dropping invalid / source-error rows.
 

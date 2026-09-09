@@ -34,9 +34,9 @@ date         = sys.argv[5] if len(sys.argv) > 5 else ""
 _METHODS = [
     ("No Val Link",          "—",     "no_val_link"),
     ("FCAV",                 "vector",     "fcav"),
-    ("ReAct (Node + Rel)",   "fuzzy",      "react"),
+    ("ReAct",                "fuzzy",      "react"),
     ("GraphRAG",             "norm-Lev",   "graphrag"),
-    ("CyANCHOR (fuzzy+lev)", "fuzzy+lev",  "cyanchor_fl"),
+    ("CyANCHOR",             "fuzzy+lev",  "cyanchor_fl"),
 ]
 
 methods, n = [], 0

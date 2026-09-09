@@ -177,6 +177,35 @@ MODEL_REGISTRY: dict = {
 #     "temperature": 0,
 # }
 
+# ── Generator-LLM sweep override ─────────────────────────────────────────────
+# A model sweep sets the generator LLM per run instead of editing this file:
+#
+#     EVAL_LLM_MODEL=claude-sonnet-5 EVAL_LLM_PROVIDER=anthropic python eval_run.py
+#
+# When ``EVAL_LLM_MODEL`` is set it replaces the model on all three stage
+# configs below (NER / Cypher / QA) — "all stages use the row's model", the
+# design of a cross-LLM comparison. ``EVAL_LLM_PROVIDER`` is optional and
+# defaults to whatever provider each stage already declares. Unset, both are
+# no-ops and the literals below are used verbatim, so existing runs and reports
+# are unaffected.
+#
+# ``eval_run`` reads the same resolved value to name the run directory, so a
+# sweep can never land two models in one report cell.
+EVAL_LLM_MODEL    = os.getenv("EVAL_LLM_MODEL") or None
+EVAL_LLM_PROVIDER = os.getenv("EVAL_LLM_PROVIDER") or None
+
+
+def _apply_llm_override(cfg: dict) -> dict:
+    """Overlay the sweep override onto one stage config (no-op when unset)."""
+    if not EVAL_LLM_MODEL:
+        return cfg
+    out = dict(cfg)
+    out["model"] = EVAL_LLM_MODEL
+    if EVAL_LLM_PROVIDER:
+        out["provider"] = EVAL_LLM_PROVIDER
+    return out
+
+
 NER_LLM_CONFIG: dict = {
    "provider":    "openai",
    "model":       "gpt-4.1",
@@ -231,8 +260,18 @@ CYPHER_LLM_CONFIG: dict = {
 #     "max_tokens":  512,
 # }
 
+# ── Apply the generator-LLM sweep override ───────────────────────────────────
+# Must run before anything is *derived* from a stage config (DEFAULT_LLM_CONFIG
+# below): a value copied out earlier would keep the pre-override model, and the
+# stage built from it would silently run a different generator than the one the
+# run directory is named for.
+NER_LLM_CONFIG    = _apply_llm_override(NER_LLM_CONFIG)
+QA_LLM_CONFIG     = _apply_llm_override(QA_LLM_CONFIG)
+CYPHER_LLM_CONFIG = _apply_llm_override(CYPHER_LLM_CONFIG)
+
 # Legacy default — used by any code path that imports ``agent_helper.llm``
-# without specifying a stage.  Defaults to the same setup as NER.
+# without specifying a stage (the entity-extraction tool inside the NER agent
+# goes through it).  Same setup as NER, *after* the override.
 DEFAULT_LLM_CONFIG: dict = dict(NER_LLM_CONFIG)
 
 
@@ -329,6 +368,25 @@ class GroundingSpec:
             return f"react_{suffix}"
         arms = "".join(a for a, on in (("f", self.fuzzy), ("v", self.vector), ("l", self.lev)) if on) or "none"
         return f"cyanchor_{arms}_{suffix}"
+
+    @property
+    def retrieval(self) -> Optional[str]:
+        """The retrieval mechanism this method actually uses.
+
+        The arm flags are cyanchor-only; the baselines each have their own FIXED
+        retrieval and never read them. Deriving this string from the raw flags
+        would report the dataclass default (``fuzzy=True``) for fcav/graphrag,
+        which is simply wrong — hence the explicit per-method mapping."""
+        if self.method == "no_val_link":
+            return None                      # grounding bypassed entirely
+        if self.method == "fcav":
+            return "vector"                  # FAISS over embedded values
+        if self.method == "graphrag":
+            return "norm-Lev"                # APOC levenshteinSimilarity scan
+        if self.method == "react":
+            return "fuzzy"                   # fixed BM25/Lucene
+        return "+".join(a for a, on in (("fuzzy", self.fuzzy), ("vector", self.vector),
+                                        ("lev", self.lev)) if on) or None
 
     @property
     def label(self) -> str:
@@ -429,8 +487,8 @@ RAG_RECURSION_LIMIT = 1
 # Contrasts with `full`: per-entity tool routing (no top-k tool crowding), no
 # get_entity intermediate layer, and candidates (not a single forced pick) are
 # given to the generator. Retrieval stays fuzzy (no value-embedding index).
-PLAN_EXEC_TOOLS_PER_ENTITY = 2    # tools routed per extracted mention
-PLAN_EXEC_VALUES_PER_TOOL  = 10   # top-K canonical values searched per tool (fuzzy modes)
+PLAN_EXEC_TOOLS_PER_ENTITY = int(os.getenv("PLAN_EXEC_TOOLS_PER_ENTITY", "2"))    # tools routed per extracted mention
+PLAN_EXEC_VALUES_PER_TOOL  = int(os.getenv("PLAN_EXEC_VALUES_PER_TOOL", "10"))   # top-K canonical values searched per tool (fuzzy modes)
 
 # plan_exec_node_rel_hybrid: per tool, union fuzzy top-K with vector top-K
 # candidates (fuzzy first, vector fills the tail). Tests whether in-graph
@@ -449,9 +507,9 @@ PLAN_EXEC_HYBRID_VECTOR_K = 5     # embedding (vector-index) candidates per tool
 # blanket top-K increases).
 # ⚙ eval receiver — edit in the eval_config panel, not here (literal = demo/CLI fallback).
 PLAN_EXEC_ESCALATE        = os.getenv("PLAN_EXEC_ESCALATE", "1").lower() in ("1", "true", "yes")
-PLAN_EXEC_MAX_ITER        = 3           # max escalation rounds per mention
-PLAN_EXEC_ESCALATE_BUDGET = (5, 3, 1)   # values added per successive round (deepen step)
-PLAN_EXEC_ROUTE_FETCH     = 6           # tools FAISS-routed per mention (initial + escalation pool)
+PLAN_EXEC_MAX_ITER        = int(os.getenv("PLAN_EXEC_MAX_ITER", "3"))           # max escalation rounds per mention
+PLAN_EXEC_ESCALATE_BUDGET = tuple(int(x) for x in os.getenv("PLAN_EXEC_ESCALATE_BUDGET", "5,3,1").split(","))   # values added per successive round (deepen step)
+PLAN_EXEC_ROUTE_FETCH     = int(os.getenv("PLAN_EXEC_ROUTE_FETCH", "6"))           # tools FAISS-routed per mention (initial + escalation pool)
 # In escalation the LLM judge picks the next action from: done | value (deepen
 # the used field) | a specific Label.property field to ADD (chosen from the menu
 # of available node fields). 'value' deepens fuzzy in the fuzzy mode and BOTH
@@ -587,3 +645,10 @@ RETRIEVAL_LEVENSHTEIN_K = int(os.getenv("RETRIEVAL_LEVENSHTEIN_K", "10"))  # can
 #  python ner_agent_auto.py "Who played Neo or Morpheus in The Matrix?" " --verbose
 #  python ner_agent_auto.py "Who act  in matrix?"  --verbose
 #  python ner_agent_auto.py "Who played neo or morphes in matrix?" --verbose
+
+
+def active_generator_model() -> str:
+    """The generator model this process actually uses — the sweep override when
+    set, else the Cypher stage's model (the stage that defines a run's
+    identity). ``eval_run`` names run dirs with this."""
+    return EVAL_LLM_MODEL or CYPHER_LLM_CONFIG.get("model") or ""

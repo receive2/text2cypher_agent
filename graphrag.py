@@ -50,6 +50,7 @@ from langchain_core.prompts import PromptTemplate
 
 import config as _config
 from agent.prompts import TEXT2CYPHER_SP
+from agent import prompt_cache
 from agent.agent_helper import (
     neo4j_graph,
     cypher_llm as _cypher_llm,
@@ -528,7 +529,11 @@ def _generate_cypher(question: str, schema: str, feedback: str, llm) -> str:
     On round 1 ``feedback`` is empty (no entity hints); later rounds inject the
     aggregated repair feedback into the ``{relevant_entities}`` slot."""
     safe_feedback = (feedback or "{}").replace("{", "{{").replace("}", "}}")
-    filled = TEXT2CYPHER_SP.replace("{relevant_entities}", safe_feedback)
+    # Everything before the marker (task text + schema) is identical for every
+    # question on this graph; the marker is stripped before any provider sees
+    # it (agent/prompt_cache.py), so the prompt text is unchanged.
+    filled = TEXT2CYPHER_SP.replace("{relevant_entities}",
+                                    prompt_cache.CACHE_BREAK + safe_feedback)
     tmpl = PromptTemplate(input_variables=["schema", "question"], template=filled)
     prompt_text = tmpl.format(schema=schema, question=question)
     # Fair comparison: every mode sees the IDENTICAL system prompt, so GraphRAG
