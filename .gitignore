@@ -124,3 +124,6 @@ paper/
 # not part of the reviewer-facing release
 # ──────────────────────────────────────────────────────────────────────────────
 internal/
+
+# dry-run plans from freeze_verified_release.py (regenerable)
+*.preview.csv

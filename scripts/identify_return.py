@@ -54,6 +54,10 @@ def _decode(raw):
 def _read(path):
     with open(path, "rb") as fh:
         raw = fh.read()
+    if str(path).lower().endswith((".xlsx", ".xlsm")):
+        # Excel return: read the first sheet directly (stdlib), header row first.
+        from xlsx_reader import read_xlsx_records
+        return read_xlsx_records(path), raw, "xlsx"
     text, enc = _decode(raw)
     return list(csv.DictReader(io.StringIO(text))), raw, enc
 
@@ -86,7 +90,7 @@ def identify(path, queues, cal, names):
         return None, "unreadable", f"UNREADABLE ({e})"
     if not rows or not SCHEMA_HEAD.issubset(rows[0].keys()):
         return None, "other", "not an annotation CSV"
-    if enc != "utf-8-sig":
+    if enc not in ("utf-8-sig", "xlsx"):
         _ENC_WARN[path] = enc
     ids = {r["id"] for r in rows}
     kind = "calibration" if ids == cal or len(rows) < 100 else "main"
@@ -124,7 +128,8 @@ def main(argv=None):
     for p in args.paths:
         p = os.path.expanduser(p)
         if os.path.isdir(p):
-            targets += sorted(os.path.join(p, f) for f in os.listdir(p) if f.lower().endswith(".csv"))
+            targets += sorted(os.path.join(p, f) for f in os.listdir(p)
+                              if f.lower().endswith((".csv", ".xlsx")))
         else:
             targets.append(p)
 
@@ -157,8 +162,19 @@ def main(argv=None):
             if os.path.exists(dest) and open(dest, "rb").read() != open(t, "rb").read():
                 dest = os.path.join(dest_dir, "CONFLICT_" + os.path.basename(t))
                 print(f"      !! different file already filed; saved as {os.path.basename(dest)}")
-            shutil.copy2(t, dest)
-            print(f"      filed -> {os.path.relpath(dest, REPO)}")
+            if t.lower().endswith((".xlsx", ".xlsm")):
+                # Downstream reads CSV: convert on filing, keep the workbook as evidence.
+                rows, _, _ = _read(t)
+                with open(dest, "w", encoding="utf-8-sig", newline="") as fh:
+                    w = csv.DictWriter(fh, fieldnames=list(rows[0].keys()))
+                    w.writeheader()
+                    w.writerows(rows)
+                shutil.copy2(t, os.path.join(dest_dir, os.path.basename(t)))
+                print(f"      converted xlsx -> {os.path.relpath(dest, REPO)} "
+                      f"(original kept beside it)")
+            else:
+                shutil.copy2(t, dest)
+                print(f"      filed -> {os.path.relpath(dest, REPO)}")
     if _ENC_WARN:
         print("\n  NOTE: not UTF-8 (decoded with a fallback; verify the text columns):")
         for p_, e_ in _ENC_WARN.items():

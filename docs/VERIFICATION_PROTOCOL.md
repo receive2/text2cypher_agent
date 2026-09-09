@@ -198,6 +198,28 @@ A "Human Verification" subsection with:
 - Release the verification artifacts: anonymised per-item verdicts, the key file,
   and the `verification_stats.py` output, so reviewers can recompute every number.
 
+## 9. Results and release freeze
+
+Collection completed 2026-09-09 (5/5 annotators, 3,322 judgments). Statistics,
+per-item verdicts and the blind key are released in `audit/verification/`
+(`stats.md` / `stats.json` from `verification_stats.py --json`). Pre-adjudication
+headline: 1,739 measured items, 1,524 double-annotated, 3.5% disagreement,
+α 0.354 / AC1 0.964, validity LLM 99.2% [98.3, 99.6] · attested 99.2% ·
+algorithmic 97.2%; 55 items pending adjudication (worklist:
+`scripts/adjudication_worklist.py`).
+
+**Applying the verdicts** is done by `scripts/freeze_verified_release.py`, which
+implements §6 and the 2026-08-22 pre-registered rules verbatim and produces the
+v2.2 manifest + `audit/verification/decisions.csv` (every v2.1 row → action).
+Policy choices the protocol leaves open, fixed here before adjudication:
+`valid` + `unnatural` is **dropped** and `valid` + `awkward` **kept** in the
+census tiers (a single rater's flag suffices — flags never co-occurred on a
+double-annotated item); Tier-2 (algorithmic) rejections are **kept** and
+reported as a rate per §3; calibration items follow the organizer reference
+answer. The new manifest verifies with `rebuild_from_manifest.py --manifest`,
+and `rescore_on_verified.py --decisions` re-derives evaluation metrics on the
+released rows without re-running any model.
+
 ---
 
 ## Appendix — running the tooling

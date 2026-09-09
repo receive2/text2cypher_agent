@@ -1,0 +1,49 @@
+﻿id,strategy,original_entity,perturbed_form,ref_validity,also_acceptable_validity,ref_naturalness,also_acceptable_naturalness,ref_source_error,rationale
+cypherbench:1529,abbrev,Israel,IL,valid,,awkward,natural,no,IL = ISO code for Israel; same country. A code in prose reads stilted.
+cypherbench:1120,abbrev,Russia,RUS,valid,,awkward,natural,no,RUS = ISO/IOC code for Russia.
+cypherbench:2050,abbrev,Ministry of National Defence,MND,valid,,awkward,natural,no,MND is an attested abbreviation of Ministry of National Defence.
+cypherbench:1987,abbrev,Somalia,SOM,valid,,awkward,natural,no,SOM = ISO/IOC code for Somalia.
+cypherbench:1941,abbrev,Bulgaria,BUL,valid,,awkward,natural,no,BUL = IOC code for Bulgaria.
+cypherbench:1688,abbrev,Canada,CA,valid,,natural,awkward,no,CA is a very common short form for Canada.
+cypherbench:283,abbrev,Pacific Southwest Airlines Flight 1771,PSA Flight 1771,valid,,natural,,no,The accident is commonly known as PSA Flight 1771.
+cypherbench:2065,abbrev,Venezuelan Democratic Party,PDV,valid,unsure,natural,awkward,no,"PDV = Partido Democratico Venezolano, the party's Spanish acronym (web-checkable)."
+mindthequery:972,abbrev,Germany 2011,WWC 2011,valid,,natural,,no,"WWC 2011 = 2011 FIFA Women's World Cup, the tournament held in Germany ('Germany 2011')."
+cypherbench:1499,abbrev,National Board of Review Award for Best Cast,NBR Award for Best Cast,valid,,natural,,no,NBR is the standard abbreviation of National Board of Review.
+cypherbench:1494,abbrev,The Saul Zaentz Company,Saul Zaentz Co.,valid,,natural,,no,'Saul Zaentz Co.' is a routine company-name shortening.
+cypherbench:224,abbrev,Boston Celtics,BOS,valid,,awkward,natural,no,BOS is the standings/box-score code for the Boston Celtics; stilted in prose (cf. 'the CHI' example).
+cypherbench:1730,alias,vampire film,vampire movie,valid,,natural,,no,'Vampire movie' and 'vampire film' name the same genre.
+cypherbench:1781,alias,Sam Nujoma,Samuel Daniel Shafiishuna Nujoma,valid,,natural,awkward,no,Samuel Daniel Shafiishuna Nujoma is Sam Nujoma's attested full name.
+cypherbench:977,alias,James A. Bell,James Aaron Bell,valid,,natural,,no,James Aaron Bell is the attested full name of James A. Bell (web-verified).
+cypherbench:1062,alias,Dongting Lake,Dòngtíng Hú,valid,,natural,awkward,no,"Dongtinghu in pinyin with tone marks — a real romanization of the lake's Chinese name. Requires correct UTF-8 display; if you see mojibake, fix the encoding, don't judge the garbage."
+cypherbench:1646,alias,"I, Tonya",I Tonya,valid,,natural,,no,Dropped comma; people routinely write 'I Tonya'.
+cypherbench:647,alias,Bandit Heeler,Bluey's Dad,valid,,natural,awkward,no,Bandit Heeler is Bluey's dad; a common informal way to refer to him.
+cypherbench:900,alias,General Motors,Government Motors,valid,,awkward,natural,no,'Government Motors' is an attested (derogatory) nickname for General Motors.
+mindthequery:638,alias,Respiratory arrest,stopped breathing,valid,,natural,awkward,no,'Stopped breathing' is the lay phrase for respiratory arrest; same event.
+mindthequery:868,alias,Physician,doctor,valid,,natural,,no,'Doctor' for 'Physician' — same reporter category.
+mindthequery:1150,alias,Denmark,The Danes,valid,unsure,awkward,,no,Metonymic people-for-country reference ('relations with the Danes'); refers to the same nation.
+cypherbench:1059,alias,Kula Kangri,Kulha Kangri,valid,unsure,natural,,no,Attested variant spelling of the mountain (older sources also use Khula Kangri / Kunla Khari).
+cypherbench:475,alias,Avengers,Earth's Mightiest Heroes,valid,,awkward,natural,no,'Earth's Mightiest Heroes' is Marvel's official epithet for the Avengers; stilted in a question.
+zograscope:120,casing,Myers,myers,valid,,natural,,no,Casual lowercase typing (frozen rule).
+mindthequery:723,casing,RIZATRIPTAN,rizatriptan,valid,,natural,,no,Re-casing only; same drug.
+mindthequery:1223,casing,France 2019,france 2019,valid,,natural,,no,Casual lowercase typing.
+cypherbench:342,casing,Southern Airways Flight 242,southern airways flight 242,valid,,natural,,no,Casual lowercase typing.
+cypherbench:817,casing,jewelry industry,JEWELRY INDUSTRY,valid,,natural,awkward,no,Re-casing only (all-caps).
+mindthequery:703,casing,Physician,physician,valid,,natural,,no,Re-casing only.
+cypherbench:1547,partial,Schindler's List,List,invalid,unsure,awkward,natural,no,Bare 'List' is not a recognizable way to refer to Schindler's List — too little to go on.
+cypherbench:1492,partial,The Lost World: Jurassic Park,World Jurassic Park,invalid,,unnatural,awkward,no,Mangled mid-span shortening nobody would write; also invites confusion with the different film 'Jurassic World'.
+mindthequery:1194,partial,Canada 2015,Canada,valid,,natural,awkward,no,Quoted + 'tournament' context; only one 'Canada' tournament exists in this database (machine-checked). World-ambiguity is not a reason to reject (rule 4).
+cypherbench:1516,partial,Honolulu Zoo,Zoo,valid,unsure,awkward,natural,no,Unique in this database; 'filmed at the Zoo' resolves in context. Weak but recognizable reference.
+mindthequery:1030,partial,Canada 2015,Canada,valid,,natural,awkward,no,Same as the other 'Canada' item: context + database uniqueness make it resolvable (rule 4).
+cypherbench:968,partial,Hartmut Mehdorn,Mehdorn,valid,,natural,,no,Surname-only reference; standard for public figures.
+cypherbench:689,partial,Shaera Targaryen,Shaera,valid,,natural,awkward,no,First-name reference; unique in this database.
+cypherbench:26,partial,Atlantic Division,Atlantic,valid,,natural,awkward,no,In NBA context 'the Atlantic' means the Atlantic Division (rule 4).
+cypherbench:1363,partial,Kasai River,Kasai,valid,,natural,,no,'Kasai' without the generic 'River' suffix.
+cypherbench:530,partial,Tommen Baratheon,Tommen,valid,,natural,,no,First-name reference; unique in this database.
+cypherbench:6,partial,Central Division,Central,valid,,natural,awkward,no,In NBA context 'the Central' means the Central Division (rule 4).
+cypherbench:1542,partial,TSG Entertainment,TSG,valid,,natural,,no,Company reference without the generic suffix.
+zograscope:184,typo,Expedition,Expeditio,valid,,natural,,no,Deliberate typo; still clearly Expedition; not another real model name.
+cypherbench:742,typo,Dwight Conrad,Dwight Conras,valid,,natural,,no,Deliberate typo; 'Conras' is not a different real surname.
+zograscope:906,typo,Headech,Hadech,valid,,natural,,no,Deliberate typo of the stored value 'Headech' (the source dataset's own idiosyncratic spelling); still the same value. Not source_error — the question reads fine.
+zograscope:1060,typo,Sandra,Sancra,valid,,natural,,no,Deliberate typo; 'Sancra' is not a different real name.
+zograscope:137,typo,Investigation complete; no suspect identified,Investigation complete; no suspect idetnified,valid,,natural,,no,Deliberate typo inside a status phrase; unmistakable.
+zograscope:97,typo,Pontiac,Pontiaac,valid,,natural,,no,Deliberate typo; clearly Pontiac. (This item also appears as the guide's worked example — it is a teaching item.)

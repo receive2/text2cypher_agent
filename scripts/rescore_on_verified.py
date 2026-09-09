@@ -100,8 +100,13 @@ def main(argv: Optional[List[str]] = None) -> int:
     ap.add_argument("--eval-dir", required=True,
                     help="directory containing <pair>/records.jsonl subdirectories")
     ap.add_argument("--key", required=True, help="verification_key.csv")
-    ap.add_argument("--annotations", nargs="+", required=True,
-                    help="filled annotator CSVs (globs allowed)")
+    ap.add_argument("--annotations", nargs="+", default=None,
+                    help="filled annotator CSVs (globs allowed); not needed with --decisions")
+    ap.add_argument("--decisions", default=None,
+                    help="audit/verification/decisions.csv from the release freeze. "
+                         "Preferred once it exists: every row whose action removed OR "
+                         "reverted it is dropped, because a reverted row's question "
+                         "changed and the old model record no longer applies to it.")
     ap.add_argument("--adjudicated", default=None, help="optional id,validity CSV")
     ap.add_argument("--calibration", nargs="*", default=None,
                     help="see verification_stats.py (default: auto-detect)")
@@ -113,13 +118,31 @@ def main(argv: Optional[List[str]] = None) -> int:
     ap.add_argument("--out", default=None, help="write the markdown table here (else stdout)")
     args = ap.parse_args(argv)
 
-    # 1. verdicts — same source of truth as the statistics report
-    got = collect_labels(args.key, args.annotations, args.adjudicated, args.calibration)
-    final: Dict[str, str] = got["final"]
-    drop_ids: Set[str] = {i for i, f in final.items() if f in DROP_LABELS}
-    pending_ids: Set[str] = {i for i, f in final.items() if f == "pending"}
-    if args.pending == "drop":
-        drop_ids |= pending_ids
+    # 1. which v2.1 rows no longer stand as evaluated
+    if args.decisions:
+        import csv
+        drop_ids: Set[str] = set()
+        pending_ids: Set[str] = set()
+        n_files = 1
+        with open(args.decisions, encoding="utf-8-sig") as fh:
+            for row in csv.DictReader(fh):
+                act = (row.get("action") or "")
+                if act.startswith(("remove", "revert")):
+                    drop_ids.add(row["id"])
+                elif act == "pending":
+                    pending_ids.add(row["id"])
+        if args.pending == "drop":
+            drop_ids |= pending_ids
+    else:
+        if not args.annotations:
+            sys.exit("pass --annotations (raw verdicts) or --decisions (release freeze)")
+        got = collect_labels(args.key, args.annotations, args.adjudicated, args.calibration)
+        final: Dict[str, str] = got["final"]
+        n_files = len(got["files"])
+        drop_ids = {i for i, f in final.items() if f in DROP_LABELS}
+        pending_ids = {i for i, f in final.items() if f == "pending"}
+        if args.pending == "drop":
+            drop_ids |= pending_ids
 
     # 2. join table
     join = load_manifest_join(args.manifest)
@@ -133,7 +156,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         sys.exit(f"no <pair>/records.jsonl under {args.eval_dir}")
 
     L = ["# Metrics on the human-verified subset\n",
-         f"- Verdicts from {len(got['files'])} annotator file(s); "
+         f"- Verdicts from {'the release decisions file' if args.decisions else f'{n_files} annotator file(s)'}; "
          f"pending items **{args.pending}** ({len(pending_ids)} pending)",
          f"- Rows dropped by verification: **{len(drop_ids)}** "
          f"(invalid / source-error{'' if args.pending == 'keep' else ' / pending'})",

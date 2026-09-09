@@ -1,0 +1,3323 @@
+﻿id,annotator,validity,naturalness,source_error,corrected_form,notes,calibration_item
+cypherbench:0,A,valid,natural,no,,,no
+cypherbench:0,D,valid,natural,no,,,no
+cypherbench:10,B,valid,natural,no,,,no
+cypherbench:10,C,valid,awkward,no,Detroit Pistons,"DET is the standard sports abbreviation for Detroit/Detroit Pistons, but using 'the DET' directly in this phrasing sounds awkward.",no
+cypherbench:1000,B,valid,natural,no,,,no
+cypherbench:1000,C,invalid,unnatural,no,Georges Favre-Jacot,Shortening a relatively obscure historical person to their initials 'G.F.J.' creates a completely ambiguous abbreviation that is not a well-established moniker.,no
+cypherbench:1001,B,valid,natural,no,,,no
+cypherbench:1001,E,valid,natural,no,,,no
+cypherbench:1004,D,valid,natural,no,,,no
+cypherbench:1004,E,valid,natural,no,,,no
+cypherbench:1005,C,valid,natural,no,,,no
+cypherbench:1005,E,valid,natural,no,,,no
+cypherbench:1006,A,valid,natural,no,,,no
+cypherbench:1006,D,valid,natural,no,,,no
+cypherbench:1007,C,valid,natural,no,Leslie Ireland,Lowercasing is valid and natural.,no
+cypherbench:1007,E,valid,natural,no,,,no
+cypherbench:1008,A,valid,natural,no,,,no
+cypherbench:1008,D,valid,natural,no,,,no
+cypherbench:101,A,valid,natural,no,,,no
+cypherbench:101,B,valid,natural,no,,,no
+cypherbench:1010,B,valid,natural,no,,,no
+cypherbench:1010,E,valid,natural,no,,,no
+cypherbench:1012,B,valid,natural,no,,,no
+cypherbench:1012,E,valid,natural,no,,,no
+cypherbench:1013,C,valid,natural,no,,Leon David Black is the full name of Leon Black.,no
+cypherbench:1013,D,valid,natural,no,,,no
+cypherbench:1014,B,valid,natural,no,,,no
+cypherbench:102,D,valid,natural,no,,,no
+cypherbench:102,E,valid,natural,no,,,no
+cypherbench:1020,B,valid,natural,no,,,no
+cypherbench:1020,D,valid,natural,no,,,no
+cypherbench:1028,A,valid,natural,no,,,no
+cypherbench:1028,E,valid,natural,no,,,no
+cypherbench:103,C,valid,awkward,no,Denver Nuggets,"DEN is the official NBA abbreviation for the Denver Nuggets, though 'the DEN' sounds a bit awkward in this sentence.",no
+cypherbench:103,D,valid,natural,no,,,no
+cypherbench:1030,A,valid,natural,no,,,no
+cypherbench:1030,B,valid,natural,no,,,no
+cypherbench:1034,A,valid,natural,no,,,no
+cypherbench:1034,E,valid,natural,no,,,no
+cypherbench:1035,B,valid,natural,no,,,no
+cypherbench:1035,E,valid,natural,no,,,no
+cypherbench:1042,D,valid,natural,no,,,no
+cypherbench:1042,E,unsure,natural,no,,,no
+cypherbench:1043,B,invalid,natural,no,,,no
+cypherbench:1044,C,valid,natural,no,,,no
+cypherbench:1044,E,valid,natural,no,,,no
+cypherbench:105,A,valid,natural,no,,,no
+cypherbench:105,D,valid,natural,no,,,no
+cypherbench:1055,A,valid,natural,no,,,no
+cypherbench:1055,B,valid,natural,no,,,no
+cypherbench:1059,B,valid,natural,no,,,yes
+cypherbench:1059,E,valid,natural,no,,,yes
+cypherbench:1062,C,valid,natural,no,,Dòngtíng Hú is the standard Pinyin romanization for Dongting Lake.,yes
+cypherbench:1062,E,valid,natural,no,,,yes
+cypherbench:107,B,valid,natural,no,,,no
+cypherbench:107,C,valid,natural,no,Pacific Division,,no
+cypherbench:1071,A,valid,natural,no,,,no
+cypherbench:1071,E,valid,natural,no,,,no
+cypherbench:1072,B,valid,natural,no,,,no
+cypherbench:1072,D,valid,natural,no,,,no
+cypherbench:108,C,valid,natural,no,Derek Lamar Fisher,Derek Lamar Fisher is the full name of Derek Fisher.,no
+cypherbench:108,D,valid,natural,no,,,no
+cypherbench:1081,A,valid,natural,no,,,no
+cypherbench:1081,E,valid,natural,no,,,no
+cypherbench:1082,B,valid,natural,no,,,no
+cypherbench:1082,E,valid,unnatural,no,,,no
+cypherbench:1084,A,valid,natural,no,,,no
+cypherbench:1084,C,valid,awkward,no,Indian Ocean,"While 'Indian Sea' is a known historical/informal alias or translation, 'Indian Ocean' is standard.",no
+cypherbench:1085,B,valid,natural,no,,,no
+cypherbench:1085,C,valid,natural,no,,Saltoro Range is a common and standard alias for the Saltoro Mountains.,no
+cypherbench:1087,B,valid,natural,no,,,no
+cypherbench:1087,E,valid,natural,no,,,no
+cypherbench:1088,B,valid,natural,no,,,no
+cypherbench:1088,C,valid,natural,no,,,no
+cypherbench:1089,B,valid,natural,no,,,no
+cypherbench:1089,C,valid,natural,no,Yuan River,Yuanjiang is a direct pinyin transliteration / valid alternate name for the Yuan River (Yuan Jiang).,no
+cypherbench:109,A,valid,natural,no,,,no
+cypherbench:109,D,valid,natural,no,,,no
+cypherbench:1097,D,valid,natural,no,,,no
+cypherbench:1097,E,valid,natural,no,,,no
+cypherbench:1098,A,valid,natural,no,,,no
+cypherbench:1098,B,valid,natural,no,,,no
+cypherbench:11,B,valid,natural,no,,,no
+cypherbench:11,C,valid,natural,no,,Full name alias for Howard Eisley.,no
+cypherbench:1102,A,valid,natural,no,,,no
+cypherbench:1102,B,valid,natural,no,,,no
+cypherbench:1107,A,valid,natural,no,,,no
+cypherbench:1107,C,valid,natural,no,Guamués River,"Diacritic stripped from Guamués River, which is very common and natural in English.",no
+cypherbench:1109,B,valid,natural,no,,,no
+cypherbench:1109,E,valid,natural,no,,,no
+cypherbench:1111,B,valid,natural,no,,,no
+cypherbench:1111,D,valid,natural,no,,,no
+cypherbench:1113,B,valid,natural,no,,,no
+cypherbench:1113,C,valid,natural,no,Kazakhstan,KAZ is the standard 3-letter ISO/IOC code for Kazakhstan.,no
+cypherbench:1114,B,valid,natural,no,,,no
+cypherbench:1114,C,valid,awkward,no,Cameroon,"CAM is a recognized abbreviation/country code for Cameroon, though slightly awkward when used directly in natural prose.",no
+cypherbench:1119,A,valid,natural,no,,,no
+cypherbench:1119,B,valid,natural,no,,,no
+cypherbench:112,B,valid,natural,no,,,no
+cypherbench:112,D,valid,natural,no,,,no
+cypherbench:1120,B,valid,natural,no,,,yes
+cypherbench:1120,D,valid,natural,no,,,yes
+cypherbench:1121,A,valid,natural,no,,,no
+cypherbench:1121,E,valid,natural,no,,,no
+cypherbench:1126,A,valid,natural,no,,,no
+cypherbench:1126,D,valid,natural,no,,,no
+cypherbench:1128,C,valid,natural,no,,,no
+cypherbench:1128,D,valid,natural,no,,,no
+cypherbench:1129,C,valid,natural,no,Lake Sartlan,"""Ozero Sartlan"" is the transliterated Russian name for Lake Sartlan.",no
+cypherbench:1129,E,valid,natural,no,,,no
+cypherbench:113,C,valid,natural,no,,,no
+cypherbench:113,D,valid,natural,no,,,no
+cypherbench:1136,D,valid,natural,no,,,no
+cypherbench:1136,E,valid,natural,no,,,no
+cypherbench:1138,B,valid,natural,no,,,no
+cypherbench:1138,E,valid,unnatural,no,,,no
+cypherbench:114,C,valid,natural,no,Central Division,Shortening 'Central Division' to 'the Central' is a common colloquialism in sports contexts.,no
+cypherbench:114,D,valid,natural,no,,,no
+cypherbench:1145,A,valid,natural,no,,,no
+cypherbench:1145,D,valid,natural,no,,,no
+cypherbench:1147,A,valid,natural,no,,,no
+cypherbench:1147,D,valid,natural,no,,,no
+cypherbench:1149,A,valid,natural,no,,,no
+cypherbench:1149,C,valid,natural,no,,,no
+cypherbench:1150,A,invalid,natural,no,,,no
+cypherbench:1150,C,invalid,unnatural,no,Iguazu River,'Recorrido' is a Spanish common noun meaning 'route' or 'course' and is not a valid name or alias for the Iguazu River.,no
+cypherbench:1152,B,valid,natural,no,,,no
+cypherbench:1152,E,valid,natural,no,,,no
+cypherbench:1153,A,valid,natural,no,,,no
+cypherbench:1153,E,valid,natural,no,,,no
+cypherbench:1155,C,valid,natural,no,S. America,Standard abbreviation for South America.,no
+cypherbench:1155,E,valid,natural,no,,,no
+cypherbench:1158,B,valid,natural,no,,,no
+cypherbench:1158,C,valid,awkward,no,Cameroon,"CAM is a recognized 3-letter country code / abbreviation for Cameroon (often used in sports / IOC / ISO-like contexts), though somewhat awkward in natural English phrasing.",no
+cypherbench:116,B,valid,natural,no,,,no
+cypherbench:116,D,valid,natural,no,,,no
+cypherbench:1161,D,valid,natural,no,,,no
+cypherbench:1161,E,valid,natural,no,,,no
+cypherbench:1168,A,valid,natural,no,,,no
+cypherbench:1168,E,valid,natural,no,,,no
+cypherbench:1171,C,valid,natural,no,Andes,Typo / character transposition from Andes to Aneds.,no
+cypherbench:1173,A,valid,natural,no,,,no
+cypherbench:1173,B,valid,natural,no,,,no
+cypherbench:1174,D,valid,natural,no,,,no
+cypherbench:1174,E,valid,natural,no,,,no
+cypherbench:1175,C,valid,natural,no,Pacific Ocean,,no
+cypherbench:1175,D,valid,natural,no,,,no
+cypherbench:1177,D,valid,natural,no,,,no
+cypherbench:1177,E,valid,natural,no,,,no
+cypherbench:1180,A,valid,natural,no,,,no
+cypherbench:1180,B,valid,natural,no,,,no
+cypherbench:1181,A,valid,natural,no,,,no
+cypherbench:1181,C,valid,natural,no,Jichu Drake,Jichu Drake is an established alternate spelling of Mount Jitchu Drake.,no
+cypherbench:1182,D,valid,natural,no,,,no
+cypherbench:1182,E,valid,natural,no,,,no
+cypherbench:1183,A,valid,natural,no,,,no
+cypherbench:1183,D,valid,natural,no,,,no
+cypherbench:1185,A,valid,natural,no,,,no
+cypherbench:1185,B,valid,natural,no,,,no
+cypherbench:1187,E,valid,natural,no,,,no
+cypherbench:1191,C,valid,natural,no,Tobol basin,,no
+cypherbench:1191,E,valid,natural,no,,,no
+cypherbench:1192,B,valid,natural,no,,,no
+cypherbench:1193,B,valid,natural,no,,,no
+cypherbench:1193,C,valid,awkward,no,Spain,"ES is the ISO 3166-1 alpha-2 country code for Spain, but using it in full-sentence prose sounds awkward.",no
+cypherbench:1205,A,valid,natural,no,,,no
+cypherbench:1205,D,valid,natural,no,,,no
+cypherbench:1209,A,valid,natural,no,,,no
+cypherbench:1209,B,valid,natural,no,,,no
+cypherbench:121,B,valid,natural,no,,,no
+cypherbench:121,E,valid,natural,no,,,no
+cypherbench:1210,C,valid,natural,no,,Namjagbarwa is a valid and widely used alternative transliteration/Pinyin spelling for Namcha Barwa.,no
+cypherbench:1210,D,valid,natural,no,,,no
+cypherbench:1211,B,valid,natural,no,,,no
+cypherbench:1211,E,valid,natural,no,,,no
+cypherbench:1212,A,valid,natural,no,,,no
+cypherbench:1215,A,valid,natural,no,,,no
+cypherbench:1215,B,valid,natural,no,,,no
+cypherbench:1217,B,valid,natural,no,,,no
+cypherbench:1217,D,valid,natural,no,,,no
+cypherbench:1220,A,valid,natural,no,,,no
+cypherbench:1220,C,valid,awkward,no,Turkey,TUR is the ISO 3166-1 alpha-3 country code for Turkey.,no
+cypherbench:1221,A,valid,natural,no,,,no
+cypherbench:1221,B,valid,natural,no,,,no
+cypherbench:1227,C,valid,awkward,no,Israel,"IL is the ISO 3166-1 alpha-2 code for Israel, but using two-letter country codes in natural English prose alongside full country names like Tunisia is awkward.",no
+cypherbench:1227,E,valid,awkward,no,,,no
+cypherbench:123,B,valid,natural,no,,,no
+cypherbench:123,D,valid,natural,no,,,no
+cypherbench:1232,D,valid,natural,no,,,no
+cypherbench:1232,E,valid,awkward,no,,,no
+cypherbench:1234,C,valid,natural,no,,Alternative transliteration/alias of Khyargas Nuur.,no
+cypherbench:1234,E,valid,natural,no,,,no
+cypherbench:1246,B,valid,natural,no,,,no
+cypherbench:1246,D,valid,natural,no,,,no
+cypherbench:1247,B,valid,natural,no,,,no
+cypherbench:1247,C,valid,awkward,no,Italy,"ITA is the standard 3-letter ISO code for Italy, though using it in natural prose is somewhat stilted.",no
+cypherbench:1253,C,valid,natural,no,Loinbo Kangri,Loinbo Kangri is a standard alternative romanization and alias of Lunpo Gangri.,no
+cypherbench:1253,D,valid,natural,no,,,no
+cypherbench:1256,C,valid,natural,no,Mount Gya,,no
+cypherbench:1256,D,valid,natural,no,,,no
+cypherbench:1259,C,valid,natural,no,Ob Basin,,no
+cypherbench:126,B,valid,natural,no,,,no
+cypherbench:1261,D,valid,natural,no,,,no
+cypherbench:1262,B,valid,natural,no,,,no
+cypherbench:1262,E,valid,natural,no,,,no
+cypherbench:1263,C,valid,natural,no,,,no
+cypherbench:1264,A,valid,natural,no,,,no
+cypherbench:1264,C,valid,natural,no,Pacific Ocean,"""Pacifick Sea"" is an archaic alias/spelling for the Pacific Ocean.",no
+cypherbench:1265,A,valid,natural,no,,,no
+cypherbench:1265,B,valid,natural,no,,,no
+cypherbench:1268,B,valid,natural,no,,,no
+cypherbench:1268,C,invalid,natural,no,Loenpo Gang,"Loinbo Kangri (Lunpo Gangri, 7095m) is a distinct mountain in the Gangdise range, separate from Loenpo Gang (6979m) in the Langtang Himal.",no
+cypherbench:1269,C,valid,natural,no,,Huang He is the standard romanized Chinese name/alias for the Yellow River.,no
+cypherbench:1269,E,valid,natural,no,,,no
+cypherbench:1275,B,valid,natural,no,,,no
+cypherbench:1275,E,valid,natural,no,,,no
+cypherbench:1276,C,valid,natural,no,,Namucuo is the pinyin romanization of Namtso (纳木错).,no
+cypherbench:1276,E,valid,natural,no,,,no
+cypherbench:1279,B,valid,natural,no,,,no
+cypherbench:1279,E,valid,unnatural,no,,,no
+cypherbench:128,B,valid,natural,no,,,no
+cypherbench:128,E,valid,natural,no,,,no
+cypherbench:1286,A,valid,natural,no,,,no
+cypherbench:1286,B,valid,natural,no,,,no
+cypherbench:1289,B,valid,natural,no,,,no
+cypherbench:1289,D,valid,natural,no,,,no
+cypherbench:129,C,valid,natural,no,SF,,no
+cypherbench:129,E,valid,natural,no,,,no
+cypherbench:1290,B,valid,natural,no,,,no
+cypherbench:1290,E,valid,natural,no,,,no
+cypherbench:1293,A,valid,natural,no,,,no
+cypherbench:1293,E,valid,natural,no,,,no
+cypherbench:1295,C,valid,natural,no,Chipiriri River,,no
+cypherbench:1295,D,valid,natural,no,,,no
+cypherbench:1298,D,valid,natural,no,,,no
+cypherbench:1298,E,valid,natural,no,,,no
+cypherbench:13,B,valid,natural,no,,,no
+cypherbench:13,D,valid,natural,no,,,no
+cypherbench:1303,A,valid,natural,no,,,no
+cypherbench:1303,C,valid,natural,no,,'Juan Shui' is a standard pinyin/Chinese alternate name for the Juan River (涓水).,no
+cypherbench:1304,C,valid,awkward,no,the Argentine Republic,Argentine Republic is the official name of Argentina; it usually takes the definite article 'the'.,no
+cypherbench:1304,D,valid,natural,no,,,no
+cypherbench:1307,D,valid,natural,no,,,no
+cypherbench:1309,C,valid,natural,no,Kharchakund,,no
+cypherbench:1309,D,valid,natural,no,,,no
+cypherbench:131,A,valid,natural,no,,,no
+cypherbench:131,B,valid,natural,no,,,no
+cypherbench:1312,B,valid,natural,no,,,no
+cypherbench:1312,C,valid,natural,no,Gorky Sea,Gorky Sea is a well-known common alias for the Gorky Reservoir.,no
+cypherbench:1313,C,valid,natural,no,,,no
+cypherbench:1313,D,valid,natural,no,,,no
+cypherbench:1314,A,valid,natural,no,,,no
+cypherbench:1314,B,valid,natural,no,,,no
+cypherbench:1316,A,valid,natural,no,,,no
+cypherbench:1316,E,valid,natural,no,,,no
+cypherbench:1318,A,valid,natural,no,,,no
+cypherbench:1318,C,valid,natural,no,Rio Unini,Portuguese name/alias for the Unini River located in Brazil.,no
+cypherbench:1322,B,valid,natural,no,,,no
+cypherbench:1322,C,valid,natural,no,Baltoro Muztagh,Baltoro Karakoram is an acceptable alias/variant referring to the Baltoro Muztagh/Karakoram subrange.,no
+cypherbench:1323,A,valid,natural,no,,,no
+cypherbench:1323,C,valid,awkward,no,Brazil,"BR is the standard two-letter country code for Brazil, though using it directly in prose sounds slightly awkward.",no
+cypherbench:1326,C,valid,natural,no,,,no
+cypherbench:1326,D,valid,natural,no,,,no
+cypherbench:1327,B,valid,natural,no,,,no
+cypherbench:1327,C,valid,awkward,no,Nepal,"NP is the standard two-letter ISO country code for Nepal, though using it in natural prose is awkward.",no
+cypherbench:1328,B,valid,natural,no,,,no
+cypherbench:1328,C,valid,natural,no,,Wade-Giles romanization of Dongting Lake.,no
+cypherbench:133,C,valid,natural,no,Elfrid Payton,"Shortened to first name, which is distinctive enough in the context of professional sports.",no
+cypherbench:133,D,valid,natural,no,,,no
+cypherbench:1331,B,valid,natural,no,,,no
+cypherbench:1331,C,valid,awkward,no,Lancang River,Lancang is the name of the Mekong River in China; using French 'Rivière' in an otherwise English sentence makes it slightly awkward.,no
+cypherbench:1334,C,valid,natural,no,,,no
+cypherbench:1334,E,valid,natural,no,,,no
+cypherbench:1336,C,valid,natural,no,Himalayas,"""Himalaya"" is a common singular alias/variant for the mountain range.",no
+cypherbench:1336,E,valid,natural,no,,,no
+cypherbench:1337,B,valid,natural,no,,,no
+cypherbench:1337,E,valid,natural,no,,,no
+cypherbench:1338,A,valid,natural,no,,,no
+cypherbench:1338,C,valid,natural,no,the Atlantic,Archaic spelling/typo of 'Atlantic Ocean' clearly identifiable in context.,no
+cypherbench:134,B,valid,natural,no,,,no
+cypherbench:134,E,valid,natural,no,,,no
+cypherbench:1345,C,valid,natural,no,,Xiangjiang is the standard pinyin romanization and alias for the Xiang River.,no
+cypherbench:1345,E,valid,natural,no,,,no
+cypherbench:1347,A,valid,natural,no,,,no
+cypherbench:1347,C,valid,natural,no,,Ozero Sartlan is the transliteration of the Russian name for Lake Sartlan (Озеро Сартлан).,no
+cypherbench:135,A,valid,natural,no,,,no
+cypherbench:135,D,valid,natural,no,,,no
+cypherbench:1352,A,valid,natural,no,,,no
+cypherbench:1352,B,valid,natural,no,,,no
+cypherbench:1358,B,valid,natural,no,,,no
+cypherbench:1358,D,valid,natural,no,,,no
+cypherbench:1362,C,valid,natural,no,Lena basin,,no
+cypherbench:1362,E,valid,natural,no,,,no
+cypherbench:1363,B,valid,natural,no,,,yes
+cypherbench:1363,C,valid,natural,no,,,yes
+cypherbench:1368,A,valid,natural,no,,,no
+cypherbench:1368,B,valid,natural,no,,,no
+cypherbench:1371,A,valid,natural,no,,,no
+cypherbench:1371,E,valid,awkward,no,,,no
+cypherbench:1373,B,valid,natural,no,,,no
+cypherbench:1373,E,valid,natural,no,,,no
+cypherbench:1374,B,valid,natural,no,,,no
+cypherbench:1374,E,valid,natural,no,,,no
+cypherbench:1375,A,valid,natural,no,,,no
+cypherbench:1375,D,valid,natural,no,,,no
+cypherbench:1377,B,valid,natural,no,,,no
+cypherbench:1377,C,valid,awkward,no,Jordan,"JO is the ISO 3166-1 alpha-2 country code for Jordan, though using two-letter country codes in prose is slightly awkward.",no
+cypherbench:1378,B,valid,natural,no,,,no
+cypherbench:1378,D,valid,natural,no,,,no
+cypherbench:1379,A,valid,natural,no,,,no
+cypherbench:1379,D,valid,natural,no,,,no
+cypherbench:1383,D,valid,natural,no,,,no
+cypherbench:1383,E,valid,natural,no,,,no
+cypherbench:1384,A,valid,natural,no,,,no
+cypherbench:1384,B,valid,natural,no,,,no
+cypherbench:1389,D,valid,natural,no,,,no
+cypherbench:1389,E,valid,natural,no,,,no
+cypherbench:139,A,valid,natural,no,,,no
+cypherbench:139,C,valid,awkward,no,Brooklyn Nets,"BKN is the official standard 3-letter abbreviation for the Brooklyn Nets, though phrasing it as 'the BKN' is slightly awkward.",no
+cypherbench:1393,A,valid,natural,no,,,no
+cypherbench:1393,E,valid,natural,no,,,no
+cypherbench:1394,B,valid,natural,no,,,no
+cypherbench:1394,C,valid,natural,no,The Blind Side,,no
+cypherbench:1395,C,valid,awkward,no,Ireland,"IE is the standard two-letter country code for Ireland, though using 'the IE' in running text is somewhat awkward.",no
+cypherbench:1395,D,valid,natural,no,,,no
+cypherbench:1397,B,valid,natural,no,,,no
+cypherbench:1397,D,valid,natural,no,,,no
+cypherbench:1398,C,valid,natural,no,Creed III,Lowercasing is a natural and valid variation.,no
+cypherbench:1398,E,valid,natural,no,,,no
+cypherbench:14,B,valid,natural,no,,,no
+cypherbench:14,D,valid,natural,no,,,no
+cypherbench:1402,A,valid,natural,no,,,no
+cypherbench:1402,C,valid,natural,no,The Lord of the Rings: The Two Towers,"Shortened to 'The Two Towers', which is universally understood and natural.",no
+cypherbench:1403,E,valid,natural,no,,,no
+cypherbench:1405,B,valid,natural,no,,,no
+cypherbench:1405,C,valid,natural,no,road movie,"""road film"" is a widely used synonymous term for ""road movie"".",no
+cypherbench:1408,B,valid,natural,no,,,no
+cypherbench:1408,E,valid,natural,no,,,no
+cypherbench:1410,B,valid,natural,no,,,no
+cypherbench:1410,C,valid,natural,no,,,no
+cypherbench:1413,A,valid,natural,no,,,no
+cypherbench:1413,B,valid,natural,no,,,no
+cypherbench:1414,A,valid,natural,no,,,no
+cypherbench:1416,D,valid,natural,no,,,no
+cypherbench:1416,E,valid,natural,no,,,no
+cypherbench:1420,B,valid,natural,no,,,no
+cypherbench:1420,E,valid,natural,no,,,no
+cypherbench:1422,B,valid,natural,no,,,no
+cypherbench:1422,E,valid,natural,no,,,no
+cypherbench:1423,C,valid,natural,no,Imagine Entertainment,"""Imagine"" is a standard shortened name for Imagine Entertainment in film contexts.",no
+cypherbench:1423,E,valid,natural,no,,,no
+cypherbench:1425,A,valid,natural,no,,,no
+cypherbench:1425,D,valid,natural,no,,,no
+cypherbench:1429,D,valid,natural,no,,,no
+cypherbench:1429,E,valid,natural,no,,,no
+cypherbench:143,C,valid,awkward,no,Brooklyn Nets,"BKN is the standard 3-letter abbreviation for the Brooklyn Nets, though using 'the BKN' is slightly awkward in phrasing.",no
+cypherbench:143,E,valid,natural,no,,,no
+cypherbench:1433,B,valid,natural,no,,,no
+cypherbench:1433,D,valid,natural,no,,,no
+cypherbench:1434,B,valid,natural,no,,,no
+cypherbench:1434,C,valid,natural,no,JP,,no
+cypherbench:1437,B,valid,natural,no,,,no
+cypherbench:1437,C,valid,natural,no,MIB 3,,no
+cypherbench:1439,D,valid,natural,no,,,no
+cypherbench:1439,E,valid,natural,no,,,no
+cypherbench:1441,B,valid,natural,no,,,no
+cypherbench:1441,D,valid,natural,no,,,no
+cypherbench:1443,A,valid,natural,no,,,no
+cypherbench:1443,E,valid,natural,no,,,no
+cypherbench:1445,A,valid,natural,no,,,no
+cypherbench:1445,C,valid,natural,no,,'Bond 22' is a well-known production alias and informal reference to 'Quantum of Solace'.,no
+cypherbench:1447,B,valid,natural,no,,,no
+cypherbench:1447,D,valid,natural,no,,,no
+cypherbench:145,A,valid,natural,no,,,no
+cypherbench:145,B,valid,natural,no,,,no
+cypherbench:1453,E,valid,natural,no,,,no
+cypherbench:1455,C,valid,natural,no,Bashtata,Bashtata (Бащата) is the original Bulgarian title of the 2019 film The Father.,no
+cypherbench:1455,D,valid,natural,no,,,no
+cypherbench:1457,A,valid,natural,no,,,no
+cypherbench:1457,B,valid,natural,no,,,no
+cypherbench:146,B,valid,natural,no,,,no
+cypherbench:146,C,valid,awkward,no,Memphis Grizzlies,"MEM is a standard NBA abbreviation for the Memphis Grizzlies, though 'the MEM' reads somewhat awkwardly.",no
+cypherbench:1463,A,valid,natural,no,,,no
+cypherbench:1463,E,valid,natural,no,,,no
+cypherbench:1465,C,valid,natural,no,Serbia,RS is the standard two-letter country code (ISO 3166-1 alpha-2) for Serbia.,no
+cypherbench:1465,E,valid,natural,no,,,no
+cypherbench:1468,A,valid,natural,no,,,no
+cypherbench:1468,C,valid,natural,no,sci-fi film,,no
+cypherbench:1469,B,valid,natural,no,,,no
+cypherbench:1469,D,valid,natural,no,,,no
+cypherbench:1475,A,valid,natural,no,,,no
+cypherbench:1475,D,valid,natural,no,,,no
+cypherbench:1476,C,valid,natural,no,,,no
+cypherbench:1476,E,valid,natural,no,,,no
+cypherbench:1477,C,valid,natural,no,fantasy films,,no
+cypherbench:1477,E,valid,natural,no,,,no
+cypherbench:1479,B,valid,natural,no,,,no
+cypherbench:1479,C,valid,natural,no,Kong,,no
+cypherbench:148,A,valid,natural,no,,,no
+cypherbench:148,E,valid,natural,no,,,no
+cypherbench:1481,B,valid,natural,no,,,no
+cypherbench:1481,E,valid,natural,no,,,no
+cypherbench:1486,A,valid,natural,no,,,no
+cypherbench:1486,B,valid,natural,no,,,no
+cypherbench:149,B,valid,natural,no,,,no
+cypherbench:149,E,valid,natural,no,,,no
+cypherbench:1494,A,valid,natural,no,,,yes
+cypherbench:1494,E,valid,natural,no,,,yes
+cypherbench:1496,C,invalid,unnatural,no,Denmark,TAN is not a valid abbreviation for Denmark (it is the code for Tanzania; Denmark is DNK or DK).,no
+cypherbench:1496,E,invalid,natural,no,,,no
+cypherbench:1498,C,invalid,unnatural,no,Star Wars,"ANH stands for 'A New Hope' (a specific film), not the entire 'Star Wars' series.",no
+cypherbench:1498,D,valid,natural,no,,,no
+cypherbench:1499,B,valid,natural,no,,,yes
+cypherbench:1499,D,valid,natural,no,,,yes
+cypherbench:150,D,valid,natural,no,,,no
+cypherbench:150,E,valid,natural,no,,,no
+cypherbench:1501,B,valid,natural,no,,,no
+cypherbench:1501,E,valid,natural,no,,,no
+cypherbench:1504,C,valid,natural,no,Columbia Pictures,"CPII stands for Columbia Pictures Industries, Inc.",no
+cypherbench:1504,D,valid,natural,no,,,no
+cypherbench:1507,A,valid,natural,no,,,no
+cypherbench:1507,D,valid,natural,no,,,no
+cypherbench:1508,A,valid,natural,no,,,no
+cypherbench:1508,C,valid,natural,no,Dead Poets Society,DPS is a recognizable acronym for Dead Poets Society in movie contexts.,no
+cypherbench:1509,A,valid,natural,no,,,no
+cypherbench:1509,D,valid,natural,no,,,no
+cypherbench:151,B,valid,natural,no,,,no
+cypherbench:151,D,valid,natural,no,,,no
+cypherbench:1511,D,valid,natural,no,,,no
+cypherbench:1511,E,valid,natural,no,,,no
+cypherbench:1512,D,valid,natural,no,,,no
+cypherbench:1512,E,valid,natural,no,,,no
+cypherbench:1513,B,valid,natural,no,,,no
+cypherbench:1513,D,valid,natural,no,,,no
+cypherbench:1518,B,valid,natural,no,,,no
+cypherbench:1518,D,valid,natural,no,,,no
+cypherbench:152,C,valid,natural,no,,"""the West"" is a standard alias for the Western Conference.",no
+cypherbench:152,E,unsure,natural,no,,,no
+cypherbench:1523,C,invalid,unnatural,no,DNK,TAN is not an abbreviation or code for Denmark (Tanzania is TAN; Denmark is DNK or DK).,no
+cypherbench:1523,E,invalid,natural,no,,,no
+cypherbench:1529,C,valid,natural,no,Israel,IL is the ISO 3166-1 alpha-2 code for Israel.,yes
+cypherbench:1529,E,valid,natural,no,,,yes
+cypherbench:1531,B,valid,natural,no,,,no
+cypherbench:1531,C,valid,natural,no,,Weepie is a well-known colloquial synonym/alias for a melodrama film.,no
+cypherbench:1536,A,valid,natural,no,,,no
+cypherbench:1536,B,valid,natural,no,,,no
+cypherbench:1537,C,valid,awkward,no,Norway,"""NO"" is the ISO two-letter country code for Norway.",no
+cypherbench:1537,D,valid,natural,no,,,no
+cypherbench:1539,A,valid,natural,no,,,no
+cypherbench:1539,C,valid,natural,no,Neil Jordan,Neil Patrick Jordan is the full name of the Irish film director Neil Jordan.,no
+cypherbench:1542,A,valid,natural,no,,,yes
+cypherbench:1542,C,valid,natural,no,TSG Entertainment,TSG is a standard abbreviation/shortening for TSG Entertainment in the context of film production.,yes
+cypherbench:1545,B,valid,natural,no,,,no
+cypherbench:1545,C,invalid,unnatural,no,Warner Bros. Pictures,"Dropping 'Warner' leaves 'Bros. Pictures', which is an ambiguous and unnatural shortening that does not clearly identify Warner Bros. Pictures.",no
+cypherbench:1546,A,valid,natural,no,,,no
+cypherbench:1546,E,valid,natural,no,,,no
+cypherbench:1548,D,valid,natural,no,,,no
+cypherbench:1548,E,valid,natural,no,,,no
+cypherbench:1549,A,valid,natural,no,,,no
+cypherbench:1549,E,valid,natural,no,,,no
+cypherbench:1550,C,valid,natural,no,TASM 2,TASM 2 is a very common and well-understood abbreviation for The Amazing Spider-Man 2.,no
+cypherbench:1550,D,valid,natural,no,,,no
+cypherbench:1551,C,valid,natural,no,,Zoetrope Studios is a well-known official former name/alias for American Zoetrope.,no
+cypherbench:1551,E,valid,natural,no,,,no
+cypherbench:1552,A,valid,natural,no,,,no
+cypherbench:1552,B,valid,natural,no,,,no
+cypherbench:1557,C,valid,natural,no,Academy Award for Best Director,Simple lowercasing perturbation.,no
+cypherbench:1559,E,valid,natural,no,,,no
+cypherbench:1561,A,valid,natural,no,,,no
+cypherbench:1561,D,valid,natural,no,,,no
+cypherbench:1566,C,valid,natural,no,Batman v Superman: Dawn of Justice,"""BvS"" is an extremely common, widely recognized abbreviation for the movie ""Batman v Superman: Dawn of Justice"".",no
+cypherbench:1566,D,valid,natural,no,,,no
+cypherbench:1569,B,valid,natural,no,,,no
+cypherbench:1569,E,valid,natural,no,,,no
+cypherbench:1571,B,valid,natural,no,,,no
+cypherbench:1571,D,valid,natural,no,,,no
+cypherbench:1575,B,valid,natural,no,,,no
+cypherbench:1575,C,valid,natural,no,,DPS is a recognized acronym for Dead Poets Society.,no
+cypherbench:159,B,valid,natural,no,,,no
+cypherbench:159,E,valid,natural,no,,,no
+cypherbench:1593,D,valid,natural,no,,,no
+cypherbench:1593,E,valid,natural,no,,,no
+cypherbench:16,A,valid,natural,no,,,no
+cypherbench:16,D,valid,natural,no,,,no
+cypherbench:160,B,valid,natural,no,,,no
+cypherbench:160,C,valid,natural,no,PF,PF is a standard abbreviation for power forward in basketball.,no
+cypherbench:1600,C,valid,natural,no,,,no
+cypherbench:1600,E,valid,natural,no,,,no
+cypherbench:1601,C,valid,natural,no,,,no
+cypherbench:1601,E,valid,natural,no,,,no
+cypherbench:1602,A,valid,natural,no,,,no
+cypherbench:1602,E,valid,natural,no,,,no
+cypherbench:1609,D,valid,natural,no,,,no
+cypherbench:1609,E,valid,natural,no,,,no
+cypherbench:1610,A,valid,natural,no,,,no
+cypherbench:1610,B,valid,natural,no,,,no
+cypherbench:1611,C,valid,natural,no,,Bond 23 was the official working title and common alias for Skyfall during production.,no
+cypherbench:1611,D,valid,natural,no,,,no
+cypherbench:1614,D,valid,natural,no,,,no
+cypherbench:1614,E,valid,natural,no,,,no
+cypherbench:1615,D,valid,natural,no,,,no
+cypherbench:1617,B,valid,natural,no,,,no
+cypherbench:1617,C,valid,natural,no,Flat Creek,Lowercasing a proper noun place name is natural and valid.,no
+cypherbench:1619,B,valid,natural,no,,,no
+cypherbench:1619,C,valid,awkward,no,Thailand,"THA is the standard ISO 3-letter country code for Thailand, but using three-letter country codes directly in running prose is somewhat awkward.",no
+cypherbench:162,A,valid,natural,no,,,no
+cypherbench:162,D,valid,natural,no,,,no
+cypherbench:1621,C,valid,natural,no,Elizabeth Chai Vasarhelyi,Common standard initial abbreviation of the first name.,no
+cypherbench:1621,D,valid,natural,no,,,no
+cypherbench:1623,B,valid,unnatural,yes,,,no
+cypherbench:1623,D,valid,natural,no,,,no
+cypherbench:1626,D,valid,natural,no,,,no
+cypherbench:1626,E,valid,natural,no,,,no
+cypherbench:1627,C,valid,natural,no,The Blind Side,All-caps perturbation is valid and natural.,no
+cypherbench:1627,E,valid,natural,no,,,no
+cypherbench:1628,A,valid,natural,no,,,no
+cypherbench:1628,B,valid,natural,no,,,no
+cypherbench:1632,A,valid,natural,no,,,no
+cypherbench:1632,D,valid,natural,no,,,no
+cypherbench:1634,A,valid,natural,no,,,no
+cypherbench:1634,B,valid,natural,no,,,no
+cypherbench:1637,A,valid,natural,no,,,no
+cypherbench:1637,C,valid,natural,no,,Simple all-caps casing transformation.,no
+cypherbench:1638,A,valid,natural,no,,,no
+cypherbench:1638,D,valid,natural,no,,,no
+cypherbench:1640,A,valid,natural,no,,,no
+cypherbench:1640,C,valid,natural,no,Lightstorm,,no
+cypherbench:1643,A,valid,natural,no,,,no
+cypherbench:1643,C,invalid,natural,no,Minae Noji,Stacy Okada is not a verified alias for actress Minae Noji.,no
+cypherbench:1649,A,valid,natural,no,,,no
+cypherbench:1649,C,valid,natural,no,,,no
+cypherbench:165,A,valid,natural,no,,,no
+cypherbench:165,B,valid,natural,no,,,no
+cypherbench:1652,B,valid,natural,no,,,no
+cypherbench:1653,C,valid,awkward,no,the Hobbit trilogy,Missing the definite article makes the sentence slightly awkward.,no
+cypherbench:1653,D,valid,natural,no,,,no
+cypherbench:1656,B,valid,natural,no,,,no
+cypherbench:1656,C,valid,natural,no,sci-fi film,,no
+cypherbench:1658,B,valid,natural,no,,,no
+cypherbench:1658,E,valid,natural,no,,,no
+cypherbench:166,A,valid,natural,no,,,no
+cypherbench:166,D,valid,natural,no,,,no
+cypherbench:1660,E,valid,natural,no,,,no
+cypherbench:1663,A,valid,natural,no,,,no
+cypherbench:1663,B,valid,natural,no,,,no
+cypherbench:1665,A,valid,natural,no,,,no
+cypherbench:1665,D,valid,natural,no,,,no
+cypherbench:1667,B,valid,natural,no,,,no
+cypherbench:1667,C,valid,natural,no,Pirates of the Caribbean,"""PotC"" is a widely used and recognizable abbreviation for Pirates of the Caribbean.",no
+cypherbench:1669,A,valid,natural,no,,,no
+cypherbench:1669,C,valid,natural,no,LOTR,LOTR is a ubiquitous and standard abbreviation for The Lord of the Rings.,no
+cypherbench:167,B,valid,natural,no,,,no
+cypherbench:167,D,valid,natural,no,,,no
+cypherbench:1670,B,valid,natural,no,,,no
+cypherbench:1670,D,valid,natural,no,,,no
+cypherbench:1671,C,valid,natural,no,,NYFCC is the standard and widely used abbreviation for the New York Film Critics Circle.,no
+cypherbench:1671,D,valid,natural,no,,,no
+cypherbench:1672,B,valid,natural,no,,,no
+cypherbench:1672,C,valid,natural,no,Spider-Verse,,no
+cypherbench:1673,A,valid,natural,no,,,no
+cypherbench:1673,D,valid,natural,no,,,no
+cypherbench:1674,A,valid,natural,no,,,no
+cypherbench:1674,E,valid,natural,no,,,no
+cypherbench:1675,D,valid,natural,no,,,no
+cypherbench:1675,E,valid,natural,no,,,no
+cypherbench:1679,A,valid,natural,no,,,no
+cypherbench:1679,C,valid,natural,no,India,IND is a standard ISO 3-letter abbreviation for India.,no
+cypherbench:1684,B,valid,natural,no,,,no
+cypherbench:1684,D,valid,natural,no,,,no
+cypherbench:1685,A,valid,natural,no,,,no
+cypherbench:1685,B,valid,natural,no,,,no
+cypherbench:1688,A,valid,natural,no,,,yes
+cypherbench:1688,D,valid,natural,no,,,yes
+cypherbench:169,B,valid,natural,no,,,no
+cypherbench:169,E,valid,natural,no,,,no
+cypherbench:1692,D,valid,natural,no,,,no
+cypherbench:1692,E,invalid,awkward,no,,,no
+cypherbench:1695,B,valid,natural,no,,,no
+cypherbench:1695,D,valid,natural,no,,,no
+cypherbench:1696,B,valid,natural,no,,,no
+cypherbench:1699,B,valid,natural,no,,,no
+cypherbench:1699,E,valid,natural,no,,,no
+cypherbench:170,B,valid,natural,no,,,no
+cypherbench:170,E,valid,natural,no,,,no
+cypherbench:1700,D,valid,natural,no,,,no
+cypherbench:1700,E,valid,natural,no,,,no
+cypherbench:1701,B,valid,natural,no,,,no
+cypherbench:1701,D,valid,natural,no,,,no
+cypherbench:1702,A,valid,natural,no,,,no
+cypherbench:1702,C,valid,natural,no,WingNut Films,,no
+cypherbench:1710,D,valid,natural,no,,,no
+cypherbench:1710,E,valid,natural,no,,,no
+cypherbench:1712,B,valid,natural,no,,,no
+cypherbench:1712,D,valid,natural,no,,,no
+cypherbench:1715,B,valid,natural,no,,,no
+cypherbench:1715,D,valid,natural,no,,,no
+cypherbench:1716,D,valid,natural,no,,,no
+cypherbench:1716,E,valid,natural,no,,,no
+cypherbench:172,C,valid,natural,no,Brooklyn Nets,BKN is the official standard 3-letter NBA abbreviation for the Brooklyn Nets franchise.,no
+cypherbench:172,D,valid,natural,no,,,no
+cypherbench:1722,C,valid,awkward,no,German,"""Deutsch"" is the German endonym for the German language.",no
+cypherbench:1722,E,valid,natural,no,,,no
+cypherbench:1723,D,valid,natural,no,,,no
+cypherbench:1723,E,valid,natural,no,,,no
+cypherbench:1724,A,invalid,natural,no,,,no
+cypherbench:1724,B,valid,natural,no,,,no
+cypherbench:1726,C,valid,natural,no,,,no
+cypherbench:1726,D,valid,natural,no,,,no
+cypherbench:173,A,valid,natural,no,,,no
+cypherbench:173,E,valid,awkward,no,,,no
+cypherbench:1731,A,valid,natural,no,,,no
+cypherbench:1731,B,valid,natural,no,,,no
+cypherbench:1732,A,valid,natural,no,,,no
+cypherbench:1732,D,valid,natural,no,,,no
+cypherbench:1734,B,valid,natural,no,,,no
+cypherbench:1734,D,valid,natural,no,,,no
+cypherbench:1735,D,valid,natural,no,,,no
+cypherbench:1735,E,valid,natural,no,,,no
+cypherbench:1738,C,valid,natural,no,the U.S.,,no
+cypherbench:1738,D,valid,natural,no,,,no
+cypherbench:1742,D,valid,natural,no,,,no
+cypherbench:1742,E,valid,awkward,no,,,no
+cypherbench:1743,C,valid,natural,no,,,no
+cypherbench:1743,D,valid,natural,no,,,no
+cypherbench:1748,B,valid,natural,no,,,no
+cypherbench:1748,E,valid,natural,no,,,no
+cypherbench:175,C,valid,natural,no,,Full legal name of the basketball player Bob Dandridge.,no
+cypherbench:175,E,valid,natural,no,,,no
+cypherbench:1753,B,valid,natural,no,,,no
+cypherbench:1753,D,valid,natural,no,,,no
+cypherbench:1756,A,valid,natural,no,,,no
+cypherbench:1756,E,valid,natural,no,,,no
+cypherbench:1758,A,valid,natural,no,,,no
+cypherbench:1758,C,valid,natural,no,DVLP,DVLP is the standard historical German abbreviation for the Deutsche Vaterlandspartei (German Fatherland Party).,no
+cypherbench:1759,B,valid,natural,no,,,no
+cypherbench:1759,C,valid,natural,no,,,no
+cypherbench:176,B,valid,natural,no,,,no
+cypherbench:176,D,valid,natural,no,,,no
+cypherbench:1766,A,valid,natural,no,,,no
+cypherbench:1768,C,valid,natural,no,,Full name with patronymic is accurate and natural.,no
+cypherbench:1768,E,valid,natural,no,,,no
+cypherbench:1771,D,valid,natural,no,,,no
+cypherbench:1771,E,valid,natural,no,,,no
+cypherbench:1773,B,valid,natural,no,,,no
+cypherbench:1773,E,valid,natural,no,,,no
+cypherbench:1777,B,valid,natural,no,,,no
+cypherbench:1779,A,valid,natural,no,,,no
+cypherbench:1779,C,valid,natural,no,ZChN,ZChN is the official and widely recognized acronym for the Christian National Union (Zjednoczenie Chrześcijańsko-Narodowe).,no
+cypherbench:1782,C,valid,natural,no,MRP,MRP stands for Mouvement Républicain Populaire (Popular Republican Movement).,no
+cypherbench:1782,E,valid,natural,no,,,no
+cypherbench:1786,A,valid,natural,no,,,no
+cypherbench:1786,E,valid,natural,no,,,no
+cypherbench:1788,A,valid,natural,no,,,no
+cypherbench:1788,D,valid,natural,no,,,no
+cypherbench:1789,B,valid,natural,no,,,no
+cypherbench:1789,D,valid,natural,no,,,no
+cypherbench:1790,C,valid,awkward,no,LR,"The standard abbreviation for the French party 'The Republicans' (Les Républicains) is LR rather than REP, though REP is understandable from context.",no
+cypherbench:1790,E,valid,natural,no,,,no
+cypherbench:1799,A,valid,natural,no,,,no
+cypherbench:1799,C,valid,natural,no,,Full legal name of Charles de Gaulle.,no
+cypherbench:180,A,valid,natural,no,,,no
+cypherbench:180,B,valid,natural,no,,,no
+cypherbench:1802,D,valid,natural,no,,,no
+cypherbench:1802,E,valid,natural,no,,,no
+cypherbench:1803,B,valid,natural,no,,,no
+cypherbench:1803,C,valid,natural,no,,UDR (Union des Démocrates pour la République) is the standard and widely recognized acronym for the Union of Democrats for the Republic.,no
+cypherbench:1805,B,valid,natural,no,,,no
+cypherbench:1805,D,valid,natural,no,,,no
+cypherbench:1808,A,valid,natural,no,,,no
+cypherbench:1808,C,valid,awkward,no,Cyprus,CYP is the standard ISO 3166-1 alpha-3 code for Cyprus.,no
+cypherbench:1809,B,valid,natural,no,,,no
+cypherbench:1809,C,valid,natural,no,the U.S. of A.,"""U.S. of A."" is a well-known informal alias for the United States of America.",no
+cypherbench:1812,B,valid,natural,no,,,no
+cypherbench:1812,C,valid,natural,no,,Donald Franciszek Tusk is Donald Tusk's full birth/official name.,no
+cypherbench:1813,C,valid,awkward,no,Rectores provinciae,Rector provinciae is the Latin term/alias for a Roman governor. The English pluralization 'Rector provinciaes' is slightly awkward.,no
+cypherbench:1813,D,valid,natural,no,,,no
+cypherbench:1818,C,valid,natural,no,Alain Juppé,,no
+cypherbench:1818,E,valid,natural,no,,,no
+cypherbench:182,A,valid,natural,no,,,no
+cypherbench:182,D,valid,natural,no,,,no
+cypherbench:1820,A,valid,natural,no,,,no
+cypherbench:1820,B,valid,natural,no,,,no
+cypherbench:1821,D,valid,natural,no,,,no
+cypherbench:1821,E,valid,natural,no,,,no
+cypherbench:1822,C,valid,natural,no,National Assembly of Armenia,Armenian Parliament is a standard and common alias for the National Assembly of Armenia.,no
+cypherbench:1822,E,valid,natural,no,,,no
+cypherbench:1823,A,valid,natural,no,,,no
+cypherbench:1823,B,valid,natural,no,,,no
+cypherbench:1825,C,valid,natural,no,Stand Up.BG! We are coming!,ИБГНИ is the standard Bulgarian abbreviation for 'Изправи се БГ! Ние идваме!' (Stand Up.BG! We are coming!).,no
+cypherbench:1825,E,valid,natural,no,,,no
+cypherbench:1828,A,valid,natural,no,,,no
+cypherbench:1828,E,valid,natural,no,,,no
+cypherbench:1830,A,valid,natural,no,,,no
+cypherbench:1830,B,valid,natural,no,,,no
+cypherbench:1833,B,valid,natural,no,,,no
+cypherbench:1833,C,valid,natural,no,PS,PS is the standard French abbreviation for Parti Socialiste (Socialist Party).,no
+cypherbench:1836,A,valid,natural,no,,,no
+cypherbench:1836,D,valid,natural,no,,,no
+cypherbench:1837,B,valid,natural,no,,,no
+cypherbench:1837,E,valid,natural,no,,,no
+cypherbench:184,C,valid,awkward,no,ORL,"ORL is the standard abbreviation for Orlando Magic, though 'the ORL' sounds slightly awkward.",no
+cypherbench:184,D,valid,natural,no,,,no
+cypherbench:1841,D,valid,natural,no,,,no
+cypherbench:1841,E,valid,natural,no,,,no
+cypherbench:1842,A,invalid,natural,no,,,no
+cypherbench:1842,E,invalid,unnatural,no,,,no
+cypherbench:1849,C,valid,awkward,no,Morocco,MAR is the standard ISO 3166-1 alpha-3 / IOC code for Morocco.,no
+cypherbench:1849,D,valid,natural,no,,,no
+cypherbench:185,B,valid,natural,no,,,no
+cypherbench:185,D,valid,natural,no,,,no
+cypherbench:1851,C,valid,natural,no,,,no
+cypherbench:1851,D,valid,natural,no,,,no
+cypherbench:1853,A,valid,natural,no,,,no
+cypherbench:1853,E,valid,natural,no,,,no
+cypherbench:1855,A,valid,natural,no,,,no
+cypherbench:1855,E,valid,natural,no,,,no
+cypherbench:186,A,valid,natural,no,,,no
+cypherbench:186,B,valid,natural,no,,,no
+cypherbench:1860,B,valid,natural,no,,,no
+cypherbench:1860,D,valid,natural,no,,,no
+cypherbench:1862,B,valid,natural,no,,,no
+cypherbench:1862,D,valid,natural,no,,,no
+cypherbench:1863,A,valid,natural,no,,,no
+cypherbench:1863,D,valid,natural,no,,,no
+cypherbench:1865,C,valid,natural,no,LR,LR is the standard French abbreviation for Les Républicains (The Republicans).,no
+cypherbench:1865,D,valid,natural,no,,,no
+cypherbench:1866,D,valid,natural,no,,,no
+cypherbench:1866,E,valid,natural,no,,,no
+cypherbench:187,B,valid,natural,no,,,no
+cypherbench:187,C,valid,awkward,no,Memphis Grizzlies,"MEM is the official NBA tricode abbreviation for the Memphis Grizzlies, though phrasing it as 'the MEM' sounds slightly awkward.",no
+cypherbench:1870,A,valid,natural,no,,,no
+cypherbench:1870,D,valid,natural,no,,,no
+cypherbench:1871,B,valid,natural,no,,,no
+cypherbench:1871,C,valid,natural,no,Georgi Ganchev,Georgi Ganchev is a common alternate spelling/transliteration for the Bulgarian politician George Ganchev.,no
+cypherbench:1875,A,valid,natural,no,,,no
+cypherbench:1875,E,valid,natural,no,,,no
+cypherbench:1876,A,valid,natural,no,,,no
+cypherbench:1876,E,valid,natural,no,,,no
+cypherbench:1883,A,valid,natural,no,,,no
+cypherbench:1883,B,valid,natural,no,,,no
+cypherbench:1886,A,valid,natural,no,,,no
+cypherbench:1886,D,valid,natural,no,,,no
+cypherbench:1888,B,valid,natural,no,,,no
+cypherbench:1888,C,valid,awkward,no,Bolivia,BOL is the standard ISO 3166-1 alpha-3 code for Bolivia.,no
+cypherbench:1889,A,valid,natural,no,,,no
+cypherbench:1889,E,valid,natural,no,,,no
+cypherbench:189,A,valid,natural,no,,,no
+cypherbench:189,D,valid,natural,no,,,no
+cypherbench:1890,A,valid,natural,no,,,no
+cypherbench:1890,C,valid,natural,no,SWAPO,SWAPO is the widely used abbreviation and common name for the SWAPO Party.,no
+cypherbench:1894,A,valid,natural,no,,,no
+cypherbench:1894,D,valid,natural,no,,,no
+cypherbench:1896,A,valid,natural,no,,,no
+cypherbench:1896,D,valid,natural,no,,,no
+cypherbench:19,B,valid,natural,no,,,no
+cypherbench:19,E,valid,natural,no,,,no
+cypherbench:190,A,valid,natural,no,,,no
+cypherbench:190,C,valid,natural,no,San Diego Rockets,San Diego Rockets is the historical name of the Houston Rockets franchise before their move to Houston in 1971.,no
+cypherbench:1900,A,valid,natural,no,,,no
+cypherbench:1900,D,valid,natural,no,,,no
+cypherbench:1903,A,valid,natural,no,,,no
+cypherbench:1903,D,valid,natural,no,,,no
+cypherbench:1908,B,valid,natural,no,,,no
+cypherbench:1908,E,valid,natural,no,,,no
+cypherbench:1910,B,valid,natural,no,,,no
+cypherbench:1910,D,valid,natural,no,,,no
+cypherbench:1911,B,valid,natural,no,,,no
+cypherbench:1911,C,valid,natural,no,,PS is the standard abbreviation for the French Socialist Party (Parti Socialiste).,no
+cypherbench:1912,B,valid,natural,no,,,no
+cypherbench:1912,E,valid,natural,no,,,no
+cypherbench:1916,B,valid,natural,no,,,no
+cypherbench:1916,E,valid,natural,no,,,no
+cypherbench:1917,A,valid,natural,no,,,no
+cypherbench:1917,B,valid,natural,no,,,no
+cypherbench:1919,A,valid,natural,no,,,no
+cypherbench:1919,B,valid,natural,no,,,no
+cypherbench:1921,C,valid,natural,no,,,no
+cypherbench:1921,E,valid,natural,no,,,no
+cypherbench:1924,A,valid,natural,no,,,no
+cypherbench:1924,D,valid,natural,no,,,no
+cypherbench:1926,C,valid,natural,no,UDR,UDR is the standard and widely recognized acronym for the Union of Democrats for the Republic (Union des démocrates pour la République).,no
+cypherbench:1926,D,valid,natural,no,,,no
+cypherbench:1929,B,valid,natural,no,,,no
+cypherbench:1929,C,valid,natural,no,Johannes Rau,"""Bruder Johannes"" is a well-known nickname for former German President Johannes Rau.",no
+cypherbench:193,C,valid,natural,no,,,no
+cypherbench:193,E,valid,natural,no,,,no
+cypherbench:1932,A,valid,natural,no,,,no
+cypherbench:1932,B,valid,natural,no,,,no
+cypherbench:1933,B,valid,natural,no,,,no
+cypherbench:1933,D,valid,natural,no,,,no
+cypherbench:1937,C,valid,natural,no,,EK is the standard acronym for the Greek political party Enosi Kentrou (Centre Union).,no
+cypherbench:1937,D,valid,natural,no,,,no
+cypherbench:1938,A,valid,natural,no,,,no
+cypherbench:1938,E,valid,natural,no,,,no
+cypherbench:1941,B,valid,natural,no,,,yes
+cypherbench:1941,C,valid,awkward,no,Bulgaria,BUL is the standard 3-letter IOC/ISO country code for Bulgaria.,yes
+cypherbench:1945,C,invalid,natural,no,SSDF,MAHBAR is not a recognizable or verified abbreviation/name for the Somali Salvation Democratic Front (commonly abbreviated as SSDF).,no
+cypherbench:1945,D,valid,natural,no,,,no
+cypherbench:1947,B,valid,natural,no,,,no
+cypherbench:1947,D,valid,natural,no,,,no
+cypherbench:1951,A,valid,natural,no,,,no
+cypherbench:1951,E,valid,natural,no,,,no
+cypherbench:1952,A,valid,natural,no,,,no
+cypherbench:1952,E,valid,natural,no,,,no
+cypherbench:1953,C,valid,awkward,no,Seychelles,"SEY is a standard ISO/IOC three-letter country code for Seychelles, though using a three-letter code directly in natural language text is somewhat awkward.",no
+cypherbench:1953,E,valid,natural,no,,,no
+cypherbench:1957,C,valid,natural,no,,"""Uncle Abe"" is a well-known historical nickname for Abraham Lincoln.",no
+cypherbench:1957,D,valid,natural,no,,,no
+cypherbench:1958,B,valid,natural,no,,,no
+cypherbench:1958,C,valid,natural,no,Law and Justice,PiS (Prawo i Sprawiedliwość) is the standard and widely used Polish acronym for the Law and Justice party.,no
+cypherbench:1959,C,valid,natural,no,Gitanas Nausėda,Diacritic stripped transliteration (ė -> e).,no
+cypherbench:1959,E,valid,natural,no,,,no
+cypherbench:196,A,valid,natural,no,,,no
+cypherbench:196,D,valid,natural,no,,,no
+cypherbench:1960,B,valid,natural,no,,,no
+cypherbench:1960,E,valid,natural,no,,,no
+cypherbench:1961,A,valid,natural,no,,,no
+cypherbench:1961,B,valid,natural,no,,,no
+cypherbench:1963,A,valid,natural,no,,,no
+cypherbench:1963,B,valid,natural,no,,,no
+cypherbench:1965,A,valid,natural,no,,,no
+cypherbench:1965,D,valid,natural,no,,,no
+cypherbench:197,C,valid,natural,no,Cotton Nash,,no
+cypherbench:1973,A,valid,natural,no,,,no
+cypherbench:1973,E,valid,natural,no,,,no
+cypherbench:1974,A,valid,natural,no,,,no
+cypherbench:1974,D,valid,natural,no,,,no
+cypherbench:1977,A,valid,natural,no,,,no
+cypherbench:1977,D,valid,natural,no,,,no
+cypherbench:198,B,valid,natural,no,,,no
+cypherbench:1987,B,valid,natural,no,,,yes
+cypherbench:1987,E,valid,natural,no,,,yes
+cypherbench:1988,C,valid,awkward,no,Anker Jørgensen,"Shortened to only the first name 'Anker', which is understandable given the role and year 1972, but awkward to refer to a political figure solely by first name.",no
+cypherbench:1988,D,valid,natural,no,,,no
+cypherbench:199,B,valid,natural,no,,,no
+cypherbench:199,C,valid,natural,no,the Atlantic Division,Referring to 'the Atlantic Division' simply as 'the Atlantic' is a standard and natural alias in sports contexts.,no
+cypherbench:1990,A,valid,natural,no,,,no
+cypherbench:1990,B,valid,natural,no,,,no
+cypherbench:1993,B,valid,natural,no,,,no
+cypherbench:1993,C,valid,natural,no,Dhafoorqiiq,Dhafoorqiiq is a well-known Somali nickname/alias for the Somali Salvation Democratic Front (SSDF).,no
+cypherbench:1994,D,valid,natural,no,,,no
+cypherbench:1994,E,valid,natural,no,,,no
+cypherbench:1995,A,valid,natural,no,,,no
+cypherbench:1995,C,valid,natural,no,Slovakia,SVK is the standard ISO 3166-1 alpha-3 and IOC country code for Slovakia.,no
+cypherbench:1998,A,valid,natural,no,,,no
+cypherbench:1998,D,valid,natural,no,,,no
+cypherbench:2,C,valid,natural,no,,,no
+cypherbench:2,E,valid,natural,no,,,no
+cypherbench:20,C,valid,natural,no,guard-forward,Guard-forward is a well-known standard basketball position synonym for swingman.,no
+cypherbench:20,D,valid,natural,no,,,no
+cypherbench:2005,B,valid,natural,no,,,no
+cypherbench:2005,E,valid,natural,no,,,no
+cypherbench:2006,B,valid,natural,no,,,no
+cypherbench:2006,E,valid,natural,no,,,no
+cypherbench:2007,B,valid,natural,no,,,no
+cypherbench:2007,D,valid,natural,no,,,no
+cypherbench:201,B,valid,natural,no,,,no
+cypherbench:201,E,valid,natural,no,,,no
+cypherbench:2010,A,valid,natural,no,,,no
+cypherbench:2010,C,valid,natural,no,Inter-Parliamentary Union,Official alternative spelling / common name.,no
+cypherbench:2018,A,valid,natural,no,,,no
+cypherbench:2018,B,valid,natural,no,,,no
+cypherbench:2019,D,valid,natural,no,,,no
+cypherbench:2019,E,valid,unnatural,no,,,no
+cypherbench:202,A,valid,natural,no,,,no
+cypherbench:202,D,valid,natural,no,,,no
+cypherbench:2023,A,valid,natural,no,,,no
+cypherbench:2023,E,valid,natural,no,,,no
+cypherbench:2024,A,valid,natural,no,,,no
+cypherbench:2024,B,valid,natural,no,,,no
+cypherbench:2026,B,valid,natural,no,,,no
+cypherbench:2026,E,valid,natural,no,,,no
+cypherbench:2029,A,valid,natural,no,,,no
+cypherbench:2029,C,valid,natural,no,Antigua and Barbuda,A&B is a standard abbreviation for Antigua and Barbuda.,no
+cypherbench:203,A,valid,natural,no,,,no
+cypherbench:203,B,valid,natural,no,,,no
+cypherbench:2030,B,valid,natural,no,,,no
+cypherbench:2030,E,valid,natural,no,,,no
+cypherbench:2031,A,valid,natural,no,,,no
+cypherbench:2031,B,valid,natural,no,,,no
+cypherbench:2032,D,valid,natural,no,,,no
+cypherbench:2033,D,invalid,natural,no,,“realm of the United” does not mean the original “realm of the United Kingdom”. the shortened form is incomplete.,no
+cypherbench:2034,C,valid,natural,no,Singapore,SGP is the standard ISO 3166-1 alpha-3 code for Singapore.,no
+cypherbench:2034,E,valid,natural,no,,,no
+cypherbench:2035,C,valid,natural,no,,,no
+cypherbench:2035,D,valid,natural,no,,,no
+cypherbench:2036,A,valid,natural,no,,,no
+cypherbench:2036,D,valid,natural,no,,,no
+cypherbench:2037,C,valid,natural,no,,The Chamber of Deputies is the lower house of the Romanian Parliament.,no
+cypherbench:2037,E,valid,natural,no,,,no
+cypherbench:2040,C,valid,natural,no,Convergencia por la Democracia,,no
+cypherbench:2040,D,valid,natural,no,,,no
+cypherbench:2042,A,valid,natural,no,,,no
+cypherbench:2042,C,invalid,unnatural,no,Christian IV of Denmark,"Removing the monarch's given name leaves just the regnal numeral ('IV of Denmark'), which is ambiguous and ungrammatical.",no
+cypherbench:2046,A,valid,natural,no,,,no
+cypherbench:2046,B,valid,natural,no,,,no
+cypherbench:2048,A,valid,natural,no,,,no
+cypherbench:2048,B,valid,natural,no,,,no
+cypherbench:2049,B,invalid,natural,no,,,no
+cypherbench:2049,C,invalid,awkward,no,Chairman of the Council of People's Commissars,Shortening the specific head of government title 'Chairman of the Council of People's Commissars' to just the plural word 'Commissars' is ambiguous and grammatically incorrect for a singular office.,no
+cypherbench:2050,D,valid,natural,no,,,yes
+cypherbench:2050,E,valid,natural,no,,,yes
+cypherbench:2051,C,valid,natural,no,Federal Republic of Germany,BRD (Bundesrepublik Deutschland) is the standard abbreviation for the Federal Republic of Germany (West Germany in 1963).,no
+cypherbench:2051,E,valid,awkward,no,,,no
+cypherbench:2052,B,valid,natural,no,,,no
+cypherbench:2052,E,valid,natural,no,,,no
+cypherbench:2053,D,valid,natural,no,,,no
+cypherbench:2053,E,valid,natural,no,,,no
+cypherbench:2056,D,valid,natural,no,,,no
+cypherbench:2056,E,valid,natural,no,,,no
+cypherbench:2057,B,valid,natural,no,,,no
+cypherbench:2057,C,valid,awkward,no,IBGNI,ИБГНИ (IBGNI) is the Bulgarian acronym for 'Изправи се БГ! Ние идваме!' ('Stand Up.BG! We are coming!'). Using Cyrillic in an English sentence makes it slightly awkward.,no
+cypherbench:2058,D,valid,natural,no,,,no
+cypherbench:2058,E,valid,natural,no,,,no
+cypherbench:206,A,valid,natural,no,,,no
+cypherbench:206,E,valid,natural,no,,,no
+cypherbench:2061,B,valid,natural,no,,,no
+cypherbench:2061,C,valid,awkward,no,Poland,"POL is the standard ISO 3166-1 alpha-3 code for Poland, though using a three-letter country code directly in this sentence phrasing sounds awkward.",no
+cypherbench:2065,A,valid,natural,no,,,yes
+cypherbench:2065,E,valid,natural,no,,,yes
+cypherbench:2070,C,valid,natural,no,Constantine Mitsotakis,Common English anglicization/alias for Konstantinos Mitsotakis.,no
+cypherbench:2070,D,valid,natural,no,,,no
+cypherbench:2071,C,valid,natural,no,Ministry of National Defence,"MDN is a recognized abbreviation (e.g., French: Ministère de la Défense nationale / Portuguese: Ministério da Defesa Nacional) for Ministry of National Defence.",no
+cypherbench:2071,E,invalid,natural,no,,,no
+cypherbench:2075,C,valid,natural,no,EK,EK is the standard Greek acronym for the Centre Union (Enosi Kentrou).,no
+cypherbench:2075,D,valid,natural,no,,,no
+cypherbench:2077,B,valid,natural,no,,,no
+cypherbench:2077,E,valid,natural,no,,,no
+cypherbench:208,A,valid,natural,no,,,no
+cypherbench:208,B,valid,natural,no,,,no
+cypherbench:2080,A,valid,natural,no,,,no
+cypherbench:2080,C,valid,natural,no,MINECON,MINECON is an established English abbreviation/acronym for the Greek Ministry of Economy.,no
+cypherbench:2082,A,valid,natural,no,,,no
+cypherbench:2082,D,valid,natural,no,,,no
+cypherbench:2086,B,valid,natural,no,,,no
+cypherbench:2086,E,valid,natural,no,,,no
+cypherbench:2089,B,valid,natural,no,,,no
+cypherbench:2089,C,valid,natural,no,the Republicans,,no
+cypherbench:2092,A,valid,natural,no,,,no
+cypherbench:2092,D,valid,natural,no,,,no
+cypherbench:2094,C,valid,awkward,no,Rwanda,"The flag emoji for Rwanda 🇷🇼 unambiguously refers to the country Rwanda, but using flag emojis inline in formal questions is awkward.",no
+cypherbench:2094,E,valid,natural,no,,,no
+cypherbench:2097,A,valid,natural,no,,,no
+cypherbench:2097,B,valid,natural,no,,,no
+cypherbench:2099,A,valid,natural,no,,,no
+cypherbench:2099,D,valid,natural,no,,,no
+cypherbench:2101,A,valid,natural,no,,,no
+cypherbench:2101,D,valid,natural,no,,,no
+cypherbench:2103,A,valid,natural,no,,,no
+cypherbench:2103,B,valid,natural,no,,,no
+cypherbench:2104,A,valid,natural,no,,,no
+cypherbench:2104,D,valid,natural,no,,,no
+cypherbench:2106,A,valid,natural,no,,,no
+cypherbench:2106,B,valid,natural,no,,,no
+cypherbench:211,C,valid,natural,no,LAC,LAC is the standard three-letter abbreviation for the Los Angeles Clippers.,no
+cypherbench:211,E,valid,natural,no,,,no
+cypherbench:2110,D,valid,natural,no,,,no
+cypherbench:2110,E,valid,natural,no,,,no
+cypherbench:2112,A,valid,natural,no,,,no
+cypherbench:2112,D,valid,natural,no,,,no
+cypherbench:217,C,valid,natural,no,,,no
+cypherbench:217,E,valid,natural,no,,,no
+cypherbench:219,C,valid,natural,no,the West,"""the West"" is a common standard alias for the Western Conference in the NBA.",no
+cypherbench:219,D,valid,natural,no,,,no
+cypherbench:22,A,valid,natural,no,,,no
+cypherbench:220,A,valid,natural,no,,,no
+cypherbench:220,B,valid,natural,no,,,no
+cypherbench:224,A,valid,natural,no,,,yes
+cypherbench:224,C,valid,natural,no,Boston Celtics,BOS is a standard NBA abbreviation for the Boston Celtics and fits clearly in the basketball context alongside the Miami Heat.,yes
+cypherbench:225,C,valid,awkward,no,Phoenix Suns,"""the Phoenix"" is slightly awkward phrasing compared to ""Phoenix"" or ""the Phoenix Suns"", but easily identifiable in context.",no
+cypherbench:225,E,valid,natural,no,,,no
+cypherbench:228,C,valid,natural,no,,,no
+cypherbench:228,D,valid,natural,no,,,no
+cypherbench:230,A,valid,natural,no,,,no
+cypherbench:230,D,valid,natural,no,,,no
+cypherbench:231,A,valid,natural,no,,,no
+cypherbench:231,C,valid,natural,no,Washington Wizards,Shortening 'Washington Wizards' to 'the Wizards' is standard sports vernacular.,no
+cypherbench:234,B,valid,natural,no,,,no
+cypherbench:234,C,valid,natural,no,,PF is a standard abbreviation for power forward in basketball.,no
+cypherbench:235,A,valid,natural,no,,,no
+cypherbench:235,E,valid,natural,no,,,no
+cypherbench:237,A,valid,natural,no,,,no
+cypherbench:237,B,valid,natural,no,,,no
+cypherbench:239,B,valid,natural,no,,,no
+cypherbench:239,D,valid,natural,no,,,no
+cypherbench:240,C,valid,natural,no,,,no
+cypherbench:240,E,valid,natural,no,,,no
+cypherbench:241,C,valid,natural,no,Dallas Mavericks,,no
+cypherbench:241,E,valid,natural,no,,,no
+cypherbench:242,A,valid,natural,no,,,no
+cypherbench:242,D,valid,natural,no,,,no
+cypherbench:243,A,valid,natural,no,,,no
+cypherbench:243,C,valid,natural,no,,,no
+cypherbench:244,A,valid,natural,no,,,no
+cypherbench:244,B,valid,natural,no,,,no
+cypherbench:245,A,valid,natural,no,,,no
+cypherbench:245,B,valid,natural,no,,,no
+cypherbench:246,A,valid,natural,no,,,no
+cypherbench:246,C,valid,natural,no,Wilt Chamberlain,Standard lowercasing perturbation.,no
+cypherbench:248,D,valid,natural,no,,,no
+cypherbench:248,E,valid,natural,no,,,no
+cypherbench:249,A,valid,natural,no,,,no
+cypherbench:249,B,valid,natural,no,,,no
+cypherbench:25,B,valid,natural,no,,,no
+cypherbench:250,B,valid,natural,no,,,no
+cypherbench:250,D,valid,natural,no,,,no
+cypherbench:254,A,valid,natural,no,,,no
+cypherbench:254,B,valid,natural,no,,,no
+cypherbench:259,B,valid,natural,no,,,no
+cypherbench:26,A,valid,natural,no,,,yes
+cypherbench:26,D,valid,natural,no,,,yes
+cypherbench:261,B,valid,natural,no,,,no
+cypherbench:261,C,valid,natural,no,Airbus A380,,no
+cypherbench:262,D,valid,natural,no,,,no
+cypherbench:262,E,valid,natural,no,,,no
+cypherbench:263,A,valid,natural,no,,,no
+cypherbench:263,C,valid,natural,no,,,no
+cypherbench:264,A,valid,natural,no,,,no
+cypherbench:264,E,valid,natural,no,,,no
+cypherbench:27,C,valid,natural,no,State Fair Coliseum,State Fair Coliseum is a valid historical/alternate name for the arena formerly known as Toyota Coliseum (Indiana Farmers Coliseum).,no
+cypherbench:27,E,valid,natural,no,,,no
+cypherbench:271,A,valid,natural,no,,,no
+cypherbench:271,D,valid,natural,no,,,no
+cypherbench:273,A,invalid,natural,no,,,no
+cypherbench:273,E,valid,natural,no,,,no
+cypherbench:274,A,valid,natural,no,,,no
+cypherbench:274,D,valid,natural,no,,,no
+cypherbench:275,A,valid,natural,no,,,no
+cypherbench:275,E,valid,natural,no,,,no
+cypherbench:276,A,valid,natural,no,,,no
+cypherbench:276,C,valid,natural,no,,WSK PZL-Mielec is a well-known historical and formal name for the aerospace manufacturer PZL Mielec.,no
+cypherbench:277,C,valid,natural,no,,SABE is the standard ICAO airport code for Aeroparque Jorge Newbery.,no
+cypherbench:277,D,valid,natural,no,,,no
+cypherbench:278,D,valid,natural,no,,,no
+cypherbench:278,E,valid,natural,no,,,no
+cypherbench:281,D,valid,natural,no,,,no
+cypherbench:281,E,valid,natural,no,,,no
+cypherbench:282,B,valid,natural,no,,,no
+cypherbench:282,C,valid,natural,no,,,no
+cypherbench:283,C,valid,natural,no,,PSA is the standard abbreviation for Pacific Southwest Airlines.,yes
+cypherbench:283,D,valid,natural,no,,,yes
+cypherbench:285,B,valid,natural,no,,,no
+cypherbench:285,C,valid,natural,no,LOT,LOT is the standard and widely used short name/abbreviation for LOT Polish Airlines.,no
+cypherbench:286,A,valid,natural,no,,,no
+cypherbench:286,E,valid,natural,no,,,no
+cypherbench:287,D,valid,natural,no,,,no
+cypherbench:289,C,valid,natural,no,ADC Airlines,"'ADC' is a widely recognized acronym/shortened name for ADC Airlines, especially in the context of aviation accidents.",no
+cypherbench:289,D,valid,natural,no,,,no
+cypherbench:29,A,valid,natural,no,,,no
+cypherbench:29,E,valid,natural,no,,,no
+cypherbench:291,D,valid,natural,no,,,no
+cypherbench:291,E,valid,natural,no,,,no
+cypherbench:292,A,valid,natural,no,,,no
+cypherbench:292,E,valid,natural,no,,,no
+cypherbench:294,C,valid,natural,no,Air Ontario Flight 1363,,no
+cypherbench:295,D,valid,natural,no,,,no
+cypherbench:295,E,valid,natural,no,,,no
+cypherbench:297,D,valid,natural,no,,,no
+cypherbench:297,E,valid,natural,no,,,no
+cypherbench:298,D,valid,natural,no,,,no
+cypherbench:298,E,valid,natural,no,,,no
+cypherbench:299,A,valid,natural,no,,,no
+cypherbench:299,C,valid,natural,no,,EK521 is the official IATA flight code alias for Emirates Flight 521.,no
+cypherbench:300,A,valid,natural,no,,,no
+cypherbench:304,D,valid,natural,no,,,no
+cypherbench:304,E,valid,natural,no,,,no
+cypherbench:305,D,valid,natural,no,,,no
+cypherbench:305,E,valid,natural,no,,,no
+cypherbench:306,A,valid,natural,no,,,no
+cypherbench:306,D,valid,natural,no,,,no
+cypherbench:309,A,valid,natural,no,,,no
+cypherbench:309,B,valid,natural,no,,,no
+cypherbench:313,A,valid,natural,no,,,no
+cypherbench:313,C,valid,natural,no,Boeing Model 464-67,Boeing Model 464-67 was the internal company model designation during the development of the B-52 Stratofortress.,no
+cypherbench:315,A,valid,natural,no,,,no
+cypherbench:315,D,valid,natural,no,,,no
+cypherbench:316,C,valid,natural,no,SAAB,SAAB is a standard and well-known acronym/name for Saab Group.,no
+cypherbench:316,D,valid,natural,no,,,no
+cypherbench:319,A,valid,natural,no,,,no
+cypherbench:319,C,valid,natural,no,LOT,LOT is the standard and widely recognized abbreviation/common name for LOT Polish Airlines.,no
+cypherbench:32,B,valid,natural,no,,,no
+cypherbench:32,E,valid,natural,no,,,no
+cypherbench:320,D,valid,natural,no,,,no
+cypherbench:320,E,valid,natural,no,,,no
+cypherbench:327,A,valid,natural,no,,,no
+cypherbench:327,C,valid,natural,no,,MHV is the standard IATA airport code for Mojave Air and Space Port.,no
+cypherbench:328,B,valid,natural,no,,,no
+cypherbench:328,D,valid,natural,no,,,no
+cypherbench:329,A,valid,natural,no,,,no
+cypherbench:329,D,valid,natural,no,,,no
+cypherbench:332,C,valid,natural,no,CRJ200,CRJ200 is a standard abbreviation/model designation for the Bombardier CRJ100/200 family.,no
+cypherbench:332,E,valid,natural,no,,,no
+cypherbench:335,A,valid,natural,no,,,no
+cypherbench:335,E,valid,natural,no,,,no
+cypherbench:336,C,valid,natural,no,,,no
+cypherbench:336,E,valid,natural,no,,,no
+cypherbench:340,B,valid,natural,no,,,no
+cypherbench:340,C,valid,natural,no,Jolo Airport,JOL is the standard IATA airport code for Jolo Airport and is unambiguous in this aviation context.,no
+cypherbench:343,B,valid,natural,no,,,no
+cypherbench:343,E,valid,natural,no,,,no
+cypherbench:344,B,valid,natural,no,,,no
+cypherbench:344,C,valid,awkward,no,Hawker Siddeley,"HS is a common abbreviation for Hawker Siddeley in aviation contexts (e.g., HS 748), though slightly awkward as a standalone company name in general conversation.",no
+cypherbench:345,D,valid,natural,no,,,no
+cypherbench:345,E,valid,natural,no,,,no
+cypherbench:346,C,valid,natural,no,,B735 is the standard ICAO designator code for the Boeing 737-500.,no
+cypherbench:346,D,valid,natural,no,,,no
+cypherbench:347,C,valid,natural,no,Bombardier,BBD is a standard stock ticker and recognized abbreviation for Bombardier.,no
+cypherbench:347,D,valid,natural,no,,,no
+cypherbench:35,A,valid,natural,no,,,no
+cypherbench:35,B,valid,natural,no,,,no
+cypherbench:350,A,valid,natural,no,,,no
+cypherbench:350,C,valid,natural,no,DC-10,DC10 is a widely recognized and natural abbreviation for the McDonnell Douglas DC-10.,no
+cypherbench:355,A,valid,natural,no,,,no
+cypherbench:355,B,valid,natural,no,,,no
+cypherbench:357,A,valid,natural,no,,,no
+cypherbench:357,E,valid,natural,no,,,no
+cypherbench:359,A,valid,natural,no,,,no
+cypherbench:359,D,invalid,natural,no,,USAir Flight 1493 refers to a different entity. clash with Tara Air Flight 193.,no
+cypherbench:360,A,valid,natural,no,,,no
+cypherbench:360,E,valid,natural,no,,,no
+cypherbench:362,B,valid,natural,no,,,no
+cypherbench:362,E,valid,natural,no,,,no
+cypherbench:363,A,valid,natural,no,,,no
+cypherbench:363,D,valid,natural,no,,,no
+cypherbench:364,D,valid,natural,no,,,no
+cypherbench:364,E,valid,natural,no,,,no
+cypherbench:365,C,valid,natural,no,Cougar Flight 91,,no
+cypherbench:365,E,valid,natural,no,,,no
+cypherbench:366,B,valid,natural,no,,,no
+cypherbench:366,D,valid,natural,no,,,no
+cypherbench:368,C,valid,natural,no,,,no
+cypherbench:368,E,valid,natural,no,,,no
+cypherbench:37,D,valid,natural,no,,,no
+cypherbench:37,E,valid,natural,no,,,no
+cypherbench:372,B,valid,natural,no,,,no
+cypherbench:372,E,valid,natural,no,,,no
+cypherbench:375,B,valid,natural,no,,,no
+cypherbench:375,D,valid,natural,no,,,no
+cypherbench:377,A,valid,natural,no,,,no
+cypherbench:377,C,valid,natural,no,Super Constellation,,no
+cypherbench:378,A,valid,natural,no,,,no
+cypherbench:378,E,valid,natural,no,,,no
+cypherbench:381,A,valid,natural,no,,,no
+cypherbench:381,C,valid,natural,no,,Schweizerische Luftverkehr-AG is the original German corporate name of Swissair.,no
+cypherbench:389,A,valid,natural,no,,,no
+cypherbench:389,E,valid,natural,no,,,no
+cypherbench:391,B,valid,natural,no,,,no
+cypherbench:391,D,valid,natural,no,,,no
+cypherbench:392,B,valid,natural,no,,,no
+cypherbench:392,C,valid,natural,no,MANCHESTER AIRPORT,Uppercase casing perturbation.,no
+cypherbench:394,A,valid,natural,no,,,no
+cypherbench:394,D,valid,natural,no,,,no
+cypherbench:395,A,invalid,natural,no,,,no
+cypherbench:395,B,valid,natural,no,,,no
+cypherbench:397,C,valid,natural,no,Chongqing Jiangbei International Airport,CKG is the standard IATA airport code for Chongqing Jiangbei International Airport.,no
+cypherbench:397,E,valid,natural,no,,,no
+cypherbench:40,B,valid,natural,no,,,no
+cypherbench:40,E,valid,natural,no,,,no
+cypherbench:402,B,valid,natural,no,,,no
+cypherbench:402,C,valid,natural,no,S-92,Omitting the hyphen in model numbers like S-92 -> S92 is common and unambiguous.,no
+cypherbench:403,B,valid,natural,no,,,no
+cypherbench:403,E,valid,natural,no,,,no
+cypherbench:404,C,valid,natural,no,,KMG is the official IATA airport code for Kunming Changshui International Airport.,no
+cypherbench:404,D,valid,natural,no,,,no
+cypherbench:405,B,valid,natural,no,,,no
+cypherbench:405,D,valid,natural,no,,,no
+cypherbench:407,C,valid,natural,no,,,no
+cypherbench:407,D,valid,natural,no,,,no
+cypherbench:410,D,valid,natural,no,,,no
+cypherbench:410,E,valid,natural,no,,,no
+cypherbench:412,C,valid,natural,no,,Common alias for the de Havilland Canada DHC-2 Beaver.,no
+cypherbench:412,E,valid,natural,no,,,no
+cypherbench:413,A,valid,natural,no,,,no
+cypherbench:413,C,valid,natural,no,FedEx Flight 14,,no
+cypherbench:415,A,valid,natural,no,,,no
+cypherbench:415,C,valid,natural,no,,U-UAZ is a widely used abbreviation for Ulan-Ude Aviation Plant (Ulan-Ude Aviation Plant / Ulan-Udenskiy Aviatsionnyy Zavod).,no
+cypherbench:416,D,valid,natural,no,,,no
+cypherbench:416,E,valid,natural,no,,,no
+cypherbench:42,B,valid,natural,no,,,no
+cypherbench:42,E,invalid,awkward,no,,using former name for current players,no
+cypherbench:422,A,valid,natural,no,,,no
+cypherbench:422,C,valid,natural,no,Baelish,,no
+cypherbench:423,A,valid,natural,no,,,no
+cypherbench:423,E,valid,natural,no,,,no
+cypherbench:425,D,valid,natural,no,,,no
+cypherbench:425,E,valid,awkward,no,,,no
+cypherbench:427,A,valid,natural,no,,,no
+cypherbench:427,E,valid,natural,no,,,no
+cypherbench:43,D,valid,natural,no,,,no
+cypherbench:43,E,valid,natural,no,,,no
+cypherbench:432,D,valid,natural,no,,,no
+cypherbench:432,E,valid,natural,no,,,no
+cypherbench:436,A,valid,natural,no,,,no
+cypherbench:436,D,valid,natural,no,,,no
+cypherbench:437,B,valid,natural,no,,,no
+cypherbench:437,E,valid,natural,no,,,no
+cypherbench:439,A,valid,natural,no,,,no
+cypherbench:439,B,valid,natural,no,,,no
+cypherbench:44,B,valid,natural,no,,,no
+cypherbench:44,E,valid,natural,no,,,no
+cypherbench:440,B,valid,natural,no,,,no
+cypherbench:440,E,valid,natural,no,,,no
+cypherbench:441,D,valid,natural,no,,,no
+cypherbench:441,E,valid,natural,no,,,no
+cypherbench:444,D,valid,natural,no,,,no
+cypherbench:444,E,valid,natural,no,,,no
+cypherbench:447,D,valid,natural,no,,,no
+cypherbench:447,E,valid,natural,no,,,no
+cypherbench:450,A,valid,natural,no,,,no
+cypherbench:450,C,valid,natural,no,T.J.,"T.J. (Talia Josephine Wagner) is the common alias/nickname of Nocturne, daughter of Nightcrawler.",no
+cypherbench:453,A,valid,natural,no,,,no
+cypherbench:453,E,valid,natural,no,,,no
+cypherbench:455,D,valid,natural,no,,,no
+cypherbench:455,E,valid,natural,no,,,no
+cypherbench:456,D,valid,natural,no,,,no
+cypherbench:457,B,valid,natural,no,,,no
+cypherbench:457,C,valid,natural,no,RTK,RTK is a widely recognized acronym for Romance of the Three Kingdoms.,no
+cypherbench:458,D,valid,natural,no,,,no
+cypherbench:458,E,valid,natural,no,,,no
+cypherbench:459,A,valid,natural,no,,,no
+cypherbench:459,C,valid,natural,no,,"Doctor Michael Morbius is the full alter-ego name of Morbius, the Living Vampire.",no
+cypherbench:460,B,valid,natural,no,,,no
+cypherbench:460,C,valid,natural,no,Chang'an,"""Changan"" is a standard alternate transliteration/spelling without the apostrophe for the historical Chinese capital Chang'an.",no
+cypherbench:462,A,valid,natural,no,,,no
+cypherbench:462,E,valid,natural,no,,,no
+cypherbench:464,A,valid,natural,no,,,no
+cypherbench:464,E,valid,natural,no,,,no
+cypherbench:465,C,valid,natural,no,the Cthulhu Mythos,Shortening 'Cthulhu Mythos' to 'the Mythos' is common and recognizable in context.,no
+cypherbench:465,D,valid,natural,no,,,no
+cypherbench:47,A,valid,natural,no,,,no
+cypherbench:47,C,valid,natural,no,Lakers,,no
+cypherbench:470,E,valid,natural,no,,,no
+cypherbench:472,C,valid,natural,no,,,no
+cypherbench:472,D,valid,natural,no,,,no
+cypherbench:473,D,valid,natural,no,,,no
+cypherbench:474,C,valid,natural,no,MCU,,no
+cypherbench:474,E,valid,natural,no,,,no
+cypherbench:475,B,valid,natural,no,,,yes
+cypherbench:475,E,valid,natural,no,,,yes
+cypherbench:479,B,valid,natural,no,,,no
+cypherbench:479,E,valid,natural,no,,,no
+cypherbench:48,B,valid,natural,no,,,no
+cypherbench:48,D,valid,natural,no,,,no
+cypherbench:480,E,invalid,natural,no,,,no
+cypherbench:487,C,valid,natural,no,Brotherhood Without Banners,BWB is a well-known community abbreviation for the Brotherhood Without Banners in A Song of Ice and Fire / Game of Thrones context.,no
+cypherbench:487,E,unsure,natural,no,,too many possible organizations called BRB; but this is also true for so many team abbreviations,no
+cypherbench:490,A,valid,natural,no,,,no
+cypherbench:490,D,valid,natural,no,,,no
+cypherbench:492,C,valid,natural,no,,"Catelyn Tully married into House Stark, making 'Catelyn Tully-Stark' a completely unambiguous and valid alias.",no
+cypherbench:492,D,valid,natural,no,,,no
+cypherbench:493,C,invalid,unnatural,no,Demon King of Confusion,Shortening 'Demon King of Confusion' to just 'Confusion' makes the entity unrecognizable and nonsensical in the context ('killed the Confusion').,no
+cypherbench:495,C,valid,natural,no,,,no
+cypherbench:495,D,valid,natural,no,,,no
+cypherbench:499,A,valid,natural,no,,,no
+cypherbench:499,C,valid,natural,no,Cao Hong,Zilian is the courtesy name (style name) of Cao Hong.,no
+cypherbench:50,C,valid,natural,no,Cavs,,no
+cypherbench:50,E,valid,natural,no,,,no
+cypherbench:500,C,valid,natural,no,,Arry is an established alias used by Arya Stark in the A Song of Ice and Fire / Game of Thrones universe.,no
+cypherbench:500,D,valid,natural,no,,,no
+cypherbench:501,B,valid,natural,no,,,no
+cypherbench:501,D,valid,natural,no,,,no
+cypherbench:503,A,valid,natural,no,,,no
+cypherbench:503,B,valid,natural,no,,,no
+cypherbench:506,A,valid,natural,no,,,no
+cypherbench:506,C,valid,natural,no,Cai Bojie,Bojie is the courtesy name (zi) of Cai Yong.,no
+cypherbench:509,A,valid,natural,no,,,no
+cypherbench:509,B,valid,natural,no,,,no
+cypherbench:510,A,valid,natural,no,,,no
+cypherbench:510,E,valid,natural,no,,,no
+cypherbench:512,C,valid,natural,no,World of Ice and Fire,Perturbation is a simple all-caps recasing of the fictional universe title.,no
+cypherbench:512,D,valid,natural,no,,,no
+cypherbench:514,B,valid,natural,no,,,no
+cypherbench:514,E,unsure,natural,no,,,no
+cypherbench:516,B,valid,natural,no,,,no
+cypherbench:520,C,valid,natural,no,Lancel Lannister,Typo transposition of 'an' to 'na' in Lannister.,no
+cypherbench:520,E,valid,natural,no,,,no
+cypherbench:523,D,valid,natural,no,,,no
+cypherbench:526,D,valid,natural,no,,,no
+cypherbench:526,E,valid,natural,no,,,no
+cypherbench:530,A,valid,natural,no,,,yes
+cypherbench:530,D,valid,natural,no,,,yes
+cypherbench:531,B,valid,natural,no,,,no
+cypherbench:532,C,valid,natural,no,Cersei Lannister,"Shortened to first name, which is unambiguous in the context of Game of Thrones characters (Ellaria Sand).",no
+cypherbench:532,D,valid,natural,no,,,no
+cypherbench:533,A,valid,natural,no,,,no
+cypherbench:533,C,valid,natural,no,,,no
+cypherbench:537,C,valid,natural,no,Tang Seng,Tang Seng (Tang Monk) is a widely known alias/title for Xuanzang in Journey to the West.,no
+cypherbench:537,D,valid,natural,no,,,no
+cypherbench:538,A,valid,natural,no,,,no
+cypherbench:538,D,valid,natural,no,,,no
+cypherbench:545,A,valid,natural,no,,,no
+cypherbench:545,D,valid,natural,no,,,no
+cypherbench:547,A,valid,natural,no,,,no
+cypherbench:547,E,unsure,natural,no,,,no
+cypherbench:548,D,valid,natural,no,,,no
+cypherbench:548,E,valid,natural,no,,,no
+cypherbench:551,A,valid,natural,no,,,no
+cypherbench:551,D,valid,natural,no,,,no
+cypherbench:552,A,valid,natural,no,,,no
+cypherbench:552,C,valid,natural,no,Liu Biao,Liu Jingsheng uses Liu Biao's courtesy name (Jingsheng).,no
+cypherbench:554,A,valid,natural,no,,,no
+cypherbench:554,B,valid,natural,no,,,no
+cypherbench:555,C,valid,natural,no,The Romance of the Three Kingdoms universe,RTK is a standard abbreviation for Romance of the Three Kingdoms.,no
+cypherbench:555,D,valid,natural,no,,,no
+cypherbench:558,A,valid,natural,no,,,no
+cypherbench:558,B,valid,natural,no,,,no
+cypherbench:560,B,valid,natural,no,,,no
+cypherbench:560,E,valid,natural,no,,,no
+cypherbench:562,D,valid,natural,no,,,no
+cypherbench:562,E,valid,natural,no,,,no
+cypherbench:563,C,valid,natural,no,Minisa Tully,'Minisa' in the context of being a mother associated with Riverrun clearly refers to Minisa Tully (from A Song of Ice and Fire).,no
+cypherbench:563,D,valid,natural,no,,,no
+cypherbench:565,C,valid,natural,no,Aunt Trixie,,no
+cypherbench:565,E,valid,natural,no,,,no
+cypherbench:566,A,valid,natural,no,,,no
+cypherbench:566,D,valid,natural,no,,,no
+cypherbench:567,B,valid,natural,no,,,no
+cypherbench:567,D,valid,natural,no,,,no
+cypherbench:568,A,invalid,natural,no,,,no
+cypherbench:568,E,valid,natural,no,,,no
+cypherbench:57,A,valid,natural,no,,,no
+cypherbench:570,B,valid,natural,no,,,no
+cypherbench:570,C,valid,awkward,no,JTTW universe,JTTW is the standard acronym for Journey to the West; phrasing 'from the JTTW' without 'universe' or simply 'from JTTW' is slightly awkward.,no
+cypherbench:571,A,valid,natural,no,,,no
+cypherbench:571,D,valid,natural,no,,,no
+cypherbench:572,B,valid,natural,no,,,no
+cypherbench:572,D,valid,natural,no,,,no
+cypherbench:574,B,valid,natural,no,,,no
+cypherbench:576,C,valid,natural,no,Thunderbolts,T-Bolts is a standard and common nickname/abbreviation for the Marvel team Thunderbolts.,no
+cypherbench:576,D,valid,natural,no,,,no
+cypherbench:578,D,valid,natural,no,,,no
+cypherbench:578,E,valid,natural,no,,,no
+cypherbench:58,C,valid,natural,no,,,no
+cypherbench:58,D,valid,natural,no,,,no
+cypherbench:581,A,valid,natural,no,,,no
+cypherbench:581,E,valid,natural,no,,,no
+cypherbench:582,C,valid,natural,no,Kevan,,no
+cypherbench:582,E,valid,natural,no,,,no
+cypherbench:586,A,valid,natural,no,,,no
+cypherbench:586,E,valid,natural,no,,,no
+cypherbench:590,A,valid,natural,no,,,no
+cypherbench:596,B,valid,natural,no,,,no
+cypherbench:596,E,valid,natural,no,,,no
+cypherbench:6,A,valid,natural,no,,,yes
+cypherbench:6,D,valid,natural,no,,,yes
+cypherbench:60,B,valid,natural,no,,,no
+cypherbench:60,D,valid,natural,no,,,no
+cypherbench:602,B,valid,natural,no,,,no
+cypherbench:602,D,valid,natural,no,,,no
+cypherbench:603,B,valid,natural,no,,,no
+cypherbench:603,E,valid,natural,no,,,no
+cypherbench:606,A,valid,natural,no,,,no
+cypherbench:606,C,valid,natural,no,,,no
+cypherbench:607,A,valid,natural,no,,,no
+cypherbench:607,C,valid,awkward,no,Hellfire Club,"""the Hellfire"" is understandable in context (Jacob Shaw / Marvel), but dropping ""Club"" makes the phrasing slightly awkward.",no
+cypherbench:609,A,valid,natural,no,,,no
+cypherbench:609,E,valid,natural,no,,,no
+cypherbench:610,C,valid,natural,no,,,no
+cypherbench:610,D,valid,natural,no,,,no
+cypherbench:615,A,valid,natural,no,,,no
+cypherbench:615,C,valid,natural,no,Cao Ziwen,Cao Ziwen uses the courtesy name Ziwen for Cao Zhang.,no
+cypherbench:622,D,valid,natural,no,,,no
+cypherbench:622,E,unsure,natural,no,,,no
+cypherbench:63,A,valid,natural,no,,,no
+cypherbench:63,E,valid,natural,no,,,no
+cypherbench:630,B,valid,natural,no,,,no
+cypherbench:630,D,valid,natural,no,,,no
+cypherbench:634,C,valid,natural,no,Rhaella,"Shortened to first name, which is natural and unambiguous in this context.",no
+cypherbench:634,D,valid,natural,no,,,no
+cypherbench:635,A,valid,natural,no,,,no
+cypherbench:635,B,valid,natural,no,,,no
+cypherbench:640,A,valid,natural,no,,,no
+cypherbench:640,E,valid,natural,no,,,no
+cypherbench:648,D,valid,natural,no,,,no
+cypherbench:648,E,valid,natural,no,,,no
+cypherbench:65,D,valid,natural,no,,,no
+cypherbench:65,E,valid,natural,no,,,no
+cypherbench:650,A,valid,natural,no,,,no
+cypherbench:650,E,valid,natural,no,,,no
+cypherbench:651,B,valid,natural,no,,,no
+cypherbench:651,E,valid,natural,no,,,no
+cypherbench:652,A,valid,natural,no,,,no
+cypherbench:652,B,valid,natural,no,,,no
+cypherbench:654,C,invalid,natural,no,Excalibur,"Caliburn is an alternate name for King Arthur's sword Excalibur, but not a recognized alias for the comic book organization/team Excalibur.",no
+cypherbench:654,E,unsure,natural,no,,,no
+cypherbench:656,B,valid,natural,no,,,no
+cypherbench:656,C,valid,awkward,no,Earth-6160,Earth-6160 is the designation for the 2023 reboot of the Ultimate Universe in Marvel Comics. The inclusion of 'the' before 'Earth-6160' is slightly awkward.,no
+cypherbench:658,D,valid,natural,no,,,no
+cypherbench:66,C,valid,natural,no,,,no
+cypherbench:66,D,valid,natural,no,,,no
+cypherbench:660,B,valid,natural,no,,,no
+cypherbench:660,E,unsure,natural,no,,,no
+cypherbench:661,C,valid,natural,no,,,no
+cypherbench:662,A,valid,natural,no,,,no
+cypherbench:662,D,valid,natural,no,,,no
+cypherbench:668,C,valid,natural,no,,,no
+cypherbench:672,A,valid,natural,no,,,no
+cypherbench:672,E,valid,natural,no,,,no
+cypherbench:673,D,valid,natural,no,,,no
+cypherbench:673,E,valid,natural,no,,,no
+cypherbench:674,C,valid,natural,no,Journey to the West,JTTW is a widely used and recognizable abbreviation for Journey to the West.,no
+cypherbench:674,D,valid,natural,no,,,no
+cypherbench:678,A,valid,natural,no,,,no
+cypherbench:678,C,valid,natural,no,Journey to the West universe,JTTW is a standard acronym/abbreviation for Journey to the West.,no
+cypherbench:680,A,valid,natural,no,,,no
+cypherbench:680,D,valid,natural,no,,,no
+cypherbench:685,A,valid,natural,no,,,no
+cypherbench:685,D,valid,natural,no,,,no
+cypherbench:686,B,valid,natural,no,,,no
+cypherbench:686,C,valid,natural,no,Sister Margaret Grace,Sister Margaret Grace is a canonical alias/religious name for Maggie Murdock in Marvel Comics/Daredevil.,no
+cypherbench:687,A,valid,natural,no,,,no
+cypherbench:687,B,valid,natural,no,,,no
+cypherbench:689,D,valid,natural,no,,,yes
+cypherbench:689,E,valid,natural,no,,,yes
+cypherbench:691,A,valid,natural,no,,,no
+cypherbench:691,B,valid,natural,no,,,no
+cypherbench:692,C,valid,natural,no,,,no
+cypherbench:692,D,valid,natural,no,,,no
+cypherbench:693,A,valid,natural,no,,,no
+cypherbench:693,E,valid,natural,no,,,no
+cypherbench:694,B,valid,natural,no,,,no
+cypherbench:694,C,valid,natural,no,,,no
+cypherbench:695,B,valid,natural,no,,,no
+cypherbench:697,B,valid,natural,no,,,no
+cypherbench:697,D,valid,natural,no,,,no
+cypherbench:700,A,valid,natural,no,,,no
+cypherbench:700,E,valid,natural,no,,,no
+cypherbench:704,A,valid,natural,no,,,no
+cypherbench:704,E,valid,natural,no,,,no
+cypherbench:708,A,valid,natural,no,,,no
+cypherbench:708,E,valid,natural,no,,,no
+cypherbench:709,A,valid,natural,no,,,no
+cypherbench:709,D,valid,natural,no,,,no
+cypherbench:712,A,valid,natural,no,,,no
+cypherbench:712,C,valid,natural,no,Nate Grey,X-Man is the primary superhero codename/alias of Nate Grey.,no
+cypherbench:716,C,valid,natural,no,Yuqing Guan,,no
+cypherbench:719,C,invalid,unnatural,no,Pyke,"""The Bloodharbor Reaper"" is a title for the League of Legends character Pyke, not the fictional location Pyke (from A Song of Ice and Fire).",no
+cypherbench:719,D,valid,natural,no,,,no
+cypherbench:72,A,valid,natural,no,,,no
+cypherbench:72,B,valid,natural,no,,,no
+cypherbench:720,B,valid,natural,no,,,no
+cypherbench:720,C,valid,natural,no,Jaehaerys II,Shortening the regnal name by omitting the house surname Targaryen is standard and clear.,no
+cypherbench:724,A,valid,natural,no,,,no
+cypherbench:724,E,valid,natural,no,,,no
+cypherbench:726,B,valid,natural,no,,,no
+cypherbench:726,C,valid,natural,no,Pengcheng,Pengcheng is the prominent historical alias/ancient name of Xuzhou.,no
+cypherbench:730,B,valid,natural,no,,,no
+cypherbench:730,D,valid,natural,no,,,no
+cypherbench:733,C,valid,natural,no,Zhao Guang,Typo via letter transposition (Zaho for Zhao).,no
+cypherbench:737,B,valid,natural,no,,,no
+cypherbench:737,D,valid,natural,no,,,no
+cypherbench:74,C,valid,awkward,no,Indiana Pacers,Shortening the team name to 'the Indiana' creates an awkward phrasing.,no
+cypherbench:74,E,invalid,natural,no,,,no
+cypherbench:740,A,valid,natural,no,,,no
+cypherbench:740,D,valid,natural,no,,,no
+cypherbench:747,A,valid,natural,no,,,no
+cypherbench:747,D,valid,natural,no,,,no
+cypherbench:75,A,valid,natural,no,,,no
+cypherbench:75,B,valid,natural,no,,,no
+cypherbench:750,A,valid,natural,no,,,no
+cypherbench:750,C,valid,natural,no,,,no
+cypherbench:751,B,valid,natural,no,,,no
+cypherbench:751,C,valid,natural,no,GMI,GMI is the standard and widely used abbreviation for Global Market Insite.,no
+cypherbench:752,A,valid,natural,no,,,no
+cypherbench:752,B,valid,natural,no,,,no
+cypherbench:753,D,valid,natural,no,,,no
+cypherbench:756,C,valid,natural,no,,BBY is the stock ticker for Best Buy and is commonly used to refer to the company in business contexts.,no
+cypherbench:756,D,valid,natural,no,,,no
+cypherbench:76,B,valid,natural,no,,,no
+cypherbench:76,C,valid,natural,no,,,no
+cypherbench:760,D,valid,natural,no,,,no
+cypherbench:760,E,valid,awkward,no,,,no
+cypherbench:762,B,valid,natural,no,,,no
+cypherbench:762,C,valid,natural,no,United Aircraft and Transport Corp,United Aircraft and Transport Corporation was the predecessor/parent conglomerate of Boeing before the 1934 breakup.,no
+cypherbench:765,A,valid,natural,no,,,no
+cypherbench:765,B,valid,natural,no,,,no
+cypherbench:768,B,valid,natural,no,,,no
+cypherbench:768,D,valid,natural,no,,,no
+cypherbench:77,C,valid,natural,no,Pacific Division,"In context of sports teams/divisions, referring to 'the Pacific Division' simply as 'the Pacific' is common and understandable.",no
+cypherbench:77,E,valid,natural,no,,,no
+cypherbench:779,B,valid,natural,no,,,no
+cypherbench:779,D,valid,natural,no,,,no
+cypherbench:78,A,valid,natural,no,,,no
+cypherbench:78,B,valid,natural,no,,,no
+cypherbench:780,A,valid,natural,no,,,no
+cypherbench:780,E,valid,natural,no,,,no
+cypherbench:784,C,valid,natural,no,,,no
+cypherbench:784,E,valid,natural,no,,,no
+cypherbench:787,D,valid,natural,no,,,no
+cypherbench:787,E,valid,awkward,no,,,no
+cypherbench:796,B,valid,natural,no,,,no
+cypherbench:796,E,valid,natural,no,,,no
+cypherbench:8,B,valid,natural,no,,,no
+cypherbench:8,E,valid,natural,no,,,no
+cypherbench:80,B,valid,natural,no,,,no
+cypherbench:80,D,valid,natural,no,,,no
+cypherbench:800,D,valid,natural,no,,,no
+cypherbench:800,E,valid,natural,no,,,no
+cypherbench:807,A,valid,natural,no,,,no
+cypherbench:807,D,valid,natural,no,,,no
+cypherbench:809,B,valid,natural,no,,,no
+cypherbench:809,E,valid,natural,no,,,no
+cypherbench:810,B,valid,natural,no,,,no
+cypherbench:810,E,valid,natural,no,,,no
+cypherbench:812,A,valid,natural,no,,,no
+cypherbench:812,C,valid,natural,no,,"GitHub is the standard, common name for GitHub Inc.",no
+cypherbench:813,A,valid,natural,no,,,no
+cypherbench:813,D,valid,natural,no,,,no
+cypherbench:814,A,valid,natural,no,,,no
+cypherbench:814,C,valid,natural,no,,,no
+cypherbench:815,A,valid,natural,no,,,no
+cypherbench:815,B,valid,natural,no,,,no
+cypherbench:816,E,valid,awkward,no,,,no
+cypherbench:818,D,valid,natural,no,,,no
+cypherbench:818,E,valid,natural,no,,,no
+cypherbench:819,E,valid,natural,no,,,no
+cypherbench:820,A,valid,natural,no,,,no
+cypherbench:820,D,valid,natural,no,,,no
+cypherbench:828,B,valid,natural,no,,,no
+cypherbench:828,E,invalid,natural,no,,,no
+cypherbench:83,C,valid,natural,no,All-NBA Team,"""All-NBA"" is a standard and common abbreviation for the ""All-NBA Team"" honor/award.",no
+cypherbench:83,D,valid,natural,no,,,no
+cypherbench:831,B,valid,natural,no,,,no
+cypherbench:831,D,valid,natural,no,,,no
+cypherbench:833,C,valid,natural,no,,,no
+cypherbench:833,E,valid,natural,no,,,no
+cypherbench:836,B,valid,natural,no,,,no
+cypherbench:836,C,valid,natural,no,rail transport,Perturbation uses a standard and unambiguous synonym/alias for the industry.,no
+cypherbench:837,C,valid,natural,no,AU,,no
+cypherbench:837,D,valid,natural,no,,,no
+cypherbench:838,D,valid,natural,no,,,no
+cypherbench:838,E,valid,natural,no,,,no
+cypherbench:839,D,valid,natural,no,,,no
+cypherbench:839,E,valid,natural,no,,,no
+cypherbench:842,C,valid,natural,no,Nathan Blecharczyk,,no
+cypherbench:842,E,valid,natural,no,,,no
+cypherbench:844,C,valid,natural,no,,,no
+cypherbench:844,D,valid,natural,no,,,no
+cypherbench:845,A,valid,natural,no,,,no
+cypherbench:845,B,valid,natural,no,,,no
+cypherbench:847,A,valid,natural,no,,,no
+cypherbench:847,E,valid,natural,no,,,no
+cypherbench:85,A,valid,natural,no,,,no
+cypherbench:85,D,valid,natural,no,,,no
+cypherbench:850,A,valid,natural,no,,,no
+cypherbench:850,E,valid,natural,no,,,no
+cypherbench:851,B,valid,natural,no,,,no
+cypherbench:851,D,valid,natural,no,,,no
+cypherbench:855,A,valid,natural,no,,,no
+cypherbench:855,E,valid,natural,no,,,no
+cypherbench:856,A,valid,natural,no,,,no
+cypherbench:857,A,valid,natural,no,,,no
+cypherbench:857,C,valid,natural,no,,,no
+cypherbench:859,A,valid,natural,no,,,no
+cypherbench:859,E,valid,natural,no,,,no
+cypherbench:860,B,valid,natural,no,,,no
+cypherbench:860,E,valid,natural,no,,,no
+cypherbench:864,B,valid,natural,no,,,no
+cypherbench:864,D,valid,natural,no,,,no
+cypherbench:865,B,valid,natural,no,,,no
+cypherbench:865,D,valid,natural,no,,,no
+cypherbench:867,C,valid,natural,no,,"Shortened to surname only, which is understandable in context.",no
+cypherbench:87,A,valid,natural,no,,,no
+cypherbench:87,B,valid,natural,no,,,no
+cypherbench:874,B,valid,natural,no,,,no
+cypherbench:874,D,valid,natural,no,,,no
+cypherbench:877,B,valid,natural,no,,,no
+cypherbench:877,E,valid,natural,no,,,no
+cypherbench:878,A,valid,natural,no,,,no
+cypherbench:878,D,valid,natural,no,,,no
+cypherbench:883,C,valid,natural,no,Nike,Blue Ribbon Sports is the original former name of Nike.,no
+cypherbench:883,E,valid,natural,no,,,no
+cypherbench:884,D,valid,natural,no,,,no
+cypherbench:884,E,valid,natural,no,,,no
+cypherbench:886,D,valid,natural,no,,,no
+cypherbench:886,E,valid,natural,no,,,no
+cypherbench:887,B,valid,natural,no,,,no
+cypherbench:887,E,valid,natural,no,,,no
+cypherbench:890,A,valid,natural,no,,,no
+cypherbench:890,C,valid,natural,no,Addis Ababa,"""Addis"" is a standard and widely understood colloquial abbreviation/short form for Addis Ababa.",no
+cypherbench:894,B,valid,natural,no,,,no
+cypherbench:894,C,valid,natural,no,,"HRM is a standard, widely recognized abbreviation for Human Resource Management.",no
+cypherbench:895,C,valid,natural,no,CSCO,CSCO is the stock ticker symbol for Cisco Systems.,no
+cypherbench:895,D,valid,natural,no,,,no
+cypherbench:898,B,valid,natural,no,,,no
+cypherbench:898,C,valid,natural,no,General Motors,"""Government Motors"" is a widely recognized satirical nickname/alias for General Motors following the 2009 government bailout.",no
+cypherbench:9,A,valid,natural,no,,,no
+cypherbench:9,D,valid,natural,no,,,no
+cypherbench:90,B,valid,natural,no,,,no
+cypherbench:90,D,valid,natural,no,,,no
+cypherbench:900,B,valid,natural,no,,,yes
+cypherbench:900,C,valid,natural,no,General Motors,"""Government Motors"" is a well-known pejorative nickname for General Motors following the 2009 government bailout.",yes
+cypherbench:904,C,valid,awkward,no,Mitsubishi,"'Three Diamonds' is the literal translation and brand symbol of Mitsubishi, though rarely used as the formal company name in English.",no
+cypherbench:904,D,valid,natural,no,,,no
+cypherbench:907,B,valid,natural,no,,,no
+cypherbench:907,D,valid,natural,no,,,no
+cypherbench:91,B,valid,natural,no,,,no
+cypherbench:91,C,valid,natural,no,,"TJC is the standard, well-known abbreviation for Tyler Junior College.",no
+cypherbench:910,A,valid,natural,no,,,no
+cypherbench:911,B,valid,natural,no,,,no
+cypherbench:911,C,valid,natural,no,Marvel Entertainment,"Marvel is a standard, unambiguous abbreviation/shortened form for Marvel Entertainment.",no
+cypherbench:912,A,valid,natural,no,,,no
+cypherbench:912,B,valid,natural,no,,,no
+cypherbench:914,D,valid,natural,no,,,no
+cypherbench:914,E,valid,natural,no,,,no
+cypherbench:919,E,valid,natural,no,,,no
+cypherbench:92,A,valid,natural,no,,,no
+cypherbench:92,D,valid,natural,no,,,no
+cypherbench:920,B,valid,natural,no,,,no
+cypherbench:920,C,valid,natural,no,,,no
+cypherbench:921,A,valid,natural,no,,,no
+cypherbench:921,B,valid,natural,no,,,no
+cypherbench:924,A,valid,natural,no,,,no
+cypherbench:924,C,valid,natural,no,Seznam.cz,Seznam is a common and natural alias/short form for Seznam.cz.,no
+cypherbench:925,C,valid,natural,no,Nancy McKinstry,Referring to a notable figure by last name only is natural.,no
+cypherbench:925,E,valid,natural,no,,,no
+cypherbench:928,A,valid,natural,no,,,no
+cypherbench:928,E,valid,natural,no,,,no
+cypherbench:934,A,valid,natural,no,,,no
+cypherbench:934,C,valid,natural,no,,,no
+cypherbench:935,C,valid,natural,no,Nancy McKinstry,"Shortened to surname only, which is common and natural in context.",no
+cypherbench:935,E,valid,natural,no,,,no
+cypherbench:938,D,valid,natural,no,,,no
+cypherbench:939,C,valid,natural,no,Tennman Records,Shortening 'Tennman Records' to 'Tennman' in this context is completely natural and refers clearly to the company.,no
+cypherbench:939,D,valid,natural,no,,,no
+cypherbench:94,D,valid,natural,no,,,no
+cypherbench:940,B,valid,natural,no,,,no
+cypherbench:940,E,valid,natural,no,,,no
+cypherbench:942,B,valid,natural,no,,,no
+cypherbench:942,E,valid,natural,no,,,no
+cypherbench:947,C,valid,natural,no,KLM,KL is the standard IATA code for KLM.,no
+cypherbench:947,D,valid,natural,no,,,no
+cypherbench:949,D,valid,natural,no,,,no
+cypherbench:949,E,valid,natural,no,,,no
+cypherbench:953,A,valid,natural,no,,,no
+cypherbench:953,E,valid,natural,no,,,no
+cypherbench:954,A,valid,natural,no,,,no
+cypherbench:954,C,valid,natural,no,,,no
+cypherbench:955,A,valid,natural,no,,,no
+cypherbench:955,E,valid,natural,no,,,no
+cypherbench:956,B,valid,natural,no,,,no
+cypherbench:956,E,valid,natural,no,,,no
+cypherbench:958,A,valid,natural,no,,,no
+cypherbench:958,E,valid,natural,no,,,no
+cypherbench:959,E,valid,natural,no,,,no
+cypherbench:96,B,valid,natural,no,,,no
+cypherbench:96,D,valid,natural,no,,,no
+cypherbench:972,B,valid,natural,no,,,no
+cypherbench:972,D,valid,natural,no,,,no
+cypherbench:975,B,valid,natural,no,,,no
+cypherbench:975,E,valid,natural,no,,,no
+cypherbench:976,D,valid,natural,no,,,no
+cypherbench:978,B,valid,natural,no,,,no
+cypherbench:978,D,valid,natural,no,,,no
+cypherbench:98,B,valid,natural,no,,,no
+cypherbench:98,C,valid,natural,no,LAL,"LAL is a standard abbreviation for the Los Angeles Lakers, especially in sports contexts.",no
+cypherbench:980,B,valid,natural,no,,,no
+cypherbench:980,D,valid,natural,no,,,no
+cypherbench:981,C,valid,natural,no,Lexicon,,no
+cypherbench:984,A,valid,natural,no,,,no
+cypherbench:984,C,valid,natural,no,,Brøderbund is the original official spelling of the company name.,no
+cypherbench:987,A,valid,natural,no,,,no
+cypherbench:987,B,valid,natural,no,,,no
+cypherbench:99,A,valid,natural,no,,,no
+cypherbench:99,D,valid,natural,no,,,no
+cypherbench:993,A,valid,natural,no,,,no
+cypherbench:993,B,valid,natural,no,,,no
+cypherbench:994,A,valid,natural,no,,,no
+cypherbench:994,E,valid,natural,no,,,no
+cypherbench:996,B,valid,natural,no,,,no
+cypherbench:996,E,valid,natural,no,,,no
+mindthequery:0,D,valid,natural,no,,,no
+mindthequery:0,E,valid,natural,no,,,no
+mindthequery:1000,A,valid,natural,no,,,no
+mindthequery:1000,D,valid,natural,no,,,no
+mindthequery:1001,B,valid,natural,no,,,no
+mindthequery:1001,C,valid,natural,no,,,no
+mindthequery:1006,A,valid,natural,no,,,no
+mindthequery:1006,B,valid,natural,no,,,no
+mindthequery:1007,C,valid,natural,no,Canada 2015,,no
+mindthequery:1007,D,valid,natural,no,,,no
+mindthequery:1010,C,valid,natural,no,,,no
+mindthequery:1010,E,valid,natural,no,,,no
+mindthequery:1014,A,valid,natural,no,,,no
+mindthequery:1014,D,valid,natural,no,,,no
+mindthequery:1016,A,valid,natural,no,,,no
+mindthequery:1016,D,valid,natural,no,,,no
+mindthequery:1017,D,valid,natural,no,,,no
+mindthequery:1021,A,valid,natural,no,,,no
+mindthequery:1021,B,valid,natural,no,,,no
+mindthequery:1022,B,valid,natural,no,,,no
+mindthequery:1022,E,valid,natural,no,,,no
+mindthequery:1024,A,valid,natural,no,,,no
+mindthequery:1024,D,valid,natural,no,,,no
+mindthequery:1026,C,valid,natural,no,,'Blågult' is a well-known nickname for Swedish national sports teams.,no
+mindthequery:1026,D,valid,natural,no,,,no
+mindthequery:1028,B,valid,natural,no,,,no
+mindthequery:1028,E,valid,unnatural,no,,,no
+mindthequery:1029,A,valid,natural,no,,,no
+mindthequery:1029,B,valid,natural,no,,,no
+mindthequery:103,C,valid,natural,no,,,no
+mindthequery:103,E,valid,natural,no,,,no
+mindthequery:1037,D,valid,natural,no,,,no
+mindthequery:1038,B,valid,natural,no,,,no
+mindthequery:1038,E,valid,natural,no,,,no
+mindthequery:1041,B,valid,natural,no,,,no
+mindthequery:1041,E,unsure,natural,no,,missed year,no
+mindthequery:1048,B,valid,natural,no,,,no
+mindthequery:1048,C,valid,natural,no,,'Black Queens' is the official nickname for the Ghana women's national football team.,no
+mindthequery:1049,A,valid,natural,no,,,no
+mindthequery:1049,B,valid,natural,no,,,no
+mindthequery:1053,B,valid,natural,no,,,no
+mindthequery:1053,C,valid,natural,no,,,no
+mindthequery:1054,A,valid,natural,no,,,no
+mindthequery:1054,E,unsure,natural,no,,missed year,no
+mindthequery:1055,C,valid,natural,no,,Helvetia is a well-known historical Latin name/alias for Switzerland.,no
+mindthequery:1055,E,valid,natural,no,,,no
+mindthequery:1057,D,valid,natural,no,,,no
+mindthequery:1057,E,valid,natural,no,,,no
+mindthequery:1058,D,valid,natural,no,,,no
+mindthequery:1058,E,valid,natural,no,,,no
+mindthequery:1059,B,valid,natural,no,,,no
+mindthequery:1059,E,valid,natural,no,,,no
+mindthequery:1060,D,valid,natural,no,,,no
+mindthequery:1061,B,valid,natural,no,,,no
+mindthequery:1061,E,valid,natural,no,,,no
+mindthequery:1065,D,valid,natural,no,,,no
+mindthequery:1065,E,valid,natural,no,,,no
+mindthequery:1066,C,valid,natural,no,CMR,CMR is the standard ISO/FIFA 3-letter country code abbreviation for Cameroon.,no
+mindthequery:1066,E,valid,natural,no,,,no
+mindthequery:1070,B,valid,natural,no,,,no
+mindthequery:1070,E,valid,natural,no,Los Cafeteros,It should be Los Cafeteros,no
+mindthequery:1074,D,valid,natural,no,,,no
+mindthequery:1074,E,valid,natural,no,,,no
+mindthequery:108,C,valid,natural,no,Sick,Typo transposition of letters 'ck' to 'kc' in 'Sick'.,no
+mindthequery:108,E,valid,natural,no,,,no
+mindthequery:1080,B,valid,natural,no,,,no
+mindthequery:1080,E,valid,natural,no,,,no
+mindthequery:1087,A,valid,natural,no,,,no
+mindthequery:1087,E,valid,natural,no,,,no
+mindthequery:1088,A,valid,natural,no,,,no
+mindthequery:1088,D,valid,natural,no,,,no
+mindthequery:1091,B,valid,natural,no,,,no
+mindthequery:1091,D,valid,natural,no,,,no
+mindthequery:1097,A,valid,natural,no,,,no
+mindthequery:1097,E,valid,natural,no,,,no
+mindthequery:1100,A,valid,natural,no,,,no
+mindthequery:1100,D,valid,natural,no,,,no
+mindthequery:1103,A,valid,natural,no,,,no
+mindthequery:1103,C,valid,natural,no,Black Queens,'Black Queens' is the well-known nickname/alias for the Ghana women's national football team.,no
+mindthequery:1107,A,valid,natural,no,,,no
+mindthequery:1107,D,valid,natural,no,,,no
+mindthequery:1110,A,valid,natural,no,,,no
+mindthequery:1110,C,valid,natural,no,,'La Albiceleste' is a well-known official nickname/alias for the Argentina national football team.,no
+mindthequery:1111,A,valid,natural,no,,,no
+mindthequery:1111,D,valid,natural,no,,,no
+mindthequery:1112,D,valid,natural,no,,,no
+mindthequery:1112,E,valid,natural,no,,,no
+mindthequery:1114,A,valid,natural,no,,,no
+mindthequery:1114,B,valid,natural,no,,,no
+mindthequery:1116,A,valid,natural,no,,,no
+mindthequery:1116,B,valid,natural,no,,,no
+mindthequery:1117,D,valid,natural,no,,,no
+mindthequery:1120,A,valid,natural,no,,,no
+mindthequery:1120,D,valid,natural,no,,,no
+mindthequery:1121,E,unsure,natural,no,,,no
+mindthequery:1122,B,valid,natural,no,,,no
+mindthequery:1122,D,valid,natural,no,,,no
+mindthequery:1123,C,valid,natural,no,China PR 1991,Lowercasing is natural and preserves entity reference.,no
+mindthequery:1124,D,valid,natural,no,,,no
+mindthequery:1124,E,valid,natural,no,,,no
+mindthequery:1127,A,valid,natural,no,,,no
+mindthequery:1127,C,valid,natural,no,,'the Lionesses' is the official and widely recognized nickname/alias for the England women's national football team.,no
+mindthequery:1129,C,invalid,unnatural,no,China PR 1991,Removing 'China' and leaving just 'PR 1991' makes the tournament name ambiguous and unnatural to refer to the 1991 FIFA Women's World Cup in China PR.,no
+mindthequery:1129,E,unsure,natural,no,,,no
+mindthequery:1130,C,invalid,unnatural,no,China 1991,"Dropping 'China' leaves 'PR 1991', which is ambiguous and not a standard or recognizable reference to the China PR 1991 tournament.",no
+mindthequery:1130,E,unsure,natural,no,,,no
+mindthequery:1131,B,valid,natural,no,,,no
+mindthequery:1131,E,valid,natural,no,,,no
+mindthequery:1132,B,valid,natural,no,,,no
+mindthequery:1132,D,valid,natural,no,,,no
+mindthequery:1134,C,valid,natural,no,,'Land of Smiles' is a well-known nickname for Thailand.,no
+mindthequery:1134,D,valid,natural,no,,,no
+mindthequery:1135,A,valid,natural,no,,,no
+mindthequery:1135,C,valid,natural,no,WWC 2019,WWC 2019 is a standard and common abbreviation for the 2019 FIFA Women's World Cup held in France.,no
+mindthequery:1136,A,valid,natural,no,,,no
+mindthequery:1136,C,valid,natural,no,WWC 2019,WWC 2019 is a standard and common abbreviation for the 2019 FIFA Women's World Cup held in France.,no
+mindthequery:1137,A,valid,natural,no,,,no
+mindthequery:1137,E,valid,natural,no,,,no
+mindthequery:1138,D,valid,natural,no,,,no
+mindthequery:1138,E,valid,natural,no,,,no
+mindthequery:1139,B,valid,natural,no,,,no
+mindthequery:1139,E,valid,natural,no,,,no
+mindthequery:1140,A,valid,natural,no,,,no
+mindthequery:1140,C,valid,natural,no,,,no
+mindthequery:1142,B,valid,natural,no,,,no
+mindthequery:1142,D,valid,natural,no,,,no
+mindthequery:1144,B,valid,natural,no,,,no
+mindthequery:1144,E,valid,natural,no,Los Cafeteros,,no
+mindthequery:1147,B,valid,natural,no,,,no
+mindthequery:1148,B,valid,natural,no,,,no
+mindthequery:1148,C,valid,natural,no,Thailand,'Land of Smiles' is a well-known sobriquet/alias for Thailand.,no
+mindthequery:1150,B,valid,natural,no,,,yes
+mindthequery:1150,D,valid,natural,no,,,yes
+mindthequery:1153,B,valid,natural,no,,,no
+mindthequery:1153,E,valid,natural,no,,,no
+mindthequery:1156,A,valid,natural,no,,,no
+mindthequery:1156,C,valid,natural,no,France,"""l'Hexagone"" is a common nickname/metonym for France.",no
+mindthequery:116,C,valid,natural,no,Restaurant,'resto' is a common colloquial abbreviation/alias for restaurant.,no
+mindthequery:116,D,valid,natural,no,,,no
+mindthequery:1160,E,valid,natural,no,,,no
+mindthequery:1161,E,valid,natural,no,,,no
+mindthequery:1168,A,valid,natural,no,,,no
+mindthequery:1168,C,valid,natural,no,Las Ticas,Las Ticas is a standard nickname for the Costa Rica women's national football team.,no
+mindthequery:117,B,valid,natural,no,,,no
+mindthequery:117,E,valid,natural,no,,,no
+mindthequery:1171,A,valid,natural,no,,,no
+mindthequery:1171,C,valid,natural,no,Germany,GER is the standard ISO and FIFA/IOC country abbreviation for Germany and is completely clear in a tournament context.,no
+mindthequery:1172,A,valid,natural,no,,,no
+mindthequery:1172,C,valid,natural,no,,,no
+mindthequery:1174,A,valid,natural,no,,,no
+mindthequery:1174,E,valid,natural,no,,,no
+mindthequery:1175,D,valid,natural,no,,,no
+mindthequery:1175,E,valid,natural,no,,,no
+mindthequery:1183,B,valid,natural,no,,,no
+mindthequery:1183,D,valid,natural,no,,,no
+mindthequery:1187,C,valid,natural,no,,WWC 2011 is a widely recognized standard abbreviation for the 2011 FIFA Women's World Cup (Germany 2011).,no
+mindthequery:1187,E,valid,natural,no,,,no
+mindthequery:1188,D,valid,natural,no,,,no
+mindthequery:1188,E,valid,natural,no,,,no
+mindthequery:1189,B,valid,natural,no,,,no
+mindthequery:1189,E,valid,natural,no,,,no
+mindthequery:119,B,valid,natural,no,,,no
+mindthequery:119,C,valid,natural,no,Restaurant,'resto' is a common colloquial abbreviation for restaurant.,no
+mindthequery:1190,A,valid,natural,no,,,no
+mindthequery:1190,C,valid,natural,no,Argentina,'La Albiceleste' is a widely recognized nickname/alias for the Argentina national football team.,no
+mindthequery:1194,A,valid,natural,no,,,yes
+mindthequery:1194,C,valid,natural,no,Canada 2015,Shortening the tournament name to 'Canada' is clear within the question context.,yes
+mindthequery:1195,A,valid,natural,no,,,no
+mindthequery:1195,D,valid,natural,no,,,no
+mindthequery:1196,E,valid,natural,no,,,no
+mindthequery:1199,A,valid,natural,no,,,no
+mindthequery:1199,E,valid,natural,no,,,no
+mindthequery:12,C,valid,natural,no,,,no
+mindthequery:12,E,valid,natural,no,,,no
+mindthequery:120,B,valid,natural,no,,,no
+mindthequery:120,D,valid,natural,no,,,no
+mindthequery:1200,B,valid,natural,no,,,no
+mindthequery:1200,D,valid,natural,no,,,no
+mindthequery:1201,B,valid,natural,no,,,no
+mindthequery:1201,D,valid,natural,no,,,no
+mindthequery:1202,D,valid,natural,no,,,no
+mindthequery:1202,E,valid,natural,no,,,no
+mindthequery:1203,C,valid,natural,no,Japan,JPN is the standard FIFA/IOC three-letter country abbreviation for Japan.,no
+mindthequery:1203,E,valid,natural,no,,,no
+mindthequery:1207,A,valid,natural,no,,,no
+mindthequery:1207,B,valid,natural,no,,,no
+mindthequery:1209,B,valid,natural,no,,,no
+mindthequery:1209,D,valid,natural,no,,,no
+mindthequery:121,C,valid,natural,no,Restaurant,'resto' is a widely recognized informal alias/abbreviation for restaurant.,no
+mindthequery:121,E,valid,natural,no,,,no
+mindthequery:1210,D,valid,natural,no,,,no
+mindthequery:1210,E,valid,natural,no,,,no
+mindthequery:1211,C,valid,natural,no,,,no
+mindthequery:1211,D,valid,natural,no,,,no
+mindthequery:1212,B,valid,natural,no,,,no
+mindthequery:1212,D,valid,natural,no,,,no
+mindthequery:1213,A,valid,natural,no,,,no
+mindthequery:1213,D,valid,natural,no,,,no
+mindthequery:1214,A,valid,natural,no,,,no
+mindthequery:1214,C,valid,natural,no,France 2019,,no
+mindthequery:1216,C,valid,natural,no,North Korea,'North Korea' is the widely accepted common alias for Korea DPR.,no
+mindthequery:1216,D,valid,natural,no,,,no
+mindthequery:1218,B,valid,natural,no,,,no
+mindthequery:1218,E,valid,natural,no,,,no
+mindthequery:1219,A,valid,natural,no,,,no
+mindthequery:1219,C,valid,natural,no,,,no
+mindthequery:122,C,valid,natural,no,,,no
+mindthequery:122,E,valid,natural,no,,,no
+mindthequery:1224,B,valid,natural,no,,,no
+mindthequery:1224,D,valid,natural,no,,,no
+mindthequery:1225,B,valid,natural,no,,,no
+mindthequery:1225,E,valid,natural,no,,,no
+mindthequery:1226,B,valid,natural,no,,,no
+mindthequery:1226,C,valid,natural,no,,,no
+mindthequery:123,A,valid,natural,no,,,no
+mindthequery:123,D,valid,natural,no,,,no
+mindthequery:127,B,valid,natural,no,,,no
+mindthequery:129,A,valid,natural,no,,,no
+mindthequery:129,D,valid,natural,no,,,no
+mindthequery:13,B,valid,natural,no,,,no
+mindthequery:13,D,valid,natural,no,,,no
+mindthequery:131,C,valid,natural,no,,,no
+mindthequery:131,E,valid,natural,no,,,no
+mindthequery:132,A,valid,natural,no,,,no
+mindthequery:133,D,valid,natural,no,,,no
+mindthequery:133,E,valid,natural,no,,,no
+mindthequery:137,A,valid,natural,no,,,no
+mindthequery:137,B,valid,natural,no,,,no
+mindthequery:140,A,valid,natural,no,,,no
+mindthequery:140,C,valid,natural,no,Sick,Simple typo adding an extra 'i' to 'Sick'.,no
+mindthequery:142,C,valid,natural,no,Hospital,Standard abbreviation 'Hosp.' for Hospital used appropriately in context.,no
+mindthequery:142,E,valid,natural,no,,,no
+mindthequery:148,A,valid,natural,no,,,no
+mindthequery:148,E,valid,natural,no,,,no
+mindthequery:151,B,valid,natural,no,,,no
+mindthequery:151,D,valid,natural,no,,,no
+mindthequery:156,E,valid,natural,no,,,no
+mindthequery:158,A,valid,natural,no,,,no
+mindthequery:158,E,valid,natural,no,,,no
+mindthequery:160,B,valid,natural,no,,,no
+mindthequery:160,E,valid,natural,no,,,no
+mindthequery:164,B,valid,natural,no,,,no
+mindthequery:164,C,valid,natural,no,resto,'resto' is a widely recognized informal abbreviation for restaurant.,no
+mindthequery:165,B,valid,natural,no,,,no
+mindthequery:165,D,valid,natural,no,,,no
+mindthequery:166,A,valid,natural,no,,,no
+mindthequery:166,B,valid,natural,no,,,no
+mindthequery:169,A,valid,natural,no,,,no
+mindthequery:169,B,valid,natural,no,,,no
+mindthequery:172,A,valid,natural,no,,,no
+mindthequery:173,B,valid,natural,no,,,no
+mindthequery:173,E,valid,natural,no,,,no
+mindthequery:176,A,valid,natural,no,,,no
+mindthequery:176,E,valid,natural,no,,,no
+mindthequery:177,B,valid,natural,no,,,no
+mindthequery:177,D,valid,natural,no,,,no
+mindthequery:178,B,valid,natural,no,,,no
+mindthequery:183,A,valid,natural,no,,,no
+mindthequery:183,C,valid,natural,no,Belgium,BE is the standard ISO 3166-1 alpha-2 country code for Belgium.,no
+mindthequery:185,A,valid,natural,no,,,no
+mindthequery:185,B,valid,natural,no,,,no
+mindthequery:189,B,valid,natural,no,,,no
+mindthequery:189,E,valid,natural,no,,,no
+mindthequery:19,A,valid,natural,no,,,no
+mindthequery:19,E,valid,natural,no,,,no
+mindthequery:192,B,valid,natural,no,,,no
+mindthequery:192,E,valid,natural,no,,,no
+mindthequery:193,E,invalid,natural,no,,,no
+mindthequery:195,B,valid,natural,no,,,no
+mindthequery:195,D,valid,natural,no,,,no
+mindthequery:199,A,valid,natural,no,,,no
+mindthequery:199,E,valid,natural,no,,,no
+mindthequery:206,C,valid,natural,no,'t Stad,'t Stad is a well-known local nickname/alias for Antwerp.,no
+mindthequery:206,E,valid,natural,no,,,no
+mindthequery:207,A,valid,natural,no,,,no
+mindthequery:207,B,valid,natural,no,,,no
+mindthequery:208,C,valid,natural,no,Belgium,BE is the standard ISO two-letter country code for Belgium.,no
+mindthequery:208,E,valid,natural,no,,,no
+mindthequery:210,D,valid,natural,no,,,no
+mindthequery:210,E,valid,natural,no,,,no
+mindthequery:218,A,valid,natural,no,,,no
+mindthequery:218,E,valid,natural,no,,,no
+mindthequery:22,A,valid,natural,no,,,no
+mindthequery:220,C,valid,natural,no,Belgium,BE is the standard ISO 3166-1 alpha-2 code for Belgium.,no
+mindthequery:220,E,valid,natural,no,,,no
+mindthequery:226,B,valid,natural,no,,,no
+mindthequery:226,D,valid,natural,no,,,no
+mindthequery:227,C,valid,natural,no,Belgium,'BE' is the standard two-letter country code for Belgium.,no
+mindthequery:227,E,valid,natural,no,,,no
+mindthequery:232,A,valid,natural,no,,,no
+mindthequery:232,E,valid,natural,no,,,no
+mindthequery:237,D,invalid,natural,no,,“t Stad” does not exactly mean to 'Antwerp' when its in the question,no
+mindthequery:237,E,valid,natural,no,,,no
+mindthequery:238,B,valid,natural,no,,,no
+mindthequery:238,C,valid,natural,no,,BE is the standard ISO 3166-1 alpha-2 country code for Belgium.,no
+mindthequery:24,B,valid,natural,no,,,no
+mindthequery:24,D,valid,natural,no,,,no
+mindthequery:240,A,valid,natural,no,,,no
+mindthequery:240,B,valid,natural,no,,,no
+mindthequery:241,B,valid,natural,no,,,no
+mindthequery:241,C,valid,natural,no,,BE is the standard ISO 3166-1 alpha-2 country code for Belgium.,no
+mindthequery:246,B,valid,natural,no,,,no
+mindthequery:246,C,valid,natural,no,Belgium,BE is the standard ISO two-letter country code for Belgium.,no
+mindthequery:249,C,valid,natural,no,Grocery,Shortening 'Grocery shop' to 'Grocery' is completely natural and unambiguous in this context.,no
+mindthequery:25,A,valid,natural,no,,,no
+mindthequery:25,C,valid,natural,no,Under the weather,,no
+mindthequery:250,A,valid,natural,no,,,no
+mindthequery:250,D,valid,natural,no,,,no
+mindthequery:254,B,valid,natural,no,,,no
+mindthequery:254,D,valid,natural,no,,,no
+mindthequery:257,B,valid,natural,no,,,no
+mindthequery:258,A,valid,natural,no,,,no
+mindthequery:258,D,invalid,natural,no,,“t Stad” does not exactly mean to 'Antwerp' when its in the question,no
+mindthequery:263,D,valid,natural,no,,,no
+mindthequery:263,E,valid,natural,no,,,no
+mindthequery:27,A,valid,natural,no,,,no
+mindthequery:27,E,valid,natural,no,,,no
+mindthequery:270,A,valid,natural,no,,,no
+mindthequery:270,D,invalid,natural,no,,“t Stad” does not exactly mean to 'Antwerp' when its in the question,no
+mindthequery:280,A,valid,natural,no,,,no
+mindthequery:280,B,valid,natural,no,,,no
+mindthequery:281,A,valid,natural,no,,,no
+mindthequery:281,D,valid,natural,no,,,no
+mindthequery:282,C,valid,natural,no,,"""Grocery"" is a standard and natural truncation of ""Grocery shop"" or ""Grocery store"".",no
+mindthequery:282,D,valid,natural,no,,,no
+mindthequery:287,A,valid,natural,no,,,no
+mindthequery:288,A,valid,natural,no,,,no
+mindthequery:288,C,valid,natural,no,restaurant,'resto' is a common colloquial abbreviation/alias for restaurant.,no
+mindthequery:289,C,valid,natural,no,,,no
+mindthequery:289,D,valid,natural,no,,,no
+mindthequery:292,C,valid,natural,no,Belgium,'BE' is the standard two-letter ISO country code for Belgium.,no
+mindthequery:292,E,valid,natural,no,,,no
+mindthequery:299,D,valid,natural,no,,,no
+mindthequery:30,A,valid,natural,no,,,no
+mindthequery:30,D,valid,natural,no,,,no
+mindthequery:301,D,valid,natural,no,,,no
+mindthequery:301,E,valid,natural,no,,,no
+mindthequery:302,D,valid,natural,no,,,no
+mindthequery:302,E,valid,natural,no,,,no
+mindthequery:307,B,valid,natural,no,,,no
+mindthequery:308,C,valid,natural,no,Sick,Typo of the health status 'Sick'.,no
+mindthequery:309,C,valid,natural,no,Belgium,BE is the standard ISO 3166-1 alpha-2 country code for Belgium.,no
+mindthequery:309,D,valid,natural,no,,,no
+mindthequery:310,A,valid,natural,no,,,no
+mindthequery:310,D,valid,natural,no,,,no
+mindthequery:315,A,valid,natural,no,,,no
+mindthequery:315,E,valid,natural,no,,,no
+mindthequery:317,B,valid,natural,no,,,no
+mindthequery:317,D,valid,natural,no,,,no
+mindthequery:320,A,valid,natural,no,,,no
+mindthequery:324,A,valid,natural,no,,,no
+mindthequery:324,D,valid,natural,no,,,no
+mindthequery:326,D,valid,natural,no,,,no
+mindthequery:329,C,valid,natural,no,'t Stad,'t Stad is a well-known Dutch/Flemish nickname for Antwerp.,no
+mindthequery:329,D,invalid,natural,no,,“t Stad” does not exactly mean to 'Antwerp' when its in the question,no
+mindthequery:33,D,valid,natural,no,,,no
+mindthequery:332,B,valid,natural,no,,,no
+mindthequery:332,D,valid,natural,no,,,no
+mindthequery:334,A,valid,natural,no,,,no
+mindthequery:334,B,valid,natural,no,,,no
+mindthequery:336,B,valid,natural,no,,,no
+mindthequery:336,E,valid,natural,no,,,no
+mindthequery:341,D,valid,natural,no,,,no
+mindthequery:342,C,valid,natural,no,,,no
+mindthequery:342,E,valid,natural,no,,,no
+mindthequery:345,B,valid,natural,no,,,no
+mindthequery:345,E,valid,natural,no,,,no
+mindthequery:346,C,valid,natural,no,Hospital,,no
+mindthequery:346,D,valid,natural,no,,,no
+mindthequery:347,D,valid,natural,no,,,no
+mindthequery:347,E,valid,natural,no,,,no
+mindthequery:351,A,valid,natural,no,,,no
+mindthequery:351,E,invalid,unnatural,no,,,no
+mindthequery:353,A,valid,natural,no,,,no
+mindthequery:353,D,valid,natural,no,,,no
+mindthequery:355,C,valid,natural,no,OH,OH is standard USPS abbreviation for Ohio.,no
+mindthequery:355,D,valid,natural,no,,,no
+mindthequery:358,B,valid,natural,no,,,no
+mindthequery:358,D,valid,natural,no,,,no
+mindthequery:359,C,valid,natural,no,,,no
+mindthequery:359,D,valid,natural,no,,,no
+mindthequery:362,C,valid,natural,no,New York,'NY' is the standard two-letter postal abbreviation for the state of New York.,no
+mindthequery:362,D,valid,natural,no,,,no
+mindthequery:364,C,valid,natural,no,female,,no
+mindthequery:364,D,valid,natural,no,,,no
+mindthequery:366,C,valid,natural,no,IP address '117.187.248.143',,no
+mindthequery:366,E,valid,natural,no,,,no
+mindthequery:367,A,valid,natural,no,,,no
+mindthequery:367,B,valid,natural,no,,,no
+mindthequery:369,B,valid,natural,no,,,no
+mindthequery:369,C,valid,natural,no,IL,Standard USPS state abbreviation.,no
+mindthequery:37,D,valid,natural,no,,,no
+mindthequery:372,B,valid,natural,no,,,no
+mindthequery:372,D,valid,natural,no,,,no
+mindthequery:373,B,valid,natural,no,,,no
+mindthequery:373,E,valid,natural,no,,,no
+mindthequery:38,B,valid,natural,no,,,no
+mindthequery:38,E,valid,natural,no,,,no
+mindthequery:380,C,valid,natural,no,Drama,,no
+mindthequery:381,A,valid,natural,no,,,no
+mindthequery:381,E,valid,natural,no,,,no
+mindthequery:384,A,valid,natural,no,,,no
+mindthequery:384,B,valid,natural,no,,,no
+mindthequery:389,C,valid,natural,no,,Nick is a standard abbreviation/nickname for Nickolas.,no
+mindthequery:389,E,valid,natural,no,,,no
+mindthequery:390,C,valid,natural,no,KY,KY is the standard postal abbreviation for Kentucky.,no
+mindthequery:390,E,valid,natural,no,,,no
+mindthequery:391,A,valid,natural,no,,,no
+mindthequery:391,C,valid,natural,no,,,no
+mindthequery:392,C,valid,natural,no,,Abbreviating female to 'F' in database query context is standard and completely clear.,no
+mindthequery:392,D,valid,natural,no,,,no
+mindthequery:397,A,valid,natural,no,,,no
+mindthequery:397,D,valid,natural,no,,,no
+mindthequery:4,B,valid,natural,no,,,no
+mindthequery:4,C,valid,natural,no,,,no
+mindthequery:400,A,valid,natural,no,,,no
+mindthequery:401,D,valid,natural,no,,,no
+mindthequery:401,E,valid,natural,no,,,no
+mindthequery:407,C,valid,natural,no,Documentary,'doc' is a widely understood abbreviation/slang for documentary.,no
+mindthequery:407,E,valid,natural,no,,,no
+mindthequery:41,C,valid,natural,no,,shopping centre is a standard synonym/alias for mall.,no
+mindthequery:41,E,valid,natural,no,,,no
+mindthequery:411,A,valid,natural,no,,,no
+mindthequery:411,C,valid,natural,no,Connecticut,CT is the standard postal abbreviation for Connecticut.,no
+mindthequery:412,B,valid,natural,no,,,no
+mindthequery:412,D,valid,natural,no,,,no
+mindthequery:415,A,valid,natural,no,,,no
+mindthequery:415,D,valid,natural,no,,,no
+mindthequery:42,A,valid,natural,no,,,no
+mindthequery:42,B,valid,natural,no,,,no
+mindthequery:420,B,valid,natural,no,,,no
+mindthequery:420,D,valid,natural,no,,,no
+mindthequery:427,B,valid,natural,no,,,no
+mindthequery:427,E,valid,natural,no,,,no
+mindthequery:428,A,valid,natural,no,,,no
+mindthequery:429,A,valid,natural,no,,,no
+mindthequery:429,C,valid,natural,no,,,no
+mindthequery:431,A,valid,natural,no,,,no
+mindthequery:431,B,valid,natural,no,,,no
+mindthequery:433,A,valid,natural,no,,,no
+mindthequery:433,E,valid,natural,no,,,no
+mindthequery:441,A,valid,natural,no,,,no
+mindthequery:441,C,valid,natural,no,United States,,no
+mindthequery:444,A,valid,natural,no,,,no
+mindthequery:444,C,valid,natural,no,NY,NY is the standard two-letter abbreviation for the state of New York.,no
+mindthequery:445,B,valid,natural,no,,,no
+mindthequery:445,D,valid,natural,no,,,no
+mindthequery:446,D,valid,natural,no,,,no
+mindthequery:448,A,valid,natural,no,,,no
+mindthequery:448,B,valid,natural,no,,,no
+mindthequery:45,B,valid,natural,no,,,no
+mindthequery:45,C,valid,natural,no,,,no
+mindthequery:451,B,valid,natural,no,,,no
+mindthequery:451,D,valid,natural,no,,,no
+mindthequery:452,C,valid,natural,no,,,no
+mindthequery:452,E,valid,natural,no,,,no
+mindthequery:454,A,valid,natural,no,,,no
+mindthequery:454,E,valid,natural,no,,,no
+mindthequery:455,B,valid,natural,no,,,no
+mindthequery:455,D,valid,natural,no,,,no
+mindthequery:457,A,valid,natural,no,,,no
+mindthequery:457,C,valid,natural,no,,,no
+mindthequery:458,A,valid,natural,no,,,no
+mindthequery:463,B,valid,natural,no,,,no
+mindthequery:463,E,valid,natural,no,,,no
+mindthequery:464,A,valid,natural,no,,,no
+mindthequery:467,D,valid,natural,no,,,no
+mindthequery:467,E,valid,natural,no,,,no
+mindthequery:469,D,valid,natural,no,,,no
+mindthequery:469,E,valid,natural,no,,,no
+mindthequery:470,A,valid,natural,no,,,no
+mindthequery:470,E,valid,natural,no,,,no
+mindthequery:471,E,valid,natural,no,,,no
+mindthequery:477,A,valid,natural,no,,,no
+mindthequery:477,E,valid,natural,no,,,no
+mindthequery:479,A,valid,natural,no,,,no
+mindthequery:479,B,valid,natural,no,,,no
+mindthequery:48,A,valid,natural,no,,,no
+mindthequery:48,E,valid,natural,no,,,no
+mindthequery:481,B,valid,natural,no,,,no
+mindthequery:481,E,valid,natural,no,,,no
+mindthequery:484,A,valid,natural,no,,,no
+mindthequery:484,E,valid,natural,no,,,no
+mindthequery:485,B,valid,natural,no,,,no
+mindthequery:485,C,invalid,natural,no,Dear John,Shortening the movie title 'Dear John' to just 'Dear' changes the title completely or creates ambiguity with other works.,no
+mindthequery:486,B,valid,natural,no,,,no
+mindthequery:490,A,valid,natural,no,,,no
+mindthequery:490,E,valid,natural,no,,,no
+mindthequery:491,D,valid,natural,no,,,no
+mindthequery:491,E,valid,natural,no,,,no
+mindthequery:492,B,valid,natural,no,,,no
+mindthequery:492,E,valid,natural,no,,,no
+mindthequery:494,C,valid,natural,no,,,no
+mindthequery:494,E,valid,natural,no,,,no
+mindthequery:496,C,valid,natural,no,,,no
+mindthequery:496,D,valid,natural,no,,,no
+mindthequery:498,B,valid,natural,no,,,no
+mindthequery:498,D,valid,natural,no,,,no
+mindthequery:50,C,valid,natural,no,Park,Typo of 'Park' to 'Parm'.,no
+mindthequery:502,A,valid,natural,no,,,no
+mindthequery:502,C,valid,natural,no,,'M' is a standard abbreviation for 'Male'.,no
+mindthequery:504,A,valid,natural,no,,,no
+mindthequery:504,D,valid,natural,no,,,no
+mindthequery:506,B,valid,natural,no,,,no
+mindthequery:507,A,valid,natural,no,,,no
+mindthequery:507,D,valid,natural,no,,,no
+mindthequery:508,B,valid,natural,no,,,no
+mindthequery:508,C,valid,natural,no,,,no
+mindthequery:512,C,valid,natural,no,,OH is the standard postal abbreviation for Ohio.,no
+mindthequery:512,D,valid,natural,no,,,no
+mindthequery:516,A,valid,natural,no,,,no
+mindthequery:516,C,valid,natural,no,,,no
+mindthequery:52,C,valid,natural,no,Sick,,no
+mindthequery:52,E,valid,awkward,no,,,no
+mindthequery:529,A,valid,natural,no,,,no
+mindthequery:529,B,valid,natural,no,,,no
+mindthequery:53,E,valid,awkward,no,,,no
+mindthequery:530,C,valid,natural,no,Horror,Clear typo of the genre 'Horror'.,no
+mindthequery:531,C,valid,natural,no,,IL is the standard two-letter postal abbreviation for Illinois.,no
+mindthequery:531,E,valid,natural,no,,,no
+mindthequery:533,B,valid,natural,no,,,no
+mindthequery:533,D,valid,natural,no,,,no
+mindthequery:535,C,valid,natural,no,Comedy,,no
+mindthequery:537,A,valid,natural,no,,,no
+mindthequery:537,E,valid,natural,no,,,no
+mindthequery:538,C,valid,natural,no,,,no
+mindthequery:538,D,valid,natural,no,,,no
+mindthequery:541,D,valid,natural,no,,,no
+mindthequery:543,B,valid,natural,no,,,no
+mindthequery:543,C,valid,natural,no,,Clozaril is a common brand name alias for clozapine.,no
+mindthequery:544,C,valid,natural,no,Hospitalization - Initial or Prolonged,HO is the standard FAERS/FDA outcome code for Hospitalization - Initial or Prolonged.,no
+mindthequery:544,E,valid,natural,no,,,no
+mindthequery:545,A,valid,natural,no,,,no
+mindthequery:545,E,valid,natural,no,,,no
+mindthequery:546,B,valid,natural,no,,,no
+mindthequery:546,C,valid,natural,no,,CPRX is the NASDAQ stock ticker symbol for Catalyst Pharmaceuticals.,no
+mindthequery:547,B,valid,natural,no,,,no
+mindthequery:547,C,valid,natural,no,Health Professional,HCP is a standard abbreviation for Healthcare Professional / Health Professional in clinical and pharmacovigilance contexts.,no
+mindthequery:550,B,valid,natural,no,,,no
+mindthequery:550,C,valid,natural,no,Other Serious (Important Medical Event),IME is a standard pharmacovigilance abbreviation for 'Important Medical Event'.,no
+mindthequery:551,A,valid,natural,no,,,no
+mindthequery:551,E,valid,natural,no,,,no
+mindthequery:552,B,valid,natural,no,,,no
+mindthequery:552,C,valid,natural,no,,Minocin is a common brand name alias for minocycline.,no
+mindthequery:553,A,valid,natural,no,,,no
+mindthequery:553,D,valid,natural,no,,,no
+mindthequery:554,B,valid,natural,no,,,no
+mindthequery:554,C,valid,natural,no,Minocin,Minocin is a well-known brand name for minocycline.,no
+mindthequery:555,A,valid,natural,no,,,no
+mindthequery:555,C,valid,natural,no,Celestone,Celestone is a widely known brand name for betamethasone.,no
+mindthequery:557,C,valid,natural,no,lung cancer,'lung cancer' is a standard and common alias for 'Lung neoplasm malignant'.,no
+mindthequery:557,E,valid,natural,no,,,no
+mindthequery:559,C,valid,natural,no,,,no
+mindthequery:559,D,valid,natural,no,,,no
+mindthequery:560,A,valid,natural,no,,,no
+mindthequery:560,E,valid,natural,no,,,no
+mindthequery:561,A,valid,natural,no,,,no
+mindthequery:561,C,valid,natural,no,,PEG is the standard abbreviation for polyethylene glycol.,no
+mindthequery:563,C,valid,natural,no,,'HO' is the standard FAERS/FDA outcome code abbreviation for 'Hospitalization - Initial or Prolonged'.,no
+mindthequery:563,E,valid,natural,no,,,no
+mindthequery:564,D,valid,natural,no,,,no
+mindthequery:564,E,valid,natural,no,,,no
+mindthequery:565,A,valid,natural,no,,,no
+mindthequery:565,D,valid,natural,no,,,no
+mindthequery:567,B,valid,natural,no,,,no
+mindthequery:567,D,valid,natural,no,,,no
+mindthequery:568,B,valid,natural,no,,,no
+mindthequery:568,E,valid,natural,no,,,no
+mindthequery:569,B,valid,natural,no,,,no
+mindthequery:569,D,valid,natural,no,,,no
+mindthequery:57,A,valid,natural,no,,,no
+mindthequery:57,C,valid,natural,no,Hospital,'Hosp.' is a standard and recognizable abbreviation for Hospital.,no
+mindthequery:570,B,valid,natural,no,,,no
+mindthequery:570,D,valid,natural,no,,,no
+mindthequery:572,C,valid,natural,no,PEG 3350,PEG 3350 is a widely recognized standard abbreviation for Polyethylene Glycol 3350.,no
+mindthequery:572,D,valid,natural,no,,,no
+mindthequery:573,A,valid,natural,no,,,no
+mindthequery:573,C,valid,natural,no,handicap,,no
+mindthequery:574,B,valid,natural,no,,,no
+mindthequery:574,E,valid,natural,no,,,no
+mindthequery:576,C,valid,natural,no,IME,IME is a standard pharmacovigilance abbreviation for Important Medical Event.,no
+mindthequery:576,E,valid,natural,no,,,no
+mindthequery:582,C,valid,natural,no,ticagrelor,Ticagrelor is the generic chemical name / active ingredient for the brand name drug Brilinta.,no
+mindthequery:582,E,valid,natural,no,,,no
+mindthequery:583,C,valid,natural,no,,Brilinta is a well-known brand name for ticagrelor.,no
+mindthequery:583,D,valid,natural,no,,,no
+mindthequery:584,C,valid,natural,no,,,no
+mindthequery:584,E,valid,natural,no,,,no
+mindthequery:585,B,valid,natural,no,,,no
+mindthequery:585,C,valid,natural,no,,,no
+mindthequery:587,A,valid,natural,no,,,no
+mindthequery:587,B,valid,natural,no,,,no
+mindthequery:589,A,valid,natural,no,,,no
+mindthequery:589,E,valid,natural,no,,,no
+mindthequery:593,A,valid,natural,no,,,no
+mindthequery:593,E,valid,natural,no,,,no
+mindthequery:594,A,valid,natural,no,,,no
+mindthequery:594,B,valid,natural,no,,,no
+mindthequery:595,B,valid,natural,no,,,no
+mindthequery:595,D,valid,natural,no,,,no
+mindthequery:596,C,valid,natural,no,HCP,HCP is a standard abbreviation for Healthcare Professional / Health Professional in clinical/case reporting contexts.,no
+mindthequery:596,E,valid,natural,no,,,no
+mindthequery:598,C,valid,natural,no,,ADMS is the stock ticker/abbreviation for Adamas Pharmaceuticals.,no
+mindthequery:598,E,valid,natural,no,,,no
+mindthequery:60,C,valid,natural,no,resto,'resto' is a common colloquial abbreviation/alias for restaurant.,no
+mindthequery:60,E,valid,natural,no,,,no
+mindthequery:600,A,valid,natural,no,,,no
+mindthequery:600,E,valid,natural,no,,,no
+mindthequery:601,C,valid,natural,no,,MTX is the standard medical abbreviation for methotrexate.,no
+mindthequery:601,D,valid,natural,no,,,no
+mindthequery:602,B,valid,natural,no,,,no
+mindthequery:602,D,valid,natural,no,,,no
+mindthequery:603,B,valid,natural,no,,,no
+mindthequery:603,D,valid,natural,no,,,no
+mindthequery:604,C,valid,natural,no,,IME is a standard abbreviation for Important Medical Event.,no
+mindthequery:604,E,valid,natural,no,,,no
+mindthequery:606,A,valid,natural,no,,,no
+mindthequery:606,C,valid,natural,no,,IME is a well-established acronym for Important Medical Event in clinical and pharmacovigilance contexts.,no
+mindthequery:608,D,valid,natural,no,,,no
+mindthequery:608,E,valid,natural,no,,,no
+mindthequery:609,A,valid,natural,no,,,no
+mindthequery:609,C,valid,natural,no,passing,Passing (or passing away) is a common euphemism/alias for death.,no
+mindthequery:612,D,valid,natural,no,,,no
+mindthequery:612,E,valid,awkward,no,,,no
+mindthequery:613,B,valid,natural,no,,,no
+mindthequery:613,C,valid,natural,no,,,no
+mindthequery:614,A,valid,natural,no,,,no
+mindthequery:614,C,valid,natural,no,,"Calcitriol is a standard synonym for 1,25-dihydroxycholecalciferol.",no
+mindthequery:615,D,valid,natural,no,,,no
+mindthequery:615,E,valid,natural,no,,,no
+mindthequery:617,A,valid,natural,no,,,no
+mindthequery:617,D,valid,natural,no,,,no
+mindthequery:618,A,valid,natural,no,,,no
+mindthequery:618,C,valid,natural,no,,"1,25-dihydroxycholecalciferol is the active form of vitamin D, commonly known as calcitriol.",no
+mindthequery:619,A,valid,natural,no,,,no
+mindthequery:619,E,valid,natural,no,,,no
+mindthequery:620,A,valid,natural,no,,,no
+mindthequery:620,E,valid,natural,no,,,no
+mindthequery:621,C,valid,natural,no,Lenalidomide,LEN is a recognized clinical abbreviation for lenalidomide (brand name Revlimid).,no
+mindthequery:621,D,valid,natural,no,,,no
+mindthequery:622,B,valid,natural,no,,,no
+mindthequery:622,C,valid,natural,no,,'passing' is a standard euphemism for 'death'.,no
+mindthequery:623,A,valid,natural,no,,,no
+mindthequery:623,C,valid,natural,no,BP decreased,,no
+mindthequery:624,A,valid,natural,no,,,no
+mindthequery:624,D,valid,natural,no,,,no
+mindthequery:625,D,valid,natural,no,,,no
+mindthequery:625,E,valid,natural,no,,,no
+mindthequery:627,A,valid,natural,no,,,no
+mindthequery:627,E,valid,natural,no,,,no
+mindthequery:628,A,valid,natural,no,,,no
+mindthequery:628,E,valid,natural,no,,,no
+mindthequery:63,C,valid,natural,no,Sick,Typo insertion of 'i' in 'Sick'.,no
+mindthequery:63,E,valid,natural,no,,,no
+mindthequery:630,A,valid,natural,no,,,no
+mindthequery:630,E,valid,natural,no,,,no
+mindthequery:631,A,valid,natural,no,,,no
+mindthequery:631,D,valid,natural,no,,,no
+mindthequery:633,B,valid,natural,no,,,no
+mindthequery:633,D,valid,natural,no,,,no
+mindthequery:634,A,valid,natural,no,,,no
+mindthequery:634,B,valid,natural,no,,,no
+mindthequery:635,D,valid,natural,no,,,no
+mindthequery:635,E,valid,natural,no,,,no
+mindthequery:637,C,valid,natural,no,passing,'Passing' is a well-known euphemism / alias for 'Death'.,no
+mindthequery:637,D,valid,natural,no,,,no
+mindthequery:638,C,valid,natural,no,,,yes
+mindthequery:638,E,valid,natural,no,,,yes
+mindthequery:639,A,valid,natural,no,,,no
+mindthequery:639,C,valid,natural,no,,,no
+mindthequery:64,D,valid,natural,no,,,no
+mindthequery:64,E,valid,natural,no,,,no
+mindthequery:640,B,valid,natural,no,,,no
+mindthequery:640,C,valid,natural,no,,,no
+mindthequery:641,A,valid,natural,no,,,no
+mindthequery:641,D,valid,natural,no,,,no
+mindthequery:642,C,valid,natural,no,Physician,Doctor is a common synonym and standard alias for Physician.,no
+mindthequery:642,E,valid,natural,no,,,no
+mindthequery:646,A,valid,natural,no,,,no
+mindthequery:646,D,valid,natural,no,,,no
+mindthequery:647,A,valid,natural,no,,,no
+mindthequery:647,C,valid,natural,no,Near death experience,"NDE is a standard, widely recognized abbreviation for near-death experience.",no
+mindthequery:649,B,valid,natural,no,,,no
+mindthequery:649,E,valid,natural,no,,,no
+mindthequery:65,D,valid,natural,no,,,no
+mindthequery:65,E,valid,natural,no,,,no
+mindthequery:650,A,valid,natural,no,,,no
+mindthequery:650,B,valid,natural,no,,,no
+mindthequery:652,B,valid,natural,no,,,no
+mindthequery:652,E,valid,natural,no,,,no
+mindthequery:653,B,valid,natural,no,,,no
+mindthequery:653,E,valid,natural,no,,,no
+mindthequery:654,B,valid,natural,no,,,no
+mindthequery:654,D,valid,natural,no,,,no
+mindthequery:656,C,valid,natural,no,Monocytosis,Monocytosis is the standard medical term/alias for Monocyte count increased.,no
+mindthequery:656,E,valid,natural,no,,,no
+mindthequery:659,C,valid,natural,no,,,no
+mindthequery:659,D,valid,natural,no,,,no
+mindthequery:661,A,valid,natural,no,,,no
+mindthequery:661,C,valid,natural,no,,,no
+mindthequery:662,C,valid,natural,no,Injection site haemorrhage,'injection site bleeding' is a common and accurate alias/synonym for 'Injection site haemorrhage'.,no
+mindthequery:662,D,valid,natural,no,,,no
+mindthequery:663,B,valid,natural,no,,,no
+mindthequery:663,E,valid,natural,no,,,no
+mindthequery:665,C,valid,natural,no,passing,'Passing' is a well-known euphemism/alias for death and fits the outcome context.,no
+mindthequery:665,D,valid,natural,no,,,no
+mindthequery:666,B,valid,natural,no,,,no
+mindthequery:666,D,valid,natural,no,,,no
+mindthequery:667,B,valid,natural,no,,,no
+mindthequery:667,E,valid,natural,no,,,no
+mindthequery:668,C,valid,natural,no,,IME is a standard pharmacovigilance abbreviation for Important Medical Event.,no
+mindthequery:668,D,valid,natural,no,,,no
+mindthequery:669,A,valid,natural,no,,,no
+mindthequery:67,B,valid,natural,no,,,no
+mindthequery:67,C,valid,natural,no,Restaurant,'resto' is a widely understood colloquial abbreviation/alias for restaurant.,no
+mindthequery:670,B,valid,natural,no,,,no
+mindthequery:670,E,valid,natural,no,,,no
+mindthequery:671,A,valid,natural,no,,,no
+mindthequery:671,D,valid,natural,no,,,no
+mindthequery:673,A,valid,natural,no,,,no
+mindthequery:674,D,valid,natural,no,,,no
+mindthequery:674,E,valid,natural,no,,,no
+mindthequery:675,A,valid,natural,no,,,no
+mindthequery:675,C,valid,natural,no,,'Doctor' is a standard and common alias/synonym for 'Physician'.,no
+mindthequery:676,C,valid,natural,no,,,no
+mindthequery:676,E,valid,natural,no,,,no
+mindthequery:677,D,valid,natural,no,,,no
+mindthequery:677,E,valid,natural,no,,,no
+mindthequery:678,C,valid,natural,no,infliximab-dyyb,Infliximab-dyyb is the FDA-designated nonproprietary/biosimilar name for Inflectra.,no
+mindthequery:678,E,valid,natural,no,,,no
+mindthequery:679,A,valid,natural,no,,,no
+mindthequery:679,D,valid,natural,no,,,no
+mindthequery:680,C,valid,natural,no,Pulmonary hypertension,PH is a standard medical abbreviation for Pulmonary Hypertension.,no
+mindthequery:680,D,valid,natural,no,,,no
+mindthequery:681,B,valid,natural,no,,,no
+mindthequery:681,C,valid,natural,no,,,no
+mindthequery:682,C,valid,natural,no,Hospitalization - Initial or Prolonged,HO is a standard abbreviation/code for 'Hospitalization - Initial or Prolonged' in adverse event reporting databases like FAERS.,no
+mindthequery:682,D,valid,natural,no,,,no
+mindthequery:683,C,valid,natural,no,ALUNBRIG,Lowercasing a brand name medication is completely understandable and natural.,no
+mindthequery:683,D,valid,natural,no,,,no
+mindthequery:686,C,valid,natural,no,LEN,LEN is a standard medical/clinical abbreviation for lenalidomide (brand name Revlimid).,no
+mindthequery:686,D,valid,natural,no,,,no
+mindthequery:687,C,valid,natural,no,passing,'passing' is a standard euphemistic alias for death.,no
+mindthequery:687,D,valid,natural,no,,,no
+mindthequery:688,C,valid,natural,no,abnormal blood work,,no
+mindthequery:688,E,valid,natural,no,,,no
+mindthequery:689,A,valid,natural,no,,,no
+mindthequery:689,D,valid,natural,no,,,no
+mindthequery:69,A,valid,natural,no,,,no
+mindthequery:69,B,valid,natural,no,,,no
+mindthequery:690,A,valid,natural,no,,,no
+mindthequery:690,D,valid,natural,no,,,no
+mindthequery:691,A,valid,natural,no,,,no
+mindthequery:691,D,valid,natural,no,,,no
+mindthequery:692,A,valid,natural,no,,,no
+mindthequery:692,D,valid,natural,no,,,no
+mindthequery:694,B,valid,natural,no,,,no
+mindthequery:694,E,valid,natural,no,,,no
+mindthequery:696,A,valid,natural,no,,,no
+mindthequery:696,C,valid,natural,no,,HCP is a standard medical/pharmacovigilance abbreviation for Health Care Professional.,no
+mindthequery:697,B,valid,natural,no,,,no
+mindthequery:697,D,valid,natural,no,,,no
+mindthequery:698,B,valid,natural,no,,,no
+mindthequery:699,A,valid,natural,no,,,no
+mindthequery:699,C,valid,natural,no,,,no
+mindthequery:700,A,valid,natural,no,,,no
+mindthequery:700,E,valid,natural,no,,,no
+mindthequery:701,D,valid,natural,no,,,no
+mindthequery:702,A,valid,natural,no,,,no
+mindthequery:702,B,valid,natural,no,,,no
+mindthequery:704,D,valid,natural,no,,,no
+mindthequery:704,E,valid,natural,no,,,no
+mindthequery:705,B,valid,natural,no,,,no
+mindthequery:705,E,valid,natural,no,,,no
+mindthequery:706,A,valid,natural,no,,,no
+mindthequery:709,A,valid,natural,no,,,no
+mindthequery:709,C,valid,natural,no,,IME is a standard abbreviation for Important Medical Event in pharmacovigilance and clinical reporting contexts.,no
+mindthequery:710,B,valid,natural,no,,,no
+mindthequery:710,D,valid,natural,no,,,no
+mindthequery:711,B,valid,natural,no,,,no
+mindthequery:711,E,valid,natural,no,,,no
+mindthequery:712,C,valid,natural,no,,,no
+mindthequery:712,D,valid,natural,no,,,no
+mindthequery:713,B,valid,natural,no,,,no
+mindthequery:714,C,valid,natural,no,,,no
+mindthequery:714,E,valid,natural,no,,,no
+mindthequery:715,B,valid,natural,no,,,no
+mindthequery:715,C,valid,natural,no,Health Professional,HCP is a standard medical abbreviation for Healthcare Professional.,no
+mindthequery:716,B,valid,natural,no,,,no
+mindthequery:716,E,valid,natural,no,,,no
+mindthequery:717,B,valid,natural,no,,,no
+mindthequery:717,C,valid,natural,no,Taxotere,Taxotere is a widely recognized brand name for docetaxel.,no
+mindthequery:718,A,valid,natural,no,,,no
+mindthequery:718,B,valid,natural,no,,,no
+mindthequery:720,B,valid,natural,no,,,no
+mindthequery:720,C,valid,natural,no,the runs,,no
+mindthequery:721,B,valid,natural,no,,,no
+mindthequery:721,D,valid,natural,no,,,no
+mindthequery:722,A,valid,natural,no,,,no
+mindthequery:722,C,valid,natural,no,Health Professional,HCP is a standard abbreviation for Health Care Professional / Health Professional.,no
+mindthequery:723,B,valid,natural,no,,,yes
+mindthequery:723,C,valid,natural,no,,,yes
+mindthequery:724,D,valid,natural,no,,,no
+mindthequery:724,E,valid,awkward,no,,,no
+mindthequery:725,C,valid,natural,no,,,no
+mindthequery:725,D,valid,natural,no,,,no
+mindthequery:728,C,valid,natural,no,,,no
+mindthequery:728,E,valid,natural,no,,,no
+mindthequery:730,B,valid,natural,no,,,no
+mindthequery:730,C,valid,natural,no,,'passing' is a common euphemism/alias for death.,no
+mindthequery:732,B,valid,natural,no,,,no
+mindthequery:732,D,valid,natural,no,,,no
+mindthequery:734,B,valid,natural,no,,,no
+mindthequery:734,E,valid,natural,no,,,no
+mindthequery:736,A,valid,natural,no,,,no
+mindthequery:736,D,valid,natural,no,,,no
+mindthequery:737,B,valid,natural,no,,,no
+mindthequery:737,C,valid,natural,no,Hospitalization - Initial or Prolonged,'HO' is the standard FDA FAERS outcome code for 'Hospitalization - Initial or Prolonged'.,no
+mindthequery:738,A,valid,natural,no,,,no
+mindthequery:738,B,valid,natural,no,,,no
+mindthequery:739,A,valid,natural,no,,,no
+mindthequery:739,D,valid,natural,no,,,no
+mindthequery:740,C,valid,natural,no,,,no
+mindthequery:740,D,valid,natural,no,,,no
+mindthequery:743,A,valid,natural,no,,,no
+mindthequery:743,B,valid,natural,no,,,no
+mindthequery:744,C,valid,natural,no,GLYCERYL TRINITRATE,GTN is a standard medical abbreviation for Glyceryl Trinitrate.,no
+mindthequery:744,E,valid,natural,no,,,no
+mindthequery:745,B,valid,natural,no,,,no
+mindthequery:745,D,valid,natural,no,,,no
+mindthequery:746,B,valid,natural,no,,,no
+mindthequery:746,D,valid,natural,no,,,no
+mindthequery:747,B,valid,natural,no,,,no
+mindthequery:747,D,valid,natural,no,,,no
+mindthequery:748,B,valid,natural,no,,,no
+mindthequery:748,E,valid,natural,no,,,no
+mindthequery:749,B,valid,natural,no,,,no
+mindthequery:749,C,valid,natural,no,,HCP is a widely recognized abbreviation for Healthcare Professional / Health Professional in pharmacovigilance and clinical reporting.,no
+mindthequery:754,A,valid,natural,no,,,no
+mindthequery:754,D,valid,natural,no,,,no
+mindthequery:755,A,valid,natural,no,,,no
+mindthequery:755,E,valid,natural,no,,,no
+mindthequery:756,B,valid,natural,no,,,no
+mindthequery:756,D,valid,natural,no,,,no
+mindthequery:758,B,valid,natural,no,,,no
+mindthequery:758,E,valid,natural,no,,,no
+mindthequery:76,D,valid,natural,no,,,no
+mindthequery:76,E,valid,natural,no,,,no
+mindthequery:760,A,valid,natural,no,,,no
+mindthequery:760,C,valid,natural,no,HO,'HO' is the standard FDA/FAERS code for 'Hospitalization - Initial or Prolonged'.,no
+mindthequery:761,A,valid,natural,no,,,no
+mindthequery:761,D,valid,natural,no,,,no
+mindthequery:763,B,valid,natural,no,,,no
+mindthequery:763,E,valid,natural,no,,,no
+mindthequery:766,A,valid,natural,no,,,no
+mindthequery:766,E,valid,natural,no,,,no
+mindthequery:768,C,valid,natural,no,Other Serious (Important Medical Event),IME is a standard abbreviation for Important Medical Event in clinical / pharmacovigilance contexts.,no
+mindthequery:768,E,valid,natural,no,,,no
+mindthequery:769,D,valid,natural,no,,,no
+mindthequery:769,E,valid,natural,no,,,no
+mindthequery:770,C,valid,natural,no,Thyroid disorder,Synonym/alias replacement.,no
+mindthequery:770,E,valid,natural,no,,,no
+mindthequery:773,B,valid,natural,no,,,no
+mindthequery:773,C,valid,natural,no,,Cyclogyl is a common brand name for cyclopentolate.,no
+mindthequery:774,A,valid,natural,no,,,no
+mindthequery:774,D,valid,natural,no,,,no
+mindthequery:775,A,valid,natural,no,,,no
+mindthequery:775,C,valid,natural,no,Other Serious (Important Medical Event),IME is a standard abbreviation for Important Medical Event in pharmacovigilance/adverse event reporting contexts.,no
+mindthequery:777,D,valid,natural,no,,,no
+mindthequery:777,E,valid,natural,no,,,no
+mindthequery:778,A,valid,natural,no,,,no
+mindthequery:778,E,valid,natural,no,,,no
+mindthequery:779,A,valid,natural,no,,,no
+mindthequery:779,E,valid,natural,no,,,no
+mindthequery:780,C,valid,natural,no,Consumer,'Shopper' is a direct synonym/alias for 'Consumer' in this context.,no
+mindthequery:780,E,valid,natural,no,,,no
+mindthequery:781,A,valid,natural,no,,,no
+mindthequery:781,B,valid,natural,no,,,no
+mindthequery:783,B,valid,natural,no,,,no
+mindthequery:783,E,valid,natural,no,,,no
+mindthequery:785,C,valid,natural,no,CHIASMA,Minor truncation/casing variation representing the manufacturer name naturally.,no
+mindthequery:785,D,valid,natural,no,,,no
+mindthequery:786,A,valid,natural,no,,,no
+mindthequery:786,E,valid,unnatural,no,,,no
+mindthequery:789,A,valid,natural,no,,,no
+mindthequery:789,D,valid,natural,no,,,no
+mindthequery:79,C,valid,natural,no,Healthy,Fit is a valid synonym/alias for Healthy in this health status context.,no
+mindthequery:79,D,valid,natural,no,,,no
+mindthequery:792,A,valid,natural,no,,,no
+mindthequery:792,B,valid,natural,no,,,no
+mindthequery:793,B,valid,natural,no,,,no
+mindthequery:793,D,valid,natural,no,,,no
+mindthequery:796,A,valid,natural,no,,,no
+mindthequery:796,D,valid,natural,no,,,no
+mindthequery:797,C,valid,natural,no,,,no
+mindthequery:797,D,valid,natural,no,,,no
+mindthequery:801,B,valid,natural,no,,,no
+mindthequery:801,D,valid,natural,no,,,no
+mindthequery:802,A,valid,natural,no,,,no
+mindthequery:802,E,valid,natural,no,,,no
+mindthequery:803,A,valid,natural,no,,,no
+mindthequery:803,B,valid,natural,no,,,no
+mindthequery:805,A,valid,natural,no,,,no
+mindthequery:805,C,valid,natural,no,Shortness of breath,SOB is a common standard medical abbreviation for shortness of breath (dyspnoea).,no
+mindthequery:809,A,valid,natural,no,,,no
+mindthequery:809,E,valid,natural,no,,,no
+mindthequery:810,C,valid,natural,no,DACARBAZINE,DTIC (dimethyl triazeno imidazole carboxamide) is a widely recognized medical abbreviation and alternative name for dacarbazine.,no
+mindthequery:810,D,valid,natural,no,,,no
+mindthequery:811,C,valid,natural,no,,,no
+mindthequery:811,D,valid,natural,no,,,no
+mindthequery:812,B,valid,natural,no,,,no
+mindthequery:812,C,valid,natural,no,CFS,CFS is a standard and universally recognized abbreviation for Chronic fatigue syndrome.,no
+mindthequery:813,B,valid,natural,no,,,no
+mindthequery:813,C,valid,natural,no,,Vitamin B3 is a widely accepted synonym/name for nicotinic acid (niacin).,no
+mindthequery:815,B,valid,natural,no,,,no
+mindthequery:815,D,valid,natural,no,,,no
+mindthequery:816,A,valid,natural,no,,,no
+mindthequery:816,D,valid,natural,no,,,no
+mindthequery:817,C,valid,natural,no,,Niacin is a standard synonym for nicotinic acid.,no
+mindthequery:817,E,valid,natural,no,,,no
+mindthequery:818,B,valid,natural,no,,,no
+mindthequery:818,D,valid,natural,no,,,no
+mindthequery:820,A,valid,natural,no,,,no
+mindthequery:820,E,valid,natural,no,,,no
+mindthequery:821,B,valid,natural,no,,,no
+mindthequery:821,C,valid,natural,no,Lioresal,Lioresal is a well-known brand name/alias for baclofen.,no
+mindthequery:822,B,valid,natural,no,,,no
+mindthequery:822,E,valid,natural,no,,,no
+mindthequery:824,D,valid,natural,no,,,no
+mindthequery:824,E,valid,natural,no,,,no
+mindthequery:825,D,valid,natural,no,,,no
+mindthequery:825,E,valid,awkward,no,,,no
+mindthequery:827,B,valid,natural,no,,,no
+mindthequery:827,C,valid,natural,no,,,no
+mindthequery:828,A,valid,natural,no,,,no
+mindthequery:828,B,valid,natural,no,,,no
+mindthequery:83,B,valid,natural,no,,,no
+mindthequery:83,E,valid,natural,no,,,no
+mindthequery:830,D,valid,natural,no,,,no
+mindthequery:830,E,valid,natural,no,,,no
+mindthequery:832,B,valid,natural,no,,,no
+mindthequery:832,E,valid,natural,no,,,no
+mindthequery:833,C,valid,natural,no,CDDP,CDDP (cis-diamminedichloroplatinum(II)) is a standard medical and scientific abbreviation for cisplatin.,no
+mindthequery:833,E,valid,natural,no,,,no
+mindthequery:834,B,valid,natural,no,,,no
+mindthequery:834,C,valid,natural,no,,,no
+mindthequery:835,B,valid,natural,no,,,no
+mindthequery:835,C,valid,natural,no,Hospitalization - Initial or Prolonged,"'HO' is a standard code/abbreviation for 'Hospitalization - initial or prolonged' in medical reporting databases (e.g., FDA FAERS).",no
+mindthequery:836,B,valid,natural,no,,,no
+mindthequery:836,E,valid,natural,no,,,no
+mindthequery:837,C,valid,natural,no,timolol,Timolol is the common base name and standard alias for timolol maleate.,no
+mindthequery:837,D,valid,natural,no,,,no
+mindthequery:839,D,valid,natural,no,,,no
+mindthequery:839,E,valid,natural,no,,,no
+mindthequery:84,C,valid,natural,no,Restaurant,'resto' is a common colloquial shortening/alias for restaurant.,no
+mindthequery:84,E,valid,natural,no,,,no
+mindthequery:840,C,valid,natural,no,,,no
+mindthequery:840,D,valid,natural,no,,,no
+mindthequery:842,A,valid,natural,no,,,no
+mindthequery:842,B,valid,natural,no,,,no
+mindthequery:843,C,valid,natural,no,Other Serious (Important Medical Event),IME is a standard abbreviation for Important Medical Event in pharmacovigilance and adverse event reporting.,no
+mindthequery:843,D,valid,natural,no,,,no
+mindthequery:845,A,valid,natural,no,,,no
+mindthequery:845,C,valid,natural,no,,Celexa is a well-known brand name alias for citalopram hydrobromide.,no
+mindthequery:848,B,valid,natural,no,,,no
+mindthequery:848,D,valid,natural,no,,,no
+mindthequery:849,C,valid,natural,no,CELGENE,CELG is the well-known former stock ticker and standard abbreviation for Celgene.,no
+mindthequery:849,D,valid,natural,no,,,no
+mindthequery:850,A,valid,awkward,no,,,no
+mindthequery:850,B,valid,natural,no,,,no
+mindthequery:851,C,valid,natural,no,,Alunbrig is a recognized brand name for brigatinib.,no
+mindthequery:851,D,valid,natural,no,,,no
+mindthequery:852,C,valid,natural,no,BHVN,BHVN is the standard stock ticker symbol and recognized abbreviation for Biohaven Pharmaceuticals.,no
+mindthequery:852,D,valid,natural,no,,,no
+mindthequery:855,A,valid,natural,no,,,no
+mindthequery:855,D,valid,natural,no,,,no
+mindthequery:858,D,valid,natural,no,,,no
+mindthequery:858,E,valid,natural,no,,,no
+mindthequery:859,A,valid,natural,no,,,no
+mindthequery:859,E,valid,natural,no,,,no
+mindthequery:861,A,valid,natural,no,,,no
+mindthequery:861,C,valid,natural,no,Urine leukocyte esterase positive,LE is a standard medical abbreviation for leukocyte esterase in urinalysis.,no
+mindthequery:862,B,valid,natural,no,,,no
+mindthequery:862,D,valid,natural,no,,,no
+mindthequery:863,A,valid,natural,no,,,no
+mindthequery:863,C,valid,natural,no,,,no
+mindthequery:865,B,valid,natural,no,,,no
+mindthequery:865,C,valid,natural,no,PEG,PEG is the standard and widely used abbreviation for Polyethylene Glycol.,no
+mindthequery:866,A,valid,natural,no,,,no
+mindthequery:866,E,valid,natural,no,,,no
+mindthequery:868,D,valid,natural,no,,,yes
+mindthequery:868,E,valid,natural,no,,,yes
+mindthequery:869,D,valid,natural,no,,,no
+mindthequery:869,E,valid,natural,no,,,no
+mindthequery:870,E,invalid,natural,no,,,no
+mindthequery:872,A,valid,natural,no,,,no
+mindthequery:872,E,valid,natural,no,,,no
+mindthequery:873,B,valid,natural,no,,,no
+mindthequery:873,C,valid,natural,no,Adolescent,,no
+mindthequery:874,A,valid,natural,no,,,no
+mindthequery:874,E,valid,natural,no,,,no
+mindthequery:875,B,valid,natural,no,,,no
+mindthequery:875,E,valid,natural,no,,,no
+mindthequery:877,D,valid,natural,no,,,no
+mindthequery:877,E,valid,natural,no,,,no
+mindthequery:879,A,valid,natural,no,,,no
+mindthequery:879,E,valid,natural,no,,,no
+mindthequery:880,A,valid,natural,no,,,no
+mindthequery:880,B,valid,natural,no,,,no
+mindthequery:882,B,valid,natural,no,,,no
+mindthequery:882,D,valid,natural,no,,,no
+mindthequery:883,B,valid,natural,no,,,no
+mindthequery:883,C,valid,natural,no,177Lu-DOTATATE,177Lu-DOTATATE is a widely recognized standard chemical abbreviation/name for lutetium oxodotreotide Lu-177.,no
+mindthequery:884,A,valid,natural,no,,,no
+mindthequery:884,B,valid,natural,no,,,no
+mindthequery:886,C,valid,natural,no,,,no
+mindthequery:886,E,valid,natural,no,,,no
+mindthequery:888,A,valid,natural,no,,,no
+mindthequery:888,C,valid,natural,no,,HCP is a standard abbreviation for Health Care Professional / Health Professional.,no
+mindthequery:890,B,valid,natural,no,,,no
+mindthequery:890,D,valid,natural,no,,,no
+mindthequery:891,C,valid,natural,no,BAXTER,'BAX' is the common stock ticker symbol/abbreviation for Baxter.,no
+mindthequery:891,E,valid,natural,no,,,no
+mindthequery:892,A,valid,natural,no,,,no
+mindthequery:892,E,valid,natural,no,,,no
+mindthequery:893,A,valid,natural,no,,,no
+mindthequery:895,A,valid,natural,no,,,no
+mindthequery:896,B,valid,natural,no,,,no
+mindthequery:896,E,valid,natural,no,,,no
+mindthequery:897,A,valid,natural,no,,,no
+mindthequery:897,B,valid,natural,no,,,no
+mindthequery:899,D,valid,natural,no,,,no
+mindthequery:899,E,valid,natural,no,,,no
+mindthequery:90,A,valid,natural,no,,,no
+mindthequery:90,D,valid,natural,no,,,no
+mindthequery:900,A,valid,natural,no,,,no
+mindthequery:900,B,valid,natural,no,,,no
+mindthequery:901,A,valid,natural,no,,,no
+mindthequery:901,B,valid,natural,no,,,no
+mindthequery:904,A,valid,natural,no,,,no
+mindthequery:904,E,valid,natural,no,,,no
+mindthequery:908,A,valid,natural,no,,,no
+mindthequery:908,C,valid,natural,no,,,no
+mindthequery:909,D,valid,natural,no,,,no
+mindthequery:909,E,valid,natural,no,,,no
+mindthequery:91,A,valid,natural,no,,,no
+mindthequery:91,E,valid,natural,no,,,no
+mindthequery:910,A,valid,natural,no,,,no
+mindthequery:910,C,valid,natural,no,immune deficiency,'immune deficiency' is a standard and natural synonym for 'immunodeficiency'.,no
+mindthequery:911,C,valid,natural,no,HCP,HCP is a standard medical abbreviation for Healthcare Professional / Health Professional.,no
+mindthequery:911,E,valid,natural,no,,,no
+mindthequery:912,A,valid,natural,no,,,no
+mindthequery:912,C,valid,natural,no,,,no
+mindthequery:913,A,valid,natural,no,,,no
+mindthequery:914,C,valid,natural,no,AEGERION,AEGR was the NASDAQ ticker symbol for Aegerion Pharmaceuticals.,no
+mindthequery:914,E,valid,natural,no,,,no
+mindthequery:915,A,valid,natural,no,,,no
+mindthequery:915,D,valid,natural,no,,,no
+mindthequery:916,A,valid,natural,no,,,no
+mindthequery:916,C,valid,natural,no,Health Professional,HCP is a standard abbreviation for Health Care Professional/Health Professional.,no
+mindthequery:918,A,valid,natural,no,,,no
+mindthequery:918,E,valid,natural,no,,,no
+mindthequery:919,D,valid,natural,no,,,no
+mindthequery:919,E,valid,natural,no,,,no
+mindthequery:922,A,valid,natural,no,,,no
+mindthequery:922,B,valid,natural,no,,,no
+mindthequery:923,B,valid,natural,no,,,no
+mindthequery:923,C,valid,natural,no,Health Professional,HCP is a standard abbreviation for Health Care Professional/Health Professional.,no
+mindthequery:924,A,valid,natural,no,,,no
+mindthequery:924,B,valid,natural,no,,,no
+mindthequery:925,A,valid,natural,no,,,no
+mindthequery:925,B,valid,natural,no,,,no
+mindthequery:926,C,valid,natural,no,vandetanib,Vandetanib is the generic international nonproprietary name (INN) for the brand-name drug Caprelsa.,no
+mindthequery:926,D,valid,natural,no,,,no
+mindthequery:927,A,valid,natural,no,,,no
+mindthequery:927,E,valid,natural,no,,,no
+mindthequery:928,D,valid,natural,no,,,no
+mindthequery:928,E,valid,natural,no,,,no
+mindthequery:929,A,valid,natural,no,,,no
+mindthequery:929,D,valid,natural,no,,,no
+mindthequery:933,C,valid,natural,no,methylprednisolone,"""Methylpred"" is a common clinical abbreviation for methylprednisolone.",no
+mindthequery:933,D,valid,natural,no,,,no
+mindthequery:936,B,valid,natural,no,,,no
+mindthequery:936,D,valid,natural,no,,,no
+mindthequery:939,C,valid,natural,no,User Facility,Shortening 'User Facility' to 'Facility' is a valid partial name within the context of adverse event report sources.,no
+mindthequery:940,C,valid,natural,no,Onfi,Onfi is a well-known brand name for clobazam.,no
+mindthequery:940,D,valid,natural,no,,,no
+mindthequery:941,B,valid,natural,no,,,no
+mindthequery:942,C,valid,natural,no,VT,"VT is a standard, widely accepted medical abbreviation for ventricular tachycardia.",no
+mindthequery:942,E,valid,natural,no,,,no
+mindthequery:944,B,valid,natural,no,,,no
+mindthequery:944,D,valid,natural,no,,,no
+mindthequery:946,A,valid,natural,no,,,no
+mindthequery:946,B,valid,natural,no,,,no
+mindthequery:947,B,valid,natural,no,,,no
+mindthequery:947,E,valid,natural,no,,,no
+mindthequery:951,A,valid,natural,no,,,no
+mindthequery:951,C,valid,natural,no,AKCEA THERAPEUTICS,AKCA is the NASDAQ stock ticker symbol and standard abbreviation for Akcea Therapeutics.,no
+mindthequery:953,B,valid,natural,no,,,no
+mindthequery:953,E,valid,natural,no,,,no
+mindthequery:954,C,valid,natural,no,,IME is a standard pharmacovigilance abbreviation for Important Medical Event.,no
+mindthequery:954,E,valid,natural,no,,,no
+mindthequery:956,A,valid,natural,no,,,no
+mindthequery:956,B,valid,natural,no,,,no
+mindthequery:957,C,valid,natural,no,WWC 2019,"WWC stands for Women's World Cup, which took place in France in 2019.",no
+mindthequery:957,D,valid,natural,no,,,no
+mindthequery:96,A,valid,natural,no,,,no
+mindthequery:96,B,valid,natural,no,,,no
+mindthequery:961,A,valid,natural,no,,,no
+mindthequery:961,C,valid,natural,no,WWC 2011,"WWC stands for Women's World Cup, which took place in Germany in 2011.",no
+mindthequery:962,D,valid,natural,no,,,no
+mindthequery:962,E,valid,natural,no,,,no
+mindthequery:963,B,valid,natural,no,,,no
+mindthequery:963,C,valid,natural,no,USA 2003,,no
+mindthequery:965,C,valid,natural,no,,"WWC 2019 stands for Women's World Cup 2019, which took place in France.",no
+mindthequery:965,E,valid,natural,no,,,no
+mindthequery:966,D,valid,natural,no,,,no
+mindthequery:966,E,valid,natural,no,,,no
+mindthequery:97,D,valid,natural,no,,,no
+mindthequery:972,C,valid,natural,no,WWC 2011,WWC 2011 is a standard abbreviation for the 2011 FIFA Women's World Cup (Germany 2011).,yes
+mindthequery:972,E,valid,natural,no,,,yes
+mindthequery:974,A,valid,natural,no,,,no
+mindthequery:974,D,valid,natural,no,,,no
+mindthequery:976,D,valid,natural,no,,,no
+mindthequery:976,E,valid,natural,no,,,no
+mindthequery:977,B,valid,natural,no,,,no
+mindthequery:977,E,valid,natural,no,,,no
+mindthequery:978,C,valid,natural,no,,"WWC stands for Women's World Cup, which uniquely identifies the Germany 2011 tournament.",no
+mindthequery:978,E,valid,natural,no,,,no
+mindthequery:979,A,valid,natural,no,,,no
+mindthequery:979,C,valid,natural,no,,,no
+mindthequery:980,B,valid,natural,no,,,no
+mindthequery:980,C,valid,natural,no,WWC 2011,"WWC stands for Women's World Cup, which is commonly used to refer to the 2011 FIFA Women's World Cup (Germany 2011).",no
+mindthequery:982,A,valid,natural,no,,,no
+mindthequery:982,E,valid,natural,no,,,no
+mindthequery:984,B,valid,natural,no,,,no
+mindthequery:984,C,valid,natural,no,WWC 2011,WWC 2011 is a recognized abbreviation for the 2011 FIFA Women's World Cup (Germany 2011).,no
+mindthequery:987,B,valid,natural,no,,,no
+mindthequery:987,D,valid,natural,no,,,no
+mindthequery:988,B,valid,natural,no,,,no
+mindthequery:988,E,valid,natural,no,,,no
+mindthequery:994,D,valid,natural,no,,,no
+mindthequery:994,E,valid,natural,no,,,no
+zograscope:1000,A,valid,natural,no,,,no
+zograscope:1000,E,valid,unnatural,no,,,no
+zograscope:1001,B,invalid,natural,no,,,no
+zograscope:1001,E,invalid,unnatural,no,,,no
+zograscope:1004,A,valid,natural,no,,,no
+zograscope:1004,C,valid,natural,no,,,no
+zograscope:1007,B,valid,natural,no,,,no
+zograscope:1007,E,valid,natural,no,,,no
+zograscope:1009,B,valid,natural,no,,,no
+zograscope:1009,C,valid,natural,no,vehicle crimes,Typo 'vehcle' for 'vehicle'.,no
+zograscope:1015,B,valid,natural,no,,,no
+zograscope:1022,A,valid,natural,no,,,no
+zograscope:1022,C,valid,natural,no,Pontiac,,no
+zograscope:1023,A,valid,natural,no,,,no
+zograscope:1023,D,invalid,natural,no,,FoMoCo is not the person surname,no
+zograscope:1024,D,valid,natural,no,,,no
+zograscope:1024,E,valid,natural,no,,,no
+zograscope:1030,C,valid,natural,no,Fuller,Typo dropping the trailing 'r' from the surname Fuller.,no
+zograscope:1030,E,unsure,natural,no,,,no
+zograscope:1034,B,valid,natural,no,,,no
+zograscope:1035,E,unsure,natural,no,,,no
+zograscope:1037,C,valid,natural,no,NHS number: 249-54-6589,Uppercase casing change is valid and natural.,no
+zograscope:1041,B,valid,natural,no,,,no
+zograscope:1041,C,invalid,unnatural,no,Austin,"ATX is an abbreviation for the city of Austin, Texas, not a person's surname.",no
+zograscope:1043,B,valid,natural,no,,,no
+zograscope:1053,D,valid,natural,no,,,no
+zograscope:1053,E,valid,natural,no,,,no
+zograscope:1057,B,valid,natural,no,,,no
+zograscope:1057,D,valid,natural,no,,,no
+zograscope:1061,A,valid,natural,no,,,no
+zograscope:1061,D,valid,natural,no,,,no
+zograscope:1062,A,valid,natural,no,,,no
+zograscope:1062,C,valid,awkward,no,Chrises,"""Chris"" is a standard abbreviation/diminutive for ""Christopher"", but the plural form is awkwardly written as ""Chriss"" instead of ""Chrises"" or ""people named Chris"".",no
+zograscope:1064,C,valid,natural,no,Fox,,no
+zograscope:1067,B,valid,natural,no,,,no
+zograscope:1067,C,valid,natural,no,,PC is a standard and common abbreviation for Police Constable.,no
+zograscope:1069,B,valid,natural,no,,,no
+zograscope:1072,E,invalid,unnatural,no,,,no
+zograscope:1077,A,valid,natural,no,,,no
+zograscope:1077,E,valid,natural,no,,,no
+zograscope:1078,D,valid,natural,no,,,no
+zograscope:1093,C,valid,natural,no,,Wm. is a standard abbreviation for William.,no
+zograscope:1093,E,valid,unnatural,no,,,no
+zograscope:1099,D,valid,natural,no,,,no
+zograscope:11,E,valid,natural,no,,,no
+zograscope:1105,B,valid,natural,no,,,no
+zograscope:1108,B,valid,natural,no,,,no
+zograscope:1110,D,valid,natural,no,,,no
+zograscope:1117,B,valid,natural,no,,,no
+zograscope:1117,C,valid,natural,no,Powell,,no
+zograscope:1126,B,valid,natural,no,,,no
+zograscope:1126,E,valid,natural,no,,,no
+zograscope:1130,A,valid,natural,no,,,no
+zograscope:1130,C,valid,natural,no,Police Constables,PC is a standard abbreviation for Police Constable.,no
+zograscope:1137,B,valid,natural,no,,,no
+zograscope:1137,D,valid,natural,no,,,no
+zograscope:114,A,valid,natural,no,,,no
+zograscope:1141,D,valid,natural,no,,,no
+zograscope:1141,E,valid,unnatural,no,,,no
+zograscope:1142,C,valid,natural,no,,,no
+zograscope:1142,D,valid,natural,no,,,no
+zograscope:1158,C,valid,natural,no,Nguyen,Clear typo of the surname Nguyen.,no
+zograscope:1161,A,valid,natural,no,,,no
+zograscope:1161,D,valid,natural,no,,,no
+zograscope:1162,D,valid,natural,no,,,no
+zograscope:1175,E,valid,natural,no,,,no
+zograscope:118,A,valid,natural,no,,,no
+zograscope:118,C,valid,awkward,no,Commander,"Abbreviating the vehicle model 'Commander' as 'Cdr' is somewhat unnatural for car models, but recognizable.",no
+zograscope:1180,B,valid,natural,no,,,no
+zograscope:1180,E,valid,awkward,no,,,no
+zograscope:1185,A,valid,natural,no,,,no
+zograscope:1185,B,valid,natural,no,,,no
+zograscope:1188,B,valid,natural,no,,,no
+zograscope:1188,C,valid,natural,no,Frances,"Single letter typo ('c' -> 'v', adjacent on QWERTY keyboard).",no
+zograscope:1191,B,valid,natural,no,,,no
+zograscope:1191,C,valid,natural,no,vehicle crime,,no
+zograscope:1199,C,valid,natural,no,Sgt,,no
+zograscope:1199,E,valid,natural,no,,,no
+zograscope:1200,A,valid,natural,no,,,no
+zograscope:1200,C,valid,natural,no,vehicle crime,Clear minor typo with a single letter omitted.,no
+zograscope:1214,B,valid,natural,no,,,no
+zograscope:1214,E,valid,natural,no,,,no
+zograscope:1216,C,valid,natural,no,Bagby,,no
+zograscope:1218,E,valid,natural,no,,,no
+zograscope:1222,C,valid,natural,no,,,no
+zograscope:1226,C,valid,natural,no,,,no
+zograscope:1226,E,valid,natural,no,,,no
+zograscope:1228,B,valid,natural,no,,,no
+zograscope:1228,C,valid,natural,no,197 Mason Street,Shortening an address by dropping 'Street' is common and natural in conversation.,no
+zograscope:1229,B,valid,natural,no,,,no
+zograscope:1234,A,valid,natural,no,,,no
+zograscope:1243,D,valid,natural,no,,,no
+zograscope:1243,E,valid,natural,no,,,no
+zograscope:1245,B,valid,natural,no,,,no
+zograscope:1245,C,valid,natural,no,,,no
+zograscope:1246,A,valid,natural,no,,,no
+zograscope:1246,E,valid,natural,no,,,no
+zograscope:1247,A,valid,natural,no,,,no
+zograscope:1256,B,valid,natural,no,,,no
+zograscope:1256,D,valid,natural,no,,,no
+zograscope:1262,C,valid,natural,no,Officer Nell,Typo from Nell to Nel is minor and clearly refers to the same entity.,no
+zograscope:1262,E,valid,natural,no,,,no
+zograscope:1263,A,valid,natural,no,,,no
+zograscope:1263,B,valid,natural,no,,,no
+zograscope:1264,D,valid,natural,no,,,no
+zograscope:1279,A,valid,natural,no,,,no
+zograscope:1279,B,valid,natural,no,,,no
+zograscope:128,B,valid,natural,no,,,no
+zograscope:128,C,valid,natural,no,Clark,,no
+zograscope:1281,A,valid,natural,no,,,no
+zograscope:1281,C,valid,natural,no,Duncan,Typo of the surname Duncan.,no
+zograscope:1282,D,valid,natural,no,,,no
+zograscope:1282,E,valid,natural,no,,,no
+zograscope:1285,C,valid,natural,no,Chevy,,no
+zograscope:1285,D,valid,natural,no,,,no
+zograscope:1293,C,valid,natural,no,Inspectors,"""Insp""/""Insps"" is a standard abbreviation for Inspector(s).",no
+zograscope:1293,D,valid,natural,no,,,no
+zograscope:1294,D,valid,natural,no,,,no
+zograscope:1296,E,valid,natural,no,,,no
+zograscope:1297,A,valid,natural,no,,,no
+zograscope:1297,B,valid,natural,no,,,no
+zograscope:132,C,valid,natural,no,Cole,Transposition typo of Cole.,no
+zograscope:132,D,valid,natural,no,,,no
+zograscope:139,A,valid,natural,no,,,no
+zograscope:139,E,valid,natural,no,,,no
+zograscope:141,B,valid,natural,no,,,no
+zograscope:141,E,valid,natural,no,,,no
+zograscope:148,A,valid,natural,no,,,no
+zograscope:151,A,valid,natural,no,,,no
+zograscope:151,E,valid,awkward,yes,,,no
+zograscope:153,A,valid,natural,no,,,no
+zograscope:153,E,valid,natural,no,,,no
+zograscope:156,C,valid,natural,no,,,no
+zograscope:158,A,valid,natural,no,,,no
+zograscope:158,E,invalid,unnatural,no,,,no
+zograscope:164,D,valid,natural,no,,,no
+zograscope:164,E,valid,natural,no,,,no
+zograscope:166,C,valid,natural,no,Laurena,Lowercasing entity name.,no
+zograscope:168,A,valid,natural,no,,,no
+zograscope:168,E,valid,natural,no,,,no
+zograscope:178,A,valid,natural,no,,,no
+zograscope:178,B,valid,natural,no,,,no
+zograscope:179,A,valid,natural,no,,,no
+zograscope:180,A,valid,natural,no,,,no
+zograscope:180,C,invalid,unnatural,no,Ford,"FoMoCo is a well-known abbreviation for the Ford Motor Company, but here the property is Person.surname ('Ford' as a person's name), making 'a FoMoCo' nonsensical and invalid in this context.",no
+zograscope:188,E,valid,natural,no,,,no
+zograscope:19,A,valid,natural,no,,,no
+zograscope:2,C,valid,natural,no,Bailey,,no
+zograscope:207,E,valid,natural,no,,,no
+zograscope:212,A,valid,natural,no,,,no
+zograscope:212,D,invalid,natural,no,,JOR is a country code for Jordan,no
+zograscope:214,D,valid,natural,no,,,no
+zograscope:214,E,valid,natural,no,,,no
+zograscope:216,A,valid,natural,no,,,no
+zograscope:216,E,valid,natural,no,,,no
+zograscope:218,B,valid,natural,no,,,no
+zograscope:218,C,invalid,unnatural,no,Austin,"ATX is an abbreviation for the city of Austin, Texas, and is not a valid abbreviation or form for a person's surname.",no
+zograscope:220,A,valid,natural,no,,,no
+zograscope:220,C,valid,natural,no,,,no
+zograscope:222,A,valid,natural,no,,,no
+zograscope:222,B,valid,awkward,no,,,no
+zograscope:224,A,valid,natural,no,,,no
+zograscope:224,C,valid,natural,no,Robertson,,no
+zograscope:227,A,valid,natural,no,,,no
+zograscope:227,C,valid,natural,no,Boydell,,no
+zograscope:229,B,valid,natural,no,,,no
+zograscope:229,C,valid,natural,no,Police Constable,,no
+zograscope:230,A,valid,natural,no,,,no
+zograscope:230,B,valid,natural,no,,,no
+zograscope:235,A,valid,natural,no,,,no
+zograscope:235,D,valid,natural,no,,,no
+zograscope:24,B,valid,natural,no,,,no
+zograscope:24,D,valid,natural,no,,,no
+zograscope:242,A,valid,natural,no,,,no
+zograscope:242,B,valid,natural,no,,,no
+zograscope:244,D,valid,natural,no,,,no
+zograscope:244,E,valid,natural,no,,,no
+zograscope:247,C,valid,natural,no,Toxhead Close,,no
+zograscope:247,D,valid,natural,no,,,no
+zograscope:252,B,valid,natural,no,,,no
+zograscope:252,D,valid,natural,no,,,no
+zograscope:254,C,invalid,unnatural,no,Ford,"FoMoCo is an abbreviation for Ford Motor Company, not a plausible person surname.",no
+zograscope:254,D,invalid,natural,no,,FoMoCo is not the person surname,no
+zograscope:255,C,valid,natural,no,Other theft,,no
+zograscope:259,E,valid,natural,no,,,no
+zograscope:265,C,valid,natural,no,vehicle crime,,no
+zograscope:265,E,valid,natural,no,,,no
+zograscope:266,B,valid,natural,no,,,no
+zograscope:266,E,valid,natural,no,,,no
+zograscope:270,A,valid,natural,no,,,no
+zograscope:270,C,valid,natural,no,Investigation complete; no suspect identified,,no
+zograscope:272,E,valid,natural,no,,,no
+zograscope:277,C,valid,natural,no,Sgts,"""Sgt""/""Sgts"" is a standard abbreviation for Sergeant/Sergeants.",no
+zograscope:277,D,valid,natural,no,,,no
+zograscope:278,A,valid,natural,no,,,no
+zograscope:285,A,valid,natural,no,,,no
+zograscope:291,C,valid,natural,no,Martin,Simple typo adding an extra 'a' to the surname Martin.,no
+zograscope:296,D,valid,natural,no,,,no
+zograscope:297,D,valid,natural,no,,,no
+zograscope:300,A,valid,natural,no,,,no
+zograscope:300,C,valid,natural,no,,,no
+zograscope:301,B,valid,natural,no,,,no
+zograscope:301,C,valid,natural,no,Janice,,no
+zograscope:303,A,valid,natural,no,,,no
+zograscope:303,B,valid,natural,no,,,no
+zograscope:313,B,valid,natural,no,,,no
+zograscope:313,D,valid,natural,no,,,no
+zograscope:317,B,valid,natural,no,,,no
+zograscope:317,C,valid,natural,no,,PC is a standard abbreviation for Police Constable.,no
+zograscope:320,A,valid,natural,no,,,no
+zograscope:320,E,valid,awkward,no,,,no
+zograscope:321,A,valid,natural,no,,,no
+zograscope:321,D,valid,natural,no,,,no
+zograscope:322,A,valid,natural,no,,,no
+zograscope:322,B,valid,natural,no,,,no
+zograscope:324,A,valid,natural,no,,,no
+zograscope:324,C,valid,natural,no,Expedition,Typo in the model name.,no
+zograscope:325,C,invalid,unnatural,no,Jordan,Abbreviating the surname 'Jordan' to 'JOR' is not a recognized abbreviation for a surname and is completely ambiguous.,no
+zograscope:325,E,invalid,unnatural,no,,,no
+zograscope:328,E,valid,natural,no,,,no
+zograscope:333,C,valid,natural,no,Brian,,no
+zograscope:334,D,valid,natural,no,,,no
+zograscope:335,A,valid,natural,no,,,no
+zograscope:335,B,valid,natural,no,,,no
+zograscope:340,B,valid,natural,no,,,no
+zograscope:349,C,valid,natural,no,174 Mill Lane,Truncating street suffixes like Lane/Street/Road in casual address references is common.,no
+zograscope:351,A,valid,natural,no,,,no
+zograscope:351,D,valid,natural,no,,,no
+zograscope:358,A,valid,natural,no,,,no
+zograscope:358,D,invalid,natural,no,,JOR is a country code for Jordan,no
+zograscope:367,B,valid,natural,no,,,no
+zograscope:367,C,valid,natural,no,Deborah,Deb is a standard common nickname/abbreviation for Deborah.,no
+zograscope:375,A,valid,natural,no,,,no
+zograscope:375,D,valid,natural,no,,,no
+zograscope:378,B,valid,natural,no,,,no
+zograscope:378,C,valid,natural,no,PCs,"PC is a standard, widely used abbreviation for Police Constable in British and Commonwealth policing.",no
+zograscope:387,E,valid,natural,no,,,no
+zograscope:39,A,valid,natural,no,,,no
+zograscope:39,C,valid,natural,no,,,no
+zograscope:392,A,valid,natural,no,,,no
+zograscope:392,C,valid,natural,no,Porter,,no
+zograscope:4,B,invalid,natural,no,,,no
+zograscope:4,C,invalid,unnatural,no,Ford,FoMoCo stands for Ford Motor Company and is not a valid abbreviation for an individual person with the surname Ford.,no
+zograscope:407,B,valid,natural,no,,,no
+zograscope:407,C,valid,natural,no,,,no
+zograscope:413,C,valid,natural,no,Sgts,Standard abbreviation for Sergeant (plural: Sgts).,no
+zograscope:413,D,valid,natural,no,,,no
+zograscope:42,A,valid,natural,no,,,no
+zograscope:423,A,valid,natural,no,,,no
+zograscope:423,E,valid,natural,no,,,no
+zograscope:428,A,valid,natural,no,,,no
+zograscope:428,B,valid,natural,no,,,no
+zograscope:435,A,valid,natural,no,,,no
+zograscope:436,B,valid,natural,no,,,no
+zograscope:436,D,valid,natural,no,,,no
+zograscope:444,B,valid,natural,no,,,no
+zograscope:444,E,valid,natural,no,,,no
+zograscope:445,B,valid,natural,no,,,no
+zograscope:445,D,valid,natural,no,,,no
+zograscope:464,B,valid,natural,no,,,no
+zograscope:464,C,valid,natural,no,,,no
+zograscope:465,B,invalid,natural,no,,,no
+zograscope:465,E,invalid,natural,no,,,no
+zograscope:47,C,valid,natural,no,vehicle crimes,,no
+zograscope:47,D,valid,natural,no,,,no
+zograscope:471,A,valid,natural,no,,,no
+zograscope:471,B,valid,natural,no,,,no
+zograscope:472,A,valid,natural,no,,,no
+zograscope:472,B,valid,natural,no,,,no
+zograscope:475,C,valid,natural,no,Stanman,Typo in the surname of the officer.,no
+zograscope:475,E,valid,natural,no,,,no
+zograscope:478,C,valid,natural,no,Insp.,"""Insp"" is a standard abbreviation for Inspector.",no
+zograscope:478,D,valid,natural,no,,,no
+zograscope:487,B,valid,natural,no,,,no
+zograscope:487,C,valid,natural,no,Jack,,no
+zograscope:49,D,valid,natural,no,,,no
+zograscope:49,E,valid,natural,no,,,no
+zograscope:492,D,valid,natural,no,,,no
+zograscope:498,B,valid,natural,no,,,no
+zograscope:498,D,valid,natural,no,,,no
+zograscope:5,E,valid,natural,no,,,no
+zograscope:504,D,invalid,natural,no,,FoMoCo is not the person surname,no
+zograscope:504,E,invalid,unnatural,no,,,no
+zograscope:505,A,valid,natural,no,,,no
+zograscope:505,E,valid,natural,no,,,no
+zograscope:51,B,valid,natural,no,,,no
+zograscope:516,C,valid,natural,no,Hanson,,no
+zograscope:520,B,valid,natural,no,,,no
+zograscope:520,D,valid,natural,no,,,no
+zograscope:523,A,valid,natural,no,,,no
+zograscope:523,D,invalid,natural,no,,"ATX refers to Austin, Texas",no
+zograscope:534,A,valid,natural,no,,,no
+zograscope:539,C,valid,natural,no,,,no
+zograscope:539,D,valid,natural,no,,,no
+zograscope:541,A,valid,natural,no,,,no
+zograscope:541,B,valid,natural,no,,,no
+zograscope:544,E,invalid,natural,no,,,no
+zograscope:547,C,valid,natural,no,Gibson,,no
+zograscope:550,A,valid,natural,no,,,no
+zograscope:550,D,valid,natural,no,,,no
+zograscope:553,A,valid,natural,no,,,no
+zograscope:556,B,valid,natural,no,,,no
+zograscope:556,C,invalid,unnatural,no,Continental Mark VII,Shortening 'Continental Mark VII' to simply 'VII' makes it completely ambiguous and unrecognizable as a vehicle model.,no
+zograscope:567,B,valid,natural,no,,,no
+zograscope:567,E,valid,natural,no,,,no
+zograscope:568,C,valid,natural,no,189 Lowton Road,Dropping the street suffix 'Road' is common and understandable in conversational address references.,no
+zograscope:570,A,valid,natural,no,,,no
+zograscope:571,D,valid,natural,no,,,no
+zograscope:574,E,valid,natural,no,,,no
+zograscope:577,B,valid,natural,no,,,no
+zograscope:588,D,valid,natural,no,,,no
+zograscope:593,C,valid,natural,no,Doris,Lowercasing a proper name is a valid and natural casing perturbation.,no
+zograscope:593,D,valid,natural,no,,,no
+zograscope:594,C,valid,natural,no,92 Hilden Street,Dropping the street type suffix (Street) is common and easily understood in context.,no
+zograscope:594,E,valid,natural,no,,,no
+zograscope:599,A,valid,natural,no,,,no
+zograscope:599,D,valid,unnatural,no,,The wording “How are named the officers” is grammatically broken. “What are the names of the officers” would be natural.,no
+zograscope:603,A,valid,natural,no,,,no
+zograscope:603,B,valid,natural,no,,,no
+zograscope:610,C,invalid,unnatural,no,Austin,"ATX is an abbreviation for the city Austin, Texas, not a valid abbreviation for a person's surname.",no
+zograscope:610,D,invalid,natural,no,,"ATX refers to Austin, Texas",no
+zograscope:611,A,valid,natural,no,,,no
+zograscope:611,D,valid,natural,no,,,no
+zograscope:613,C,valid,natural,no,,Sgt is a standard abbreviation for Sergeant.,no
+zograscope:613,E,valid,natural,no,,,no
+zograscope:619,A,valid,natural,no,,,no
+zograscope:619,C,valid,natural,no,,PC is a standard abbreviation for Police Constable.,no
+zograscope:62,C,valid,natural,no,Porty,Typo in proper name.,no
+zograscope:626,B,valid,natural,no,,,no
+zograscope:626,C,valid,awkward,no,Matt,"The abbreviation 'Matt.' is valid for Matthew, though retaining the period mid-sentence creates awkward punctuation.",no
+zograscope:628,B,valid,natural,no,,,no
+zograscope:628,D,valid,natural,no,,,no
+zograscope:630,A,valid,natural,no,,,no
+zograscope:631,A,valid,natural,no,,,no
+zograscope:631,E,invalid,unnatural,no,,,no
+zograscope:635,C,valid,natural,no,Ford,FoMoCo is a well-known official abbreviation for Ford Motor Company.,no
+zograscope:635,E,valid,natural,no,,,no
+zograscope:638,A,valid,natural,no,,,no
+zograscope:638,C,valid,natural,no,,,no
+zograscope:639,B,valid,unnatural,yes,,,no
+zograscope:639,D,valid,natural,no,,,no
+zograscope:644,B,valid,unnatural,yes,,,no
+zograscope:644,E,valid,natural,no,,,no
+zograscope:645,D,valid,natural,no,,,no
+zograscope:653,C,valid,natural,no,,,no
+zograscope:653,E,valid,natural,no,,,no
+zograscope:655,B,valid,natural,no,,,no
+zograscope:655,E,valid,natural,no,,,no
+zograscope:660,B,valid,natural,no,,,no
+zograscope:660,C,valid,natural,no,,,no
+zograscope:664,B,valid,natural,no,,,no
+zograscope:664,C,valid,awkward,no,Matt,"Using 'Matt.' with a period in the middle of a sentence followed by 'and' looks slightly awkward, but it is a standard valid abbreviation of Matthew.",no
+zograscope:665,B,valid,natural,no,,,no
+zograscope:665,D,valid,natural,no,,,no
+zograscope:674,D,valid,natural,no,,,no
+zograscope:674,E,valid,natural,no,,,no
+zograscope:676,B,valid,natural,no,,,no
+zograscope:676,E,valid,natural,no,,,no
+zograscope:677,B,valid,natural,no,,,no
+zograscope:678,A,valid,natural,no,,,no
+zograscope:678,C,valid,natural,no,,PC is a standard and common abbreviation for Police Constable.,no
+zograscope:681,A,valid,natural,no,,,no
+zograscope:681,B,valid,natural,no,,,no
+zograscope:686,D,valid,natural,no,,,no
+zograscope:686,E,valid,natural,no,,,no
+zograscope:687,C,valid,natural,no,Amanda,Simple typo ('j' instead of 'n').,no
+zograscope:689,A,valid,natural,no,,,no
+zograscope:689,D,valid,natural,no,,,no
+zograscope:693,B,valid,natural,no,,,no
+zograscope:702,B,valid,unnatural,yes,,,no
+zograscope:702,E,valid,natural,no,,,no
+zograscope:703,B,valid,natural,no,,,no
+zograscope:703,E,valid,natural,no,,,no
+zograscope:71,B,valid,natural,no,,,no
+zograscope:71,D,valid,natural,no,,,no
+zograscope:713,D,valid,natural,no,,,no
+zograscope:713,E,valid,natural,no,,,no
+zograscope:714,C,valid,natural,no,Investigation complete; no suspect identified,,no
+zograscope:721,B,valid,natural,no,,,no
+zograscope:721,E,valid,natural,no,,,no
+zograscope:723,A,valid,natural,no,,,no
+zograscope:723,D,valid,natural,no,,,no
+zograscope:724,B,valid,natural,no,,,no
+zograscope:724,E,valid,natural,no,,,no
+zograscope:729,B,valid,natural,no,,,no
+zograscope:729,D,valid,natural,no,,,no
+zograscope:736,A,valid,natural,no,,,no
+zograscope:736,D,valid,natural,no,,,no
+zograscope:742,C,valid,natural,no,Police Constable,PC is a standard abbreviation for Police Constable.,no
+zograscope:742,D,valid,natural,no,,,no
+zograscope:743,A,valid,natural,no,,,no
+zograscope:743,D,valid,natural,no,,,no
+zograscope:744,A,valid,natural,no,,,no
+zograscope:747,A,valid,natural,no,,,no
+zograscope:747,E,valid,natural,no,,,no
+zograscope:750,A,valid,natural,no,,,no
+zograscope:750,E,valid,natural,no,,,no
+zograscope:752,C,valid,natural,no,Police Constable,"""PC"" is a common and standard abbreviation for Police Constable.",no
+zograscope:752,E,valid,natural,no,,,no
+zograscope:753,C,invalid,unnatural,no,Austin,"ATX is an abbreviation/airport code for the city of Austin, Texas, not an acceptable or recognizable abbreviation for a person's surname.",no
+zograscope:753,D,invalid,natural,no,,"ATX refers to Austin, Texas",no
+zograscope:757,A,valid,natural,no,,,no
+zograscope:757,C,valid,natural,no,Allen,Typo transposition of letters (Aleln for Allen).,no
+zograscope:760,C,valid,natural,no,,,no
+zograscope:764,A,valid,natural,no,,,no
+zograscope:764,D,valid,natural,no,,,no
+zograscope:773,A,valid,natural,no,,,no
+zograscope:773,B,valid,natural,no,,,no
+zograscope:776,E,valid,natural,no,,,no
+zograscope:778,C,valid,natural,no,Diana,,no
+zograscope:778,D,valid,natural,no,,,no
+zograscope:783,B,valid,natural,no,,,no
+zograscope:783,D,valid,natural,no,,,no
+zograscope:79,E,valid,natural,no,,,no
+zograscope:790,E,valid,natural,no,,,no
+zograscope:8,C,valid,natural,no,Toyota Motor Corporation,TMC is a standard and recognized abbreviation for Toyota Motor Corporation.,no
+zograscope:8,D,valid,natural,no,,,no
+zograscope:800,B,valid,natural,no,,,no
+zograscope:802,D,valid,natural,no,,,no
+zograscope:809,B,valid,natural,no,,,no
+zograscope:809,C,valid,natural,no,Arnold,Perturbation is simple ALL-CAPS casing.,no
+zograscope:813,A,valid,natural,no,,,no
+zograscope:817,A,valid,natural,no,,,no
+zograscope:817,C,valid,natural,no,vehicle crimes,Typo in 'crimes' -> 'crmes'.,no
+zograscope:820,B,valid,awkward,no,,,no
+zograscope:820,C,valid,natural,no,,,no
+zograscope:824,C,valid,natural,no,PC,"""PC"" is a common and standard abbreviation for Police Constable.",no
+zograscope:824,D,valid,natural,no,,,no
+zograscope:831,C,valid,natural,no,132 Phipps Street,,no
+zograscope:831,D,valid,natural,no,,,no
+zograscope:835,A,valid,natural,no,,,no
+zograscope:835,C,invalid,unnatural,no,Ford,"FoMoCo is an abbreviation for Ford Motor Company, not an acceptable or valid substitute for the surname Ford in the context of a person.",no
+zograscope:836,E,valid,natural,no,,,no
+zograscope:837,B,valid,natural,no,,,no
+zograscope:844,A,valid,natural,no,,,no
+zograscope:844,D,valid,natural,no,,,no
+zograscope:849,B,valid,natural,no,,,no
+zograscope:849,D,valid,natural,no,,,no
+zograscope:85,A,valid,natural,no,,,no
+zograscope:85,E,unsure,natural,no,,,no
+zograscope:852,B,valid,natural,no,,,no
+zograscope:855,B,valid,natural,no,,,no
+zograscope:855,D,valid,natural,no,,,no
+zograscope:86,E,valid,natural,no,,,no
+zograscope:860,C,valid,natural,no,29 Atherleigh Way,Dropping the street suffix 'Way' is a common partial abbreviation.,no
+zograscope:861,B,valid,natural,no,,,no
+zograscope:861,E,invalid,unnatural,no,,,no
+zograscope:862,C,valid,natural,no,Carlos,,no
+zograscope:862,E,valid,natural,no,,,no
+zograscope:865,B,valid,natural,no,,,no
+zograscope:865,E,valid,natural,no,,,no
+zograscope:869,B,valid,natural,no,,,no
+zograscope:869,D,valid,natural,no,,,no
+zograscope:872,C,valid,natural,no,Ford,FoMoCo is an established and widely recognized abbreviation for Ford Motor Company.,no
+zograscope:872,E,valid,natural,no,,,no
+zograscope:878,A,valid,natural,no,,,no
+zograscope:878,E,unsure,natural,no,,,no
+zograscope:888,A,valid,natural,no,,,no
+zograscope:888,B,valid,natural,no,,,no
+zograscope:895,A,valid,natural,no,,,no
+zograscope:895,E,valid,natural,no,,,no
+zograscope:898,B,valid,natural,no,,,no
+zograscope:9,D,valid,natural,no,,,no
+zograscope:9,E,valid,natural,no,,,no
+zograscope:901,E,valid,natural,no,,,no
+zograscope:902,B,valid,natural,no,,,no
+zograscope:902,D,valid,natural,no,,,no
+zograscope:915,A,valid,natural,no,,,no
+zograscope:915,E,valid,natural,no,,,no
+zograscope:916,E,valid,natural,no,,,no
+zograscope:917,B,valid,natural,no,,,no
+zograscope:917,D,valid,natural,no,,,no
+zograscope:919,A,valid,natural,no,,,no
+zograscope:919,E,valid,natural,no,,,no
+zograscope:92,A,valid,natural,no,,,no
+zograscope:92,B,valid,natural,no,,,no
+zograscope:920,B,invalid,natural,no,,,no
+zograscope:920,D,invalid,natural,no,,FoMoCo is not the person surname,no
+zograscope:93,B,valid,natural,no,,,no
+zograscope:93,C,valid,natural,no,,,no
+zograscope:931,A,valid,natural,no,,,no
+zograscope:933,A,valid,natural,no,,,no
+zograscope:933,C,valid,natural,no,,,no
+zograscope:941,A,valid,natural,no,,,no
+zograscope:945,B,valid,natural,no,,,no
+zograscope:945,C,valid,natural,no,,PC is a standard abbreviation for Police Constable.,no
+zograscope:946,A,valid,natural,no,,,no
+zograscope:946,C,valid,awkward,no,Matt,Abbreviating a first name with a period mid-sentence is slightly awkward compared to just writing 'Matt'.,no
+zograscope:948,A,valid,natural,no,,,no
+zograscope:948,B,valid,natural,no,,,no
+zograscope:949,A,valid,natural,no,,,no
+zograscope:949,B,valid,natural,no,,,no
+zograscope:950,D,valid,natural,no,,,no
+zograscope:960,C,valid,natural,no,William,"Wm. is a standard, historically common abbreviation for the name William.",no
+zograscope:960,E,invalid,unnatural,no,,,no
+zograscope:965,B,valid,natural,no,,,no
+zograscope:971,A,valid,natural,no,,,no
+zograscope:971,E,valid,natural,no,,,no
+zograscope:972,C,valid,natural,no,Police Constables,PC is a standard and common abbreviation for Police Constable.,no
+zograscope:972,D,valid,natural,no,,,no
+zograscope:986,B,valid,natural,no,,,no
+zograscope:987,A,valid,natural,no,,,no
+zograscope:987,C,valid,natural,no,,,no
+zograscope:990,C,valid,natural,no,William,Wm. is a standard abbreviation for the name William.,no
+zograscope:990,D,valid,natural,no,,,no
+zograscope:998,A,valid,natural,no,,,no
+zograscope:998,E,invalid,unnatural,no,,,no
+zograscope:999,C,valid,natural,no,Bruce,,no

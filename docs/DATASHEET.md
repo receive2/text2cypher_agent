@@ -131,6 +131,10 @@ the per-graph mix rather than forcing abbreviations/aliases that do not exist.
 ## 7. Quality control & known limitations
 
 - **Human verification.** All **916 LLM-proposed edits (100%)** undergo a full double-annotated census — the tier that underpins the anti-circularity claim, and the only tier where verification *removes* items. The lower-risk tiers are *measured* by stratified sample rather than exhaustively cleaned: **400 of 1,052** attested/KB edits (double-annotated) and **450 of 2,673** algorithmic edits, each reported as a validity rate with a Wilson 95% CI; un-sampled rows of those two tiers remain in the release. Total queue 1,766 items / 3,322 judgments across 5 annotators. Queues are built blind by `scripts/verification_sample.py` (annotator instructions: `docs/ANNOTATION_QUICKSTART.md`; internal guideline: `docs/ANNOTATION_SHEET.md`; methodology: `docs/VERIFICATION_PROTOCOL.md`). Adjudication rules are pre-registered (§7 curation log, 2026-08-22); calibration items are excluded from all reported measurements. **Canonical figures are post-adjudication; this v2.1 freeze is pre-verification.**
+
+<!-- AUTOGEN:VERIFICATION -->
+_Verification results not yet frozen — run `scripts/freeze_verified_release.py` after adjudication._
+<!-- /AUTOGEN:VERIFICATION -->
 - **Residual LLM noise** caught by verification: standings-code abbreviations
   (`the CHI`) and invented nicknames for obscure entities. Closed-set categories
   (≤30 distinct values: divisions, conferences, positions, awards) are excluded
@@ -306,6 +310,19 @@ the per-graph mix rather than forcing abbreviations/aliases that do not exist.
   the frozen decisions and verifies canonical-hash equality with the released
   files (verified: 6/6 files match). The manifest supersedes the per-wave
   curation logs as the complete row-level provenance record.
+
+- **2026-09-09 — human verification collected (5/5 annotators); freeze
+  pending adjudication.** 3,322 judgments over 1,766 queue items; 1,739
+  measured after the pre-registered calibration exclusion. Validity: LLM
+  99.2% [98.3, 99.6], attested 99.2% [97.7, 99.7], algorithmic 97.2% [95.2,
+  98.4]; agreement AC1 0.964 / raw 95.8–97.7% (α 0.354, deflated by
+  prevalence as pre-registered). 55 items await adjudication; the v2.1 files
+  remain the released files until `scripts/freeze_verified_release.py`
+  writes v2.2. Dry run on current verdicts: 3 removed as invalid, 7 reverted
+  to certified prior forms, 5 source-error, 9 unnatural, 2 calibration —
+  well under the ≈100–150 loss pre-registered; contingency rate 0.4%.
+  Policy choices stated in `docs/VERIFICATION_PROTOCOL.md` §9. Artifacts:
+  `audit/verification/`.
 
 ## 8. Files
 

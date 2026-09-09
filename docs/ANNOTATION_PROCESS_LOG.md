@@ -22,6 +22,9 @@ Annotator-facing instructions: `docs/ANNOTATION_QUICKSTART.md`.
 | 2026-08-25 | First returned calibration file identified as the **original** (08-22/23) calibration set — the rebuilt packages had silently re-drawn a different one. Row-level review of the return: 9 of 12 `invalid` labels trace to known §3 issues (plus one new: world-ambiguity, added as feedback point 4); 2–3 flag genuinely weak algorithmic partials (`List`, `World Jurassic Park`) — real signal the Tier-2 sample is designed to measure. |
 | 2026-08-25 | **Package v2.2:** since no new-set package had been sent, the calibration file was reverted to the original 48-item set for all five annotators (main CSVs unchanged). Single shared calibration set; 27 in-queue ids excluded → **1,739 measured items / 3,268 judgments**. Answer key frozen for this set (`verification/calibration_key.csv`, organizer-only; 2 ref-invalid teaching items). |
 | 2026-08-28 | All 5 warm-ups returned (one attribution pending). Graded against the key: judge-in-context 15/15 miss, typo intent 22/30 miss, casing naturalness 4/5 — all strict-direction. Guide updated with warm-up-mistakes box and **frozen**; **package v2.3** (per-annotator calibration filenames + `annotator` column; `identify_return.py` files returns automatically). Main CSVs still byte-identical to v2. |
+| 2026-09-01 | First main file returned (E). Came back cp1252 from Excel's plain "CSV" save: 10 rows' non-Latin characters replaced by `?`, labels intact — repaired by restoring source columns from the shipped queue; `identify_return.py` gained encoding fallbacks and the guide now says "CSV UTF-8". |
+| 2026-09-07 | A, B, D returned main files (UTF-8, complete). |
+| 2026-09-09 | C returned main file (UTF-8, 664/664, 0 illegal values). **Collection complete: 5/5.** Five-annotator statistics computed; 55 items pending adjudication (worklist issued); release freeze tooling ready (§7). |
 
 ## 2. Recruitment context
 
@@ -224,3 +227,56 @@ design remains substantially above the field norm.
   (`verification_stats.py` does this automatically). Organizer-only reference
   answers with rationales: `verification/calibration_key.csv` (frozen with the
   guidelines; **never shipped to annotators**).
+
+## 7. Collection outcome (2026-09-09, pre-adjudication)
+
+All five annotators returned complete main files (3,322 judgments; every
+`validity` cell filled, zero illegal values). Statistics from
+`scripts/verification_stats.py` on the 1,739 measured items (27 calibration
+overlaps excluded as pre-registered):
+
+| | value |
+|---|---|
+| double-annotated items | 1,524 |
+| disagreements (→ adjudication) | 53 (3.5%) |
+| still pending after agreed-unsure | **55** (LLM 34 · attested 9 · algorithmic 12) |
+| Krippendorff's α (all items) | 0.354 |
+| Gwet's AC1 (all items) | 0.964 |
+| raw agreement, by tier | LLM 96.2% · attested 97.7% · algorithmic 95.8% |
+| validity, by tier (Wilson 95% CI) | LLM 99.2% [98.3, 99.6] · attested 99.2% [97.7, 99.7] · algorithmic 97.2% [95.2, 98.4] |
+| validity, by strategy | casing 100 · alias 99.8 · typo 99.0 · abbrev 98.7 · partial 94.5 |
+| source-error flags | 5 |
+
+**Reading the agreement figures.** α is deflated exactly as pre-registered in
+the protocol: with 97–99% of items `valid`, chance agreement is already ~0.96,
+so α sits far below the raw agreement it summarises. Two pairwise κ values are
+0.000 (A–B, A–D) because one rater in each pair never left `valid` on the
+co-rated items — κ is 0 by construction when a rater has no variance — and
+B–D is 1.000 because the pair agreed on every item including a shared
+rejection; pairs that include the stricter raters (C, E) land at 0.33–0.59.
+Per-rater rejection rates: A 0.9%, B 0.9%, C 4.1%, D 2.3%, E 6.1%. All
+disagreement is in one direction (a stricter rater rejecting), which is the
+safe failure mode for a benchmark.
+
+**Column misuse, logged not applied.** Annotator C filled `corrected_form` on
+436 rows; 275 simply restate the canonical entity and 142 restate the
+perturbed form, i.e. the column was read as "what is the correct name" rather
+than "a better rewrite". The 19 substantive suggestions (e.g. `TAN → DNK` for
+Denmark) are kept in `audit/verification/verdicts_long.csv`; none is applied,
+because the pre-registered fix path requires a second verification pass that
+did not take place.
+
+**What happens to the release** (`scripts/freeze_verified_release.py`, rules
+pre-registered 2026-08-22; policy choices stated here as the protocol
+requires): `source_error` → removed in every tier; census-tier (LLM/attested)
+`invalid` → reverted to the certified prior algorithmic form when one exists,
+otherwise removed; algorithmic-tier `invalid` → kept, rate reported (§3: that
+tier triggers no removals); `valid` + `unnatural` in the census tiers →
+removed, `awkward` kept (`--naturalness drop-unnatural`); calibration items →
+organizer reference answer (2 removed); items never sampled → kept. Dry run on
+the current verdicts: 3 removed as invalid, 7 reverted, 5 source-error, 9
+unnatural, 2 calibration; contingency rate 0.4% (threshold 20%). The freeze
+refuses to run while 55 items await adjudication; the canonical v2.2 numbers
+follow adjudication. Raw artifacts (blind key, anonymised per-item verdicts,
+calibration set + reference answers, statistics) are in
+`audit/verification/`.

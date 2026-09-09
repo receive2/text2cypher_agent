@@ -78,7 +78,13 @@ def cohen_kappa(pairs: List[Tuple[str, str]]) -> Optional[float]:
     pa = {c: sum(1 for a, _ in pairs if a == c) / n for c in cats}
     pb = {c: sum(1 for _, b in pairs if b == c) / n for c in cats}
     pe = sum(pa[c] * pb[c] for c in cats)
-    return 1.0 if pe >= 1.0 else (po - pe) / (1 - pe)
+    if pe >= 1.0:
+        # Both raters used a single, identical category on every co-rated
+        # item: observed and expected agreement are both 1, so kappa is 0/0.
+        # Report it as undefined rather than 1.0 — perfect agreement with no
+        # label variance carries no information about reliability.
+        return None
+    return (po - pe) / (1 - pe)
 
 
 def gwet_ac1(ratings_by_item: Dict[str, Dict[str, str]],
@@ -291,6 +297,9 @@ def main(argv: Optional[List[str]] = None) -> int:
                          "calibration_legacy_ids.csv next to --key, if "
                          "present; pass a bare --calibration to disable)")
     ap.add_argument("--out", default=None, help="write the markdown report here (else stdout)")
+    ap.add_argument("--json", default=None,
+                    help="also write every reported figure as JSON here (consumed by "
+                         "render_datasheet_tables.py and the release freeze)")
     args = ap.parse_args(argv)
 
     key = _read_key(args.key)
@@ -346,11 +355,18 @@ def main(argv: Optional[List[str]] = None) -> int:
     # overall pairwise Cohen kappa
     anns = sorted({a for d in val.values() for a in d})
     kappa_lines = []
+    kappa_json: Dict[str, dict] = {}
     for a, b in combinations(anns, 2):
         pairs = [(d[a], d[b]) for d in val.values() if a in d and b in d]
         k = cohen_kappa(pairs)
-        kappa_lines.append(f"  - {a}–{b}: kappa={k:.3f} (n={len(pairs)})" if k is not None
-                           else f"  - {a}–{b}: (no co-rated items)")
+        kappa_json[f"{a}-{b}"] = {"kappa": k, "n": len(pairs)}
+        if k is not None:
+            kappa_lines.append(f"  - {a}–{b}: kappa={k:.3f} (n={len(pairs)})")
+        elif pairs:
+            kappa_lines.append(f"  - {a}–{b}: undefined — no label variance in either rater "
+                               f"(all {len(pairs)} co-rated items agree)")
+        else:
+            kappa_lines.append(f"  - {a}–{b}: (no co-rated items)")
     alpha_all = krippendorff_alpha_nominal(val)
     ac1_all = gwet_ac1(val, _CATS)
 
@@ -407,6 +423,41 @@ def main(argv: Optional[List[str]] = None) -> int:
         print(f"Wrote {args.out}")
     else:
         print(report)
+
+    if args.json:
+        import json
+        cols = ("stratum", "n", "resolved", "valid", "invalid", "source_error",
+                "pending", "validity", "ci_lo", "ci_hi", "alpha", "ac1",
+                "raw_agreement", "n_double")
+        def table(rows):
+            return [dict(zip(cols, r)) for r in rows]
+        payload = {
+            "items": total,
+            "annotators": anns,
+            "calibration_excluded_ids": len(cal_ids),
+            "calibration_ids_in_queue": len(cal_ids_seen),
+            "calibration_judgments_dropped": n_cal_excluded,
+            "double_annotated": n_double,
+            "disagreements": n_disagree,
+            "pending": sum(1 for f in final.values() if f == "pending"),
+            "source_error": sum(1 for f in final.values() if f == "source_error"),
+            "invalid": sum(1 for f in final.values() if f == "invalid"),
+            "retained_valid": final_valid,
+            "alpha": alpha_all,
+            "ac1": ac1_all,
+            "kappa": kappa_json,
+            "by_strategy": table(stratum_rows(lambda m: m.get("strategy", "?"))),
+            "by_provenance": table(stratum_rows(lambda m: m.get("provenance", "?"))),
+            "by_dataset": table(stratum_rows(lambda m: m.get("dataset", "?"))),
+            "by_strategy_provenance": table(stratum_rows(
+                lambda m: f"{m.get('strategy','?')} / {m.get('provenance','?')}")),
+            "overall": table(stratum_rows(lambda m: "ALL")),
+            "final_labels": final,
+        }
+        Path(args.json).parent.mkdir(parents=True, exist_ok=True)
+        Path(args.json).write_text(json.dumps(payload, ensure_ascii=False, indent=1),
+                                   encoding="utf-8")
+        print(f"Wrote {args.json}")
     return 0
 
 

@@ -135,13 +135,61 @@ def block_realized(rows):
     return "\n".join(L)
 
 
+VERIF_DIR = _REPO / "audit" / "verification"
+
+
+def block_verification():
+    """Human-verification outcome, from the release freeze's artifacts. Every
+    number here is produced by scripts (verification_stats.py --json and
+    freeze_verified_release.py); nothing is typed in by hand."""
+    stats_p, summ_p = VERIF_DIR / "stats.json", VERIF_DIR / "summary.json"
+    if not (stats_p.exists() and summ_p.exists()):
+        return ("_Verification results not yet frozen — run "
+                "`scripts/freeze_verified_release.py` after adjudication._")
+    st = json.loads(stats_p.read_text(encoding="utf-8"))
+    sm = json.loads(summ_p.read_text(encoding="utf-8"))
+    f = lambda x: "—" if x is None else f"{x:.3f}"
+    L = [f"**Release {sm['version']}** — {sm['rows_in']:,} rows in → "
+         f"**{sm['rows_out']:,}** released "
+         f"({sm['actions'].get('remove_total', 0)} removed, "
+         f"{sm['actions'].get('revert_total', 0)} reverted to a certified prior "
+         f"algorithmic form, {sm['actions'].get('pending', 0)} pending). "
+         f"Naturalness policy: `{sm['naturalness_policy']}`. "
+         f"Verdicts from {len(st['annotators'])} annotators over {st['items']:,} "
+         f"measured items ({st['double_annotated']:,} double-annotated; "
+         f"{st['calibration_ids_in_queue']} calibration items excluded).", "",
+         f"Inter-annotator agreement (validity): Krippendorff's α = **{f(st['alpha'])}**, "
+         f"Gwet's AC1 = **{f(st['ac1'])}**, disagreement rate "
+         f"{100*st['disagreements']/max(st['double_annotated'],1):.1f}%.", "",
+         "| provenance | n | validity % [95% CI] | α | AC1 | raw agr (n₂) | action |",
+         "|---|--:|---|--:|--:|---|---|"]
+    act = {"llm": "invalid → revert/remove", "attested": "invalid → revert/remove",
+           "algorithmic": "rate only (no removals)"}
+    for r in st["by_provenance"]:
+        ci = "—" if not r["resolved"] else f"{100*r['validity']:.1f}% [{100*r['ci_lo']:.1f}, {100*r['ci_hi']:.1f}]"
+        raw = "—" if r["raw_agreement"] is None else f"{100*r['raw_agreement']:.1f}% ({r['n_double']})"
+        L.append(f"| {r['stratum']} | {r['n']} | {ci} | {f(r['alpha'])} | {f(r['ac1'])} | {raw} | {act.get(r['stratum'], '')} |")
+    L += ["", "| strategy | n | validity % [95% CI] | α | AC1 | raw agr (n₂) |",
+          "|---|--:|---|--:|--:|---|"]
+    for r in st["by_strategy"]:
+        ci = "—" if not r["resolved"] else f"{100*r['validity']:.1f}% [{100*r['ci_lo']:.1f}, {100*r['ci_hi']:.1f}]"
+        raw = "—" if r["raw_agreement"] is None else f"{100*r['raw_agreement']:.1f}% ({r['n_double']})"
+        L.append(f"| {r['stratum']} | {r['n']} | {ci} | {f(r['alpha'])} | {f(r['ac1'])} | {raw} |")
+    L += ["", "Per-row verdicts (anonymised annotator letters), the blind key, the "
+          "calibration reference answers and the full statistics report ship in "
+          "`audit/verification/`; `decisions.csv` maps every v2.1 row to its "
+          "action and its position in the released files."]
+    return "\n".join(L)
+
+
 def main() -> int:
     rows = load()
     s = DATASHEET.read_text(encoding="utf-8")
     for tag, content in (("HEADLINE", block_headline(rows)),
                          ("COMPOSITION", block_composition(rows)),
                          ("DIFFICULTY", block_difficulty(rows)),
-                         ("REALIZED", block_realized(rows))):
+                         ("REALIZED", block_realized(rows)),
+                         ("VERIFICATION", block_verification())):
         pat = re.compile(f"<!-- AUTOGEN:{tag} -->.*?<!-- /AUTOGEN:{tag} -->",
                          re.DOTALL)
         if not pat.search(s):

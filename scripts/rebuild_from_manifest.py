@@ -44,27 +44,29 @@ def canonical_hash(obj) -> str:
     ).hexdigest()
 
 
-def main() -> int:
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--out", default=None, help="also write rebuilt files here")
-    args = ap.parse_args()
-
-    lines = open(MANIFEST, encoding="utf-8").read().splitlines()
+def load_manifest(path) -> tuple[dict, list]:
+    lines = open(path, encoding="utf-8").read().splitlines()
     header = json.loads(lines[0])
     assert header.get("_manifest_header"), "first line must be the manifest header"
-    recs = [json.loads(l) for l in lines[1:]]
-    print(f"manifest {header['version']}: {len(recs)} rows")
+    return header, [json.loads(l) for l in lines[1:]]
 
-    rebuilt = defaultdict(lambda: ([], []))   # ds -> (rows, probed_rows)
-    n_derived = 0
+
+def build_rows(recs) -> dict:
+    """Re-derive the released rows from manifest records.
+
+    Returns ``{dataset: (rows, probed_rows)}`` in manifest order. The perturbed
+    question is NOT copied — it is rebuilt from ``original_nl`` and the frozen
+    edit through the same word-boundary replacement + splice guard used at
+    generation time, so the manifest is the only input. This is the one place
+    the row shape is defined; the verified-release freeze reuses it so a v2.2
+    manifest verifies with exactly this code."""
+    rebuilt = defaultdict(lambda: ([], []))
     for r in sorted(recs, key=lambda r: (r["dataset"], r["position"])):
         meta = r["aug_meta"]
         e = (meta.get("edits") or [{}])[0]
         original_nl = meta.get("original_nl") or ""
-        # re-derive the perturbed question from the frozen decision
         nl = _replace_all(original_nl, e.get("from", ""), e.get("to", ""))
         assert nl is not None, f"derivation failed at {r['dataset']}:{r['position']}"
-        n_derived += 1
         row = {"dataset": r["dataset"], "graph": r["graph"], "id": r["id"],
                "nl": nl, "gold_cypher": r["gold_cypher"],
                "_aug_meta": meta, "_source_row": r["_source_row"]}
@@ -75,9 +77,13 @@ def main() -> int:
         prow = {**row, "_aug_meta": pmeta, **(r.get("probed_extra_keys") or {})}
         rebuilt[r["dataset"]][0].append(row)
         rebuilt[r["dataset"]][1].append(prow)
+    return rebuilt
 
+
+def verify(header, rebuilt, out=None, datasets=None) -> bool:
+    """Compare rebuilt files against the hashes frozen in the header."""
     ok = True
-    for ds, path in _DATASETS.items():
+    for ds, path in (datasets or _DATASETS).items():
         rows, prows = rebuilt[ds]
         for name, built in (("test.json", rows), ("test.probed.json", prows)):
             want = header["released_hashes"][f"{ds}/{name}"]
@@ -86,12 +92,26 @@ def main() -> int:
             if got != want:
                 ok = False
             print(f"  {match} {ds}/{name}: rebuilt={got[:16]}… released={want[:16]}…")
-            if args.out:
-                out = Path(args.out) / ds
-                out.mkdir(parents=True, exist_ok=True)
-                json.dump(built, open(out / name, "w", encoding="utf-8"),
+            if out:
+                o = Path(out) / ds
+                o.mkdir(parents=True, exist_ok=True)
+                json.dump(built, open(o / name, "w", encoding="utf-8"),
                           ensure_ascii=False, indent=1)
-    print(f"\n{n_derived} perturbed questions re-derived from frozen decisions.")
+    return ok
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--out", default=None, help="also write rebuilt files here")
+    ap.add_argument("--manifest", default=str(MANIFEST),
+                    help=f"decision manifest to rebuild from (default: {MANIFEST})")
+    args = ap.parse_args()
+
+    header, recs = load_manifest(args.manifest)
+    print(f"manifest {header['version']}: {len(recs)} rows")
+    rebuilt = build_rows(recs)
+    ok = verify(header, rebuilt, out=args.out)
+    print(f"\n{len(recs)} perturbed questions re-derived from frozen decisions.")
     print("REBUILD VERIFIED — datasets are a deterministic function of the manifest."
           if ok else "MISMATCH — investigate before release.")
     return 0 if ok else 1
