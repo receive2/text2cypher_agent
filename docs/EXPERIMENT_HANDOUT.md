@@ -1,8 +1,9 @@
 # Running the perturbed-benchmark experiments — start here
 
 You are running a fixed evaluation harness over three entity-perturbed
-text-to-Cypher benchmarks. You do **not** need to understand the method: you
-pick a slice, run four commands, and send back the output directory.
+text-to-Cypher benchmarks with **one generator LLM assigned to you**. You do
+**not** need to understand the method: you set three lines in one config file,
+run four commands, and send back the output directory.
 
 Everything below is a checklist. If a step does not print what it says it
 should, stop and ask — a run that starts from a bad state produces a
@@ -14,17 +15,32 @@ Depth, troubleshooting and every config knob: [`RUNNING_EXPERIMENTS.md`](RUNNING
 
 ## 0. Prerequisites
 
-- Python env with the repo's dependencies installed.
-- **Neo4j access.** The graphs live on a shared VM. If your machine is on a
-  corporate VPN, the VM is usually unreachable — **disconnect the VPN** before
-  running. `UNREACH` in the pre-flight means a network problem, not a broken
-  setup.
-- An LLM API key configured as the repo expects.
-
 ```bash
-git clone <repo> && cd t2c
-git checkout dataset-curation-v2.1     # the branch these experiments run on
+git clone <repo> && cd t2c          # main branch — do not check out anything else
+python3 -m venv venv && source venv/bin/activate
+pip install -r requirements.txt     # pinned to the environment the reference runs used (Python 3.12)
+cp .env.example .env                # then put the keys in (below)
 ```
+
+- **Neo4j access.** The graphs live on a shared VM whose connection details are
+  committed in `eval_config.py`. If your machine is on a corporate VPN the VM
+  is usually unreachable — **disconnect the VPN** before running. `UNREACH` in
+  the pre-flight means a network problem, not a broken setup.
+- **API keys.** `.env` holds keys and nothing else — the model is chosen in
+  `eval_config.py` (step 2), never in `.env`. You need the key for the
+  provider of *your* model:
+
+| your model (`GENERATOR_LLM`) | provider | key in `.env` | where a key comes from |
+|---|---|---|---|
+| `gpt-5.6-terra`, `gpt-5.6-luna`, `gpt-4.1` | OpenAI | `OPENAI_API_KEY` | platform.openai.com → API keys |
+| `claude-opus-5`, `claude-haiku-4.5` | Anthropic | `ANTHROPIC_API_KEY` | console.anthropic.com → API Keys |
+| `deepseek-v3.1`, `llama-3.3-70b` | DeepInfra | `DEEPINFRA_API_KEY` | deepinfra.com → Dashboard → API Keys |
+
+  **Ask the coordinator for the lab key before creating your own** — the runs
+  are billed centrally and each model has its own key so spend can be tracked.
+  Never commit `.env`.
+- **Disk, if you run `fcav`:** its FAISS index is ~4 GB per graph, and building
+  it downloads a sentence-transformers model on first use.
 
 ## 1. Verify the dataset — do this first, every time you pull
 
@@ -35,27 +51,45 @@ python benchmarks/verify.py
 Must print **`VERIFIED — safe to run experiments and pool results.`**
 
 This is not a formality. The benchmarks are the **v2.2 verified release,
-4,611 questions** (the v2.1 freeze after applying the human-verification
-verdicts); earlier checkouts carried the 4,641-row pre-verification v2.1 set or
-the 4,875-row pre-curation set. Results from different copies **cannot be
-pooled**, and nothing downstream will warn you. If it fails: `git pull`, run it again, and if it still fails, ask before
-running anything.
+4,611 questions**; earlier checkouts carried the 4,641-row pre-verification
+v2.1 set or the 4,875-row pre-curation set, and results from different copies
+**cannot be pooled** — nothing downstream will warn you. If it fails:
+`git pull`, run it again, and if it still fails, ask before running anything.
 
-## 2. Choose your slice — edit `eval_config.py`
+## 2. Choose your model and slice — edit `eval_config.py`
 
-Open `eval_config.py` and edit the boxed **`★ EXPERIMENT PARAMETERS ★`** block
-at the top plus `EVAL_PAIRS` just below it:
+Open `eval_config.py`. In the boxed **`★ EXPERIMENT PARAMETERS ★`** block at
+the top set your model and method, and just below it set `EVAL_PAIRS`:
 
 ```python
-EVAL_PAIRS = [("cypherbench_augmented", "movie")]   # your assigned graph(s)
-METHOD     = "cyanchor"                             # one of the five, see below
-SHARDS     = 1                                      # keep 1 for cyanchor
-LIMIT      = None                                   # None = all examples
+GENERATOR_LLM = "gpt-5.6-terra"   # ← the model assigned to you (exact preset name, see table)
+METHOD        = "cyanchor"        # one of the five below; run each separately
+SHARDS        = 1                 # keep 1 for cyanchor (see warning)
+LIMIT         = None              # None = all examples; 5 = smoke test
+
+EVAL_PAIRS = [("cypherbench_augmented", "movie")]   # your graph(s); full suite in "Work split"
 ```
 
 **The values already in the file are the last person's scratch, not a default.**
-Set them to your own slice. When you are done, `git checkout eval_config.py` —
-do not commit these edits.
+Set them to your own assignment. When you are done, `git checkout eval_config.py`
+— do not commit these edits.
+
+**The seven model presets** (`config.MODEL_PRESETS`; the name is what you type
+and what appears in the result directory):
+
+| preset | what it is | key |
+|---|---|---|
+| `gpt-4.1` | the baseline all reference runs used | `OPENAI_API_KEY` |
+| `gpt-5.6-terra` | GPT workhorse (primary model) | `OPENAI_API_KEY` |
+| `gpt-5.6-luna` | cheap tier — also for smoke tests | `OPENAI_API_KEY` |
+| `claude-opus-5` | strongest tier (thinking switched off by the harness) | `ANTHROPIC_API_KEY` |
+| `claude-haiku-4.5` | cheap tier (its 4k-token caching minimum exceeds this prompt, so it runs uncached) | `ANTHROPIC_API_KEY` |
+| `deepseek-v3.1` | open-weights, strong tier (DeepInfra) | `DEEPINFRA_API_KEY` |
+| `llama-3.3-70b` | open-weights baseline (DeepInfra) | `DEEPINFRA_API_KEY` |
+
+One name switches every stage of the pipeline (entity extraction, Cypher
+generation, answer formatting). A wrong name fails immediately with the list
+of valid ones — it never silently falls back to another model.
 
 **The five methods** (run each one separately; results land in separate
 directories, nothing is overwritten):
@@ -74,7 +108,16 @@ the shipped configuration.
 > ⚠️ **`SHARDS = 1` for `cyanchor`.** It is the most LLM-call-heavy method;
 > sharding it raises peak concurrency past provider rate limits and the
 > resulting per-example timeouts are scored as failures, which silently
-> understates it. The other four methods can use higher `SHARDS`.
+> understates it. The other four methods can use higher `SHARDS`. If you share
+> a key with someone else running at the same time, keep it low.
+
+**Smoke test first:** set your own `GENERATOR_LLM`, `LIMIT = 5`, one graph,
+`METHOD = "no_val_link"` — a two-minute run that proves your key, the model
+id, Neo4j and the harness work before you spend hours. The two Claude presets
+have been exercised end-to-end; the GPT-5.6 and DeepInfra presets are
+registered from the providers' published ids but your smoke test is their
+first live call — if the API rejects a parameter, the error names it and the
+fix is one line in `config.MODEL_PRESETS` (tell the coordinator).
 
 ## 3. One-time setup for each graph you were assigned
 
@@ -84,7 +127,9 @@ python setup_fcav.py                   # only if you will run the fcav method
 ```
 
 Both read `EVAL_PAIRS`, so set that first. Positional arguments are
-deliberately rejected, so the CLI and the config can never disagree.
+deliberately rejected, so the CLI and the config can never disagree. Setup is
+per graph and independent of the model — do it once, then run all five
+methods against it.
 
 ## 4. Pre-flight — must be green
 
@@ -101,20 +146,20 @@ continuing.
 
 ```bash
 python eval_run.py        # one run per METHOD; re-edit METHOD and repeat
-python eval_aggregate.py  # prints the summary table
+python eval_aggregate.py  # prints the summary table (one block per method@model)
 ```
 
 Results land in a fresh timestamped directory per run:
 
 ```
-logs/runs/<dataset>__<graph>__<method>__<YYYYMMDD-HHMMSS>/
+logs/runs/<dataset>__<graph>__<method>@<model>__<YYYYMMDD-HHMMSS>/
     records.jsonl    one line per example  ← this is what we need back
-    summary.json     aggregate + full run configuration
+    summary.json     aggregate + full run configuration (incl. the model)
 ```
 
-`<method>` in the directory name is `no_val_link` / `fcav` / `react` /
-`graphrag`, and for our method `cyanchor_fl` (the active retrieval arms are part
-of the name, so arm ablations never overwrite each other).
+`<method>` is `no_val_link` / `fcav` / `react` / `graphrag`, and for our method
+`cyanchor_fl`; `<model>` is your `GENERATOR_LLM`. Two models can never land in
+the same directory, so re-running is always safe.
 
 ## 6. Send back
 
@@ -122,35 +167,67 @@ Send the whole `logs/runs/` directory (or just the run dirs you produced),
 zipped. **`records.jsonl` is the important file** — it holds one record per
 example, which lets us re-derive every table without re-running anything.
 
-Also tell us: which graphs and methods you ran, and anything that looked odd
-(hangs, rate-limit errors, red pre-flight lines you worked around).
+Also tell us: which model, graphs and methods you ran, and anything that looked
+odd (hangs, rate-limit errors, red pre-flight lines you worked around).
 
 Do **not** delete run directories that errored — a failed run is diagnostic.
 
 ---
 
-## Work split
+## Work split — one person, one model
 
-Setup is per-graph, so the natural unit of work is a **graph**: take a graph,
-run all five methods on it. These 13 pairs are the full evaluation suite
-(`_FULL_EVAL_PAIRS_13` in `eval_config.py`); question counts are v2.1:
+Each person owns **one model** and runs the **full suite** on it: 13 graphs ×
+5 methods (~54 machine-hours at the shard settings above; leave it running).
+If you finish early, take a second model.
 
-| dataset | graph | questions | assigned to |
-|---|---|--:|---|
-| `cypherbench_augmented` | `movie` | 360 | |
-| `cypherbench_augmented` | `politics` | 360 | |
-| `cypherbench_augmented` | `geography` | 331 | |
-| `cypherbench_augmented` | `fictional_character` | 324 | |
-| `cypherbench_augmented` | `company` | 305 | |
-| `cypherbench_augmented` | `nba` | 251 | |
-| `cypherbench_augmented` | `flight_accident` | 168 | |
-| `mindthequery_augmented` | `healthcare` | 419 | |
-| `mindthequery_augmented` | `covid` | 327 | |
-| `mindthequery_augmented` | `wwc` | 267 | |
-| `mindthequery_augmented` | `er` | 185 | |
-| `mindthequery_augmented` | `bloom` | 24 | |
-| `zograscope_augmented` | `pole` | 1,290 | |
-| | **total** | **4,611** | |
+| model (`GENERATOR_LLM`) | owner | status |
+|---|---|---|
+| `gpt-5.6-terra` | | |
+| `gpt-5.6-luna` | | |
+| `claude-opus-5` | | |
+| `claude-haiku-4.5` | | |
+| `deepseek-v3.1` | | |
+| `llama-3.3-70b` | | |
+
+The full suite, ready to paste as `EVAL_PAIRS` (perturbed sets only; use
+`bloom`, not `bloom50` — see the note below):
+
+```python
+EVAL_PAIRS = [
+    ("cypherbench_augmented",  "movie"),
+    ("cypherbench_augmented",  "politics"),
+    ("cypherbench_augmented",  "geography"),
+    ("cypherbench_augmented",  "fictional_character"),
+    ("cypherbench_augmented",  "company"),
+    ("cypherbench_augmented",  "nba"),
+    ("cypherbench_augmented",  "flight_accident"),
+    ("mindthequery_augmented", "healthcare"),
+    ("mindthequery_augmented", "covid"),
+    ("mindthequery_augmented", "wwc"),
+    ("mindthequery_augmented", "er"),
+    ("mindthequery_augmented", "bloom"),
+    ("zograscope_augmented",   "pole"),
+]
+```
+
+Question counts (v2.2), so you can budget and split:
+
+| dataset | graph | questions |
+|---|---|--:|
+| `cypherbench_augmented` | `movie` | 360 |
+| `cypherbench_augmented` | `politics` | 360 |
+| `cypherbench_augmented` | `geography` | 331 |
+| `cypherbench_augmented` | `fictional_character` | 324 |
+| `cypherbench_augmented` | `company` | 305 |
+| `cypherbench_augmented` | `nba` | 251 |
+| `cypherbench_augmented` | `flight_accident` | 168 |
+| `mindthequery_augmented` | `healthcare` | 419 |
+| `mindthequery_augmented` | `covid` | 327 |
+| `mindthequery_augmented` | `wwc` | 267 |
+| `mindthequery_augmented` | `er` | 185 |
+| `mindthequery_augmented` | `bloom` | 24 |
+| `zograscope_augmented` | `pole` | 1,290 |
+| | **total** | **4,611** |
 
 > `zograscope/pole` is one graph but 28% of the benchmark — budget for it, or
 > split it by running with different `LIMIT`/shard settings and telling us how
@@ -163,8 +240,8 @@ run all five methods on it. These 13 pairs are the full evaluation suite
 > dump is named `bloom50`, the test data's `graph` field says `bloom`) — for
 > the perturbed set always use **`bloom`**.
 
-Each graph × 5 methods. Every run writes its own directory, so two people never
-overwrite each other **as long as they are on different machines**.
+Every run writes its own directory, so two people never overwrite each other
+**as long as they are on different machines**.
 
 ## Two things that will bite you
 

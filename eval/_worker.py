@@ -164,6 +164,7 @@ def _run_meta() -> Dict[str, Any]:
             meta["retrieval"]  = spec.retrieval
         except Exception:  # noqa: BLE001
             pass
+        meta["generator_llm"] = _c.active_generator_model()   # preset name (run-dir tag)
         meta["ner_llm"]    = _c.NER_LLM_CONFIG.get("model")
         meta["cypher_llm"] = _c.CYPHER_LLM_CONFIG.get("model")
         meta["qa_llm"]     = _c.QA_LLM_CONFIG.get("model")

@@ -162,6 +162,30 @@ MODEL_REGISTRY: dict = {
         "api_key_env": "GROQ_API_KEY",
         "model": "qwen-2.5-coder-32b",
     },
+
+    # ── DeepInfra (OpenAI-compatible; one key serves both open-weights models
+    #    of the generator sweep — see MODEL_PRESETS) ─────────────────────────
+    "deepseek-v3.1-deepinfra": {
+        "base_url":    "https://api.deepinfra.com/v1/openai",
+        "api_key_env": "DEEPINFRA_API_KEY",
+        "model":       "deepseek-ai/DeepSeek-V3.1",
+    },
+    "llama-3.3-70b-deepinfra": {
+        "base_url":    "https://api.deepinfra.com/v1/openai",
+        "api_key_env": "DEEPINFRA_API_KEY",
+        "model":       "meta-llama/Llama-3.3-70B-Instruct-Turbo",
+    },
+    # ── Together (alternate host for the same two models) ────────────────────
+    "deepseek-v3.1-together": {
+        "base_url":    "https://api.together.xyz/v1",
+        "api_key_env": "TOGETHER_API_KEY",
+        "model":       "deepseek-ai/DeepSeek-V3.1",
+    },
+    "llama-3.3-70b-together": {
+        "base_url":    "https://api.together.xyz/v1",
+        "api_key_env": "TOGETHER_API_KEY",
+        "model":       "meta-llama/Llama-3.3-70B-Instruct-Turbo",
+    },
 }
 
 
@@ -177,33 +201,58 @@ MODEL_REGISTRY: dict = {
 #     "temperature": 0,
 # }
 
-# ── Generator-LLM sweep override ─────────────────────────────────────────────
-# A model sweep sets the generator LLM per run instead of editing this file:
+# ── Generator LLM: presets + the eval receiver ───────────────────────────────
+# One name selects the generator LLM for all three stages (NER / Cypher / QA).
+# Edit it in eval_config.py (``GENERATOR_LLM = "gpt-5.6-terra"``) — the control
+# panel — never here and never in .env, which holds API keys only. eval_run
+# injects the chosen name into the worker as the GENERATOR_LLM env var, the
+# same way it passes METHOD; the name is also what appears in the run
+# directory (``cyanchor_fl@gpt-5.6-terra``), so a sweep never mixes models.
 #
-#     EVAL_LLM_MODEL=claude-sonnet-5 EVAL_LLM_PROVIDER=anthropic python eval_run.py
-#
-# When ``EVAL_LLM_MODEL`` is set it replaces the model on all three stage
-# configs below (NER / Cypher / QA) — "all stages use the row's model", the
-# design of a cross-LLM comparison. ``EVAL_LLM_PROVIDER`` is optional and
-# defaults to whatever provider each stage already declares. Unset, both are
-# no-ops and the literals below are used verbatim, so existing runs and reports
-# are unaffected.
-#
-# ``eval_run`` reads the same resolved value to name the run directory, so a
-# sweep can never land two models in one report cell.
-EVAL_LLM_MODEL    = os.getenv("EVAL_LLM_MODEL") or None
-EVAL_LLM_PROVIDER = os.getenv("EVAL_LLM_PROVIDER") or None
+# provider "openai" / "anthropic" call the vendor directly; "hf_compatible"
+# routes through an OpenAI-compatible endpoint described in MODEL_REGISTRY.
+# An optional "params" dict is passed to the chat-model constructor verbatim
+# (e.g. {"reasoning_effort": "medium"}); the builders already choose safe
+# defaults per model family, so most presets need none.
+MODEL_PRESETS: dict = {
+    # ── the gpt-4.1 baseline every existing run was made with ──
+    "gpt-4.1":          {"provider": "openai",        "model": "gpt-4.1"},
+    # ── GPT family ──
+    "gpt-5.6-terra":    {"provider": "openai",        "model": "gpt-5.6-terra"},   # workhorse (primary)
+    "gpt-5.6-luna":     {"provider": "openai",        "model": "gpt-5.6-luna"},    # cheap tier / smoke tests
+    # ── Claude family (temperature is rejected and thinking is switched off
+    #    for the 4.6+/5 generation — see agent_helper._anthropic_generation_kwargs) ──
+    "claude-opus-5":    {"provider": "anthropic",     "model": "claude-opus-5"},
+    "claude-haiku-4.5": {"provider": "anthropic",     "model": "claude-haiku-4-5"},
+    # ── open-weights, served by DeepInfra (one key for both; Together entries
+    #    exist in MODEL_REGISTRY as alternates) ──
+    "deepseek-v3.1":    {"provider": "hf_compatible", "model": "deepseek-v3.1-deepinfra"},
+    "llama-3.3-70b":    {"provider": "hf_compatible", "model": "llama-3.3-70b-deepinfra"},
+}
+
+# ⚙ eval receiver — edit GENERATOR_LLM in the eval_config panel, not here.
+GENERATOR_LLM = os.getenv("GENERATOR_LLM") or None
+
+
+def resolve_preset(name: str) -> dict:
+    """Preset name -> ``{"provider", "model"}``. Unknown names fail loudly with
+    the list of valid ones; a silent fallback here would put the wrong model
+    behind a directory that claims another."""
+    if name in MODEL_PRESETS:
+        return dict(MODEL_PRESETS[name])
+    raise KeyError(f"GENERATOR_LLM={name!r} is not a preset. Known presets: "
+                   + ", ".join(sorted(MODEL_PRESETS)))
 
 
 def _apply_llm_override(cfg: dict) -> dict:
-    """Overlay the sweep override onto one stage config (no-op when unset)."""
-    if not EVAL_LLM_MODEL:
+    """Overlay the selected preset onto one stage config (no-op when unset).
+    A preset's optional ``"params"`` (e.g. ``{"reasoning_effort": "low"}``) are
+    flattened in and reach the chat-model constructor as keyword arguments."""
+    if not GENERATOR_LLM:
         return cfg
-    out = dict(cfg)
-    out["model"] = EVAL_LLM_MODEL
-    if EVAL_LLM_PROVIDER:
-        out["provider"] = EVAL_LLM_PROVIDER
-    return out
+    spec = resolve_preset(GENERATOR_LLM)
+    params = spec.pop("params", None) or {}
+    return {**cfg, **spec, **params}
 
 
 NER_LLM_CONFIG: dict = {
@@ -648,7 +697,15 @@ RETRIEVAL_LEVENSHTEIN_K = int(os.getenv("RETRIEVAL_LEVENSHTEIN_K", "10"))  # can
 
 
 def active_generator_model() -> str:
-    """The generator model this process actually uses — the sweep override when
-    set, else the Cypher stage's model (the stage that defines a run's
-    identity). ``eval_run`` names run dirs with this."""
-    return EVAL_LLM_MODEL or CYPHER_LLM_CONFIG.get("model") or ""
+    """The generator this process actually uses, as a *preset name* — what run
+    directories and reports are keyed by. The GENERATOR_LLM receiver when set
+    (the worker, after eval_run injected it), else the preset whose model
+    matches the Cypher stage's literal (the stage that defines a run's
+    identity), else that literal itself."""
+    if GENERATOR_LLM:
+        return GENERATOR_LLM
+    lit = CYPHER_LLM_CONFIG.get("model") or ""
+    for name, spec in MODEL_PRESETS.items():
+        if spec["model"] == lit and spec["provider"] == CYPHER_LLM_CONFIG.get("provider"):
+            return name
+    return lit

@@ -132,8 +132,17 @@ _AUTO = object()   # sentinel: resolve the model from config
 
 
 def default_model() -> str:
-    """The generator model configured for this process (``""`` if config is
-    unavailable). Readers default to it so a report never mixes models."""
+    """The generator preset this process is configured for, so a reader never
+    mixes models: eval_config.GENERATOR_LLM (the control panel — what eval_run
+    injects into workers) when set, else config.py's own resolution. ``""`` if
+    neither is importable."""
+    try:
+        import eval_config as _e
+        name = getattr(_e, "GENERATOR_LLM", None)
+        if name:
+            return str(name)
+    except Exception:  # noqa: BLE001
+        pass
     try:
         import config as _c
         return _c.active_generator_model()

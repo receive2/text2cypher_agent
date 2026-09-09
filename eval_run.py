@@ -89,7 +89,7 @@ def _resolve_test_path(dataset: str) -> str:
 # Run-config fields eval_config injects into the worker env — and, verbatim,
 # the knob set recorded into each run's summary.json ``run_config`` block
 # (module-level so _build_env and _stamp_summary stay in lockstep).
-_STR  = ("METHOD", "TOOL_TYPE")
+_STR  = ("METHOD", "TOOL_TYPE", "GENERATOR_LLM")
 _BOOL = ("RETRIEVAL_FUZZY", "RETRIEVAL_VECTOR", "RETRIEVAL_LEVENSHTEIN",
          "CYPHER_SEMANTIC_REPAIR", "CYPHER_EMPTY_IS_WRONG",
          # ablation toggles (eval_config control panel) — config.py reads each
@@ -152,10 +152,10 @@ def _stamp_summary(out_summary: Path, env: dict, *, dataset: str, graph: str,
 
 
 def _active_model(env: dict) -> str:
-    """Generator model for the child run: the sweep override this parent will
-    pass down (``EVAL_LLM_MODEL``), else the configured Cypher-stage model.
-    Kept in one place so the dir name and the child's actual model agree."""
-    m = env.get("EVAL_LLM_MODEL") or os.environ.get("EVAL_LLM_MODEL")
+    """Generator preset for the child run — the GENERATOR_LLM that _build_env
+    just injected from eval_config (so the dir name and the worker's model come
+    from one value), else config.py's resolution of its own literals."""
+    m = env.get("GENERATOR_LLM")
     if m:
         return m
     try:

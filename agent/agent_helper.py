@@ -97,7 +97,7 @@ load_dotenv(".env", override=False)
 # ─────────────────────────────────────────────────────────────────────────────
 
 # Default Anthropic model — overridable via the ANTHROPIC_MODEL env var.
-DEFAULT_ANTHROPIC_MODEL = "claude-opus-4-20250514"
+DEFAULT_ANTHROPIC_MODEL = "claude-opus-5"
 
 
 def _build_http_client() -> httpx.Client:
@@ -137,16 +137,40 @@ def _build_openai_llm(
     http_client: httpx.Client,
     **extra: Any,
 ) -> ChatOpenAI:
+    model = model or os.getenv("OPENAI_MODEL", "gpt-4.1")
     return _cache_mixin(ChatOpenAI, anthropic=False)(
-        model=model or os.getenv("OPENAI_MODEL", "gpt-4.1"),
+        model=model,
         api_key=os.getenv("OPENAI_API_KEY"),
-        temperature=temperature,
         timeout=60,
         max_retries=2,
         base_url=os.getenv("OPENAI_BASE_URL") or None,
         http_client=http_client,
-        **extra,
+        **{**_openai_generation_kwargs(model, temperature), **extra},
     )
+
+
+# OpenAI's reasoning line (gpt-5.x, gpt-6, o-series) rejects sampling knobs
+# ("temperature does not support 0 with this model") and reasons by default; the
+# gpt-4.x line accepts temperature and does not reason. Mirror of the Anthropic
+# rule: every generator runs as a plain, terse text model. Override per preset
+# with a ``"params"`` dict in config.MODEL_PRESETS (e.g. a different
+# reasoning_effort) — a value the API rejects fails on the first call with the
+# offending parameter named.
+_OPENAI_REASONING_FAMILY = re.compile(r"^(?:gpt-5|gpt-6|o[1-9])(?:[.-]|$)")
+_OPENAI_REASONING_EFFORT_FIELD = True
+
+
+def _openai_generation_kwargs(model: str, temperature: Optional[float]) -> dict:
+    """ChatOpenAI constructor kwargs that are valid for *this* model."""
+    kw: dict = {}
+    if _OPENAI_REASONING_FAMILY.match(model or ""):
+        if _OPENAI_REASONING_EFFORT_FIELD:
+            kw["reasoning_effort"] = "low"
+        else:
+            kw["model_kwargs"] = {"reasoning_effort": "low"}
+    elif temperature is not None:
+        kw["temperature"] = temperature
+    return kw
 
 
 def _build_azure_llm(
@@ -236,17 +260,39 @@ def _build_anthropic_llm(
             ".env file before requesting provider='anthropic'."
         )
 
+    model = model or os.getenv("ANTHROPIC_MODEL", DEFAULT_ANTHROPIC_MODEL)
     # Anthropic caching is opt-in: the static prefix must arrive as its own
     # cache_control block, which this subclass does from the CACHE_BREAK marker.
     _Cls = _cache_mixin(ChatAnthropic, anthropic=True)
     return _Cls(
-        model=model or os.getenv("ANTHROPIC_MODEL", DEFAULT_ANTHROPIC_MODEL),
+        model=model,
         api_key=api_key,
-        temperature=temperature,
         timeout=60,
         max_retries=2,
+        **_anthropic_generation_kwargs(model, temperature),
         **extra,
     )
+
+
+# Claude 4.6+ / 5 (and Fable / Mythos) reject sampling parameters outright and
+# think by default; the older 4.x / Haiku 4.5 line accepts temperature and
+# does not think unless asked. The benchmark compares *generators*, so every
+# model runs as a plain deterministic text generator: no sampling knobs where
+# they are refused, thinking switched off where it is on by default.
+_NO_SAMPLING_PARAMS = re.compile(
+    r"^claude-(?:opus|sonnet)-(?:5|4-[6-9])(?:-|$)|^claude-(?:fable|mythos)-")
+
+
+def _anthropic_generation_kwargs(model: str, temperature: Optional[float]) -> dict:
+    """ChatAnthropic constructor kwargs that are valid for *this* model."""
+    kw: dict = {"max_tokens": 4096}          # library default (1024) truncates CoT repairs
+    if _NO_SAMPLING_PARAMS.match(model or ""):
+        # temperature would be a 400; thinking is on by default -> off, so the
+        # reply is one plain text block like every other generator's.
+        kw["model_kwargs"] = {"thinking": {"type": "disabled"}}
+    elif temperature is not None:
+        kw["temperature"] = temperature
+    return kw
 
 
 def _build_hf_compatible_llm(

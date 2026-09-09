@@ -54,11 +54,16 @@ baselines. Ablation: [report/CypherBench/flight_accident.md](report/CypherBench/
 |---|---|
 | Python | 3.10 – 3.12 |
 | Neo4j | **5.18+** (native vector indexes required for hybrid retrieval; fulltext-only fallback works on 4.4+ if you `--skip-embeddings`) |
-| OpenAI API key | GPT-4 class model recommended; also used by the default `text-embedding-3-small` embedding backend |
+| API keys | `OPENAI_API_KEY` for the default `gpt-4.1` generator and the `text-embedding-3-small` embedding backend; `ANTHROPIC_API_KEY` / `DEEPINFRA_API_KEY` only for those presets (`config.MODEL_PRESETS`) |
 
 ---
 
 ## Quick Start
+
+> **Running the perturbed-benchmark experiments?** Follow
+> [`docs/EXPERIMENT_HANDOUT.md`](docs/EXPERIMENT_HANDOUT.md) — it is the
+> complete checklist (dataset check, model choice, keys, setup, run, send back).
+> The steps below are for developing the agent itself.
 
 ### 1 — Install dependencies
 
@@ -84,10 +89,10 @@ NEO4J_USERNAME=neo4j
 NEO4J_PASSWORD=your-password
 NEO4J_DATABASE=neo4j                # the database name inside Neo4j
 
-# ── OpenAI (required) ─────────────────────────────────────────────────────────
-OPENAI_API_KEY=sk-...
-OPENAI_MODEL=gpt-4.1                # or gpt-4o, gpt-4-turbo, etc.
-OPENAI_BASE_URL=                    # leave blank for api.openai.com
+# ── LLM API keys (keys only — the model is chosen in eval_config.py / config.py) ──
+OPENAI_API_KEY=sk-...               # gpt-4.1, gpt-5.6-terra, gpt-5.6-luna
+ANTHROPIC_API_KEY=                  # claude-opus-5, claude-haiku-4.5 (only if you run them)
+DEEPINFRA_API_KEY=                  # deepseek-v3.1, llama-3.3-70b (only if you run them)
 
 # ── Azure OpenAI (optional — replaces OpenAI when all three are set) ──────────
 AZURE_OPENAI_ENDPOINT=

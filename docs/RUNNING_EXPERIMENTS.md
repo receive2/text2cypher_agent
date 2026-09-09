@@ -215,29 +215,60 @@ against `run_meta`), so nothing on disk today is lost.
 `eval_aggregate.py` aggregates only the newest run per
 `(dataset, graph, method, model)` and groups by `(dataset, method)`.
 
-## Sweeping generator LLMs
+## Choosing the generator LLM
 
-Set the model per run instead of editing `config.py` — one env var switches all
-three stages (NER / Cypher / QA), matching "all stages use the row's model":
+One field in the control panel selects the model for **all three stages**
+(NER / Cypher / QA) and tags every run directory with it:
 
-```bash
-EVAL_LLM_MODEL=claude-sonnet-5 EVAL_LLM_PROVIDER=anthropic python eval_run.py
-EVAL_LLM_MODEL=gpt-5.6-terra   EVAL_LLM_PROVIDER=openai    python eval_run.py
+```python
+GENERATOR_LLM = "claude-opus-5"     # eval_config.py, ★ EXPERIMENT PARAMETERS ★
 ```
 
-Unset, both are no-ops and `config.py`'s literals are used verbatim — existing
-runs and reports are unaffected. The same resolved value names the run dir, so
-two models can never land in one report cell. When you *read* results back
-(report generators, `eval_aggregate`), export the same `EVAL_LLM_MODEL` so the
-reader scopes to that model's runs.
+The value is a **preset name** from `config.MODEL_PRESETS` (`gpt-4.1`,
+`gpt-5.6-terra`, `gpt-5.6-luna`, `claude-opus-5`, `claude-haiku-4.5`,
+`deepseek-v3.1`, `llama-3.3-70b`). A preset fixes the provider and the exact
+model id; the two open-weights models route through DeepInfra's
+OpenAI-compatible endpoint via `config.MODEL_REGISTRY`. An unknown name fails
+at startup with the list of valid ones — there is no silent fallback. Adding a
+model = one entry in `MODEL_PRESETS` (plus a `MODEL_REGISTRY` entry if it is an
+OpenAI-compatible host).
+
+`.env` holds **API keys only** (`OPENAI_API_KEY`, `ANTHROPIC_API_KEY`,
+`DEEPINFRA_API_KEY`; see `.env.example`) — never a model choice. `eval_run`
+hands the preset to the worker the same way it hands `METHOD` (an injected
+`GENERATOR_LLM` env var that `config.py` receives), so the worker's model and
+the directory name always come from the one value you edited. Readers (report
+generators, `eval_aggregate`, `latest_run_dir`) scope to
+`eval_config.GENERATOR_LLM` too, so a report never mixes models; set it to the
+model you want to read before regenerating reports.
+
+Model-specific handling lives in one place, `agent_helper`: the Claude 4.6+/5
+line rejects sampling parameters and thinks by default, so those models are
+called without `temperature` and with thinking switched off; OpenAI's
+reasoning line (gpt-5.x / gpt-6 / o-series) likewise gets no `temperature`
+and `reasoning_effort="low"`. Every generator therefore runs as a plain, terse
+text model, which is what the comparison needs. To change a model's
+parameters, add a `"params"` dict to its entry in `config.MODEL_PRESETS`
+(passed to the chat-model constructor verbatim) — never edit `.env`.
+
+**What has been exercised live.** `claude-opus-5` and `claude-haiku-4.5` were
+called through the real builders (2026-09-09): no parameter errors, plain-text
+replies, and the cache marker produced `cache_creation` then `cache_read`
+tokens on Opus. The `gpt-5.6-*` presets use OpenAI's published model ids but
+could not be called from the coordinator's network (corporate proxy blocks the
+OpenAI API from Python); the DeepInfra presets await a key. **Your first run
+is the smoke test for them** — a rejected parameter fails on the first call
+with the parameter named, and the fix is one line in `MODEL_PRESETS`.
 
 **Prompt caching is automatic and applies to every model.** The Cypher prompt is
 laid out static-first (task text → schema → *then* retrieved values → question),
 so OpenAI caches the ~2.8k-token prefix on its own, and a `CACHE_BREAK` marker at
 that boundary makes Anthropic cache it too (`agent/prompt_cache.py`). Providers
 that cannot use the marker have it stripped, so **the model sees byte-identical
-text either way** — caching changes cost, never results. On a Claude model a
-full sweep costs roughly half as much as it would uncached.
+text either way** — caching changes cost, never results. One measured exception:
+Claude Haiku 4.5 only caches prefixes of ≥ 4,096 tokens (verified: a 2.9k-token
+prefix is not cached, a 6.8k one is), and this prompt's static prefix is ~3k, so
+`claude-haiku-4.5` runs uncached — budget it at the uncached rate.
 
 ## Producing the per-graph comparison reports
 

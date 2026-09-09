@@ -22,7 +22,7 @@ import pytest
 import eval_paths
 
 
-GPT, CLAUDE = "gpt-4.1", "claude-sonnet-5"
+GPT, CLAUDE = "gpt-4.1", "claude-opus-5"
 
 
 def _mk(root: Path, dataset: str, graph: str, seg: str, stamp: str,
@@ -117,34 +117,60 @@ def test_missing_triple_returns_none(tmp_path):
     assert eval_paths.latest_run_dir("ds", "g", "fcav", root=tmp_path, model=GPT) is None
 
 
-# ── the sweep override ───────────────────────────────────────────────────────
+# ── the generator preset (config receiver <- eval_config control panel) ──────
 
-def test_config_override_switches_every_stage(monkeypatch):
+def _reload_config(monkeypatch, preset):
     import importlib
     import config
+    if preset is None:
+        monkeypatch.delenv("GENERATOR_LLM", raising=False)
+    else:
+        monkeypatch.setenv("GENERATOR_LLM", preset)
+    return importlib.reload(config)
 
-    monkeypatch.setenv("EVAL_LLM_MODEL", CLAUDE)
-    monkeypatch.setenv("EVAL_LLM_PROVIDER", "anthropic")
-    cfg = importlib.reload(config)
+
+def test_preset_switches_every_stage(monkeypatch):
     try:
+        cfg = _reload_config(monkeypatch, CLAUDE)
         assert cfg.active_generator_model() == CLAUDE
-        for stage in (cfg.NER_LLM_CONFIG, cfg.QA_LLM_CONFIG, cfg.CYPHER_LLM_CONFIG):
-            assert stage["model"] == CLAUDE
+        for stage in (cfg.NER_LLM_CONFIG, cfg.QA_LLM_CONFIG, cfg.CYPHER_LLM_CONFIG, cfg.DEFAULT_LLM_CONFIG):
+            assert stage["model"] == "claude-sonnet-5" or stage["model"] == cfg.MODEL_PRESETS[CLAUDE]["model"]
             assert stage["provider"] == "anthropic"
     finally:
-        monkeypatch.delenv("EVAL_LLM_MODEL", raising=False)
-        monkeypatch.delenv("EVAL_LLM_PROVIDER", raising=False)
-        importlib.reload(config)
+        _reload_config(monkeypatch, None)
 
 
-def test_no_override_leaves_config_untouched(monkeypatch):
+def test_preset_covers_the_whole_sweep(monkeypatch):
+    import config
+    for name in ("gpt-4.1", "gpt-5.6-terra", "gpt-5.6-luna", "claude-opus-5",
+                 "claude-haiku-4.5", "deepseek-v3.1", "llama-3.3-70b"):
+        spec = config.resolve_preset(name)
+        assert spec["provider"] in ("openai", "anthropic", "hf_compatible")
+        if spec["provider"] == "hf_compatible":
+            assert spec["model"] in config.MODEL_REGISTRY, name
+
+
+def test_unknown_preset_fails_loudly(monkeypatch):
     import importlib
     import config
+    monkeypatch.setenv("GENERATOR_LLM", "not-a-model")
+    try:
+        with pytest.raises(KeyError):
+            importlib.reload(config)
+    finally:
+        _reload_config(monkeypatch, None)
 
-    monkeypatch.delenv("EVAL_LLM_MODEL", raising=False)
-    cfg = importlib.reload(config)
-    assert cfg.active_generator_model() == cfg.CYPHER_LLM_CONFIG["model"]
+
+def test_no_receiver_resolves_to_the_baseline_preset(monkeypatch):
+    cfg = _reload_config(monkeypatch, None)
+    assert cfg.active_generator_model() == "gpt-4.1"
     assert cfg.CYPHER_LLM_CONFIG["provider"] == "openai"
+
+
+def test_reader_default_follows_the_control_panel(monkeypatch):
+    import eval_config
+    monkeypatch.setattr(eval_config, "GENERATOR_LLM", "gpt-5.6-luna", raising=False)
+    assert eval_paths.default_model() == "gpt-5.6-luna"
 
 
 if __name__ == "__main__":
@@ -161,22 +187,20 @@ def test_any_model_mode_sees_tagged_dirs_too(tmp_path):
     assert eval_paths.latest_run_dir("ds", "g", "graphrag", root=tmp_path, model=None) == newest
 
 
-def test_default_llm_config_follows_the_override(monkeypatch):
+def test_default_llm_config_follows_the_preset(monkeypatch):
     """DEFAULT_LLM_CONFIG feeds the entity-extraction tool inside the NER
     agent. It is *derived* from NER_LLM_CONFIG, so it must be derived after
-    the override or that stage silently runs the pre-override model."""
+    the preset is applied or that stage silently runs the baseline model."""
     import importlib
     import config
 
-    monkeypatch.setenv("EVAL_LLM_MODEL", CLAUDE)
-    monkeypatch.setenv("EVAL_LLM_PROVIDER", "anthropic")
+    monkeypatch.setenv("GENERATOR_LLM", CLAUDE)
     try:
         cfg = importlib.reload(config)
-        assert cfg.DEFAULT_LLM_CONFIG["model"] == CLAUDE
+        assert cfg.DEFAULT_LLM_CONFIG["model"] == cfg.MODEL_PRESETS[CLAUDE]["model"]
         assert cfg.DEFAULT_LLM_CONFIG["provider"] == "anthropic"
     finally:
-        monkeypatch.delenv("EVAL_LLM_MODEL", raising=False)
-        monkeypatch.delenv("EVAL_LLM_PROVIDER", raising=False)
+        monkeypatch.delenv("GENERATOR_LLM", raising=False)
         importlib.reload(config)
 
 
