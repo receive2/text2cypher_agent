@@ -39,6 +39,12 @@ import numpy as np
 
 import vector_config as vc
 from embedding.embedding_helper import embed_texts, embed_query
+from eval.artifact_identity import (
+    IDENTITY_KEY,
+    current_pair,
+    make_identity,
+    verify_dir,
+)
 from paths import REPO_ROOT
 
 logger = logging.getLogger("t2c.fcav")
@@ -146,10 +152,20 @@ def build_fcav_index(
     *,
     include_descriptions: bool = False,
     out_dir: Path = FCAV_DIR,
+    dataset: Optional[str] = None,
+    graph: Optional[str] = None,
+    uri: Optional[str] = None,
 ) -> Dict[str, Any]:
     """
     Build + persist the FCAV VectorDB for the connected graph. Returns the
     manifest dict. Embedding backend is read from ``vector_config``.
+
+    Pass ``dataset``/``graph`` (and ideally ``uri``, the bolt URI actually
+    connected to) so the manifest carries an identity stamp — archive and
+    load boundaries verify it and refuse a foreign-graph index (see
+    :mod:`eval.artifact_identity`). Building without an identity is allowed
+    only for ad-hoc experiments; such an index cannot be archived or served
+    during an eval run.
     """
     import faiss  # local import: heavy native dep, only needed at build time
 
@@ -200,6 +216,15 @@ def build_fcav_index(
         "include_descriptions": include_descriptions,
         "database":             database,
     }
+    if dataset and graph:
+        manifest[IDENTITY_KEY] = make_identity(
+            dataset, graph, uri=uri, database=database
+        )
+    else:
+        logger.warning(
+            "FCAV: building WITHOUT an identity stamp (dataset/graph not "
+            "given) — this index cannot be archived or used in an eval run."
+        )
     (out_dir / "manifest.json").write_text(
         json.dumps(manifest, indent=2, ensure_ascii=False), encoding="utf-8"
     )
@@ -215,14 +240,29 @@ _CACHE: Dict[str, Any] = {}
 
 
 def _load(out_dir: Path = FCAV_DIR):
-    """Load + cache (index, meta, manifest). Raises if the index is absent."""
-    key = str(out_dir)
+    """
+    Load + cache (index, meta, manifest). Raises if the index is absent, or
+    if its identity stamp does not match the live ``.current_setup`` graph
+    (fail closed — a mismatched index silently degrades FCAV to No-Val-Link,
+    which is exactly the 2026-07 pollution incident).
+    """
+    # The sentinel is part of the cache key: after a swap_in within the same
+    # process the stale cached index must not be served.
+    expected = current_pair(REPO_ROOT)
+    key = (str(out_dir), expected)
     if key in _CACHE:
         return _CACHE[key]
     import faiss
     if not (out_dir / "index.faiss").is_file():
         raise FileNotFoundError(
             f"FCAV index not found at {out_dir}. Run `python setup_fcav.py` first."
+        )
+    if expected is not None:
+        verify_dir(out_dir, expected, context="FCAV load", missing="raise")
+    else:
+        logger.warning(
+            "FCAV: no %s sentinel — cannot verify which graph this index "
+            "belongs to. Proceeding (ad-hoc use only).", ".current_setup",
         )
     index = faiss.read_index(str(out_dir / "index.faiss"))
     # HNSW indexes need efSearch set at query time to control recall.

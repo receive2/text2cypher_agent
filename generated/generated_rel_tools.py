@@ -21,47 +21,6 @@ from neo4j_lib.neo4j_search import search_tool, search_rel_tool
 from config import TOOL_TOP_K
 
 
-# ────────────────────────────────────────────────────────────────────────
-# Part 1 — Relationship PROPERTY tools
-#          Search canonical values stored on relationship objects.
-# ────────────────────────────────────────────────────────────────────────
-
-@tool
-def get_hascastmember_character_role(user_query: str) -> List[str]:
-    """Look up canonical hasCastMember.character_role values. Call this whenever the question mentions a character_role value associated with a hascastmember relationship. When in doubt, call it."""
-    search_term = get_entity(user_query, topic="fictional character name")
-    # v1: relationship-property retrieval is fuzzy-only.
-    # TODO(v2): drop mode="fuzzy" once rel-property vector indexes ship.
-    return search_rel_tool(phrase=search_term, rel_type="hasCastMember", property_name="character_role", k=TOOL_TOP_K, verbose=True, mode="fuzzy")
-
-
-@tool
-def get_receivesaward_winners(user_query: str) -> List[str]:
-    """Look up canonical receivesAward.winners values. Call this whenever the question mentions a winners value associated with a receivesaward relationship. When in doubt, call it."""
-    search_term = get_entity(user_query, topic="award recipients")
-    # v1: relationship-property retrieval is fuzzy-only.
-    # TODO(v2): drop mode="fuzzy" once rel-property vector indexes ship.
-    return search_rel_tool(phrase=search_term, rel_type="receivesAward", property_name="winners", k=TOOL_TOP_K, verbose=True, mode="fuzzy")
-
-
-@tool
-def get_receivesaward_year(user_query: str) -> List[str]:
-    """Look up canonical receivesAward.year values. Call this whenever the question mentions a year value associated with a receivesaward relationship. When in doubt, call it."""
-    search_term = get_entity(user_query, topic="award year")
-    # v1: relationship-property retrieval is fuzzy-only.
-    # TODO(v2): drop mode="fuzzy" once rel-property vector indexes ship.
-    return search_rel_tool(phrase=search_term, rel_type="receivesAward", property_name="year", k=TOOL_TOP_K, verbose=True, mode="fuzzy")
-
-
-@tool
-def get_releasedin_date(user_query: str) -> List[str]:
-    """Look up canonical releasedIn.date values. Call this whenever the question mentions a date value associated with a releasedin relationship. When in doubt, call it."""
-    search_term = get_entity(user_query, topic="release date")
-    # v1: relationship-property retrieval is fuzzy-only.
-    # TODO(v2): drop mode="fuzzy" once rel-property vector indexes ship.
-    return search_rel_tool(phrase=search_term, rel_type="releasedIn", property_name="date", k=TOOL_TOP_K, verbose=True, mode="fuzzy")
-
-
 
 
 # ────────────────────────────────────────────────────────────────────────
@@ -71,55 +30,37 @@ def get_releasedin_date(user_query: str) -> List[str]:
 # ────────────────────────────────────────────────────────────────────────
 
 @tool
-def get_directedby_relation(user_query: str) -> List[str]:
-    """Find Person.name values reachable via (:Movie)-[:directedBy]->(:Person). Call this when the question references a person's name that may be related to a movie, including partial or informal mentions. When in doubt, call it."""
-    search_term = get_entity(user_query, topic="person name in directedBy relationship")
+def get_employs_relation(user_query: str) -> List[str]:
+    """Find Weapon.name values reachable via (:TerroristAttack)-[:employs]->(:Weapon). Call this when the question references a weapon's name that may be related to a terroristattack, including partial or informal mentions. When in doubt, call it."""
+    search_term = get_entity(user_query, topic="weapon name in employs relationship")
     # PERMANENT: structural traversal tools are not semantic retrieval.
     # mode="fuzzy" is intentional and must NOT be removed.
-    return search_tool(phrase=search_term, node_label="Person", property_name="name", k=TOOL_TOP_K, verbose=True, mode="fuzzy")
+    return search_tool(phrase=search_term, node_label="Weapon", property_name="name", k=TOOL_TOP_K, verbose=True, mode="fuzzy")
 
 
 @tool
-def get_hasgenre_relation(user_query: str) -> List[str]:
-    """Find Genre.name values reachable via (:Movie)-[:hasGenre]->(:Genre). Call this when the question references a genre's name that may be related to a movie, including partial or informal mentions. When in doubt, call it."""
-    search_term = get_entity(user_query, topic="genre name in hasGenre relationship")
-    # PERMANENT: structural traversal tools are not semantic retrieval.
-    # mode="fuzzy" is intentional and must NOT be removed.
-    return search_tool(phrase=search_term, node_label="Genre", property_name="name", k=TOOL_TOP_K, verbose=True, mode="fuzzy")
-
-
-@tool
-def get_originatesfrom_relation(user_query: str) -> List[str]:
-    """Find Country.name values reachable via (:Movie)-[:originatesFrom]->(:Country). Call this when the question references a country's name that may be related to a movie, including partial or informal mentions. When in doubt, call it."""
-    search_term = get_entity(user_query, topic="country name in originatesFrom relationship")
+def get_occursin_relation(user_query: str) -> List[str]:
+    """Find Country.name values reachable via (:TerroristAttack)-[:occursIn]->(:Country). Call this when the question references a country's name that may be related to a terroristattack, including partial or informal mentions. When in doubt, call it."""
+    search_term = get_entity(user_query, topic="country name in occursIn relationship")
     # PERMANENT: structural traversal tools are not semantic retrieval.
     # mode="fuzzy" is intentional and must NOT be removed.
     return search_tool(phrase=search_term, node_label="Country", property_name="name", k=TOOL_TOP_K, verbose=True, mode="fuzzy")
 
 
 @tool
-def get_partofseries_relation(user_query: str) -> List[str]:
-    """Find FilmSeries.name values reachable via (:Movie)-[:partOfSeries]->(:FilmSeries). Call this when the question references a filmseries's name that may be related to a movie, including partial or informal mentions. When in doubt, call it."""
-    search_term = get_entity(user_query, topic="film series name in partOfSeries relationship")
+def get_perpetratedby_relation(user_query: str) -> List[str]:
+    """Find Terrorist.name values reachable via (:TerroristAttack)-[:perpetratedBy]->(:Terrorist). Call this when the question references a terrorist's name that may be related to a terroristattack, including partial or informal mentions. When in doubt, call it."""
+    search_term = get_entity(user_query, topic="person name in perpetratedBy relationship")
     # PERMANENT: structural traversal tools are not semantic retrieval.
     # mode="fuzzy" is intentional and must NOT be removed.
-    return search_tool(phrase=search_term, node_label="FilmSeries", property_name="name", k=TOOL_TOP_K, verbose=True, mode="fuzzy")
+    return search_tool(phrase=search_term, node_label="Terrorist", property_name="name", k=TOOL_TOP_K, verbose=True, mode="fuzzy")
 
 
 @tool
-def get_producedby_relation(user_query: str) -> List[str]:
-    """Find ProductionCompany.name values reachable via (:Movie)-[:producedBy]->(:ProductionCompany). Call this when the question references a productioncompany's name that may be related to a movie, including partial or informal mentions. When in doubt, call it."""
-    search_term = get_entity(user_query, topic="company name in producedBy relationship")
+def get_targets_relation(user_query: str) -> List[str]:
+    """Find Target.name values reachable via (:TerroristAttack)-[:targets]->(:Target). Call this when the question references a target's name that may be related to a terroristattack, including partial or informal mentions. When in doubt, call it."""
+    search_term = get_entity(user_query, topic="target name in targets relationship")
     # PERMANENT: structural traversal tools are not semantic retrieval.
     # mode="fuzzy" is intentional and must NOT be removed.
-    return search_tool(phrase=search_term, node_label="ProductionCompany", property_name="name", k=TOOL_TOP_K, verbose=True, mode="fuzzy")
-
-
-@tool
-def get_writtenby_relation(user_query: str) -> List[str]:
-    """Find Person.name values reachable via (:Movie)-[:writtenBy]->(:Person). Call this when the question references a person's name that may be related to a movie, including partial or informal mentions. When in doubt, call it."""
-    search_term = get_entity(user_query, topic="person name in writtenBy relationship")
-    # PERMANENT: structural traversal tools are not semantic retrieval.
-    # mode="fuzzy" is intentional and must NOT be removed.
-    return search_tool(phrase=search_term, node_label="Person", property_name="name", k=TOOL_TOP_K, verbose=True, mode="fuzzy")
+    return search_tool(phrase=search_term, node_label="Target", property_name="name", k=TOOL_TOP_K, verbose=True, mode="fuzzy")
 

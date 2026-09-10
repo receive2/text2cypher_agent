@@ -53,7 +53,7 @@ Extraction rules (follow strictly)
     empty.)
 
 6.  Final output MUST be a single valid JSON object — nothing else.
-    • Keys   : "Label.property" format (e.g. "Award.aliases", "Award.description", "Award.eid")
+    • Keys   : "Label.property" format (e.g. "Country.aliases", "Country.description", "Country.eid")
     • Values :
         - SINGLE value  → bare scalar  (e.g. "Inception" or 2015)
         - MULTIPLE values (2+) → JSON array  (e.g. ["Neo", "Morpheus"])
@@ -104,20 +104,14 @@ Extraction rules (follow strictly)
 
 Examples
 ────────
-Q: Find the movie named "What Girls Never Say".
-A: {"Movie.name": "What Girls Never Say"}
+Q: Find the terroristattack named "1973 New York City bomb plot".
+A: {"TerroristAttack.name": "1973 New York City bomb plot"}
 
-Q: Which movie has aliases containing "['Belt', 'La cintura']"?
-A: {"Movie.aliases": "['Belt', 'La cintura']"}
-
-Q: Which movie has hascastmember character_role "Charles X of France"?
-A: {"hasCastMember.character_role": "Charles X of France"}
+Q: Which terroristattack has aliases containing "[]"?
+A: {"TerroristAttack.aliases": "[]"}
 
 Q: Show every entity in the graph.
 A: {}
-
-Q: Find movies where character_role is "Charles X of France" or "Mary Magdalene", specifically the movie named "What Girls Never Say".
-A: {"hasCastMember.character_role": ["Charles X of France", "Mary Magdalene"], "Movie.name": "What Girls Never Say"}
 
 Note: When a question mentions multiple distinct entity types (e.g. both a movie AND the role played in it), call the appropriate name/title tool for each one and include ALL resolved keys in the output JSON.  Respect the rule-7 budget: at most 1 call per mention, at most 4 calls total.
 """
@@ -326,26 +320,19 @@ Cypher:
 Graph Schema (static snapshot — baked at generation time)
 ──────────────────────────────────────────────────────────
     Node Labels and Properties:
-      Award             : aliases (StringArray), description (String), eid (String), name (String), provenance (StringArray)
-      Country           : aliases (StringArray), description (String), eid (String), name (String), provenance (StringArray)
-      FilmSeries        : aliases (StringArray), description (String), eid (String), name (String), provenance (StringArray)
-      Genre             : aliases (StringArray), description (String), eid (String), name (String), provenance (StringArray)
-      Movie             : aliases (StringArray), description (String), eid (String), filming_location (StringArray), global_box_office_usd (Double), name (String), original_language (StringArray), provenance (StringArray), runtime_minute (Double)
-      Person            : aliases (StringArray), country_of_citizenship (StringArray), date_of_birth (Date), date_of_death (Date), description (String), eid (String), gender (String), name (String), place_of_birth (String), provenance (StringArray)
-      ProductionCompany : aliases (StringArray), country (String), description (String), eid (String), name (String), provenance (StringArray)
+      Country         : aliases (StringArray), description (String), eid (String), name (String), provenance (StringArray)
+      Target          : aliases (StringArray), description (String), eid (String), name (String), provenance (StringArray)
+      Terrorist       : aliases (StringArray), country_of_citizenship (StringArray), date_of_birth (Date), description (String), eid (String), gender (String), name (String), place_of_birth (String), provenance (StringArray)
+      TerroristAttack : aliases (StringArray), date (Date), description (String), eid (String), locations (StringArray), name (String), number_of_deaths (Long), number_of_injuries (Long), provenance (StringArray)
+      Weapon          : aliases (StringArray), description (String), eid (String), name (String), provenance (StringArray)
 
     Relationships:
-      (:Movie)-[:directedBy]->(:Person)
-      (:Movie)-[:hasCastMember {{character_role: String}}]->(:Person)
-      (:Movie)-[:hasGenre]->(:Genre)
-      (:Movie)-[:originatesFrom]->(:Country)
-      (:Movie)-[:partOfSeries]->(:FilmSeries)
-      (:Movie)-[:producedBy]->(:ProductionCompany)
-      (:Movie)-[:receivesAward {{winners: StringArray, year: Long}}]->(:Award)
-      (:Movie)-[:releasedIn {{date: Date}}]->(:Country)
-      (:Movie)-[:writtenBy]->(:Person)
+      (:TerroristAttack)-[:employs]->(:Weapon)
+      (:TerroristAttack)-[:occursIn]->(:Country)
+      (:TerroristAttack)-[:perpetratedBy]->(:Terrorist)
+      (:TerroristAttack)-[:targets]->(:Target)
 
-    Central entities (most relationships): Movie
+    Central entities (most relationships): TerroristAttack
 
 Live schema (injected at runtime by GraphCypherQAChain — authoritative):
 {schema}
@@ -461,134 +448,91 @@ Now rephrase:
 # ──────────────────────────────────────────────────────────────────────────────
 
 # Node labels
-NODE_AWARD = "Award"
 NODE_COUNTRY = "Country"
-NODE_FILM_SERIES = "FilmSeries"
-NODE_GENRE = "Genre"
-NODE_MOVIE = "Movie"
-NODE_PERSON = "Person"
-NODE_PRODUCTION_COMPANY = "ProductionCompany"
+NODE_TARGET = "Target"
+NODE_TERRORIST = "Terrorist"
+NODE_TERRORIST_ATTACK = "TerroristAttack"
+NODE_WEAPON = "Weapon"
 
 # Node properties
-PROPERTY_AWARD_ALIASES = "aliases"
-PROPERTY_AWARD_DESCRIPTION = "description"
-PROPERTY_AWARD_EID = "eid"
-PROPERTY_AWARD_NAME = "name"
-PROPERTY_AWARD_PROVENANCE = "provenance"
 PROPERTY_COUNTRY_ALIASES = "aliases"
 PROPERTY_COUNTRY_DESCRIPTION = "description"
 PROPERTY_COUNTRY_EID = "eid"
 PROPERTY_COUNTRY_NAME = "name"
 PROPERTY_COUNTRY_PROVENANCE = "provenance"
-PROPERTY_FILM_SERIES_ALIASES = "aliases"
-PROPERTY_FILM_SERIES_DESCRIPTION = "description"
-PROPERTY_FILM_SERIES_EID = "eid"
-PROPERTY_FILM_SERIES_NAME = "name"
-PROPERTY_FILM_SERIES_PROVENANCE = "provenance"
-PROPERTY_GENRE_ALIASES = "aliases"
-PROPERTY_GENRE_DESCRIPTION = "description"
-PROPERTY_GENRE_EID = "eid"
-PROPERTY_GENRE_NAME = "name"
-PROPERTY_GENRE_PROVENANCE = "provenance"
-PROPERTY_MOVIE_ALIASES = "aliases"
-PROPERTY_MOVIE_DESCRIPTION = "description"
-PROPERTY_MOVIE_EID = "eid"
-PROPERTY_MOVIE_FILMING_LOCATION = "filming_location"
-PROPERTY_MOVIE_GLOBAL_BOX_OFFICE_USD = "global_box_office_usd"
-PROPERTY_MOVIE_NAME = "name"
-PROPERTY_MOVIE_ORIGINAL_LANGUAGE = "original_language"
-PROPERTY_MOVIE_PROVENANCE = "provenance"
-PROPERTY_MOVIE_RUNTIME_MINUTE = "runtime_minute"
-PROPERTY_PERSON_ALIASES = "aliases"
-PROPERTY_PERSON_COUNTRY_OF_CITIZENSHIP = "country_of_citizenship"
-PROPERTY_PERSON_DATE_OF_BIRTH = "date_of_birth"
-PROPERTY_PERSON_DATE_OF_DEATH = "date_of_death"
-PROPERTY_PERSON_DESCRIPTION = "description"
-PROPERTY_PERSON_EID = "eid"
-PROPERTY_PERSON_GENDER = "gender"
-PROPERTY_PERSON_NAME = "name"
-PROPERTY_PERSON_PLACE_OF_BIRTH = "place_of_birth"
-PROPERTY_PERSON_PROVENANCE = "provenance"
-PROPERTY_PRODUCTION_COMPANY_ALIASES = "aliases"
-PROPERTY_PRODUCTION_COMPANY_COUNTRY = "country"
-PROPERTY_PRODUCTION_COMPANY_DESCRIPTION = "description"
-PROPERTY_PRODUCTION_COMPANY_EID = "eid"
-PROPERTY_PRODUCTION_COMPANY_NAME = "name"
-PROPERTY_PRODUCTION_COMPANY_PROVENANCE = "provenance"
+PROPERTY_TARGET_ALIASES = "aliases"
+PROPERTY_TARGET_DESCRIPTION = "description"
+PROPERTY_TARGET_EID = "eid"
+PROPERTY_TARGET_NAME = "name"
+PROPERTY_TARGET_PROVENANCE = "provenance"
+PROPERTY_TERRORIST_ALIASES = "aliases"
+PROPERTY_TERRORIST_COUNTRY_OF_CITIZENSHIP = "country_of_citizenship"
+PROPERTY_TERRORIST_DATE_OF_BIRTH = "date_of_birth"
+PROPERTY_TERRORIST_DESCRIPTION = "description"
+PROPERTY_TERRORIST_EID = "eid"
+PROPERTY_TERRORIST_GENDER = "gender"
+PROPERTY_TERRORIST_NAME = "name"
+PROPERTY_TERRORIST_PLACE_OF_BIRTH = "place_of_birth"
+PROPERTY_TERRORIST_PROVENANCE = "provenance"
+PROPERTY_TERRORIST_ATTACK_ALIASES = "aliases"
+PROPERTY_TERRORIST_ATTACK_DATE = "date"
+PROPERTY_TERRORIST_ATTACK_DESCRIPTION = "description"
+PROPERTY_TERRORIST_ATTACK_EID = "eid"
+PROPERTY_TERRORIST_ATTACK_LOCATIONS = "locations"
+PROPERTY_TERRORIST_ATTACK_NAME = "name"
+PROPERTY_TERRORIST_ATTACK_NUMBER_OF_DEATHS = "number_of_deaths"
+PROPERTY_TERRORIST_ATTACK_NUMBER_OF_INJURIES = "number_of_injuries"
+PROPERTY_TERRORIST_ATTACK_PROVENANCE = "provenance"
+PROPERTY_WEAPON_ALIASES = "aliases"
+PROPERTY_WEAPON_DESCRIPTION = "description"
+PROPERTY_WEAPON_EID = "eid"
+PROPERTY_WEAPON_NAME = "name"
+PROPERTY_WEAPON_PROVENANCE = "provenance"
 
 # Filterable properties per node label
-FILTERABLE_AWARD_PROPERTIES = ["aliases", "description", "eid", "name", "provenance"]
 FILTERABLE_COUNTRY_PROPERTIES = ["aliases", "description", "eid", "name", "provenance"]
-FILTERABLE_FILM_SERIES_PROPERTIES = ["aliases", "description", "eid", "name", "provenance"]
-FILTERABLE_GENRE_PROPERTIES = ["aliases", "description", "eid", "name", "provenance"]
-FILTERABLE_MOVIE_PROPERTIES = ["aliases", "description", "eid", "filming_location", "name", "original_language", "provenance"]
-FILTERABLE_PERSON_PROPERTIES = ["aliases", "country_of_citizenship", "date_of_birth", "date_of_death", "description", "eid", "gender", "name", "place_of_birth", "provenance"]
-FILTERABLE_PRODUCTION_COMPANY_PROPERTIES = ["aliases", "country", "description", "eid", "name", "provenance"]
+FILTERABLE_TARGET_PROPERTIES = ["aliases", "description", "eid", "name", "provenance"]
+FILTERABLE_TERRORIST_PROPERTIES = ["aliases", "country_of_citizenship", "date_of_birth", "description", "eid", "gender", "name", "place_of_birth", "provenance"]
+FILTERABLE_TERRORIST_ATTACK_PROPERTIES = ["aliases", "date", "description", "eid", "locations", "name", "provenance"]
+FILTERABLE_WEAPON_PROPERTIES = ["aliases", "description", "eid", "name", "provenance"]
 
 # Relationship types
-REL_DIRECTED_BY = "directedBy"
-REL_HAS_CAST_MEMBER = "hasCastMember"
-REL_HAS_GENRE = "hasGenre"
-REL_ORIGINATES_FROM = "originatesFrom"
-REL_PART_OF_SERIES = "partOfSeries"
-REL_PRODUCED_BY = "producedBy"
-REL_RECEIVES_AWARD = "receivesAward"
-REL_RELEASED_IN = "releasedIn"
-REL_WRITTEN_BY = "writtenBy"
-
-# Relationship properties
-REL_PROPERTY_HAS_CAST_MEMBER_CHARACTER_ROLE = "character_role"
-REL_PROPERTY_RECEIVES_AWARD_WINNERS = "winners"
-REL_PROPERTY_RECEIVES_AWARD_YEAR = "year"
-REL_PROPERTY_RELEASED_IN_DATE = "date"
+REL_EMPLOYS = "employs"
+REL_OCCURS_IN = "occursIn"
+REL_PERPETRATED_BY = "perpetratedBy"
+REL_TARGETS = "targets"
 
 # Fulltext index names
-FULLTEXT_INDEX_AWARD_ALIASES_INDEX = "Award_aliases_Index"
-FULLTEXT_INDEX_AWARD_DESCRIPTION_INDEX = "Award_description_Index"
-FULLTEXT_INDEX_AWARD_EID_INDEX = "Award_eid_Index"
-FULLTEXT_INDEX_AWARD_NAME_INDEX = "Award_name_Index"
-FULLTEXT_INDEX_AWARD_PROVENANCE_INDEX = "Award_provenance_Index"
 FULLTEXT_INDEX_COUNTRY_ALIASES_INDEX = "Country_aliases_Index"
 FULLTEXT_INDEX_COUNTRY_DESCRIPTION_INDEX = "Country_description_Index"
 FULLTEXT_INDEX_COUNTRY_EID_INDEX = "Country_eid_Index"
 FULLTEXT_INDEX_COUNTRY_NAME_INDEX = "Country_name_Index"
 FULLTEXT_INDEX_COUNTRY_PROVENANCE_INDEX = "Country_provenance_Index"
-FULLTEXT_INDEX_FILM_SERIES_ALIASES_INDEX = "FilmSeries_aliases_Index"
-FULLTEXT_INDEX_FILM_SERIES_DESCRIPTION_INDEX = "FilmSeries_description_Index"
-FULLTEXT_INDEX_FILM_SERIES_EID_INDEX = "FilmSeries_eid_Index"
-FULLTEXT_INDEX_FILM_SERIES_NAME_INDEX = "FilmSeries_name_Index"
-FULLTEXT_INDEX_FILM_SERIES_PROVENANCE_INDEX = "FilmSeries_provenance_Index"
-FULLTEXT_INDEX_GENRE_ALIASES_INDEX = "Genre_aliases_Index"
-FULLTEXT_INDEX_GENRE_DESCRIPTION_INDEX = "Genre_description_Index"
-FULLTEXT_INDEX_GENRE_EID_INDEX = "Genre_eid_Index"
-FULLTEXT_INDEX_GENRE_NAME_INDEX = "Genre_name_Index"
-FULLTEXT_INDEX_GENRE_PROVENANCE_INDEX = "Genre_provenance_Index"
-FULLTEXT_INDEX_MOVIE_ALIASES_INDEX = "Movie_aliases_Index"
-FULLTEXT_INDEX_MOVIE_DESCRIPTION_INDEX = "Movie_description_Index"
-FULLTEXT_INDEX_MOVIE_EID_INDEX = "Movie_eid_Index"
-FULLTEXT_INDEX_MOVIE_FILMING_LOCATION_INDEX = "Movie_filming_location_Index"
-FULLTEXT_INDEX_MOVIE_GLOBAL_BOX_OFFICE_USD_INDEX = "Movie_global_box_office_usd_Index"
-FULLTEXT_INDEX_MOVIE_NAME_INDEX = "Movie_name_Index"
-FULLTEXT_INDEX_MOVIE_ORIGINAL_LANGUAGE_INDEX = "Movie_original_language_Index"
-FULLTEXT_INDEX_MOVIE_PROVENANCE_INDEX = "Movie_provenance_Index"
-FULLTEXT_INDEX_MOVIE_RUNTIME_MINUTE_INDEX = "Movie_runtime_minute_Index"
-FULLTEXT_INDEX_PERSON_ALIASES_INDEX = "Person_aliases_Index"
-FULLTEXT_INDEX_PERSON_COUNTRY_OF_CITIZENSHIP_INDEX = "Person_country_of_citizenship_Index"
-FULLTEXT_INDEX_PERSON_DATE_OF_BIRTH_INDEX = "Person_date_of_birth_Index"
-FULLTEXT_INDEX_PERSON_DATE_OF_DEATH_INDEX = "Person_date_of_death_Index"
-FULLTEXT_INDEX_PERSON_DESCRIPTION_INDEX = "Person_description_Index"
-FULLTEXT_INDEX_PERSON_EID_INDEX = "Person_eid_Index"
-FULLTEXT_INDEX_PERSON_GENDER_INDEX = "Person_gender_Index"
-FULLTEXT_INDEX_PERSON_NAME_INDEX = "Person_name_Index"
-FULLTEXT_INDEX_PERSON_PLACE_OF_BIRTH_INDEX = "Person_place_of_birth_Index"
-FULLTEXT_INDEX_PERSON_PROVENANCE_INDEX = "Person_provenance_Index"
-FULLTEXT_INDEX_PRODUCTION_COMPANY_ALIASES_INDEX = "ProductionCompany_aliases_Index"
-FULLTEXT_INDEX_PRODUCTION_COMPANY_COUNTRY_INDEX = "ProductionCompany_country_Index"
-FULLTEXT_INDEX_PRODUCTION_COMPANY_DESCRIPTION_INDEX = "ProductionCompany_description_Index"
-FULLTEXT_INDEX_PRODUCTION_COMPANY_EID_INDEX = "ProductionCompany_eid_Index"
-FULLTEXT_INDEX_PRODUCTION_COMPANY_NAME_INDEX = "ProductionCompany_name_Index"
-FULLTEXT_INDEX_PRODUCTION_COMPANY_PROVENANCE_INDEX = "ProductionCompany_provenance_Index"
-FULLTEXT_INDEX_HAS_CAST_MEMBER_CHARACTER_ROLE_REL_INDEX = "hasCastMember_character_role_RelIndex"
-FULLTEXT_INDEX_RECEIVES_AWARD_WINNERS_REL_INDEX = "receivesAward_winners_RelIndex"
-FULLTEXT_INDEX_RECEIVES_AWARD_YEAR_REL_INDEX = "receivesAward_year_RelIndex"
-FULLTEXT_INDEX_RELEASED_IN_DATE_REL_INDEX = "releasedIn_date_RelIndex"
+FULLTEXT_INDEX_TARGET_ALIASES_INDEX = "Target_aliases_Index"
+FULLTEXT_INDEX_TARGET_DESCRIPTION_INDEX = "Target_description_Index"
+FULLTEXT_INDEX_TARGET_EID_INDEX = "Target_eid_Index"
+FULLTEXT_INDEX_TARGET_NAME_INDEX = "Target_name_Index"
+FULLTEXT_INDEX_TARGET_PROVENANCE_INDEX = "Target_provenance_Index"
+FULLTEXT_INDEX_TERRORIST_ATTACK_ALIASES_INDEX = "TerroristAttack_aliases_Index"
+FULLTEXT_INDEX_TERRORIST_ATTACK_DATE_INDEX = "TerroristAttack_date_Index"
+FULLTEXT_INDEX_TERRORIST_ATTACK_DESCRIPTION_INDEX = "TerroristAttack_description_Index"
+FULLTEXT_INDEX_TERRORIST_ATTACK_EID_INDEX = "TerroristAttack_eid_Index"
+FULLTEXT_INDEX_TERRORIST_ATTACK_LOCATIONS_INDEX = "TerroristAttack_locations_Index"
+FULLTEXT_INDEX_TERRORIST_ATTACK_NAME_INDEX = "TerroristAttack_name_Index"
+FULLTEXT_INDEX_TERRORIST_ATTACK_NUMBER_OF_DEATHS_INDEX = "TerroristAttack_number_of_deaths_Index"
+FULLTEXT_INDEX_TERRORIST_ATTACK_NUMBER_OF_INJURIES_INDEX = "TerroristAttack_number_of_injuries_Index"
+FULLTEXT_INDEX_TERRORIST_ATTACK_PROVENANCE_INDEX = "TerroristAttack_provenance_Index"
+FULLTEXT_INDEX_TERRORIST_ALIASES_INDEX = "Terrorist_aliases_Index"
+FULLTEXT_INDEX_TERRORIST_COUNTRY_OF_CITIZENSHIP_INDEX = "Terrorist_country_of_citizenship_Index"
+FULLTEXT_INDEX_TERRORIST_DATE_OF_BIRTH_INDEX = "Terrorist_date_of_birth_Index"
+FULLTEXT_INDEX_TERRORIST_DESCRIPTION_INDEX = "Terrorist_description_Index"
+FULLTEXT_INDEX_TERRORIST_EID_INDEX = "Terrorist_eid_Index"
+FULLTEXT_INDEX_TERRORIST_GENDER_INDEX = "Terrorist_gender_Index"
+FULLTEXT_INDEX_TERRORIST_NAME_INDEX = "Terrorist_name_Index"
+FULLTEXT_INDEX_TERRORIST_PLACE_OF_BIRTH_INDEX = "Terrorist_place_of_birth_Index"
+FULLTEXT_INDEX_TERRORIST_PROVENANCE_INDEX = "Terrorist_provenance_Index"
+FULLTEXT_INDEX_WEAPON_ALIASES_INDEX = "Weapon_aliases_Index"
+FULLTEXT_INDEX_WEAPON_DESCRIPTION_INDEX = "Weapon_description_Index"
+FULLTEXT_INDEX_WEAPON_EID_INDEX = "Weapon_eid_Index"
+FULLTEXT_INDEX_WEAPON_NAME_INDEX = "Weapon_name_Index"
+FULLTEXT_INDEX_WEAPON_PROVENANCE_INDEX = "Weapon_provenance_Index"

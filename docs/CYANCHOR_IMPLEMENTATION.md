@@ -394,25 +394,53 @@ python ner_agent_auto.py "Who directed The Matrix?" --mode cyanchor_fl_node_rel 
 
 ---
 
-## 11. Worked example (perturbed mention)
+## 11. Worked examples (verified against live runs, 2026-07-07)
 
-Question: *"How many movies did **Tmo Hooper** direct?"* (typo for *Tom Hooper*)
+### 11a. Typo — cheap-grounded fast path (judges skipped)
 
-1. **PLAN** → `[{"Tmo Hooper", node, "film director name"}, {"direct", relation, "directed relation"}]`.
+Question: *"How many movies did **Tmo Hooper** direct?"* (typo for *Tom Hooper*,
+CypherBench `movie` graph, shipped config `cyanchor_fl_node_rel`)
+
+1. **PLAN** → `[{"Tmo Hooper", node, "film director name"}, {"direct", relation, …}, {"movies", node, …}]`.
 2. **EXECUTE** "Tmo Hooper":
-   - route `"film director name"` → `Person.name`, `Person.aliases`.
-   - fuzzy + Levenshtein over `Person.name` → `["Tom Hooper", "Tobe Hooper", …]`.
-   - not cheaply grounded ("tmohooper" ⊄ "tomhooper") → escalation judge says
-     `done` (right kind, candidate present) → ABSTAIN judge `select`s
-     `"Tom Hooper"` → evidence filtered to that one value.
-   - "direct" (relation) → pattern `(:Person)-[:DIRECTED]->(:Movie)`.
-3. **GENERATE** injection:
-   `- "Tmo Hooper" → Person.name: "Tom Hooper"` /
-   `- "direct" → relationship pattern: (:Person)-[:DIRECTED]->(:Movie)`.
-4. Cypher LLM writes `MATCH (p:Person {name:"Tom Hooper"})-[:DIRECTED]->(m:Movie) RETURN count(m)`,
-   executes, semantic verdict `accept`.
+   - route → top-2 fields `Person.name` **and** `Movie.name`.
+   - fuzzy + Levenshtein → `Person.name: ["Tom Hooper", "Hooper Atchley", …,
+     "Tobe Hooper", …]` and `Movie.name: ["Hooper", "Looper", …]`.
+   - **cheaply grounded**: the *Movie.name* candidate `"Hooper"` normalized is a
+     substring of `"tmohooper"` (`_cheap_grounded` checks both directions over
+     ALL routed fields' values) → **escalation AND select judge are both
+     skipped** — the multi-candidate evidence goes in as-is.
+   - "direct" (relation) → patterns `(:Movie)-[:directedBy]->(:Person)` and
+     `(:Movie)-[:writtenBy]->(:Person)` (top-2 routed relation tools).
+3. **GENERATE** injection (mention-grouped, best-first — NOT filtered to one):
+   `- "Tmo Hooper" → Person.name: "Tom Hooper" | "Hooper Atchley" | …`
+   `- "Tmo Hooper" → Movie.name: "Hooper" | "Looper" | …`
+   `- "direct"     → relationship pattern: (:Movie)-[:directedBy]->(:Person)`.
+4. The Cypher LLM does the final value-linking ("use at most one value per
+   mention") → `MATCH (m:Movie)-[:directedBy]->(p:Person {name:"Tom Hooper"})
+   RETURN count(m)`, executes, semantic verdict `accept`.
 5. value-snap: `"Tom Hooper"` exists → existence gate skips it. Done.
 
-Had the ABSTAIN judge mis-fired and the LLM copied `"Tmo Hooper"` into the
-`WHERE`, **value-snap** would have caught it: the value doesn't exist → closed-list
-pick → substitute `"Tom Hooper"` → re-execute.
+Had the LLM copied `"Tmo Hooper"` into the `WHERE`, **value-snap** would have
+caught it: the value doesn't exist → closed-list pick → substitute → re-execute.
+
+### 11b. Alias — select judge fires
+
+*"… movies that have received the **Satellite Best Score** …"* (LLM-sourced
+alias of *Satellite Award for Best Original Score*): retrieval surfaces the
+canonical `Award.name` value (token overlap, no containment → NOT cheaply
+grounded) → the select judge fires, `select`s the canonical value → evidence
+filtered to that single value.
+
+### 11c. Alias — abstain (recall miss degrades safely)
+
+*"… won the **BSFC Best Supporting Actor** …"*: the canonical value (*Boston
+Society of Film Critics Award for Best Supporting Actor*) is never retrieved in
+any escalation round; facing a candidate list of *other* awards, the judge
+`abstain`s → evidence suppressed → the Cypher LLM free-generates the predicate.
+No wrong award is ever injected.
+
+> History note: an earlier version of this example claimed the select judge
+> fires on "Tmo Hooper" and filters the evidence to a single value. That was
+> wrong for the shipped config — the `Movie.name` candidate `"Hooper"` makes
+> the mention cheaply grounded, skipping both judges (verified by live trace).

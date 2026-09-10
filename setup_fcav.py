@@ -76,7 +76,8 @@ def main() -> int:
             driver = GraphDatabase.driver(conn.uri, auth=(conn.user, conn.password))
             try:
                 m = build_fcav_index(driver, conn.database,
-                                     include_descriptions=args.include_descriptions)
+                                     include_descriptions=args.include_descriptions,
+                                     dataset=dataset, graph=graph, uri=conn.uri)
             finally:
                 driver.close()
             archive_current(dataset, graph, force=True)   # 3. fold fcav into archive

@@ -162,6 +162,8 @@ GRAPH_CONNS: dict[tuple[str, str], GraphConn] = {
     ("cypherbench",  "movie"):               _conn(15066),
     ("cypherbench",  "nba"):                 _conn(15067),
     ("cypherbench",  "politics"):            _conn(15068),
+    # train-split graph (dev/tuning only — never part of the 13-graph eval suite)
+    ("cypherbench",  "terrorist_attack"):    _conn(15069),
     # ── Mind-the-Query ─────────────────────────────────────────────────────
     # NOTE: these graph keys are Mind-the-Query's OWN upstream short-names (the
     # labels of their Datasets/*.dump files), kept verbatim so the `graph` field
@@ -202,7 +204,7 @@ GRAPH_CONNS.update({
 # Shrink for a partial eval; on-disk records persist and aggregation reads them all.
 # Use `*_augmented` for the perturbed set, the bare name for the original (clean) set.
 EVAL_PAIRS: list[tuple[str, str]] = [
-    ("zograscope_augmented", "pole"),
+    ("cypherbench_augmented", "terrorist_attack"),
 ]
 
 _FULL_EVAL_PAIRS_13: list[tuple[str, str]] = [

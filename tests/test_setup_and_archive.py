@@ -169,6 +169,9 @@ def _sandbox(tmp_path, monkeypatch):
     (root / "generated" / "faiss" / "tools_auto" / "index.faiss").write_bytes(b"x")
     (root / "generated" / "faiss" / "tools_auto_node_only").mkdir(parents=True)
     (root / "generated" / "faiss" / "tools_auto_node_only" / "index.faiss").write_bytes(b"x")
+    # Optional per-graph value index (SWAP_DIRS_OPTIONAL).
+    (root / "generated" / "fcav").mkdir(parents=True)
+    (root / "generated" / "fcav" / "index.faiss").write_bytes(b"x")
 
     # Sentinel.
     (root / ".current_setup").write_text("dataset__graph", encoding="utf-8")

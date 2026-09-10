@@ -268,6 +268,33 @@ def _verify_fingerprint(
             + "\nRerun setup_project.py against the current database."
         )
 
+    # Per-graph identity check: db/model fields above cannot tell the 13 eval
+    # graphs apart (they all run database='neo4j' on the same host), so a
+    # stamped index must additionally match the live .current_setup pair.
+    # Legacy indexes without a stamp pass here (tool_names_hash still guards
+    # them); stamps are added by archive_current / the identity audit script.
+    ident = on_disk.get("identity")
+    if isinstance(ident, dict) and ident.get("pair"):
+        try:
+            from eval.artifact_identity import (
+                current_pair as _current_pair,
+                pairs_equivalent as _pairs_equivalent,
+            )
+            from paths import REPO_ROOT as _repo_root
+            _expected = _current_pair(_repo_root)
+        except Exception:  # pragma: no cover — identity module unavailable
+            _expected = None
+            _pairs_equivalent = None
+        if (_expected is not None and _pairs_equivalent is not None
+                and not _pairs_equivalent(ident["pair"], _expected)):
+            raise StaleFaissIndexError(
+                f"FAISS index at {os.fspath(faiss_dir)!r} is stamped for "
+                f"{ident['pair']!r} but the live setup is {_expected!r} "
+                "(cross-graph artifact pollution — see "
+                "eval/artifact_identity.py). Re-run swap_in for the intended "
+                "graph or rebuild the index."
+            )
+
     logger.debug(
         f"[tool_search] FAISS fingerprint OK at {fp_path} "
         f"(db={on_disk.get('database')!r}, tools={on_disk.get('tool_count')}, "

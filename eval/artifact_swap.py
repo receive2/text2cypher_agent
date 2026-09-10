@@ -45,6 +45,13 @@ from typing import List, Optional
 
 from loguru import logger
 
+from eval.artifact_identity import (
+    ArtifactIdentityError,
+    SENTINEL_NAME,
+    read_identity,
+    stamp_dir,
+    verify_dir,
+)
 from paths import REPO_ROOT
 
 
@@ -95,7 +102,7 @@ SWAP_DIRS_OPTIONAL: list[str] = [
 # :mod:`scripts._vector_config_io.replace_embeddable_block`.
 _SNIPPET_NAME      = "vector_config.embeddable_properties.snippet"
 _VECTOR_CONFIG_REL = "vector_config.py"
-_SENTINEL_NAME     = ".current_setup"
+_SENTINEL_NAME     = SENTINEL_NAME  # single source: eval.artifact_identity
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -166,6 +173,19 @@ def _validate_archive_complete(archive: Path) -> None:
                 f"Archive {archive} has empty optional directory {rel}/. "
                 "Either delete the empty directory from the archive or re-run "
                 "setup_and_archive.py to repopulate."
+            )
+    # Identity gate: any stamped per-graph index dir inside the archive must
+    # be stamped for THIS archive's pair — a mismatch means the archive itself
+    # is polluted (2026-07 FCAV incident) and must not be swapped in.
+    # Unstamped (legacy) dirs pass with a warning here; the load boundary
+    # (fcav._load / tool_search) stays fail-closed for the dirs that matter.
+    expected_pair = archive.name
+    for rel in [*SWAP_DIRS, *SWAP_DIRS_OPTIONAL]:
+        p = archive / rel
+        if p.is_dir():
+            verify_dir(
+                p, expected_pair,
+                context=f"swap_in validation ({rel})", missing="warn",
             )
 
 
@@ -293,8 +313,19 @@ def swap_in(dataset: str, graph: str) -> None:
 
         for rel in SWAP_DIRS_OPTIONAL:
             src = archive / rel
+            live = _live_path(rel)
             if src.is_dir():
-                _replace_dir(src, _live_path(rel))
+                _replace_dir(src, live)
+            elif live.is_dir():
+                # Hermetic swap: absent in archive ⇒ absent live. Leaving the
+                # previous graph's index behind is how the 2026-07 FCAV
+                # pollution started (a later archive_current folded the stale
+                # dir into a foreign archive).
+                shutil.rmtree(live)
+                logger.info(
+                    f"artifact_swap.swap_in: removed stale live {rel}/ — "
+                    f"absent from archive {pair_id} (hermetic swap)."
+                )
             else:
                 logger.debug(f"artifact_swap.swap_in: optional dir absent in archive: {rel}")
 
@@ -369,6 +400,8 @@ def archive_current(dataset: str, graph: str, *, force: bool = False) -> None:
         else:
             logger.debug(f"artifact_swap.archive_current: optional file absent: {rel}")
 
+    pair = f"{dataset}__{graph}"
+
     # ── Required dirs ───────────────────────────────────────────────────────
     for rel in SWAP_DIRS:
         live = _live_path(rel)
@@ -377,16 +410,36 @@ def archive_current(dataset: str, graph: str, *, force: bool = False) -> None:
                 f"Required artifact directory missing: {live}. "
                 "Did setup_project.py Step 10 (FAISS build) finish?"
             )
+        # A live dir stamped for another graph must never be archived under
+        # this pair's name. Unstamped (legacy) dirs pass with a warning and
+        # get stamped IN PLACE before the copy — archive_current's own
+        # (dataset, graph) args are the authoritative identity here, and
+        # stamping live-first keeps live == archive (round_trip_check).
+        verify_dir(live, pair,
+                   context=f"archive_current ({rel})", missing="warn")
+        if read_identity(live) is None:
+            try:
+                stamp_dir(live, dataset, graph)
+            except ArtifactIdentityError:
+                logger.debug(
+                    f"artifact_swap.archive_current: {rel} has no carrier "
+                    "file to stamp (pre-fingerprint index?) — left unstamped."
+                )
         dst = archive / rel
         dst.parent.mkdir(parents=True, exist_ok=True)
         if dst.exists():
             shutil.rmtree(dst)
         shutil.copytree(live, dst)
 
-    # ── Optional dirs ───────────────────────────────────────────────────────
+    # ── Optional dirs (per-graph value indexes, e.g. generated/fcav) ───────
+    # Fail closed: these are exactly the dirs that caused the 2026-07 FCAV
+    # pollution. An optional dir may only enter an archive when it can PROVE
+    # (build-time stamp) that it belongs to this pair.
     for rel in SWAP_DIRS_OPTIONAL:
         live = _live_path(rel)
         if live.is_dir():
+            verify_dir(live, pair,
+                       context=f"archive_current ({rel})", missing="raise")
             dst = archive / rel
             dst.parent.mkdir(parents=True, exist_ok=True)
             if dst.exists():
@@ -436,19 +489,16 @@ def round_trip_check(dataset: str, graph: str) -> None:
 
     Raises ``RuntimeError`` on any mismatch.
     """
-    # Snapshot the live files before doing anything that mutates them.
-    pre_files = {rel: _file_sha(_live_path(rel)) for rel in SWAP_FILES if _live_path(rel).is_file()}
-    pre_dirs  = {rel: _dir_signature(_live_path(rel)) for rel in SWAP_DIRS}
-    pre_snip  = None
-    vc_path = _live_path(_VECTOR_CONFIG_REL)
-    if vc_path.is_file():
-        from scripts._vector_config_io import extract_embeddable_block
-        pre_snip = extract_embeddable_block(str(vc_path))
-
     # Archive into a temp dir and run swap_in via a temporarily relocated
     # SETUP_ARTIFACTS_ROOT.  The simplest way is to call the real
     # archive_current/swap_in into a temp directory by monkey-patching
     # _setup_artifacts_root for the duration of the check.
+    #
+    # The live snapshot is taken AFTER archive_current: archiving may stamp a
+    # previously unstamped live index dir in place (a one-time identity
+    # migration — see eval.artifact_identity), and the invariant under test is
+    # "swap_in restores exactly what archive_current wrote", not "archiving is
+    # a pure read".
     with tempfile.TemporaryDirectory(prefix="t2c_round_trip_") as td:
         td_root = Path(td)
         global _setup_artifacts_root  # noqa: PLW0603 — intentional shim
@@ -460,6 +510,14 @@ def round_trip_check(dataset: str, graph: str) -> None:
 
         try:
             archive_current(dataset, graph, force=True)
+
+            pre_files = {rel: _file_sha(_live_path(rel)) for rel in SWAP_FILES if _live_path(rel).is_file()}
+            pre_dirs  = {rel: _dir_signature(_live_path(rel)) for rel in SWAP_DIRS}
+            pre_snip  = None
+            vc_path = _live_path(_VECTOR_CONFIG_REL)
+            if vc_path.is_file():
+                from scripts._vector_config_io import extract_embeddable_block
+                pre_snip = extract_embeddable_block(str(vc_path))
 
             # Force swap_in to do real work even if the sentinel already
             # matches.
