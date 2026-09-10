@@ -113,11 +113,12 @@ the shipped configuration.
 
 **Smoke test first:** set your own `GENERATOR_LLM`, `LIMIT = 5`, one graph,
 `METHOD = "no_val_link"` — a two-minute run that proves your key, the model
-id, Neo4j and the harness work before you spend hours. The two Claude presets
-have been exercised end-to-end; the GPT-5.6 and DeepInfra presets are
-registered from the providers' published ids but your smoke test is their
-first live call — if the API rejects a parameter, the error names it and the
-fix is one line in `config.MODEL_PRESETS` (tell the coordinator).
+id, Neo4j and the harness work before you spend hours. The GPT-5.6 and Claude presets
+have been exercised end-to-end (parameters accepted, caching confirmed); the
+DeepInfra presets are registered from the provider's published ids and your
+smoke test is their first live call — if the API rejects a parameter, the
+error names it and the fix is one line in `config.MODEL_PRESETS` (tell the
+coordinator).
 
 ## 3. One-time setup for each graph you were assigned
 

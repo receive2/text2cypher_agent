@@ -251,14 +251,15 @@ text model, which is what the comparison needs. To change a model's
 parameters, add a `"params"` dict to its entry in `config.MODEL_PRESETS`
 (passed to the chat-model constructor verbatim) — never edit `.env`.
 
-**What has been exercised live.** `claude-opus-5` and `claude-haiku-4.5` were
-called through the real builders (2026-09-09): no parameter errors, plain-text
-replies, and the cache marker produced `cache_creation` then `cache_read`
-tokens on Opus. The `gpt-5.6-*` presets use OpenAI's published model ids but
-could not be called from the coordinator's network (corporate proxy blocks the
-OpenAI API from Python); the DeepInfra presets await a key. **Your first run
-is the smoke test for them** — a rejected parameter fails on the first call
-with the parameter named, and the fix is one line in `MODEL_PRESETS`.
+**What has been exercised live (2026-09-09).** `gpt-5.6-terra`,
+`gpt-5.6-luna`, `claude-opus-5` and `claude-haiku-4.5` were all called through
+the real builders: no parameter errors, plain-text replies, zero reasoning
+tokens on the GPT-5.6 presets at `reasoning_effort="low"`, and prompt caching
+confirmed on both vendors (a second identical call reported `cache_read`
+2,446 of 2,449 input tokens on GPT-5.6 and 4,202 on Opus 5). The DeepInfra
+presets await a key: **your first run is their smoke test** — a rejected
+parameter fails on the first call with the parameter named, and the fix is
+one line in `MODEL_PRESETS`.
 
 **Prompt caching is automatic and applies to every model.** The Cypher prompt is
 laid out static-first (task text → schema → *then* retrieved values → question),
