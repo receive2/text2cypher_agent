@@ -27,20 +27,25 @@ cp .env.example .env                # then put the keys in (below)
   is usually unreachable — **disconnect the VPN** before running. `UNREACH` in
   the pre-flight means a network problem, not a broken setup.
 - **API keys.** `.env` holds keys and nothing else — the model is chosen in
-  `eval_config.py` (step 2), never in `.env`. You need the key for the
-  provider of *your* model:
+  `eval_config.py` (step 2), never in `.env`. **Everyone needs
+  `OPENAI_API_KEY`**, whatever model you run: the setup step builds the
+  schema metadata with `gpt-4.1`, and the embeddings behind tool routing and
+  the FCAV baseline are OpenAI `text-embedding-3-small`. On top of that you
+  need the key for the provider of *your* model:
 
 | your model (`GENERATOR_LLM`) | provider | key in `.env` | where a key comes from |
 |---|---|---|---|
-| `gpt-5.6-terra`, `gpt-5.6-luna`, `gpt-4.1` | OpenAI | `OPENAI_API_KEY` | platform.openai.com → API keys |
-| `claude-opus-5`, `claude-haiku-4.5` | Anthropic | `ANTHROPIC_API_KEY` | console.anthropic.com → API Keys |
+| everyone (setup + embeddings), and `gpt-5.6-terra` / `gpt-5.6-luna` | OpenAI | `OPENAI_API_KEY` | platform.openai.com → API keys |
+| `claude-sonnet-5`, `claude-haiku-4.5` | Anthropic | `ANTHROPIC_API_KEY` | console.anthropic.com → API Keys |
 | `deepseek-v3.1`, `llama-3.3-70b` | DeepInfra | `DEEPINFRA_API_KEY` | deepinfra.com → Dashboard → API Keys |
 
   **Ask the coordinator for the lab key before creating your own** — the runs
   are billed centrally and each model has its own key so spend can be tracked.
   Never commit `.env`.
-- **Disk, if you run `fcav`:** its FAISS index is ~4 GB per graph, and building
-  it downloads a sentence-transformers model on first use.
+- **Disk, if you run `fcav`:** its FAISS index is ~4 GB per graph (~50 GB for
+  the full suite). Building it embeds every distinct string value of the graph
+  with OpenAI `text-embedding-3-small` — cents per graph, but minutes to hours
+  of API calls on the large graphs.
 
 ## 1. Verify the dataset — do this first, every time you pull
 
@@ -74,18 +79,21 @@ EVAL_PAIRS = [("cypherbench_augmented", "movie")]   # your graph(s); full suite 
 Set them to your own assignment. When you are done, `git checkout eval_config.py`
 — do not commit these edits.
 
-**The seven model presets** (`config.MODEL_PRESETS`; the name is what you type
-and what appears in the result directory):
+**The model presets** (`config.MODEL_PRESETS`; the name is what you type and
+what appears in the result directory). The six in the sweep:
 
 | preset | what it is | key |
 |---|---|---|
-| `gpt-4.1` | the baseline all reference runs used | `OPENAI_API_KEY` |
 | `gpt-5.6-terra` | GPT workhorse (primary model) | `OPENAI_API_KEY` |
 | `gpt-5.6-luna` | cheap tier — also for smoke tests | `OPENAI_API_KEY` |
-| `claude-opus-5` | strongest tier (thinking switched off by the harness) | `ANTHROPIC_API_KEY` |
-| `claude-haiku-4.5` | cheap tier (its 4k-token caching minimum exceeds this prompt, so it runs uncached) | `ANTHROPIC_API_KEY` |
+| `claude-sonnet-5` | Claude strong tier, same price point as Terra (thinking switched off by the harness) | `ANTHROPIC_API_KEY` |
+| `claude-haiku-4.5` | cheap tier (its NER-stage prompt is cached; its Cypher-stage prompt is just under Haiku's 4,096-token caching minimum, so that stage runs uncached) | `ANTHROPIC_API_KEY` |
 | `deepseek-v3.1` | open-weights, strong tier (DeepInfra) | `DEEPINFRA_API_KEY` |
 | `llama-3.3-70b` | open-weights baseline (DeepInfra) | `DEEPINFRA_API_KEY` |
+
+Two more exist but are **not** part of the sweep — do not run them unless
+asked: `gpt-4.1` (the baseline the reference runs used) and `claude-opus-5`
+(about 2.5× the cost of Sonnet).
 
 One name switches every stage of the pipeline (entity extraction, Cypher
 generation, answer formatting). A wrong name fails immediately with the list
@@ -130,7 +138,15 @@ python setup_fcav.py                   # only if you will run the fcav method
 Both read `EVAL_PAIRS`, so set that first. Positional arguments are
 deliberately rejected, so the CLI and the config can never disagree. Setup is
 per graph and independent of the model — do it once, then run all five
-methods against it.
+methods against it. It always uses `gpt-4.1` + OpenAI embeddings, whatever
+your `GENERATOR_LLM`, so everyone's artifacts are built the same way.
+
+> Setup connects to the **shared** VM graph: it creates full-text indexes if
+> they are missing (idempotent) and clears any leftover vector indexes /
+> embedding properties (there are none in the default configuration). Evaluation
+> itself only reads the graph (plus the same idempotent index creation).
+> **Do not run setup for a graph while someone
+> else is setting up the same graph**; announce it in the channel first.
 
 ## 4. Pre-flight — must be green
 
@@ -185,7 +201,7 @@ If you finish early, take a second model.
 |---|---|---|
 | `gpt-5.6-terra` | | |
 | `gpt-5.6-luna` | | |
-| `claude-opus-5` | | |
+| `claude-sonnet-5` | | |
 | `claude-haiku-4.5` | | |
 | `deepseek-v3.1` | | |
 | `llama-3.3-70b` | | |

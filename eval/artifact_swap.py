@@ -143,7 +143,7 @@ def _validate_archive_complete(archive: Path) -> None:
     if not archive.is_dir():
         raise FileNotFoundError(
             f"Archive directory not found: {archive}. "
-            "Run `python scripts/setup_and_archive.py <dataset> <graph>` first."
+            "Add the pair to eval_config.EVAL_PAIRS and run `python scripts/setup_and_archive.py` first."
         )
     missing: list[str] = []
     for rel in SWAP_FILES:

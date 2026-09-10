@@ -221,12 +221,12 @@ One field in the control panel selects the model for **all three stages**
 (NER / Cypher / QA) and tags every run directory with it:
 
 ```python
-GENERATOR_LLM = "claude-opus-5"     # eval_config.py, ★ EXPERIMENT PARAMETERS ★
+GENERATOR_LLM = "claude-sonnet-5"   # eval_config.py, ★ EXPERIMENT PARAMETERS ★
 ```
 
 The value is a **preset name** from `config.MODEL_PRESETS` (`gpt-4.1`,
-`gpt-5.6-terra`, `gpt-5.6-luna`, `claude-opus-5`, `claude-haiku-4.5`,
-`deepseek-v3.1`, `llama-3.3-70b`). A preset fixes the provider and the exact
+`gpt-5.6-terra`, `gpt-5.6-luna`, `claude-sonnet-5`, `claude-haiku-4.5`,
+`claude-opus-5`, `deepseek-v3.1`, `llama-3.3-70b`). A preset fixes the provider and the exact
 model id; the two open-weights models route through DeepInfra's
 OpenAI-compatible endpoint via `config.MODEL_REGISTRY`. An unknown name fails
 at startup with the list of valid ones — there is no silent fallback. Adding a
@@ -234,7 +234,10 @@ model = one entry in `MODEL_PRESETS` (plus a `MODEL_REGISTRY` entry if it is an
 OpenAI-compatible host).
 
 `.env` holds **API keys only** (`OPENAI_API_KEY`, `ANTHROPIC_API_KEY`,
-`DEEPINFRA_API_KEY`; see `.env.example`) — never a model choice. `eval_run`
+`DEEPINFRA_API_KEY`; see `.env.example`) — never a model choice. Note that
+`OPENAI_API_KEY` is required for every generator: setup's schema-metadata step
+runs on `gpt-4.1`, and the tool router and FCAV embed with OpenAI
+`text-embedding-3-small` (`vector_config.py`). `eval_run`
 hands the preset to the worker the same way it hands `METHOD` (an injected
 `GENERATOR_LLM` env var that `config.py` receives), so the worker's model and
 the directory name always come from the one value you edited. Readers (report
@@ -252,11 +255,12 @@ parameters, add a `"params"` dict to its entry in `config.MODEL_PRESETS`
 (passed to the chat-model constructor verbatim) — never edit `.env`.
 
 **What has been exercised live (2026-09-09).** `gpt-5.6-terra`,
-`gpt-5.6-luna`, `claude-opus-5` and `claude-haiku-4.5` were all called through
-the real builders: no parameter errors, plain-text replies, zero reasoning
-tokens on the GPT-5.6 presets at `reasoning_effort="low"`, and prompt caching
-confirmed on both vendors (a second identical call reported `cache_read`
-2,446 of 2,449 input tokens on GPT-5.6 and 4,202 on Opus 5). The DeepInfra
+`gpt-5.6-luna`, `claude-sonnet-5`, `claude-opus-5` and `claude-haiku-4.5` were
+all called through the real builders: no parameter errors, plain-text replies,
+zero reasoning tokens on the GPT-5.6 presets at `reasoning_effort="low"`, and
+prompt caching confirmed on both vendors (a second identical call reported
+`cache_read` 2,446 of 2,449 input tokens on GPT-5.6, 4,202 on Opus 5 and
+5,545 / 11,854 on Sonnet 5 for the Cypher / NER stage prompts). The DeepInfra
 presets await a key: **your first run is their smoke test** — a rejected
 parameter fails on the first call with the parameter named, and the fix is
 one line in `MODEL_PRESETS`.
@@ -267,9 +271,15 @@ so OpenAI caches the ~2.8k-token prefix on its own, and a `CACHE_BREAK` marker a
 that boundary makes Anthropic cache it too (`agent/prompt_cache.py`). Providers
 that cannot use the marker have it stripped, so **the model sees byte-identical
 text either way** — caching changes cost, never results. One measured exception:
-Claude Haiku 4.5 only caches prefixes of ≥ 4,096 tokens (verified: a 2.9k-token
-prefix is not cached, a 6.8k one is), and this prompt's static prefix is ~3k, so
-`claude-haiku-4.5` runs uncached — budget it at the uncached rate.
+Claude Haiku 4.5 only caches prefixes of ≥ 4,096 tokens. Measured on the real
+prompts (2026-09-09): the NER-agent prefix (system prompt + tool schemas,
+5–12k Haiku tokens) **is** cached on 12 of the 13 graphs (`er` is 3,977 tokens,
+just under), while the Cypher-stage prefix (3.4–3.8k tokens; only `bloom` clears
+4,096) is **not** — so budget Haiku with roughly 40% of its input tokens
+cached rather than 60% (Sonnet/Opus/GPT), which puts it at about 85% of its
+uncached cost. Note also that the Claude 5 tokenizer counts ~1.5–1.9× the
+tokens GPT's does on these prompts (Haiku 4.5: ~1.2×); price Claude runs on
+their own token counts, not GPT's.
 
 ## Producing the per-graph comparison reports
 

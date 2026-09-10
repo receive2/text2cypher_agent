@@ -62,7 +62,8 @@ from dataclasses import dataclass
 GENERATOR_LLM: str = "gpt-4.1"  # preset name from config.MODEL_PRESETS — selects the LLM for
                                 #   ALL stages (NER / Cypher / QA) and tags the run dir
                                 #   (cyanchor_fl@<name>). Presets: gpt-4.1 | gpt-5.6-terra |
-                                #   gpt-5.6-luna | claude-opus-5 | claude-haiku-4.5 |
+                                #   gpt-5.6-luna | claude-sonnet-5 | claude-haiku-4.5 |
+                                #   claude-opus-5 (extra) |
                                 #   deepseek-v3.1 | llama-3.3-70b
 METHOD:    str = "cyanchor"     # no_val_link | fcav | react | graphrag | cyanchor
 TOOL_TYPE: str = "node_rel"     # node | node_rel   (applies to react / cyanchor)

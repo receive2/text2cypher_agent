@@ -222,7 +222,8 @@ MODEL_PRESETS: dict = {
     "gpt-5.6-luna":     {"provider": "openai",        "model": "gpt-5.6-luna"},    # cheap tier / smoke tests
     # ── Claude family (temperature is rejected and thinking is switched off
     #    for the 4.6+/5 generation — see agent_helper._anthropic_generation_kwargs) ──
-    "claude-opus-5":    {"provider": "anthropic",     "model": "claude-opus-5"},
+    "claude-sonnet-5":  {"provider": "anthropic",     "model": "claude-sonnet-5"},   # sweep: Claude strong tier
+    "claude-opus-5":    {"provider": "anthropic",     "model": "claude-opus-5"},     # extra — not in the sweep (~2.5x Sonnet)
     "claude-haiku-4.5": {"provider": "anthropic",     "model": "claude-haiku-4-5"},
     # ── open-weights, served by DeepInfra (one key for both; Together entries
     #    exist in MODEL_REGISTRY as alternates) ──

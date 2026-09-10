@@ -83,15 +83,16 @@ pip install faiss-cpu            # or faiss-gpu for CUDA
 Create a `.env` file in the project root:
 
 ```dotenv
-# ── Neo4j (required) ──────────────────────────────────────────────────────────
+# ── Neo4j — for the agent demo / setup against YOUR OWN database. The evaluation
+#    harness ignores these and reads its graph connections from eval_config.py. ──
 NEO4J_URI=bolt://localhost:7687     # or neo4j+s://... for AuraDB
 NEO4J_USERNAME=neo4j
 NEO4J_PASSWORD=your-password
 NEO4J_DATABASE=neo4j                # the database name inside Neo4j
 
 # ── LLM API keys (keys only — the model is chosen in eval_config.py / config.py) ──
-OPENAI_API_KEY=sk-...               # gpt-4.1, gpt-5.6-terra, gpt-5.6-luna
-ANTHROPIC_API_KEY=                  # claude-opus-5, claude-haiku-4.5 (only if you run them)
+OPENAI_API_KEY=sk-...               # always needed: setup + embeddings use OpenAI; generators gpt-4.1, gpt-5.6-terra, gpt-5.6-luna
+ANTHROPIC_API_KEY=                  # claude-sonnet-5, claude-haiku-4.5 (only if you run them)
 DEEPINFRA_API_KEY=                  # deepseek-v3.1, llama-3.3-70b (only if you run them)
 
 # ── Azure OpenAI (optional — replaces OpenAI when all three are set) ──────────
