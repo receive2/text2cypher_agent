@@ -1,0 +1,16 @@
+rel_type,from_label,to_label,property,property_types,mandatory,rel_count,sample_values
+belongsTo,GovernmentOrganization,Country,,,,237577,
+foundedBy,PoliticalParty,Politician,,,,1806,
+hasDiplomaticRelationWith,Country,Country,,,,5721,
+hasHeadOfGovernment,Country,Politician,end_year,Long,False,939,2018 | 2001 | 1993
+hasHeadOfGovernment,Country,Politician,start_year,Long,False,939,1857 | 1926 | 2016
+hasHeadOfState,Country,Politician,end_year,Long,False,688,2009 | 2006 | 1994
+hasHeadOfState,Country,Politician,start_year,Long,False,688,2000 | 1966 | 2017
+headedBy,PoliticalParty,Politician,end_year,Long,False,3661,1945 | 1980 | 2017
+headedBy,PoliticalParty,Politician,start_year,Long,False,3661,2020 | 2009 | 2016
+holdsPosition,Politician,Position,end_year,Long,False,975844,1985 | 1965 | 2019
+holdsPosition,Politician,Position,start_year,Long,False,975844,1993 | 2013 | 2003
+leads,Position,GovernmentOrganization,,,,4603,
+memberOf,Country,InternationalOrganization,,,,303178,
+memberOf,Politician,PoliticalParty,,,,303178,
+operatesIn,PoliticalParty,Country,,,,14399,

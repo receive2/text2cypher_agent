@@ -1,0 +1,262 @@
+{
+  "nodes": {
+    "Character": {
+      "id_property": "name",
+      "properties": {
+        "aliases": {
+          "data_type": "list",
+          "topic": "character aliases",
+          "description": "Alternative names or nicknames by which the character is known."
+        },
+        "birth_name": {
+          "data_type": "name",
+          "topic": "birth name",
+          "description": "The original or given name of the character at birth."
+        },
+        "country_of_citizenship": {
+          "data_type": "list",
+          "topic": "citizenship country",
+          "description": "Countries or fictional realms where the character holds citizenship."
+        },
+        "creator": {
+          "data_type": "name",
+          "topic": "creator name",
+          "description": "The name of the person who created the character."
+        },
+        "description": {
+          "data_type": "text",
+          "topic": "character description",
+          "description": "A brief summary or description of the character."
+        },
+        "eid": {
+          "data_type": "id",
+          "topic": "external identifier",
+          "description": "A unique external identifier for the character, often referencing a knowledge base."
+        },
+        "gender": {
+          "data_type": "enum",
+          "topic": "gender identity",
+          "description": "The gender identity of the character."
+        },
+        "name": {
+          "data_type": "name",
+          "topic": "character name",
+          "description": "The primary name of the character."
+        },
+        "occupation": {
+          "data_type": "list",
+          "topic": "character occupation",
+          "description": "Occupations or roles held by the character."
+        },
+        "provenance": {
+          "data_type": "list",
+          "topic": "data provenance",
+          "description": "Sources or references indicating where the character data was obtained."
+        }
+      }
+    },
+    "FictionalUniverse": {
+      "id_property": "name",
+      "properties": {
+        "aliases": {
+          "data_type": "list",
+          "topic": "universe alternate names",
+          "description": "Alternative names or nicknames by which the fictional universe is known."
+        },
+        "copyright_holder": {
+          "data_type": "name",
+          "topic": "copyright owner",
+          "description": "The entity or organization that holds the copyright for the fictional universe."
+        },
+        "creator": {
+          "data_type": "name",
+          "topic": "universe creator",
+          "description": "The person or group credited with creating the fictional universe."
+        },
+        "description": {
+          "data_type": "text",
+          "topic": "universe summary",
+          "description": "A brief summary or description of the fictional universe."
+        },
+        "eid": {
+          "data_type": "id",
+          "topic": "external identifier",
+          "description": "A unique external identifier for the fictional universe, often referencing a knowledge base."
+        },
+        "inception_year": {
+          "data_type": "year",
+          "topic": "universe creation year",
+          "description": "The year in which the fictional universe was first introduced or created."
+        },
+        "name": {
+          "data_type": "name",
+          "topic": "universe name",
+          "description": "The primary name of the fictional universe."
+        },
+        "provenance": {
+          "data_type": "list",
+          "topic": "source references",
+          "description": "A list of sources or references that provide information about the fictional universe."
+        }
+      }
+    },
+    "Location": {
+      "id_property": "name",
+      "properties": {
+        "aliases": {
+          "data_type": "list",
+          "topic": "location alternate names",
+          "description": "Stores alternative names or aliases for the location."
+        },
+        "description": {
+          "data_type": "text",
+          "topic": "location summary",
+          "description": "A brief textual description providing context or details about the location."
+        },
+        "eid": {
+          "data_type": "id",
+          "topic": "external location identifier",
+          "description": "A unique external identifier for the location, often referencing a knowledge base."
+        },
+        "name": {
+          "data_type": "name",
+          "topic": "location name",
+          "description": "The primary name of the location."
+        },
+        "provenance": {
+          "data_type": "list",
+          "topic": "location data sources",
+          "description": "A list of sources or origins from which information about the location was obtained."
+        }
+      }
+    },
+    "Organization": {
+      "id_property": "name",
+      "properties": {
+        "aliases": {
+          "data_type": "list",
+          "topic": "organization alternate names",
+          "description": "A list of alternative names or aliases by which the organization is known."
+        },
+        "description": {
+          "data_type": "text",
+          "topic": "organization description",
+          "description": "A brief textual summary describing the organization."
+        },
+        "eid": {
+          "data_type": "id",
+          "topic": "organization external id",
+          "description": "A unique external identifier for the organization, often referencing a knowledge base."
+        },
+        "name": {
+          "data_type": "name",
+          "topic": "organization name",
+          "description": "The primary name of the organization."
+        },
+        "provenance": {
+          "data_type": "list",
+          "topic": "organization data sources",
+          "description": "A list of sources or references that provide information about the organization."
+        }
+      }
+    }
+  },
+  "relationships": {
+    "basedIn": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Organization",
+          "to": "Location"
+        }
+      ]
+    },
+    "bornIn": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Character",
+          "to": "Location"
+        }
+      ]
+    },
+    "diedIn": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Character",
+          "to": "Location"
+        }
+      ]
+    },
+    "fromUniverse": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Character",
+          "to": "FictionalUniverse"
+        },
+        {
+          "from": "Organization",
+          "to": "FictionalUniverse"
+        }
+      ]
+    },
+    "hasFather": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Character",
+          "to": "Character"
+        }
+      ]
+    },
+    "hasMother": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Character",
+          "to": "Character"
+        }
+      ]
+    },
+    "hasSpouse": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Character",
+          "to": "Character"
+        }
+      ]
+    },
+    "hasStudent": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Character",
+          "to": "Character"
+        }
+      ]
+    },
+    "killedBy": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Character",
+          "to": "Character"
+        }
+      ]
+    },
+    "memberOf": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Character",
+          "to": "Organization"
+        }
+      ]
+    }
+  },
+  "generated_at_utc": "2026-06-21T20:40:15.244749+00:00",
+  "language": "en"
+}

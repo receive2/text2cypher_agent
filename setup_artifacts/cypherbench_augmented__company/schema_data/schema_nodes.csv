@@ -1,0 +1,27 @@
+label,property,property_types,mandatory,node_count,non_null_count,fill_pct,sample_values
+Company,aliases,StringArray,True,547969,547969,100.0%,[] | [] | []
+Company,description,String,False,547969,451518,82.4%,"company in the Czech Republic | Bank located in states of Indiana and Kent… | hotel in Erechim, Bra…"
+Company,eid,String,True,547969,547969,100.0%,Company#Q113466459 | Company#Q119399120 | Company#Q95413215
+Company,launch_year,Long,False,547969,218460,39.9%,1990 | 2000 | 1978
+Company,name,String,True,547969,547969,100.0%,OYO 8593 Hotel Supernova | Busline Hradec Králové | The Palm
+Company,provenance,StringArray,True,547969,547969,100.0%,[] | [] | []
+Country,aliases,StringArray,True,217,217,100.0%,"['Naoero', 'Pleasant Island', 'Republic of… | ['BR Deutschland', 'BRD', 'Bundesrepublik … | ['Feder…"
+Country,description,String,False,217,215,99.1%,country in Northern Europe | island country in the southwest Pacific Ocean | country in Central Eur…
+Country,eid,String,True,217,217,100.0%,Country#Q222 | Country#Q148 | Country#Q954
+Country,name,String,True,217,217,100.0%,Democratic Republic of the Congo | Galicia | The Bahamas
+Country,provenance,StringArray,True,217,217,100.0%,['https://en.wikipedia.org/wiki/Niger'] | ['https://en.wikipedia.org/wiki/Uganda'] | ['https://en.w…
+Industry,aliases,StringArray,True,526,526,100.0%,"[] | ['agricultural industry', 'agroindustrial … | ['biotech industry']"
+Industry,description,String,False,526,441,83.8%,"management of water by humans. Activity of… | investigation and reporting of events, iss… | industr…"
+Industry,eid,String,True,526,526,100.0%,Industry#Q16070574 | Industry#Q220117 | Industry#Q5919003
+Industry,name,String,True,526,526,100.0%,leisure industry | hotel industry | Energy service company
+Industry,provenance,StringArray,True,526,526,100.0%,[] | ['https://en.wikipedia.org/wiki/Water_trea… | ['https://en.wikipedia.org/wiki/Telephony']
+Person,aliases,StringArray,True,32594,32594,100.0%,"['Jack Hody Johnson'] | ['A. E. Lindgren', 'A. Lindgren', 'Armas E… | []"
+Person,country_of_citizenship,StringArray,False,32594,25259,77.5%,['Israel'] | ['United States of America'] | ['Finland']
+Person,date_of_birth,Date,False,32594,20747,63.7%,1930-01-30 | 1810-07-21 | 1910-06-25
+Person,date_of_death,Date,False,32594,11223,34.4%,1926-04-04 | 1924-09-20 | 1986-03-22
+Person,description,String,False,32594,27796,85.3%,Czech manager | French money manager and businessman (1943… | German physicist
+Person,eid,String,True,32594,32594,100.0%,Person#Q1350380 | Person#Q83287233 | Person#Q3270035
+Person,gender,String,False,32594,31744,97.4%,male | male | male
+Person,name,String,True,32594,32594,100.0%,Gabriel Dalporto | Frederick Augustus Muhlenberg | Ornella Vanoni
+Person,place_of_birth,String,False,32594,21437,65.8%,1st arrondissement of Lyon | Aachen | Southwark
+Person,provenance,StringArray,True,32594,32594,100.0%,[] | [] | ['https://en.wikipedia.org/wiki/John_Brown…

@@ -1,0 +1,6 @@
+rel_type,from_label,to_label,property,property_types,mandatory,rel_count,sample_values
+departsFrom,FlightAccident,Airport,,,,507,
+destinedFor,FlightAccident,Airport,,,,491,
+involves,FlightAccident,AircraftModel,,,,530,
+manufacturedBy,AircraftModel,AircraftManufacturer,,,,128,
+operatedBy,FlightAccident,Operator,,,,556,

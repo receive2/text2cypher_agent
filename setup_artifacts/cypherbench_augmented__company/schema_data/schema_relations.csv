@@ -1,0 +1,9 @@
+rel_type,from_label,to_label,property,property_types,mandatory,rel_count,sample_values
+basedIn,Company,Country,,,,194832,
+foundedBy,Company,Person,,,,27728,
+hasBoardMember,Company,Person,end_year,Long,False,3724,2014 | 1936 | 2009
+hasBoardMember,Company,Person,start_year,Long,False,3724,2020 | 2012 | 2022
+hasCEO,Company,Person,end_year,Long,False,4664,1983 | 2002 | 2005
+hasCEO,Company,Person,start_year,Long,False,4664,2009 | 1921 | 2010
+operatesIn,Company,Industry,,,,43335,
+subsidiaryOf,Company,Company,,,,25298,

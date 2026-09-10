@@ -1,0 +1,19 @@
+{
+  "database": "neo4j",
+  "neo4j_uri_host": "34.9.85.21",
+  "tool_names_hash": "e19a920bf8d0c67e3d0c5661b1b9a4191d05d75b037a89f350a5bca5f46159c8",
+  "tool_count": 13,
+  "embedding_model": "text-embedding-3-small",
+  "embedding_backend": "openai",
+  "ner_mode": "node_only",
+  "built_at": "2026-06-22T11:31:02+00:00",
+  "schema_version": 1,
+  "identity": {
+    "pair": "mindthequery_augmented__wwc",
+    "dataset": "mindthequery_augmented",
+    "graph": "wwc",
+    "bolt_uri": null,
+    "database": null,
+    "stamped_at": "2026-07-18T22:14:12+00:00"
+  }
+}

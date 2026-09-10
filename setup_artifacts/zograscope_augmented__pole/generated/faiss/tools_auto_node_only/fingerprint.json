@@ -1,0 +1,19 @@
+{
+  "database": "neo4j",
+  "neo4j_uri_host": "34.9.85.21",
+  "tool_names_hash": "d894495e7632b3abaa8d1202ded5dc4bbcf2cab1ceaf67247b8bed646c6a969e",
+  "tool_count": 33,
+  "embedding_model": "text-embedding-3-small",
+  "embedding_backend": "openai",
+  "ner_mode": "node_only",
+  "built_at": "2026-06-21T04:32:15+00:00",
+  "schema_version": 1,
+  "identity": {
+    "pair": "zograscope_augmented__pole",
+    "dataset": "zograscope_augmented",
+    "graph": "pole",
+    "bolt_uri": null,
+    "database": null,
+    "stamped_at": "2026-07-18T22:14:12+00:00"
+  }
+}

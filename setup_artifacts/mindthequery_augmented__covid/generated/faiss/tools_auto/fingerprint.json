@@ -1,0 +1,19 @@
+{
+  "database": "neo4j",
+  "neo4j_uri_host": "34.9.85.21",
+  "tool_names_hash": "e2bcf8802f0d8b47ac99a622266e0099239d04fe93063d5bca15f9d399e31145",
+  "tool_count": 30,
+  "embedding_model": "text-embedding-3-small",
+  "embedding_backend": "openai",
+  "ner_mode": "full",
+  "built_at": "2026-06-18T08:00:53+00:00",
+  "schema_version": 1,
+  "identity": {
+    "pair": "mindthequery_augmented__covid",
+    "dataset": "mindthequery_augmented",
+    "graph": "covid",
+    "bolt_uri": null,
+    "database": null,
+    "stamped_at": "2026-07-18T22:14:12+00:00"
+  }
+}

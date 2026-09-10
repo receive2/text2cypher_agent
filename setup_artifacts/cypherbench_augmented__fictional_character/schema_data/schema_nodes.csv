@@ -1,0 +1,29 @@
+label,property,property_types,mandatory,node_count,non_null_count,fill_pct,sample_values
+Character,aliases,StringArray,True,25299,25299,100.0%,"[] | [""Lai Jue's father""] | ['Cream Cow mob', 'MC Cream Cow', 'Minecra…"
+Character,birth_name,String,False,25299,784,3.1%,Kal-El | Rey Palpatine | Patrick Dugan
+Character,country_of_citizenship,StringArray,False,25299,8096,32.0%,['Great Liao'] | ['United States of America'] | ['Far Madding']
+Character,creator,String,False,25299,7677,30.3%,Carl Barks | Joe Gill | Eiichiro Oda
+Character,description,String,False,25299,23524,93.0%,Middle-Earth character | fictional Grandreams Teenage Mutant Hero T… | fictional character from Re:…
+Character,eid,String,True,25299,25299,100.0%,Character#Q78471095 | Character#Q12716046 | Character#Q3545048
+Character,gender,String,False,25299,22795,90.1%,female | female | male
+Character,name,String,True,25299,25299,100.0%,Bandit Princess | Luke the Engine Driver | Prince Caspian
+Character,occupation,StringArray,False,25299,10083,39.9%,"['detective'] | ['detective', 'journalist', 'private inves… | ['chief of police']"
+Character,provenance,StringArray,True,25299,25299,100.0%,['https://en.wikipedia.org/wiki/Liberty_Be… | [] | []
+FictionalUniverse,aliases,StringArray,True,1278,1278,100.0%,"[] | [] | ['Soulsborne', 'Soulsbornekiro']"
+FictionalUniverse,copyright_holder,String,False,1278,8,0.6%,Level-5 | Sony Group | Sony Group
+FictionalUniverse,creator,String,False,1278,304,23.8%,Astrid Lindgren | Michael Moorcock | Cecil Bødker
+FictionalUniverse,description,String,False,1278,1222,95.6%,in Norse mythology enormous hall located i… | fictional universe containing Arthurian ro… | fiction…
+FictionalUniverse,eid,String,True,1278,1278,100.0%,FictionalUniverse#Q116480229 | FictionalUniverse#Q62665020 | FictionalUniverse#Q125405686
+FictionalUniverse,inception_year,Long,False,1278,89,7.0%,1968 | 1989 | 2000
+FictionalUniverse,name,String,True,1278,1278,100.0%,The Vampire Diaries universe | Heaven Sent Gaming universe | Whoniverse
+FictionalUniverse,provenance,StringArray,True,1278,1278,100.0%,['https://en.wikipedia.org/wiki/Multiverse… | [] | []
+Location,aliases,StringArray,True,594,594,100.0%,[] | [] | ['Futaba Town']
+Location,description,String,False,594,565,95.1%,location in Romance of the Three Kingdoms | fictional waterfall in Middle-Earth | fictional amipthe…
+Location,eid,String,True,594,594,100.0%,Location#Q108101175 | Location#Q29158733 | Location#Q5960579
+Location,name,String,True,594,594,100.0%,Coruscant | Astronomy tower | Liaodong
+Location,provenance,StringArray,True,594,594,100.0%,[] | [] | []
+Organization,aliases,StringArray,True,1744,1744,100.0%,[] | [] | []
+Organization,description,String,False,1744,1570,90.0%,fictional temple in Dream of the Red Chamber | fictional temple in Romance of the Three K… | fictio…
+Organization,eid,String,True,1744,1744,100.0%,Organization#Q3796844 | Organization#Q1387735 | Organization#Q21526525
+Organization,name,String,True,1744,1744,100.0%,Rise FM | Black Mesa East | Wolfram & Hart
+Organization,provenance,StringArray,True,1744,1744,100.0%,['https://en.wikipedia.org/wiki/Hydra_(com… | [] | []

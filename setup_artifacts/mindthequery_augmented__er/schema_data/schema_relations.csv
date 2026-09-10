@@ -1,0 +1,4 @@
+rel_type,from_label,to_label,property,property_types,mandatory,rel_count,sample_values
+HAS,Movie,Genre,,,,320,
+USES,User,IpAddress,,,,500,
+WATCHED,User,Movie,watchCount,Long,True,999,1 | 2 | 2

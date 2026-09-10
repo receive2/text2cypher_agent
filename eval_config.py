@@ -226,6 +226,13 @@ _FULL_EVAL_PAIRS_13: list[tuple[str, str]] = [
     ("zograscope",             "pole"),
 ]
 
+# The 13 perturbed evaluation pairs — the model sweep, and the set of archives
+# the coordinator publishes in git (scripts/artifact_manifest.py). The
+# perturbed Mind-the-Query set names the bloom graph `bloom`, not `bloom50`.
+FULL_EVAL_PAIRS_13_AUGMENTED: list[tuple[str, str]] = [
+    (f"{ds}_augmented", "bloom" if g == "bloom50" else g) for ds, g in _FULL_EVAL_PAIRS_13
+]
+
 
 # Important: list each base pair BEFORE its augmented sibling.
 # scripts/setup_and_archive.py copies the base archive verbatim into

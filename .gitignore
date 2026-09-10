@@ -127,3 +127,26 @@ internal/
 
 # dry-run plans from freeze_verified_release.py (regenerable)
 *.preview.csv
+
+# ── Shared per-graph artifacts (docs/EXPERIMENT_HANDOUT.md §3) ────────────────
+# setup_artifacts/ stays ignored EXCEPT the small, model-independent parts of the
+# *_augmented__* archives plus MANIFEST.json (scripts/artifact_manifest.py).
+# The large indexes (generated/fcav, generated/chess) never enter git.
+!setup_artifacts/
+setup_artifacts/*
+!setup_artifacts/MANIFEST.json
+!setup_artifacts/*_augmented__*/
+setup_artifacts/*_augmented__*/*
+setup_artifacts/*__terrorist_attack/
+setup_artifacts/*__bloom50/
+!setup_artifacts/*_augmented__*/agent/
+!setup_artifacts/*_augmented__*/schema_data/
+!setup_artifacts/*_augmented__*/vector_config.embeddable_properties.snippet
+!setup_artifacts/*_augmented__*/generated/
+setup_artifacts/*_augmented__*/generated/*
+!setup_artifacts/*_augmented__*/generated/generated_node_tools.py
+!setup_artifacts/*_augmented__*/generated/generated_rel_tools.py
+!setup_artifacts/*_augmented__*/generated/tool_descriptions.csv
+!setup_artifacts/*_augmented__*/generated/faiss/
+!setup_artifacts/*_augmented__*/schema_data/**
+!setup_artifacts/*_augmented__*/generated/faiss/**

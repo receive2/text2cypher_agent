@@ -1,0 +1,49 @@
+label,property,property_types,mandatory,node_count,non_null_count,fill_pct,sample_values
+Award,aliases,StringArray,True,28,28,100.0%,"[] | [] | ['Bill Russell NBA Finals MVP Award', 'NBA…"
+Award,description,String,False,28,20,71.4%,sports award | National Basketball Association honor | most valuable player in the Supercopa de E…
+Award,eid,String,True,28,28,100.0%,Award#Q674359 | Award#Q289678 | Award#Q99526970
+Award,name,String,True,28,28,100.0%,National Football League Most Valuable Pla… | NBA All-Star Game Kobe Bryant Most Valuabl… | All-NBA…
+Award,provenance,StringArray,True,28,28,100.0%,"['https://en.wikipedia.org/wiki/Jim_Phelan… | [""https://en.wikipedia.org/wiki/L'Équipe_C… | ['https…"
+Conference,aliases,StringArray,True,2,2,100.0%,['NBA Western Conference'] | ['NBA Eastern Conference']
+Conference,description,String,True,2,2,100.0%,conference of the National Basketball Asso… | conference of the National Basketball Asso…
+Conference,eid,String,True,2,2,100.0%,Conference#Q238240 | Conference#Q318389
+Conference,name,String,True,2,2,100.0%,Eastern Conference | Western Conference
+Conference,provenance,StringArray,True,2,2,100.0%,['https://en.wikipedia.org/wiki/Eastern_Co… | ['https://en.wikipedia.org/wiki/Western_Co…
+Division,aliases,StringArray,True,6,6,100.0%,[] | [] | []
+Division,description,String,True,6,6,100.0%,division in the National Basketball Associ… | division of the National Basketball Associ… | divisio…
+Division,eid,String,True,6,6,100.0%,Division#Q391166 | Division#Q638908 | Division#Q639928
+Division,name,String,True,6,6,100.0%,Northwest Division | Central Division | Atlantic Division
+Division,provenance,StringArray,True,6,6,100.0%,['https://en.wikipedia.org/wiki/Southwest_… | ['https://en.wikipedia.org/wiki/Pacific_Di… | ['https…
+Player,aliases,StringArray,True,4148,4148,100.0%,['Fabricio Raúl Jesús Oberto'] | ['James Rowinski'] | ['Andrew Jay Rautins']
+Player,country_of_citizenship,StringArray,False,4148,4130,99.6%,['United States of America'] | ['United States of America'] | ['United States of America']
+Player,date_of_birth,Date,False,4148,4117,99.3%,1944-05-03 | 1985-05-08 | 1997-06-04
+Player,date_of_death,Date,False,4148,747,18.0%,1987-05-01 | 2003-12-22 | 2007-01-09
+Player,description,String,False,4148,4147,100.0%,"American basketball player, coach, executive | American basketball player (1946-) | American basket…"
+Player,eid,String,True,4148,4148,100.0%,Player#Q1622405 | Player#Q715717 | Player#Q3675561
+Player,gender,String,True,4148,4148,100.0%,male | male | male
+Player,handedness,String,False,4148,9,0.2%,right-handedness | left-handedness | right-handedness
+Player,height_cm,Double,False,4148,4074,98.2%,201.0 | 206.0 | 188.0
+Player,mass_kg,Double,False,4148,4055,97.8%,86.18255030000002 | 100.0 | 104.0
+Player,name,String,True,4148,4148,100.0%,Sam Vincent | Anthony Avent | Albert King
+Player,nicknames,StringArray,False,4148,237,5.7%,"['Mozart of the Hoops', 'Petro'] | ['The Microwave'] | ['Paco']"
+Player,place_of_birth,String,False,4148,4106,99.0%,Birmingham | Danville | New Jersey
+Player,provenance,StringArray,True,4148,4148,100.0%,['https://en.wikipedia.org/wiki/Paul_Hoffm… | ['https://en.wikipedia.org/wiki/Isaiah_Hic… | ['https…
+Player,schools_attended,StringArray,False,4148,3906,94.2%,"['Brewster Academy', 'Homebush Boys High S… | ['Pennsylvania State University', 'Widefie… | ['Farra…"
+Position,aliases,StringArray,True,8,8,100.0%,"['four'] | ['Guard-forward'] | ['basketball center', 'basketball pivot', …"
+Position,description,String,True,8,8,100.0%,basketball position | basketball position | basketball position for players who play o…
+Position,eid,String,True,8,8,100.0%,Position#Q2302133 | Position#Q1607137 | Position#Q212413
+Position,name,String,True,8,8,100.0%,point guard | shooting guard | center
+Position,provenance,StringArray,True,8,8,100.0%,['https://en.wikipedia.org/wiki/Point_forw… | ['https://en.wikipedia.org/wiki/Point_guard'] | ['htt…
+Team,aliases,StringArray,True,30,30,100.0%,"['The Grizz'] | ['Buffalo Braves', 'L.A. Clippers', 'LA Ch… | ['Cavs']"
+Team,description,String,True,30,30,100.0%,American professional basketball team | American professional basketball team base… | Arizona-based…
+Team,eid,String,True,30,30,100.0%,Team#Q170649 | Team#Q128109 | Team#Q166105
+Team,head_coach,String,True,30,30,100.0%,Fred Hoiberg | Tom Thibodeau | Mike Budenholzer
+Team,inception_year,Long,True,30,30,100.0%,1946 | 1988 | 1946
+Team,name,String,True,30,30,100.0%,Minnesota Timberwolves | Orlando Magic | Utah Jazz
+Team,owners,StringArray,False,30,19,63.3%,['Glen Taylor'] | ['Maple Leaf Sports & Entertainment'] | ['Jeanie Buss']
+Team,provenance,StringArray,True,30,30,100.0%,['https://en.wikipedia.org/wiki/Utah_Jazz'] | ['https://en.wikipedia.org/wiki/New_York_K… | ['https…
+Venue,aliases,StringArray,True,105,105,100.0%,[] | [] | ['The Omni']
+Venue,description,String,False,105,101,96.2%,"indoor arena in Boston, Massachusetts, USA… | Indoor arena in Denver | indoor arena located in Cinc…"
+Venue,eid,String,True,105,105,100.0%,Venue#Q76318 | Venue#Q3106621 | Venue#Q2226897
+Venue,name,String,True,105,105,100.0%,Moda Center | 69th Regiment Armory | Fertitta Center
+Venue,provenance,StringArray,True,105,105,100.0%,['https://en.wikipedia.org/wiki/SAP_Center'] | ['https://en.wikipedia.org/wiki/Barclays_C… | ['http…

@@ -1,0 +1,30 @@
+rel_type,from_label,to_label,property,property_types,mandatory,rel_count,sample_values
+FALLS_UNDER,Case,AgeGroup,,,,4307,
+HAS_REACTION,Case,Reaction,,,,21069,
+IS_CONCOMITANT,Case,Drug,doseAmount,String,True,8393,20 | 1 | 40
+IS_CONCOMITANT,Case,Drug,doseUnit,String,True,8393,PCT | MG | MG
+IS_CONCOMITANT,Case,Drug,drugSequence,String,True,8393,2 | 23 | 5
+IS_CONCOMITANT,Case,Drug,indication,String,True,8393,Unknown | Unknown | Unknown
+IS_CONCOMITANT,Case,Drug,route,String,True,8393,Oral | Unknown | Oral
+IS_INTERACTING,Case,Drug,doseAmount,String,True,1,20
+IS_INTERACTING,Case,Drug,doseUnit,String,True,1,MG
+IS_INTERACTING,Case,Drug,drugSequence,String,True,1,2
+IS_INTERACTING,Case,Drug,indication,String,True,1,Blood cholesterol increased
+IS_INTERACTING,Case,Drug,route,String,True,1,Unknown
+IS_PRIMARY_SUSPECT,Case,Drug,doseAmount,String,True,3830,225 | 40 | 10
+IS_PRIMARY_SUSPECT,Case,Drug,doseUnit,String,True,3830,MG | MG | PCT
+IS_PRIMARY_SUSPECT,Case,Drug,drugSequence,String,True,3830,1 | 1 | 1
+IS_PRIMARY_SUSPECT,Case,Drug,indication,String,True,3830,Chronic myeloid leukaemia recurrent | Adenocarcinoma of colon | Hypertonic bladder
+IS_PRIMARY_SUSPECT,Case,Drug,route,String,True,3830,Oral | Subcutaneous | Intravenous (not otherwise specified)
+IS_SECONDARY_SUSPECT,Case,Drug,doseAmount,String,True,3616,40 | 5000 | 40
+IS_SECONDARY_SUSPECT,Case,Drug,doseUnit,String,True,3616,G | MG | MG
+IS_SECONDARY_SUSPECT,Case,Drug,drugSequence,String,True,3616,4 | 3 | 3
+IS_SECONDARY_SUSPECT,Case,Drug,indication,String,True,3616,Contraception | Acute myeloid leukaemia | Unknown
+IS_SECONDARY_SUSPECT,Case,Drug,route,String,True,3616,Oral | Oral | Oral
+PRESCRIBED,Therapy,Drug,drugSequence,String,True,5441,16 | 3 | 3
+PRESCRIBED,Therapy,Drug,endYear,String,True,5441,2017 | 2015 | 2021
+PRESCRIBED,Therapy,Drug,startYear,String,True,5441,2014 | 2020 | 2020
+RECEIVED,Case,Therapy,,,,1721,
+REGISTERED,Manufacturer,Case,,,,4307,
+REPORTED_BY,Case,ReportSource,,,,4307,
+RESULTED_IN,Case,Outcome,,,,4461,

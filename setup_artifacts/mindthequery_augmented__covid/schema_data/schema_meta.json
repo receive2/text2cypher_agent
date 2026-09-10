@@ -1,0 +1,213 @@
+{
+  "nodes": {
+    "Continent": {
+      "id_property": "name",
+      "properties": {
+        "name": {
+          "data_type": "name",
+          "topic": "continent name",
+          "description": "The name of the continent."
+        }
+      }
+    },
+    "Country": {
+      "id_property": "name",
+      "properties": {
+        "name": {
+          "data_type": "name",
+          "topic": "country name",
+          "description": "The official name of the country."
+        }
+      }
+    },
+    "Person": {
+      "id_property": "name",
+      "properties": {
+        "addresslocation": {
+          "data_type": "other",
+          "topic": "geographic location",
+          "description": "The geographic coordinates representing the person's address location."
+        },
+        "confirmedtime": {
+          "data_type": "date",
+          "topic": "confirmation timestamp",
+          "description": "The date and time when the person's status was confirmed."
+        },
+        "healthstatus": {
+          "data_type": "enum",
+          "topic": "health status",
+          "description": "The current health status of the person, such as 'Sick' or 'Healthy'."
+        },
+        "id": {
+          "data_type": "id",
+          "topic": "person identifier",
+          "description": "A unique string identifier assigned to the person."
+        },
+        "name": {
+          "data_type": "name",
+          "topic": "person name",
+          "description": "The full name of the person."
+        }
+      }
+    },
+    "Place": {
+      "id_property": "name",
+      "properties": {
+        "homelocation": {
+          "data_type": "other",
+          "topic": "geographic coordinates",
+          "description": "Stores the geographic coordinates (latitude and longitude) of the place."
+        },
+        "id": {
+          "data_type": "id",
+          "topic": "place identifier",
+          "description": "A unique string identifier for the place."
+        },
+        "name": {
+          "data_type": "name",
+          "topic": "place name",
+          "description": "The human-readable name of the place."
+        },
+        "type": {
+          "data_type": "enum",
+          "topic": "place category",
+          "description": "The category or type of the place, such as School, Restaurant, or Bar."
+        }
+      }
+    },
+    "Region": {
+      "id_property": "name",
+      "properties": {
+        "name": {
+          "data_type": "name",
+          "topic": "region name",
+          "description": "The name of the region, such as a city, province, or administrative area."
+        }
+      }
+    },
+    "Visit": {
+      "id_property": "id",
+      "properties": {
+        "duration": {
+          "data_type": "other",
+          "topic": "visit duration",
+          "description": "The total elapsed time of the visit, represented as a duration."
+        },
+        "endtime": {
+          "data_type": "date",
+          "topic": "visit end time",
+          "description": "The date and time when the visit ended."
+        },
+        "id": {
+          "data_type": "id",
+          "topic": "visit identifier",
+          "description": "A unique string identifier for the visit."
+        },
+        "starttime": {
+          "data_type": "date",
+          "topic": "visit start time",
+          "description": "The date and time when the visit began."
+        }
+      }
+    },
+    "_Bloom_Perspective_": {
+      "id_property": "name",
+      "properties": {
+        "data": {
+          "data_type": "other",
+          "topic": "perspective configuration data",
+          "description": "Stores the serialized configuration and metadata for the Bloom perspective, typically as a JSON string."
+        },
+        "id": {
+          "data_type": "id",
+          "topic": "perspective unique identifier",
+          "description": "A unique identifier for the Bloom perspective, usually a UUID."
+        },
+        "name": {
+          "data_type": "name",
+          "topic": "perspective name",
+          "description": "The human-readable name of the Bloom perspective."
+        },
+        "roles": {
+          "data_type": "list",
+          "topic": "user roles",
+          "description": "A list of user roles that have access to this Bloom perspective."
+        },
+        "version": {
+          "data_type": "text",
+          "topic": "perspective version",
+          "description": "The version number of the Bloom perspective configuration."
+        }
+      }
+    }
+  },
+  "relationships": {
+    "LOCATED_AT": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Visit",
+          "to": "Place"
+        }
+      ]
+    },
+    "PART_OF": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Place",
+          "to": "Region"
+        },
+        {
+          "from": "Region",
+          "to": "Country"
+        },
+        {
+          "from": "Country",
+          "to": "Continent"
+        }
+      ]
+    },
+    "PERFORMS_VISIT": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Person",
+          "to": "Visit"
+        }
+      ]
+    },
+    "VISITS": {
+      "properties": {
+        "duration": {
+          "data_type": "other",
+          "topic": "visit duration",
+          "description": "The total length of time the person spent at the place during the visit."
+        },
+        "endtime": {
+          "data_type": "date",
+          "topic": "visit end time",
+          "description": "The date and time when the visit to the place ended."
+        },
+        "id": {
+          "data_type": "id",
+          "topic": "visit identifier",
+          "description": "A unique identifier for the visit relationship."
+        },
+        "starttime": {
+          "data_type": "date",
+          "topic": "visit start time",
+          "description": "The date and time when the visit to the place began."
+        }
+      },
+      "endpoints": [
+        {
+          "from": "Person",
+          "to": "Place"
+        }
+      ]
+    }
+  },
+  "generated_at_utc": "2026-06-18T08:00:38.143990+00:00",
+  "language": "en"
+}

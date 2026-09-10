@@ -1,0 +1,126 @@
+{
+  "nodes": {
+    "Genre": {
+      "id_property": "name",
+      "properties": {
+        "name": {
+          "data_type": "name",
+          "topic": "genre name",
+          "description": "The name of the genre, such as Drama, Animation, or Fantasy."
+        }
+      }
+    },
+    "IpAddress": {
+      "id_property": "address",
+      "properties": {
+        "address": {
+          "data_type": "id",
+          "topic": "IP address",
+          "description": "Stores the IPv4 address associated with this node."
+        }
+      }
+    },
+    "Movie": {
+      "id_property": "title",
+      "properties": {
+        "movieId": {
+          "data_type": "id",
+          "topic": "movie identifier",
+          "description": "A unique numeric identifier assigned to each movie."
+        },
+        "title": {
+          "data_type": "title",
+          "topic": "movie title",
+          "description": "The official title of the movie."
+        },
+        "year": {
+          "data_type": "year",
+          "topic": "movie release year",
+          "description": "The year the movie was released."
+        }
+      }
+    },
+    "User": {
+      "id_property": "email",
+      "properties": {
+        "country": {
+          "data_type": "enum",
+          "topic": "country of residence",
+          "description": "The country where the user resides, typically represented by a country code."
+        },
+        "email": {
+          "data_type": "id",
+          "topic": "email address",
+          "description": "The user's unique email address used for identification and communication."
+        },
+        "firstName": {
+          "data_type": "name",
+          "topic": "given name",
+          "description": "The user's first or given name."
+        },
+        "gender": {
+          "data_type": "enum",
+          "topic": "gender identity",
+          "description": "The user's gender, such as Male or Female."
+        },
+        "lastName": {
+          "data_type": "name",
+          "topic": "family name",
+          "description": "The user's last or family name."
+        },
+        "phone": {
+          "data_type": "text",
+          "topic": "phone number",
+          "description": "The user's contact phone number."
+        },
+        "state": {
+          "data_type": "enum",
+          "topic": "state of residence",
+          "description": "The state or region where the user resides."
+        },
+        "userId": {
+          "data_type": "id",
+          "topic": "user identifier",
+          "description": "A unique numeric identifier assigned to each user."
+        }
+      }
+    }
+  },
+  "relationships": {
+    "HAS": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Movie",
+          "to": "Genre"
+        }
+      ]
+    },
+    "USES": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "User",
+          "to": "IpAddress"
+        }
+      ]
+    },
+    "WATCHED": {
+      "properties": {
+        "watchCount": {
+          "data_type": "number",
+          "topic": "number of views",
+          "description": "Stores the total number of times the user has watched the movie."
+        }
+      },
+      "endpoints": [
+        {
+          "from": "User",
+          "to": "Movie"
+        }
+      ]
+    }
+  },
+  "generated_at_utc": "2026-06-22T10:38:38.976743+00:00",
+  "language": "en"
+}

@@ -1,0 +1,352 @@
+{
+  "nodes": {
+    "AgeGroup": {
+      "id_property": "ageGroup",
+      "properties": {
+        "ageGroup": {
+          "data_type": "enum",
+          "topic": "person age group",
+          "description": "Indicates the age group classification such as Child, Adult, or Infant."
+        }
+      }
+    },
+    "Case": {
+      "id_property": "primaryid",
+      "properties": {
+        "age": {
+          "data_type": "number",
+          "topic": "person age",
+          "description": "The age of the individual involved in the case."
+        },
+        "ageUnit": {
+          "data_type": "enum",
+          "topic": "age unit",
+          "description": "The unit of measurement for the age, such as years."
+        },
+        "eventDate": {
+          "data_type": "date",
+          "topic": "event date",
+          "description": "The date when the case event occurred."
+        },
+        "gender": {
+          "data_type": "enum",
+          "topic": "person gender",
+          "description": "The gender of the individual involved in the case."
+        },
+        "primaryid": {
+          "data_type": "id",
+          "topic": "case identifier",
+          "description": "A unique identifier for the case."
+        },
+        "reportDate": {
+          "data_type": "date",
+          "topic": "report date",
+          "description": "The date when the case was reported."
+        },
+        "reporterOccupation": {
+          "data_type": "enum",
+          "topic": "reporter occupation",
+          "description": "The occupation of the person reporting the case."
+        }
+      }
+    },
+    "Drug": {
+      "id_property": "name",
+      "properties": {
+        "name": {
+          "data_type": "name",
+          "topic": "drug name",
+          "description": "The official or commercial name of the drug."
+        },
+        "primarySubstabce": {
+          "data_type": "name",
+          "topic": "active substance name",
+          "description": "The primary active chemical substance contained in the drug."
+        }
+      }
+    },
+    "Manufacturer": {
+      "id_property": "manufacturerName",
+      "properties": {
+        "manufacturerName": {
+          "data_type": "name",
+          "topic": "manufacturer name",
+          "description": "The official name of the manufacturer."
+        }
+      }
+    },
+    "Outcome": {
+      "id_property": "outcome",
+      "properties": {
+        "code": {
+          "data_type": "enum",
+          "topic": "outcome code",
+          "description": "A short code representing the type of outcome, such as DS, DE, or CA."
+        },
+        "outcome": {
+          "data_type": "title",
+          "topic": "outcome description",
+          "description": "A descriptive label for the outcome, such as Death, Disability, or Other Serious (Important Medical Event)."
+        }
+      }
+    },
+    "Reaction": {
+      "id_property": "description",
+      "properties": {
+        "description": {
+          "data_type": "text",
+          "topic": "reaction description",
+          "description": "A textual description of the specific reaction or event."
+        }
+      }
+    },
+    "ReportSource": {
+      "id_property": "name",
+      "properties": {
+        "code": {
+          "data_type": "enum",
+          "topic": "report source code",
+          "description": "A short code representing the type of report source."
+        },
+        "name": {
+          "data_type": "title",
+          "topic": "report source name",
+          "description": "The full name or title of the report source type."
+        }
+      }
+    },
+    "Therapy": {
+      "id_property": "primaryid",
+      "properties": {
+        "primaryid": {
+          "data_type": "id",
+          "topic": "therapy record id",
+          "description": "A unique identifier assigned to each therapy node."
+        }
+      }
+    }
+  },
+  "relationships": {
+    "FALLS_UNDER": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Case",
+          "to": "AgeGroup"
+        }
+      ]
+    },
+    "HAS_REACTION": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Case",
+          "to": "Reaction"
+        }
+      ]
+    },
+    "IS_CONCOMITANT": {
+      "properties": {
+        "doseAmount": {
+          "data_type": "number",
+          "topic": "drug dose amount",
+          "description": "The numeric amount of the drug administered concomitantly in the case."
+        },
+        "doseUnit": {
+          "data_type": "enum",
+          "topic": "drug dose unit",
+          "description": "The unit of measurement for the drug dose amount, such as MG or PCT."
+        },
+        "drugSequence": {
+          "data_type": "number",
+          "topic": "drug sequence number",
+          "description": "The sequence number indicating the order of the drug among all drugs administered in the case."
+        },
+        "indication": {
+          "data_type": "text",
+          "topic": "drug indication",
+          "description": "The medical reason or indication for which the drug was administered."
+        },
+        "route": {
+          "data_type": "enum",
+          "topic": "drug administration route",
+          "description": "The route by which the drug was administered, such as Oral or Unknown."
+        }
+      },
+      "endpoints": [
+        {
+          "from": "Case",
+          "to": "Drug"
+        }
+      ]
+    },
+    "IS_INTERACTING": {
+      "properties": {
+        "doseAmount": {
+          "data_type": "number",
+          "topic": "Dosage amount",
+          "description": "The numeric value representing the amount of drug administered in the interaction."
+        },
+        "doseUnit": {
+          "data_type": "enum",
+          "topic": "Dosage unit",
+          "description": "The unit of measurement for the drug dosage, such as milligrams (MG)."
+        },
+        "drugSequence": {
+          "data_type": "number",
+          "topic": "Drug sequence order",
+          "description": "The sequence number indicating the order of the drug in the case interaction."
+        },
+        "indication": {
+          "data_type": "text",
+          "topic": "Medical indication",
+          "description": "The medical reason or condition for which the drug is being administered."
+        },
+        "route": {
+          "data_type": "enum",
+          "topic": "Administration route",
+          "description": "The method or route by which the drug is administered, such as oral or intravenous."
+        }
+      },
+      "endpoints": [
+        {
+          "from": "Case",
+          "to": "Drug"
+        }
+      ]
+    },
+    "IS_PRIMARY_SUSPECT": {
+      "properties": {
+        "doseAmount": {
+          "data_type": "number",
+          "topic": "drug dosage amount",
+          "description": "Stores the numeric value of the drug dose administered as the primary suspect in the case."
+        },
+        "doseUnit": {
+          "data_type": "enum",
+          "topic": "drug dosage unit",
+          "description": "Indicates the unit of measurement for the drug dose, such as milligrams or percent."
+        },
+        "drugSequence": {
+          "data_type": "number",
+          "topic": "drug sequence order",
+          "description": "Represents the sequence number of the drug in the context of the case."
+        },
+        "indication": {
+          "data_type": "text",
+          "topic": "medical indication",
+          "description": "Describes the medical condition or reason for which the drug was administered."
+        },
+        "route": {
+          "data_type": "enum",
+          "topic": "administration route",
+          "description": "Specifies the method or route by which the drug was administered to the patient."
+        }
+      },
+      "endpoints": [
+        {
+          "from": "Case",
+          "to": "Drug"
+        }
+      ]
+    },
+    "IS_SECONDARY_SUSPECT": {
+      "properties": {
+        "doseAmount": {
+          "data_type": "number",
+          "topic": "drug dose amount",
+          "description": "The numeric value representing the amount of the drug administered as a secondary suspect in the case."
+        },
+        "doseUnit": {
+          "data_type": "enum",
+          "topic": "drug dose unit",
+          "description": "The unit of measurement for the drug dose amount, such as milligrams or grams."
+        },
+        "drugSequence": {
+          "data_type": "number",
+          "topic": "drug sequence number",
+          "description": "The sequence number indicating the order of the drug as a secondary suspect in the case."
+        },
+        "indication": {
+          "data_type": "text",
+          "topic": "drug indication",
+          "description": "The medical reason or condition for which the drug was administered."
+        },
+        "route": {
+          "data_type": "enum",
+          "topic": "administration route",
+          "description": "The method or route by which the drug was administered, such as oral."
+        }
+      },
+      "endpoints": [
+        {
+          "from": "Case",
+          "to": "Drug"
+        }
+      ]
+    },
+    "PRESCRIBED": {
+      "properties": {
+        "drugSequence": {
+          "data_type": "number",
+          "topic": "drug order sequence",
+          "description": "Indicates the sequence number of the drug within the prescribed therapy."
+        },
+        "endYear": {
+          "data_type": "year",
+          "topic": "therapy end year",
+          "description": "The year in which the prescribed drug therapy ended."
+        },
+        "startYear": {
+          "data_type": "year",
+          "topic": "therapy start year",
+          "description": "The year in which the prescribed drug therapy began."
+        }
+      },
+      "endpoints": [
+        {
+          "from": "Therapy",
+          "to": "Drug"
+        }
+      ]
+    },
+    "RECEIVED": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Case",
+          "to": "Therapy"
+        }
+      ]
+    },
+    "REGISTERED": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Manufacturer",
+          "to": "Case"
+        }
+      ]
+    },
+    "REPORTED_BY": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Case",
+          "to": "ReportSource"
+        }
+      ]
+    },
+    "RESULTED_IN": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Case",
+          "to": "Outcome"
+        }
+      ]
+    }
+  },
+  "generated_at_utc": "2026-06-22T12:52:35.506829+00:00",
+  "language": "en"
+}

@@ -1,0 +1,14 @@
+label,property,property_types,mandatory,node_count,non_null_count,fill_pct,sample_values
+Genre,name,String,True,10,10,100.0%,Drama | Animation | Fantasy
+IpAddress,address,String,True,407,407,100.0%,170.73.240.36 | 247.145.254.235 | 159.20.53.179
+Movie,movieId,Long,True,320,320,100.0%,38 | 56 | 263
+Movie,title,String,True,320,320,100.0%,The Unholy | Julia | The Night
+Movie,year,Long,True,320,320,100.0%,2021 | 2021 | 2008
+User,country,String,True,500,500,100.0%,US | US | US
+User,email,String,True,500,500,100.0%,gcrippin6j@jugem.jp | mskurm18@trellian.com | rferrari2p@bbb.org
+User,firstName,String,True,500,500,100.0%,Robyn | Martha | Willard
+User,gender,String,True,500,500,100.0%,Female | Male | Male
+User,lastName,String,True,500,500,100.0%,Rigmand | Wroath | D
+User,phone,String,True,500,500,100.0%,656-336-5037 | 983-712-8130 | 184-415-3324
+User,state,String,True,500,500,100.0%,Illinois | Kentucky | Washington
+User,userId,Long,True,500,500,100.0%,62 | 335 | 66

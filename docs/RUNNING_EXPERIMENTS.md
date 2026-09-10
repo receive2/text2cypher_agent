@@ -187,6 +187,31 @@ the shipped `fuzzy+lev` default, build with `--skip-embeddings` and leave
 > Not the same as `vector_config.TOOL_RETRIEVAL_MODE` (`fuzzy`/`vector`/`hybrid`) —
 > that is the **ReAct baseline's** retrieval mode, unrelated to CyANCHOR's arm.
 
+## The published artifact set (coordinator only)
+
+Colleagues never run setup: the model-independent parts of every perturbed
+graph's archive — `agent/prompts.py`, `generated/generated_{node,rel}_tools.py`,
+`schema_data/`, the two `generated/faiss/tools_auto*` routing indexes and the
+`vector_config` snippet — are committed under `setup_artifacts/` (the
+`.gitignore` whitelists exactly these; `generated/fcav` and `generated/chess`
+never enter git), and `setup_artifacts/MANIFEST.json` pins one sha256 per file.
+`verify_setup.py` compares every checkout against it, so a run can only start
+on byte-identical prompts and tools. To publish or re-publish:
+
+```bash
+# 1. rebuild whatever verify_setup.py --all flags (EVAL_PAIRS = that pair), then setup_fcav.py
+python scripts/setup_and_archive.py && python setup_fcav.py
+# 2. write the manifest — refuses any archive whose FAISS fingerprints are stamped for another pair
+python scripts/artifact_manifest.py build --strict
+# 3. commit the whitelisted files (~7 MB for 13 graphs) and push
+git add setup_artifacts && git commit -m "artifacts: publish <graphs>" && git push
+# 4. share generated/fcav/ out of band (one tar per graph); it is not in the manifest
+```
+
+`python scripts/artifact_manifest.py check --all` reports every published pair
+as OK / MISMATCH / MISSING / UNPUBLISHED; `verify_setup.py` prints the same
+verdict next to the graph check.
+
 ## Where results land
 
 Each invocation writes a **fresh, timestamped per-run directory** (see

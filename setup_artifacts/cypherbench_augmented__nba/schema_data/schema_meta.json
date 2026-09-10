@@ -1,0 +1,385 @@
+{
+  "nodes": {
+    "Award": {
+      "id_property": "name",
+      "properties": {
+        "aliases": {
+          "data_type": "list",
+          "topic": "award alternate names",
+          "description": "A list of alternative names or aliases by which the award is known."
+        },
+        "description": {
+          "data_type": "text",
+          "topic": "award description",
+          "description": "A brief textual summary describing the nature or purpose of the award."
+        },
+        "eid": {
+          "data_type": "id",
+          "topic": "external award identifier",
+          "description": "A unique external identifier for the award, often referencing a knowledge base or database."
+        },
+        "name": {
+          "data_type": "name",
+          "topic": "award name",
+          "description": "The official or primary name of the award."
+        },
+        "provenance": {
+          "data_type": "list",
+          "topic": "award provenance sources",
+          "description": "A list of URLs or references indicating the sources or provenance of the award's information."
+        }
+      }
+    },
+    "Conference": {
+      "id_property": "name",
+      "properties": {
+        "aliases": {
+          "data_type": "list",
+          "topic": "conference alternate names",
+          "description": "A list of alternative names or abbreviations for the conference."
+        },
+        "description": {
+          "data_type": "text",
+          "topic": "conference description",
+          "description": "A brief textual summary describing the conference."
+        },
+        "eid": {
+          "data_type": "id",
+          "topic": "conference external id",
+          "description": "A unique external identifier for the conference, often referencing a knowledge base."
+        },
+        "name": {
+          "data_type": "name",
+          "topic": "conference name",
+          "description": "The official name of the conference."
+        },
+        "provenance": {
+          "data_type": "list",
+          "topic": "conference data sources",
+          "description": "A list of URLs or sources where information about the conference was obtained."
+        }
+      }
+    },
+    "Division": {
+      "id_property": "name",
+      "properties": {
+        "aliases": {
+          "data_type": "list",
+          "topic": "division alternate names",
+          "description": "Stores alternative names or abbreviations for the division."
+        },
+        "description": {
+          "data_type": "text",
+          "topic": "division description",
+          "description": "A brief textual summary describing the division."
+        },
+        "eid": {
+          "data_type": "id",
+          "topic": "external division identifier",
+          "description": "A unique external identifier for the division, often referencing a knowledge base."
+        },
+        "name": {
+          "data_type": "name",
+          "topic": "division name",
+          "description": "The official name of the division."
+        },
+        "provenance": {
+          "data_type": "list",
+          "topic": "division data sources",
+          "description": "A list of URLs or references indicating the sources of information for the division."
+        }
+      }
+    },
+    "Player": {
+      "id_property": "name",
+      "properties": {
+        "aliases": {
+          "data_type": "list",
+          "topic": "person alternate names",
+          "description": "A list of alternative names or spellings by which the player is known."
+        },
+        "country_of_citizenship": {
+          "data_type": "list",
+          "topic": "citizenship country",
+          "description": "A list of countries where the player holds citizenship."
+        },
+        "date_of_birth": {
+          "data_type": "date",
+          "topic": "birth date",
+          "description": "The date on which the player was born."
+        },
+        "date_of_death": {
+          "data_type": "date",
+          "topic": "death date",
+          "description": "The date on which the player died, if applicable."
+        },
+        "description": {
+          "data_type": "text",
+          "topic": "person summary",
+          "description": "A brief textual summary describing the player."
+        },
+        "eid": {
+          "data_type": "id",
+          "topic": "external identifier",
+          "description": "A unique external identifier for the player, often referencing a knowledge base."
+        },
+        "gender": {
+          "data_type": "enum",
+          "topic": "person gender",
+          "description": "The gender of the player."
+        },
+        "handedness": {
+          "data_type": "enum",
+          "topic": "dominant hand",
+          "description": "The dominant hand used by the player, such as right-handedness or left-handedness."
+        },
+        "height_cm": {
+          "data_type": "number",
+          "topic": "person height",
+          "description": "The height of the player in centimeters."
+        },
+        "mass_kg": {
+          "data_type": "number",
+          "topic": "person weight",
+          "description": "The weight of the player in kilograms."
+        },
+        "name": {
+          "data_type": "name",
+          "topic": "person name",
+          "description": "The full name of the player."
+        },
+        "nicknames": {
+          "data_type": "list",
+          "topic": "person nicknames",
+          "description": "A list of informal or popular nicknames for the player."
+        },
+        "place_of_birth": {
+          "data_type": "text",
+          "topic": "birthplace",
+          "description": "The place where the player was born."
+        },
+        "provenance": {
+          "data_type": "list",
+          "topic": "data sources",
+          "description": "A list of sources or references from which the player's data was obtained."
+        },
+        "schools_attended": {
+          "data_type": "list",
+          "topic": "educational institutions",
+          "description": "A list of schools or educational institutions attended by the player."
+        }
+      }
+    },
+    "Position": {
+      "id_property": "name",
+      "properties": {
+        "aliases": {
+          "data_type": "list",
+          "topic": "position alternate names",
+          "description": "A list of alternative names or terms used to refer to this position."
+        },
+        "description": {
+          "data_type": "text",
+          "topic": "position description",
+          "description": "A brief explanation or summary of the position."
+        },
+        "eid": {
+          "data_type": "id",
+          "topic": "external identifier",
+          "description": "A unique external identifier for the position, often referencing a knowledge base."
+        },
+        "name": {
+          "data_type": "name",
+          "topic": "position name",
+          "description": "The primary name of the position."
+        },
+        "provenance": {
+          "data_type": "list",
+          "topic": "source URLs",
+          "description": "A list of URLs indicating the sources or references for this position's information."
+        }
+      }
+    },
+    "Team": {
+      "id_property": "name",
+      "properties": {
+        "aliases": {
+          "data_type": "list",
+          "topic": "team alternate names",
+          "description": "A list of alternative names or nicknames by which the team is known."
+        },
+        "description": {
+          "data_type": "text",
+          "topic": "team summary",
+          "description": "A brief textual summary describing the team."
+        },
+        "eid": {
+          "data_type": "id",
+          "topic": "external team identifier",
+          "description": "A unique external identifier for the team, often referencing a knowledge base."
+        },
+        "head_coach": {
+          "data_type": "name",
+          "topic": "head coach name",
+          "description": "The full name of the team's current head coach."
+        },
+        "inception_year": {
+          "data_type": "year",
+          "topic": "team founding year",
+          "description": "The year in which the team was founded or established."
+        },
+        "name": {
+          "data_type": "name",
+          "topic": "team name",
+          "description": "The official name of the team."
+        },
+        "owners": {
+          "data_type": "list",
+          "topic": "team owners",
+          "description": "A list of individuals or organizations that own the team."
+        },
+        "provenance": {
+          "data_type": "list",
+          "topic": "information sources",
+          "description": "A list of URLs or references indicating the sources of information about the team."
+        }
+      }
+    },
+    "Venue": {
+      "id_property": "name",
+      "properties": {
+        "aliases": {
+          "data_type": "list",
+          "topic": "venue alternate names",
+          "description": "A list of alternative names or nicknames by which the venue is known."
+        },
+        "description": {
+          "data_type": "text",
+          "topic": "venue description",
+          "description": "A brief textual summary describing the venue, its location, or characteristics."
+        },
+        "eid": {
+          "data_type": "id",
+          "topic": "venue external identifier",
+          "description": "A unique external identifier for the venue, often referencing a knowledge base entry."
+        },
+        "name": {
+          "data_type": "name",
+          "topic": "venue name",
+          "description": "The official or most commonly used name of the venue."
+        },
+        "provenance": {
+          "data_type": "list",
+          "topic": "venue data sources",
+          "description": "A list of URLs or references indicating the sources of information about the venue."
+        }
+      }
+    }
+  },
+  "relationships": {
+    "draftedBy": {
+      "properties": {
+        "year": {
+          "data_type": "year",
+          "topic": "draft year",
+          "description": "The year in which the player was drafted by the team."
+        }
+      },
+      "endpoints": [
+        {
+          "from": "Player",
+          "to": "Team"
+        }
+      ]
+    },
+    "hasHomeVenue": {
+      "properties": {
+        "end_year": {
+          "data_type": "year",
+          "topic": "venue end year",
+          "description": "The year when the team stopped using the venue as its home."
+        },
+        "start_year": {
+          "data_type": "year",
+          "topic": "venue start year",
+          "description": "The year when the team began using the venue as its home."
+        }
+      },
+      "endpoints": [
+        {
+          "from": "Team",
+          "to": "Venue"
+        }
+      ]
+    },
+    "partOfConference": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Division",
+          "to": "Conference"
+        }
+      ]
+    },
+    "partOfDivision": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Team",
+          "to": "Division"
+        }
+      ]
+    },
+    "playsFor": {
+      "properties": {
+        "end_year": {
+          "data_type": "year",
+          "topic": "end year",
+          "description": "The year when the player stopped playing for the team."
+        },
+        "sport_number": {
+          "data_type": "number",
+          "topic": "jersey number",
+          "description": "The jersey or sport number worn by the player while playing for the team."
+        },
+        "start_year": {
+          "data_type": "year",
+          "topic": "start year",
+          "description": "The year when the player started playing for the team."
+        }
+      },
+      "endpoints": [
+        {
+          "from": "Player",
+          "to": "Team"
+        }
+      ]
+    },
+    "playsPosition": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Player",
+          "to": "Position"
+        }
+      ]
+    },
+    "receivesAward": {
+      "properties": {
+        "year": {
+          "data_type": "year",
+          "topic": "award year",
+          "description": "The calendar year in which the player received the award."
+        }
+      },
+      "endpoints": [
+        {
+          "from": "Player",
+          "to": "Award"
+        }
+      ]
+    }
+  },
+  "generated_at_utc": "2026-06-21T19:40:09.210727+00:00",
+  "language": "en"
+}

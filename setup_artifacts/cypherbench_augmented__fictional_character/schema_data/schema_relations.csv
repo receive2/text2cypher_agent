@@ -1,0 +1,12 @@
+rel_type,from_label,to_label,property,property_types,mandatory,rel_count,sample_values
+basedIn,Organization,Location,,,,69,
+bornIn,Character,Location,,,,518,
+diedIn,Character,Location,,,,957,
+fromUniverse,Character,FictionalUniverse,,,,28354,
+fromUniverse,Organization,FictionalUniverse,,,,28354,
+hasFather,Character,Character,,,,2365,
+hasMother,Character,Character,,,,1430,
+hasSpouse,Character,Character,,,,2250,
+hasStudent,Character,Character,,,,476,
+killedBy,Character,Character,,,,775,
+memberOf,Character,Organization,,,,3354,

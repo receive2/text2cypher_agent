@@ -1,0 +1,391 @@
+{
+  "nodes": {
+    "Area": {
+      "id_property": "areaCode",
+      "properties": {
+        "areaCode": {
+          "data_type": "id",
+          "topic": "geographic area code",
+          "description": "A unique code representing a specific geographic area."
+        }
+      }
+    },
+    "Crime": {
+      "id_property": "id",
+      "properties": {
+        "charge": {
+          "data_type": "text",
+          "topic": "criminal charge description",
+          "description": "Specifies the formal criminal charge or offense associated with the crime."
+        },
+        "date": {
+          "data_type": "date",
+          "topic": "crime occurrence date",
+          "description": "Indicates the date on which the crime took place."
+        },
+        "id": {
+          "data_type": "id",
+          "topic": "crime unique identifier",
+          "description": "A unique identifier assigned to each crime record."
+        },
+        "last_outcome": {
+          "data_type": "text",
+          "topic": "case outcome summary",
+          "description": "Describes the most recent outcome or resolution of the crime case."
+        },
+        "note": {
+          "data_type": "text",
+          "topic": "case note",
+          "description": "Contains additional notes or comments related to the crime."
+        },
+        "type": {
+          "data_type": "enum",
+          "topic": "crime category",
+          "description": "Categorizes the crime into a general type or classification."
+        }
+      }
+    },
+    "Email": {
+      "id_property": "email_address",
+      "properties": {
+        "email_address": {
+          "data_type": "id",
+          "topic": "email address",
+          "description": "The unique email address associated with this node."
+        }
+      }
+    },
+    "Location": {
+      "id_property": "address",
+      "properties": {
+        "address": {
+          "data_type": "text",
+          "topic": "street address",
+          "description": "The full street address or name of the location."
+        },
+        "latitude": {
+          "data_type": "number",
+          "topic": "geographic latitude",
+          "description": "The latitude coordinate of the location in decimal degrees."
+        },
+        "longitude": {
+          "data_type": "number",
+          "topic": "geographic longitude",
+          "description": "The longitude coordinate of the location in decimal degrees."
+        },
+        "postcode": {
+          "data_type": "text",
+          "topic": "postal code",
+          "description": "The postal or ZIP code associated with the location."
+        }
+      }
+    },
+    "Object": {
+      "id_property": "description",
+      "properties": {
+        "description": {
+          "data_type": "text",
+          "topic": "object description",
+          "description": "A textual description of the object, often including quantity, type, and value."
+        },
+        "id": {
+          "data_type": "id",
+          "topic": "object identifier",
+          "description": "A unique string identifier assigned to the object."
+        },
+        "type": {
+          "data_type": "enum",
+          "topic": "object type",
+          "description": "The category or classification of the object, such as 'Evidence'."
+        }
+      }
+    },
+    "Officer": {
+      "id_property": "badge_no",
+      "properties": {
+        "badge_no": {
+          "data_type": "id",
+          "topic": "officer badge number",
+          "description": "A unique identifier assigned to each police officer, typically used for official identification."
+        },
+        "name": {
+          "data_type": "name",
+          "topic": "officer first name",
+          "description": "The given or first name of the police officer."
+        },
+        "rank": {
+          "data_type": "title",
+          "topic": "police rank",
+          "description": "The official rank or position held by the police officer within the organization."
+        },
+        "surname": {
+          "data_type": "name",
+          "topic": "officer surname",
+          "description": "The family or last name of the police officer."
+        }
+      }
+    },
+    "Person": {
+      "id_property": "name",
+      "properties": {
+        "age": {
+          "data_type": "number",
+          "topic": "person age",
+          "description": "The age of the person, represented as a number."
+        },
+        "name": {
+          "data_type": "name",
+          "topic": "person first name",
+          "description": "The given or first name of the person."
+        },
+        "nhs_no": {
+          "data_type": "id",
+          "topic": "NHS number",
+          "description": "The unique NHS identification number assigned to the person."
+        },
+        "surname": {
+          "data_type": "name",
+          "topic": "person surname",
+          "description": "The family or last name of the person."
+        }
+      }
+    },
+    "Phone": {
+      "id_property": "phoneNo",
+      "properties": {
+        "phoneNo": {
+          "data_type": "id",
+          "topic": "telephone number",
+          "description": "This property stores the unique phone number assigned to the phone."
+        }
+      }
+    },
+    "PhoneCall": {
+      "id_property": null,
+      "properties": {
+        "call_date": {
+          "data_type": "date",
+          "topic": "phone call date",
+          "description": "The calendar date on which the phone call occurred, formatted as DD/MM/YYYY."
+        },
+        "call_duration": {
+          "data_type": "number",
+          "topic": "call duration seconds",
+          "description": "The duration of the phone call in seconds."
+        },
+        "call_time": {
+          "data_type": "other",
+          "topic": "phone call time",
+          "description": "The time of day when the phone call took place, formatted as HH:MM."
+        },
+        "call_type": {
+          "data_type": "enum",
+          "topic": "type of call",
+          "description": "The type of phone call, such as SMS or voice."
+        }
+      }
+    },
+    "PostCode": {
+      "id_property": "code",
+      "properties": {
+        "code": {
+          "data_type": "id",
+          "topic": "postal code",
+          "description": "This property stores the alphanumeric postal code assigned to a specific geographic area."
+        }
+      }
+    },
+    "Vehicle": {
+      "id_property": "reg",
+      "properties": {
+        "make": {
+          "data_type": "name",
+          "topic": "vehicle manufacturer",
+          "description": "The brand or manufacturer of the vehicle."
+        },
+        "model": {
+          "data_type": "name",
+          "topic": "vehicle model",
+          "description": "The specific model designation of the vehicle."
+        },
+        "reg": {
+          "data_type": "id",
+          "topic": "vehicle registration number",
+          "description": "The unique registration identifier assigned to the vehicle."
+        },
+        "year": {
+          "data_type": "year",
+          "topic": "vehicle manufacture year",
+          "description": "The year the vehicle was manufactured."
+        }
+      }
+    }
+  },
+  "relationships": {
+    "CALLED": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "PhoneCall",
+          "to": "Phone"
+        }
+      ]
+    },
+    "CALLER": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "PhoneCall",
+          "to": "Phone"
+        }
+      ]
+    },
+    "CURRENT_ADDRESS": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Person",
+          "to": "Location"
+        }
+      ]
+    },
+    "FAMILY_REL": {
+      "properties": {
+        "rel_type": {
+          "data_type": "enum",
+          "topic": "family relationship type",
+          "description": "Indicates the type of familial relationship between two people, such as sibling or parent."
+        }
+      },
+      "endpoints": [
+        {
+          "from": "Person",
+          "to": "Person"
+        }
+      ]
+    },
+    "HAS_EMAIL": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Person",
+          "to": "Email"
+        }
+      ]
+    },
+    "HAS_PHONE": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Person",
+          "to": "Phone"
+        }
+      ]
+    },
+    "HAS_POSTCODE": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Location",
+          "to": "PostCode"
+        }
+      ]
+    },
+    "INVESTIGATED_BY": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Crime",
+          "to": "Officer"
+        }
+      ]
+    },
+    "INVOLVED_IN": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Object",
+          "to": "Crime"
+        },
+        {
+          "from": "Vehicle",
+          "to": "Crime"
+        }
+      ]
+    },
+    "KNOWS": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Person",
+          "to": "Person"
+        }
+      ]
+    },
+    "KNOWS_LW": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Person",
+          "to": "Person"
+        }
+      ]
+    },
+    "KNOWS_PHONE": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Person",
+          "to": "Person"
+        }
+      ]
+    },
+    "KNOWS_SN": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Person",
+          "to": "Person"
+        }
+      ]
+    },
+    "LOCATION_IN_AREA": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Location",
+          "to": "Area"
+        }
+      ]
+    },
+    "OCCURRED_AT": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Crime",
+          "to": "Location"
+        }
+      ]
+    },
+    "PARTY_TO": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Person",
+          "to": "Crime"
+        }
+      ]
+    },
+    "POSTCODE_IN_AREA": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "PostCode",
+          "to": "Area"
+        }
+      ]
+    }
+  },
+  "generated_at_utc": "2026-06-21T04:31:28.971908+00:00",
+  "language": "en"
+}

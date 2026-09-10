@@ -1,0 +1,19 @@
+{
+  "database": "neo4j",
+  "neo4j_uri_host": "34.9.85.21",
+  "tool_names_hash": "5a6dbb33b89c92eaf120851f7e256d4c981fb414a76febd705295e587138d45f",
+  "tool_count": 56,
+  "embedding_model": "text-embedding-3-small",
+  "embedding_backend": "openai",
+  "ner_mode": "full",
+  "built_at": "2026-06-16T08:02:18+00:00",
+  "schema_version": 1,
+  "identity": {
+    "pair": "cypherbench_augmented__politics",
+    "dataset": "cypherbench_augmented",
+    "graph": "politics",
+    "bolt_uri": null,
+    "database": null,
+    "stamped_at": "2026-07-18T22:14:12+00:00"
+  }
+}

@@ -1,0 +1,261 @@
+{
+  "schema_version": 1,
+  "built_at": "2026-09-10T06:28:48+00:00",
+  "commit": "ae4427496d02f4838f2d3a1cfcf8e16e967bc178",
+  "set_id": "7ba73788a7ad",
+  "covers": "prompts, generated tools, schema files, tool-routing FAISS index (eval.artifact_swap SWAP_FILES/SWAP_DIRS); NOT generated/fcav or generated/chess",
+  "pairs": {
+    "cypherbench_augmented__company": {
+      "dataset": "cypherbench_augmented",
+      "graph": "company",
+      "n_files": 13,
+      "bytes": 475477,
+      "files": {
+        "agent/prompts.py": "bbaee709a29dd66c71d36af99a3333b114051a0fdee4cf55951a6db557d579d9",
+        "generated/faiss/tools_auto/fingerprint.json": "faaf113ede4766a5775128073cb6d58f20d42eea1a020672f8f75f01a5575104",
+        "generated/faiss/tools_auto/index.faiss": "c1fcf91c45a140c7b3a7298a2c3d42bc48790648f7cb09e91d558dc2add4ac14",
+        "generated/faiss/tools_auto/index.pkl": "1f64e90816a17243506c88aed6902790e9803f64e32aeb4f28cffc1e6278ca8b",
+        "generated/faiss/tools_auto_node_only/fingerprint.json": "4be99988a8a018f89ccbd7efa22dde50faeafc2b8dd40a4e75252f25037d081a",
+        "generated/faiss/tools_auto_node_only/index.faiss": "b9f1d34123d4173ce881a1bb4cc8fc22eabfa2efeb25d2344082ca72ddbc9d96",
+        "generated/faiss/tools_auto_node_only/index.pkl": "3a8828510add99dc1c5b01defcbb6e022dc73b0b4b1f236d82ec9a1f59eef6a6",
+        "generated/generated_node_tools.py": "c1653b9fc87172779df3cb9e39331ff88ec1d5292924c723c1c788f3b424e9d6",
+        "generated/generated_rel_tools.py": "869bc91134a39db0a45c8084db0ddf0af3e94123186ec85fd60d1952279e147b",
+        "schema_data/schema_meta.json": "1f2d09542bcc48184f6305fd535d535b554034ec999eca5539e3a2e43850cb0d",
+        "schema_data/schema_nodes.csv": "ef2ecc299db09198b29b5d365d479e9cc3abceab243600f62fb9777b474e1246",
+        "schema_data/schema_relations.csv": "6e2b7ff87a241c302c20b2bf1adf91e62a8f2c7f9c9cbc87f9d37fd83de2b760",
+        "vector_config.embeddable_properties.snippet": "55741147dc455d361dfed5214b40f826a92c2ca351fcf09d26143e0c8b59b0e8"
+      }
+    },
+    "cypherbench_augmented__fictional_character": {
+      "dataset": "cypherbench_augmented",
+      "graph": "fictional_character",
+      "n_files": 13,
+      "bytes": 534407,
+      "files": {
+        "agent/prompts.py": "1e922fa3f0a997ff3b8e2a4c2d69a03e0d106ab6bdb3c199fd306fd1df60925e",
+        "generated/faiss/tools_auto/fingerprint.json": "723abef0f6fef5ddcd4ebcf877fdb61139ece602db08670d37bd9ff52f3834ea",
+        "generated/faiss/tools_auto/index.faiss": "2293eed763051b7d2aaf81b898a5e16e5174d69f9d1dfa30aa17153d65e37699",
+        "generated/faiss/tools_auto/index.pkl": "5d4fab21a0af1a0ee5f369a63a40deb3c2c93cfe781382714ccbe5b09bb18cc7",
+        "generated/faiss/tools_auto_node_only/fingerprint.json": "99b0cccadde968f57a4a4027327bbed789ae8bbab94f7a573ca5fa313c449ff0",
+        "generated/faiss/tools_auto_node_only/index.faiss": "bb33d5e387cebf77a810f0c626399eb9d62176924663d8429b71746f89fec273",
+        "generated/faiss/tools_auto_node_only/index.pkl": "20e66b1416c5ef10d65984a7e18ccd763de4c7c589ebebf32018b2cafde6fba3",
+        "generated/generated_node_tools.py": "dc403e637022186cefd67e6f111ab3267bba4144b774175132d968f2fa3ee4ac",
+        "generated/generated_rel_tools.py": "e4a5aaadf9eccc9d659937d80b53338c34be4235ba02c8e3cf80576ceec75760",
+        "schema_data/schema_meta.json": "317d2eb78711ea2fab1f6e529789049ee0a8b1a5a24850da078d5e156a1cca7d",
+        "schema_data/schema_nodes.csv": "f419ccde1b3f875d47b0a6299e60c05d6da739824280d5731be78a04879924a4",
+        "schema_data/schema_relations.csv": "4ed0a8306d7165445d1328e5429c28d9a789cc668ff6d8ba08bb69a9f9521d0a",
+        "vector_config.embeddable_properties.snippet": "55741147dc455d361dfed5214b40f826a92c2ca351fcf09d26143e0c8b59b0e8"
+      }
+    },
+    "cypherbench_augmented__flight_accident": {
+      "dataset": "cypherbench_augmented",
+      "graph": "flight_accident",
+      "n_files": 13,
+      "bytes": 743124,
+      "files": {
+        "agent/prompts.py": "907e8a5f2174bd8f2b02abca581a442c03d5db62b23bea0a3a15d39181c0d716",
+        "generated/faiss/tools_auto/fingerprint.json": "3387896afdbf8526512ed4f2dd7f230762678974e6fec9552d3a04f912d3f51c",
+        "generated/faiss/tools_auto/index.faiss": "6680ff23576cdbb6a5a374fae0f1a45b4c638fbe4ccdc706bdac2b14a1fee22c",
+        "generated/faiss/tools_auto/index.pkl": "a1a2e0038ef1a2745de22eff09f6aae7d455fbebff4fe2a62074b1905184167a",
+        "generated/faiss/tools_auto_node_only/fingerprint.json": "fa877a88d7499f5dcf8b41ae354dba40055782c004da9347ced8211e2c6cc10e",
+        "generated/faiss/tools_auto_node_only/index.faiss": "89accf28ffbedc18fc32b6e8ebe747b1470cfb55da46776ed9361ed1ef1e3b26",
+        "generated/faiss/tools_auto_node_only/index.pkl": "a4a9ab06305c5abfbef394665409bcb592825df53606bc691dea9944df6edb73",
+        "generated/generated_node_tools.py": "fbbae5f32f5913b373e74fce73c8398eec12b3dd3c4085aaf54dabf32b02a555",
+        "generated/generated_rel_tools.py": "a81478c27063a0fad69b61e9b65777fa21dba4b7312404a3b1de39094172f767",
+        "schema_data/schema_meta.json": "8cf7f5d64c2c106d89cfcd6e672545857f1337138325c281d005fabb19d8dfb1",
+        "schema_data/schema_nodes.csv": "6d3413f9c43e47af7ca5b593f5196aaa245d8eee297184adeccf5b8cd41bdf10",
+        "schema_data/schema_relations.csv": "1960c5b79643dfc7f352fa1e63aab8bcee5c9d364b56e62f3d76203a2e1e252d",
+        "vector_config.embeddable_properties.snippet": "55741147dc455d361dfed5214b40f826a92c2ca351fcf09d26143e0c8b59b0e8"
+      }
+    },
+    "cypherbench_augmented__geography": {
+      "dataset": "cypherbench_augmented",
+      "graph": "geography",
+      "n_files": 13,
+      "bytes": 888607,
+      "files": {
+        "agent/prompts.py": "04d0708fe1ac416aec85db95218897b6c9bd5cd0eae37dd4fec41dcf12015839",
+        "generated/faiss/tools_auto/fingerprint.json": "e329eb644f5fba16213157e2348f45a7953affc03fd88eae9ae3f42ece9fdcfa",
+        "generated/faiss/tools_auto/index.faiss": "efecc566117f1bb6956bcfa6177aed787256a846130154ffd18d3bcf27ba9536",
+        "generated/faiss/tools_auto/index.pkl": "379cee32d2e0196e4a93daacfa952bc9c605636988df1947305bec3926efb2e9",
+        "generated/faiss/tools_auto_node_only/fingerprint.json": "7c151618df25b7bce45b801c5fc6479d6e04c8543f925723f99fcb6ce89cc22f",
+        "generated/faiss/tools_auto_node_only/index.faiss": "24fb5dc6d5c84c32a16aac2c748b1a958534c200b77f399bfe507c8973d9ea7b",
+        "generated/faiss/tools_auto_node_only/index.pkl": "4f7ab4f06611b1d848f8dd408bf41d642509168d9ccbff684eb57397e75140c4",
+        "generated/generated_node_tools.py": "3da7351153fcd08498ac8c4de01dfcf42230139b8008d8cc894a11e729b2fd65",
+        "generated/generated_rel_tools.py": "3473689ee9cc0b9f0b3c7a4e0161f92e94c4a41e39ccfc0c8a91e3028f90ed8d",
+        "schema_data/schema_meta.json": "196086e385b79704e9d1c8a4ee8a1ec6b8c93bed718e38774702165d36140260",
+        "schema_data/schema_nodes.csv": "aa77504989041f294e862c820833a316b1ed28baf8fe1ac0f12c46813f88b5e3",
+        "schema_data/schema_relations.csv": "c5bb18e6012f9b83dbff6ff0f066d7f3c1dbeddbcf029b974b9af7ff02d36dfa",
+        "vector_config.embeddable_properties.snippet": "55741147dc455d361dfed5214b40f826a92c2ca351fcf09d26143e0c8b59b0e8"
+      }
+    },
+    "cypherbench_augmented__movie": {
+      "dataset": "cypherbench_augmented",
+      "graph": "movie",
+      "n_files": 13,
+      "bytes": 784487,
+      "files": {
+        "agent/prompts.py": "4dc9711d046c47596c26516eb20eb6f4137bcd6cd6586382e271d899eb504272",
+        "generated/faiss/tools_auto/fingerprint.json": "4fe81978b78bcfa5ff7449a45879d61bb7d95069f50eb57778fb1fa09739ca95",
+        "generated/faiss/tools_auto/index.faiss": "f569999fb3fe79f86f9ca07940d8b261f5aacf21267271a30e7e0ef7b0676cef",
+        "generated/faiss/tools_auto/index.pkl": "f9336e2032ec4155ef4ce54c4a6b45f500124bde448290aae982add985557ad7",
+        "generated/faiss/tools_auto_node_only/fingerprint.json": "576f4c83f0c0ac943d5eeb3e50cf1bede3b9bbec18eb7ae22615386803e6ab0f",
+        "generated/faiss/tools_auto_node_only/index.faiss": "95b965de1455901f9e9f99736122d7ae6825baaf36586599c52879ef173c11d4",
+        "generated/faiss/tools_auto_node_only/index.pkl": "1335779bbdb9f291f038f38290494caa88a81bd3dfdbdb9202c10d47cfbe40cd",
+        "generated/generated_node_tools.py": "bcf4218ad550d50a40f8590c6e6e5f5078d588a3bc3662bac725ed38db02c54f",
+        "generated/generated_rel_tools.py": "863043f9bb5527edad299d59f100332d8e1650c1b782d365ba26fefa6e1d5f69",
+        "schema_data/schema_meta.json": "76c5cf2ffd3e723e1de87454020ccc365b3fb6793135d8e09095b0479f827762",
+        "schema_data/schema_nodes.csv": "f32f1420440fd2219417b2c5e88e31ea7be134607c2d27037220f1a7bfe55e3c",
+        "schema_data/schema_relations.csv": "f0e96de1bb8b74bc36a32fe0d86a22c0dae71c0fc6b8237635ca7b2325fe5d00",
+        "vector_config.embeddable_properties.snippet": "55741147dc455d361dfed5214b40f826a92c2ca351fcf09d26143e0c8b59b0e8"
+      }
+    },
+    "cypherbench_augmented__nba": {
+      "dataset": "cypherbench_augmented",
+      "graph": "nba",
+      "n_files": 13,
+      "bytes": 818695,
+      "files": {
+        "agent/prompts.py": "9535d6717b0bb5f3c8e8d2111b9eb6ad79d2ce8d2b76c67bc8e056ed2b9d4af4",
+        "generated/faiss/tools_auto/fingerprint.json": "7db01555c7a631ec2b6761fe7a2390b843f2e0b874f278ec8a7602b489fbf41d",
+        "generated/faiss/tools_auto/index.faiss": "0b6820af5a056082b7f1ee08c56a23fb1c3205196e0944178e696c551c942452",
+        "generated/faiss/tools_auto/index.pkl": "bab3d4ccfe3026c2f47a2d864705a1b21b132a49bcadfd6a33c9b49b7c6d9dcf",
+        "generated/faiss/tools_auto_node_only/fingerprint.json": "af5c937a7bd663dbb691defe63c1b48f34e23f4473d54c771b14619260cec7d0",
+        "generated/faiss/tools_auto_node_only/index.faiss": "492191429d6614b8ef28c333512f30fd968b55ae5f85db1936724dea599e390e",
+        "generated/faiss/tools_auto_node_only/index.pkl": "941195d03aed47b418abd729d6cd710aa71316678cadde4853e52eb7a419d677",
+        "generated/generated_node_tools.py": "54501b38a4731ee4350e9e159c1676a9e6adf66fcfd7a354bc5f7e793cb67032",
+        "generated/generated_rel_tools.py": "3922a8ac0ebbd5f8f724a520b0f3af72fef43823b35af92a7f919e8c7cf186d5",
+        "schema_data/schema_meta.json": "20a8012ec94725ed2396e306eef9ef5e192748d7faa282807274a2a8959a11ba",
+        "schema_data/schema_nodes.csv": "59fe82a4195f050d6c2b1d1c13633a61eef6fd525ca6c30a8f2e0c1e16222607",
+        "schema_data/schema_relations.csv": "2c41f1749b3dd7b2d21e69f31c2744cda2a38fb5cc0515a46f53661c8382be9d",
+        "vector_config.embeddable_properties.snippet": "55741147dc455d361dfed5214b40f826a92c2ca351fcf09d26143e0c8b59b0e8"
+      }
+    },
+    "cypherbench_augmented__politics": {
+      "dataset": "cypherbench_augmented",
+      "graph": "politics",
+      "n_files": 13,
+      "bytes": 770969,
+      "files": {
+        "agent/prompts.py": "6f7bcb0a38f47e3eec0ae872ef520cf578589683561cf95cf73a3137220ae48b",
+        "generated/faiss/tools_auto/fingerprint.json": "ede8a2f6234d69046a88aa1bfea7b502317c1f0d6a692e79d70cdf4594c58baa",
+        "generated/faiss/tools_auto/index.faiss": "7d80a6bd554e6d5bb85b8a2034f2cd88ad67d370c6b6bf186f34c24f8965e634",
+        "generated/faiss/tools_auto/index.pkl": "86aabbcf76f2f12f37ad580250c783b0134c070476870bad4b56bda9500ed5f8",
+        "generated/faiss/tools_auto_node_only/fingerprint.json": "8c5db0ee3366711495e522feb32f4e5328c07f110415d60fe5dfbff8adf8c496",
+        "generated/faiss/tools_auto_node_only/index.faiss": "c40fc01bc543e3dc414df731c75a962740a63de9c4d9c1eaf9917b731f1e7f12",
+        "generated/faiss/tools_auto_node_only/index.pkl": "8a11df5e41cd4bb36b283df5cce3415d52ed8c9aed474caec9ae27a2b8efc09b",
+        "generated/generated_node_tools.py": "7cd57fa26d7a3b97819814a7568d33c613f492c53d6f9d29a506819209cff1b1",
+        "generated/generated_rel_tools.py": "49e54d548a1ed9fc42549a9951cc122f2719dc443fee91a201156e7e31788cf4",
+        "schema_data/schema_meta.json": "0561326f6e19d084e31882f6edc35633ba61d536fbdc4587da5edf7032abccde",
+        "schema_data/schema_nodes.csv": "f7dca7cb75953859763a7af2f3ad5056b51513602f6a1e0fb7ab0d044fb521ac",
+        "schema_data/schema_relations.csv": "be1fc03a25445f2e67c96aa68c3727982d1750285900080cf02cb0123455f844",
+        "vector_config.embeddable_properties.snippet": "55741147dc455d361dfed5214b40f826a92c2ca351fcf09d26143e0c8b59b0e8"
+      }
+    },
+    "mindthequery_augmented__covid": {
+      "dataset": "mindthequery_augmented",
+      "graph": "covid",
+      "n_files": 13,
+      "bytes": 409890,
+      "files": {
+        "agent/prompts.py": "244dbb48486796429d35f00ba77479b1c8c9c162cbd3852eb5f128dc33cd3928",
+        "generated/faiss/tools_auto/fingerprint.json": "b3ff2c0395d95af440bc0d815dba88f76a2fbb8c2fe9b40756e40f61418569e0",
+        "generated/faiss/tools_auto/index.faiss": "8f63b3fb5a75614f3646759e00efa2cfd2938c0404b1507d44c6afae60c2bbe3",
+        "generated/faiss/tools_auto/index.pkl": "5d6af1408375e0373d1ac80050abb1f93002585282d624e9b26ce04c708ddee4",
+        "generated/faiss/tools_auto_node_only/fingerprint.json": "0dae440ca0a6d525eb7b9c2e6b74c2cd45740ad121a6d179dd7bb13db4788ceb",
+        "generated/faiss/tools_auto_node_only/index.faiss": "bc9cecb8795f971aa736c26e21db4c06357928f0037741c95c44959db7316298",
+        "generated/faiss/tools_auto_node_only/index.pkl": "ece20a68071f5cfd462ebe0da32d58e32e5ae26ddb47492a477786532521983a",
+        "generated/generated_node_tools.py": "6b9f8e04accc486125b739df83e28d6835f5cc73bf7c7cda083e4922fe498205",
+        "generated/generated_rel_tools.py": "1d4ac3fb6daba00f9741825478b6ff059ec7face5e5924baae4da44958de3956",
+        "schema_data/schema_meta.json": "9523699b07be12a14285d9c4f2704b1fa9143c30b169a66f20978d4e4f9ab5cd",
+        "schema_data/schema_nodes.csv": "af1c0894fd9c18147208a1a184acd0c37482161b740a2a2585d01fdc28ece5c4",
+        "schema_data/schema_relations.csv": "7471f1b2f5d544452a712f77e5193def88d787192695165b50e755e6e84578db",
+        "vector_config.embeddable_properties.snippet": "55741147dc455d361dfed5214b40f826a92c2ca351fcf09d26143e0c8b59b0e8"
+      }
+    },
+    "mindthequery_augmented__er": {
+      "dataset": "mindthequery_augmented",
+      "graph": "er",
+      "n_files": 13,
+      "bytes": 243439,
+      "files": {
+        "agent/prompts.py": "a8848ca8f37d00ab3acfb409e439495cbd5efd4b07e6d7fc40adca0f98b5dc3c",
+        "generated/faiss/tools_auto/fingerprint.json": "20ba78e9a2a117040b1a20f982c0bf1c838f8e3a099ab075a312b4378b8863fc",
+        "generated/faiss/tools_auto/index.faiss": "32a6ef7ff1bb02cefd42493a2f354422a8c2bf89330cb2fcf1012ce9d7ef7716",
+        "generated/faiss/tools_auto/index.pkl": "40aa96425e2ea2b269ac2c2e82e6c1dc1ddf97c8ead4113b277471d9c94479e6",
+        "generated/faiss/tools_auto_node_only/fingerprint.json": "c366cc1a4292ad0f60629b88fdcaf6882d80ac188b50ae71a9a3cb6e874a71f5",
+        "generated/faiss/tools_auto_node_only/index.faiss": "861c32ce919bbc833e008413d0cf0bb23f715d10cb8028d46d35a0cb9862d998",
+        "generated/faiss/tools_auto_node_only/index.pkl": "e00f1080bd7b99f68dc8a123f8fe0835d353bbaaaabf098c302671f104f2c564",
+        "generated/generated_node_tools.py": "05683f2be04691138e783e7fe01894cdbec2b3e00252bcc972a028516b348a29",
+        "generated/generated_rel_tools.py": "bbf67ad2b90e068b7e2c1f8defe0e92c3be3e72c77b766eb5337c28ad25f467f",
+        "schema_data/schema_meta.json": "62e478767adf87d5821a74970b61a6c61b753125c61092f72effa4feab84d8f1",
+        "schema_data/schema_nodes.csv": "4f3bf1942542c0a44916ce00d6199ae16bd870bf5922217894b4560e510b2977",
+        "schema_data/schema_relations.csv": "cd23f1dfa53916c70521075138f77295b575f477cbfc645d56627b3fefcaab66",
+        "vector_config.embeddable_properties.snippet": "55741147dc455d361dfed5214b40f826a92c2ca351fcf09d26143e0c8b59b0e8"
+      }
+    },
+    "mindthequery_augmented__healthcare": {
+      "dataset": "mindthequery_augmented",
+      "graph": "healthcare",
+      "n_files": 13,
+      "bytes": 506948,
+      "files": {
+        "agent/prompts.py": "8ea01b2b4daac775a9ff04b5cc10596a2e79d1d5fa757aee18516ac0e19dd8ba",
+        "generated/faiss/tools_auto/fingerprint.json": "8f9c0494ee16c904dedbb01d32a1c73eb0afb26f27484283ebeeed7b9a7a878f",
+        "generated/faiss/tools_auto/index.faiss": "efd725892bb0a37b953fe0f44cda7642e570ec7685175a007119941fe22d112a",
+        "generated/faiss/tools_auto/index.pkl": "9cf8f62564ebb7365d982d5240c95518d11a494abfbe181a0c6db74f18a10680",
+        "generated/faiss/tools_auto_node_only/fingerprint.json": "750e4185faabb8d3c7003bb8eafeab42b0561157708ae2d732a5d306724417dc",
+        "generated/faiss/tools_auto_node_only/index.faiss": "8012c900ab9c8e9d9b5084f91cffb7a287643b44103cfae9391d62680b322c99",
+        "generated/faiss/tools_auto_node_only/index.pkl": "e7936b8f5b2124ce095a382247047f63ee4b0b90d18c32c5c794db429c4c844d",
+        "generated/generated_node_tools.py": "a9618203298204e86b5548ff5c2e1fac7452d54c32585321422c909266c3b044",
+        "generated/generated_rel_tools.py": "e2836f8bb268517d1494c63b3311af8c57a5d88b42bffbd7adcbee640db71928",
+        "schema_data/schema_meta.json": "902d721ae18779b73b9dcaa5d29a188c90fc50002fccbc8623b0071bca74fabb",
+        "schema_data/schema_nodes.csv": "7d413475adc74d63aaf2cd7147a55aab18e7039e110f0b6de5564c7f61039f00",
+        "schema_data/schema_relations.csv": "5980fa59b9287a811b1b2b3db940c760c8392b66cf3d97d80837531518982b6d",
+        "vector_config.embeddable_properties.snippet": "55741147dc455d361dfed5214b40f826a92c2ca351fcf09d26143e0c8b59b0e8"
+      }
+    },
+    "mindthequery_augmented__wwc": {
+      "dataset": "mindthequery_augmented",
+      "graph": "wwc",
+      "n_files": 13,
+      "bytes": 313713,
+      "files": {
+        "agent/prompts.py": "7abe1179fe2e02c6424da496eeec1ddd59a785daf0a7206c220f8df0fe1e979d",
+        "generated/faiss/tools_auto/fingerprint.json": "d7a2fc00995d6150cd8194ff1f8b6d68cfcacfb5a9d0ca2cc770b59541265689",
+        "generated/faiss/tools_auto/index.faiss": "b03c63ca318cd724fd23ba47fc32500967d3cef46ccef36f713cb92dffc10646",
+        "generated/faiss/tools_auto/index.pkl": "221a0767fd62e7930a59dbbf387ebb6b38123fb4eecad405e9522ca9c903f1af",
+        "generated/faiss/tools_auto_node_only/fingerprint.json": "a835553747990cfd6e8cdcc067c794021de4fe56771f49f3aa2329f06b90d2bb",
+        "generated/faiss/tools_auto_node_only/index.faiss": "630a94b66a93a436f8f2a4828dd6d374d1d9f1f8ed49dab217a4223cb4767b6b",
+        "generated/faiss/tools_auto_node_only/index.pkl": "c2c1a9d2e1370c50f729b3cf7c786e11059f138c143c65b9a7c86c0589668fa3",
+        "generated/generated_node_tools.py": "8a88510bc8456406534e11f7e3d4bfff35622e11bf6752cee58dcfa0deebc38d",
+        "generated/generated_rel_tools.py": "4ef53ffbd1860044780a6464ad444a8246558f0ff9af328e86d9692b56210c43",
+        "schema_data/schema_meta.json": "9a159f290bdd66194f081190a9c9bf1b00cfdd6d76433af1e3dcf0a055dd9bcc",
+        "schema_data/schema_nodes.csv": "342d953f9fb2f62b43e9b73b23d6ecb891d4ba9b8a95752f34c6ff7e720cec8b",
+        "schema_data/schema_relations.csv": "d511949b6328e4da0b5baddd32100b21785d105b74b69183d9479a179137eed4",
+        "vector_config.embeddable_properties.snippet": "55741147dc455d361dfed5214b40f826a92c2ca351fcf09d26143e0c8b59b0e8"
+      }
+    },
+    "zograscope_augmented__pole": {
+      "dataset": "zograscope_augmented",
+      "graph": "pole",
+      "n_files": 13,
+      "bytes": 660064,
+      "files": {
+        "agent/prompts.py": "22ea99eee5857f6574710755e76eaed1012c4de940bf2c4cce182c312539b1fb",
+        "generated/faiss/tools_auto/fingerprint.json": "8938c96753ebeefeafa1299f5a40f50afe5a2b7e2a2ef60dd19d5c7cee12356c",
+        "generated/faiss/tools_auto/index.faiss": "f60e7515d7c57a446897d739a6b31ad0455805a86216ca275f1ff644215dda05",
+        "generated/faiss/tools_auto/index.pkl": "4e3dad25c21d5d99bbecd25c1e750e3d37129b54379e46f2d1c59dc4c9bb4597",
+        "generated/faiss/tools_auto_node_only/fingerprint.json": "a74fca2d536f9687f7cb94d4a097b1e5c0ca02b07db5c148908de317488dfa35",
+        "generated/faiss/tools_auto_node_only/index.faiss": "23d8e06526ee74f771fce2bcfef7b039e5777120c103d405f91010feb9802fa0",
+        "generated/faiss/tools_auto_node_only/index.pkl": "e82acae92eae98064b31cbbdfe106c23e124d3a9b2b289594d24edbabb9c655b",
+        "generated/generated_node_tools.py": "7a389076a30c5c3671ad13b2838577d93fd58a925beb473baabf27bbfedcfb63",
+        "generated/generated_rel_tools.py": "97aa1481ebe454cb7aaa14f133d876908ce250dd3f46441ecc3bea8244303a7e",
+        "schema_data/schema_meta.json": "4d11a5361553cceaa82b3b33f7f07c260e27fb6a1a199553757f865927cb919d",
+        "schema_data/schema_nodes.csv": "f195815a19aac74b7d2a8ee7cca768623f38eb97754fcc8e535b95cacbf336e5",
+        "schema_data/schema_relations.csv": "b9fc9171b7b746965b066e798e3a2669fe94ebb3f33b7d12e99b15c03b365267",
+        "vector_config.embeddable_properties.snippet": "55741147dc455d361dfed5214b40f826a92c2ca351fcf09d26143e0c8b59b0e8"
+      }
+    }
+  }
+}

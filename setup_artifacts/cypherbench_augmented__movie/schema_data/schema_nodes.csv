@@ -1,0 +1,46 @@
+label,property,property_types,mandatory,node_count,non_null_count,fill_pct,sample_values
+Award,aliases,StringArray,True,1583,1583,100.0%,['APSA'] | [] | []
+Award,description,String,False,1583,977,61.7%,prize awarded for the best film at the Ber… | film award | Sundance Film Festival award
+Award,eid,String,True,1583,1583,100.0%,Award#Q28711772 | Award#Q900369 | Award#Q1377773
+Award,name,String,True,1583,1583,100.0%,Vanitha Film Awards | National Society of Film Critics Award for… | Nederlands Academy Award
+Award,provenance,StringArray,True,1583,1583,100.0%,['https://en.wikipedia.org/wiki/Teen_Choic… | [] | []
+Country,aliases,StringArray,True,205,205,100.0%,"['CRO', 'HR', 'HRV', 'RH', 'Republic of Cr… | ['Heart of South America', 'Republic of Pa… | ['AT', …"
+Country,description,String,True,205,205,100.0%,sovereign state in northern South America | country in the Caribbean Sea | country in southeastern …
+Country,eid,String,True,205,205,100.0%,Country#Q408 | Country#Q769 | Country#Q398
+Country,name,String,True,205,205,100.0%,Algeria | Tunisia | Laos
+Country,provenance,StringArray,True,205,205,100.0%,['https://en.wikipedia.org/wiki/Morocco'] | ['https://en.wikipedia.org/wiki/Benin'] | ['https://en.…
+FilmSeries,aliases,StringArray,True,596,596,100.0%,['SP: The motion picture yabô hen'] | [] | ['Eastrail 177 Trilogy']
+FilmSeries,description,String,False,596,593,99.5%,1995-2013 film series directed by Richard … | film american series | animated film series
+FilmSeries,eid,String,True,596,596,100.0%,FilmSeries#Q5325474 | FilmSeries#Q7339356 | FilmSeries#Q27959207
+FilmSeries,name,String,True,596,596,100.0%,Psycho tetralogy | The Texas Chainsaw Massacre | Richie Rich
+FilmSeries,provenance,StringArray,True,596,596,100.0%,['https://en.wikipedia.org/wiki/Cloverfiel… | [] | ['https://en.wikipedia.org/wiki/Red_Asphalt']
+Genre,aliases,StringArray,True,694,694,100.0%,"[] | ['film about music', 'music film'] | []"
+Genre,description,String,False,694,667,96.1%,genre of rock music | media that aims to teach viewers academic … | subgenre of horror film
+Genre,eid,String,True,694,694,100.0%,Genre#Q2301591 | Genre#Q7603925 | Genre#Q33130924
+Genre,name,String,True,694,694,100.0%,children's literature | hip hop music | skate video
+Genre,provenance,StringArray,True,694,694,100.0%,"[""https://en.wikipedia.org/wiki/Children's… | ['https://en.wikipedia.org/wiki/Photo_comi… | []"
+Movie,aliases,StringArray,True,218828,218828,100.0%,[] | ['Girl with the Hungry Eyes'] | []
+Movie,description,String,False,218828,218801,100.0%,1935 film | 1912 film | 2006 film by Dan Wolman
+Movie,eid,String,True,218828,218828,100.0%,Movie#Q3399701 | Movie#Q8063439 | Movie#Q56274553
+Movie,filming_location,StringArray,False,218828,19222,8.8%,['Langeland'] | ['California'] | ['Montreal']
+Movie,global_box_office_usd,Double,False,218828,1263,0.6%,1968000.0 | 97195.0 | 237200000.0
+Movie,name,String,True,218828,218828,100.0%,Swaroopa | Must Read After My Death | Last Embrace
+Movie,original_language,StringArray,False,218828,170487,77.9%,['Bangla'] | ['French'] | ['English']
+Movie,provenance,StringArray,True,218828,218828,100.0%,['https://en.wikipedia.org/wiki/All_Fired_… | ['https://en.wikipedia.org/wiki/O.K._Conne… | ['https…
+Movie,runtime_minute,Double,False,218828,109337,50.0%,105.0 | 110.0 | 180.0
+Person,aliases,StringArray,True,234309,234309,100.0%,"['Franco Pallavera'] | ['Socrates Hernandez Topacio', 'Socrates H… | []"
+Person,country_of_citizenship,StringArray,False,234309,189340,80.8%,['United States of America'] | ['United States of America'] | ['France']
+Person,date_of_birth,Date,False,234309,165357,70.6%,1971-12-20 | 1951-01-25 | 1970-06-22
+Person,date_of_death,Date,False,234309,64221,27.4%,1985-09-25 | 1966-07-15 | 1990-12-28
+Person,description,String,False,234309,199783,85.3%,American musician | American actress (1893–1972) | Irish actress
+Person,eid,String,True,234309,234309,100.0%,Person#Q15955286 | Person#Q20110040 | Person#Q3557729
+Person,gender,String,False,234309,222059,94.8%,male | female | female
+Person,name,String,True,234309,234309,100.0%,Park Ki-woong | Claude Luter | Max Martini
+Person,place_of_birth,String,False,234309,169638,72.4%,Barcelona | Georgetown | Jerusalem
+Person,provenance,StringArray,True,234309,234309,100.0%,['https://en.wikipedia.org/wiki/Arleen_Sor… | ['https://en.wikipedia.org/wiki/Gaurav_Cha… | ['https…
+ProductionCompany,aliases,StringArray,True,3178,3178,100.0%,[] | ['Federalnoe gosudarstvennoe unitarnoe pre… | []
+ProductionCompany,country,String,False,3178,2278,71.7%,United States of America | Soviet Union | Germany
+ProductionCompany,description,String,False,3178,2485,78.2%,Norwegian film production company | Hong Kong production company | UK film production company
+ProductionCompany,eid,String,True,3178,3178,100.0%,ProductionCompany#Q64975503 | ProductionCompany#Q7634417 | ProductionCompany#Q21008544
+ProductionCompany,name,String,True,3178,3178,100.0%,Runteam Productions | Shaw Brothers Studio | Melnitsa Animation Studio
+ProductionCompany,provenance,StringArray,True,3178,3178,100.0%,[] | ['https://en.wikipedia.org/wiki/Team_Downey'] | []

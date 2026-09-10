@@ -1,0 +1,11 @@
+rel_type,from_label,to_label,property,property_types,mandatory,rel_count,sample_values
+draftedBy,Player,Team,year,Long,False,2889,1947 | 2019 | 2019
+hasHomeVenue,Team,Venue,end_year,Long,False,118,1955 | 1955 | 1988
+hasHomeVenue,Team,Venue,start_year,Long,True,118,1970 | 1945 | 1968
+partOfConference,Division,Conference,,,,6,
+partOfDivision,Team,Division,,,,30,
+playsFor,Player,Team,end_year,Long,False,10223,2001 | 2009 | 1987
+playsFor,Player,Team,sport_number,Long,False,10223,45 | 13 | 34
+playsFor,Player,Team,start_year,Long,False,10223,2017 | 2020 | 1987
+playsPosition,Player,Position,,,,5127,
+receivesAward,Player,Award,year,Long,False,598,1968 | 1973 | 1965

@@ -1,0 +1,19 @@
+{
+  "database": "neo4j",
+  "neo4j_uri_host": "34.9.85.21",
+  "tool_names_hash": "daeb8341f3c197f184e5b3cd161191ad4c0dae83c7d8c68b2579eb93b84766f2",
+  "tool_count": 13,
+  "embedding_model": "text-embedding-3-small",
+  "embedding_backend": "openai",
+  "ner_mode": "node_only",
+  "built_at": "2026-06-22T10:39:12+00:00",
+  "schema_version": 1,
+  "identity": {
+    "pair": "mindthequery_augmented__er",
+    "dataset": "mindthequery_augmented",
+    "graph": "er",
+    "bolt_uri": null,
+    "database": null,
+    "stamped_at": "2026-07-18T22:14:12+00:00"
+  }
+}

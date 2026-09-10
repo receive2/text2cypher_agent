@@ -1,0 +1,19 @@
+{
+  "database": "neo4j",
+  "neo4j_uri_host": "34.9.85.21",
+  "tool_names_hash": "d735a8d5f0ef1dbde4d3dac3b05e1199c22df67594523958daf5ce92c5cc1c38",
+  "tool_count": 58,
+  "embedding_model": "text-embedding-3-small",
+  "embedding_backend": "openai",
+  "ner_mode": "full",
+  "built_at": "2026-06-21T19:41:15+00:00",
+  "schema_version": 1,
+  "identity": {
+    "pair": "cypherbench_augmented__nba",
+    "dataset": "cypherbench_augmented",
+    "graph": "nba",
+    "bolt_uri": null,
+    "database": null,
+    "stamped_at": "2026-07-18T22:14:12+00:00"
+  }
+}

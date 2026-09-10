@@ -1,0 +1,10 @@
+rel_type,from_label,to_label,property,property_types,mandatory,rel_count,sample_values
+LOCATED_AT,Visit,Place,,,,5009,
+PART_OF,Country,Continent,,,,103,
+PART_OF,Place,Region,,,,103,
+PART_OF,Region,Country,,,,103,
+PERFORMS_VISIT,Person,Visit,,,,5009,
+VISITS,Person,Place,duration,Duration,True,5009,PT13H5M28S | PT12H14M24S | PT23H38M54S
+VISITS,Person,Place,endtime,DateTime,True,5009,2020-04-14T05:43:25.000000000+00:00 | 2020-05-07T14:28:18.000000000+00:00 | 2020-04-29T05:57:26.000…
+VISITS,Person,Place,id,String,True,5009,2114 | 4850 | 2525
+VISITS,Person,Place,starttime,DateTime,True,5009,2020-05-02T13:36:14.000000000+00:00 | 2020-04-22T00:20:16.000000000+00:00 | 2020-04-24T14:11:56.000…

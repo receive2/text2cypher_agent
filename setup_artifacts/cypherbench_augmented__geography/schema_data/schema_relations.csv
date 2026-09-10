@@ -1,0 +1,13 @@
+rel_type,from_label,to_label,property,property_types,mandatory,rel_count,sample_values
+flowsInto,River,Lake,,,,75139,
+flowsInto,River,Ocean,,,,75139,
+flowsInto,River,River,,,,75139,
+flowsThrough,River,Country,,,,82155,
+locatedIn,Country,Continent,,,,682096,
+locatedIn,DrainageBasin,Country,,,,682096,
+locatedIn,Lake,Country,,,,682096,
+locatedIn,Mountain,Country,,,,682096,
+partOf,Lake,DrainageBasin,,,,64404,
+partOf,Mountain,MountainRange,,,,64404,
+partOf,MountainRange,MountainRange,,,,64404,
+partOf,River,DrainageBasin,,,,64404,

@@ -1,0 +1,210 @@
+{
+  "nodes": {
+    "Match": {
+      "id_property": "id",
+      "properties": {
+        "date": {
+          "data_type": "date",
+          "topic": "match date",
+          "description": "The calendar date on which the match took place."
+        },
+        "id": {
+          "data_type": "id",
+          "topic": "match identifier",
+          "description": "A unique identifier assigned to each match."
+        },
+        "stage": {
+          "data_type": "enum",
+          "topic": "tournament stage",
+          "description": "The phase or round of the tournament in which the match occurred."
+        }
+      }
+    },
+    "Person": {
+      "id_property": "name",
+      "properties": {
+        "dob": {
+          "data_type": "date",
+          "topic": "person birth date",
+          "description": "The date of birth of the person."
+        },
+        "id": {
+          "data_type": "id",
+          "topic": "person identifier",
+          "description": "A unique string identifier assigned to each person."
+        },
+        "name": {
+          "data_type": "name",
+          "topic": "person name",
+          "description": "The full name of the person."
+        }
+      }
+    },
+    "Squad": {
+      "id_property": "id",
+      "properties": {
+        "id": {
+          "data_type": "title",
+          "topic": "squad identifier",
+          "description": "A human-readable identifier for the squad, typically combining a country or team name with a year."
+        }
+      }
+    },
+    "Team": {
+      "id_property": "name",
+      "properties": {
+        "id": {
+          "data_type": "id",
+          "topic": "team identifier",
+          "description": "A unique string identifier assigned to each team."
+        },
+        "name": {
+          "data_type": "name",
+          "topic": "team name",
+          "description": "The official name of the team."
+        }
+      }
+    },
+    "Tournament": {
+      "id_property": "name",
+      "properties": {
+        "id": {
+          "data_type": "id",
+          "topic": "tournament identifier",
+          "description": "A unique string identifier for the tournament."
+        },
+        "name": {
+          "data_type": "name",
+          "topic": "tournament name",
+          "description": "The official name of the tournament, typically including the host country and year."
+        },
+        "shortName": {
+          "data_type": "text",
+          "topic": "tournament short name",
+          "description": "A short or abbreviated string representing the tournament, often used as a code or slug."
+        },
+        "year": {
+          "data_type": "year",
+          "topic": "tournament year",
+          "description": "The year in which the tournament took place."
+        }
+      }
+    }
+  },
+  "relationships": {
+    "COACH_FOR": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Person",
+          "to": "Squad"
+        }
+      ]
+    },
+    "FOR": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Squad",
+          "to": "Tournament"
+        }
+      ]
+    },
+    "IN_SQUAD": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Person",
+          "to": "Squad"
+        }
+      ]
+    },
+    "IN_TOURNAMENT": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Match",
+          "to": "Tournament"
+        }
+      ]
+    },
+    "NAMED": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Team",
+          "to": "Squad"
+        }
+      ]
+    },
+    "PARTICIPATED_IN": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Team",
+          "to": "Tournament"
+        }
+      ]
+    },
+    "PLAYED_IN": {
+      "properties": {
+        "minuteOn": {
+          "data_type": "text",
+          "topic": "match entry minute",
+          "description": "Indicates the minute of the match when the team or person started playing, including possible extra time notation."
+        },
+        "penaltyScore": {
+          "data_type": "number",
+          "topic": "penalty goals scored",
+          "description": "Stores the number of penalty goals scored by the team or person in the match."
+        },
+        "score": {
+          "data_type": "number",
+          "topic": "goals scored",
+          "description": "Represents the total number of goals scored by the team or person in the match."
+        },
+        "type": {
+          "data_type": "enum",
+          "topic": "participation type",
+          "description": "Describes the manner in which the team or person participated in the match, such as 'Started' or 'Subbed On'."
+        }
+      },
+      "endpoints": [
+        {
+          "from": "Team",
+          "to": "Match"
+        },
+        {
+          "from": "Person",
+          "to": "Match"
+        }
+      ]
+    },
+    "REPRESENTS": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Person",
+          "to": "Team"
+        }
+      ]
+    },
+    "SCORED_GOAL": {
+      "properties": {
+        "minute": {
+          "data_type": "number",
+          "topic": "goal minute",
+          "description": "The minute of the match when the goal was scored, typically represented as a number followed by an apostrophe."
+        }
+      },
+      "endpoints": [
+        {
+          "from": "Person",
+          "to": "Match"
+        }
+      ]
+    }
+  },
+  "generated_at_utc": "2026-06-22T11:30:23.462354+00:00",
+  "language": "en"
+}

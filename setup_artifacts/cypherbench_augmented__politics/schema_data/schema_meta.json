@@ -1,0 +1,381 @@
+{
+  "nodes": {
+    "Country": {
+      "id_property": "name",
+      "properties": {
+        "aliases": {
+          "data_type": "list",
+          "topic": "country alternate names",
+          "description": "A list of alternative names, abbreviations, or codes by which the country is known."
+        },
+        "description": {
+          "data_type": "text",
+          "topic": "country summary",
+          "description": "A brief textual summary describing the country."
+        },
+        "eid": {
+          "data_type": "id",
+          "topic": "external country identifier",
+          "description": "A unique external identifier for the country, often referencing a knowledge base entry."
+        },
+        "founding_date": {
+          "data_type": "date",
+          "topic": "country founding date",
+          "description": "The date on which the country was founded or established."
+        },
+        "name": {
+          "data_type": "name",
+          "topic": "country name",
+          "description": "The official or most commonly used name of the country."
+        },
+        "official_language": {
+          "data_type": "list",
+          "topic": "official languages",
+          "description": "A list of languages that have official status in the country."
+        },
+        "provenance": {
+          "data_type": "list",
+          "topic": "country data sources",
+          "description": "A list of URLs or references indicating the sources of information about the country."
+        }
+      }
+    },
+    "GovernmentOrganization": {
+      "id_property": "name",
+      "properties": {
+        "aliases": {
+          "data_type": "list",
+          "topic": "organization alternate names",
+          "description": "A list of alternative names or aliases by which the government organization is known."
+        },
+        "description": {
+          "data_type": "text",
+          "topic": "organization description",
+          "description": "A textual summary or description of the government organization."
+        },
+        "eid": {
+          "data_type": "id",
+          "topic": "external identifier",
+          "description": "A unique external identifier for the government organization, often referencing a knowledge base."
+        },
+        "name": {
+          "data_type": "name",
+          "topic": "organization name",
+          "description": "The official or primary name of the government organization."
+        },
+        "provenance": {
+          "data_type": "list",
+          "topic": "data provenance sources",
+          "description": "A list of sources or references indicating where the information about the government organization was obtained."
+        }
+      }
+    },
+    "InternationalOrganization": {
+      "id_property": "name",
+      "properties": {
+        "aliases": {
+          "data_type": "list",
+          "topic": "organization alternate names",
+          "description": "A list of alternative names or abbreviations by which the organization is known."
+        },
+        "description": {
+          "data_type": "text",
+          "topic": "organization summary",
+          "description": "A brief textual summary describing the organization."
+        },
+        "eid": {
+          "data_type": "id",
+          "topic": "organization external id",
+          "description": "A unique external identifier for the organization, often including a namespace and reference."
+        },
+        "founding_year": {
+          "data_type": "year",
+          "topic": "organization founding year",
+          "description": "The year in which the organization was founded."
+        },
+        "name": {
+          "data_type": "name",
+          "topic": "organization name",
+          "description": "The primary name of the international organization."
+        },
+        "provenance": {
+          "data_type": "list",
+          "topic": "organization data sources",
+          "description": "A list of URLs or references indicating the sources of information about the organization."
+        }
+      }
+    },
+    "PoliticalParty": {
+      "id_property": "name",
+      "properties": {
+        "aliases": {
+          "data_type": "list",
+          "topic": "political party aliases",
+          "description": "Alternative names or abbreviations by which the political party is known."
+        },
+        "description": {
+          "data_type": "text",
+          "topic": "political party description",
+          "description": "A brief summary or explanation of the political party."
+        },
+        "eid": {
+          "data_type": "id",
+          "topic": "external identifier",
+          "description": "A unique external identifier for the political party, often referencing a knowledge base."
+        },
+        "founding_date": {
+          "data_type": "date",
+          "topic": "party founding date",
+          "description": "The date on which the political party was officially founded."
+        },
+        "name": {
+          "data_type": "name",
+          "topic": "political party name",
+          "description": "The official name of the political party."
+        },
+        "provenance": {
+          "data_type": "list",
+          "topic": "data provenance URLs",
+          "description": "A list of source URLs or references from which information about the political party was obtained."
+        }
+      }
+    },
+    "Politician": {
+      "id_property": "name",
+      "properties": {
+        "aliases": {
+          "data_type": "list",
+          "topic": "person aliases",
+          "description": "Alternative names or nicknames by which the politician is known."
+        },
+        "country_of_citizenship": {
+          "data_type": "list",
+          "topic": "citizenship country",
+          "description": "Countries where the politician holds citizenship."
+        },
+        "date_of_birth": {
+          "data_type": "date",
+          "topic": "birth date",
+          "description": "The date when the politician was born."
+        },
+        "date_of_death": {
+          "data_type": "date",
+          "topic": "death date",
+          "description": "The date when the politician died, if applicable."
+        },
+        "description": {
+          "data_type": "text",
+          "topic": "person summary",
+          "description": "A brief summary or description of the politician."
+        },
+        "eid": {
+          "data_type": "id",
+          "topic": "external identifier",
+          "description": "A unique external identifier for the politician, often referencing a knowledge base."
+        },
+        "gender": {
+          "data_type": "enum",
+          "topic": "person gender",
+          "description": "The gender of the politician."
+        },
+        "name": {
+          "data_type": "name",
+          "topic": "person name",
+          "description": "The full name of the politician."
+        },
+        "place_of_birth": {
+          "data_type": "text",
+          "topic": "birthplace",
+          "description": "The place where the politician was born."
+        },
+        "place_of_death": {
+          "data_type": "text",
+          "topic": "death place",
+          "description": "The place where the politician died, if applicable."
+        },
+        "provenance": {
+          "data_type": "list",
+          "topic": "data sources",
+          "description": "Sources or references from which the politician's data was obtained."
+        },
+        "schools_attended": {
+          "data_type": "list",
+          "topic": "educational institutions",
+          "description": "Educational institutions attended by the politician."
+        }
+      }
+    },
+    "Position": {
+      "id_property": "name",
+      "properties": {
+        "aliases": {
+          "data_type": "list",
+          "topic": "position alternate names",
+          "description": "A list of alternative names or aliases for the position."
+        },
+        "description": {
+          "data_type": "text",
+          "topic": "position summary",
+          "description": "A brief textual summary describing the position."
+        },
+        "eid": {
+          "data_type": "id",
+          "topic": "external position identifier",
+          "description": "A unique external identifier for the position, often referencing a knowledge base."
+        },
+        "name": {
+          "data_type": "title",
+          "topic": "position title",
+          "description": "The official title or name of the position."
+        },
+        "provenance": {
+          "data_type": "list",
+          "topic": "position data sources",
+          "description": "A list of sources or origins from which information about the position was obtained."
+        }
+      }
+    }
+  },
+  "relationships": {
+    "belongsTo": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "GovernmentOrganization",
+          "to": "Country"
+        }
+      ]
+    },
+    "foundedBy": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "PoliticalParty",
+          "to": "Politician"
+        }
+      ]
+    },
+    "hasDiplomaticRelationWith": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Country",
+          "to": "Country"
+        }
+      ]
+    },
+    "hasHeadOfGovernment": {
+      "properties": {
+        "end_year": {
+          "data_type": "year",
+          "topic": "end of term year",
+          "description": "The year when the politician's term as head of government ended."
+        },
+        "start_year": {
+          "data_type": "year",
+          "topic": "start of term year",
+          "description": "The year when the politician's term as head of government began."
+        }
+      },
+      "endpoints": [
+        {
+          "from": "Country",
+          "to": "Politician"
+        }
+      ]
+    },
+    "hasHeadOfState": {
+      "properties": {
+        "end_year": {
+          "data_type": "year",
+          "topic": "term end year",
+          "description": "The year when the politician's term as head of state ended."
+        },
+        "start_year": {
+          "data_type": "year",
+          "topic": "term start year",
+          "description": "The year when the politician's term as head of state began."
+        }
+      },
+      "endpoints": [
+        {
+          "from": "Country",
+          "to": "Politician"
+        }
+      ]
+    },
+    "headedBy": {
+      "properties": {
+        "end_year": {
+          "data_type": "year",
+          "topic": "end year",
+          "description": "The year when the politician stopped heading the political party."
+        },
+        "start_year": {
+          "data_type": "year",
+          "topic": "start year",
+          "description": "The year when the politician began heading the political party."
+        }
+      },
+      "endpoints": [
+        {
+          "from": "PoliticalParty",
+          "to": "Politician"
+        }
+      ]
+    },
+    "holdsPosition": {
+      "properties": {
+        "end_year": {
+          "data_type": "year",
+          "topic": "position end year",
+          "description": "The year in which the politician ended holding the position."
+        },
+        "start_year": {
+          "data_type": "year",
+          "topic": "position start year",
+          "description": "The year in which the politician began holding the position."
+        }
+      },
+      "endpoints": [
+        {
+          "from": "Politician",
+          "to": "Position"
+        }
+      ]
+    },
+    "leads": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Position",
+          "to": "GovernmentOrganization"
+        }
+      ]
+    },
+    "memberOf": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Politician",
+          "to": "PoliticalParty"
+        },
+        {
+          "from": "Country",
+          "to": "InternationalOrganization"
+        }
+      ]
+    },
+    "operatesIn": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "PoliticalParty",
+          "to": "Country"
+        }
+      ]
+    }
+  },
+  "generated_at_utc": "2026-06-15T18:08:12.399687+00:00",
+  "language": "en"
+}

@@ -1,0 +1,42 @@
+label,property,property_types,mandatory,node_count,non_null_count,fill_pct,sample_values
+Country,aliases,StringArray,True,217,217,100.0%,"['Lower Alsace'] | ['Ayiti', 'HAI', 'HT', 'Haitian Republic',… | ['SOL', 'sb', '🇸🇧']"
+Country,description,String,False,217,215,99.1%,sovereign state in South America | country in Central Europe | country in Central Europe
+Country,eid,String,True,217,217,100.0%,Country#Q733 | Country#Q114 | Country#Q347
+Country,founding_date,Date,False,217,131,60.4%,1981-11-01 | 1784-05-12 | 1975-07-06
+Country,name,String,True,217,217,100.0%,Comoros | Latvia | Japan
+Country,official_language,StringArray,False,217,201,92.6%,"['Barwe', 'Chewa', 'English', 'Kalanga', '… | ['English', 'Welsh'] | ['French']"
+Country,provenance,StringArray,True,217,217,100.0%,['https://en.wikipedia.org/wiki/Rwanda'] | ['https://en.wikipedia.org/wiki/Mauritius'] | ['https://…
+GovernmentOrganization,aliases,StringArray,True,251643,251643,100.0%,['Kokubu'] | [] | []
+GovernmentOrganization,description,String,False,251643,223156,88.7%,"human settlement in Buzdyaksky District, R… | human settlement in Dzhidinsky District, R… | borough…"
+GovernmentOrganization,eid,String,True,251643,251643,100.0%,GovernmentOrganization#Q1720803 | GovernmentOrganization#Q504124 | GovernmentOrganization#Q667598
+GovernmentOrganization,name,String,True,251643,251643,100.0%,Greggio | Xaintray | Niki
+GovernmentOrganization,provenance,StringArray,True,251643,251643,100.0%,['https://en.wikipedia.org/wiki/Herrera_de… | [] | []
+InternationalOrganization,aliases,StringArray,True,2772,2772,100.0%,"['International Office of Epizootics', 'OI… | [] | ['Department of Economic Affairs', 'United…"
+InternationalOrganization,description,String,False,2772,2216,79.9%,non-profit association of the Federal Repu… | intergovernmental organization which manag… | intergo…
+InternationalOrganization,eid,String,True,2772,2772,100.0%,InternationalOrganization#Q7958554 | InternationalOrganization#Q114352162 | InternationalOrganizati…
+InternationalOrganization,founding_year,Long,False,2772,1935,69.8%,2010 | 1949 | 1979
+InternationalOrganization,name,String,True,2772,2772,100.0%,Confederation of Mountain Peoples of the C… | European Securities and Markets Authority | Open Lear…
+InternationalOrganization,provenance,StringArray,True,2772,2772,100.0%,['https://en.wikipedia.org/wiki/Bani_Yas'] | ['https://en.wikipedia.org/wiki/Weimar_Tri… | ['https:…
+PoliticalParty,aliases,StringArray,True,19998,19998,100.0%,[] | [] | []
+PoliticalParty,description,String,False,19998,17405,87.0%,Latvian political party | political party | defunct political party in Spain
+PoliticalParty,eid,String,True,19998,19998,100.0%,PoliticalParty#Q4118170 | PoliticalParty#Q116745366 | PoliticalParty#Q15980834
+PoliticalParty,founding_date,Date,False,19998,4568,22.8%,1973-05-10 | 2002-01-20 | 2008-10-04
+PoliticalParty,name,String,True,19998,19998,100.0%,Ang Mata'y Alagaan | Southern Ethiopian People's Democratic Mov… | Italian Catholic Electoral Union
+PoliticalParty,provenance,StringArray,True,19998,19998,100.0%,['https://en.wikipedia.org/wiki/National_U… | ['https://en.wikipedia.org/wiki/Socialist_… | ['https…
+Politician,aliases,StringArray,True,540962,540962,100.0%,"[] | ['J. A. Melley', 'Joseph A. Melley', 'Jose… | ['Barbara Evans Fleischauer']"
+Politician,country_of_citizenship,StringArray,False,540962,477635,88.3%,['New Zealand'] | ['United States of America'] | ['Belgium']
+Politician,date_of_birth,Date,False,540962,380500,70.3%,1869-10-11 | 1976-06-30 | 1855-07-06
+Politician,date_of_death,Date,False,540962,210360,38.9%,2010-05-25 | 1893-01-31 | 1661-03-15
+Politician,description,String,False,540962,498227,92.1%,"politician in Massachusetts, US | Argentinian journalist and politician (190… | Spanish politician"
+Politician,eid,String,True,540962,540962,100.0%,Politician#Q1686702 | Politician#Q3184476 | Politician#Q65592777
+Politician,gender,String,False,540962,526500,97.3%,male | male | male
+Politician,name,String,True,540962,540962,100.0%,Stefan Richter | Vita Martinciglio | Constantin Croitoru
+Politician,place_of_birth,String,False,540962,294555,54.5%,Santiago del Estero | Lorca | Dörphof
+Politician,place_of_death,String,False,540962,137798,25.5%,Hydra | Beijing | Vágur
+Politician,provenance,StringArray,True,540962,540962,100.0%,['https://en.wikipedia.org/wiki/Michael_Be… | ['https://en.wikipedia.org/wiki/J._T._Ruth… | ['https…
+Politician,schools_attended,StringArray,False,540962,138122,25.5%,"['Eton College', 'Trinity College'] | ['Ibero-American University'] | ['University of Maryland']"
+Position,aliases,StringArray,True,69596,69596,100.0%,[] | [] | []
+Position,description,String,False,69596,23635,34.0%,Spanish government position | head of the government of the city of Cane… | political position in S…
+Position,eid,String,True,69596,69596,100.0%,Position#Q65368923 | Position#Q65243355 | Position#Q65462675
+Position,name,String,True,69596,69596,100.0%,Mayor of Arthez-d'Armagnac | Mayor of Luzeret | Mayor of Hatrize
+Position,provenance,StringArray,True,69596,69596,100.0%,[] | [] | []

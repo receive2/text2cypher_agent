@@ -1,0 +1,52 @@
+label,property,property_types,mandatory,node_count,non_null_count,fill_pct,sample_values
+Continent,aliases,StringArray,True,7,7,100.0%,"['African continent', 'Ancient Libya'] | ['Antarctic Selection'] | ['003 (UN M.49 code)', 'Amérique…"
+Continent,description,String,True,7,7,100.0%,continent | continent | geographical region comprising Australasia…
+Continent,eid,String,True,7,7,100.0%,Continent#Q51 | Continent#Q55643 | Continent#Q49
+Continent,name,String,True,7,7,100.0%,South America | Antarctica | Europe
+Continent,provenance,StringArray,True,7,7,100.0%,['https://en.wikipedia.org/wiki/Asia'] | ['https://en.wikipedia.org/wiki/Europe'] | ['https://en.wi…
+Country,aliases,StringArray,True,217,217,100.0%,"['Eron Islom Respublikasi', 'Fors', 'Persi… | ['Republic of Trinidad and Tobago', 'TRI',… | ['COD',…"
+Country,area_km2,Double,False,217,196,90.3%,385207.0 | 236800.0 | 947303.0
+Country,capital,String,False,217,202,93.1%,Dodoma | Stockholm | Philipsburg
+Country,description,String,False,217,215,99.1%,sovereign state in southern Africa | sovereign state in West Africa | country in Northwestern Europe
+Country,eid,String,True,217,217,100.0%,Country#Q145 | Country#Q5705 | Country#Q1042
+Country,name,String,True,217,217,100.0%,São Tomé and Príncipe | Ecuador | Nicaragua
+Country,provenance,StringArray,True,217,217,100.0%,['https://en.wikipedia.org/wiki/Laos'] | ['https://en.wikipedia.org/wiki/Namibia'] | ['https://en.w…
+DrainageBasin,aliases,StringArray,True,1392,1392,100.0%,[] | [] | []
+DrainageBasin,area_km2,Double,False,1392,116,8.3%,214000.0 | 1222.0 | 15100.0
+DrainageBasin,description,String,False,1392,794,57.0%,"river basin of Želetavka | drainage basin in French Guiana | river basin in Kerala, India"
+DrainageBasin,eid,String,True,1392,1392,100.0%,DrainageBasin#Q115104200 | DrainageBasin#Q8115676 | DrainageBasin#Q47004244
+DrainageBasin,name,String,True,1392,1392,100.0%,Saint-François River bassin | Monocacy River basin | West Branch Susquehanna River drainage basin
+DrainageBasin,provenance,StringArray,True,1392,1392,100.0%,[] | [] | []
+Lake,aliases,StringArray,True,239318,239318,100.0%,"[] | ['Canunda', 'Coonunda', 'Lake Bonney', 'La… | []"
+Lake,area_km2,Double,False,239318,23615,9.9%,0.04319 | 2.62 | 0.13
+Lake,description,String,False,239318,218638,91.4%,"lake in Alberta, Canada | lake in Outaouais, Canada | lake in St. Joseph County, Michigan, USA"
+Lake,eid,String,True,239318,239318,100.0%,Lake#Q22456298 | Lake#Q23732031 | Lake#Q1535929
+Lake,name,String,True,239318,239318,100.0%,Laderoute Lake | Lac Boivin | Qagan Nur
+Lake,provenance,StringArray,True,239318,239318,100.0%,[] | [] | []
+Lake,vertical_depth_m,Double,False,239318,4788,2.0%,10.6 | 33.0 | 13.0
+Mountain,aliases,StringArray,True,447475,447475,100.0%,[] | [] | []
+Mountain,description,String,False,447475,440527,98.4%,"mountain in California, United States of A… | mountain in Vermont, United States of America | mount…"
+Mountain,eid,String,True,447475,447475,100.0%,Mountain#Q28254315 | Mountain#Q49074894 | Mountain#Q31495781
+Mountain,elevation_m,Double,False,447475,65335,14.6%,5200.0 | 6983.0 | 1406.0
+Mountain,name,String,True,447475,447475,100.0%,Cerro Huachuayan | Calaban Dağı | Kūh-e Ashqār
+Mountain,provenance,StringArray,True,447475,447475,100.0%,[] | [] | []
+MountainRange,aliases,StringArray,True,2436,2436,100.0%,"[] | ['Darling Range', 'Darling Range, Western … | []"
+MountainRange,description,String,False,2436,2178,89.4%,"mountain range in Colorado, United States | mountain in France | sandstone massif located in the no…"
+MountainRange,eid,String,True,2436,2436,100.0%,MountainRange#Q1262289 | MountainRange#Q639193 | MountainRange#Q215950
+MountainRange,name,String,True,2436,2436,100.0%,Triangolo lariano | Mátra | Himalayas
+MountainRange,provenance,StringArray,True,2436,2436,100.0%,['https://en.wikipedia.org/wiki/Prealps_Ea… | ['https://en.wikipedia.org/wiki/Hüggel'] | []
+Ocean,aliases,StringArray,True,5,5,100.0%,"['Eastern Ocean', 'Eastern Sea', 'Indian S… | ['Atlantic', 'Atlantic Sea', 'Atlantick', … | ['Great…"
+Ocean,area_km2,Double,True,5,5,100.0%,20327000.0 | 106460000.0 | 76174000.0
+Ocean,avg_vertical_depth_m,Double,False,5,3,60.0%,3711.0 | 1038.0 | 4280.0
+Ocean,description,String,True,5,5,100.0%,"ocean between Asia, Australia and the Amer… | ocean between Europe, Africa and the Americas | ocean…"
+Ocean,eid,String,True,5,5,100.0%,Ocean#Q788 | Ocean#Q97 | Ocean#Q7354
+Ocean,max_vertical_depth_m,Double,False,5,4,80.0%,11034.0 | 8605.0 | 5550.0
+Ocean,name,String,True,5,5,100.0%,Atlantic Ocean | Southern Ocean | Indian Ocean
+Ocean,provenance,StringArray,True,5,5,100.0%,['https://en.wikipedia.org/wiki/Atlantic_O… | ['https://en.wikipedia.org/wiki/Pacific_Oc… | ['https…
+River,aliases,StringArray,True,82639,82639,100.0%,[] | [] | []
+River,description,String,False,82639,80096,96.9%,river in Nigeria | river in Romania | river in Russia
+River,discharge_m3_s,Double,False,82639,3340,4.0%,2463.0 | 0.75 | 6.36
+River,eid,String,True,82639,82639,100.0%,River#Q84792 | River#Q11786195 | River#Q7969210
+River,length_km,Double,False,82639,47091,57.0%,30.0 | 195.0 | 13.0
+River,name,String,True,82639,82639,100.0%,Utyak | Lonja | Naẖal H̱evyon
+River,provenance,StringArray,True,82639,82639,100.0%,['https://en.wikipedia.org/wiki/Aschach_(r… | [] | ['https://en.wikipedia.org/wiki/Girdimanch…

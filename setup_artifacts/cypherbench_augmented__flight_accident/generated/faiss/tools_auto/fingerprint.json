@@ -1,0 +1,19 @@
+{
+  "database": "neo4j",
+  "neo4j_uri_host": "34.9.85.21",
+  "tool_names_hash": "aeef444bfe33308c26eb13ef3396bdf08975aa79f9cdd1e858c4c91604673494",
+  "tool_count": 50,
+  "embedding_model": "text-embedding-3-small",
+  "embedding_backend": "openai",
+  "ner_mode": "full",
+  "built_at": "2026-06-16T19:27:25+00:00",
+  "schema_version": 1,
+  "identity": {
+    "pair": "cypherbench_augmented__flight_accident",
+    "dataset": "cypherbench_augmented",
+    "graph": "flight_accident",
+    "bolt_uri": null,
+    "database": null,
+    "stamped_at": "2026-07-18T22:14:12+00:00"
+  }
+}

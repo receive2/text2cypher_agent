@@ -1,0 +1,19 @@
+{
+  "database": "neo4j",
+  "neo4j_uri_host": "34.9.85.21",
+  "tool_names_hash": "e66cb963eadd57b307a7cfd88060d57e1b89ec0b9dc6a7fa0ae2715d60ca40be",
+  "tool_count": 51,
+  "embedding_model": "text-embedding-3-small",
+  "embedding_backend": "openai",
+  "ner_mode": "node_only",
+  "built_at": "2026-06-16T08:02:05+00:00",
+  "schema_version": 1,
+  "identity": {
+    "pair": "cypherbench_augmented__geography",
+    "dataset": "cypherbench_augmented",
+    "graph": "geography",
+    "bolt_uri": null,
+    "database": null,
+    "stamped_at": "2026-07-18T22:14:12+00:00"
+  }
+}

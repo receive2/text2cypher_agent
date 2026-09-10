@@ -1,0 +1,19 @@
+{
+  "database": "neo4j",
+  "neo4j_uri_host": "34.9.85.21",
+  "tool_names_hash": "5139ece805361d206cec440b9c2aa76362e8e381c974a28d1d99751209e22dd3",
+  "tool_count": 45,
+  "embedding_model": "text-embedding-3-small",
+  "embedding_backend": "openai",
+  "ner_mode": "node_only",
+  "built_at": "2026-06-18T17:38:18+00:00",
+  "schema_version": 1,
+  "identity": {
+    "pair": "cypherbench_augmented__movie",
+    "dataset": "cypherbench_augmented",
+    "graph": "movie",
+    "bolt_uri": null,
+    "database": null,
+    "stamped_at": "2026-07-18T22:14:12+00:00"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "database": "neo4j",
+  "neo4j_uri_host": "34.9.85.21",
+  "tool_names_hash": "660e3faa75cb7c467c80499a893a763753a0188e38896a11dd1a006409a45c6d",
+  "tool_count": 17,
+  "embedding_model": "text-embedding-3-small",
+  "embedding_backend": "openai",
+  "ner_mode": "node_only",
+  "built_at": "2026-06-22T12:53:38+00:00",
+  "schema_version": 1,
+  "identity": {
+    "pair": "mindthequery_augmented__healthcare",
+    "dataset": "mindthequery_augmented",
+    "graph": "healthcare",
+    "bolt_uri": null,
+    "database": null,
+    "stamped_at": "2026-07-18T22:14:12+00:00"
+  }
+}

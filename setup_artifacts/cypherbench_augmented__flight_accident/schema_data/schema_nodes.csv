@@ -1,0 +1,46 @@
+label,property,property_types,mandatory,node_count,non_null_count,fill_pct,sample_values
+AircraftManufacturer,aliases,StringArray,True,58,58,100.0%,"[] | ['MiG', 'Mikoyan Gurevich', 'Mikoyan and G… | ['Aeronautical Scientific-Technical Comple…"
+AircraftManufacturer,country,String,False,58,54,93.1%,Russia | Italy | Russia
+AircraftManufacturer,description,String,False,58,57,98.3%,aerospace manufacturer | German aircraft manufacturer (1922-2002) | 1943-1996 aerospace manufacturer
+AircraftManufacturer,eid,String,True,58,58,100.0%,AircraftManufacturer#Q11253118 | AircraftManufacturer#Q194009 | AircraftManufacturer#Q1510005
+AircraftManufacturer,launch_year,Long,False,58,56,96.6%,1927 | 1910 | 2002
+AircraftManufacturer,name,String,True,58,58,100.0%,Hawker Beechcraft | Tupolev | Aermacchi
+AircraftManufacturer,provenance,StringArray,True,58,58,100.0%,['https://en.wikipedia.org/wiki/Sud_Aviati… | ['https://en.wikipedia.org/wiki/Curtiss-Wr… | ['https…
+AircraftModel,aliases,StringArray,True,152,152,100.0%,"['C-130 Hercules', 'C130', 'CC-130', 'CC13… | ['S76', 'Sikorsky S-76 Spirit'] | ['Clobber', 'Iak-42…"
+AircraftModel,description,String,True,152,152,100.0%,tanker aircraft series by Lockheed | 1957 utility aircraft family by Cessna | 1978 multi-role comba…
+AircraftModel,eid,String,True,152,152,100.0%,AircraftModel#Q745036 | AircraftModel#Q182575 | AircraftModel#Q15635084
+AircraftModel,first_flight,Date,False,152,132,86.8%,1953-05-18 | 1955-11-24 | 1949-11-27
+AircraftModel,height_metre,Double,False,152,65,42.8%,4.08 | 16.53 | 6.8884799999999995
+AircraftModel,length_metre,Double,False,152,105,69.1%,34.0 | 20.42 | 53.12
+AircraftModel,name,String,True,152,152,100.0%,Boeing 737-500 | PA-31 | MD-80 family
+AircraftModel,provenance,StringArray,True,152,152,100.0%,['https://en.wikipedia.org/wiki/Douglas_DC… | [] | ['https://en.wikipedia.org/wiki/Lockheed_C…
+AircraftModel,range_km,Double,False,152,35,23.0%,6400.0 | 2170.0 | 13350.0
+AircraftModel,service_entry,Date,False,152,35,23.0%,1952-05-02 | 2009-06-02 | 1959-07-22
+AircraftModel,wingspan_metre,Double,False,152,101,66.4%,60.3 | 44.84 | 32.92
+Airport,aliases,StringArray,True,519,519,100.0%,"['CYYZ', 'Lester B Pearson International A… | ['Marco Fidel Suarez AB Airport', 'Marco F… | ['Eugen…"
+Airport,country,String,True,519,519,100.0%,United States of America | Uzbekistan | United States of America
+Airport,description,String,True,519,519,100.0%,"international airport serving Kerala, India | public airport in the state of Washington,… | airport"
+Airport,eid,String,True,519,519,100.0%,Airport#Q390522 | Airport#Q650215 | Airport#Q2661286
+Airport,iata_code,String,False,519,492,94.8%,IWK | ISP | KTM
+Airport,icao_code,String,False,519,511,98.5%,LEMG | VYYY | VNJS
+Airport,location,String,False,519,510,98.3%,Tabasco | Tunis | Sanam Bin
+Airport,name,String,True,519,519,100.0%,Carlos Rovirosa Pérez International Airport | Guilin Liangjiang International Airport | Enshi Xujia…
+Airport,provenance,StringArray,True,519,519,100.0%,['https://en.wikipedia.org/wiki/Zaragoza_A… | ['https://en.wikipedia.org/wiki/Timișoara_… | ['https…
+FlightAccident,aliases,StringArray,True,605,605,100.0%,"[] | ['LO16', 'SP-LPC'] | ['IL-76 crash']"
+FlightAccident,date,Date,False,605,603,99.7%,2005-09-05 | 1966-03-05 | 2014-02-11
+FlightAccident,description,String,False,605,585,96.7%,passenger flight which crashed near Urmia … | 1999 aviation incident | Tupolev Tu-154 crash in Omsk…
+FlightAccident,eid,String,True,605,605,100.0%,FlightAccident#Q4055771 | FlightAccident#Q1494794 | FlightAccident#Q105563892
+FlightAccident,flight_number,String,False,605,142,23.5%,KE902 | ЦГИ-9605 (РЛУ-243) | BE609
+FlightAccident,location,String,False,605,601,99.3%,Zhuravlevo | Piedade de Caratinga | Zolochiv
+FlightAccident,name,String,True,605,605,100.0%,United Express Flight 5925 | Iran Aseman Airlines Flight 3704 | Avianca Flight 671
+FlightAccident,number_of_deaths,Long,False,605,595,98.3%,5 | 2 | 2
+FlightAccident,number_of_injuries,Long,False,605,428,70.7%,0 | 13 | 0
+FlightAccident,number_of_survivors,Long,False,605,454,75.0%,0 | 29 | 0
+FlightAccident,provenance,StringArray,True,605,605,100.0%,['https://en.wikipedia.org/wiki/Sriwijaya_… | ['https://en.wikipedia.org/wiki/Aviogenex_… | ['https…
+Operator,aliases,StringArray,True,349,349,100.0%,"['PLL SCAT Air Company'] | ['PAL', 'Philippine Air Lines'] | []"
+Operator,country,String,False,349,346,99.1%,Bahrain | United States of America | Myanmar
+Operator,description,String,False,349,344,98.6%,low cost airline | Flag-carrier and largest airline of Germany | sovereign state in Africa
+Operator,eid,String,True,349,349,100.0%,Operator#Q1819913 | Operator#Q919252 | Operator#Q741723
+Operator,launch_year,Long,False,349,342,98.0%,1968 | 1949 | 1932
+Operator,name,String,True,349,349,100.0%,SACO | SCAT Airlines | Saudia
+Operator,provenance,StringArray,True,349,349,100.0%,['https://en.wikipedia.org/wiki/LaMia'] | ['https://en.wikipedia.org/wiki/Emirates_(… | ['https://e…

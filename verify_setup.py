@@ -3,14 +3,22 @@
 """
 verify_setup.py
 ===============
-Pre-flight check for the evaluation harness.  Confirms that every
-``(dataset, graph)`` **archive**'s node tools actually match the labels
-in that pair's Neo4j graph — BEFORE you spend hours evaluating.
+Pre-flight check for the evaluation harness.  For every ``(dataset, graph)``
+pair it confirms two things BEFORE you spend hours evaluating:
 
-Run this and read the table.  Green means the archive's tools belong to
-the graph; red means the archive is **contaminated** (its tools belong
-to a different graph) and any eval on it will silently score at the
-no-val-link floor.  See ``eval/graph_guard.py`` for why this can happen.
+1. the **archive**'s node tools actually match the labels in that pair's
+   Neo4j graph (``eval/graph_guard.py``) — otherwise the archive is
+   **contaminated** (its tools belong to a different graph) and any eval on
+   it silently scores at the no-val-link floor;
+2. the archive's prompts / tools / schema files / routing index are
+   byte-identical to the **published set** (``setup_artifacts/MANIFEST.json``,
+   ``scripts/artifact_manifest.py``) — otherwise your numbers cannot be pooled
+   with anyone else's, because the model comparison assumes every generator
+   saw the same prompts and tools.
+
+Run this and read the table: every line must be ✓.  ``!`` means the
+coordinator has not published that graph yet — wait, do not build it
+yourself.
 
 Usage
 -----
@@ -33,9 +41,10 @@ import sys
 from pathlib import Path
 
 import eval_config as cfg
-from eval.artifact_swap import archive_dir_for, _read_sentinel
+from eval.artifact_swap import archive_dir_for, _read_sentinel, _setup_artifacts_root
 from eval.graph_guard import check_tools_match_graph
 from paths import REPO_ROOT
+from scripts import artifact_manifest as am
 
 _NODE_TOOLS_REL = "generated/generated_node_tools.py"
 
@@ -101,23 +110,41 @@ def main(argv: list[str] | None = None) -> int:
     scope = "GRAPH_CONNS (--all)" if "--all" in argv else "EVAL_PAIRS"
     print(f"[verify_setup] checking {len(pairs)} archive(s) from {scope}…\n")
 
-    results = [(ds, gr, *_check_archive(ds, gr)) for ds, gr in pairs]
+    root = _setup_artifacts_root()
+    manifest = am.load_manifest(am.manifest_path(root))
+    if manifest is None:
+        print(f"[verify_setup] ! no {am.MANIFEST_NAME} under {root} — git pull; "
+              "the published artifact set ships in the repo.\n")
 
-    # Aligned table.
+    results = [(ds, gr, *_check_archive(ds, gr), *am.check_pair(manifest, root, ds, gr))
+               for ds, gr in pairs]
+
+    # Aligned table: graph check | published-set check.
     wpair = max((len(f"{ds}__{gr}") for ds, gr, *_ in results), default=4)
-    bad = 0
-    for ds, gr, status, detail in results:
-        mark = "✓" if status == "OK" else "✗"
-        if status != "OK":
-            bad += 1
+    bad = unpublished = 0
+    for ds, gr, status, detail, mstatus, mdetail in results:
+        if status != "OK" or mstatus in (am.MISMATCH, am.MISSING):
+            mark, bad = "✗", bad + 1
+        elif mstatus == am.UNPUBLISHED:
+            mark, unpublished = "!", unpublished + 1
+        else:
+            mark = "✓"
         print(f"  {mark} {f'{ds}__{gr}':<{wpair}}  {status:<7}  {detail}")
+        print(f"    {'':<{wpair}}  {'artifacts':<9} {mstatus}: {mdetail}")
 
     print()
     if bad:
-        print(f"[verify_setup] ✗ {bad}/{len(results)} FAILED — do NOT evaluate "
-              "these until fixed (re-run scripts/setup_and_archive.py).")
+        print(f"[verify_setup] ✗ {bad}/{len(results)} FAILED — do NOT evaluate these until fixed. "
+              "Graph mismatch / MISSING: git pull the published archives (coordinator: re-run "
+              "scripts/setup_and_archive.py, then scripts/artifact_manifest.py build). "
+              "Artifacts MISMATCH: your copy differs from the published set — git checkout "
+              "setup_artifacts/ and do not run setup yourself.")
         return 1
-    print(f"[verify_setup] ✓ all {len(results)} archives match their graphs.")
+    if unpublished:
+        print(f"[verify_setup] ! {unpublished}/{len(results)} graph(s) not published yet — "
+              "ask the coordinator before running them.")
+    print(f"[verify_setup] ✓ all {len(results)} archives match their graphs"
+          f"{' and the published set' if not unpublished else ''}.")
     return 0
 
 

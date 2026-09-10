@@ -1,0 +1,17 @@
+rel_type,from_label,to_label,property,property_types,mandatory,rel_count,sample_values
+COACH_FOR,Person,Squad,,,,140,
+FOR,Squad,Tournament,,,,136,
+IN_SQUAD,Person,Squad,,,,2880,
+IN_TOURNAMENT,Match,Tournament,,,,284,
+NAMED,Team,Squad,,,,136,
+PARTICIPATED_IN,Team,Tournament,,,,136,
+PLAYED_IN,Person,Match,minuteOn,String,False,8252,76' | 68' | 90'+6'
+PLAYED_IN,Person,Match,penaltyScore,Long,False,8252,0 | 0 | 3
+PLAYED_IN,Person,Match,score,Long,False,8252,3 | 0 | 1
+PLAYED_IN,Person,Match,type,String,False,8252,Subbed On | Started | Started
+PLAYED_IN,Team,Match,minuteOn,String,False,8252,86' | 76' | 34'
+PLAYED_IN,Team,Match,penaltyScore,Long,False,8252,0 | 0 | 0
+PLAYED_IN,Team,Match,score,Long,False,8252,2 | 2 | 5
+PLAYED_IN,Team,Match,type,String,False,8252,Started | Started | Started
+REPRESENTS,Person,Team,,,,1928,
+SCORED_GOAL,Person,Match,minute,String,True,907,11' | 81' | 13'
