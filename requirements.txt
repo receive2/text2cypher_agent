@@ -1,204 +1,139 @@
-# Pinned to the environment the experiments are run in (pip freeze, 2026-09-09, Python 3.12.11, macOS arm64).
-# Install with:  pip install -r requirements.txt
-# torch/faiss wheels are platform-specific; on Linux/CUDA pip resolves the matching build for the same version.
-aiohappyeyeballs==2.6.1
-aiohttp==3.13.5
-aiosignal==1.4.0
-altair==5.5.0
-annotated-types==0.7.0
-anthropic==0.97.0
-anyio==4.13.0
-appnope==0.1.4
-argon2-cffi==25.1.0
-argon2-cffi-bindings==25.1.0
-arrow==1.3.0
-asttokens==3.0.0
-async-lru==2.0.5
-attrs==26.1.0
-babel==2.17.0
-beautifulsoup4==4.13.5
-bleach==6.2.0
-blinker==1.9.0
-cachetools==6.2.0
-certifi==2026.4.22
-cffi==2.0.0
-charset-normalizer==3.4.7
-click==8.3.0
-comm==0.2.3
-cryptography==46.0.3
-dataclasses-json==0.6.7
-debugpy==1.8.17
-decorator==5.2.1
-defusedxml==0.7.1
-distro==1.9.0
-docstring_parser==0.18.0
-environs==9.5.0
-executing==2.2.1
-faiss-cpu==1.12.0
-fastjsonschema==2.21.2
-filelock==3.25.2
-fqdn==1.5.1
-frozenlist==1.8.0
-fsspec==2024.12.0
-gdown==6.0.0
-gitdb==4.0.12
-GitPython==3.1.45
-grpcio==1.63.0
-h11==0.16.0
-hf-xet==1.4.3
-httpcore==1.0.9
+# ──────────────────────────────────────────────────────────────────────────────
+# requirements.txt
+# Curated list (same packages as before); versions pinned to the environment the
+# reference runs used — pip freeze 2026-09-09, Python 3.12.11, macOS arm64.
+# torch / faiss wheels are platform-specific: on Linux or CUDA pip resolves the
+# matching build of the same version.
+# ──────────────────────────────────────────────────────────────────────────────
+
+# ── Core runtime ──────────────────────────────────────────────────────────────
+python-dotenv==1.2.2
 httpx==0.28.1
-httpx-sse==0.4.3
-huggingface_hub==0.36.2
-idna==3.13
-iniconfig==2.3.0
-ipykernel==6.30.1
-ipython==9.5.0
-ipython_pygments_lexers==1.1.1
-isoduration==20.11.0
-jedi==0.19.2
-Jinja2==3.1.6
-jiter==0.14.0
-joblib==1.5.2
-json5==0.12.1
-json_repair==0.44.1
-jsonpatch==1.33
-jsonpointer==3.1.1
-jsonschema==4.25.1
-jsonschema-specifications==2025.9.1
-jupyter-events==0.12.0
-jupyter-lsp==2.3.0
-jupyter_client==8.6.3
-jupyter_core==5.8.1
-jupyter_server==2.17.0
-jupyter_server_terminals==0.5.3
-jupyterlab==4.4.7
-jupyterlab_pygments==0.3.0
-jupyterlab_server==2.27.3
-langchain==0.3.28
-langchain-anthropic==0.2.4
-langchain-community==0.3.31
-langchain-core==0.3.84
-langchain-neo4j==0.5.0
-langchain-openai==0.3.35
-langchain-text-splitters==0.3.11
-langgraph==0.3.34
-langgraph-checkpoint==2.1.2
-langgraph-prebuilt==0.1.8
-langgraph-sdk==0.1.74
-langsmith==0.7.33
-lark==1.2.2
+requests==2.33.1
+typing_extensions==4.15.0
 loguru==0.7.3
-MarkupSafe==3.0.2
-marshmallow==3.26.2
-matplotlib-inline==0.1.7
-milvus-lite==2.4.12
-mistune==3.1.4
-mpmath==1.3.0
-msgpack==1.1.2
-multidict==6.7.1
-mypy_extensions==1.1.0
-narwhals==2.5.0
-nbclient==0.10.2
-nbconvert==7.16.6
-nbformat==5.10.4
+
+# ── Pydantic ──────────────────────────────────────────────────────────────────
+pydantic==2.13.3
+pydantic-core==2.46.3
+pydantic-settings==2.14.0
+annotated-types==0.7.0
+
+# ── LangChain stack ───────────────────────────────────────────────────────────
+langchain==0.3.28
+langchain-core==0.3.84
+langchain-openai==0.3.35
+langchain-community==0.3.31
+langchain-text-splitters==0.3.11
+
+# ── LangGraph ─────────────────────────────────────────────────────────────────
+langgraph==0.3.34
+langgraph-prebuilt==0.1.8
+langgraph-checkpoint==2.1.2
+langgraph-sdk==0.1.74
+
+# ── LangSmith (tracing) ───────────────────────────────────────────────────────
+langsmith==0.7.33
+
+# ── Neo4j ─────────────────────────────────────────────────────────────────────
+# Native vector indexes require Neo4j >= 5.18 (verified at startup by
+# embedding_helper.check_neo4j_version). The pinned client below works
+# against any 5.x server.
 neo4j==5.28.3
-neo4j-graphrag==1.14.1
-nest-asyncio==1.6.0
-networkx==3.6.1
-nlpaug==1.1.11
-nltk==3.9.4
-notebook==7.4.5
-notebook_shim==0.2.4
-numpy==2.4.4
+langchain-neo4j==0.5.0
+
+# ── OpenAI ────────────────────────────────────────────────────────────────────
+# Used for both chat completions (gpt-4o etc.) and the default embedding
+# backend (text-embedding-3-small, 1536d) selected by
+# vector_config.EMBEDDING_BACKEND="openai".
 openai==2.32.0
+tiktoken==0.12.0
+
+# ── Embedding backend (OPTIONAL — sentence-transformers / local) ──────────────
+# The OpenAI backend above is the default and is sufficient for paper
+# experiments. Install the entries below ONLY if you set
+# vector_config.EMBEDDING_BACKEND="sentence_transformers" (e.g. for paper
+# reproducibility runs that must avoid closed-source models).
+#
+# These pull in several GB of PyTorch wheels — kept commented so OpenAI
+# users are not forced to install them.
+#
+#   pip install sentence-transformers torch
+#
+# sentence-transformers>=2.7
+# torch>=2.2
+#
+# for cpu
+# pip install torch==2.5.1 --index-url https://download.pytorch.org/whl/cpu
+# pip install sentence-transformers==3.3.1
+
+torch==2.5.1
+sentence-transformers==3.3.1
+
+# ── Anthropic (Claude — Opus / Sonnet / Haiku) ────────────────────────────────
+# Pinned to the last 0.2.x release to stay compatible with langchain-core 0.3.x.
+langchain-anthropic==0.2.4
+anthropic==0.97.0
+
+# ── FAISS ─────────────────────────────────────────────────────────────────────
+# CPU build, used by the tool router (tools/tool_search.py) and the FCAV
+# baseline (fcav.py). For CUDA install faiss-gpu instead and drop this line.
+faiss-cpu==1.12.0
+
+# ── Numeric ───────────────────────────────────────────────────────────────────
+numpy==2.4.4
+
+# ── HTTP / async ──────────────────────────────────────────────────────────────
+httpx-sse==0.4.3
+httpcore==1.0.9
+h11==0.16.0
+anyio==4.13.0
+sniffio==1.3.1
+aiohttp==3.13.5
+aiohappyeyeballs==2.6.1
+aiosignal==1.4.0
+frozenlist==1.8.0
+multidict==6.7.1
+yarl==1.23.0
+propcache==0.4.1
+
+# ── Serialisation / data ──────────────────────────────────────────────────────
 orjson==3.11.8
 ormsgpack==1.12.2
-packaging==25.0
-pandas==2.3.2
-pandocfilters==1.5.1
-parso==0.8.5
-pexpect==4.9.0
-pillow==11.3.0
-platformdirs==4.4.0
-pluggy==1.6.0
-prometheus_client==0.23.1
-prompt_toolkit==3.0.52
-propcache==0.4.1
-protobuf==6.32.1
-psutil==7.1.0
-ptyprocess==0.7.0
-pure_eval==0.2.3
-py==1.11.0
-pyarrow==21.0.0
-pycparser==2.23
-pycryptodome==3.23.0
-pydantic==2.13.3
-pydantic-settings==2.14.0
-pydantic_core==2.46.3
-pydeck==0.9.1
-Pygments==2.19.2
-pymilvus==2.4.4
-pypdf==6.10.2
-PySocks==1.7.1
-pytest==7.0.0
-python-dateutil==2.9.0.post0
-python-dotenv==1.2.2
-python-json-logger==3.3.0
-pytz==2026.1.post1
+marshmallow==3.26.2
+dataclasses-json==0.6.7
+jsonpatch==1.33
+jsonpointer==3.1.1
 PyYAML==6.0.3
-pyzmq==27.1.0
-referencing==0.36.2
-regex==2026.4.4
-requests==2.33.1
-requests-toolbelt==1.0.0
-retry==0.9.2
-rfc3339-validator==0.1.4
-rfc3986-validator==0.1.1
-rfc3987-syntax==1.1.0
-rpds-py==0.27.1
-safetensors==0.7.0
-scikit-learn==1.6.1
-scipy==1.17.1
-Send2Trash==1.8.3
-sentence-transformers==3.3.1
-setuptools==82.0.1
-six==1.17.0
-smmap==5.0.2
-sniffio==1.3.1
-soupsieve==2.8
+packaging==25.0
+
+# ── Database ──────────────────────────────────────────────────────────────────
 SQLAlchemy==2.0.49
-stack-data==0.6.3
-streamlit==1.49.1
-sympy==1.13.1
+
+# ── Data augmentation ─────────────────────────────────────────────────────────
+# Used by data_augmentation/augmenters/typo.py for keyboard-adjacent /
+# random-char-swap typo simulation.  Falls back to a small built-in
+# implementation if nlpaug isn't available.
+nlpaug>=1.1.11
+nltk>=3.8
+
+# ── Misc utilities ────────────────────────────────────────────────────────────
 tenacity==9.1.4
-terminado==0.18.1
-threadpoolctl==3.6.0
-tiktoken==0.12.0
-tinycss2==1.4.0
-tokenizers==0.22.2
-toml==0.10.2
-tomli==2.4.1
-torch==2.5.1
-tornado==6.5.2
 tqdm==4.67.3
-traitlets==5.14.3
-transformers==4.57.6
-types-python-dateutil==2.9.0.20250822
-types-PyYAML==6.0.12.20260408
+regex==2026.4.4
+requests-toolbelt==1.0.0
+certifi==2026.4.22
+charset-normalizer==3.4.7
+idna==3.13
+urllib3==2.6.3
+distro==1.9.0
+jiter==0.14.0
+pytz==2026.1.post1
 typing-inspect==0.9.0
 typing-inspection==0.4.2
-typing_extensions==4.15.0
-tzdata==2025.2
-ujson==5.11.0
-uri-template==1.3.0
-urllib3==2.6.3
-uuid_utils==0.14.1
-wcwidth==0.2.13
-webcolors==24.11.1
-webencodings==0.5.1
-websocket-client==1.8.0
-wheel==0.47.0
+mypy_extensions==1.1.0
+attrs==26.1.0
 xxhash==3.6.0
-yarl==1.23.0
 zstandard==0.25.0
+uuid_utils==0.14.1
+pytest==7.0.0
