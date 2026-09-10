@@ -210,7 +210,11 @@ git add setup_artifacts && git commit -m "artifacts: publish <graphs>" && git pu
 
 `python scripts/artifact_manifest.py check --all` reports every published pair
 as OK / MISMATCH / MISSING / UNPUBLISHED; `verify_setup.py` prints the same
-verdict next to the graph check.
+verdict next to the graph check, and `eval_run.py` refuses to run a
+MISMATCH / MISSING pair (UNPUBLISHED only warns, so the coordinator can
+evaluate a rebuilt archive before publishing it; `EVAL_SKIP_MANIFEST_GUARD=1`
+bypasses the guard). `eval_run.py` also refuses `METHOD = "fcav"` on a graph
+whose archive has no `generated/fcav/` index.
 
 ## Where results land
 

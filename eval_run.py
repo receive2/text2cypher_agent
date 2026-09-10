@@ -52,7 +52,7 @@ from typing import List, Tuple
 
 import eval_config as cfg
 import eval_paths
-from eval.artifact_swap import swap_in
+from eval.artifact_swap import archive_dir_for, swap_in, _setup_artifacts_root
 from paths import REPO_ROOT
 
 
@@ -303,6 +303,27 @@ def _run_pair(
         return False, f"swap_in: {exc}"
     except Exception as exc:  # noqa: BLE001
         return False, f"swap_in: {type(exc).__name__}: {exc}"
+
+    # ── Step 1.5: published-set guard ───────────────────────────────────────
+    # Results are only poolable if every generator saw byte-identical prompts
+    # and tools, so an archive that differs from setup_artifacts/MANIFEST.json
+    # is refused (coordinator: after a rebuild, run
+    # `python scripts/artifact_manifest.py build` first). A graph the manifest
+    # does not cover yet only warns. Bypass with EVAL_SKIP_MANIFEST_GUARD=1.
+    if os.environ.get("EVAL_SKIP_MANIFEST_GUARD") != "1":
+        from scripts import artifact_manifest as am
+        root = _setup_artifacts_root()
+        mstatus, mdetail = am.check_pair(am.load_manifest(am.manifest_path(root)), root, dataset, graph)
+        if mstatus in (am.MISMATCH, am.MISSING):
+            return False, f"published-set guard: {mstatus} — {mdetail}"
+        if mstatus == am.UNPUBLISHED:
+            print(f"[eval_run] ! {dataset}__{graph}: {mdetail} — running on an unpublished archive.")
+
+    # ── Step 1.6: the fcav method needs its value index ─────────────────────
+    if str(getattr(cfg, "METHOD", "") or "").strip().lower() == "fcav":
+        if not (archive_dir_for(dataset, graph) / "generated" / "fcav").is_dir():
+            return False, ("fcav: no generated/fcav/ index in this graph's archive — build it with "
+                           "`python setup_fcav.py` (EVAL_PAIRS = this pair) or unpack the coordinator's bundle")
 
     # ── Step 2: connection lookup ───────────────────────────────────────────
     try:

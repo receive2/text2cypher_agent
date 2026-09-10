@@ -2,7 +2,7 @@
 
 You are running a fixed evaluation harness over three entity-perturbed
 text-to-Cypher benchmarks with **one generator LLM assigned to you**. You do
-**not** need to understand the method: you set three lines in one config file,
+**not** need to understand the method: you set a few lines in one config file,
 run four commands, and send back the output directory.
 
 Everything below is a checklist. If a step does not print what it says it
@@ -17,25 +17,28 @@ Depth, troubleshooting and every config knob: [`RUNNING_EXPERIMENTS.md`](RUNNING
 
 ```bash
 git clone <repo> && cd t2c          # main branch — do not check out anything else
-python3 -m venv venv && source venv/bin/activate
-pip install -r requirements.txt     # pinned to the environment the reference runs used (Python 3.12)
+python3.12 -m venv venv && source venv/bin/activate   # Python 3.12 exactly — the pins (torch, faiss) have no 3.13 wheels
+python --version                    # must say 3.12.x
+pip install -r requirements.txt     # pinned to the environment the reference runs used
 cp .env.example .env                # then put the keys in (below)
 ```
 
 - **Neo4j access.** The graphs live on a shared VM whose connection details are
   committed in `eval_config.py`. If your machine is on a corporate VPN the VM
   is usually unreachable — **disconnect the VPN** before running. `UNREACH` in
-  the pre-flight means a network problem, not a broken setup.
+  the pre-flight means a network problem, not a broken setup. Quick probe:
+  `nc -zv 34.9.85.21 15066` must say *succeeded*; if it does not, tell the
+  coordinator (the VM firewall may need your IP).
 - **API keys.** `.env` holds keys and nothing else — the model is chosen in
   `eval_config.py` (step 2), never in `.env`. **Everyone needs
-  `OPENAI_API_KEY`**, whatever model you run: the setup step builds the
-  schema metadata with `gpt-4.1`, and the embeddings behind tool routing and
-  the FCAV baseline are OpenAI `text-embedding-3-small`. On top of that you
-  need the key for the provider of *your* model:
+  `OPENAI_API_KEY`**, whatever model you run: at run time the tool router
+  embeds every mention and the FCAV baseline embeds every question with OpenAI
+  `text-embedding-3-small` (and `setup_fcav.py` embeds the graph's values with
+  it). On top of that you need the key for the provider of *your* model:
 
 | your model (`GENERATOR_LLM`) | provider | key in `.env` | where a key comes from |
 |---|---|---|---|
-| everyone (setup + embeddings), and `gpt-5.6-terra` / `gpt-5.6-luna` | OpenAI | `OPENAI_API_KEY` | platform.openai.com → API keys |
+| everyone (embeddings), and `gpt-5.6-terra` / `gpt-5.6-luna` | OpenAI | `OPENAI_API_KEY` | platform.openai.com → API keys |
 | `claude-sonnet-5`, `claude-haiku-4.5` | Anthropic | `ANTHROPIC_API_KEY` | console.anthropic.com → API Keys |
 | `deepseek-v3.1`, `llama-3.3-70b` | DeepInfra | `DEEPINFRA_API_KEY` | deepinfra.com → Dashboard → API Keys |
 
@@ -120,10 +123,10 @@ the shipped configuration.
 
 **Smoke test first:** set your own `GENERATOR_LLM`, `LIMIT = 5`, one graph,
 `METHOD = "no_val_link"` — a two-minute run that proves your key, the model
-id, Neo4j and the harness work before you spend hours. The GPT-5.6 and Claude presets
-have been exercised end-to-end (parameters accepted, caching confirmed); the
-DeepInfra presets are registered from the provider's published ids and your
-smoke test is their first live call — if the API rejects a parameter, the
+id, Neo4j and the harness work before you spend hours. The GPT-5.6 and Claude
+presets have been called live through the harness's model builders
+(parameters accepted, caching confirmed); the DeepInfra presets are registered
+from the provider's published ids and your smoke test is their first live call — if the API rejects a parameter, the
 error names it and the fix is one line in `config.MODEL_PRESETS` (tell the
 coordinator).
 
@@ -139,20 +142,21 @@ would regenerate the prompts with an LLM call, give you a slightly different
 set, and the pre-flight would (correctly) refuse to run on it.
 
 What is *not* in git is the large value index of the `fcav` method,
-`generated/fcav/` (3–4 GB per large graph, ~40 GB for all 13). Two ways to get
-it, per graph:
+`generated/fcav/` (3–4 GB per large graph, ~40 GB for all 13). You build it
+yourself, once per graph — it is model-independent:
 
 ```bash
-# (a) download the coordinator's bundle (link in the channel) and unpack it so that
-#     setup_artifacts/<dataset>__<graph>/generated/fcav/ exists, or
-# (b) build it yourself — reads EVAL_PAIRS; cents of OpenAI embeddings per graph,
-#     minutes on the small graphs, a few hours on movie / politics / geography / company:
-python setup_fcav.py
+python setup_fcav.py     # reads EVAL_PAIRS; cents of OpenAI embeddings per graph;
+                         # minutes on the small graphs, a few hours on movie / politics / geography / company
 ```
 
-You only need it for `METHOD = "fcav"`; the other four methods run without it.
-If the pre-flight prints `!` for a graph, the coordinator has not published
-that graph yet — ask, don't build.
+(If the coordinator has shared a pre-built bundle, unpacking it so that
+`setup_artifacts/<dataset>__<graph>/generated/fcav/` exists is equivalent.)
+You only need it for `METHOD = "fcav"`; the other four methods run without it,
+and `eval_run.py` refuses to start an `fcav` run on a graph whose index is
+missing, so you cannot accidentally score an empty index. If the pre-flight
+prints `!` for a graph, the coordinator has not published that graph yet —
+ask, don't build.
 
 ## 4. Pre-flight — must be green
 
@@ -169,7 +173,9 @@ Every line must be ✓. It checks two things per graph:
 - **artifacts = published set** — `MISMATCH` means your copy of the archive
   differs from `MANIFEST.json` (edited, or regenerated by a setup run).
   `git checkout setup_artifacts/` and re-run. `MISSING` means you have not
-  pulled the archive. `!` means not published yet — wait.
+  pulled the archive. `!` means not published yet — wait. `eval_run.py`
+  applies the same check and refuses a `MISMATCH`/`MISSING` graph, so a run
+  cannot start on the wrong prompts even if you skip the pre-flight.
 
 `UNREACH` is a network problem (VPN), not a broken setup.
 
@@ -192,6 +198,11 @@ logs/runs/<dataset>__<graph>__<method>@<model>__<YYYYMMDD-HHMMSS>/
 `cyanchor_fl`; `<model>` is your `GENERATOR_LLM`. Two models can never land in
 the same directory, so re-running is always safe.
 
+**If a run dies** (laptop asleep, rate-limit storm, network): there is no
+resume — re-run with `EVAL_PAIRS` shrunk to the graphs that did not finish.
+Each graph is its own run directory, so nothing already completed is touched;
+just leave the dead run's directory in place (it is diagnostic, see step 6).
+
 ## 6. Send back
 
 Send the whole `logs/runs/` directory (or just the run dirs you produced),
@@ -209,7 +220,10 @@ Do **not** delete run directories that errored — a failed run is diagnostic.
 
 Each person owns **one model** and runs the **full suite** on it: 13 graphs ×
 5 methods (~54 machine-hours at the shard settings above; leave it running).
-If you finish early, take a second model.
+To finish in a day or two instead, make two or three separate clones of the
+repo on your machine and give each a different slice of `EVAL_PAIRS` — one
+`eval_run.py` per clone is fine (it is one per *checkout* that matters, see
+below). If you finish early, take a second model.
 
 | model (`GENERATOR_LLM`) | owner | status |
 |---|---|---|
@@ -236,7 +250,7 @@ EVAL_PAIRS = [
     ("mindthequery_augmented", "covid"),
     ("mindthequery_augmented", "wwc"),
     ("mindthequery_augmented", "er"),
-    ("mindthequery_augmented", "bloom"),
+    # ("mindthequery_augmented", "bloom"),   # 24 questions — NOT published yet; add it when the coordinator says so
     ("zograscope_augmented",   "pole"),
 ]
 ```
@@ -256,7 +270,7 @@ Question counts (v2.2), so you can budget and split:
 | `mindthequery_augmented` | `covid` | 327 |
 | `mindthequery_augmented` | `wwc` | 267 |
 | `mindthequery_augmented` | `er` | 185 |
-| `mindthequery_augmented` | `bloom` | 24 |
+| `mindthequery_augmented` | `bloom` | 24 (not published yet) |
 | `zograscope_augmented` | `pole` | 1,290 |
 | | **total** | **4,611** |
 
@@ -274,18 +288,19 @@ Question counts (v2.2), so you can budget and split:
 Every run writes its own directory, so two people never overwrite each other
 **as long as they are on different machines**.
 
-## Two things that will bite you
+## Three things that will bite you
 
-0. **Never run `scripts/setup_and_archive.py` or edit anything under
+1. **Never run `scripts/setup_and_archive.py` or edit anything under
    `setup_artifacts/`.** Results are only poolable if every generator saw the
-   same prompts and tools; the pre-flight enforces this against
-   `MANIFEST.json`.
-1. **One `eval_run.py` per machine/checkout at a time.** The harness keeps one
-   live copy of each graph's artifacts and swaps the right one in before each
-   pair. Two concurrent runs on the same checkout corrupt each other's scores
-   without any error. Use `SHARDS` for parallelism inside a graph; use separate
-   machines or separate checkouts for parallelism across people.
-2. **Don't trust a low score.** If the grounding methods (`react`, `cyanchor`)
+   same prompts and tools; the pre-flight and `eval_run.py` both enforce this
+   against `MANIFEST.json`.
+2. **One `eval_run.py` per checkout at a time.** The harness keeps one live
+   copy of each graph's artifacts and swaps the right one in before each pair.
+   Two concurrent runs on the same checkout corrupt each other's scores
+   without any error. Use `SHARDS` for parallelism inside a graph; use
+   separate clones (on one machine or many) for parallelism across graphs or
+   people.
+3. **Don't trust a low score.** If the grounding methods (`react`, `cyanchor`)
    collapse to roughly the `no_val_link` score while `fcav` still looks normal,
    that is the signature of contaminated artifacts, not a real result. Re-run
    `verify_setup.py`.
