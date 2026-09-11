@@ -14,8 +14,9 @@ Per pair:
   2. Connect via :func:`eval_config.conn_for`, extract distinct
      ``(value, label, key)`` triples for identifying string properties,
      embed them, and write the FAISS index to ``generated/fcav/``.
-  3. ``archive_current`` folds ``generated/fcav/`` (an optional swap dir) into
-     ``setup_artifacts/<dataset>__<graph>/``.
+  3. ``archive_optional_dir`` folds ``generated/fcav/`` (an optional swap dir)
+     into ``setup_artifacts/<dataset>__<graph>/`` — and nothing else, so the
+     published archive files stay byte-identical to ``MANIFEST.json``.
 
 Usage
 -----
@@ -46,7 +47,7 @@ logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(messag
 load_dotenv(".env", override=False)
 
 import eval_config as cfg
-from eval.artifact_swap import swap_in, archive_current
+from eval.artifact_swap import swap_in, archive_optional_dir
 from fcav import build_fcav_index, FCAV_DIR
 
 
@@ -80,7 +81,7 @@ def main() -> int:
                                      dataset=dataset, graph=graph, uri=conn.uri)
             finally:
                 driver.close()
-            archive_current(dataset, graph, force=True)   # 3. fold fcav into archive
+            archive_optional_dir(dataset, graph, "generated/fcav")   # 3. fold ONLY fcav into the archive
             print(f"[setup_fcav] ✓ {dataset}__{graph}: {m['count']} values, dim {m['dimensions']}, "
                   f"{m['embedding_backend']}/{m['embedding_model']}")
             done.append((dataset, graph))

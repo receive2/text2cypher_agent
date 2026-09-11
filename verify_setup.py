@@ -121,8 +121,14 @@ def main(argv: list[str] | None = None) -> int:
 
     # Aligned table: graph check | published-set check.
     wpair = max((len(f"{ds}__{gr}") for ds, gr, *_ in results), default=4)
-    bad = unpublished = 0
+    bad = unpublished = skipped = 0
     for ds, gr, status, detail, mstatus, mdetail in results:
+        if status == "MISSING" and mstatus == am.UNPUBLISHED and "--all" in argv:
+            # --all walks every registered pair; an archive that neither exists
+            # nor is published is simply not part of the sweep — not a failure.
+            skipped += 1
+            print(f"  · {f'{ds}__{gr}':<{wpair}}  no archive, not in the published set — skipped")
+            continue
         if status != "OK" or mstatus in (am.MISMATCH, am.MISSING):
             mark, bad = "✗", bad + 1
         elif mstatus == am.UNPUBLISHED:
@@ -131,6 +137,7 @@ def main(argv: list[str] | None = None) -> int:
             mark = "✓"
         print(f"  {mark} {f'{ds}__{gr}':<{wpair}}  {status:<7}  {detail}")
         print(f"    {'':<{wpair}}  {'artifacts':<9} {mstatus}: {mdetail}")
+    results = [r for r in results if not (r[2] == "MISSING" and r[4] == am.UNPUBLISHED and "--all" in argv)]
 
     print()
     if bad:
@@ -144,7 +151,8 @@ def main(argv: list[str] | None = None) -> int:
         print(f"[verify_setup] ! {unpublished}/{len(results)} graph(s) not published yet — "
               "ask the coordinator before running them.")
     print(f"[verify_setup] ✓ all {len(results)} archives match their graphs"
-          f"{' and the published set' if not unpublished else ''}.")
+          f"{' and the published set' if not unpublished else ''}"
+          f"{f' ({skipped} registered pairs have no archive and are not in the sweep)' if skipped else ''}.")
     return 0
 
 

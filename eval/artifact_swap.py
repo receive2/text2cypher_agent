@@ -349,6 +349,47 @@ def swap_in(dataset: str, graph: str) -> None:
 
 
 # ──────────────────────────────────────────────────────────────────────────────
+# 5b. Public API — archive_optional_dir
+# ──────────────────────────────────────────────────────────────────────────────
+
+def archive_optional_dir(dataset: str, graph: str, rel: str) -> Path:
+    """
+    Fold ONE optional per-graph index dir (``rel`` in :data:`SWAP_DIRS_OPTIONAL`,
+    e.g. ``generated/fcav``) from the live tree into the pair's archive,
+    leaving every other archived file untouched.
+
+    This is what ``setup_fcav.py`` uses: the published archive files
+    (prompts, tools, schema, routing index — pinned by
+    ``setup_artifacts/MANIFEST.json``) must stay byte-identical on every
+    machine, so building a value index must not go through
+    :func:`archive_current`, which wipes and rewrites the whole archive.
+
+    Fail closed like :func:`archive_current`: the live dir must carry a
+    build-time identity stamp for this pair (the 2026-07 pollution guard).
+    A symlinked archive is resolved to its target. Returns the destination.
+    """
+    if rel not in SWAP_DIRS_OPTIONAL:
+        raise ValueError(f"{rel!r} is not an optional swap dir ({SWAP_DIRS_OPTIONAL})")
+    live = _live_path(rel)
+    if not live.is_dir():
+        raise FileNotFoundError(f"Live index dir missing: {live}")
+    pair = f"{dataset}__{graph}"
+    verify_dir(live, pair, context=f"archive_optional_dir ({rel})", missing="raise")
+    archive = archive_dir_for(dataset, graph)
+    if archive.is_symlink():
+        archive = archive.resolve()
+    if not archive.is_dir():
+        raise FileNotFoundError(
+            f"Archive directory not found: {archive}. The base archive must exist "
+            "before an optional index can be folded into it."
+        )
+    dst = archive / rel
+    _replace_dir(live, dst)
+    logger.info(f"artifact_swap.archive_optional_dir: {rel} → {dst}")
+    return dst
+
+
+# ──────────────────────────────────────────────────────────────────────────────
 # 6. Public API — archive_current
 # ──────────────────────────────────────────────────────────────────────────────
 
@@ -369,6 +410,12 @@ def archive_current(dataset: str, graph: str, *, force: bool = False) -> None:
     ``<archive>/vector_config.embeddable_properties.snippet``.
     """
     archive = archive_dir_for(dataset, graph)
+    if archive.is_symlink():
+        # One graph under two names (mindthequery_augmented__bloom ->
+        # mindthequery_augmented__bloom50): rebuild the link's target in place
+        # so the link keeps pointing at a valid archive. rmtree() refuses a
+        # symlink outright.
+        archive = archive.resolve()
     if archive.exists():
         if not force:
             raise FileExistsError(
