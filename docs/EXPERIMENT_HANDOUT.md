@@ -250,7 +250,7 @@ EVAL_PAIRS = [
     ("mindthequery_augmented", "covid"),
     ("mindthequery_augmented", "wwc"),
     ("mindthequery_augmented", "er"),
-    # ("mindthequery_augmented", "bloom"),   # 24 questions — NOT published yet; add it when the coordinator says so
+    ("mindthequery_augmented", "bloom"),
     ("zograscope_augmented",   "pole"),
 ]
 ```
@@ -270,7 +270,7 @@ Question counts (v2.2), so you can budget and split:
 | `mindthequery_augmented` | `covid` | 327 |
 | `mindthequery_augmented` | `wwc` | 267 |
 | `mindthequery_augmented` | `er` | 185 |
-| `mindthequery_augmented` | `bloom` | 24 (not published yet) |
+| `mindthequery_augmented` | `bloom` | 24 |
 | `zograscope_augmented` | `pole` | 1,290 |
 | | **total** | **4,611** |
 
@@ -283,7 +283,9 @@ Question counts (v2.2), so you can budget and split:
 > it is deliberately outside the 13-graph evaluation suite and has no perturbed
 > questions. `bloom50` is the *same graph* as `bloom` (same connection; the
 > dump is named `bloom50`, the test data's `graph` field says `bloom`) — for
-> the perturbed set always use **`bloom`**.
+> the perturbed set always use **`bloom`**. In `setup_artifacts/` the `bloom`
+> archive is a symlink to `mindthequery_augmented__bloom50` — git restores it on
+> macOS / Linux / WSL; on native Windows enable symlinks or copy the directory.
 
 Every run writes its own directory, so two people never overwrite each other
 **as long as they are on different machines**.

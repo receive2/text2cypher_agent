@@ -138,7 +138,9 @@ setup_artifacts/*
 !setup_artifacts/*_augmented__*/
 setup_artifacts/*_augmented__*/*
 setup_artifacts/*__terrorist_attack/
-setup_artifacts/*__bloom50/
+# mindthequery_augmented__bloom is a symlink to mindthequery_augmented__bloom50 (one graph,
+# two names — see eval_config.GRAPH_CONNS); publish the target's files and the link.
+!setup_artifacts/mindthequery_augmented__bloom
 !setup_artifacts/*_augmented__*/agent/
 !setup_artifacts/*_augmented__*/schema_data/
 !setup_artifacts/*_augmented__*/vector_config.embeddable_properties.snippet

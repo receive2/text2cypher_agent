@@ -1,0 +1,572 @@
+{
+  "nodes": {
+    "AccountHolder": {
+      "id_property": "fullName",
+      "properties": {
+        "UniqueId": {
+          "data_type": "id",
+          "topic": "account holder identifier",
+          "description": "A unique alphanumeric identifier assigned to each account holder."
+        },
+        "birthDate": {
+          "data_type": "date",
+          "topic": "person birth date",
+          "description": "The date of birth of the account holder in YYYY-MM-DD format."
+        },
+        "firstName": {
+          "data_type": "name",
+          "topic": "person first name",
+          "description": "The given name of the account holder."
+        },
+        "fullName": {
+          "data_type": "name",
+          "topic": "person full name",
+          "description": "The complete name of the account holder, including first and last names."
+        },
+        "lastName": {
+          "data_type": "name",
+          "topic": "person last name",
+          "description": "The family or surname of the account holder."
+        }
+      }
+    },
+    "AccountHolder`": {
+      "id_property": "fullName",
+      "properties": {
+        "UniqueId": {
+          "data_type": "id",
+          "topic": "unique identifier",
+          "description": "A unique string that identifies the account holder."
+        },
+        "birthDate": {
+          "data_type": "date",
+          "topic": "person birth date",
+          "description": "The date of birth of the account holder."
+        },
+        "firstName": {
+          "data_type": "name",
+          "topic": "person first name",
+          "description": "The given name of the account holder."
+        },
+        "fullName": {
+          "data_type": "name",
+          "topic": "person full name",
+          "description": "The complete name of the account holder."
+        },
+        "lastName": {
+          "data_type": "name",
+          "topic": "person last name",
+          "description": "The family name or surname of the account holder."
+        }
+      }
+    },
+    "Address": {
+      "id_property": "streetAddress",
+      "properties": {
+        "city": {
+          "data_type": "name",
+          "topic": "city name",
+          "description": "The name of the city where the address is located."
+        },
+        "state": {
+          "data_type": "name",
+          "topic": "state name",
+          "description": "The name of the state where the address is located."
+        },
+        "streetAddress": {
+          "data_type": "text",
+          "topic": "street address",
+          "description": "The street address including house number and street name."
+        },
+        "zip": {
+          "data_type": "text",
+          "topic": "postal code",
+          "description": "The postal or ZIP code for the address, which may include a 5-digit or 9-digit format."
+        }
+      }
+    },
+    "BankAccount": {
+      "id_property": "accountNumber",
+      "properties": {
+        "accountNumber": {
+          "data_type": "id",
+          "topic": "bank account number",
+          "description": "A unique identifier for the bank account, typically formatted as a string of digits."
+        },
+        "balance": {
+          "data_type": "number",
+          "topic": "account balance",
+          "description": "The current monetary balance held in the bank account."
+        },
+        "lastReceived": {
+          "data_type": "date",
+          "topic": "last received timestamp",
+          "description": "The timestamp of the most recent incoming transaction to the account, stored as a Unix epoch in milliseconds."
+        },
+        "lastSend": {
+          "data_type": "date",
+          "topic": "last sent timestamp",
+          "description": "The timestamp of the most recent outgoing transaction from the account, stored as a Unix epoch in milliseconds."
+        }
+      }
+    },
+    "BankCard": {
+      "id_property": "accountNumber",
+      "properties": {
+        "accountNumber": {
+          "data_type": "id",
+          "topic": "bank card number",
+          "description": "The unique account number printed on the bank card."
+        },
+        "balance": {
+          "data_type": "number",
+          "topic": "card balance amount",
+          "description": "The current monetary balance available on the bank card."
+        },
+        "expirationDate": {
+          "data_type": "date",
+          "topic": "card expiration date",
+          "description": "The expiration date of the bank card, typically in MM-YY format."
+        },
+        "latePayments": {
+          "data_type": "number",
+          "topic": "late payment count",
+          "description": "The number of times payments on this card have been late."
+        },
+        "limit": {
+          "data_type": "number",
+          "topic": "credit limit amount",
+          "description": "The maximum allowed balance or credit limit for the bank card."
+        },
+        "securityCode": {
+          "data_type": "id",
+          "topic": "card security code",
+          "description": "The security code (such as CVV or CVC) associated with the bank card."
+        }
+      }
+    },
+    "CreditCard": {
+      "id_property": "accountNumber",
+      "properties": {
+        "accountNumber": {
+          "data_type": "id",
+          "topic": "credit card number",
+          "description": "The unique account number associated with the credit card."
+        },
+        "balance": {
+          "data_type": "number",
+          "topic": "current balance",
+          "description": "The current outstanding balance on the credit card."
+        },
+        "expirationDate": {
+          "data_type": "date",
+          "topic": "card expiration date",
+          "description": "The expiration date of the credit card, typically in MM-YY format."
+        },
+        "latePayments": {
+          "data_type": "number",
+          "topic": "late payment count",
+          "description": "The number of late payments recorded for the credit card."
+        },
+        "limit": {
+          "data_type": "number",
+          "topic": "credit limit",
+          "description": "The maximum credit limit assigned to the credit card."
+        },
+        "securityCode": {
+          "data_type": "id",
+          "topic": "card security code",
+          "description": "The security code (CVV/CVC) associated with the credit card."
+        }
+      }
+    },
+    "DeliveryAddress": {
+      "id_property": "streetAddress",
+      "properties": {
+        "city": {
+          "data_type": "name",
+          "topic": "city name",
+          "description": "The name of the city where the delivery address is located."
+        },
+        "state": {
+          "data_type": "name",
+          "topic": "state name",
+          "description": "The name of the state where the delivery address is located."
+        },
+        "streetAddress": {
+          "data_type": "text",
+          "topic": "street address",
+          "description": "The street address component of the delivery location, including house number and street name."
+        },
+        "zip": {
+          "data_type": "text",
+          "topic": "postal code",
+          "description": "The postal or ZIP code for the delivery address."
+        }
+      }
+    },
+    "FinancialInstitute": {
+      "id_property": "name",
+      "properties": {
+        "name": {
+          "data_type": "name",
+          "topic": "financial institution name",
+          "description": "The official name of the financial institute."
+        },
+        "website": {
+          "data_type": "text",
+          "topic": "company website URL",
+          "description": "The website address of the financial institute."
+        }
+      }
+    },
+    "IP": {
+      "id_property": "ip",
+      "properties": {
+        "ip": {
+          "data_type": "id",
+          "topic": "IP address",
+          "description": "Stores the IPv4 address associated with this node."
+        }
+      }
+    },
+    "Login": {
+      "id_property": "userid",
+      "properties": {
+        "firstName": {
+          "data_type": "name",
+          "topic": "person first name",
+          "description": "The given name of the user associated with this login."
+        },
+        "lastName": {
+          "data_type": "name",
+          "topic": "person last name",
+          "description": "The family name of the user associated with this login."
+        },
+        "mail": {
+          "data_type": "text",
+          "topic": "email address",
+          "description": "The email address used by the user for login or contact."
+        },
+        "startDate": {
+          "data_type": "date",
+          "topic": "account start date",
+          "description": "The date when the user's login account was created or activated, formatted as YYYYMMDD."
+        },
+        "userid": {
+          "data_type": "id",
+          "topic": "user identifier",
+          "description": "A unique identifier or username for the user associated with this login."
+        }
+      }
+    },
+    "MoneyTransfer": {
+      "id_property": null,
+      "properties": {
+        "amount": {
+          "data_type": "number",
+          "topic": "money transfer amount",
+          "description": "The monetary value transferred in this transaction."
+        },
+        "transactionDate": {
+          "data_type": "date",
+          "topic": "transaction date",
+          "description": "The date on which the money transfer occurred."
+        }
+      }
+    },
+    "PhoneNumber": {
+      "id_property": "phone",
+      "properties": {
+        "phone": {
+          "data_type": "id",
+          "topic": "phone number",
+          "description": "The unique telephone number associated with this record."
+        },
+        "provider": {
+          "data_type": "text",
+          "topic": "telecom provider name",
+          "description": "The name of the telecommunications provider for this phone number."
+        },
+        "touched": {
+          "data_type": "number",
+          "topic": "last touched timestamp",
+          "description": "A timestamp indicating the last time this phone number record was updated or accessed."
+        }
+      }
+    },
+    "Purchase": {
+      "id_property": "purchaseCode",
+      "properties": {
+        "amount": {
+          "data_type": "number",
+          "topic": "purchase amount",
+          "description": "The total monetary value of the purchase."
+        },
+        "date": {
+          "data_type": "date",
+          "topic": "purchase date",
+          "description": "The calendar date when the purchase was made."
+        },
+        "purchaseCode": {
+          "data_type": "id",
+          "topic": "purchase identifier",
+          "description": "A unique code assigned to identify the purchase."
+        },
+        "time": {
+          "data_type": "number",
+          "topic": "purchase timestamp",
+          "description": "The timestamp representing the exact time the purchase occurred, in milliseconds since epoch."
+        }
+      }
+    },
+    "SSN": {
+      "id_property": "ssn",
+      "properties": {
+        "ssn": {
+          "data_type": "id",
+          "topic": "social security number",
+          "description": "This property stores the unique Social Security Number assigned to an individual."
+        }
+      }
+    },
+    "Shop": {
+      "id_property": "name",
+      "properties": {
+        "business": {
+          "data_type": "text",
+          "topic": "business description",
+          "description": "A short marketing or mission statement describing the shop's business focus or value proposition."
+        },
+        "name": {
+          "data_type": "name",
+          "topic": "shop name",
+          "description": "The official name of the shop or business entity."
+        },
+        "shopID": {
+          "data_type": "id",
+          "topic": "shop identifier",
+          "description": "A unique alphanumeric identifier assigned to each shop."
+        }
+      }
+    },
+    "State": {
+      "id_property": "name",
+      "properties": {
+        "name": {
+          "data_type": "name",
+          "topic": "state name",
+          "description": "The official name of the U.S. state."
+        }
+      }
+    },
+    "UnsecuredLoan": {
+      "id_property": "accountNumber",
+      "properties": {
+        "APR": {
+          "data_type": "number",
+          "topic": "loan interest rate",
+          "description": "The annual percentage rate applied to the unsecured loan."
+        },
+        "accountNumber": {
+          "data_type": "id",
+          "topic": "loan account number",
+          "description": "A unique identifier assigned to the unsecured loan account."
+        },
+        "balance": {
+          "data_type": "number",
+          "topic": "outstanding loan balance",
+          "description": "The current outstanding balance remaining on the unsecured loan."
+        },
+        "loanAmount": {
+          "data_type": "number",
+          "topic": "original loan amount",
+          "description": "The initial principal amount borrowed for the unsecured loan."
+        }
+      }
+    },
+    "_Bloom_Perspective_": {
+      "id_property": "name",
+      "properties": {
+        "data": {
+          "data_type": "text",
+          "topic": "perspective configuration data",
+          "description": "Stores the serialized configuration or metadata for the Bloom perspective, typically as a JSON string."
+        },
+        "id": {
+          "data_type": "id",
+          "topic": "perspective unique identifier",
+          "description": "A unique identifier (UUID) for the Bloom perspective."
+        },
+        "name": {
+          "data_type": "name",
+          "topic": "perspective name",
+          "description": "The human-readable name of the Bloom perspective."
+        },
+        "roles": {
+          "data_type": "list",
+          "topic": "user roles",
+          "description": "A list of user roles that have access to or are associated with this Bloom perspective."
+        },
+        "version": {
+          "data_type": "text",
+          "topic": "perspective version",
+          "description": "The version string of the Bloom perspective configuration."
+        }
+      }
+    }
+  },
+  "relationships": {
+    "DELIVERED_AT": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Purchase",
+          "to": "DeliveryAddress"
+        }
+      ]
+    },
+    "FOR_SHOP": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Login",
+          "to": "Shop"
+        }
+      ]
+    },
+    "FROM": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "BankAccount",
+          "to": "FinancialInstitute"
+        }
+      ]
+    },
+    "FROM_IP": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Purchase",
+          "to": "IP"
+        }
+      ]
+    },
+    "HAS_ADDRESS": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "AccountHolder",
+          "to": "Address"
+        }
+      ]
+    },
+    "HAS_BANKACCOUNT": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "AccountHolder",
+          "to": "BankAccount"
+        }
+      ]
+    },
+    "HAS_CREDITCARD": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "AccountHolder",
+          "to": "CreditCard"
+        }
+      ]
+    },
+    "HAS_PHONENUMBER": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "AccountHolder",
+          "to": "PhoneNumber"
+        },
+        {
+          "from": "PhoneNumber",
+          "to": "UnsecuredLoan"
+        }
+      ]
+    },
+    "HAS_SSN": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "AccountHolder",
+          "to": "SSN"
+        }
+      ]
+    },
+    "HAS_UNSECUREDLOAN": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "AccountHolder",
+          "to": "UnsecuredLoan"
+        }
+      ]
+    },
+    "LOCATED_IN": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "IP",
+          "to": "State"
+        }
+      ]
+    },
+    "SEND": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "BankAccount",
+          "to": "MoneyTransfer"
+        },
+        {
+          "from": "MoneyTransfer",
+          "to": "BankAccount"
+        }
+      ]
+    },
+    "WITH": {
+      "properties": {
+        "lastUsed": {
+          "data_type": "number",
+          "topic": "timestamp usage",
+          "description": "The Unix timestamp in milliseconds indicating when this phone number was last used in a money transfer."
+        }
+      },
+      "endpoints": [
+        {
+          "from": "MoneyTransfer",
+          "to": "PhoneNumber"
+        }
+      ]
+    },
+    "WITH_CARD": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Purchase",
+          "to": "BankCard"
+        }
+      ]
+    },
+    "WITH_LOGIN": {
+      "properties": {},
+      "endpoints": [
+        {
+          "from": "Purchase",
+          "to": "Login"
+        }
+      ]
+    }
+  },
+  "generated_at_utc": "2026-06-22T15:05:44.458428+00:00",
+  "language": "en"
+}

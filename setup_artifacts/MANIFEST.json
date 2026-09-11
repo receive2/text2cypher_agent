@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "built_at": "2026-09-10T06:28:48+00:00",
-  "commit": "ae4427496d02f4838f2d3a1cfcf8e16e967bc178",
-  "set_id": "7ba73788a7ad",
+  "built_at": "2026-09-11T00:55:05+00:00",
+  "commit": "be36c26928876fd3a3ee70f9c6c01c8d20b3329a",
+  "set_id": "31db179b1d24",
   "covers": "prompts, generated tools, schema files, tool-routing FAISS index (eval.artifact_swap SWAP_FILES/SWAP_DIRS); NOT generated/fcav or generated/chess",
   "pairs": {
     "cypherbench_augmented__company": {
@@ -149,6 +149,27 @@
         "schema_data/schema_meta.json": "0561326f6e19d084e31882f6edc35633ba61d536fbdc4587da5edf7032abccde",
         "schema_data/schema_nodes.csv": "f7dca7cb75953859763a7af2f3ad5056b51513602f6a1e0fb7ab0d044fb521ac",
         "schema_data/schema_relations.csv": "be1fc03a25445f2e67c96aa68c3727982d1750285900080cf02cb0123455f844",
+        "vector_config.embeddable_properties.snippet": "55741147dc455d361dfed5214b40f826a92c2ca351fcf09d26143e0c8b59b0e8"
+      }
+    },
+    "mindthequery_augmented__bloom": {
+      "dataset": "mindthequery_augmented",
+      "graph": "bloom",
+      "n_files": 13,
+      "bytes": 1067297,
+      "files": {
+        "agent/prompts.py": "c9ed2f9a2f379706e6e050a00682836a7ed15eb1c0bb8b953d724efd4478028e",
+        "generated/faiss/tools_auto/fingerprint.json": "46249c029e182969e31a250c32f622327c3497fff2b00e9444c2e0ebe2e94edc",
+        "generated/faiss/tools_auto/index.faiss": "3d24054d43bee353a2f2406299ed7a95d237c44e14f69b47631268d523962d80",
+        "generated/faiss/tools_auto/index.pkl": "0185e1ce64a6e204ac4432d40d7d23261548940e0eac2d021d59cf54e88c0889",
+        "generated/faiss/tools_auto_node_only/fingerprint.json": "a5778f8ce3f4d3b0a2a0ade9e63b811f8c40a6e2b9d32eea7eed1c4135989b2f",
+        "generated/faiss/tools_auto_node_only/index.faiss": "cebc9f3ba0403407a74a7ad709842c9628c12b97e0b60e19ae8ab3d441af07e7",
+        "generated/faiss/tools_auto_node_only/index.pkl": "9b4de3622961377d2ff79644f0963d060781b5df6243a238dd13e90a0615b7cc",
+        "generated/generated_node_tools.py": "4e9850c78171064fd8c36450530fe4be346d28af7821dd793af8421c6c997d98",
+        "generated/generated_rel_tools.py": "4d92ae390bac2a3fe295198d0fdf79020ace18b72a358863dfe423f5cc3f4c51",
+        "schema_data/schema_meta.json": "c50773ee6d66be4a9af96967c9eb94b35e5e50a5f3ec4e64c8c836e2ff30140f",
+        "schema_data/schema_nodes.csv": "84713dc250e71db2bf32565a28878e1a24620e48ea8a62a5713790af5010555c",
+        "schema_data/schema_relations.csv": "d1e6630811701bc86b305284a291fdfcdfdc26a06bf422a360e77f9f39adff1e",
         "vector_config.embeddable_properties.snippet": "55741147dc455d361dfed5214b40f826a92c2ca351fcf09d26143e0c8b59b0e8"
       }
     },

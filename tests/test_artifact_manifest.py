@@ -71,6 +71,13 @@ def test_gate_excludes_misstamped_archive(tmp_path):
     assert set(manifest["pairs"]) == {"cypherbench_augmented__movie"}
 
 
+def test_gate_accepts_equivalent_pair_stamp(tmp_path):
+    # the same graph under its clean-set name (``_augmented`` stripped) is not pollution
+    _make_archive(tmp_path, "cypherbench_augmented", "movie", stamp="cypherbench__movie")
+    manifest, excluded = am.build(tmp_path, PAIRS[:1], commit="x")
+    assert not excluded and "cypherbench_augmented__movie" in manifest["pairs"]
+
+
 def test_gate_reports_missing_files(tmp_path):
     a = _make_archive(tmp_path, "cypherbench_augmented", "movie")
     (a / "agent" / "prompts.py").unlink()

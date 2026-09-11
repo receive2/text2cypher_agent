@@ -21,9 +21,10 @@ separately and are *not* covered by the manifest.
     python scripts/artifact_manifest.py check --all     # every pair in the manifest
 
 An archive is only published if it passes the identity gate: every required
-file present and both FAISS fingerprints stamped with the archive's own pair
-name — an index built for another graph (the 2026-07 pollution) can never be
-published.
+file present and both FAISS fingerprints stamped for the archive's own graph
+(``eval.artifact_identity.pairs_equivalent`` — so the ``bloom`` archive, a
+symlink twin of ``bloom50`` on the same connection, passes) — an index built
+for another graph (the 2026-07 pollution) can never be published.
 """
 from __future__ import annotations
 
@@ -43,6 +44,11 @@ if str(_REPO) not in sys.path:
 from eval.artifact_swap import (  # noqa: E402
     SWAP_DIRS, SWAP_FILES, SWAP_FILES_OPTIONAL, _SNIPPET_NAME, _setup_artifacts_root,
 )
+try:  # same equivalence the swap-in gate and the tool loader use (bloom ≡ bloom50: one graph, two names)
+    from eval.artifact_identity import pairs_equivalent  # noqa: E402
+except Exception:  # pragma: no cover — identity module unavailable
+    def pairs_equivalent(a, b):  # type: ignore[misc]
+        return bool(a) and a == b
 
 MANIFEST_NAME = "MANIFEST.json"
 SCHEMA_VERSION = 1
@@ -108,7 +114,7 @@ def gate(pair: str, archive: Path) -> List[str]:
             problems.append(f"missing {d}/")
             continue
         stamp = _faiss_stamp(archive, d)
-        if stamp != pair:
+        if not pairs_equivalent(stamp, pair):
             problems.append(f"{d} is stamped for {stamp!r}, not {pair!r}")
     return problems
 

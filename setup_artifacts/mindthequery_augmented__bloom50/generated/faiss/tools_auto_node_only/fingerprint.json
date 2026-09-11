@@ -1,0 +1,19 @@
+{
+  "database": "neo4j",
+  "neo4j_uri_host": "34.9.85.21",
+  "tool_names_hash": "f6a9892f91a2ac6ed26ba264fb38fbffe6ebdc4fd1ea3afca94879bfc4703816",
+  "tool_count": 60,
+  "embedding_model": "text-embedding-3-small",
+  "embedding_backend": "openai",
+  "ner_mode": "node_only",
+  "built_at": "2026-06-22T15:07:25+00:00",
+  "schema_version": 1,
+  "identity": {
+    "pair": "mindthequery_augmented__bloom50",
+    "dataset": "mindthequery_augmented",
+    "graph": "bloom50",
+    "bolt_uri": null,
+    "database": null,
+    "stamped_at": "2026-07-18T22:14:12+00:00"
+  }
+}

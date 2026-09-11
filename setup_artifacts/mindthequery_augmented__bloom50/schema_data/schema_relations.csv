@@ -1,0 +1,18 @@
+rel_type,from_label,to_label,property,property_types,mandatory,rel_count,sample_values
+DELIVERED_AT,Purchase,DeliveryAddress,,,,500,
+FOR_SHOP,Login,Shop,,,,200,
+FROM,BankAccount,FinancialInstitute,,,,5060,
+FROM_IP,Purchase,IP,,,,500,
+HAS_ADDRESS,AccountHolder,Address,,,,4060,
+HAS_BANKACCOUNT,AccountHolder,BankAccount,,,,4060,
+HAS_CREDITCARD,AccountHolder,CreditCard,,,,2050,
+HAS_PHONENUMBER,AccountHolder,PhoneNumber,,,,4061,
+HAS_PHONENUMBER,PhoneNumber,UnsecuredLoan,,,,4061,
+HAS_SSN,AccountHolder,SSN,,,,4060,
+HAS_UNSECUREDLOAN,AccountHolder,UnsecuredLoan,,,,1040,
+LOCATED_IN,IP,State,,,,240,
+SEND,BankAccount,MoneyTransfer,,,,2000,
+SEND,MoneyTransfer,BankAccount,,,,2000,
+WITH,MoneyTransfer,PhoneNumber,lastUsed,Long,True,1000,1518026098090 | 1518026127477 | 1518026140454
+WITH_CARD,Purchase,BankCard,,,,500,
+WITH_LOGIN,Purchase,Login,,,,400,
