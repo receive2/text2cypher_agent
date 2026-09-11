@@ -88,25 +88,31 @@ def _load_openai_kwargs():
     ns = {"re": re, "Optional": typing.Optional}
     for n in ast.parse(src).body:
         if (isinstance(n, ast.Assign) and getattr(n.targets[0], "id", "") in
-                ("_OPENAI_REASONING_FAMILY", "_OPENAI_REASONING_EFFORT_FIELD")) or \
-           (isinstance(n, ast.FunctionDef) and n.name == "_openai_generation_kwargs"):
+                ("_OPENAI_REASONING_FAMILY", "_OPENAI_REASONING_EFFORT_FIELD",
+                 "_OPENAI_EFFORT_NONE_FAMILY")) or \
+           (isinstance(n, ast.FunctionDef) and n.name in
+                ("_openai_generation_kwargs", "_openai_reasoning_effort")):
             exec(ast.get_source_segment(src, n), ns)
     return ns["_openai_generation_kwargs"]
 
 
-@pytest.mark.parametrize("model,keeps_temperature,reasoning_low", [
-    ("gpt-4.1", True, False),
-    ("gpt-4o", True, False),
-    ("gpt-5.6-terra", False, True),
-    ("gpt-5.6-luna", False, True),
-    ("gpt-5", False, True),
-    ("o3", False, True),
+@pytest.mark.parametrize("model,keeps_temperature,effort_expected", [
+    ("gpt-4.1", True, None),
+    ("gpt-4o", True, None),
+    # gpt-5.1+ / gpt-6: "none" — required for function tools on chat completions
+    ("gpt-5.6-terra", False, "none"),
+    ("gpt-5.6-luna", False, "none"),
+    ("gpt-6-astra", False, "none"),
+    # original gpt-5 and o-series: "none" is not a valid value there
+    ("gpt-5", False, "low"),
+    ("gpt-5-mini", False, "low"),
+    ("o3", False, "low"),
 ])
-def test_openai_kwargs_follow_the_model_family(model, keeps_temperature, reasoning_low):
+def test_openai_kwargs_follow_the_model_family(model, keeps_temperature, effort_expected):
     kw = _load_openai_kwargs()(model, 0)
     assert ("temperature" in kw) == keeps_temperature
     effort = kw.get("reasoning_effort") or kw.get("model_kwargs", {}).get("reasoning_effort")
-    assert (effort == "low") == reasoning_low
+    assert effort == effort_expected
 
 
 def test_preset_params_are_flattened_into_the_stage_config(monkeypatch):

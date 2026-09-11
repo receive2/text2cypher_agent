@@ -277,16 +277,20 @@ model you want to read before regenerating reports.
 Model-specific handling lives in one place, `agent_helper`: the Claude 4.6+/5
 line rejects sampling parameters and thinks by default, so those models are
 called without `temperature` and with thinking switched off; OpenAI's
-reasoning line (gpt-5.x / gpt-6 / o-series) likewise gets no `temperature`
-and `reasoning_effort="low"`. Every generator therefore runs as a plain, terse
-text model, which is what the comparison needs. To change a model's
+reasoning line likewise gets no `temperature`: gpt-5.1+ and gpt-6 run with
+`reasoning_effort="none"` — the value the chat-completions endpoint *requires*
+once function tools are bound (the react agent binds ~50; measured 2026-09-11:
+`"low"` is rejected with a 400 on every react example) — while the original
+gpt-5 and the o-series, which do not accept `"none"`, keep `"low"`. Every
+generator therefore runs as a plain, terse text model, which is what the
+comparison needs. To change a model's
 parameters, add a `"params"` dict to its entry in `config.MODEL_PRESETS`
 (passed to the chat-model constructor verbatim) — never edit `.env`.
 
 **What has been exercised live (2026-09-09).** `gpt-5.6-terra`,
 `gpt-5.6-luna`, `claude-sonnet-5`, `claude-opus-5` and `claude-haiku-4.5` were
 all called through the real builders: no parameter errors, plain-text replies,
-zero reasoning tokens on the GPT-5.6 presets at `reasoning_effort="low"`, and
+zero reasoning tokens on the GPT-5.6 presets (`reasoning_effort="none"`), and
 prompt caching confirmed on both vendors (a second identical call reported
 `cache_read` 2,446 of 2,449 input tokens on GPT-5.6, 4,202 on Opus 5 and
 5,545 / 11,854 on Sonnet 5 for the Cypher / NER stage prompts). The DeepInfra

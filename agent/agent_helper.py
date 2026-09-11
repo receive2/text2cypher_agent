@@ -158,16 +158,27 @@ def _build_openai_llm(
 # offending parameter named.
 _OPENAI_REASONING_FAMILY = re.compile(r"^(?:gpt-5|gpt-6|o[1-9])(?:[.-]|$)")
 _OPENAI_REASONING_EFFORT_FIELD = True
+# gpt-5.1+ and gpt-6 accept reasoning_effort="none" — and REQUIRE it for
+# function tools on /v1/chat/completions (measured 2026-09-11 on gpt-5.6-luna:
+# 400 "Function tools with reasoning_effort are not supported … set
+# reasoning_effort to 'none'"; the react agent binds ~50 tools). The original
+# gpt-5 and the o-series only know minimal|low|medium|high, so they keep "low".
+_OPENAI_EFFORT_NONE_FAMILY = re.compile(r"^(?:gpt-5\.(?:[1-9]|[1-9][0-9])|gpt-6)(?:[.-]|$)")
+
+
+def _openai_reasoning_effort(model: str) -> str:
+    return "none" if _OPENAI_EFFORT_NONE_FAMILY.match(model or "") else "low"
 
 
 def _openai_generation_kwargs(model: str, temperature: Optional[float]) -> dict:
     """ChatOpenAI constructor kwargs that are valid for *this* model."""
     kw: dict = {}
     if _OPENAI_REASONING_FAMILY.match(model or ""):
+        effort = _openai_reasoning_effort(model)
         if _OPENAI_REASONING_EFFORT_FIELD:
-            kw["reasoning_effort"] = "low"
+            kw["reasoning_effort"] = effort
         else:
-            kw["model_kwargs"] = {"reasoning_effort": "low"}
+            kw["model_kwargs"] = {"reasoning_effort": effort}
     elif temperature is not None:
         kw["temperature"] = temperature
     return kw

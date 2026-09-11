@@ -121,14 +121,21 @@ the shipped configuration.
 > understates it. The other four methods can use higher `SHARDS`. If you share
 > a key with someone else running at the same time, keep it low.
 
-**Smoke test first:** set your own `GENERATOR_LLM`, `LIMIT = 5`, one graph,
-`METHOD = "no_val_link"` — a two-minute run that proves your key, the model
-id, Neo4j and the harness work before you spend hours. The GPT-5.6 and Claude
-presets have been called live through the harness's model builders
-(parameters accepted, caching confirmed); the DeepInfra presets are registered
-from the provider's published ids and your smoke test is their first live call — if the API rejects a parameter, the
-error names it and the fix is one line in `config.MODEL_PRESETS` (tell the
-coordinator).
+**Smoke test first — all five methods, not just one.** Set your own
+`GENERATOR_LLM`, `LIMIT = 3`, `EVAL_PAIRS = [("cypherbench_augmented",
+"flight_accident")]` (the smallest graph), then run `python eval_run.py` once
+per `METHOD` (about ten minutes and a few cents in total) and
+`python eval_aggregate.py`. **Every method's block must show `err = 0`.** A
+provider can reject one method and accept the other four — on 2026-09-11
+GPT-5.6 refused every `react` example (function tools + reasoning) while
+`no_val_link` / `cyanchor` / `fcav` / `graphrag` ran fine; a `no_val_link`-only
+smoke test would have passed and the full `react` run would have scored every
+question 0. If a block shows `err > 0`, stop and send the coordinator the
+`error` field of one line of that run's `records.jsonl` — a rejected
+parameter is a one-line fix in the harness, not something to work around.
+The GPT-5.6 and Claude presets have been run through all five methods from a
+fresh clone; the DeepInfra presets are registered from the provider's
+published ids and your smoke test is their first live call.
 
 ## 3. Get the per-graph artifacts — do **not** run setup yourself
 
@@ -305,7 +312,9 @@ Every run writes its own directory, so two people never overwrite each other
 3. **Don't trust a low score.** If the grounding methods (`react`, `cyanchor`)
    collapse to roughly the `no_val_link` score while `fcav` still looks normal,
    that is the signature of contaminated artifacts, not a real result. Re-run
-   `verify_setup.py`.
+   `verify_setup.py`. And a block with `err > 0` in `eval_aggregate.py` is not
+   a result at all — every errored example is scored 0, so a rejected API
+   parameter looks like a bad model. Check `err` before you read `EA`.
 
 ## Questions
 
