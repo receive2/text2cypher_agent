@@ -29,6 +29,8 @@ cp .env.example .env                # then put the keys in (below)
   the pre-flight means a network problem, not a broken setup. Quick probe:
   `nc -zv 34.9.85.21 15066` must say *succeeded*; if it does not, tell the
   coordinator (the VM firewall may need your IP).
+  The same kind of corporate proxy also blocks `pip` wheel downloads
+  (`403 MediaTypeBlocked`) — do the `pip install` off-VPN as well.
 - **API keys.** `.env` holds keys and nothing else — the model is chosen in
   `eval_config.py` (step 2), never in `.env`. **Everyone needs
   `OPENAI_API_KEY`**, whatever model you run: at run time the tool router

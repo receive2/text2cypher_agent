@@ -41,6 +41,9 @@ langsmith==0.7.33
 # against any 5.x server.
 neo4j==5.28.3
 langchain-neo4j==0.5.0
+# pulled in by langchain-neo4j; pinned so every machine resolves the same build
+# (a fresh install otherwise picks the newest release, 1.18+).
+neo4j-graphrag==1.14.1
 
 # ── OpenAI ────────────────────────────────────────────────────────────────────
 # Used for both chat completions (gpt-4o etc.) and the default embedding
