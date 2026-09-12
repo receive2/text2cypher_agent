@@ -602,7 +602,9 @@ def main(argv: Optional[List[str]] = None) -> int:
                 first = next((r.get("error") for r in c["records"] if r.get("error")), "")
                 systematic.append(f"{m}: every example errored — {str(first)[:300]}")
             elif not c["complete"]:
-                systematic.append(f"{m}: {c['n']}/{c['expected']} records — the run did not finish")
+                why = state["cells"].get(f"{ds}__{g}__{m}", {}).get("last_error", "")
+                systematic.append(f"{m}: {c['n']}/{c['expected']} records — the run did not finish"
+                                  + (f" — {why}" if why else ""))
         if systematic:
             log("✗ SMOKE FAILED:\n  " + "\n  ".join(systematic) + "\n  Send these lines to the coordinator.")
             return 1
