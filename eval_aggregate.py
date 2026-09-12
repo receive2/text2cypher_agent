@@ -133,7 +133,7 @@ def _render_dataset_table(
     axis:         str   = "difficulty",
 ) -> List[str]:
     """Render one dataset table as aligned Markdown (readable in a terminal too)."""
-    headers = [axis, "EA", "EM", "PSJS", "n", "err"]
+    headers = [axis, "EA", "PSJS", "n", "err"]   # EM is not reported: near-zero by construction on perturbed questions
     rows: List[List[str]] = []
     for b in bucket_order:
         c = cells.get(b)
@@ -141,7 +141,7 @@ def _render_dataset_table(
             continue
         rows.append([
             b,
-            _fmt_metric(c.get("ea")), _fmt_metric(c.get("em")), _fmt_metric(c.get("psjs")),
+            _fmt_metric(c.get("ea")), _fmt_metric(c.get("psjs")),
             str(c.get("n", 0)), str(c.get("n_errors", 0)),
         ])
 

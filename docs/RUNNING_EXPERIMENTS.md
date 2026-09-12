@@ -187,6 +187,32 @@ the shipped `fuzzy+lev` default, build with `--skip-embeddings` and leave
 > Not the same as `vector_config.TOOL_RETRIEVAL_MODE` (`fuzzy`/`vector`/`hybrid`) —
 > that is the **ReAct baseline's** retrieval mode, unrelated to CyANCHOR's arm.
 
+## One-command sweep: `orchestrate_sweep.py`
+
+The model sweep is run one model per person with a single driver — the
+participant-facing steps are in [`EXPERIMENT_HANDOUT.md`](EXPERIMENT_HANDOUT.md):
+
+```bash
+python orchestrate_sweep.py --smoke     # 5 methods x flight_accident x 3 questions -> logs/smoke/
+python orchestrate_sweep.py             # 13 graphs x 5 methods for eval_config.GENERATOR_LLM; re-run to resume
+python orchestrate_sweep.py --status    # completeness matrix + headline EA/PSJS, no runs
+python orchestrate_sweep.py --publish   # branch sweep/<model>: run dirs + report/ + log, commit, push
+```
+
+It wraps the same pieces described below — `eval_run.py` per pair, the
+graph / manifest / fcav guards, `gen_ablation_report.py` and
+`gen_pooled_report.py` for the tables — and adds: a pre-flight over all 13
+graphs; building a graph's FCAV index on first use; retry (3×) per cell; resume
+from disk (a cell is complete when its newest run holds one record per
+question — errored questions are allowed and score 0); `report/SWEEP_<model>.md`
+with the completeness matrix and the pooled numbers. Pooling is over all
+questions of a dataset (each question weighs one), identical to the committed
+gpt-4.1 tables. `orchestrate_cyanchor.py` is the older CyANCHOR-only refresh
+driver and is unchanged.
+
+The deliverable of a sweep is the branch `sweep/<model>`; `main` keeps the
+gpt-4.1 reference tables under `report/`.
+
 ## The published artifact set (coordinator only)
 
 Colleagues never run setup: the model-independent parts of every perturbed
@@ -242,7 +268,9 @@ configured for. Runs recorded before model tagging carry no `@` segment; they
 stay resolvable, but only for the model that actually produced them (proven
 against `run_meta`), so nothing on disk today is lost.
 `eval_aggregate.py` aggregates only the newest run per
-`(dataset, graph, method, model)` and groups by `(dataset, method)`.
+`(dataset, graph, method, model)` and groups by `(dataset, method)`. It reports
+EA and PSJS; exact-match (EM) is recorded per example but not printed — it is
+near zero by construction on perturbed questions and says nothing.
 
 ## Choosing the generator LLM
 
