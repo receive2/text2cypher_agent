@@ -55,8 +55,8 @@ if not methods:
 
 spec = {
     "title": title, "out": out, "graph": "all graphs pooled",
-    "dataset": ds_label, "n_questions": n, "generated": "2026-06-22",
-    "llm": "gpt-4.1", "methods": methods,
+    "dataset": ds_label, "n_questions": n, "generated": __import__("time").strftime("%Y-%m-%d"),
+    "llm": eval_paths.default_model(), "methods": methods,
 }
 Path(out).parent.mkdir(parents=True, exist_ok=True)
 sp = Path(f"/tmp/_pooled_spec_{tag}.json"); sp.write_text(json.dumps(spec))
