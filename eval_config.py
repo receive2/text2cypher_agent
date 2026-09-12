@@ -77,7 +77,9 @@ RETRIEVAL_LEVENSHTEIN_K: int  = 10      # # candidates the Levenshtein arm retur
 # ── CyANCHOR result self-correction  (cyanchor only) ─────────────────────────
 CYPHER_SEMANTIC_REPAIR:   bool = True   # result-level evaluate → regenerate loop
 CYPHER_REPAIR_MAX_ROUNDS: int  = 4      # max semantic-repair rounds
-CYPHER_EMPTY_IS_WRONG:    bool = True   # treat a 0-row result as a defect
+CYPHER_EMPTY_IS_WRONG:    bool = False  # treat a 0-row result as a defect — OFF by default since 2026-09:
+                                        #   zero contribution on 4 graphs / 3 benchmark families (paired ablation,
+                                        #   Δ within ±1pt, flips even); see report/tuning_summary.md
 
 # ── CyANCHOR ablation toggles  (default ON = the shipped method) ─────────────
 PLAN_EXEC_ESCALATE:          bool = True   # corrective LLM-judge retrieval loop
@@ -264,8 +266,8 @@ CYPHERBENCH_PATH  = "/Users/q0w01lh/datasets/cypherbench/test.json"
 MINDTHEQUERY_PATH = "/Users/q0w01lh/datasets/mindthequery/Train_Test_Splits/Manual"
 ZOGRASCOPE_PATH   = "/Users/q0w01lh/datasets/zograscope/data/zograscope_test_v1.csv"
 
-# Augmented (entity-perturbed) test-set paths — the v2.1 release, versioned in
-# this repo under ``benchmarks/``.  Repo-relative on purpose: a fresh clone runs
+# Augmented (entity-perturbed) test-set paths — the v2.2 verified release,
+# versioned in this repo under ``benchmarks/``.  Repo-relative on purpose: a fresh clone runs
 # without editing anything, and everyone evaluates the same bytes, which is what
 # makes results poolable.  Verify before running:  python benchmarks/verify.py
 #

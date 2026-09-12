@@ -637,7 +637,10 @@ CYPHER_RETRY_MAX_ROUNDS = int(os.getenv("CYPHER_RETRY_MAX_ROUNDS", "2"))
 # ⚙ eval receiver — edit in the eval_config panel, not here (literal = demo/CLI fallback).
 CYPHER_SEMANTIC_REPAIR  = os.getenv("CYPHER_SEMANTIC_REPAIR", "1").lower() in ("1", "true", "yes")
 CYPHER_REPAIR_MAX_ROUNDS = int(os.getenv("CYPHER_REPAIR_MAX_ROUNDS", "4"))
-CYPHER_EMPTY_IS_WRONG    = os.getenv("CYPHER_EMPTY_IS_WRONG", "1").lower() in ("1", "true", "yes")
+# Default OFF (2026-09): the empty-result trigger showed zero contribution in a
+# 4-graph paired ablation — with grounding front-loaded, residual empties are
+# mostly legitimately-empty answers and re-generation only churns.
+CYPHER_EMPTY_IS_WRONG    = os.getenv("CYPHER_EMPTY_IS_WRONG", "0").lower() in ("1", "true", "yes")
 # Retry is error-driven only — an empty result does NOT trigger a rewrite. An
 # empty result is not evidence of a wrong query (the answer may legitimately be
 # empty), and on this benchmark the dominant failure is "wrong-but-non-empty"

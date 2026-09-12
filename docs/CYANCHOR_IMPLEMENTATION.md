@@ -65,7 +65,7 @@ CyANCHOR's behavior is fully described by a `GroundingSpec`
 |---|---|---|
 | `CYPHER_SEMANTIC_REPAIR` | on | enable result-evaluate → regenerate loop |
 | `CYPHER_REPAIR_MAX_ROUNDS` | 4 | round budget when semantic repair is on |
-| `CYPHER_EMPTY_IS_WRONG` | on | treat a 0-row result as a defect |
+| `CYPHER_EMPTY_IS_WRONG` | **off** (since 2026-09) | treat a 0-row result as a defect — ablated to zero contribution on 4 graphs, see `report/tuning_summary.md` |
 | `CYPHER_RETRY_MAX_ROUNDS` | 2 | error-only retry budget (react baseline + repair-off) |
 | `PLAN_EXEC_VALUE_SNAP` | on | post-generation existence-gated snap guard |
 

@@ -76,7 +76,9 @@ for tag, ds, graph, attr, path in PAIRS:
     s=json.load(open(d/"summary.json")); kn=s.get("run_config",{}).get("knobs",{})
     shutil.move(str(d), str(dest))
     recs=[json.loads(l) for l in open(dest/"records.jsonl")]
-    lat=statistics.mean([r["elapsed_agent_sec"] for r in recs if r.get("elapsed_agent_sec")])
+    _lv=[r.get("elapsed_agent_sec") for r in recs if r.get("elapsed_agent_sec")]
+    # newer harness records carry no per-example timing; fall back to wall/n
+    lat=statistics.mean(_lv) if _lv else s.get("elapsed_sec",0)/max(s.get("n",1),1)
     print(f"DONE {tag}/{best} EA={s['ea']:.3f} PSJS={s['psjs']:.3f} lat={lat:.1f}s err={s['n_errors']} "
           f"t={(time.time()-t0)/60:.0f}m vpt={kn.get('PLAN_EXEC_VALUES_PER_TOOL')} "
           f"levk={kn.get('RETRIEVAL_LEVENSHTEIN_K')} budget={kn.get('PLAN_EXEC_ESCALATE_BUDGET')}", flush=True)
