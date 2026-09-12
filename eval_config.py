@@ -261,10 +261,19 @@ FULL_EVAL_PAIRS_13_AUGMENTED: list[tuple[str, str]] = [
 
 # ZOGRASCOPE: path to ``data/zograscope_test_v1.csv``.
 
-# Test-set paths
-CYPHERBENCH_PATH  = "/Users/q0w01lh/datasets/cypherbench/test.json"
-MINDTHEQUERY_PATH = "/Users/q0w01lh/datasets/mindthequery/Train_Test_Splits/Manual"
-ZOGRASCOPE_PATH   = "/Users/q0w01lh/datasets/zograscope/data/zograscope_test_v1.csv"
+# Test-set paths — the ORIGINAL (clean) benchmarks the perturbed sets were
+# built from. They are not part of the perturbed-benchmark sweep and are not
+# versioned in this repo (third-party data): only the bare dataset names
+# (e.g. ("cypherbench", "flight_accident")) read them. Point T2C_DATASETS_DIR
+# at a directory laid out as
+#     <dir>/cypherbench/test.json
+#     <dir>/mindthequery/Train_Test_Splits/Manual/
+#     <dir>/zograscope/data/zograscope_test_v1.csv
+# (default: ~/datasets).
+_DATASETS_DIR = os.environ.get("T2C_DATASETS_DIR", os.path.expanduser("~/datasets"))
+CYPHERBENCH_PATH  = os.path.join(_DATASETS_DIR, "cypherbench", "test.json")
+MINDTHEQUERY_PATH = os.path.join(_DATASETS_DIR, "mindthequery", "Train_Test_Splits", "Manual")
+ZOGRASCOPE_PATH   = os.path.join(_DATASETS_DIR, "zograscope", "data", "zograscope_test_v1.csv")
 
 # Augmented (entity-perturbed) test-set paths — the v2.2 verified release,
 # versioned in this repo under ``benchmarks/``.  Repo-relative on purpose: a fresh clone runs

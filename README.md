@@ -575,9 +575,10 @@ GRAPH_CONNS: dict[tuple[str, str], GraphConn] = {
 }
 
 # Test-set paths (one combined file per dataset; the worker filters by graph).
-CYPHERBENCH_PATH  = "/path/to/cypherbench/test.json"
-MINDTHEQUERY_PATH = "/path/to/mindthequery/Train_Test_Splits/Manual"
-ZOGRASCOPE_PATH   = "/path/to/zograscope/data/zograscope_test_v1.csv"
+# resolved from T2C_DATASETS_DIR (default ~/datasets):
+CYPHERBENCH_PATH  = "<T2C_DATASETS_DIR>/cypherbench/test.json"
+MINDTHEQUERY_PATH = "<T2C_DATASETS_DIR>/mindthequery/Train_Test_Splits/Manual"
+ZOGRASCOPE_PATH   = "<T2C_DATASETS_DIR>/zograscope/data/zograscope_test_v1.csv"
 
 # Which pairs to evaluate on the next `python eval_run.py`.
 EVAL_PAIRS: list[tuple[str, str]] = [

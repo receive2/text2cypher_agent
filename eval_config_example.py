@@ -34,6 +34,8 @@ Edit, save, then run::
 
 from __future__ import annotations
 
+import os
+
 from dataclasses import dataclass
 
 
@@ -86,9 +88,19 @@ EVAL_PAIRS: list[tuple[str, str]] = [
 # Datasets ship one combined test file that internally tags each example
 # with its graph; the worker filters per-pair via ``graph_filter``.
 
-CYPHERBENCH_PATH  = "/Users/username/datasets/cypherbench/test.json"
-MINDTHEQUERY_PATH = "/Users/username/datasets/mindthequery/Train_Test_Splits/Manual"
-ZOGRASCOPE_PATH   = "/Users/username/datasets/zograscope/data/zograscope_test_v1.csv"
+# Test-set paths — the ORIGINAL (clean) benchmarks the perturbed sets were
+# built from. They are not part of the perturbed-benchmark sweep and are not
+# versioned in this repo (third-party data): only the bare dataset names
+# (e.g. ("cypherbench", "flight_accident")) read them. Point T2C_DATASETS_DIR
+# at a directory laid out as
+#     <dir>/cypherbench/test.json
+#     <dir>/mindthequery/Train_Test_Splits/Manual/
+#     <dir>/zograscope/data/zograscope_test_v1.csv
+# (default: ~/datasets).
+_DATASETS_DIR = os.environ.get("T2C_DATASETS_DIR", os.path.expanduser("~/datasets"))
+CYPHERBENCH_PATH  = os.path.join(_DATASETS_DIR, "cypherbench", "test.json")
+MINDTHEQUERY_PATH = os.path.join(_DATASETS_DIR, "mindthequery", "Train_Test_Splits", "Manual")
+ZOGRASCOPE_PATH   = os.path.join(_DATASETS_DIR, "zograscope", "data", "zograscope_test_v1.csv")
 
 
 
