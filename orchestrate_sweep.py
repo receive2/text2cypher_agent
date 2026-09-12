@@ -537,9 +537,13 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     model = model_name()
     _LOG_PATH = REPO / "logs" / f"sweep_{model}.log"
-    methods = args.methods or [m for _, _, m in METHODS]
+    all_methods = [m for _, _, m in METHODS]
+    methods = args.methods or all_methods
     expected = expected_counts()
-    pairs = [SMOKE_PAIR] if args.smoke else suite_pairs()
+    # The verdict (COMPLETE / INCOMPLETE, the SWEEP file, --publish) is ALWAYS
+    # over the full suite; --graphs / --methods only restrict what runs now.
+    scope_pairs = [SMOKE_PAIR] if args.smoke else suite_pairs()
+    pairs = list(scope_pairs)
     if args.graphs:
         pairs = [p for p in pairs if p[1] in args.graphs]
         unknown = set(args.graphs) - {p[1] for p in pairs}
@@ -548,10 +552,10 @@ def main(argv: Optional[List[str]] = None) -> int:
     out_dir = SMOKE_OUT if args.smoke else eval_paths.RUNS_ROOT
     limit = SMOKE_LIMIT if args.smoke else None
     if args.smoke:
-        expected = {p: min(SMOKE_LIMIT, expected.get(p, 0)) for p in pairs}
+        expected = {p: min(SMOKE_LIMIT, expected.get(p, 0)) for p in scope_pairs}
 
     if args.status or args.publish:
-        status = build_status(pairs, methods, expected, out_dir, model)
+        status = build_status(scope_pairs, all_methods, expected, out_dir, model)
         text = render_status(status)
         print(text)
         if not args.smoke:
@@ -591,7 +595,7 @@ def main(argv: Optional[List[str]] = None) -> int:
             except Exception as exc:  # noqa: BLE001
                 log(f"  summary generation failed for {ds}: {type(exc).__name__}: {exc}")
 
-    status = build_status(pairs, methods, expected, out_dir, model)
+    status = build_status(scope_pairs, all_methods, expected, out_dir, model)
     print(); print(render_status(status))
     if args.smoke:
         # A method whose every example errored is a systematic rejection (bad
