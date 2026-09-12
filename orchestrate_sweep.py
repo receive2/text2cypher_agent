@@ -65,6 +65,13 @@ REPO = Path(__file__).resolve().parent
 if str(REPO) not in sys.path:
     sys.path.insert(0, str(REPO))
 
+from dotenv import load_dotenv  # noqa: E402
+
+# .env holds API keys only (never a model choice). The eval workers load it
+# themselves; the driver needs it too because it builds a graph's FCAV index
+# in-process (OpenAI embeddings) before running the fcav method.
+load_dotenv(REPO / ".env")
+
 import eval_config as cfg   # noqa: E402
 import eval_paths           # noqa: E402
 
