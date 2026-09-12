@@ -136,8 +136,16 @@ stops with the error text: **send that text to the coordinator, do not work
 around it.** A single errored question is fine (see step 5).
 
 The driver runs the pre-flight itself first: every graph's archive is checked
-against the live graph and against the published set. `UNREACH` there is a
-network problem (VPN), not a broken setup.
+against the live graph and against the published set, and it stops on any ✗:
+
+- `UNREACH` — network problem (VPN, firewall), not a broken setup;
+- `CONTAM` — the archive's tools do not match the graph: `git pull`, retry, then ask;
+- artifacts `MISMATCH` — your copy differs from `MANIFEST.json` (edited or
+  regenerated): `git checkout setup_artifacts/` and retry;
+- artifacts `MISSING` — you have not pulled the archives: `git pull`.
+
+(`python verify_setup.py` prints the same table on its own if you want to look
+before running anything.)
 
 ## 5. The full run — one command, leave it running
 

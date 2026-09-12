@@ -4,6 +4,12 @@ A 10-minute path from clone to a working agent, then to running experiments.
 For full detail see [README.md](README.md); for the design/research docs see
 [docs/INDEX.md](docs/INDEX.md).
 
+> **Running the perturbed-benchmark model sweep?** Do not follow this file —
+> follow [docs/EXPERIMENT_HANDOUT.md](docs/EXPERIMENT_HANDOUT.md): one line in
+> `eval_config.py`, `python orchestrate_sweep.py --smoke`, `python
+> orchestrate_sweep.py`, `python orchestrate_sweep.py --publish`. The steps
+> below build the agent on **your own** Neo4j and drive the harness by hand.
+
 ---
 
 ## 0. What you need
@@ -82,7 +88,12 @@ answer. That's the whole pipeline.
 
 ---
 
-## 5. Run experiments (the evaluation harness)
+## 5. Run experiments (the evaluation harness, by hand)
+
+This is the low-level, one-`METHOD`-at-a-time interface for development. The
+model sweep uses `orchestrate_sweep.py` on top of it (all five methods, all 13
+graphs, resume, reports, publish) — see
+[docs/EXPERIMENT_HANDOUT.md](docs/EXPERIMENT_HANDOUT.md).
 
 The harness runs the agent over one or more `(dataset, graph)` pairs and reports
 bucketed metrics. It is driven entirely by **`eval_config.py`** — no CLI.

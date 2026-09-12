@@ -647,9 +647,11 @@ For each pair in `EVAL_PAIRS` the driver:
 2. **Graph-identity guard** — connects to the pair's graph and confirms the live node tools search labels that have nodes there. A mismatch (contaminated archive) is **skipped with a loud reason**, not silently mis-scored. This is the same check as `verify_setup.py`; bypass with `EVAL_SKIP_GRAPH_GUARD=1` only if you know what you're doing.
 3. Looks up the `GraphConn`, builds the worker env (`EVAL_NEO4J_URI` / `_USER` / `_PASSWORD` / `_DATABASE`).
 4. Spawns `python -m eval._worker <dataset> <graph> <test_path> <records_out> <summary_out>` as a fresh subprocess so each pair gets a clean Python interpreter.
-5. Writes the canonical per-run dir (method derived from the resolved config; see `eval_paths.py`):
-   - `logs/runs/<dataset>__<graph>__<method>/records.jsonl` — one line per example (gold cypher, predicted cypher, EA / EM verdict, normalised result-sets, error info)
-   - `logs/runs/<dataset>__<graph>__<method>/summary.json` — aggregate summary for that pair
+5. Writes a fresh, timestamped per-run dir (method derived from the resolved config, generator model appended; see `eval_paths.py`):
+   - `logs/runs/<dataset>__<graph>__<method>@<model>__<YYYYMMDD-HHMMSS>/records.jsonl` — one line per example (gold cypher, predicted cypher, EA / PSJS, normalised result-sets, error info)
+   - `logs/runs/<dataset>__<graph>__<method>@<model>__<YYYYMMDD-HHMMSS>/summary.json` — aggregate summary for that pair + the full run configuration
+   
+   For the full model sweep (all five methods × all 13 graphs, resume, per-model reports, publish as a branch) use `python orchestrate_sweep.py` — see [docs/EXPERIMENT_HANDOUT.md](docs/EXPERIMENT_HANDOUT.md).
 
 A failure on one pair (missing archive, worker crash, etc.) is logged and skipped — the rest of `EVAL_PAIRS` still runs. The driver only exits non-zero if **every** pair failed.
 
@@ -659,11 +661,11 @@ A failure on one pair (missing archive, worker crash, etc.) is logged and skippe
 python eval_aggregate.py
 ```
 
-Scans `logs/runs/` for every `*/summary.json`, groups by `(dataset, method)` (parsed from the `<dataset>__<graph>__<method>` run-dir name), re-aggregates the underlying `records.jsonl` files via `eval.difficulty.aggregate_by_difficulty`, and prints one bucketed table per `(dataset, method)` (rows: `all` / `easy` / `medium` / `hard` / `extra`) with a footer naming the graphs that contributed. Records persist on disk across runs, so partial re-evals just overwrite the affected run dir and leave everything else untouched.
+Scans `logs/runs/` for every `*/summary.json`, keeps the newest run per `(dataset, graph, method, model)`, groups by `(dataset, method@model)`, re-aggregates the underlying `records.jsonl` files via `eval.difficulty.aggregate_by_difficulty`, and prints one bucketed table per group (rows: `all` / `easy` / `medium` / `hard` / `extra`, columns EA / PSJS / n / err) with a footer naming the graphs that contributed, plus one timestamped copy `logs/runs/report_<YYYYMMDD_HHMMSS>.md`. Every run writes its own directory, so a partial re-eval never touches other runs; the newest run of a cell is the one that counts.
 
 #### Metrics & normalisation
 
-Each per-dataset metric module under `eval/` computes the headline numbers; for CypherBench-style datasets the harness reports **Execution Accuracy (EA, multiset)** and **Execution Match (EM, ordered)**. Result-set comparison is delegated to `eval/cypher_eval_normalize.py:normalize_result_set`, which structurally expands `Node` / `Relationship` / `Path` cells (label-set + property-set, **never** `element_id`), rounds floats to a configurable epsilon (default `1e-6`), and sorts `collect()`-style list cells unless the gold query has a top-level `ORDER BY`. EA stays multiset and EM stays ordered in both modes — the `ORDER BY` heuristic only governs `sort_collections` inside `collect()` cells, so the EA−EM gap remains a meaningful "fraction of items where ordering matters" signal.
+Each per-dataset metric module under `eval/` computes the headline numbers; for CypherBench-style datasets the harness records **Execution Accuracy (EA, multiset)** and **Execution Match (EM, ordered)** per example, and reports EA and PSJS (EM is kept in `records.jsonl` for completeness but is not printed — on perturbed questions it is near zero by construction). Result-set comparison is delegated to `eval/cypher_eval_normalize.py:normalize_result_set`, which structurally expands `Node` / `Relationship` / `Path` cells (label-set + property-set, **never** `element_id`), rounds floats to a configurable epsilon (default `1e-6`), and sorts `collect()`-style list cells unless the gold query has a top-level `ORDER BY`. EA stays multiset and EM stays ordered in both modes — the `ORDER BY` heuristic only governs `sort_collections` inside `collect()` cells, so the EA−EM gap remains a meaningful "fraction of items where ordering matters" signal.
 
 Offline unit tests for the normaliser:
 
