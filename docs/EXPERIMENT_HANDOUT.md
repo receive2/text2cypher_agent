@@ -59,6 +59,11 @@ python benchmarks/verify.py
 
 Must print **`VERIFIED — safe to run experiments and pool results.`**
 
+The benchmark itself ships in the repo — `benchmarks/<dataset>_augmented_v2/test.json`
+for `cypherbench`, `mindthequery` and `zograscope` — and `eval_run.py` reads it
+from there (`eval_config._BENCHMARKS_DIR`, repo-relative). Nothing to download,
+nothing to configure.
+
 This is not a formality. The benchmarks are the **v2.2 verified release,
 4,611 questions**; earlier checkouts carried the 4,641-row pre-verification
 v2.1 set or the 4,875-row pre-curation set, and results from different copies
