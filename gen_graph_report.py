@@ -53,10 +53,10 @@ if not methods:
 
 spec = {
     "title": f"Report — {graph} (entity-perturbed {dataset_lab})",
-    "out":   f"{REPORT_DIR}/{dataset_dir}/{graph}.md",
+    "out":   f"{REPORT_DIR}/{eval_paths.default_model()}/{dataset_dir}/{graph}.md",   # one folder per generator model
     "graph": graph, "dataset": dataset_lab, "n_questions": n,
-    "generated": date, "llm": "gpt-4.1", "methods": methods,
+    "generated": date, "llm": eval_paths.default_model(), "methods": methods,
 }
-Path(REPORT_DIR, dataset_dir).mkdir(parents=True, exist_ok=True)
+Path(REPORT_DIR, eval_paths.default_model(), dataset_dir).mkdir(parents=True, exist_ok=True)
 sp = Path(f"/tmp/_spec_{graph}.json"); sp.write_text(json.dumps(spec))
 subprocess.run([sys.executable, "gen_ablation_report.py", str(sp)], check=True)

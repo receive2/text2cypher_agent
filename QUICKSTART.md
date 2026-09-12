@@ -176,7 +176,7 @@ rate limits.
 (LLM evaluator: incorrect/illogical/incomplete/empty) → grounding-aware
 regeneration (keeps the candidates + adds feedback), up to `CYPHER_REPAIR_MAX_ROUNDS`,
 keeping the first accepted (else first executable) attempt. See
-[report/CypherBench/flight_accident.md](report/CypherBench/flight_accident.md)
+[report/gpt-4.1/CypherBench/flight_accident.md](report/gpt-4.1/CypherBench/flight_accident.md)
 for the ablation and the README "Methods" table for details.
 
 To run a different method or arm set, **edit `eval_config.py` and re-run** — e.g.

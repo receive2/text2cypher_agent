@@ -155,10 +155,12 @@ logs/runs/<dataset>__<graph>__<method>@<model>__<YYYYMMDD-HHMMSS>/
     summary.json     aggregate + the full run configuration
 ```
 
-and after each graph the driver regenerates `report/<Dataset>/<graph>.md`,
-after each dataset `report/<Dataset>/_summary.md`, and at the end
-`report/SWEEP_<model>.md` — the completeness matrix plus the headline EA / PSJS
-per dataset and overall.
+and after each graph the driver regenerates `report/<model>/<Dataset>/<graph>.md`,
+after each dataset `report/<model>/<Dataset>/_summary.md`, and at the end
+**`report/<model>/SWEEP_<YYYYMMDD-HHMMSS>.md`** — one file per run, never
+overwritten (`SWEEP.md` is a copy of the latest): the completeness matrix plus
+every table the paper needs — EA / PSJS per dataset and overall, by
+perturbation strategy, by query difficulty.
 
 **Completeness, not perfection.** A cell is complete when it holds one record
 per question (`n` equals the graph's question count). Some questions **will**
@@ -190,10 +192,11 @@ python orchestrate_sweep.py --publish
 
 Creates the branch **`sweep/<model>`** (e.g. `sweep/gpt-5.6-terra`) from
 `main`, commits your model's run directories (`records.jsonl` + `summary.json`
-for all 65 cells), the regenerated `report/` tables, the sweep log and your
-`eval_config.py`, and pushes it. Tell the coordinator the branch name. That is
-all we need: the tables are in `report/`, and the per-question records let us
-re-derive anything without re-running.
+for all 65 cells), `report/<model>/` (the per-graph tables and every
+`SWEEP_*.md`), the sweep log and your `eval_config.py`, and pushes it. Tell the
+coordinator the branch name. That is all we need: the tables are in
+`report/<model>/`, and the per-question records let us re-derive anything
+without re-running.
 
 `--publish` refuses an INCOMPLETE sweep; if the coordinator explicitly accepts
 a partial result, `--publish --allow-incomplete`.

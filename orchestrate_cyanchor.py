@@ -166,11 +166,11 @@ def gen_graph_report(report_graph: str, conn_graph: str, dataset_key: str,
             default=0)
     spec = {
         "title": f"Report — {report_graph} (entity-perturbed {label})",
-        "out":   f"{cfg.REPORT_DIR}/{folder}/{report_graph}.md",
+        "out":   f"{cfg.REPORT_DIR}/{eval_paths.default_model()}/{folder}/{report_graph}.md",
         "graph": report_graph, "dataset": label, "n_questions": n,
-        "generated": time.strftime("%Y-%m-%d"), "llm": "gpt-4.1", "methods": methods,
+        "generated": time.strftime("%Y-%m-%d"), "llm": eval_paths.default_model(), "methods": methods,
     }
-    Path(cfg.REPORT_DIR, folder).mkdir(parents=True, exist_ok=True)
+    Path(cfg.REPORT_DIR, eval_paths.default_model(), folder).mkdir(parents=True, exist_ok=True)
     sp = TMP_OUT / f"_spec_{report_graph}.json"
     TMP_OUT.mkdir(parents=True, exist_ok=True)
     sp.write_text(json.dumps(spec))
@@ -179,7 +179,8 @@ def gen_graph_report(report_graph: str, conn_graph: str, dataset_key: str,
 
 
 def gen_summary(folder: str, label: str, dataset_key: str, graphs: list[str]) -> None:
-    out = f"{cfg.REPORT_DIR}/{folder}/_summary.md"
+    out = f"{cfg.REPORT_DIR}/{eval_paths.default_model()}/{folder}/_summary.md"
+    Path(cfg.REPORT_DIR, eval_paths.default_model(), folder).mkdir(parents=True, exist_ok=True)
     title = f"Report — {label} (all graphs pooled)"
     subprocess.run([sys.executable, "gen_pooled_report.py", out, label, title,
                     dataset_key, *graphs], check=True, cwd=REPO)

@@ -41,8 +41,12 @@ After each graph, ``report/<Dataset>/<graph>.md`` is regenerated from the five
 run dirs (``gen_ablation_report.py``); after each dataset, its pooled
 ``_summary.md`` (``gen_pooled_report.py``). Pooling is over all questions
 (each question weighs one; an errored question scores 0) — the same arithmetic
-as the committed gpt-4.1 tables. ``report/SWEEP_<model>.md`` holds the
-completeness matrix and the headline EA / PSJS per dataset and overall.
+as the committed gpt-4.1 tables. Everything a model produces lives under
+``report/<model>/``: ``<Dataset>/<graph>.md``, ``<Dataset>/_summary.md`` and —
+written at the end of every driver invocation, never overwritten —
+``SWEEP_<YYYYMMDD-HHMMSS>.md``: the completeness matrix plus every table the
+paper needs (per dataset and overall; by perturbation strategy; by query
+difficulty), with ``SWEEP.md`` a copy of the latest one.
 """
 from __future__ import annotations
 
@@ -176,6 +180,36 @@ def _fmt(x: Optional[float]) -> str:
     return "—" if x is None else f"{x:.3f}"
 
 
+def report_root(model: str) -> Path:
+    """report/<model>/ — one folder per generator model."""
+    return REPO / cfg.REPORT_DIR / model
+
+
+try:  # canonical bucket order, shared with the per-graph tables
+    from gen_ablation_report import _STRAT_ORDER, _DIFF_ORDER, _order as _bucket_order  # noqa: E402
+except Exception:  # pragma: no cover
+    _STRAT_ORDER, _DIFF_ORDER = [], []
+
+    def _bucket_order(values, known):  # type: ignore[misc]
+        return sorted(values)
+
+
+def _breakdown(recs_by_method: Dict[str, List[dict]], field: str, known: List[str],
+               metric, labels: Dict[str, str], methods: List[str]) -> str:
+    """Markdown table: rows = methods, columns = buckets of *field* (+ all)."""
+    values = {str(r.get(field) or "?") for recs in recs_by_method.values() for r in recs}
+    buckets = list(_bucket_order(values, known))
+    head = "| method | " + " | ".join(buckets) + " | all |\n|---|" + "---:|" * (len(buckets) + 1)
+    rows = []
+    for m in methods:
+        recs = recs_by_method.get(m, [])
+        cells = [_fmt(metric([r for r in recs if str(r.get(field) or "?") == b])) for b in buckets]
+        rows.append("| " + labels[m] + " | " + " | ".join(cells) + f" | {_fmt(metric(recs))} |")
+    counts = "| n | " + " | ".join(str(sum(1 for r in recs_by_method.get(methods[0], []) if str(r.get(field) or "?") == b))
+                                   for b in buckets) + f" | {len(recs_by_method.get(methods[0], []))} |"
+    return "\n".join([head, *rows, counts])
+
+
 def _git(*args: str) -> str:
     try:
         return subprocess.check_output(["git", *args], cwd=REPO, stderr=subprocess.DEVNULL).decode().strip()
@@ -209,7 +243,8 @@ def build_status(pairs: List[Tuple[str, str]], methods: List[str], expected: Dic
 
 def render_status(status: dict) -> str:
     model, cells, pairs, methods = status["model"], status["cells"], status["pairs"], status["methods"]
-    lines = [f"# Sweep — `{model}`", ""]
+    stamp = time.strftime("%Y-%m-%d %H:%M")
+    lines = [f"# Sweep — `{model}` — {stamp}", ""]
     lines.append(("**COMPLETE** — every graph x method cell holds one record per question."
                   if status["complete"] else
                   "**INCOMPLETE** — cells marked ✗ are missing or truncated; re-run "
@@ -249,15 +284,35 @@ def render_status(status: dict) -> str:
             all_recs += recs
         row += [_fmt(ea(all_recs)), _fmt(psjs(all_recs)), str(len(all_recs)), str(n_err(all_recs))]
         lines.append("| " + " | ".join(row) + " |")
-    lines += ["", "`*` = one or more cells of that dataset are incomplete; the number is over the records present.",
-              "", "Per-graph tables: `report/<Dataset>/<graph>.md`; per-dataset pooled tables: `report/<Dataset>/_summary.md`."]
+    lines += ["", "`*` = one or more cells of that dataset are incomplete; the number is over the records present."]
+    # ── the breakdown tables the paper uses, per dataset and over everything ──
+    scopes = [(DATASET_INFO[ds][1], ds) for ds in DATASET_INFO if any(p[0] == ds for p in pairs)]
+    if len(scopes) > 1:
+        scopes.append(("All datasets", None))
+    for title, ds in scopes:
+        by_m = {m: [r for (d2, g2, m2), c in cells.items() if m2 == m and (ds is None or d2 == ds) for r in c["records"]]
+                for m in methods}
+        if not any(by_m.values()):
+            continue
+        lines += ["", f"## {title} — by perturbation strategy", "",
+                  "EA", "", _breakdown(by_m, "strategy", list(_STRAT_ORDER), ea, labels, methods), "",
+                  "PSJS", "", _breakdown(by_m, "strategy", list(_STRAT_ORDER), psjs, labels, methods),
+                  "", f"## {title} — by query difficulty", "",
+                  "EA", "", _breakdown(by_m, "difficulty", list(_DIFF_ORDER), ea, labels, methods), "",
+                  "PSJS", "", _breakdown(by_m, "difficulty", list(_DIFF_ORDER), psjs, labels, methods)]
+    lines += ["", f"Per-graph tables: `{cfg.REPORT_DIR}/{model}/<Dataset>/<graph>.md`; "
+              f"per-dataset pooled tables: `{cfg.REPORT_DIR}/{model}/<Dataset>/_summary.md`."]
     return "\n".join(lines) + "\n"
 
 
 def write_status(status: dict) -> Path:
-    out = REPO / cfg.REPORT_DIR / f"SWEEP_{status['model']}.md"
-    out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(render_status(status), encoding="utf-8")
+    """One timestamped file per driver invocation (never overwritten) plus
+    SWEEP.md, a copy of the latest. Returns the timestamped path."""
+    root = report_root(status["model"]); root.mkdir(parents=True, exist_ok=True)
+    text = render_status(status)
+    out = root / f"SWEEP_{time.strftime('%Y%m%d-%H%M%S')}.md"
+    out.write_text(text, encoding="utf-8")
+    (root / "SWEEP.md").write_text(text, encoding="utf-8")
     return out
 
 
@@ -368,22 +423,23 @@ def refresh_graph_report(dataset: str, graph: str, model: str) -> None:
         return
     n = max(len(read_records(REPO / m["dir"])) for m in methods)
     spec = {"title": f"Report — {graph} (entity-perturbed {label})",
-            "out": f"{cfg.REPORT_DIR}/{folder}/{graph}.md",
+            "out": f"{cfg.REPORT_DIR}/{model}/{folder}/{graph}.md",
             "graph": graph, "dataset": label, "n_questions": n,
             "generated": time.strftime("%Y-%m-%d"), "llm": model, "methods": methods}
-    (REPO / cfg.REPORT_DIR / folder).mkdir(parents=True, exist_ok=True)
+    (report_root(model) / folder).mkdir(parents=True, exist_ok=True)
     tmp = REPO / "logs" / "_sweep_tmp"; tmp.mkdir(parents=True, exist_ok=True)
     sp = tmp / f"_spec_{graph}.json"; sp.write_text(json.dumps(spec), encoding="utf-8")
     subprocess.run([sys.executable, "gen_ablation_report.py", str(sp)], check=True, cwd=REPO)
     log(f"  report: {spec['out']}")
 
 
-def refresh_summary(dataset: str, graphs: List[str]) -> None:
+def refresh_summary(dataset: str, graphs: List[str], model: str) -> None:
     folder, label = DATASET_INFO[dataset]
     have = [g for g in graphs if eval_paths.latest_run_dir(dataset, g, method_seg("cyanchor")) is not None]
     if not have:
         return
-    out = f"{cfg.REPORT_DIR}/{folder}/_summary.md"
+    (report_root(model) / folder).mkdir(parents=True, exist_ok=True)
+    out = f"{cfg.REPORT_DIR}/{model}/{folder}/_summary.md"
     subprocess.run([sys.executable, "gen_pooled_report.py", out, label, f"Report — {label} (all graphs pooled)",
                     dataset, *have], check=True, cwd=REPO)
     log(f"  summary: {out}")
@@ -442,14 +498,14 @@ def publish(status: dict, allow_incomplete: bool) -> int:
     subprocess.run(["git", "checkout", "-B", branch], cwd=REPO, check=True)
     dirs = sorted({c["dir"] for c in status["cells"].values() if c["dir"]})
     subprocess.run(["git", "add", "-f", *dirs], cwd=REPO, check=True)
-    extras = [cfg.REPORT_DIR, "eval_config.py"] + [str(p.relative_to(REPO)) for p in
+    extras = [f"{cfg.REPORT_DIR}/{model}", "eval_config.py"] + [str(p.relative_to(REPO)) for p in
                                                   (state_path(model), REPO / "logs" / f"sweep_{model}.log") if p.is_file()]
     subprocess.run(["git", "add", "-f", *extras], cwd=REPO, check=True)
     n_cells = len(status["cells"]); n_done = sum(1 for c in status["cells"].values() if c["complete"])
     msg = (f"sweep({model}): {'full suite' if status['complete'] else 'PARTIAL'} — "
            f"{n_done}/{n_cells} graph x method cells, {len(dirs)} run dirs + reports\n\n"
            f"Generator: {model}. Base: {base}. Benchmarks {_benchmarks_version()}, artifacts set {_artifact_set_id()}.\n"
-           f"records.jsonl / summary.json per run dir under logs/runs/; tables under report/.")
+           f"records.jsonl / summary.json per run dir under logs/runs/; tables under {cfg.REPORT_DIR}/{model}/.")
     subprocess.run(["git", "commit", "-q", "-m", msg], cwd=REPO, check=True)
     subprocess.run(["git", "push", "-u", "origin", branch], cwd=REPO, check=True)
     log(f"✓ published branch {branch} ({n_done}/{n_cells} cells, {len(dirs)} run dirs). You are now on that branch.")
@@ -524,7 +580,7 @@ def main(argv: Optional[List[str]] = None) -> int:
                     log(f"  report generation failed for {ds}__{g}: {type(exc).__name__}: {exc}")
         if not args.smoke:
             try:
-                refresh_summary(ds, graphs)
+                refresh_summary(ds, graphs, model)
             except Exception as exc:  # noqa: BLE001
                 log(f"  summary generation failed for {ds}: {type(exc).__name__}: {exc}")
 

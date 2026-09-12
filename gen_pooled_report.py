@@ -12,7 +12,7 @@ Records are read from the canonical per-run dirs (see ``eval_paths``):
   logs/runs/<dataset_key>__<graph>__{no_val_link,fcav,react,graphrag,cyanchor_fl}/
 
 Example (MindTheQuery, covid + 4 driver graphs):
-  python gen_pooled_report.py report/MindTheQuery/_summary.md MindTheQuery \
+  python gen_pooled_report.py report/<model>/MindTheQuery/_summary.md MindTheQuery \
     "Ablation — MindTheQuery (all graphs pooled)" \
     mindthequery_augmented covid er wwc healthcare bloom
 """

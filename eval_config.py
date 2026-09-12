@@ -302,8 +302,9 @@ OUT_DIR = "logs/runs"
 SETUP_ARTIFACTS_ROOT = "setup_artifacts"
 
 
-# Where generated reports are written: REPORT_DIR/<dataset>/<graph>.md and
-# REPORT_DIR/<dataset>/_summary.md. Default "report".
+# Where generated reports are written — one folder per generator model:
+# REPORT_DIR/<model>/<dataset>/<graph>.md, REPORT_DIR/<model>/<dataset>/_summary.md
+# and REPORT_DIR/<model>/SWEEP_<stamp>.md (orchestrate_sweep). Default "report".
 REPORT_DIR: str = "report"
 
 # (Method / retrieval arms / ablation toggles / LIMIT / SHARDS / VERBOSE all live

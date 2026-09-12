@@ -72,6 +72,24 @@ def test_status_complete_when_every_cell_is_full(tmp_path, monkeypatch):
     assert "**COMPLETE**" in text and "✓ 2/1" in text and "| No Val Link | 0.500 | 0.500 |" in text
 
 
+def test_write_status_keeps_one_file_per_invocation(tmp_path, monkeypatch):
+    import eval_config as cfg
+    monkeypatch.setattr(osw, "REPO", tmp_path)
+    monkeypatch.setattr(cfg, "REPORT_DIR", "report")
+    rows = [{"ea": True, "psjs": 1.0, "strategy": "typo", "difficulty": "easy"},
+            {"ea": False, "psjs": 0.0, "strategy": "alias", "difficulty": "hard"}]
+    _write_run(tmp_path, "mindthequery_augmented", "er", "no_val_link", "m1", "20260101-000000", rows)
+    st = osw.build_status([("mindthequery_augmented", "er")], ["no_val_link"], {("mindthequery_augmented", "er"): 2}, "logs/x", "m1")
+    p1 = osw.write_status(st)
+    import time; time.sleep(1.1)
+    p2 = osw.write_status(st)
+    assert p1 != p2 and p1.parent == tmp_path / "report" / "m1" and p1.name.startswith("SWEEP_")
+    assert (tmp_path / "report" / "m1" / "SWEEP.md").read_text(encoding="utf-8") == p2.read_text(encoding="utf-8")
+    text = p2.read_text(encoding="utf-8")
+    assert "by perturbation strategy" in text and "| typo |" in text.replace("| typo | alias", "| typo |") or "typo" in text
+    assert "by query difficulty" in text and "hard" in text
+
+
 def test_model_name_rejects_unknown_preset(monkeypatch):
     import eval_config as cfg
     monkeypatch.setattr(cfg, "GENERATOR_LLM", "gpt-9-nope")

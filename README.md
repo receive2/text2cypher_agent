@@ -44,7 +44,7 @@ User question
 The method is selected by the `METHOD` axis — `no_val_link` · `fcav` · `react` ·
 `graphrag` · `cyanchor` (see [Methods](#value-linking-modes)). The shipped method is
 **CyANCHOR** (`cyanchor`); `No Val Link`, `FCAV`, `ReAct`, and `GraphRAG` are the
-baselines. Ablation: [report/CypherBench/flight_accident.md](report/CypherBench/flight_accident.md).
+baselines. Ablation: [report/gpt-4.1/CypherBench/flight_accident.md](report/gpt-4.1/CypherBench/flight_accident.md).
 
 ---
 
@@ -236,7 +236,7 @@ baseline. The batch drivers (`orchestrate_cyanchor.py`, …) sweep methods by se
 > resolve in `config.py` (`val_link`+`plan_exec` → `cyanchor`, `hybrid` → `+vector`).
 
 Method writeup: [docs/multi_agent_graphrag.md](docs/multi_agent_graphrag.md) ·
-results: [report/CypherBench/flight_accident.md](report/CypherBench/flight_accident.md).
+results: [report/gpt-4.1/CypherBench/flight_accident.md](report/gpt-4.1/CypherBench/flight_accident.md).
 
 ---
 
@@ -590,7 +590,7 @@ LIMIT:   int | None = None      # cap examples per pair (None = all)
 VERBOSE: bool       = False     # per-example log lines
 SHARDS:  int        = 4         # intra-graph parallelism (1 = single process)
 OUT_DIR              = "logs/runs"
-REPORT_DIR           = "report" # where gen_*_report.py write report/<dataset>/<graph>.md + _summary.md
+REPORT_DIR           = "report" # gen_*_report.py write report/<model>/<dataset>/<graph>.md + _summary.md
 SETUP_ARTIFACTS_ROOT = "setup_artifacts"
 ```
 

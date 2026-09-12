@@ -131,7 +131,7 @@ VERBOSE: bool = False
 # coverage). Lower if you hit LLM rate limits.
 SHARDS: int = 4
 
-# Where generated reports are written: REPORT_DIR/<dataset>/<graph>.md and _summary.md.
+# Where generated reports are written: REPORT_DIR/<model>/<dataset>/<graph>.md and _summary.md.
 REPORT_DIR: str = "report"
 
 

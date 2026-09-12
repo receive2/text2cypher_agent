@@ -204,14 +204,17 @@ graph / manifest / fcav guards, `gen_ablation_report.py` and
 `gen_pooled_report.py` for the tables — and adds: a pre-flight over all 13
 graphs; building a graph's FCAV index on first use; retry (3×) per cell; resume
 from disk (a cell is complete when its newest run holds one record per
-question — errored questions are allowed and score 0); `report/SWEEP_<model>.md`
-with the completeness matrix and the pooled numbers. Pooling is over all
-questions of a dataset (each question weighs one), identical to the committed
-gpt-4.1 tables. `orchestrate_cyanchor.py` is the older CyANCHOR-only refresh
-driver and is unchanged.
+question — errored questions are allowed and score 0). Every driver invocation
+ends by writing `report/<model>/SWEEP_<YYYYMMDD-HHMMSS>.md` — never
+overwritten; `SWEEP.md` is a copy of the latest — holding the completeness
+matrix and every table the paper needs: EA / PSJS per dataset and overall, by
+perturbation strategy, by query difficulty. Pooling is over all questions of a
+dataset (each question weighs one), identical to the committed gpt-4.1 tables.
+`orchestrate_cyanchor.py` is the older CyANCHOR-only refresh driver; it now
+writes under `report/<model>/` as well.
 
 The deliverable of a sweep is the branch `sweep/<model>`; `main` keeps the
-gpt-4.1 reference tables under `report/`.
+gpt-4.1 reference tables under `report/gpt-4.1/`.
 
 ## The published artifact set (coordinator only)
 
@@ -344,16 +347,17 @@ their own token counts, not GPT's.
 
 ## Producing the per-graph comparison reports
 
-The committed `report/<dataset>/<graph>.md` tables (Overall + by perturbation
-strategy + by difficulty, EA & PSJS, across all five methods) are rendered from
-`logs/runs/` — no prefix map, locations resolved through `eval_paths`:
+The committed `report/<model>/<dataset>/<graph>.md` tables (Overall + by
+perturbation strategy + by difficulty, EA & PSJS, across all five methods) are
+rendered from `logs/runs/` — one folder per generator model (`report/gpt-4.1/`
+holds the June reference tables); locations resolved through `eval_paths`:
 
 ```bash
 # One graph (args: <graph> <report_dir> <label> <dataset_key> [date]):
 python gen_graph_report.py movie CypherBench CypherBench cypherbench_augmented
 
 # Dataset-pooled summary across graphs:
-python gen_pooled_report.py report/CypherBench/_summary.md CypherBench \
+python gen_pooled_report.py report/<model>/CypherBench/_summary.md CypherBench \
   "Report — CypherBench (all graphs pooled)" cypherbench_augmented movie nba geography …
 
 # Full CyANCHOR refresh across all 13 graphs (re-runs CyANCHOR, regenerates every
