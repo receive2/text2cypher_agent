@@ -121,8 +121,19 @@ def _stamp_summary(out_summary: Path, env: dict, *, dataset: str, graph: str,
     llm: dict = {}
     try:
         import config as _config
+        # Resolve the generator preset from the SAME env that tags the run dir
+        # (GENERATOR_LLM injected by _build_env). The parent process never has
+        # that env var itself, so reading config.*_LLM_CONFIG here would record
+        # the static literals (gpt-4.1) for a run that actually used the preset.
+        preset = env.get("GENERATOR_LLM") or None
+        overlay: dict = {}
+        if preset:
+            spec = _config.resolve_preset(preset)
+            params = spec.pop("params", None) or {}
+            overlay = {**spec, **params}
+        llm["generator_llm"] = preset
         for stage in ("NER", "CYPHER", "QA"):
-            c = getattr(_config, f"{stage}_LLM_CONFIG", None) or {}
+            c = {**(getattr(_config, f"{stage}_LLM_CONFIG", None) or {}), **overlay}
             llm[stage.lower()] = {k: c.get(k) for k in ("provider", "model") if k in c}
     except Exception:  # noqa: BLE001
         pass
