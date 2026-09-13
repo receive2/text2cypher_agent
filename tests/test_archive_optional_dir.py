@@ -88,17 +88,21 @@ def test_swap_in_reswaps_when_live_files_differ_despite_sentinel(tmp_path, monke
     monkeypatch.setattr(aswap, "REPO_ROOT", root)
     monkeypatch.setattr(aswap, "_setup_artifacts_root", lambda: arch_root)
     a = arch_root / "cypherbench_augmented__movie"
-    for rel in SWAP_FILES + [_SNIPPET_NAME]:
-        (a / rel).parent.mkdir(parents=True, exist_ok=True); (a / rel).write_text(f"ARCHIVE {rel}\\n", encoding="utf-8")
+    for rel in SWAP_FILES:
+        (a / rel).parent.mkdir(parents=True, exist_ok=True)
+        (a / rel).write_text("ARCHIVE " + rel + "\n", encoding="utf-8")
+    (a / _SNIPPET_NAME).write_text("EMBEDDABLE_PROPERTIES = []\n", encoding="utf-8")   # must be a valid block
     for d in SWAP_DIRS:
-        (a / d).mkdir(parents=True, exist_ok=True); (a / d / "index.faiss").write_bytes(b"x")
+        (a / d).mkdir(parents=True, exist_ok=True)
+        (a / d / "index.faiss").write_bytes(b"x")
         (a / d / "fingerprint.json").write_text(_json.dumps({"identity": {"pair": "cypherbench_augmented__movie"}}), encoding="utf-8")
-    (root / "vector_config.py").parent.mkdir(parents=True, exist_ok=True)
-    (root / "vector_config.py").write_text("EMBEDDABLE_PROPERTIES = []\\n", encoding="utf-8")
+    root.mkdir(parents=True, exist_ok=True)
+    (root / "vector_config.py").write_text("EMBEDDABLE_PROPERTIES = []\n", encoding="utf-8")
     # live tree: another graph's copies, but the sentinel claims movie
     for rel in SWAP_FILES:
-        (root / rel).parent.mkdir(parents=True, exist_ok=True); (root / rel).write_text(f"OTHER GRAPH {rel}\\n", encoding="utf-8")
+        (root / rel).parent.mkdir(parents=True, exist_ok=True)
+        (root / rel).write_text("OTHER GRAPH " + rel + "\n", encoding="utf-8")
     aswap._write_sentinel("cypherbench_augmented__movie")
     aswap.swap_in("cypherbench_augmented", "movie")
     for rel in SWAP_FILES:
-        assert (root / rel).read_text(encoding="utf-8") == f"ARCHIVE {rel}\\n"
+        assert (root / rel).read_text(encoding="utf-8") == "ARCHIVE " + rel + "\n"
