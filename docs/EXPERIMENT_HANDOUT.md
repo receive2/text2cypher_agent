@@ -201,10 +201,18 @@ python orchestrate_sweep.py --publish
 Creates the branch **`sweep/<model>`** (e.g. `sweep/gpt-5.6-terra`) from
 `main`, commits your model's run directories (`records.jsonl` + `summary.json`
 for all 65 cells), `report/<model>/` (the per-graph tables and every
-`SWEEP_*.md`), the sweep log and your `eval_config.py`, and pushes it. Tell the
-coordinator the branch name. That is all we need: the tables are in
-`report/<model>/`, and the per-question records let us re-derive anything
-without re-running.
+`SWEEP_*.md`), the sweep log and your `eval_config.py`, and pushes it.
+
+Then send the coordinator **two things**:
+
+1. the branch name (`sweep/<model>`), and
+2. the results file **`report/<model>/SWEEP.md`** attached to the message — it
+   is the completeness matrix plus every table the paper needs (EA / PSJS per
+   dataset and overall, by perturbation strategy, by query difficulty). It is
+   also in the branch; attaching it just saves a checkout.
+
+That is all we need: the tables are in `report/<model>/`, and the per-question
+records let us re-derive anything without re-running.
 
 `--publish` refuses an INCOMPLETE sweep; if the coordinator explicitly accepts
 a partial result, `--publish --allow-incomplete`.
