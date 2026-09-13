@@ -99,10 +99,11 @@ def _load_openai_kwargs():
 @pytest.mark.parametrize("model,keeps_temperature,effort_expected", [
     ("gpt-4.1", True, None),
     ("gpt-4o", True, None),
-    # gpt-5.1+ / gpt-6: "none" — required for function tools on chat completions
-    ("gpt-5.6-terra", False, "none"),
-    ("gpt-5.6-luna", False, "none"),
-    ("gpt-6-astra", False, "none"),
+    # gpt-5.1+ / gpt-6: "none" — required for function tools on chat completions;
+    # non-reasoning mode accepts temperature again, so it is kept (= gpt-4.1's 0)
+    ("gpt-5.6-terra", True, "none"),
+    ("gpt-5.6-luna", True, "none"),
+    ("gpt-6-astra", True, "none"),
     # original gpt-5 and o-series: "none" is not a valid value there
     ("gpt-5", False, "low"),
     ("gpt-5-mini", False, "low"),

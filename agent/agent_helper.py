@@ -179,6 +179,12 @@ def _openai_generation_kwargs(model: str, temperature: Optional[float]) -> dict:
             kw["reasoning_effort"] = effort
         else:
             kw["model_kwargs"] = {"reasoning_effort": effort}
+        # In non-reasoning mode ("none") gpt-5.1+/gpt-6 accept sampling
+        # parameters again (verified live on gpt-5.6-terra/luna, 2026-09-12), so
+        # they run at the same temperature as gpt-4.1 — without it the API
+        # samples at its default and the same question flips between runs.
+        if effort == "none" and temperature is not None:
+            kw["temperature"] = temperature
     elif temperature is not None:
         kw["temperature"] = temperature
     return kw

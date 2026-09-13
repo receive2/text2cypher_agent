@@ -311,10 +311,12 @@ called without `temperature` and with thinking switched off; OpenAI's
 reasoning line likewise gets no `temperature`: gpt-5.1+ and gpt-6 run with
 `reasoning_effort="none"` — the value the chat-completions endpoint *requires*
 once function tools are bound (the react agent binds ~50; measured 2026-09-11:
-`"low"` is rejected with a 400 on every react example) — while the original
-gpt-5 and the o-series, which do not accept `"none"`, keep `"low"`. Every
-generator therefore runs as a plain, terse text model, which is what the
-comparison needs. To change a model's
+`"low"` is rejected with a 400 on every react example) **and keep
+`temperature=0`**, which non-reasoning mode accepts again — so they are as
+deterministic as gpt-4.1 was; the original gpt-5 and the o-series, which do
+not accept `"none"` (nor a temperature), keep `"low"`. Every generator
+therefore runs as a plain, terse text model, which is what the comparison
+needs. To change a model's
 parameters, add a `"params"` dict to its entry in `config.MODEL_PRESETS`
 (passed to the chat-model constructor verbatim) — never edit `.env`.
 
