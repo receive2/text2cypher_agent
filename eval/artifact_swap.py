@@ -288,11 +288,22 @@ def swap_in(dataset: str, graph: str) -> None:
         return
 
     pair_id = f"{dataset}__{graph}"
-    if _read_sentinel() == pair_id:
-        logger.debug(f"artifact_swap.swap_in: sentinel already at {pair_id}, no-op.")
-        return
-
     archive = archive_dir_for(dataset, graph)
+    if _read_sentinel() == pair_id:
+        # The sentinel only records a NAME. The live files are tracked in git,
+        # so a `git pull` / checkout can silently replace them with another
+        # graph's copies while the sentinel still says this pair (seen
+        # 2026-09-13: every cell refused by the graph guard). Trust the
+        # sentinel only when the live required files match the archive.
+        stale = [rel for rel in SWAP_FILES
+                 if not (_live_path(rel).is_file() and (archive / rel).is_file()
+                         and _file_sha(_live_path(rel)) == _file_sha(archive / rel))]
+        if not stale:
+            logger.debug(f"artifact_swap.swap_in: sentinel already at {pair_id} and live files match, no-op.")
+            return
+        logger.warning(f"artifact_swap.swap_in: sentinel says {pair_id} but live files differ from the "
+                       f"archive ({', '.join(stale)}) — re-swapping.")
+
     _validate_archive_complete(archive)
 
     try:
