@@ -320,6 +320,14 @@ needs. To change a model's
 parameters, add a `"params"` dict to its entry in `config.MODEL_PRESETS`
 (passed to the chat-model constructor verbatim) — never edit `.env`.
 
+**Sampling, per preset** (what the builders send; verified live 2026-09-12):
+
+| preset | sampling |
+|---|---|
+| `gpt-4.1`, `claude-haiku-4.5`, `deepseek-v3.1`, `llama-3.3-70b` | `temperature=0` |
+| `gpt-5.6-terra`, `gpt-5.6-luna` | `reasoning_effort="none"` + `temperature=0` |
+| `claude-sonnet-5`, `claude-opus-5` | thinking disabled; **no temperature — the API refuses it** (`"temperature is deprecated for this model"`), so these run at Anthropic's default sampling and a re-run of the same question can differ. There is no seed either; report them as single-sample runs. |
+
 **What has been exercised live (2026-09-09).** `gpt-5.6-terra`,
 `gpt-5.6-luna`, `claude-sonnet-5`, `claude-opus-5` and `claude-haiku-4.5` were
 all called through the real builders: no parameter errors, plain-text replies,
