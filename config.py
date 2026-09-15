@@ -170,6 +170,16 @@ MODEL_REGISTRY: dict = {
         "api_key_env": "DEEPINFRA_API_KEY",
         "model":       "deepseek-ai/DeepSeek-V3.1",
     },
+    "qwen3-32b-deepinfra": {
+        # Hybrid thinking model: the preset passes chat_template_kwargs.enable_thinking=false
+        # (vLLM convention on DeepInfra) so it runs as a plain text model. If the endpoint
+        # rejects that field, switch to the non-thinking checkpoint
+        # "Qwen/Qwen3-30B-A3B-Instruct-2507" and drop the params. Id/price unverified until
+        # the first smoke test (registered without network access).
+        "base_url":    "https://api.deepinfra.com/v1/openai",
+        "api_key_env": "DEEPINFRA_API_KEY",
+        "model":       "Qwen/Qwen3-32B",
+    },
     "llama-3.3-70b-deepinfra": {
         "base_url":    "https://api.deepinfra.com/v1/openai",
         "api_key_env": "DEEPINFRA_API_KEY",
@@ -229,6 +239,8 @@ MODEL_PRESETS: dict = {
     #    exist in MODEL_REGISTRY as alternates) ──
     "deepseek-v3.1":    {"provider": "hf_compatible", "model": "deepseek-v3.1-deepinfra"},
     "llama-3.3-70b":    {"provider": "hf_compatible", "model": "llama-3.3-70b-deepinfra"},
+    "qwen3-32b":        {"provider": "hf_compatible", "model": "qwen3-32b-deepinfra",     # open-weights small tier
+                         "params": {"extra_body": {"chat_template_kwargs": {"enable_thinking": False}}}},
 }
 
 # ⚙ eval receiver — edit GENERATOR_LLM in the eval_config panel, not here.

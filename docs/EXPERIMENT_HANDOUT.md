@@ -42,7 +42,7 @@ cp .env.example .env                # then put the keys in (below)
 |---|---|---|---|
 | everyone (embeddings), and `gpt-5.6-terra` / `gpt-5.6-luna` | OpenAI | `OPENAI_API_KEY` | platform.openai.com → API keys |
 | `claude-sonnet-5`, `claude-haiku-4.5` | Anthropic | `ANTHROPIC_API_KEY` | console.anthropic.com → API Keys |
-| `deepseek-v3.1`, `llama-3.3-70b` | DeepInfra | `DEEPINFRA_API_KEY` | deepinfra.com → Dashboard → API Keys |
+| `deepseek-v3.1`, `llama-3.3-70b`, `qwen3-32b` | DeepInfra | `DEEPINFRA_API_KEY` | deepinfra.com → Dashboard → API Keys |
 
   **Ask the coordinator for the lab key before creating your own** — the runs
   are billed centrally and each model has its own key so spend can be tracked.
@@ -85,7 +85,7 @@ same ones. The value already in the file is the last person's scratch, not a
 default.
 
 **The model presets** (`config.MODEL_PRESETS`; the name is what you type and
-what appears in every run directory). The six in the sweep:
+what appears in every run directory). The seven in the sweep:
 
 | preset | what it is | key |
 |---|---|---|
@@ -95,6 +95,7 @@ what appears in every run directory). The six in the sweep:
 | `claude-haiku-4.5` | cheap tier | `ANTHROPIC_API_KEY` |
 | `deepseek-v3.1` | open-weights, strong tier (DeepInfra) | `DEEPINFRA_API_KEY` |
 | `llama-3.3-70b` | open-weights baseline (DeepInfra) | `DEEPINFRA_API_KEY` |
+| `qwen3-32b` | open-weights small tier (DeepInfra; thinking switched off by the harness) | `DEEPINFRA_API_KEY` |
 
 Two more exist but are **not** part of the sweep — do not run them unless
 asked: `gpt-4.1` (the baseline the reference runs used) and `claude-opus-5`.
@@ -238,6 +239,7 @@ Do **not** delete `logs/runs/` afterwards, and do not force-push.
 | `claude-haiku-4.5` | | `sweep/claude-haiku-4.5` |
 | `deepseek-v3.1` | | `sweep/deepseek-v3.1` |
 | `llama-3.3-70b` | | `sweep/llama-3.3-70b` |
+| `qwen3-32b` | | `sweep/qwen3-32b` |
 
 Question counts (v2.2), so you know what `n` must be:
 
