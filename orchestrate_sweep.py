@@ -11,6 +11,7 @@ One person, one model, one command.
     python orchestrate_sweep.py                      # the full suite; re-run the same command to resume
     python orchestrate_sweep.py --graphs movie nba   # only these graphs (all five methods)
     python orchestrate_sweep.py --methods react      # only this method (all graphs)
+    python orchestrate_sweep.py --skip-methods react # this model does not run react: excluded from the run AND the verdict
     python orchestrate_sweep.py --status             # completeness matrix + headline numbers, no runs
     python orchestrate_sweep.py --publish            # branch sweep/<model>: run dirs + reports, commit, push
 
@@ -248,10 +249,16 @@ def build_status(pairs: List[Tuple[str, str]], methods: List[str], expected: Dic
     return {"model": model, "cells": cells, "complete": complete, "pairs": pairs, "methods": methods}
 
 
+SKIPPED_METHODS: List[str] = []
+
+
 def render_status(status: dict) -> str:
     model, cells, pairs, methods = status["model"], status["cells"], status["pairs"], status["methods"]
     stamp = time.strftime("%Y-%m-%d %H:%M")
     lines = [f"# Sweep — `{model}` — {stamp}", ""]
+    if SKIPPED_METHODS:
+        lines += [f"**Methods not run for this model (by decision, --skip-methods): {', '.join(SKIPPED_METHODS)}.** "
+                  "They are absent from every table below and do not count against completeness.", ""]
     lines.append(("**COMPLETE** — every graph x method cell holds one record per question."
                   if status["complete"] else
                   "**INCOMPLETE** — cells marked ✗ are missing or truncated; re-run "
@@ -531,14 +538,20 @@ def main(argv: Optional[List[str]] = None) -> int:
     ap.add_argument("--publish", action="store_true", help="commit this model's run dirs + reports to branch sweep/<model> and push")
     ap.add_argument("--allow-incomplete", action="store_true", help="let --publish proceed on an incomplete sweep")
     ap.add_argument("--graphs", nargs="+", metavar="GRAPH", help="restrict to these graphs")
-    ap.add_argument("--methods", nargs="+", metavar="METHOD", choices=[m for _, _, m in METHODS], help="restrict to these methods")
+    ap.add_argument("--methods", nargs="+", metavar="METHOD", choices=[m for _, _, m in METHODS], help="restrict to these methods (a partial re-run; the verdict still covers all five)")
+    ap.add_argument("--skip-methods", nargs="+", metavar="METHOD", choices=[m for _, _, m in METHODS], default=[],
+                    help="methods this model does NOT run (e.g. react for a model without tool calling): removed from the suite, so COMPLETE and --publish ignore them; recorded in the SWEEP file")
     ap.add_argument("--skip-preflight", action="store_true")
     args = ap.parse_args(argv)
 
     model = model_name()
     _LOG_PATH = REPO / "logs" / f"sweep_{model}.log"
-    all_methods = [m for _, _, m in METHODS]
-    methods = args.methods or all_methods
+    all_methods = [m for _, _, m in METHODS if m not in set(args.skip_methods)]
+    if not all_methods:
+        ap.error("--skip-methods removed every method")
+    methods = [m for m in (args.methods or all_methods) if m in all_methods]
+    global SKIPPED_METHODS
+    SKIPPED_METHODS = list(args.skip_methods)
     expected = expected_counts()
     # The verdict (COMPLETE / INCOMPLETE, the SWEEP file, --publish) is ALWAYS
     # over the full suite; --graphs / --methods only restrict what runs now.

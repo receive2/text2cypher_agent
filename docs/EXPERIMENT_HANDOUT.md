@@ -192,6 +192,13 @@ python orchestrate_sweep.py --status                 # matrix + headline numbers
 The run ends with **COMPLETE** or **INCOMPLETE** and the matrix. Do not
 report numbers from an INCOMPLETE sweep.
 
+**If the coordinator tells you a method does not apply to your model** (for
+example `react` on a model whose API has no function calling), add
+`--skip-methods react` to every `orchestrate_sweep.py` command. The method is
+then left out of the run *and* of the completeness verdict, `--publish`
+accepts the sweep, and the SWEEP file states which methods were skipped.
+Decide this with the coordinator, not on your own.
+
 ## 6. Publish — the deliverable is a branch
 
 ```bash
