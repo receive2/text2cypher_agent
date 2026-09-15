@@ -170,6 +170,23 @@ MODEL_REGISTRY: dict = {
         "api_key_env": "DEEPINFRA_API_KEY",
         "model":       "deepseek-ai/DeepSeek-V3.1",
     },
+    # DeepSeek V4.1 Flash (released 2026-09-10, MIT weights): the current DeepSeek
+    # model for the sweep's open-weights strong tier. The official API documents
+    # the non-thinking switch (`thinking: {"type": "disabled"}`) and tool calling,
+    # and caches repeated prefixes automatically ($0.30/$1.20 per M peak,
+    # $0.15/$0.60 off-peak, cache hits ~$0.006). DeepInfra hosts it too
+    # ($0.20/$0.60, no caching) — the alternate entry below — but whether it
+    # honours the thinking switch is unverified.
+    "deepseek-v4.1-flash": {
+        "base_url":    "https://api.deepseek.com/v1",
+        "api_key_env": "DEEPSEEK_API_KEY",
+        "model":       "deepseek-flash",
+    },
+    "deepseek-v4.1-flash-deepinfra": {
+        "base_url":    "https://api.deepinfra.com/v1/openai",
+        "api_key_env": "DEEPINFRA_API_KEY",
+        "model":       "deepseek-ai/DeepSeek-V4.1-Flash",
+    },
     "qwen3-32b-deepinfra": {
         # Hybrid thinking model: the preset passes chat_template_kwargs.enable_thinking=false
         # (vLLM convention on DeepInfra) so it runs as a plain text model. If the endpoint
@@ -237,7 +254,9 @@ MODEL_PRESETS: dict = {
     "claude-haiku-4.5": {"provider": "anthropic",     "model": "claude-haiku-4-5"},
     # ── open-weights, served by DeepInfra (one key for both; Together entries
     #    exist in MODEL_REGISTRY as alternates) ──
-    "deepseek-v3.1":    {"provider": "hf_compatible", "model": "deepseek-v3.1-deepinfra"},
+    "deepseek-v4.1-flash": {"provider": "hf_compatible", "model": "deepseek-v4.1-flash",   # sweep: open-weights strong tier
+                            "params": {"extra_body": {"thinking": {"type": "disabled"}}}},
+    "deepseek-v3.1":    {"provider": "hf_compatible", "model": "deepseek-v3.1-deepinfra"},   # extra — superseded by v4.1-flash
     "llama-3.3-70b":    {"provider": "hf_compatible", "model": "llama-3.3-70b-deepinfra"},
     "qwen3-32b":        {"provider": "hf_compatible", "model": "qwen3-32b-deepinfra",     # open-weights small tier
                          "params": {"extra_body": {"chat_template_kwargs": {"enable_thinking": False}}}},

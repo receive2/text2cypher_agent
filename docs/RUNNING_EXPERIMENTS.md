@@ -286,7 +286,7 @@ GENERATOR_LLM = "claude-sonnet-5"   # eval_config.py, ★ EXPERIMENT PARAMETERS 
 
 The value is a **preset name** from `config.MODEL_PRESETS` (`gpt-4.1`,
 `gpt-5.6-terra`, `gpt-5.6-luna`, `claude-sonnet-5`, `claude-haiku-4.5`,
-`claude-opus-5`, `deepseek-v3.1`, `llama-3.3-70b`, `qwen3-32b`). A preset fixes the provider and the exact
+`claude-opus-5`, `deepseek-v4.1-flash`, `deepseek-v3.1`, `llama-3.3-70b`, `qwen3-32b`). A preset fixes the provider and the exact
 model id; the two open-weights models route through DeepInfra's
 OpenAI-compatible endpoint via `config.MODEL_REGISTRY`. An unknown name fails
 at startup with the list of valid ones — there is no silent fallback. Adding a
@@ -325,6 +325,7 @@ parameters, add a `"params"` dict to its entry in `config.MODEL_PRESETS`
 | preset | sampling |
 |---|---|
 | `gpt-4.1`, `claude-haiku-4.5`, `deepseek-v3.1`, `llama-3.3-70b`, `qwen3-32b` | `temperature=0` (Qwen3 additionally `enable_thinking=false`) |
+| `deepseek-v4.1-flash` | `temperature=0` + `thinking: {"type": "disabled"}` (DeepSeek's documented non-thinking switch) |
 | `gpt-5.6-terra`, `gpt-5.6-luna` | `reasoning_effort="none"` + `temperature=0` |
 | `claude-sonnet-5`, `claude-opus-5` | thinking disabled; **no temperature — the API refuses it** (`"temperature is deprecated for this model"`), so these run at Anthropic's default sampling and a re-run of the same question can differ. There is no seed either; report them as single-sample runs. |
 

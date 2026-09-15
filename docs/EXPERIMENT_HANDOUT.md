@@ -42,7 +42,8 @@ cp .env.example .env                # then put the keys in (below)
 |---|---|---|---|
 | everyone (embeddings), and `gpt-5.6-terra` / `gpt-5.6-luna` | OpenAI | `OPENAI_API_KEY` | platform.openai.com → API keys |
 | `claude-sonnet-5`, `claude-haiku-4.5` | Anthropic | `ANTHROPIC_API_KEY` | console.anthropic.com → API Keys |
-| `deepseek-v3.1`, `llama-3.3-70b`, `qwen3-32b` | DeepInfra | `DEEPINFRA_API_KEY` | deepinfra.com → Dashboard → API Keys |
+| `deepseek-v4.1-flash` | DeepSeek | `DEEPSEEK_API_KEY` | platform.deepseek.com → API keys |
+| `llama-3.3-70b`, `qwen3-32b` | DeepInfra | `DEEPINFRA_API_KEY` | deepinfra.com → Dashboard → API Keys |
 
   **Ask the coordinator for the lab key before creating your own** — the runs
   are billed centrally and each model has its own key so spend can be tracked.
@@ -93,12 +94,13 @@ what appears in every run directory). The seven in the sweep:
 | `gpt-5.6-luna` | cheap tier | `OPENAI_API_KEY` |
 | `claude-sonnet-5` | Claude strong tier, same price point as Terra (thinking switched off by the harness) | `ANTHROPIC_API_KEY` |
 | `claude-haiku-4.5` | cheap tier | `ANTHROPIC_API_KEY` |
-| `deepseek-v3.1` | open-weights, strong tier (DeepInfra) | `DEEPINFRA_API_KEY` |
+| `deepseek-v4.1-flash` | open-weights (MIT), current DeepSeek — strong tier (thinking switched off by the harness) | `DEEPSEEK_API_KEY` |
 | `llama-3.3-70b` | open-weights baseline (DeepInfra) | `DEEPINFRA_API_KEY` |
 | `qwen3-32b` | open-weights small tier (DeepInfra; thinking switched off by the harness) | `DEEPINFRA_API_KEY` |
 
-Two more exist but are **not** part of the sweep — do not run them unless
-asked: `gpt-4.1` (the baseline the reference runs used) and `claude-opus-5`.
+Three more exist but are **not** part of the sweep — do not run them unless
+asked: `gpt-4.1` (the baseline the reference runs used), `claude-opus-5`, and
+`deepseek-v3.1` (superseded by v4.1-flash).
 
 One name switches every stage of the pipeline (entity extraction, Cypher
 generation, answer formatting). A wrong name fails immediately with the list
@@ -237,7 +239,7 @@ Do **not** delete `logs/runs/` afterwards, and do not force-push.
 | `gpt-5.6-luna` | | `sweep/gpt-5.6-luna` |
 | `claude-sonnet-5` | | `sweep/claude-sonnet-5` |
 | `claude-haiku-4.5` | | `sweep/claude-haiku-4.5` |
-| `deepseek-v3.1` | | `sweep/deepseek-v3.1` |
+| `deepseek-v4.1-flash` | | `sweep/deepseek-v4.1-flash` |
 | `llama-3.3-70b` | | `sweep/llama-3.3-70b` |
 | `qwen3-32b` | | `sweep/qwen3-32b` |
 
