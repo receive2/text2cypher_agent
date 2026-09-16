@@ -170,8 +170,8 @@ MODEL_REGISTRY: dict = {
         "api_key_env": "DEEPINFRA_API_KEY",
         "model":       "deepseek-ai/DeepSeek-V3.1",
     },
-    # DeepSeek V4.1 Flash (released 2026-09-10, MIT weights): the current DeepSeek
-    # model for the sweep's open-weights strong tier. The official API documents
+    # DeepSeek V4.1 Flash (released 2026-09-10, MIT weights): registered as an
+    # EXTRA (not in the sweep — it needs a separate key). The official API documents
     # the non-thinking switch (`thinking: {"type": "disabled"}`) and tool calling,
     # and caches repeated prefixes automatically ($0.30/$1.20 per M peak,
     # $0.15/$0.60 off-peak, cache hits ~$0.006). DeepInfra hosts it too
@@ -254,9 +254,9 @@ MODEL_PRESETS: dict = {
     "claude-haiku-4.5": {"provider": "anthropic",     "model": "claude-haiku-4-5"},
     # ── open-weights, served by DeepInfra (one key for both; Together entries
     #    exist in MODEL_REGISTRY as alternates) ──
-    "deepseek-v4.1-flash": {"provider": "hf_compatible", "model": "deepseek-v4.1-flash",   # sweep: open-weights strong tier
+    "deepseek-v3.1":    {"provider": "hf_compatible", "model": "deepseek-v3.1-deepinfra"},   # sweep: open-weights strong tier (DeepInfra key)
+    "deepseek-v4.1-flash": {"provider": "hf_compatible", "model": "deepseek-v4.1-flash",   # extra — needs its own DEEPSEEK_API_KEY
                             "params": {"extra_body": {"thinking": {"type": "disabled"}}}},
-    "deepseek-v3.1":    {"provider": "hf_compatible", "model": "deepseek-v3.1-deepinfra"},   # extra — superseded by v4.1-flash
     "llama-3.3-70b":    {"provider": "hf_compatible", "model": "llama-3.3-70b-deepinfra"},
     "qwen3-32b":        {"provider": "hf_compatible", "model": "qwen3-32b-deepinfra",     # open-weights small tier
                          "params": {"extra_body": {"chat_template_kwargs": {"enable_thinking": False}}}},
