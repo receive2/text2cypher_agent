@@ -181,12 +181,37 @@ overwritten (`SWEEP.md` is a copy of the latest): the completeness matrix plus
 every table the paper needs — EA / PSJS per dataset and overall, by
 perturbation strategy, by query difficulty.
 
+The `<method>` segment spells out CyANCHOR's active retrieval arms, so the
+shipped default appears as `cyanchor_fl` (fuzzy + Levenshtein). If you ever see
+`cyanchor_fvl`, the vector arm has been switched on and the run is not
+comparable with everyone else's — restore the defaults and re-run.
+
 **Completeness, not perfection.** A cell is complete when it holds one record
 per question (`n` equals the graph's question count). Some questions **will**
 error — broken gold queries, the odd timeout — and that is expected: the
 evaluation scores an errored question 0 (the denominator is always all
 questions) and reports the count in the `err` column. A cell with a few errors
 is a result. A missing or truncated cell is not, and the matrix marks it ✗.
+
+**But a lopsided error rate is a symptom.** Read the `err` column across the
+five methods **on the same graph**. If one cell errors on a large share of its
+questions (say a quarter or more) while the other methods on that graph do not,
+that is rate-limiting, not a property of the data: `cyanchor` and `react` make
+the most API calls per question, so they hit the provider's limit first. Seen in
+practice on ZOGRASCOPE: `cyanchor` errored on 861 of 1,290 questions and `react`
+on 383, while `fcav`, `graphrag` and `no_val_link` errored on fewer than ten
+each. Such a cell is *complete* — the driver will not re-run it for you — but
+its score measures the rate limit, not the model. Check `SHARDS = 1` in
+`eval_config.py`, delete that cell's run directory, and re-run just it:
+
+```bash
+python orchestrate_sweep.py --graphs pole --methods cyanchor
+```
+
+An error rate that is **uniformly** high across all five methods is a different
+thing and is not your problem: MindTheQuery runs at roughly 15% errors for every
+method and every model, from broken gold queries in the source data. Leave those
+alone — re-running changes nothing.
 
 **If it stops** (laptop asleep, rate-limit storm, network): run the same
 command again. Completion is read from disk, so every complete cell is
