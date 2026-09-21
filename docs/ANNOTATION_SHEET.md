@@ -1,11 +1,11 @@
 # Annotation sheet — entity-perturbation verification (blind, release-grade)
 
 Per-row instructions for the **blind, double-annotated** verification queue
-(`verification/verification_annotator_<X>.csv`). This is the release-grade
-companion to `docs/VERIFICATION_PROTOCOL.md`; it supersedes the older
-keep/fix/drop `docs/REVIEW_GUIDE.md` **for these CSVs** — here you record three
-independent primitive labels and the keep/fix/drop action is *derived*
-downstream by `scripts/verification_stats.py`. Fill the columns exactly as
+(`verification/verification_annotator_<X>.csv`). This is the column-level
+companion to `docs/VERIFICATION_PROTOCOL.md` and `docs/ANNOTATION_QUICKSTART.md`:
+you record independent primitive labels here, and the release action
+(keep / revert / remove) is derived downstream by
+`scripts/freeze_verified_release.py`. Fill the columns exactly as
 named; the stats tool matches these value vocabularies literally.
 
 ## What each row is

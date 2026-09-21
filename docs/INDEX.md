@@ -10,7 +10,7 @@ the CyANCHOR method.
 | [DATASHEET.md](DATASHEET.md) | **Release-facing** dataset description — composition, perturbation taxonomy, intended use, limitations. Start here to *use* the benchmark. |
 | [AUGMENTATION_METHODS.md](AUGMENTATION_METHODS.md) | **Methodology spec** (paper appendix) — exactly how each perturbation category is produced & validated. The authoritative "how it was built" reference. |
 | [VERIFICATION_PROTOCOL.md](VERIFICATION_PROTOCOL.md) | **Human-verification methodology** — coverage by provenance class, double annotation, IAA, adjudication, reporting. |
-| [REVIEW_GUIDE.md](REVIEW_GUIDE.md) | **Human-verification instructions** — the per-row instruction sheet handed to annotators verifying perturbation batches. |
+| [ANNOTATION_QUICKSTART.md](ANNOTATION_QUICKSTART.md) | **Annotator guide as shipped** — the step-by-step instructions the five annotators worked from (frozen); column semantics in [ANNOTATION_SHEET.md](ANNOTATION_SHEET.md). |
 | [GOLD_ERROR_AUDIT.md](GOLD_ERROR_AUDIT.md) | **Dataset-audit guide** — eval scores broken golds as failures (no assumptions); `audit_gold_errors.py` lists them + step-by-step fix/remove workflow. |
 | [DIFFICULTY_DESIGN.md](DIFFICULTY_DESIGN.md) | Design-of-record for `eval/difficulty.py` (graded query-difficulty rubric). Status: implemented. |
 
