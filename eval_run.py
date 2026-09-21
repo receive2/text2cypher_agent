@@ -183,9 +183,10 @@ def _build_env(uri: str, user: str, password: str, database: str) -> dict[str, s
     eval_config is authoritative: for every run-config field it sets, it
     *overrides* anything inherited from the shell, so a stale `export METHOD=…`
     can never silently win over the file you edited. A field eval_config leaves
-    unset (``None``) falls through to config.py's default in the worker. The sweep
-    driver (orchestrate_sweep.py) drives a sweep by mutating ``cfg.METHOD`` etc.
-    in-process — same single surface, not a parallel env channel."""
+    unset (``None``) falls through to config.py's default in the worker. The batch
+    drivers (orchestrate_cyanchor / run_pole_baselines / complete_pole_1441) drive
+    a sweep by mutating ``cfg.METHOD`` etc. in-process — same single surface, not a
+    parallel env channel."""
     env = dict(os.environ)
     env["EVAL_NEO4J_URI"]      = uri
     env["EVAL_NEO4J_USER"]     = user
@@ -554,10 +555,6 @@ def main() -> int:
     print(
         "\nRun `python eval_aggregate.py` to print the bucketed metric table "
         f"over everything currently in {out_dir}."
-        "\nNOTE: that table is for development only. For the model sweep, run "
-        "`python orchestrate_sweep.py` instead — it is the only path that "
-        "checks completeness, writes report/<model>/SWEEP.md and publishes the "
-        "branch (docs/EXPERIMENT_HANDOUT.md)."
     )
 
     # Exit non-zero iff every pair failed; partial success returns 0 so
