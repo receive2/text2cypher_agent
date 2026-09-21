@@ -210,8 +210,6 @@ overwritten; `SWEEP.md` is a copy of the latest — holding the completeness
 matrix and every table the paper needs: EA / PSJS per dataset and overall, by
 perturbation strategy, by query difficulty. Pooling is over all questions of a
 dataset (each question weighs one), identical to the committed gpt-4.1 tables.
-`orchestrate_cyanchor.py` is the older CyANCHOR-only refresh driver; it now
-writes under `report/<model>/` as well.
 
 The deliverable of a sweep is the branch `sweep/<model>`; `main` keeps the
 gpt-4.1 reference tables under `report/gpt-4.1/`.
@@ -363,17 +361,12 @@ perturbation strategy + by difficulty, EA & PSJS, across all five methods) are
 rendered from `logs/runs/` — one folder per generator model (`report/gpt-4.1/`
 holds the June reference tables); locations resolved through `eval_paths`:
 
-```bash
-# One graph (args: <graph> <report_dir> <label> <dataset_key> [date]):
-python gen_graph_report.py movie CypherBench CypherBench cypherbench_augmented
+`orchestrate_sweep.py` regenerates them as it goes, so you rarely call the
+renderers by hand. To rebuild one dataset's pooled summary on its own:
 
-# Dataset-pooled summary across graphs:
+```bash
 python gen_pooled_report.py report/<model>/CypherBench/_summary.md CypherBench \
   "Report — CypherBench (all graphs pooled)" cypherbench_augmented movie nba geography …
-
-# Full CyANCHOR refresh across all 13 graphs (re-runs CyANCHOR, regenerates every
-# report; baselines are read from their existing run dirs, not re-run):
-python orchestrate_cyanchor.py
 ```
 
 ## Parallelism (`SHARDS`)
@@ -396,9 +389,9 @@ what you run — the file you edited always wins. (A field you leave unset in
 eval_config falls through to `config.py`'s shipped default, which is CyANCHOR
 `fuzzy+lev`.)
 
-The batch driver `orchestrate_cyanchor.py` sweeps methods/arms by setting
-`cfg.METHOD` / `cfg.RETRIEVAL_*` **in-process** — the same single surface, not a
-parallel env channel.
+The sweep driver `orchestrate_sweep.py` sweeps methods by setting `cfg.METHOD`
+/ `cfg.RETRIEVAL_*` **in-process** — the same single surface, not a parallel env
+channel.
 
 ## Safety nets already in place (you don't have to do anything)
 

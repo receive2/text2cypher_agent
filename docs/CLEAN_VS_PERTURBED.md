@@ -91,7 +91,7 @@ needs to *ground* anything; perturbation exposes the gap, and value grounding
 #   EVAL_PAIRS=[("mindthequery","bloom50")]          (MINDTHEQUERY_PATH)
 python eval_run.py            # per METHOD in eval_config.py (loop the 5)
 # perturbed: same but EVAL_PAIRS with the *_augmented dataset key.
-# render: python gen_graph_report.py <graph> <dir> <label> <dataset_key>
+# render: orchestrate_sweep.py regenerates these tables automatically
 ```
 
 Records: `logs/runs/{cypherbench,cypherbench_augmented}__flight_accident__*/`,
