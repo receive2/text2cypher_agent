@@ -26,9 +26,10 @@ live graph) and 100\% human verification (double-annotated census with
 adjudication; \S\ref{sec:verification}). Validity was judged only by the
 database, attested resources, and human annotators --- never by an LLM ---
 so any LLM, including evaluated systems, can serve as proposer without
-contaminating the labels. All proposals, including rejected ones and their
-per-item evidence, are frozen in the released decision manifest, and the
-released dataset is a verified deterministic function of that manifest.
+contaminating the labels. Every released LLM-proposed edit carries its proposer model and
+the evidence the proposer cited, frozen in the released manifest
+(`release_manifest_v2.2.jsonl`), and the released dataset is a verified
+deterministic function of that manifest.
 
 \paragraph{Supply measurement.}
 The applicability-ceiling analysis (\S\ref{sec:applicability}) used the same
@@ -50,7 +51,7 @@ bounds any proposer-familiarity effect.
 | Checklist item | Answer / pointer |
 |---|---|
 | Use of AI assistants disclosed? | Yes — section above; roles: proposer, supply probe, engineering |
-| Models identified? | `gpt-4.1`, `claude-opus-5` (pinned per-edit in `release_manifest_v2.1.jsonl`, carried into the verified `release_manifest_v2.2.jsonl`) |
+| Models identified? | `gpt-4.1`, `claude-opus-5` (pinned per edit in `release_manifest_v2.2.jsonl`) |
 | Human oversight of AI-generated content? | 100% census of LLM-proposed edits, double annotation + adjudication, pre-registered rejection rules (DATASHEET §7 curation log) |
 | Contamination / circularity risk? | LLM never judges; DB + attested + human judges only; provenance ablation reported |
 | Artifacts released? | Manifest (all proposals + evidence), rebuild script, prompts (in `scripts/regenerate_llm_tier.py`, `scripts/measure_applicability_ceiling.py`) |

@@ -201,7 +201,7 @@ Verdicts (keep / fix / drop) are applied before release. (In the v2.1 freeze,
 double-annotated census.) In the verified v2.2 release, 25 of the 898
 measured LLM edits were rejected (19 reverted to certified prior algorithmic
 forms, 6 removed), 3 were removed as source errors and 9 as unnatural;
-see `docs/VERIFICATION_PROTOCOL.md` §9.
+see `docs/VERIFICATION_PROTOCOL.md` §6.
 
 ## A.6 On the reliability of LLM-proposed forms
 

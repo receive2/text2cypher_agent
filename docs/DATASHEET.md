@@ -157,9 +157,8 @@ Per-row verdicts (anonymised annotator letters), the blind key, the calibration 
   (`the CHI`) and invented nicknames for obscure entities. Closed-set categories
   (≤30 distinct values: divisions, conferences, positions, awards) are excluded
   from LLM aliasing to prevent sibling-swaps.
-- **Layout.** v2 is a consolidated `test.json`; converting to each source's
-  eval layout (Mind-the-Query per-graph files; ZOGRASCOPE CSV) is pending before
-  harness consumption (`_source_row` preserved, so conversion is lossless).
+- **Layout.** One consolidated `test.json` per source dataset; the evaluation
+  harness reads it directly (`_source_row` preserves the original row).
 - **Difficulty ranks.** `fulltext_rank`/`vector_rank` are not computed (the
   benchmark graphs ship without those indexes); the §4 class spectrum is
   index-free.
@@ -339,7 +338,7 @@ Per-row verdicts (anonymised annotator letters), the blind key, the calibration 
   writes v2.2. Dry run on current verdicts: 3 removed as invalid, 7 reverted
   to certified prior forms, 5 source-error, 9 unnatural, 2 calibration —
   well under the ≈100–150 loss pre-registered; contingency rate 0.4%.
-  Policy choices stated in `docs/VERIFICATION_PROTOCOL.md` §9. Artifacts:
+  Policy choices stated in `docs/VERIFICATION_PROTOCOL.md` §5. Artifacts:
   `audit/verification/`.
 
 - **2026-09-09 — adjudication complete; VERIFIED RELEASE v2.2 frozen (4,641 →

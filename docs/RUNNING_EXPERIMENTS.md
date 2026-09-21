@@ -40,7 +40,7 @@ and everyone evaluates the same bytes — which is what makes separate people's
 results poolable. The release is the **v2.2 verified freeze: 4,611 questions**
 (cypherbench 2,099 · mindthequery 1,222 · zograscope 1,290) —
 the v2.1 freeze (4,641) after applying the human-verification verdicts
-(`docs/VERIFICATION_PROTOCOL.md` §9; every row's fate is in
+(`docs/VERIFICATION_PROTOCOL.md` §6; every row's fate is in
 `audit/verification/decisions.csv`).
 
 > A checkout from before 2026-09 carried the *pre-curation* set (4,875 rows);

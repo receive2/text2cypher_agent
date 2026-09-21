@@ -291,4 +291,4 @@ pre-adjudication figure counted only unanimous verdicts and was therefore
 optimistic; the final figure is the one to report. Freeze: 4,641 → 4,611
 rows; 20 reverted to certified prior algorithmic forms, 30 removed (11
 invalid, 5 source-error, 12 unnatural, 2 calibration). Final numbers and
-policy statements: `docs/VERIFICATION_PROTOCOL.md` §9.
+policy statements: `docs/VERIFICATION_PROTOCOL.md` §5–6.

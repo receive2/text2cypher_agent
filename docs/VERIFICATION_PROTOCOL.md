@@ -1,268 +1,145 @@
-# Human Verification Protocol — Entity-Perturbed text2cypher Benchmark
+# Human verification of the perturbed benchmark
 
-The release-grade protocol for human-validating the benchmark's entity
-perturbations. It supersedes the annotator-facing [`REVIEW_GUIDE.md`](REVIEW_GUIDE.md)
-(which it keeps as the per-row instruction sheet) by adding the methodology a
-benchmark paper needs: coverage of **all** provenance classes, double
-annotation, inter-annotator agreement (IAA), adjudication, and a fixed
-reporting schedule.
+How the entity perturbations in the released benchmark (v2.2, 4,611 questions
+over 13 graphs) were verified by human annotators, and what the verification
+found. Annotator-facing instructions are in `ANNOTATION_QUICKSTART.md`; the
+day-by-day record is in `ANNOTATION_PROCESS_LOG.md`; every number below can be
+recomputed from `audit/verification/` with `scripts/verification_stats.py`.
 
-Tooling: [`scripts/verification_sample.py`](../scripts/verification_sample.py)
-builds the (seeded, stratified) annotation queues; after annotation,
-[`scripts/verification_stats.py`](../scripts/verification_stats.py) computes IAA
-+ validity rates with confidence intervals.
+## 1. What is verified
 
----
+Each perturbation replaces one entity mention in a question (e.g. `Montana` →
+`MT`) while the gold Cypher and the graph stay unchanged. Verification asks
+whether the new mention still denotes the same database value, and whether the
+question still reads naturally.
 
-## 0. Why this exists
+Perturbations come from three sources, which determine how they are verified:
 
-Each test question's entity mention is rewritten to a realistic variant while
-the gold Cypher (which uses the **canonical** value) is left unchanged. The
-benchmark is only valid if every rewrite **still refers to the same database
-entity** — otherwise the gold answer is silently wrong (*referent corruption*).
-Automatic checks (DB grounding, attested aliases, collision filters) catch most
-cases but not all (a typo can land on another real value; a KB alias can be
-ambiguous). Human verification measures the residual corruption rate and makes
-it defensible.
-
-## 1. What each item is judged on (three independent labels)
-
-| field | values | meaning |
-|---|---|---|
-| **validity** *(decisive)* | `valid` / `invalid` / `unsure` | Does the perturbed surface form still refer to the **same, unique** DB entity? `invalid` if it (a) names a *different* entity, (b) names a *sibling* in the same family, or (c) is **ambiguous** (could resolve to several entities). Because the gold Cypher uses the unchanged canonical value, **validity = gold correctness**. |
-| **naturalness** *(quality)* | `natural` / `awkward` / `unnatural` | Would a real user plausibly write it in a question? |
-| **source_error** *(side-channel)* | `yes` / `no` | Is the *source dataset's own gold* already wrong here (independent of the perturbation)? Flag → excluded from the release, **not** counted as perturbation corruption. |
-
-The `keep / fix / drop` action is **derived** from the three (see §6); annotators
-record the three primitives so validity rate and naturalness rate can be reported
-cleanly and separately.
-
-## 2. Annotators
-
-- **≥ 3 annotators** (3 enables Krippendorff's α / Fleiss κ; 2 only supports
-  Cohen κ).
-- Domain familiarity matching the datasets (NBA, geography, politics, aviation,
-  biomedical…). Each row carries a one-line KB description of the canonical
-  entity to aid judgment.
-- **Independent**: no communication during annotation; item order **randomised
-  per annotator**.
-- **Blind to provenance** (annotators are not told whether a row is LLM- / KB- /
-  rule-generated) and **blind to any system output** (never show model
-  predictions). The sampler enforces this — provenance lives only in the key
-  file, never in the annotator CSVs.
-  *Disclosure:* the annotator CSVs do show the **intended strategy**
-  (typo/alias/abbrev/partial/casing). This is deliberate and load-bearing — the
-  typo rule ("a deliberate misspelling is `valid` if still recognizable")
-  cannot be applied without knowing the row is a typo. Strategy does not reveal
-  the generation provenance that the anti-circularity claim depends on
-  (LLM vs KB vs rule for alias/abbrev/partial stays hidden).
-
-## 3. Coverage — what gets verified (all provenance classes)
-
-The benchmark (4,641 perturbations at the v2.1 freeze the queue was drawn
-from; 4,611 in the verified v2.2 release — §9) splits by **provenance**, which
-determines how each part is verified. Counts are for the v2.1 freeze and
-already reflect the coverage revision of 2026-08-25 (§6):
-
-| provenance | in release | verified | how |
+| source | in release | verified | how |
 |---|--:|--:|---|
-| **LLM-proposed** (alias/abbrev/partial) | 916 | **916 (100%)** | **Full census** — every item, double-annotated |
-| **Attested / KB** (alias/abbrev from a knowledge base) | 1,052 | 400 (38%) | Stratified sample, double-annotated |
-| **Algorithmic / rule** (casing, typo, rule-based partial) | 2,673 | 450 (17%) | Powered stratified sample |
+| LLM-proposed (abbreviations, aliases, some partial names) | 916 | 916 (every item) | full census, two annotators per item |
+| attested (aliases/abbreviations taken from a knowledge base or property table) | 1,052 | 400 | stratified random sample, two annotators per item |
+| algorithmic (casing, typo, rule-based partial names) | 2,673 | 450 | stratified random sample: 240 items with two annotators, 210 with one |
 
-- **Tier 1 — full census of all 916 LLM-proposed edits.** Non-negotiable: this
-  tier carries the highest corruption risk and underpins the anti-circularity
-  claim (no model judges its own proposals). A census *cleans* — every invalid
-  item is identified and removed, which sampling cannot do.
-- **Tier 1b — stratified sample of the 1,052 attested/KB edits.** These carry
-  external provenance and are lower-risk, so their validity is *measured*
-  (reported with a Wilson CI) rather than exhaustively cleaned; un-sampled
-  attested rows remain in the release.
-- **Tier 2 — powered sample of the 2,673 purely-algorithmic edits.** "Trusted by
-  construction" is an assumption; *measure* it. This tier estimates a rate and
-  triggers no removals. Typo is the largest strategy (1,422) **and** the most
-  collision-prone, so it carries the largest share of the sample.
+The LLM tier is audited exhaustively because it carries the highest risk and
+because the anti-circularity claim depends on it: no model ever judges its own
+proposals. The other two tiers are sampled to *measure* their error rate; their
+un-sampled items stay in the release unchanged.
 
-Stratify (and report) on three axes: **strategy × provenance × source dataset**
-(CypherBench / Mind-the-Query / ZOGRASCOPE) — corruption risk differs by domain.
+## 2. Labels
 
-## 4. Procedure (order matters)
+Two labels per item, judged from the question, the original mention, the
+perturbed mention and the database value:
 
-1. **Calibration round.** All annotators jointly label ~50 items spanning every
-   strategy; discuss disagreements; refine the guideline. The calibration set is
-   **excluded** from the measured release (prevents data-snooping).
-2. **Freeze the guideline** (pre-registration). It is not edited mid-annotation.
-3. **Double annotation.** Every queued item (Tier 1 census + Tier 2 sample) is
-   labeled by **≥ 2 independent annotators**. The sampler assigns each item to a
-   rotating annotator pair, so coverage is even and every pair co-annotates a
-   share (enabling pairwise κ and a missing-data-tolerant Krippendorff α).
-4. **Compute IAA** (§5). If a stratum's α/κ is low, the guideline is unclear for
-   it → refine and **re-annotate that stratum**; never silently accept.
-5. **Adjudication.** Items where the two annotators disagree (incl. any `unsure`)
-   are resolved to a single gold label by a third annotator / expert, or by
-   consensus discussion. Record the **disagreement rate** and the method.
-6. **Apply outcomes** (§6) and report (§7).
+- **validity** (decisive): `valid` — the perturbed mention still refers to the
+  same, unique database value; `invalid` — it does not (wrong entity,
+  ambiguous, or nonsensical); `source_error` — the original question or gold
+  query is itself broken; `unsure`.
+- **naturalness**: `natural` / `awkward` / `unnatural` — how the perturbed
+  question reads to a fluent speaker.
 
-## 5. Inter-annotator agreement (the reliability evidence)
+Database-side facts (does the canonical value exist, is it unique) are checked
+by machine before annotation; annotators judge reference and readability only.
 
-Computed on the **validity** label (the decisive one):
+## 3. Procedure
 
-- **Krippendorff's α** (nominal) over the full item×rater matrix — handles 2
-  raters/item with missing cells, so it fits the rotating-pair design. **Primary.**
-- **Pairwise Cohen's κ** per annotator pair (on co-annotated items) — reported
-  for transparency.
-- **Fleiss' κ** if (and only if) a fully-overlapped subset exists.
+1. **Calibration.** All five annotators labelled the same 50 items spanning
+   every strategy, received written feedback against a reference key, and the
+   guideline was finalised. Calibration items are excluded from all statistics.
+2. **Annotation.** The queue (1,766 items, 3,322 judgments) was split across
+   the five annotators so that every double-annotated item is seen by a
+   rotating pair and every pair shares roughly 150 items. Annotators worked
+   independently from a blind CSV (no source, no model name, no other rater's
+   label).
+3. **Adjudication.** Items where the two annotators disagreed, or both marked
+   `unsure`, were resolved by the first author from a worklist showing both
+   labels and notes; no model was involved. 55 items were adjudicated
+   (29 valid, 26 invalid).
+4. **Verdicts** were applied by a script under fixed rules (§5) to produce the
+   release.
 
-Report **overall + per strategy + per dataset**. Acceptance: **α/κ ≥ 0.6**
-acceptable, **≥ 0.8** strong. (Naturalness IAA may go in an appendix.)
+Five annotators took part: graduate-student volunteers from the lab, not
+authors of the paper, acknowledged with a small gift-card honorarium. They
+appear in the released artifacts only as letters A–E.
 
-## 6. Applying the verdicts
+## 4. Agreement
 
-- `invalid` or `source_error` → **drop** from the release. The released
-  benchmark is the cleaned set; report the **final N**.
-- `valid` + (`awkward`/`unnatural`) → either **drop** (cleanest — introduces no
-  unverified surface form) or **fix** to a better form *and re-verify the fixed
-  form* in a second pass. State which policy was used.
-- `valid` + `natural` → **keep**.
+Agreement is computed on the validity label over the 1,524 double-annotated
+items (1,739 items were measured in total).
 
-**IAA reporting under the revised coverage (2026-08-25).** The
-double-annotation budget for the algorithmic tier is allocated **evenly across
-strategies** (not proportionally), so every stratum has comparable power for
-per-stratum agreement: abbrev 740 / alias 527 / partial 129 / typo 80 /
-casing 80 double-annotated items in the shipped queue (abbrev 728 / alias 520 /
-partial 122 / typo 80 / casing 79 **measured**, after the pre-registered
-exclusion of calibration items — see below), plus ~155 co-annotated items per
-annotator pair for Cohen's kappa. Per-stratum tables report **raw pairwise agreement
-alongside Krippendorff's alpha**, because alpha is deflated by construction in
-high-prevalence strata: when ~97% of items share one label, chance agreement is
-already ~97%, and alpha can approach zero despite near-perfect agreement (the
-"kappa paradox"). Acceptance is judged on alpha where label variance permits and
-on raw agreement otherwise, with the stratum's `n_2` reported so readers can see
-the power behind each figure.
+| | overall | LLM-proposed | attested | algorithmic |
+|---|--:|--:|--:|--:|
+| double-annotated items | 1,524 | 898 | 393 | 238 |
+| raw agreement | 96.5% | 96.2% | 97.7% | 95.8% |
+| Gwet's AC1 | 0.964 | 0.961 | 0.977 | 0.956 |
+| Krippendorff's α | 0.354 | 0.291 | 0.390 | 0.482 |
 
-**Coverage revision (2026-08-25, pre-annotation).** Annotator availability
-(volunteer lab members) required reducing per-person load. Revised design:
-**LLM-proposed edits keep a full double-annotated census** (916 items — the
-highest-risk tier, and the basis of the anti-circularity claim); the
-**attested/KB tier moves from census to a strategy-stratified sample**
-(400 of 1,052, double-annotated) and is therefore *measured* rather than
-exhaustively cleaned — its validity rate is reported with a Wilson CI and
-un-sampled attested rows remain in the release; the **algorithmic Tier-2
-sample** is reduced to 450 items, of which 240 are double-annotated (weighted
-evenly across strategies for per-stratum IAA) and the remaining 210
-single-annotated (this tier estimates a rate; it triggers no removals). Total
-shipped queue: **1,766 items / 3,322 judgments** (1,556 double + 210 single;
-~664 judgments per annotator). This remains well above comparable released
-benchmarks (e.g. VeriTaS, ACL 2026, validated 25k claims with ~816 human
-annotations).
+By strategy (raw agreement / α): casing 100% / 1.00 · typo 98.8% / 0.66 ·
+alias 97.5% / 0.18 · abbrev 95.9% / 0.36 · partial 92.6% / 0.44. Pairwise
+Cohen's κ over the ten annotator pairs ranges from 0.00 to 0.59 (~150 shared
+items each); several pairs have no label variance at all.
 
-**Calibration exclusion (pre-registered).** Calibration items may overlap the
-main queue, and annotators receive guideline feedback on them before the main
-pass, so their main-queue labels are not independent first judgments. All
-annotators share a **single 48-item calibration set** (the set from the first
-package generation, retained across rebuilds — see the process log for why);
-27 of its items sit in the main queue. `verification_stats.py` excludes these
-ids from **all** reported measurements automatically (auto-detected from
-`verification/calibration_50.csv` / `calibration_legacy_ids.csv`, which now
-list the same set), leaving **1,739 measured items / 3,268 judgments**.
-Excluded items' main-queue labels are retained only as an informal
-intra-annotator consistency check, never in any reported figure. A
-transiently used alternative calibration set (drawn 2026-08-25, packaged but
-**never sent to anyone**) was retired the same day; having reached no
-annotator, it requires no exclusion
-(`verification/retired_newset_2026-08-25/`).
+**How to read these.** 97% of items are valid, so two annotators agreeing by
+chance would already reach ~97%; chance-corrected coefficients such as α and
+κ therefore have almost no room above zero and are uninformative here (the
+"high agreement, low kappa" effect). Raw agreement and AC1, which is designed
+to be robust to skewed label prevalence, are the figures that describe the
+annotation: annotators disagreed on 3.5% of double-annotated items, and every
+one of those disagreements was adjudicated by hand. Where a stratum has real
+label variance (typo, partial), α is moderate as well.
 
-**Pre-registered rejection handling for converted rows** (fixed before
-annotation; see the datasheet curation log, 2026-08-22): a rejected edit on a
-row with a logged prior valid form reverts to that form; rows without one
-follow the rules above. Canonical dataset figures are post-adjudication.
+## 5. Verdict rules
 
-## 7. What to report in the paper (fixed schedule)
+Applied by `scripts/freeze_verified_release.py`, fixed before adjudication:
 
-A "Human Verification" subsection with:
+| final label | LLM-proposed / attested (census or sampled item) | algorithmic (sampled item) |
+|---|---|---|
+| `source_error` | remove the question | remove the question |
+| `invalid` | revert to the question's certified algorithmic perturbation if one exists, otherwise remove | keep (the tier is measured, not cleaned; reported as a rate) |
+| `valid` + `unnatural` | remove | keep, reported as a rate |
+| `valid` + `awkward` / `natural` | keep | keep |
+| never sampled | keep | keep |
 
-1. Annotator count + qualifications + calibration.
-2. Verification scope: Tier 1 census size, Tier 2 sample sizes.
-3. **IAA**: validity α (and κ), **overall + per strategy + per dataset**.
-4. **Validity (and corruption = 1−validity) rate**: overall + per stratum, each
-   with a **Wilson 95% CI** (e.g. `alias valid 96.5% [94.8, 97.8]`).
-5. **Sampled validity rate + CI for the attested and algorithmic tiers**
-   (justifies trusting the 652 un-sampled attested and 2,223 un-sampled
-   algorithmic rows).
-6. **Disagreement rate** + adjudication method.
-7. **Final released N** after dropping invalid / source-error rows.
+Calibration items follow the organiser's reference answer. A contingency stop
+(halt and re-plan if more than 20% of no-prior census items were invalid) was
+pre-set and not triggered (1.5%).
 
-## 8. Ethics & reproducibility
+## 6. Results
 
-- Annotator recruitment, informed consent, and compensation (Responsible-NLP
-  section).
-- Release the verification artifacts: anonymised per-item verdicts, the key file,
-  and the `verification_stats.py` output, so reviewers can recompute every number.
+Validity, with Wilson 95% confidence intervals:
 
-## 9. Results and release freeze
+| source | measured | valid | invalid | source error | validity |
+|---|--:|--:|--:|--:|---|
+| LLM-proposed | 898 | 870 | 25 | 3 | 97.2% [95.9, 98.1] |
+| attested | 393 | 387 | 6 | 0 | 98.5% [96.7, 99.3] |
+| algorithmic | 448 | 429 | 17 | 2 | 96.2% [94.0, 97.6] |
 
-**Collection** completed 2026-09-09: 5/5 annotators, 3,322 judgments, every
-`validity` cell filled. **Adjudication** of the 55 unresolved items (raters
-disagreed, or agreed on `unsure`) was done on 2026-09-09 by the first author
-from the worklist (`scripts/adjudication_worklist.py`; both raters' labels
-and notes visible, no model involved): 29 valid / 26 invalid (LLM 16/18,
-attested 6/3, algorithmic 7/5). Recorded in `audit/verification/adjudicated.csv`.
+By strategy: casing 100.0% · typo 99.0% · alias 98.7% · abbrev 96.7% ·
+partial 92.1% [87.4, 95.2].
 
-**Final figures** (1,739 measured items; `audit/verification/stats.md`):
+Release: 4,641 questions in the pre-verification set → **4,611** released.
+20 questions reverted to their certified algorithmic perturbation (19 LLM, 1
+attested); 30 removed — 11 invalid without a prior form, 5 source errors, 12
+valid but unnatural, 2 calibration items judged invalid by the reference key.
+17 invalid and 12 unnatural algorithmic-tier items were kept and are reported
+above as rates. Per dataset: CypherBench 2,099 · Mind-the-Query 1,222 ·
+ZOGRASCOPE 1,290. The strategy mixture is unchanged (typo 31.3% · abbrev
+22.4% · alias 18.2% · partial 18.1% · casing 10.0%).
 
-| tier | n | validity [95% CI] | α | AC1 | raw agr (n₂) |
-|---|--:|---|--:|--:|---|
-| LLM-proposed | 898 | **97.2% [95.9, 98.1]** | 0.291 | 0.961 | 96.2% (898) |
-| attested / KB | 393 | 98.5% [96.7, 99.3] | 0.390 | 0.977 | 97.7% (393) |
-| algorithmic | 448 | 96.2% [94.0, 97.6] | 0.482 | 0.956 | 95.8% (238) |
-| all | 1,739 | 97.3% | 0.354 | 0.964 | 96.5% (1,524) |
+## 7. Artifacts
 
-By strategy: casing 100.0 · typo 99.0 · alias 98.7 · abbrev 96.7 · partial
-92.1% [87.4, 95.2]. Disagreement 3.5%; source-error flags 5. α is deflated by
-prevalence exactly as anticipated in §6; AC1 and raw agreement are the
-readable reliability figures, and the strata with real label variance (typo
-α 0.66, partial 0.44) show the annotators were engaged.
+`audit/verification/` ships with the data:
 
-**Release freeze** (`scripts/freeze_verified_release.py`, 2026-09-09, rules of
-§6 and the 2026-08-22 pre-registration applied verbatim): 4,641 → **4,611**
-rows (cypherbench 2,099 · mindthequery 1,222 · zograscope 1,290). Actions:
-20 reverted to a certified prior algorithmic form (LLM 19, attested 1), 30
-removed — 11 invalid without a prior form (LLM 6, attested 5), 5
-source-error, 12 valid-but-unnatural (LLM 9, attested 3), 2 calibration items
-judged invalid by the organizer key; 17 algorithmic-tier rejections and 12
-naturalness flags kept and reported as rates (§3). Contingency rate 1.5% (stop
-threshold 20%). Policy choices the protocol leaves open, fixed before
-adjudication: `valid`+`unnatural` **dropped**, `valid`+`awkward` **kept** in
-the census tiers (a single rater's flag suffices — flags never co-occurred on a
-double-annotated item); Tier-2 rejections **kept**; calibration items follow
-the organizer reference answer. Manifest `release_manifest_v2.2.jsonl`
-verifies against the released files with `rebuild_from_manifest.py`
-(three-way: rebuilt = frozen hash = file on disk); every v2.1 row's fate is in
-`audit/verification/decisions.csv`, and `rescore_on_verified.py --decisions`
-re-derives evaluation metrics from runs made on v2.1 without re-running any
-model.
+| file | contents |
+|---|---|
+| `verdicts_long.csv` | every judgment: item, annotator letter, validity, naturalness, note |
+| `verification_key.csv` | the blind key: item → source, strategy, original and perturbed mention |
+| `adjudicated.csv` | the 55 adjudicated items with both raters' labels and the final label |
+| `calibration_ids.csv`, `calibration_key.csv` | the calibration set and its reference answers |
+| `decisions.csv` | every pre-verification row → action (keep / revert / remove) and its position in the released files |
+| `stats.json`, `stats.md`, `summary.json` | all statistics above, machine-readable and rendered |
 
----
-
-## Appendix — running the tooling
-
-```bash
-# 1. Build the seeded, stratified, blinded annotation queues.
-python scripts/verification_sample.py \
-    --out verification/ --annotators 3 --seed 42 \
-    --sample-typo 300 --sample-partial 200 --sample-casing 150
-# -> verification/verification_key.csv          (full metadata; NOT for annotators)
-#    verification/verification_annotator_A.csv  (blind; A fills validity/naturalness/...)
-#    verification/verification_annotator_B.csv
-#    verification/verification_annotator_C.csv
-
-# 2. Annotators fill their CSVs (validity, naturalness, source_error,
-#    corrected_form, notes), then:
-python scripts/verification_stats.py \
-    --key verification/verification_key.csv \
-    --annotations verification/verification_annotator_*.csv \
-    --out verification/report.md
-# -> Krippendorff alpha + pairwise Cohen kappa, validity rate + Wilson CI
-#    per (strategy x provenance x dataset) and overall, disagreement rate,
-#    final retained N.
-```
+`benchmarks/release_manifest_v2.2.jsonl` records, for every released
+question, the perturbation applied, the proposer model and its evidence for
+LLM-proposed edits, and the verification action; `scripts/rebuild_from_manifest.py`
+regenerates the released files from it and checks their hashes.
