@@ -11,12 +11,16 @@ plausible-looking score that is silently wrong, and we cannot tell afterwards.
 
 Depth, troubleshooting and every config knob: [`RUNNING_EXPERIMENTS.md`](RUNNING_EXPERIMENTS.md).
 
+> **What you hand in:** the branch `sweep/<model>` **pushed to this repository**,
+> plus its link (§6). A report sent as a file is not a deliverable — the
+> per-question records we need exist only on the branch.
+
 ---
 
 ## 0. Prerequisites
 
 ```bash
-git clone <repo> && cd t2c          # main branch — do not check out anything else
+git clone https://github.com/receive2/text2cypher_agent.git t2c && cd t2c   # main branch — do not check out anything else
 python3.12 -m venv venv && source venv/bin/activate   # Python 3.12 exactly — the pins (torch, faiss) have no 3.13 wheels
 python --version                    # must say 3.12.x
 pip install -r requirements.txt     # pinned to the environment the reference runs used
@@ -31,6 +35,11 @@ cp .env.example .env                # then put the keys in (below)
   coordinator (the VM firewall may need your IP).
   The same kind of corporate proxy also blocks `pip` wheel downloads
   (`403 MediaTypeBlocked`) — do the `pip install` off-VPN as well.
+- **Push access.** The deliverable is a branch pushed to this repository
+  (§6), so you need **write access**. Ask the coordinator to add you as a
+  collaborator on GitHub and accept the invitation **on day 1** — do not find
+  out after the sweep has finished. Check it once with
+  `git push --dry-run origin main` (details in §6.1).
 - **API keys.** `.env` holds keys and nothing else — the model is chosen in
   `eval_config.py` (step 2), never in `.env`. **Everyone needs
   `OPENAI_API_KEY`**, whatever model you run: at run time the tool router
@@ -201,32 +210,93 @@ then left out of the run *and* of the completeness verdict, `--publish`
 accepts the sweep, and the SWEEP file states which methods were skipped.
 Decide this with the coordinator, not on your own.
 
-## 6. Publish — the deliverable is a branch
+## 6. Deliver — push the branch, send the link
+
+**The deliverable is the branch `sweep/<model>` on GitHub.** It must hold every
+run's per-question records (`logs/runs/…/records.jsonl` + `summary.json`) and
+the report tables (`report/<model>/`). Every number in the paper is re-derived
+from those records; a report without them cannot be used.
+
+**What does not count as delivered:** a `.md` file attached to a message,
+tables pasted into chat, a screenshot, or a branch that exists only on your
+laptop. If you are about to send a file, the push has not happened — go back
+to §6.2.
+
+### 6.1 Make sure you can push (once, before your first publish)
+
+You need write access to this repository. Ask the coordinator to add you as a
+collaborator and accept the GitHub invitation, then check:
+
+```bash
+git push --dry-run origin main
+```
+
+`Everything up-to-date` (or a list of refs) means you can push. Anything
+mentioning `403`, `Permission … denied` or `not authorized` means you cannot —
+tell the coordinator before running anything else. A dry run creates nothing.
+
+### 6.2 Publish
 
 ```bash
 python orchestrate_sweep.py --publish
 ```
 
-Creates the branch **`sweep/<model>`** (e.g. `sweep/gpt-5.6-terra`) from
-`main`, commits your model's run directories (`records.jsonl` + `summary.json`
-for all 65 cells), `report/<model>/` (the per-graph tables and every
-`SWEEP_*.md`), the sweep log and your `eval_config.py`, and pushes it.
+This creates `sweep/<model>` from your current `main`, force-adds your run
+directories (they live under the gitignored `logs/`), `report/<model>/`, the
+sweep log and your `eval_config.py`, commits, and pushes. It is done **only**
+when the last line is
 
-Then send the coordinator **two things**:
+```
+✓ published branch sweep/<model> (65/65 cells, N run dirs). You are now on that branch.
+```
 
-1. the branch name (`sweep/<model>`), and
-2. the results file **`report/<model>/SWEEP.md`** attached to the message — it
-   is the completeness matrix plus every table the paper needs (EA / PSJS per
-   dataset and overall, by perturbation strategy, by query difficulty). It is
-   also in the branch; attaching it just saves a checkout.
+The two cell numbers must be equal (65/65, or e.g. 52/52 if the coordinator
+had you `--skip-methods` one method). Otherwise:
 
-That is all we need: the tables are in `report/<model>/`, and the per-question
-records let us re-derive anything without re-running.
+| you see instead | it means | do |
+|---|---|---|
+| `✗ the sweep is INCOMPLETE — publish refused …` | some graph × method cells are missing | §6.3 |
+| an error at `git push` (`403`, `Permission denied`, `not authorized`) | no write access | §6.1 — and do not send files instead |
+| `rejected` / `non-fast-forward` at `git push` | the remote branch has moved | tell the coordinator; **never force-push** |
 
-`--publish` refuses an INCOMPLETE sweep; if the coordinator explicitly accepts
-a partial result, `--publish --allow-incomplete`.
+### 6.3 If the sweep is INCOMPLETE
 
-Do **not** delete `logs/runs/` afterwards, and do not force-push.
+1. Re-run the sweep — it skips every finished cell and only fills the gaps:
+
+   ```bash
+   python orchestrate_sweep.py
+   python orchestrate_sweep.py --status     # cells still marked ✗ are missing
+   ```
+
+2. Repeat once if cells are still ✗ — most gaps are transient provider errors
+   and close on the second pass.
+3. If a cell is still ✗ after that for a reason you cannot fix (provider
+   outage, or a method the coordinator told you to skip), **publish anyway** so
+   the finished records reach the repository:
+
+   ```bash
+   python orchestrate_sweep.py --publish --allow-incomplete
+   ```
+
+   The commit is labelled `PARTIAL — n/65 … cells` automatically, so it cannot
+   be mistaken for a finished sweep. A partial branch with real records on it is
+   useful to us; a file with tables in it is not.
+
+### 6.4 Send exactly this — one message, three lines
+
+```
+model:   <model>
+branch:  sweep/<model>
+report:  https://github.com/receive2/text2cypher_agent/blob/sweep/<model>/report/<model>/SWEEP.md
+```
+
+If the sweep was partial, add one line listing the ✗ cells from `--status`.
+Do not attach files. If the report link does not open for the coordinator, the
+branch is not on GitHub — the push in §6.2 did not complete.
+
+Afterwards: do **not** delete `logs/runs/`, do **not** force-push. If the
+coordinator asks for a refreshed branch, run `--publish` again — it adds a
+commit on top, which is fine.
 
 ---
 
