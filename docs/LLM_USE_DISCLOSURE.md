@@ -31,38 +31,33 @@ the evidence the proposer cited, frozen in the released manifest
 (`release_manifest_v2.2.jsonl`), and the released dataset is a verified
 deterministic function of that manifest.
 
-\paragraph{Supply measurement.}
-The applicability-ceiling analysis (\S\ref{sec:applicability}) used the same
-abstention-first proposer to estimate, per graph and strategy, the fraction
-of entities admitting an attested alternative form; LLM-derived supply
-estimates are discounted by the human-measured proposal precision.
-
 \paragraph{Engineering and writing assistance.}
 Dataset-pipeline and audit tooling were developed with AI assistance
 (Claude); all code is released and was reviewed by the authors, who take
 full responsibility for the content of this paper. Because evaluated systems
-include models from the same family as the proposer, we report the
-LLM-proposed vs.\ attested provenance split and an ablation over it, which
-bounds any proposer-familiarity effect.
+include models from the same family as the proposer, every released edit is
+labelled with its provenance (LLM-proposed, attested, or algorithmic) so that
+results can be split by it.
 ```
 
 ## Responsible NLP Checklist mapping
 
 | Checklist item | Answer / pointer |
 |---|---|
-| Use of AI assistants disclosed? | Yes — section above; roles: proposer, supply probe, engineering |
+| Use of AI assistants disclosed? | Yes — section above; roles: proposer, engineering |
 | Models identified? | `gpt-4.1`, `claude-opus-5` (pinned per edit in `release_manifest_v2.2.jsonl`) |
-| Human oversight of AI-generated content? | 100% census of LLM-proposed edits, double annotation + adjudication, pre-registered rejection rules (DATASHEET §7 curation log) |
+| Human oversight of AI-generated content? | every LLM-proposed edit double-annotated and adjudicated; fixed verdict rules (`docs/VERIFICATION_PROTOCOL.md` §5) |
 | Contamination / circularity risk? | LLM never judges; DB + attested + human judges only; provenance ablation reported |
-| Artifacts released? | Manifest (all proposals + evidence), rebuild script, prompts (in `scripts/regenerate_llm_tier.py`, `scripts/measure_applicability_ceiling.py`) |
+| Artifacts released? | manifest (every released edit with proposer model + evidence), rebuild script, proposer prompts (`scripts/regenerate_llm_tier.py`), per-item verdicts (`audit/verification/`) |
 
 ## Notes for the writer
 
-- Wire `\S\ref{sec:verification}` / `\S\ref{sec:applicability}` to the actual
-  section labels in paper.tex.
+- Wire `\S\ref{sec:verification}` to the actual section label in paper.tex.
 - If reviewers ask "which snapshot of claude-opus-5": the API alias is
   undated by provider design; the manifest records the call date
   (2026-08) — state that.
-- The proposer-precision number to cite: ~85% (A/B,
-  `audit/llm_proposer_ab_results.md`); final per-strategy acceptance rates
-  come from the adjudicated census (auto-generated post-annotation).
+- The number to cite for LLM-proposed edits is the verified validity rate:
+  97.2% [95.9, 98.1] (abbrev 96.7%, alias 98.7%, partial 92.1%;
+  `docs/VERIFICATION_PROTOCOL.md` §6). The earlier ~85% A/B figure
+  (`audit/llm_proposer_ab_results.md`) is raw proposer precision before the
+  database gates, not the released rate.

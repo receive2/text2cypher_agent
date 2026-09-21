@@ -52,5 +52,5 @@ checks the same six canonical hashes.
 
 ## For auditors
 
-- Verification instructions: [`../docs/REVIEW_GUIDE.md`](../docs/REVIEW_GUIDE.md)
+- How the perturbations were verified: [`../docs/VERIFICATION_PROTOCOL.md`](../docs/VERIFICATION_PROTOCOL.md); the guide annotators worked from: [`../docs/ANNOTATION_QUICKSTART.md`](../docs/ANNOTATION_QUICKSTART.md)
 - How the perturbations are produced: [`../docs/AUGMENTATION_METHODS.md`](../docs/AUGMENTATION_METHODS.md)

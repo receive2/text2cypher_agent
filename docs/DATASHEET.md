@@ -328,19 +328,6 @@ Per-row verdicts (anonymised annotator letters), the blind key, the calibration 
   files (verified: 6/6 files match). The manifest supersedes the per-wave
   curation logs as the complete row-level provenance record.
 
-- **2026-09-09 — human verification collected (5/5 annotators); freeze
-  pending adjudication.** 3,322 judgments over 1,766 queue items; 1,739
-  measured after the pre-registered calibration exclusion. Validity: LLM
-  99.2% [98.3, 99.6], attested 99.2% [97.7, 99.7], algorithmic 97.2% [95.2,
-  98.4]; agreement AC1 0.964 / raw 95.8–97.7% (α 0.354, deflated by
-  prevalence as pre-registered). 55 items await adjudication; the v2.1 files
-  remain the released files until `scripts/freeze_verified_release.py`
-  writes v2.2. Dry run on current verdicts: 3 removed as invalid, 7 reverted
-  to certified prior forms, 5 source-error, 9 unnatural, 2 calibration —
-  well under the ≈100–150 loss pre-registered; contingency rate 0.4%.
-  Policy choices stated in `docs/VERIFICATION_PROTOCOL.md` §5. Artifacts:
-  `audit/verification/`.
-
 - **2026-09-09 — adjudication complete; VERIFIED RELEASE v2.2 frozen (4,641 →
   4,611).** The 55 pending items were adjudicated by the first author (29
   valid / 26 invalid; no model involved). Final validity (1,739 measured
@@ -370,7 +357,6 @@ benchmarks/verify.py        # pins the v2.2 hashes — run before any experiment
 benchmarks/release_manifest_v2.2.jsonl   # verified release: one record per released row
                                          #   (source row, unperturbed question, gold, edit
                                          #   decision, raters' labels, action, v2.1 position)
-~/datasets/release_manifest_v2.1.jsonl   # pre-verification freeze the queue was drawn from
 audit/verification/
   decisions.csv             # every v2.1 row -> action (keep / revert / remove) + reason
   verification_key.csv      # the blind queue key (provenance, strategy, assignment)

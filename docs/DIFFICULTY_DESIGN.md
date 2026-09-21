@@ -222,10 +222,12 @@ concentrated. Accept iff, on **each** dataset:
 
 | dataset | n | easy | medium | hard | accept |
 |---|--:|--:|--:|--:|---|
-| cypherbench | 2136 | 16.3% | 52.9% | 30.8% | ✓ |
-| mindthequery | 1298 | 6.2% | 61.9% | 31.9% | ✓ |
-| zograscope | 1441 | 6.3% | 74.4% | 19.3% | ✓ (medium near cap; principled for single-domain curated data) |
-| POOLED | 4875 | 10.7% | 61.6% | 27.7% | ✓ |
+| cypherbench | 2099 | 16.2% | 53.0% | 30.9% | ✓ |
+| mindthequery | 1222 | 6.5% | 61.7% | 31.8% | ✓ |
+| zograscope | 1290 | 6.3% | 74.3% | 19.4% | ✓ (medium near cap; principled for single-domain curated data) |
+| POOLED | 4611 | 10.8% | 61.3% | 27.9% | ✓ |
+
+(Released v2.2 questions; the classifier is unchanged since it was locked.)
 
 Cross-check: CypherBench 99.1% in-range, ρ=+0.763; ZOGRASCOPE 98.1%
 in-range, ρ=+0.748. Top mismatches are documented in the validator output

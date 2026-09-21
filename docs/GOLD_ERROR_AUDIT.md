@@ -117,11 +117,14 @@ removal of inconvenient examples is not defensible, documented curation is.
 
 ## Current snapshot (for reference)
 
-As of the latest run, `audit_gold_errors.py` reports **79** unique broken golds,
-all in Mind-the-Query (covid 59, wwc 12, healthcare 5, er 3); CypherBench and
-ZOGRASCOPE/pole have **0**. Roughly half look like Neo4j version/dialect issues
-(likely recoverable by transpiling), the rest genuine gold bugs. Verify per the
-workflow above before acting.
+On the released v2.2 benchmark, executing every gold query against the
+deployed graphs (`scripts/tuning/probe_empty_gold.py`, 2026-09-12;
+`report/empty_gold_rates.md`) finds **36** golds that do not execute, all in
+Mind-the-Query (covid 17, wwc 12, healthcare 4, er 3); CypherBench and
+ZOGRASCOPE have **0**. These golds are kept as shipped and score 0 for every
+method (the denominator is always all questions), so they lower every
+method equally and do not affect the comparison; the count is reported with
+the results.
 
 ## See also
 

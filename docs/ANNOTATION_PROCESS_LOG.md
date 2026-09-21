@@ -292,3 +292,12 @@ optimistic; the final figure is the one to report. Freeze: 4,641 → 4,611
 rows; 20 reverted to certified prior algorithmic forms, 30 removed (11
 invalid, 5 source-error, 12 unnatural, 2 calibration). Final numbers and
 policy statements: `docs/VERIFICATION_PROTOCOL.md` §5–6.
+
+## 8. Final outcome
+
+Adjudication of the 55 unresolved items was completed on 2026-09-09 and the
+verified release (v2.2, 4,611 questions) was frozen the same day. The final
+agreement figures, per-tier validity rates and verdict counts are in
+`docs/VERIFICATION_PROTOCOL.md` §4–6; the interim (pre-adjudication) numbers
+in §7 above are superseded by them.
+

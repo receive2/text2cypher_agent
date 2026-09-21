@@ -191,17 +191,21 @@ entity's `(label, property)`.
 ## A.5 Provenance and human verification
 
 Each edit records its `source`: `algorithmic`, `kb:curated`, `kb:simplekg`,
-`kb:rxnorm`, or `llm`. **Only `llm`-sourced edits are flagged
-`needs_verification`.** Algorithmic and attested-source edits are trusted by
-construction; LLM proposals are 100% human-verified (not sampled) against two
-questions: (i) does the perturbed mention still uniquely denote the original
-entity / preserve the gold answer? (ii) is it a plausible real-user surface form?
-Verdicts (keep / fix / drop) are applied before release. (In the v2.1 freeze,
-916 of the 4,641 edits are LLM-proposed; all 916 are queued for the
-double-annotated census.) In the verified v2.2 release, 25 of the 898
-measured LLM edits were rejected (19 reverted to certified prior algorithmic
-forms, 6 removed), 3 were removed as source errors and 9 as unnatural;
-see `docs/VERIFICATION_PROTOCOL.md` §6.
+`kb:rxnorm`, or `llm`. Human verification covered all three provenance tiers,
+with depth matched to risk: every LLM-proposed edit (916) was labelled
+independently by two annotators; the attested (knowledge-base) edits and the
+algorithmic edits were labelled on stratified random samples (400 of 1,052
+and 450 of 2,673). Annotators judged two things per item — whether the
+perturbed mention still uniquely denotes the original database value
+(`valid` / `invalid` / `source_error`) and whether the question still reads
+naturally (`natural` / `awkward` / `unnatural`); disagreements were
+adjudicated by the first author. Verdicts were applied by script under fixed
+rules: invalid LLM-proposed or attested edits revert to the question's
+certified algorithmic perturbation when one exists and are removed
+otherwise; source errors and valid-but-unnatural edits are removed; the
+sampled algorithmic tier is measured, not cleaned. Result: 4,641 → 4,611
+released questions (20 reverted, 30 removed). Full protocol, agreement and
+per-tier validity: `docs/VERIFICATION_PROTOCOL.md`.
 
 ## A.6 On the reliability of LLM-proposed forms
 
@@ -212,7 +216,9 @@ standardised short forms with a single correct answer) and the two-stage judge +
 collision check make them high-precision; aliases require specific world
 knowledge and are the noisiest (sibling-swaps, invented nicknames for obscure
 entities), which is exactly why the closed-set and synthetic-domain guards and
-the human-verification backstop concentrate there.
+the human-verification backstop concentrate there. Measured on the released
+data, 97.2% of LLM-proposed edits were judged valid (abbreviations 96.7%,
+aliases 98.7%, partial names 92.1%; `docs/VERIFICATION_PROTOCOL.md` §6).
 
 ## A.7 Reproducibility
 

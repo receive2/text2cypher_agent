@@ -43,7 +43,7 @@ by machine before annotation; annotators judge reference and readability only.
 
 ## 3. Procedure
 
-1. **Calibration.** All five annotators labelled the same 50 items spanning
+1. **Calibration.** All five annotators labelled the same 48 items spanning
    every strategy, received written feedback against a reference key, and the
    guideline was finalised. Calibration items are excluded from all statistics.
 2. **Annotation.** The queue (1,766 items, 3,322 judgments) was split across
