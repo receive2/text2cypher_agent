@@ -229,7 +229,7 @@ directly (env-overridable). You never set environment variables in the normal fl
 To run a given configuration, set it in `eval_config.py` and run `python eval_run.py`
 — e.g. `METHOD = "cyanchor"` with `RETRIEVAL_VECTOR = False`, `TOOL_TYPE = "node_rel"`
 for CyANCHOR `fuzzy+lev`, or `METHOD = "graphrag"` for the Multi-Agent GraphRAG
-baseline. The batch drivers (`orchestrate_cyanchor.py`, …) sweep methods by setting
+baseline. The sweep driver (`orchestrate_sweep.py`) sweeps methods by setting
 `cfg.METHOD` in-process — same surface, no env channel.
 
 > Back-compat: the legacy `VAL_LINK_MODE` / `AGENT_TYPE` / `RETRIEVAL_TYPE` axes still
