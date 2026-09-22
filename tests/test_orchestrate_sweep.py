@@ -56,7 +56,7 @@ def test_cell_status_and_matrix(world):
     assert not pole["complete"] and pole["n"] == 0 and pole["dir"] is None
     assert not st["complete"]
     text = osw.render_status(st)
-    assert "**INCOMPLETE**" in text and "✓ 3/0" in text and "✗ 2/0" in text and "✗ missing" in text
+    assert "**NOT CLEAN**" in text and "✓ 3/0" in text and "✗ 2/0" in text and "✗ missing" in text
     assert "| No Val Link | 1.000 | 1.000 |" in text            # CypherBench pooled over the complete cell
 
 

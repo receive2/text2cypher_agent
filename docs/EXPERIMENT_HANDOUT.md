@@ -39,7 +39,9 @@ cp .env.example .env                # then put the keys in (below)
   (§6), so you need **write access**. Ask the coordinator to add you as a
   collaborator on GitHub and accept the invitation **on day 1** — do not find
   out after the sweep has finished. Check it once with
-  `git push --dry-run origin main` (details in §6.1).
+  `git push --dry-run origin main` — `Everything up-to-date` means you can push; `403` /
+  `denied` means you cannot. `--publish` runs the same check itself and stops with a
+  clear message, so this is just to find out early.
 - **API keys.** `.env` holds keys and nothing else — the model is chosen in
   `eval_config.py` (step 2), never in `.env`. **Everyone needs
   `OPENAI_API_KEY`**, whatever model you run: at run time the tool router
@@ -186,38 +188,29 @@ shipped default appears as `cyanchor_fl` (fuzzy + Levenshtein). If you ever see
 `cyanchor_fvl`, the vector arm has been switched on and the run is not
 comparable with everyone else's — restore the defaults and re-run.
 
-**Completeness, not perfection.** A cell is complete when it holds one record
-per question (`n` equals the graph's question count). Some questions **will**
-error — broken gold queries, the odd timeout — and that is expected: the
-evaluation scores an errored question 0 (the denominator is always all
-questions) and reports the count in the `err` column. A cell with a few errors
-is a result. A missing or truncated cell is not, and the matrix marks it ✗.
+**How to read the matrix.** Each cell shows `n/err`: records present / records
+that errored. A cell is
 
-**But a lopsided error rate is a symptom.** Read the `err` column across the
-five methods **on the same graph**. If one cell errors on a large share of its
-questions (say a quarter or more) while the other methods on that graph do not,
-that is rate-limiting, not a property of the data: `cyanchor` and `react` make
-the most API calls per question, so they hit the provider's limit first. Seen in
-practice on ZOGRASCOPE: `cyanchor` errored on 861 of 1,290 questions and `react`
-on 383, while `fcav`, `graphrag` and `no_val_link` errored on fewer than ten
-each. Such a cell is *complete* — the driver will not re-run it for you — but
-its score measures the rate limit, not the model. Check `SHARDS = 1` in
-`eval_config.py`, delete that cell's run directory, and re-run just it:
-
-```bash
-python orchestrate_sweep.py --graphs pole --methods cyanchor
-```
-
-An error rate that is **uniformly** high across all five methods is a different
-thing and is not your problem: MindTheQuery runs at roughly 15% errors for every
-method and every model, from broken gold queries in the source data. Leave those
-alone — re-running changes nothing.
+- **✓** — one record per question and no infrastructure problem. Errors are
+  allowed here: some questions error on every model because the benchmark's own
+  gold query is broken (`gold`), and some because your model wrote invalid
+  Cypher (`agent`). Both score 0 and are part of the result.
+- **✗** — missing or truncated: fewer records than questions. The run did not
+  finish.
+- **⚠** — complete, but a large share of the errors are **timeouts or API
+  failures** (`infra`): the model never actually answered those questions.
+  Such a score measures the provider's rate limit, not the model. The driver
+  detects this by classifying every error string, lists the cells under
+  **Flagged cells** with the most common error text, and re-runs them
+  automatically (at most twice). The report also has an *Errors by kind*
+  table so `116 errors` reads as `71 model + 45 timeouts`.
 
 **If it stops** (laptop asleep, rate-limit storm, network): run the same
-command again. Completion is read from disk, so every complete cell is
-skipped and only the missing ones run; a cell that keeps failing is retried
-three times, then reported and skipped so the rest of the suite continues.
-To re-run a subset on purpose:
+command again. Completion is read from disk, so every ✓ cell is skipped and
+only ✗ and ⚠ cells run; a re-run writes a new time-stamped directory and the
+newest one wins, so there is nothing to delete by hand. A cell that keeps
+failing is retried three times, then reported and skipped so the rest of the
+suite continues. To re-run a subset on purpose:
 
 ```bash
 python orchestrate_sweep.py --graphs movie nba       # these graphs, all methods
@@ -225,8 +218,8 @@ python orchestrate_sweep.py --methods react          # this method, all graphs
 python orchestrate_sweep.py --status                 # matrix + headline numbers, runs nothing
 ```
 
-The run ends with **COMPLETE** or **INCOMPLETE** and the matrix. Do not
-report numbers from an INCOMPLETE sweep.
+The run ends with **COMPLETE** or **NOT CLEAN** and prints the next command
+to type. Do not report numbers from a sweep that is not COMPLETE.
 
 **If the coordinator tells you a method does not apply to your model** (for
 example `react` on a model whose API has no function calling), add
@@ -235,93 +228,55 @@ then left out of the run *and* of the completeness verdict, `--publish`
 accepts the sweep, and the SWEEP file states which methods were skipped.
 Decide this with the coordinator, not on your own.
 
-## 6. Deliver — push the branch, send the link
+## 6. Deliver — run `--publish`, send what it prints
 
-**The deliverable is the branch `sweep/<model>` on GitHub.** It must hold every
+**The deliverable is the branch `sweep/<model>` on GitHub.** It holds every
 run's per-question records (`logs/runs/…/records.jsonl` + `summary.json`) and
 the report tables (`report/<model>/`). Every number in the paper is re-derived
-from those records; a report without them cannot be used.
-
-**What does not count as delivered:** a `.md` file attached to a message,
-tables pasted into chat, a screenshot, or a branch that exists only on your
-laptop. If you are about to send a file, the push has not happened — go back
-to §6.2.
-
-### 6.1 Make sure you can push (once, before your first publish)
-
-You need write access to this repository. Ask the coordinator to add you as a
-collaborator and accept the GitHub invitation, then check:
-
-```bash
-git push --dry-run origin main
-```
-
-`Everything up-to-date` (or a list of refs) means you can push. Anything
-mentioning `403`, `Permission … denied` or `not authorized` means you cannot —
-tell the coordinator before running anything else. A dry run creates nothing.
-
-### 6.2 Publish
+from those records; a report file sent by email or chat cannot be used, and
+does not count as delivered.
 
 ```bash
 python orchestrate_sweep.py --publish
 ```
 
-This creates `sweep/<model>` from your current `main`, force-adds your run
-directories (they live under the gitignored `logs/`), `report/<model>/`, the
-sweep log and your `eval_config.py`, commits, and pushes. It is done **only**
-when the last line is
+The command checks that you can push, builds the commit in a throw-away git
+worktree (your own branch and working tree are never touched, so you can keep
+`git pull`-ing `main`), pushes `sweep/<model>`, and ends with the lines to
+send. It is done **only** when you see:
 
 ```
-✓ published branch sweep/<model> (65/65 cells, N run dirs). You are now on that branch.
+✓ published branch sweep/<model> @ <sha> (65/65 clean cells, N run dirs). Your branch and working tree were not touched.
+
+  Send the coordinator exactly this:
+    model:   <model>
+    branch:  sweep/<model>
+    report:  https://github.com/receive2/text2cypher_agent/blob/sweep/<model>/report/<model>/SWEEP.md
 ```
 
-The two cell numbers must be equal (65/65, or e.g. 52/52 if the coordinator
-had you `--skip-methods` one method). Otherwise:
+Copy those three lines into one message. That is the whole deliverable.
 
-| you see instead | it means | do |
-|---|---|---|
-| `✗ the sweep is INCOMPLETE — publish refused …` | some graph × method cells are missing | §6.3 |
-| an error at `git push` (`403`, `Permission denied`, `not authorized`) | no write access | §6.1 — and do not send files instead |
-| `rejected` / `non-fast-forward` at `git push` | the remote branch has moved | tell the coordinator; **never force-push** |
+If instead it prints **`✗ publish refused — the sweep is not clean`**, it lists
+the ✗ / ⚠ cells and the exact commands to run next — follow them:
 
-### 6.3 If the sweep is INCOMPLETE
+1. `python orchestrate_sweep.py` — re-runs only those cells; everything else is
+   kept.
+2. `python orchestrate_sweep.py --status` — every cell should now show ✓.
+3. If a ⚠ cell is *still* flagged after its automatic re-runs, publish anyway so
+   the finished records reach the repository, and paste the report's **Flagged
+   cells** section to the coordinator:
+   `python orchestrate_sweep.py --publish --allow-incomplete`.
+   The branch is labelled `PARTIAL` and lists the affected cells; nobody will
+   mistake it for a finished sweep.
 
-1. Re-run the sweep — it skips every finished cell and only fills the gaps:
+If it prints **`✗ you cannot push to this repository`**, you do not have write
+access yet: ask the coordinator to add you as a collaborator on GitHub, accept
+the invitation, and run `--publish` again. Nothing was changed. Do **not** send
+files instead.
 
-   ```bash
-   python orchestrate_sweep.py
-   python orchestrate_sweep.py --status     # cells still marked ✗ are missing
-   ```
-
-2. Repeat once if cells are still ✗ — most gaps are transient provider errors
-   and close on the second pass.
-3. If a cell is still ✗ after that for a reason you cannot fix (provider
-   outage, or a method the coordinator told you to skip), **publish anyway** so
-   the finished records reach the repository:
-
-   ```bash
-   python orchestrate_sweep.py --publish --allow-incomplete
-   ```
-
-   The commit is labelled `PARTIAL — n/65 … cells` automatically, so it cannot
-   be mistaken for a finished sweep. A partial branch with real records on it is
-   useful to us; a file with tables in it is not.
-
-### 6.4 Send exactly this — one message, three lines
-
-```
-model:   <model>
-branch:  sweep/<model>
-report:  https://github.com/receive2/text2cypher_agent/blob/sweep/<model>/report/<model>/SWEEP.md
-```
-
-If the sweep was partial, add one line listing the ✗ cells from `--status`.
-Do not attach files. If the report link does not open for the coordinator, the
-branch is not on GitHub — the push in §6.2 did not complete.
-
-Afterwards: do **not** delete `logs/runs/`, do **not** force-push. If the
-coordinator asks for a refreshed branch, run `--publish` again — it adds a
-commit on top, which is fine.
+Publishing again later (a refreshed branch, or after filling ⚠ cells) is the
+same command; it adds a commit on top of the existing branch. Do **not** delete
+`logs/runs/` and do **not** force-push.
 
 ---
 

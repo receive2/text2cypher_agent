@@ -14,6 +14,7 @@ One person, one model, one command.
     python orchestrate_sweep.py --skip-methods react # this model does not run react: excluded from the run AND the verdict
     python orchestrate_sweep.py --status             # completeness matrix + headline numbers, no runs
     python orchestrate_sweep.py --publish            # branch sweep/<model>: run dirs + reports, commit, push
+    python orchestrate_sweep.py --publish --allow-incomplete   # push a PARTIAL branch (missing/⚠ cells listed)
 
 The model is ``eval_config.GENERATOR_LLM`` — the one line a participant edits.
 Graphs are ``eval_config.FULL_EVAL_PAIRS_13_AUGMENTED``; methods are the five
@@ -25,16 +26,45 @@ Completeness
 A cell (graph, method) is COMPLETE when the newest run for this model holds one
 record per question of that graph (``records.jsonl`` rows == question count in
 the benchmark file). Errored questions are allowed: the eval scores them 0
-(denominator = all questions) and reports them in the ``err`` column — a graph
-with a few broken golds or timeouts still completes. What must never happen is
-a missing or truncated cell, and that is what the matrix checks.
+(denominator = all questions) and reports them in the ``err`` column.
+
+Errors are not all alike, so every errored record is classified by its
+``error`` string:
+
+* ``gold``  — the benchmark's own gold Cypher failed (a data defect; identical
+  for every method and model; never fixable by re-running);
+* ``agent`` — the model's generated Cypher failed (the model's result; scores 0);
+* ``infra`` — timeout / API timeout / rate limit / connection failure: the
+  question was never really evaluated. These are the only errors a re-run can
+  recover, and a cell with more than a handful of them is marked ⚠ and treated
+  as NOT clean: the run loop re-runs it (at most SUSPECT_RERUN_MAX times) and
+  ``--publish`` refuses it unless ``--allow-incomplete``;
+* ``other`` — unclassified; flagged only when lopsided against the other
+  methods on the same graph.
+
+The matrix shows ✓ (clean), ✗ (missing/truncated) or ⚠ (infrastructure
+failures), and a "Flagged cells" section prints the breakdown, the most common
+error text and the exact command to re-run just that cell.
 
 Resume
 ------
 Completion is read from disk, so re-running the same command skips every
-complete cell and re-runs the rest (up to MAX_TRIES attempts each). A cell that
+clean cell and re-runs the rest (up to MAX_TRIES attempts each). A cell that
 keeps failing is reported, not retried forever; the run continues with the next
-cell. ``logs/sweep_<model>.json`` keeps the per-cell history.
+cell. A ⚠ cell is re-run at most SUSPECT_RERUN_MAX times across invocations,
+then reported as persistent. ``logs/sweep_<model>.json`` keeps the per-cell
+history. Re-runs write a new time-stamped directory; the newest one wins, so
+nothing has to be deleted by hand.
+
+Publish
+-------
+``--publish`` never touches your branch or working tree. It builds the commit
+in a throw-away git worktree based on ``origin/sweep/<model>`` (or on HEAD the
+first time), mirrors the current run dirs + ``report/<model>/`` +
+``eval_config.py`` into it, commits, and pushes — so a second publish after a
+``git pull`` fast-forwards instead of being rejected, and switching branches
+afterwards cannot delete your run dirs. It ends by printing the three lines to
+send to the coordinator (model, branch, report URL).
 
 Reports
 -------
@@ -56,8 +86,11 @@ import collections
 import glob
 import json
 import os
+import re
+import shutil
 import subprocess
 import sys
+import tempfile
 import time
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
@@ -95,6 +128,27 @@ SMOKE_LIMIT = 3
 SMOKE_OUT = "logs/smoke"
 MAX_TRIES = 3
 CYANCHOR_PER_EXAMPLE_TIMEOUT = "900"   # seconds; slowest legitimate examples take 70-120 s
+
+# ⚠ detection — see "Completeness" in the module docstring.
+SUSPECT_INFRA_MIN_ABS   = 10     # this many infra errors in a cell always flags it
+SUSPECT_INFRA_RATE      = 0.02   # ... or this share of the cell's questions,
+SUSPECT_INFRA_MIN_RATE  = 3      #     provided at least this many (small graphs)
+SUSPECT_OTHER_RATE      = 0.25   # unclassified errors: flag when lopsided vs the
+SUSPECT_OTHER_REF_RATE  = 0.05   #     other methods on the same graph (min ≤ this)
+SUSPECT_OTHER_ABS_RATE  = 0.50   #     ... or when more than half the cell errored
+SUSPECT_RERUN_MAX       = 2      # automatic re-runs of a ⚠ cell across invocations
+
+# A Cypher / Neo4j *statement* error is the query's fault (gold or agent) and
+# never infrastructure — even when its message contains a number that looks
+# like an HTTP status ("line 1, column 536"). Checked before the infra patterns.
+_CYPHER_ERROR = re.compile(r"Cypher\w*Error|Neo\.ClientError\.", re.IGNORECASE)
+_INFRA_PATTERNS = re.compile(
+    r"example timeout|APITimeoutError|transaction timeout|timed out|"
+    r"(?:Read|Write|Connect)?TimeoutError|(?:Read|Write|Connect)Timeout|"
+    r"RateLimit|rate limit|\b429\b|(?:error code|status(?: code)?|http)\W{0,3}5\d\d\b|"
+    r"ServiceUnavailable|InternalServerError|APIConnectionError|"
+    r"Connection(?:Error|Reset|Refused)|overloaded|watchdog",
+    re.IGNORECASE)
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -173,11 +227,50 @@ def n_err(records: List[dict]) -> int:
     return sum(1 for r in records if r.get("ea") is None)
 
 
+def classify_error(error: Optional[str]) -> str:
+    """'infra' | 'gold' | 'agent' | 'other' — see the module docstring.
+    A Cypher/Neo4j statement error is classified by its prefix and is never
+    infra; otherwise infra patterns win over the prefix ('agent: APITimeoutError'
+    is infra)."""
+    e = str(error or "")
+    if _CYPHER_ERROR.search(e):
+        return "gold" if e.startswith("gold") else "agent"
+    if _INFRA_PATTERNS.search(e):
+        return "infra"
+    if e.startswith("gold"):
+        return "gold"
+    if e.startswith("agent"):
+        return "agent"
+    return "other"
+
+
+def error_breakdown(records: List[dict]) -> dict:
+    """Counts per error class plus the most common error text (digits masked)."""
+    kinds = collections.Counter()
+    texts = collections.Counter()
+    for r in records:
+        if r.get("ea") is not None:
+            continue
+        kinds[classify_error(r.get("error"))] += 1
+        texts[re.sub(r"\d+", "N", str(r.get("error") or ""))[:160]] += 1
+    top = texts.most_common(1)[0][0] if texts else ""
+    return {"infra": kinds["infra"], "gold": kinds["gold"], "agent": kinds["agent"],
+            "other": kinds["other"], "top_error": top}
+
+
+def infra_suspect(bd: dict, n: int) -> bool:
+    """A cell whose infrastructure failures exceed the small allowance."""
+    k = bd["infra"]
+    return k >= SUSPECT_INFRA_MIN_ABS or (k >= SUSPECT_INFRA_MIN_RATE and n and k / n >= SUSPECT_INFRA_RATE)
+
+
 def cell_status(dataset: str, graph: str, method: str, expected: int, out_dir: str, model: str) -> dict:
     d = newest_run_dir(dataset, graph, method, out_dir, model)
     recs = read_records(d)
+    bd = error_breakdown(recs)
     return {"dir": str(d.relative_to(REPO)) if d else None, "n": len(recs), "err": n_err(recs),
-            "expected": expected, "complete": bool(recs) and len(recs) == expected, "records": recs}
+            "expected": expected, "complete": bool(recs) and len(recs) == expected, "records": recs,
+            "breakdown": bd, "suspect": False, "why": ""}
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -245,8 +338,47 @@ def build_status(pairs: List[Tuple[str, str]], methods: List[str], expected: Dic
                  out_dir: str, model: str) -> dict:
     cells = {(ds, g, m): cell_status(ds, g, m, expected.get((ds, g), 0), out_dir, model)
              for ds, g in pairs for m in methods}
-    complete = all(c["complete"] for c in cells.values())
-    return {"model": model, "cells": cells, "complete": complete, "pairs": pairs, "methods": methods}
+    flag_suspects(cells)
+    complete = all(c["complete"] and not c["suspect"] for c in cells.values())
+    return {"model": model, "cells": cells, "complete": complete, "pairs": pairs, "methods": methods,
+            "missing": [k for k, c in cells.items() if not c["complete"]],
+            "flagged": [k for k, c in cells.items() if c["suspect"]]}
+
+
+def flag_suspects(cells: Dict[Tuple[str, str, str], dict]) -> None:
+    """Mark cells whose errors are infrastructure failures rather than results.
+
+    Rule 1 (by error type): more than a small allowance of ``infra`` errors.
+    Rule 2 (fallback, unclassified ``other`` errors only): lopsided against the
+    other methods on the same graph — this cell errors on ≥ SUSPECT_OTHER_RATE
+    while the best other method errors on ≤ SUSPECT_OTHER_REF_RATE — or more
+    than half the cell errored. ``gold`` and ``agent`` errors never flag: the
+    first is the data, the second is the model's score."""
+    by_graph: Dict[Tuple[str, str], List[Tuple[str, dict]]] = collections.defaultdict(list)
+    for (ds, g, m), c in cells.items():
+        by_graph[(ds, g)].append((m, c))
+    for (ds, g), lst in by_graph.items():
+        for m, c in lst:
+            n, bd = c["n"], c["breakdown"]
+            if not n:
+                continue
+            if infra_suspect(bd, n):
+                c["suspect"] = True
+                c["why"] = (f"{bd['infra']} of {n} questions failed on infrastructure "
+                            f"(timeout / API / rate limit) — never evaluated")
+                continue
+            other_rate = bd["other"] / n
+            if other_rate >= SUSPECT_OTHER_ABS_RATE:
+                c["suspect"] = True
+                c["why"] = f"{bd['other']} of {n} questions ({100*other_rate:.0f}%) failed with an unclassified error"
+                continue
+            if other_rate >= SUSPECT_OTHER_RATE:
+                refs = [c2["err"] / c2["n"] for m2, c2 in lst if m2 != m and c2["n"] and c2["complete"]]
+                if refs and min(refs) <= SUSPECT_OTHER_REF_RATE:
+                    c["suspect"] = True
+                    c["why"] = (f"{bd['other']} of {n} questions ({100*other_rate:.0f}%) failed with an "
+                                f"unclassified error while another method on this graph failed on "
+                                f"{100*min(refs):.1f}% — lopsided")
 
 
 SKIPPED_METHODS: List[str] = []
@@ -259,10 +391,19 @@ def render_status(status: dict) -> str:
     if SKIPPED_METHODS:
         lines += [f"**Methods not run for this model (by decision, --skip-methods): {', '.join(SKIPPED_METHODS)}.** "
                   "They are absent from every table below and do not count against completeness.", ""]
-    lines.append(("**COMPLETE** — every graph x method cell holds one record per question."
-                  if status["complete"] else
-                  "**INCOMPLETE** — cells marked ✗ are missing or truncated; re-run "
-                  "`python orchestrate_sweep.py` to fill them. Do not report these numbers."))
+    n_missing, n_flag = len(status.get("missing", [])), len(status.get("flagged", []))
+    if status["complete"]:
+        lines.append("**COMPLETE** — every graph x method cell holds one record per question, "
+                     "and no cell is dominated by infrastructure failures.")
+    else:
+        parts = []
+        if n_missing:
+            parts.append(f"{n_missing} cell(s) marked ✗ are missing or truncated")
+        if n_flag:
+            parts.append(f"{n_flag} cell(s) marked ⚠ failed on infrastructure (timeouts / API) and were "
+                         "never really evaluated — see *Flagged cells* below")
+        lines.append("**NOT CLEAN** — " + "; ".join(parts) + ". Re-run `python orchestrate_sweep.py` "
+                     "(it re-runs only these cells). Do not report these numbers.")
     lines += ["", f"- generated: {time.strftime('%Y-%m-%d %H:%M')} · commit `{_git('rev-parse', '--short', 'HEAD')}` "
               f"· benchmarks `{_benchmarks_version()}` · artifacts set `{_artifact_set_id()}`",
               f"- run config: CYPHER_EMPTY_IS_WRONG={getattr(cfg, 'CYPHER_EMPTY_IS_WRONG', '?')} · "
@@ -279,7 +420,46 @@ def render_status(status: dict) -> str:
         row = [DATASET_INFO[ds][1], g, str(cells[(ds, g, methods[0])]["expected"])]
         for m in methods:
             c = cells[(ds, g, m)]
-            row.append(("✓ " if c["complete"] else "✗ ") + (f"{c['n']}/{c['err']}" if c["n"] else "missing"))
+            mark = "⚠ " if c["suspect"] else ("✓ " if c["complete"] else "✗ ")
+            row.append(mark + (f"{c['n']}/{c['err']}" if c["n"] else "missing"))
+        lines.append("| " + " | ".join(row) + " |")
+    # ── flagged cells: what failed, why, and the one command that re-runs it ──
+    flagged = [(k, cells[k]) for k in status.get("flagged", [])]
+    if flagged:
+        lines += ["", "## Flagged cells — infrastructure failures, not results", "",
+                  "These cells hold one record per question but a large share of those records are "
+                  "timeouts or API failures: the model never answered them and they score 0 for the wrong "
+                  "reason. `python orchestrate_sweep.py` re-runs them automatically (up to "
+                  f"{SUSPECT_RERUN_MAX} times); to re-run one by hand use the command shown.", ""]
+        for (ds, g, m), c in flagged:
+            bd = c["breakdown"]
+            lines += [f"- **{DATASET_INFO[ds][1]} · {g} · {labels[m]}** — {c['why']}.",
+                      f"  errors: infra {bd['infra']} · gold {bd['gold']} · agent {bd['agent']} · other {bd['other']}",
+                      f"  most common: `{bd['top_error'] or '—'}`",
+                      f"  re-run: `python orchestrate_sweep.py --graphs {g} --methods {m}`"]
+    # ── error breakdown per dataset × method (so 116 errors reads as 71 model + 45 timeouts) ──
+    lines += ["", "## Errors by kind (pooled per dataset) — infra / gold / agent / other", "",
+              "`infra` = timeout, API or rate-limit failure (recoverable by re-running; flags ⚠ when large). "
+              "`gold` = the benchmark's own gold query failed (a data defect, the same for every model). "
+              "`agent` = the model's generated Cypher failed (the model's result). "
+              "`other` = unclassified.", "",
+              "| method | " + " | ".join(DATASET_INFO[ds][1] for ds in DATASET_INFO
+                                          if any(p[0] == ds for p in pairs)) + " | All |",
+              "|---|" + "---|" * (sum(1 for ds in DATASET_INFO if any(p[0] == ds for p in pairs)) + 1)]
+    for m in methods:
+        row = [labels[m]]
+        tot = collections.Counter()
+        for ds in DATASET_INFO:
+            if not any(p[0] == ds for p in pairs):
+                continue
+            k = collections.Counter()
+            for (d2, g2, m2), c in cells.items():
+                if d2 == ds and m2 == m:
+                    for kind in ("infra", "gold", "agent", "other"):
+                        k[kind] += c["breakdown"][kind]
+            tot.update(k)
+            row.append(f"{k['infra']} / {k['gold']} / {k['agent']} / {k['other']}")
+        row.append(f"{tot['infra']} / {tot['gold']} / {tot['agent']} / {tot['other']}")
         lines.append("| " + " | ".join(row) + " |")
     # ── headline numbers (pooled over questions; errors score 0) ──
     lines += ["", "## Headline — EA / PSJS pooled over all questions (errored questions score 0)", "",
@@ -502,27 +682,163 @@ def save_state(st: dict) -> None:
     p.write_text(json.dumps(st, indent=2), encoding="utf-8")
 
 
+def _remote_https_url() -> Optional[str]:
+    """https://github.com/<owner>/<repo> for origin, or None if it cannot be derived."""
+    url = _git("remote", "get-url", "origin")
+    m = (re.match(r"^https?://([^/]+)/(.+?)(?:\.git)?/?$", url)
+         or re.match(r"^(?:ssh://)?git@([^:/]+)[:/](.+?)(?:\.git)?/?$", url))
+    return f"https://{m.group(1)}/{m.group(2)}" if m else None
+
+
+def _classify_push_failure(stderr: str) -> str:
+    e = stderr.lower()
+    if "403" in e or "denied" in e or "not authorized" in e or "permission" in e or "authentication" in e:
+        return "access"
+    if "non-fast-forward" in e or "fetch first" in e or "rejected" in e:
+        return "moved"
+    if "could not resolve" in e or "unable to access" in e or "connection" in e or "timed out" in e:
+        return "network"
+    return "unknown"
+
+
+def _publish_tree(repo: Path, branch: str, run_dirs: List[str], extra_paths: List[str],
+                  mirror_roots: List[str], message: str) -> Tuple[str, str]:
+    """Commit *run_dirs* + *extra_paths* (repo-relative) onto ``origin/<branch>``
+    and push, without touching the caller's branch or working tree.
+
+    Builds the commit in a detached throw-away worktree based on the remote
+    branch (or HEAD when the branch does not exist yet), first un-tracking
+    *mirror_roots* so the committed tree mirrors what is on disk now, then
+    copying the paths in and force-adding them (they live under gitignored
+    ``logs/``). Returns ``("pushed"|"unchanged", commit_sha)``; raises
+    ``subprocess.CalledProcessError`` with stderr on git failure."""
+    def git(*args, cwd=repo, **kw):
+        return subprocess.run(["git", *args], cwd=cwd, check=True, text=True,
+                              capture_output=True, **kw)
+    git("worktree", "prune")
+    subprocess.run(["git", "fetch", "origin", branch], cwd=repo, text=True, capture_output=True)  # may not exist yet
+    remote_ok = subprocess.run(["git", "rev-parse", "--verify", "--quiet", f"refs/remotes/origin/{branch}"],
+                               cwd=repo, capture_output=True).returncode == 0
+    base = f"refs/remotes/origin/{branch}" if remote_ok else "HEAD"
+    tmp = Path(tempfile.mkdtemp(prefix="t2c_publish_"))
+    try:
+        git("worktree", "add", "--detach", str(tmp), base)
+        if mirror_roots:
+            git("rm", "-r", "-q", "--cached", "--ignore-unmatch", *mirror_roots, cwd=tmp)
+        to_add: List[str] = []
+        for rel in run_dirs + extra_paths:
+            src = repo / rel
+            dst = tmp / rel
+            if src.is_dir():
+                shutil.copytree(src, dst, dirs_exist_ok=True)
+            elif src.is_file():
+                dst.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(src, dst)
+            else:
+                continue
+            to_add.append(rel)
+        if to_add:
+            git("add", "-f", "--", *to_add, cwd=tmp)
+        changed = git("status", "--porcelain", cwd=tmp).stdout.strip() != ""
+        if changed:
+            git("commit", "-q", "-m", message, cwd=tmp)
+        sha = git("rev-parse", "--short", "HEAD", cwd=tmp).stdout.strip()
+        git("push", "origin", f"HEAD:refs/heads/{branch}", cwd=tmp)
+        return ("pushed" if changed else "unchanged"), sha
+    finally:
+        subprocess.run(["git", "worktree", "remove", "--force", str(tmp)], cwd=repo, capture_output=True)
+        subprocess.run(["git", "worktree", "prune"], cwd=repo, capture_output=True)
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
+def _cell_label(k: Tuple[str, str, str]) -> str:
+    ds, g, m = k
+    return f"{DATASET_INFO[ds][1]} · {g} · {m}"
+
+
 def publish(status: dict, allow_incomplete: bool) -> int:
     model = status["model"]
-    if not status["complete"] and not allow_incomplete:
-        log("✗ the sweep is INCOMPLETE — publish refused (pass --allow-incomplete only if the coordinator says so)")
-        return 1
     branch = f"sweep/{model}"
-    base = _git("rev-parse", "--abbrev-ref", "HEAD")
-    subprocess.run(["git", "checkout", "-B", branch], cwd=REPO, check=True)
-    dirs = sorted({c["dir"] for c in status["cells"].values() if c["dir"]})
-    subprocess.run(["git", "add", "-f", *dirs], cwd=REPO, check=True)
-    extras = [f"{cfg.REPORT_DIR}/{model}", "eval_config.py"] + [str(p.relative_to(REPO)) for p in
-                                                  (state_path(model), REPO / "logs" / f"sweep_{model}.log") if p.is_file()]
-    subprocess.run(["git", "add", "-f", *extras], cwd=REPO, check=True)
-    n_cells = len(status["cells"]); n_done = sum(1 for c in status["cells"].values() if c["complete"])
-    msg = (f"sweep({model}): {'full suite' if status['complete'] else 'PARTIAL'} — "
-           f"{n_done}/{n_cells} graph x method cells, {len(dirs)} run dirs + reports\n\n"
-           f"Generator: {model}. Base: {base}. Benchmarks {_benchmarks_version()}, artifacts set {_artifact_set_id()}.\n"
+    missing, flagged = status.get("missing", []), status.get("flagged", [])
+    cells = status["cells"]
+
+    # ── 1. verdict ──────────────────────────────────────────────────────────
+    if (missing or flagged) and not allow_incomplete:
+        log("✗ publish refused — the sweep is not clean:")
+        for k in missing:
+            c = cells[k]
+            log(f"    ✗ {_cell_label(k)}: {c['n']}/{c['expected']} records" + ("" if c["n"] else " (missing)"))
+        for k in flagged:
+            log(f"    ⚠ {_cell_label(k)}: {cells[k]['why']}")
+        log("  Next:")
+        log("    1. python orchestrate_sweep.py            # re-runs only the ✗ and ⚠ cells; everything else is kept")
+        log("    2. python orchestrate_sweep.py --status   # confirm every cell shows ✓")
+        log("    3. if a ⚠ cell is still flagged after its automatic re-runs, publish anyway so the finished")
+        log("       records reach the repository, and paste the 'Flagged cells' section to the coordinator:")
+        log("       python orchestrate_sweep.py --publish --allow-incomplete")
+        log("  Do not send report files by email or chat — the per-question records only exist on the branch.")
+        return 1
+
+    # ── 2. can we push at all? (a dry run creates nothing) ──────────────────
+    dry = subprocess.run(["git", "push", "--dry-run", "origin", f"HEAD:refs/heads/{branch}"],
+                         cwd=REPO, text=True, capture_output=True)
+    if dry.returncode != 0:
+        kind = _classify_push_failure(dry.stderr)
+        if kind == "access":
+            log("✗ you cannot push to this repository (no write access).")
+            log("  Ask the coordinator to add you as a collaborator on GitHub and accept the invitation,")
+            log("  then run --publish again. Nothing was changed. Do not send files instead.")
+            return 1
+        if kind == "network":
+            log("✗ GitHub is not reachable from here (network / VPN / proxy). Nothing was changed.")
+            log("  " + dry.stderr.strip().splitlines()[-1] if dry.stderr.strip() else "")
+            return 1
+        # 'moved' (non-fast-forward) is expected when the branch already exists — handled below.
+
+    # ── 3. build + push in a throw-away worktree ────────────────────────────
+    run_dirs = sorted({c["dir"] for c in cells.values() if c["dir"]})
+    extras = [f"{cfg.REPORT_DIR}/{model}", "eval_config.py"] + [
+        str(p.relative_to(REPO)) for p in (state_path(model), REPO / "logs" / f"sweep_{model}.log") if p.is_file()]
+    n_cells = len(cells); n_done = sum(1 for c in cells.values() if c["complete"] and not c["suspect"])
+    verdict = "full suite" if status["complete"] else "PARTIAL"
+    msg = (f"sweep({model}): {verdict} — {n_done}/{n_cells} clean graph x method cells, {len(run_dirs)} run dirs + reports\n\n"
+           f"Generator: {model}. Base: {_git('rev-parse', '--short', 'HEAD')}. "
+           f"Benchmarks {_benchmarks_version()}, artifacts set {_artifact_set_id()}.\n"
            f"records.jsonl / summary.json per run dir under logs/runs/; tables under {cfg.REPORT_DIR}/{model}/.")
-    subprocess.run(["git", "commit", "-q", "-m", msg], cwd=REPO, check=True)
-    subprocess.run(["git", "push", "-u", "origin", branch], cwd=REPO, check=True)
-    log(f"✓ published branch {branch} ({n_done}/{n_cells} cells, {len(dirs)} run dirs). You are now on that branch.")
+    if missing:
+        msg += "\n\nMissing / truncated cells:\n" + "\n".join(f"  ✗ {_cell_label(k)}" for k in missing)
+    if flagged:
+        msg += "\n\nCells flagged as infrastructure failures (⚠), included as-is:\n" + "\n".join(
+            f"  ⚠ {_cell_label(k)}: {cells[k]['why']}" for k in flagged)
+    try:
+        outcome, sha = _publish_tree(REPO, branch, run_dirs, extras,
+                                     mirror_roots=[eval_paths.RUNS_ROOT, f"{cfg.REPORT_DIR}/{model}"], message=msg)
+    except subprocess.CalledProcessError as exc:
+        kind = _classify_push_failure(exc.stderr or "")
+        if kind == "access":
+            log("✗ push rejected: no write access to this repository. Ask the coordinator to add you as a "
+                "collaborator, then run --publish again. Nothing was changed on your machine.")
+        elif kind == "moved":
+            log("✗ push rejected: the remote branch moved while publishing (someone else pushed to it). "
+                "Run --publish again — it rebuilds on the new tip. Never force-push.")
+        else:
+            log("✗ git failed during publish. Nothing was changed on your branch or working tree.")
+            log("  " + (exc.stderr or str(exc)).strip()[-600:])
+        return 1
+
+    # ── 4. what to send ─────────────────────────────────────────────────────
+    url = _remote_https_url()
+    report_url = f"{url}/blob/{branch}/{cfg.REPORT_DIR}/{model}/SWEEP.md" if url else f"(report at {cfg.REPORT_DIR}/{model}/SWEEP.md on branch {branch})"
+    log(f"✓ published branch {branch} @ {sha} ({n_done}/{n_cells} clean cells, {len(run_dirs)} run dirs)"
+        + (" — no change since the last publish" if outcome == "unchanged" else "")
+        + ". Your branch and working tree were not touched.")
+    log("")
+    log("  Send the coordinator exactly this:")
+    log(f"    model:   {model}")
+    log(f"    branch:  {branch}")
+    log(f"    report:  {report_url}")
+    if not status["complete"]:
+        log(f"    status:  PARTIAL — {len(missing)} missing, {len(flagged)} ⚠ (see the 'Flagged cells' section of the report)")
     return 0
 
 
@@ -536,7 +852,9 @@ def main(argv: Optional[List[str]] = None) -> int:
     ap.add_argument("--smoke", action="store_true", help=f"5 methods x {SMOKE_PAIR[1]} x {SMOKE_LIMIT} questions into {SMOKE_OUT}/")
     ap.add_argument("--status", action="store_true", help="print the completeness matrix + headline numbers; run nothing")
     ap.add_argument("--publish", action="store_true", help="commit this model's run dirs + reports to branch sweep/<model> and push")
-    ap.add_argument("--allow-incomplete", action="store_true", help="let --publish proceed on an incomplete sweep")
+    ap.add_argument("--allow-incomplete", action="store_true",
+                    help="let --publish push a PARTIAL branch although cells are missing (✗) or flagged ⚠; "
+                         "the report and the commit message list them")
     ap.add_argument("--graphs", nargs="+", metavar="GRAPH", help="restrict to these graphs")
     ap.add_argument("--methods", nargs="+", metavar="METHOD", choices=[m for _, _, m in METHODS], help="restrict to these methods (a partial re-run; the verdict still covers all five)")
     ap.add_argument("--skip-methods", nargs="+", metavar="METHOD", choices=[m for _, _, m in METHODS], default=[],
@@ -553,7 +871,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     global SKIPPED_METHODS
     SKIPPED_METHODS = list(args.skip_methods)
     expected = expected_counts()
-    # The verdict (COMPLETE / INCOMPLETE, the SWEEP file, --publish) is ALWAYS
+    # The verdict (COMPLETE / NOT CLEAN, the SWEEP file, --publish) is ALWAYS
     # over the full suite; --graphs / --methods only restrict what runs now.
     scope_pairs = [SMOKE_PAIR] if args.smoke else suite_pairs()
     pairs = list(scope_pairs)
@@ -592,10 +910,22 @@ def main(argv: Optional[List[str]] = None) -> int:
     for ds, graphs in by_dataset.items():
         for g in graphs:
             for m in methods:
-                c = cell_status(ds, g, m, expected[(ds, g)], out_dir, model)
-                if c["complete"]:
-                    log(f"  = {ds}__{g}__{m}: complete ({c['n']} records, err={c['err']}) — skipped")
+                probe = build_status([(ds, g)], methods, expected, out_dir, model)  # flags need the graph's peers
+                c = probe["cells"][(ds, g, m)]
+                key = f"{ds}__{g}__{m}"
+                if c["complete"] and not c["suspect"]:
+                    log(f"  = {key}: clean ({c['n']} records, err={c['err']}) — skipped")
                     continue
+                if c["suspect"]:
+                    entry = state["cells"].setdefault(key, {"tries": 0})
+                    done = int(entry.get("suspect_reruns", 0))
+                    if done >= SUSPECT_RERUN_MAX:
+                        log(f"  ⚠ {key}: {c['why']} — already re-run {done}x, not retrying. "
+                            "Persistent: report the 'Flagged cells' section to the coordinator.")
+                        continue
+                    entry["suspect_reruns"] = done + 1
+                    save_state(state)
+                    log(f"  ⚠ {key}: {c['why']} — re-running (attempt {done + 1}/{SUSPECT_RERUN_MAX})")
                 run_cell(ds, g, m, limit=limit, out_dir=out_dir, user_shards=user_shards, model=model, state=state)
             if not args.smoke:
                 try:
@@ -629,9 +959,19 @@ def main(argv: Optional[List[str]] = None) -> int:
             "(a few errors are fine; a whole method erroring is not). Now run: python orchestrate_sweep.py")
         return 0
     out = write_status(status)
-    log(f"=== sweep {'COMPLETE' if status['complete'] else 'INCOMPLETE'}: {out.relative_to(REPO)} ===")
-    if not status["complete"]:
-        log("re-run `python orchestrate_sweep.py` to fill the missing cells; then `python orchestrate_sweep.py --publish`")
+    log(f"=== sweep {'COMPLETE' if status['complete'] else 'NOT CLEAN'}: {out.relative_to(REPO)} ===")
+    if status["complete"]:
+        log("next: python orchestrate_sweep.py --publish")
+    else:
+        if status.get("missing"):
+            log(f"{len(status['missing'])} cell(s) missing/truncated (✗); "
+                f"{len(status.get('flagged', []))} cell(s) failed on infrastructure (⚠).")
+        elif status.get("flagged"):
+            log(f"{len(status['flagged'])} cell(s) failed on infrastructure (⚠) — see 'Flagged cells' in the report.")
+        log("next: python orchestrate_sweep.py            # re-runs only the ✗ / ⚠ cells")
+        log("      python orchestrate_sweep.py --publish  # when every cell shows ✓")
+        log("      (a ⚠ cell that persists after its automatic re-runs: --publish --allow-incomplete, "
+            "and send the 'Flagged cells' section to the coordinator)")
     return 0 if status["complete"] else 1
 
 
