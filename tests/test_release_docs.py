@@ -52,7 +52,7 @@ def test_gold_executability_covers_every_released_question():
     for ds in ("cypherbench", "mindthequery", "zograscope"):
         released += len(json.loads(_read(REPO / "benchmarks" / f"{ds}_augmented_v2" / "test.json")))
     assert sum(g["n"] for g in d["graphs"]) == released
-    assert "v2.2" in d["version"]
+    assert "v2.3" in d["version"]
 
 
 def test_proposer_pins_are_stated_exactly():

@@ -65,7 +65,8 @@ def from_runs(model: str) -> dict:
         for h in hits:
             f = Path(h) / "records.jsonl"
             if f.is_file():
-                rs = [json.loads(l) for l in f.open(encoding="utf-8") if l.strip()]
+                rs = [r for r in (json.loads(l) for l in f.open(encoding="utf-8") if l.strip())
+                      if str(r["qid"]) in qids]                     # rows removed since the run are ignored
                 if len(rs) == len(qids):
                     recs = {str(r["qid"]): r for r in rs}
         if not recs:

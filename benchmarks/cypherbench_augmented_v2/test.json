@@ -10997,7 +10997,7 @@
      "prop": "name",
      "occurrences": 1,
      "validity": "ok",
-     "regenerated": "verification_revert_v2.2-verified-2026-09-09",
+     "regenerated": "verification_revert_v2.3-verified-2026-09-22",
      "reverted_from": {
       "strategy": "abbrev",
       "to": "RC-7B",
@@ -19221,45 +19221,6 @@
  {
   "dataset": "cypherbench",
   "graph": "fictional_character",
-  "id": "0f75d737-0b3f-4720-b3e1-21f40ce06511",
-  "nl": "How many fictional universes include either the Globe organization or the character Fei Lian?",
-  "gold_cypher": "CALL { MATCH (n:FictionalUniverse)<-[r0:fromUniverse]-(m0:Organization {name: 'Daily Globe'}) RETURN n, m0 as m UNION MATCH (n:FictionalUniverse)<-[r1:fromUniverse]-(m1:Character {name: 'Fei Lian'}) RETURN n, m1 as m } WITH DISTINCT n RETURN count(n)",
-  "_aug_meta": {
-   "augmented": true,
-   "original_nl": "How many fictional universes include either the Daily Globe organization or the character Fei Lian?",
-   "graph": "fictional_character",
-   "edits": [
-    {
-     "strategy": "partial",
-     "from": "Daily Globe",
-     "to": "Globe",
-     "source": "algorithmic",
-     "needs_verification": false,
-     "label": "Organization",
-     "prop": "name",
-     "occurrences": 1,
-     "validity": "ok"
-    }
-   ],
-   "query_difficulty": "hard"
-  },
-  "_source_row": {
-   "qid": "0f75d737-0b3f-4720-b3e1-21f40ce06511",
-   "graph": "fictional_character",
-   "gold_cypher": "CALL { MATCH (n:FictionalUniverse)<-[r0:fromUniverse]-(m0:Organization {name: 'Daily Globe'}) RETURN n, m0 as m UNION MATCH (n:FictionalUniverse)<-[r1:fromUniverse]-(m1:Character {name: 'Fei Lian'}) RETURN n, m1 as m } WITH DISTINCT n RETURN count(n)",
-   "nl_question": "How many fictional universes include either the Daily Globe organization or the character Fei Lian?",
-   "answer_json": "[[2]]",
-   "from_template": {
-    "match_category": "special_union",
-    "match_cypher": "CALL { MATCH (n)<-[r0]-(m0<name>) RETURN n, m0 as m UNION MATCH (n)<-[r1]-(m1<name>) RETURN n, m1 as m }",
-    "return_pattern_id": "n_union_count",
-    "return_cypher": "${match_cypher} WITH DISTINCT n RETURN count(n)"
-   }
-  }
- },
- {
-  "dataset": "cypherbench",
-  "graph": "fictional_character",
   "id": "72381d24-45b9-4a6c-976e-1ab83b755341",
   "nl": "What are the names and countries of citizenship of characters who are students of Stick and spouses of milla donovan?",
   "gold_cypher": "MATCH (n:Character)<-[r0:hasStudent]-(m0:Character {name: 'Stick'}),(n:Character)<-[r1:hasSpouse]-(m1:Character {name: 'Milla Donovan'}) WITH DISTINCT n RETURN n.name, n.country_of_citizenship",
@@ -19730,45 +19691,6 @@
     "match_cypher": "MATCH (n)-[r0]->(m0<name>),(n)-[r1]->(m1<name>)",
     "return_pattern_id": "n_name",
     "return_cypher": "${match_cypher} WITH DISTINCT n RETURN n.name"
-   }
-  }
- },
- {
-  "dataset": "cypherbench",
-  "graph": "fictional_character",
-  "id": "0fa1aba2-ae80-4b17-8a4b-18e8e8df3a14",
-  "nl": "How many characters either killed the Confusion or are students of Xuanzang?",
-  "gold_cypher": "CALL { MATCH (n:Character)<-[r0:killedBy]-(m0:Character {name: 'Demon King of Confusion'}) RETURN n, m0 as m UNION MATCH (n:Character)<-[r1:hasStudent]-(m1:Character {name: 'Xuanzang'}) RETURN n, m1 as m } WITH DISTINCT n RETURN count(n)",
-  "_aug_meta": {
-   "augmented": true,
-   "original_nl": "How many characters either killed the Demon King of Confusion or are students of Xuanzang?",
-   "graph": "fictional_character",
-   "edits": [
-    {
-     "strategy": "partial",
-     "from": "Demon King of Confusion",
-     "to": "Confusion",
-     "source": "algorithmic",
-     "needs_verification": false,
-     "label": "Character",
-     "prop": "name",
-     "occurrences": 1,
-     "validity": "ok"
-    }
-   ],
-   "query_difficulty": "hard"
-  },
-  "_source_row": {
-   "qid": "0fa1aba2-ae80-4b17-8a4b-18e8e8df3a14",
-   "graph": "fictional_character",
-   "gold_cypher": "CALL { MATCH (n:Character)<-[r0:killedBy]-(m0:Character {name: 'Demon King of Confusion'}) RETURN n, m0 as m UNION MATCH (n:Character)<-[r1:hasStudent]-(m1:Character {name: 'Xuanzang'}) RETURN n, m1 as m } WITH DISTINCT n RETURN count(n)",
-   "nl_question": "How many characters either killed the Demon King of Confusion or are students of Xuanzang?",
-   "answer_json": "[[3]]",
-   "from_template": {
-    "match_category": "special_union",
-    "match_cypher": "CALL { MATCH (n)<-[r0]-(m0<name>) RETURN n, m0 as m UNION MATCH (n)<-[r1]-(m1<name>) RETURN n, m1 as m }",
-    "return_pattern_id": "n_union_count",
-    "return_cypher": "${match_cypher} WITH DISTINCT n RETURN count(n)"
    }
   }
  },
@@ -26158,7 +26080,7 @@
      "prop": "name",
      "occurrences": 1,
      "validity": "ok",
-     "regenerated": "verification_revert_v2.2-verified-2026-09-09",
+     "regenerated": "verification_revert_v2.3-verified-2026-09-22",
      "reverted_from": {
       "strategy": "alias",
       "to": "Caliburn",
@@ -33004,45 +32926,6 @@
     "match_cypher": "MATCH (n)-[r1]->(m1<name>) OPTIONAL MATCH (n)-[r0]->(m0)",
     "return_pattern_id": "n_m0_group_by_count",
     "return_cypher": "${match_cypher} WITH n, count(DISTINCT m0) AS num RETURN n.name, num"
-   }
-  }
- },
- {
-  "dataset": "cypherbench",
-  "graph": "company",
-  "id": "1ad45fec-5651-4467-81d1-6f239823a01f",
-  "nl": "Who are the individuals who have served as CEO of Soup Company at any time, and when did they pass away?",
-  "gold_cypher": "MATCH (n:Person)<-[r0:hasCEO]-(m0:Company {name: 'Campbell Soup Company'}) WITH DISTINCT n RETURN n.name, n.date_of_death",
-  "_aug_meta": {
-   "augmented": true,
-   "original_nl": "Who are the individuals who have served as CEO of Campbell Soup Company at any time, and when did they pass away?",
-   "graph": "company",
-   "edits": [
-    {
-     "strategy": "partial",
-     "from": "Campbell Soup Company",
-     "to": "Soup Company",
-     "source": "algorithmic",
-     "needs_verification": false,
-     "label": "Company",
-     "prop": "name",
-     "occurrences": 1,
-     "validity": "ok"
-    }
-   ],
-   "query_difficulty": "easy"
-  },
-  "_source_row": {
-   "qid": "1ad45fec-5651-4467-81d1-6f239823a01f",
-   "graph": "company",
-   "gold_cypher": "MATCH (n:Person)<-[r0:hasCEO]-(m0:Company {name: 'Campbell Soup Company'}) WITH DISTINCT n RETURN n.name, n.date_of_death",
-   "nl_question": "Who are the individuals who have served as CEO of Campbell Soup Company at any time, and when did they pass away?",
-   "answer_json": "[[\"Denise Morrison\", null]]",
-   "from_template": {
-    "match_category": "basic_(n)-(m0*)",
-    "match_cypher": "MATCH (n)<-[r0]-(m0<name>)",
-    "return_pattern_id": "n_name_prop",
-    "return_cypher": "${match_cypher} WITH DISTINCT n RETURN n.name, n.${prop}"
    }
   }
  },
@@ -41465,46 +41348,6 @@
     "match_cypher": "MATCH (n)<-[r0]-(m0)-[r1]->(m1<name>)",
     "return_pattern_id": "n_agg",
     "return_cypher": "${match_cypher} WITH DISTINCT n RETURN ${agg_clause}"
-   }
-  }
- },
- {
-  "dataset": "cypherbench",
-  "graph": "company",
-  "id": "706d5649-1b1a-4f49-8641-da3401e33fed",
-  "nl": "What is the name and launch year of the company that is based in the United States of America and owns plc?",
-  "gold_cypher": "MATCH (n:Company)-[r0:basedIn]->(m0:Country {name: 'United States of America'}),(n:Company)<-[r1:subsidiaryOf]-(m1:Company {name: 'Domino\\'s Pizza Group plc'}) WITH DISTINCT n RETURN n.name, n.launch_year",
-  "_aug_meta": {
-   "augmented": true,
-   "original_nl": "What is the name and launch year of the company that is based in the United States of America and owns Domino's Pizza Group plc?",
-   "graph": "company",
-   "edits": [
-    {
-     "strategy": "partial",
-     "from": "Domino's Pizza Group plc",
-     "to": "plc",
-     "source": "algorithmic",
-     "needs_verification": false,
-     "label": null,
-     "prop": null,
-     "occurrences": 1,
-     "validity": "ok",
-     "validity_backfill": "ok_backfilled"
-    }
-   ],
-   "query_difficulty": "medium"
-  },
-  "_source_row": {
-   "qid": "706d5649-1b1a-4f49-8641-da3401e33fed",
-   "graph": "company",
-   "gold_cypher": "MATCH (n:Company)-[r0:basedIn]->(m0:Country {name: 'United States of America'}),(n:Company)<-[r1:subsidiaryOf]-(m1:Company {name: 'Domino\\'s Pizza Group plc'}) WITH DISTINCT n RETURN n.name, n.launch_year",
-   "nl_question": "What is the name and launch year of the company that is based in the United States of America and owns Domino's Pizza Group plc?",
-   "answer_json": "[[\"Domino\\u2019s Pizza\", 1960]]",
-   "from_template": {
-    "match_category": "basic_(n)-(m0*),(n)-(m1*)",
-    "match_cypher": "MATCH (n)-[r0]->(m0<name>),(n)<-[r1]-(m1<name>)",
-    "return_pattern_id": "n_name_prop",
-    "return_cypher": "${match_cypher} WITH DISTINCT n RETURN n.name, n.${prop}"
    }
   }
  },
@@ -50279,7 +50122,7 @@
      "prop": "name",
      "occurrences": 1,
      "validity": "ok",
-     "regenerated": "verification_revert_v2.2-verified-2026-09-09",
+     "regenerated": "verification_revert_v2.3-verified-2026-09-22",
      "reverted_from": {
       "strategy": "alias",
       "to": "Loinbo Kangri",
@@ -61069,46 +60912,6 @@
    "gold_cypher": "MATCH (n:Person)<-[r0:writtenBy]-(m0:Movie)-[r1:writtenBy]->(m1:Person {name: 'Furio Scarpelli'}) WITH n, count(DISTINCT m0) AS num RETURN n.name, num",
    "nl_question": "Who are the co-writers of movies written by Furio Scarpelli, and how many such movies did each of them co-write?",
    "answer_json": "[[\"Agenore Incrocci\", 94], [\"Suso Cecchi d'Amico\", 6], [\"Tonino Guerra\", 1], [\"Mario Monicelli\", 22], [\"Ettore Scola\", 18], [\"Vincenzo Cerami\", 2], [\"Alberto Moravia\", 2], [\"Vasco Pratolini\", 1], [\"Eduardo De Filippo\", 2], [\"Alessandro Blasetti\", 2], [\"Ennio Flaiano\", 3], [\"Silvio D'Arzo\", 1], [\"Giorgio Bassani\", 2], [\"Claude-Andr\\u00e9 Puget\", 1], [\"Sandro Continenza\", 8], [\"Ruggero Maccari\", 12], [\"Sergio Pugliese\", 1], [\"Stefano Vanzina\", 9], [\"Vittorio Metz\", 17], [\"Marcello Marchesi\", 14], [\"Nanni Loy\", 1], [\"Leonardo Benvenuti\", 10], [\"Ren\\u00e9 Barjavel\", 1], [\"Giovannino Guareschi\", 1], [\"Dino Risi\", 3], [\"Marcello Fondato\", 1], [\"Luigi Comencini\", 2], [\"Graziano Diana\", 1], [\"Gaio Fratini\", 1], [\"Pietro Francisci\", 1], [\"Ennio de Concini\", 3], [\"Renato Salvatori\", 1], [\"Luciano Vincenzoni\", 6], [\"Carmine Gallone\", 1], [\"Luigi Filippo D'Amico\", 3], [\"Vittorio Nino Novarese\", 1], [\"Giacomo Scarpelli\", 10], [\"Renzo Tarabusi\", 2], [\"Piero De Bernardi\", 1], [\"Bernardino Zapponi\", 1], [\"Jean-Claude Penchenat\", 1], [\"Elio Petri\", 2], [\"Eduardo Ciannelli\", 1], [\"Sergio Amidei\", 5], [\"Valentino Orsini\", 1], [\"Giuliano Montaldo\", 1], [\"Paolo Virz\\u00ec\", 3], [\"Jean Manse\", 1], [\"Jean-Charles Tacchella\", 1], [\"Christian-Jaque\", 1], [\"Pietro Germi\", 2], [\"Michael Radford\", 1], [\"Massimo Troisi\", 1], [\"Anna Pavignano\", 1], [\"Ghigo De Chiara\", 1], [\"Franco Brusati\", 1], [\"Francesco Rosi\", 2], [\"Roberto Gianviti\", 1], [\"Federico Zardi\", 1], [\"Luigi Magni\", 3], [\"Arduino Maiuri\", 1], [\"Mario Mattoli\", 2], [\"Edoardo Anton\", 3], [\"Jean Bernard-Luc\", 2], [\"Claudio Gora\", 1], [\"Vitaliano Brancati\", 1], [\"Luigi Zampa\", 2], [\"Aldo Fabrizi\", 1], [\"Carlo Lizzani\", 1], [\"Ugo Pirro\", 1], [\"Armando Crispino\", 1], [\"Dario Fo\", 1], [\"Antonio Pietrangeli\", 2], [\"Nelo Risi\", 1], [\"Tullio Pinelli\", 2], [\"Glauco Pellegrini\", 1], [\"Franco Ferrini\", 1], [\"Claudio Bonivento\", 1], [\"Franco Castellano\", 1], [\"Giuseppe Moccia\", 2], [\"Aldo De Benedetti\", 2], [\"Nicola Manzari\", 1], [\"Federico Fellini\", 1], [\"Walter Reisch\", 1], [\"Francesca Archibugi\", 1], [\"Carlo Verdone\", 1], [\"Enrico Oldoini\", 1], [\"Mario Amendola\", 2], [\"Rodolfo Sonego\", 4], [\"Vincenzo Talarico\", 2], [\"Gian Domenico Giagni\", 1], [\"Maurizio Arena\", 1], [\"Alberto Sordi\", 1], [\"Guido Brignone\", 1], [\"Tino Scotti\", 1], [\"Marco Ferreri\", 1], [\"Rafael Azcona\", 1], [\"Francesco Bruni\", 2], [\"Paolo Levi\", 1], [\"Nino Manfredi\", 2], [\"Renzo Martinelli\", 1], [\"Mario Camerini\", 1], [\"Guido Leoni\", 1], [\"Achille Campanile\", 1], [\"Galeazzo Benti\", 1], [\"Vittorio Gassman\", 1], [\"Marco Risi\", 2], [\"Peter Barnes\", 1], [\"Pasquale Pozzessere\", 1], [\"Filiberto Scarpelli\", 1], [\"Paola Tiziana Cruciani\", 1], [\"Armando Curcio\", 1], [\"Sergio Donati\", 1], [\"Mickey Knox\", 1], [\"Sergio Leone\", 1], [\"Silvia Scola\", 1], [\"Adriano Baracco\", 1], [\"Lianella Carell\", 1], [\"Dacia Maraini\", 1], [\"Elvio Porta\", 1], [\"Primo Zeglio\", 1], [\"Eduardo Passarelli\", 1]]",
-   "from_template": {
-    "match_category": "special_three-node-groupby",
-    "match_cypher": "MATCH (n)<-[r0]-(m0)-[r1]->(m1<name>)",
-    "return_pattern_id": "n_m0_group_by_count",
-    "return_cypher": "${match_cypher} WITH n, count(DISTINCT m0) AS num RETURN n.name, num"
-   }
-  }
- },
- {
-  "dataset": "cypherbench",
-  "graph": "movie",
-  "id": "584a0908-1681-440e-9299-04afd39da02a",
-  "nl": "What are the names of countries from which movies produced by Bros. Pictures originate, and how many such movies come from each country?",
-  "gold_cypher": "MATCH (n:Country)<-[r0:originatesFrom]-(m0:Movie)-[r1:producedBy]->(m1:ProductionCompany {name: 'Warner Bros. Pictures'}) WITH n, count(DISTINCT m0) AS num RETURN n.name, num",
-  "_aug_meta": {
-   "augmented": true,
-   "original_nl": "What are the names of countries from which movies produced by Warner Bros. Pictures originate, and how many such movies come from each country?",
-   "graph": "movie",
-   "edits": [
-    {
-     "strategy": "partial",
-     "from": "Warner Bros. Pictures",
-     "to": "Bros. Pictures",
-     "source": "algorithmic",
-     "needs_verification": false,
-     "label": "ProductionCompany",
-     "prop": "name",
-     "occurrences": 1,
-     "validity": "ok",
-     "regenerated": "llm_tier_opus5_2026-08"
-    }
-   ],
-   "query_difficulty": "hard"
-  },
-  "_source_row": {
-   "qid": "584a0908-1681-440e-9299-04afd39da02a",
-   "graph": "movie",
-   "gold_cypher": "MATCH (n:Country)<-[r0:originatesFrom]-(m0:Movie)-[r1:producedBy]->(m1:ProductionCompany {name: 'Warner Bros. Pictures'}) WITH n, count(DISTINCT m0) AS num RETURN n.name, num",
-   "nl_question": "What are the names of countries from which movies produced by Warner Bros. Pictures originate, and how many such movies come from each country?",
-   "answer_json": "[[\"United Kingdom\", 22], [\"United States of America\", 214], [\"Australia\", 4], [\"France\", 4], [\"Malta\", 1], [\"Hungary\", 1], [\"Canada\", 2], [\"Netherlands\", 1], [\"Republic of Ireland\", 1], [\"Italy\", 3], [\"Brazil\", 1], [\"Germany\", 2], [\"South Africa\", 1]]",
    "from_template": {
     "match_category": "special_three-node-groupby",
     "match_cypher": "MATCH (n)<-[r0]-(m0)-[r1]->(m1<name>)",
@@ -72751,46 +72554,6 @@
  {
   "dataset": "cypherbench",
   "graph": "politics",
-  "id": "f122bc75-dd26-4d3c-aeb7-f3a0eb60e9b3",
-  "nl": "How many politicians are either members of the Party or have served as the head of government in Poland at some point?",
-  "gold_cypher": "CALL { MATCH (n:Politician)-[r0:memberOf]->(m0:PoliticalParty {name: 'United People\\'s Party'}) RETURN n, m0 as m UNION MATCH (n:Politician)<-[r1:hasHeadOfGovernment]-(m1:Country {name: 'Poland'}) RETURN n, m1 as m } WITH DISTINCT n RETURN count(n)",
-  "_aug_meta": {
-   "augmented": true,
-   "original_nl": "How many politicians are either members of the United People's Party or have served as the head of government in Poland at some point?",
-   "graph": "politics",
-   "edits": [
-    {
-     "strategy": "partial",
-     "from": "United People's Party",
-     "to": "Party",
-     "source": "algorithmic",
-     "needs_verification": false,
-     "label": null,
-     "prop": null,
-     "occurrences": 1,
-     "validity": "ok",
-     "validity_backfill": "ok_backfilled"
-    }
-   ],
-   "query_difficulty": "hard"
-  },
-  "_source_row": {
-   "qid": "f122bc75-dd26-4d3c-aeb7-f3a0eb60e9b3",
-   "graph": "politics",
-   "gold_cypher": "CALL { MATCH (n:Politician)-[r0:memberOf]->(m0:PoliticalParty {name: 'United People\\'s Party'}) RETURN n, m0 as m UNION MATCH (n:Politician)<-[r1:hasHeadOfGovernment]-(m1:Country {name: 'Poland'}) RETURN n, m1 as m } WITH DISTINCT n RETURN count(n)",
-   "nl_question": "How many politicians are either members of the United People's Party or have served as the head of government in Poland at some point?",
-   "answer_json": "[[98]]",
-   "from_template": {
-    "match_category": "special_union",
-    "match_cypher": "CALL { MATCH (n)-[r0]->(m0<name>) RETURN n, m0 as m UNION MATCH (n)<-[r1]-(m1<name>) RETURN n, m1 as m }",
-    "return_pattern_id": "n_union_count",
-    "return_cypher": "${match_cypher} WITH DISTINCT n RETURN count(n)"
-   }
-  }
- },
- {
-  "dataset": "cypherbench",
-  "graph": "politics",
   "id": "0063ecae-1b28-49ee-a6a5-f3f358a1c129",
   "nl": "Who are the politicians who have either served as the Mecklenburg-Western Pomerania or have been the head of government in Germany at any time?",
   "gold_cypher": "CALL { MATCH (n:Politician)-[r0:holdsPosition]->(m0:Position {name: 'Party Chairman of the CDU Mecklenburg-Western Pomerania'}) RETURN n, m0 as m UNION MATCH (n:Politician)<-[r1:hasHeadOfGovernment]-(m1:Country {name: 'Germany'}) RETURN n, m1 as m } WITH DISTINCT n RETURN n.name",
@@ -80303,45 +80066,6 @@
  {
   "dataset": "cypherbench",
   "graph": "politics",
-  "id": "5d084097-97fd-4219-be51-a2ad9d6fdcf3",
-  "nl": "Who are the politicians who have served as the head of government for the realm of the United at any time, past or present?",
-  "gold_cypher": "MATCH (n:Politician)<-[r0:hasHeadOfGovernment]-(m0:Country {name: 'realm of the United Kingdom'}) WITH DISTINCT n RETURN n.name",
-  "_aug_meta": {
-   "augmented": true,
-   "original_nl": "Who are the politicians who have served as the head of government for the realm of the United Kingdom at any time, past or present?",
-   "graph": "politics",
-   "edits": [
-    {
-     "strategy": "partial",
-     "from": "realm of the United Kingdom",
-     "to": "realm of the United",
-     "source": "algorithmic",
-     "needs_verification": false,
-     "label": "Country",
-     "prop": "name",
-     "occurrences": 1,
-     "validity": "ok"
-    }
-   ],
-   "query_difficulty": "easy"
-  },
-  "_source_row": {
-   "qid": "5d084097-97fd-4219-be51-a2ad9d6fdcf3",
-   "graph": "politics",
-   "gold_cypher": "MATCH (n:Politician)<-[r0:hasHeadOfGovernment]-(m0:Country {name: 'realm of the United Kingdom'}) WITH DISTINCT n RETURN n.name",
-   "nl_question": "Who are the politicians who have served as the head of government for the realm of the United Kingdom at any time, past or present?",
-   "answer_json": "[[\"Boris Johnson\"], [\"David Cameron\"], [\"Rishi Sunak\"], [\"Theresa May\"], [\"Liz Truss\"]]",
-   "from_template": {
-    "match_category": "basic_(n)-(m0*)",
-    "match_cypher": "MATCH (n)<-[r0]-(m0<name>)",
-    "return_pattern_id": "n_name",
-    "return_cypher": "${match_cypher} WITH DISTINCT n RETURN n.name"
-   }
-  }
- },
- {
-  "dataset": "cypherbench",
-  "graph": "politics",
   "id": "bcd75063-a788-4768-8bcb-4be026b4bee9",
   "nl": "Which country was founded later, SGP or Nauru?",
   "gold_cypher": "MATCH (n:Country {name: 'Singapore'}), (m0:Country {name: 'Nauru'}) RETURN CASE WHEN n.founding_date > m0.founding_date THEN n.name ELSE m0.name END AS answer",
@@ -80658,45 +80382,6 @@
  {
   "dataset": "cypherbench",
   "graph": "politics",
-  "id": "d02c5a89-5d77-478c-9de6-65029bf9e6df",
-  "nl": "What are the names and official languages of members of the African Development Bank that have had IV of Denmark as their head of state at some point?",
-  "gold_cypher": "MATCH (n:Country)-[r0:memberOf]->(m0:InternationalOrganization {name: 'African Development Bank'}),(n:Country)-[r1:hasHeadOfState]->(m1:Politician {name: 'Christian IV of Denmark'}) WITH DISTINCT n RETURN n.name, n.official_language",
-  "_aug_meta": {
-   "augmented": true,
-   "original_nl": "What are the names and official languages of members of the African Development Bank that have had Christian IV of Denmark as their head of state at some point?",
-   "graph": "politics",
-   "edits": [
-    {
-     "strategy": "partial",
-     "from": "Christian IV of Denmark",
-     "to": "IV of Denmark",
-     "source": "algorithmic",
-     "needs_verification": false,
-     "label": "Politician",
-     "prop": "name",
-     "occurrences": 1,
-     "validity": "ok"
-    }
-   ],
-   "query_difficulty": "medium"
-  },
-  "_source_row": {
-   "qid": "d02c5a89-5d77-478c-9de6-65029bf9e6df",
-   "graph": "politics",
-   "gold_cypher": "MATCH (n:Country)-[r0:memberOf]->(m0:InternationalOrganization {name: 'African Development Bank'}),(n:Country)-[r1:hasHeadOfState]->(m1:Politician {name: 'Christian IV of Denmark'}) WITH DISTINCT n RETURN n.name, n.official_language",
-   "nl_question": "What are the names and official languages of members of the African Development Bank that have had Christian IV of Denmark as their head of state at some point?",
-   "answer_json": "[[\"Denmark\", [\"Danish\"]]]",
-   "from_template": {
-    "match_category": "basic_(n)-(m0*),(n)-(m1*)",
-    "match_cypher": "MATCH (n)-[r0]->(m0<name>),(n)-[r1]->(m1<name>)",
-    "return_pattern_id": "n_name_prop",
-    "return_cypher": "${match_cypher} WITH DISTINCT n RETURN n.name, n.${prop}"
-   }
-  }
- },
- {
-  "dataset": "cypherbench",
-  "graph": "politics",
   "id": "cba4f759-dff8-4860-b4db-36f03d51b001",
   "nl": "What are the names and founding dates of countries to which the ministère de la marine belongs?",
   "gold_cypher": "MATCH (n:Country)<-[r0:belongsTo]-(m0:GovernmentOrganization {name: 'Ministère de la Marine'}) WITH DISTINCT n RETURN n.name, n.founding_date",
@@ -80925,46 +80610,6 @@
    "from_template": {
     "match_category": "basic_(n)-(m0*),(n)-(m1*)",
     "match_cypher": "MATCH (n)-[r0]->(m0<name>),(n)-[r1]->(m1<name>)",
-    "return_pattern_id": "n_name_prop",
-    "return_cypher": "${match_cypher} WITH DISTINCT n RETURN n.name, n.${prop}"
-   }
-  }
- },
- {
-  "dataset": "cypherbench",
-  "graph": "politics",
-  "id": "e2442682-e364-4959-8beb-a2283c79bb7f",
-  "nl": "What are the names and founding dates of political parties that have been led by a politician who has held the position of Commissars?",
-  "gold_cypher": "MATCH (n:PoliticalParty)-[r0:headedBy]->(m0:Politician)-[r1:holdsPosition]->(m1:Position {name: 'Chairman of the Council of People\\'s Commissars'}) WITH DISTINCT n RETURN n.name, n.founding_date",
-  "_aug_meta": {
-   "augmented": true,
-   "original_nl": "What are the names and founding dates of political parties that have been led by a politician who has held the position of Chairman of the Council of People's Commissars?",
-   "graph": "politics",
-   "edits": [
-    {
-     "strategy": "partial",
-     "from": "Chairman of the Council of People's Commissars",
-     "to": "Commissars",
-     "source": "algorithmic",
-     "needs_verification": false,
-     "label": null,
-     "prop": null,
-     "occurrences": 1,
-     "validity": "ok",
-     "validity_backfill": "ok_backfilled"
-    }
-   ],
-   "query_difficulty": "medium"
-  },
-  "_source_row": {
-   "qid": "e2442682-e364-4959-8beb-a2283c79bb7f",
-   "graph": "politics",
-   "gold_cypher": "MATCH (n:PoliticalParty)-[r0:headedBy]->(m0:Politician)-[r1:holdsPosition]->(m1:Position {name: 'Chairman of the Council of People\\'s Commissars'}) WITH DISTINCT n RETURN n.name, n.founding_date",
-   "nl_question": "What are the names and founding dates of political parties that have been led by a politician who has held the position of Chairman of the Council of People's Commissars?",
-   "answer_json": "[[\"Russian Social Democratic Labour Party (bolshevik)\", \"1917-05-07\"], [\"Russian Social Democratic Labour Party\", \"1898-03-13\"], [\"Communist Party of the Soviet Union\", \"1898-03-13\"]]",
-   "from_template": {
-    "match_category": "basic_(n)-(m0)-(m1*)",
-    "match_cypher": "MATCH (n)-[r0]->(m0)-[r1]->(m1<name>)",
     "return_pattern_id": "n_name_prop",
     "return_cypher": "${match_cypher} WITH DISTINCT n RETURN n.name, n.${prop}"
    }

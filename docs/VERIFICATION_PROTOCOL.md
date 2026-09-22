@@ -1,6 +1,6 @@
 # Human verification of the perturbed benchmark
 
-How the entity perturbations in the released benchmark (v2.2, 4,611 questions
+How the entity perturbations in the released benchmark (v2.3, 4,590 questions
 over 13 graphs) were verified by human annotators, and what the verification
 found. Annotator-facing instructions are in `ANNOTATION_QUICKSTART.md`; the
 day-by-day record is in `archive/ANNOTATION_PROCESS_LOG.md`; every number below can be
@@ -15,7 +15,7 @@ question still reads naturally.
 
 Perturbations come from three sources, which determine how they are verified:
 
-| source | in release | verified | how |
+| source | before verification | verified | how |
 |---|--:|--:|---|
 | LLM-proposed (abbreviations, aliases, some partial names) | 916 | 916 (every item) | full census, two annotators per item |
 | attested (aliases/abbreviations taken from a knowledge base or property table) | 1,052 | 400 | stratified random sample, two annotators per item |
@@ -24,7 +24,8 @@ Perturbations come from three sources, which determine how they are verified:
 The LLM tier is audited exhaustively because it carries the highest risk and
 because the anti-circularity claim depends on it: no model ever judges its own
 proposals. The other two tiers are sampled to *measure* their error rate; their
-un-sampled items stay in the release unchanged.
+un-sampled items stay in the release as generated, and the sampled rate is the
+estimate of how many of them are wrong.
 
 ## 2. Labels
 
@@ -51,11 +52,11 @@ by machine before annotation; annotators judge reference and readability only.
    rotating pair and every pair shares roughly 150 items. Annotators worked
    independently from a blind CSV (no source, no model name, no other rater's
    label).
-3. **Adjudication.** Items where the two annotators disagreed, or both marked
-   `unsure`, were resolved by the first author from a worklist showing both
-   labels and notes; no model was involved. 55 items were adjudicated
-   (29 valid, 26 invalid).
-4. **Verdicts** were applied by a script under fixed rules (§5) to produce the
+3. **Adjudication.** Items where the two annotators disagreed (53), or whose
+   only label was `unsure` (2), were resolved by the first author from a
+   worklist showing the labels and notes; no model was involved. 55 items were
+   adjudicated (29 valid, 26 invalid).
+4. **Verdicts** were applied by a script under the rules in §5 to produce the
    release.
 
 Five annotators took part: graduate-student volunteers from the lab, not
@@ -65,7 +66,10 @@ appear in the released artifacts only as letters A–E.
 ## 4. Agreement
 
 Agreement is computed on the validity label over the 1,524 double-annotated
-items (1,739 items were measured in total).
+items that received a validity verdict. 1,739 items were measured in total:
+1,529 carry two labels (5 of them, flagged as source errors, are set aside
+here) and 210 rule-based items carry one label, which enters no agreement
+figure.
 
 | | overall | LLM-proposed | attested | algorithmic |
 |---|--:|--:|--:|--:|
@@ -90,19 +94,19 @@ label variance (typo, partial), α is moderate as well.
 
 ## 5. Verdict rules
 
-Applied by `scripts/freeze_verified_release.py`, fixed before adjudication:
+Applied by `scripts/freeze_verified_release.py`; the same rules for every tier:
 
-| final label | LLM-proposed / attested (census or sampled item) | algorithmic (sampled item) |
-|---|---|---|
-| `source_error` | remove the question | remove the question |
-| `invalid` | revert to the question's certified algorithmic perturbation if one exists, otherwise remove | keep (the tier is measured, not cleaned; reported as a rate) |
-| `valid` + `unnatural` | remove | keep, reported as a rate |
-| `valid` + `awkward` / `natural` | keep | keep |
-| never sampled | keep | keep |
+| final label | action |
+|---|---|
+| `source_error` | remove the question |
+| `invalid` | LLM-proposed or attested edit: revert to the question's certified rule-based perturbation if one exists, otherwise remove. Rule-based edit: remove (there is no verified replacement form) |
+| `valid` + `unnatural` (either annotator) | remove |
+| `valid` + `awkward` / `natural` | keep |
+| never sampled | keep |
 
 Calibration items follow the organiser's reference answer. A contingency stop
-(halt and re-plan if more than 20% of no-prior census items were invalid) was
-pre-set and not triggered (1.5%).
+(halt and re-plan if more than 20% of no-prior LLM-proposed or attested items
+were invalid) was pre-set and not triggered (1.5%).
 
 ## 6. Results
 
@@ -117,14 +121,17 @@ Validity, with Wilson 95% confidence intervals:
 By strategy: casing 100.0% · typo 99.0% · alias 98.7% · abbrev 96.7% ·
 partial 92.1% [87.4, 95.2].
 
-Release: 4,641 questions in the pre-verification set → **4,611** released.
-20 questions reverted to their certified algorithmic perturbation (19 LLM, 1
-attested); 30 removed — 11 invalid without a prior form, 5 source errors, 12
-valid but unnatural, 2 calibration items judged invalid by the reference key.
-17 invalid and 12 unnatural algorithmic-tier items were kept and are reported
-above as rates. Per dataset: CypherBench 2,099 · Mind-the-Query 1,222 ·
-ZOGRASCOPE 1,290. The strategy mixture is unchanged (typo 31.3% · abbrev
-22.4% · alias 18.2% · partial 18.1% · casing 10.0%).
+Release: 4,641 questions in the pre-verification set → **4,590** released.
+20 questions reverted to their certified rule-based perturbation (19 LLM, 1
+attested); 51 removed — 28 invalid (11 LLM-proposed or attested without a
+prior form, 17 rule-based), 5 source errors, 16 valid but judged unnatural by
+at least one annotator (12 LLM-proposed or attested, 4 rule-based), 2
+calibration items judged invalid by the reference key. No item that an
+annotator judged invalid or unnatural is in the release; the rates above
+estimate the error rate of the items that were never sampled (652 attested,
+2,223 rule-based), which are released as generated. Per dataset: CypherBench
+2,090 · Mind-the-Query 1,217 · ZOGRASCOPE 1,283. Strategy mixture: typo
+31.4% · abbrev 22.5% · alias 18.3% · partial 17.8% · casing 10.1%.
 
 ## 7. Artifacts
 
@@ -139,7 +146,11 @@ ZOGRASCOPE 1,290. The strategy mixture is unchanged (typo 31.3% · abbrev
 | `decisions.csv` | every pre-verification row → action (keep / revert / remove) and its position in the released files |
 | `stats.json`, `stats.md`, `summary.json` | all statistics above, machine-readable and rendered |
 
-`benchmarks/release_manifest_v2.2.jsonl` records, for every released
+`benchmarks/release_manifest_v2.3.jsonl` records, for every released
 question, the perturbation applied, the proposer model and its evidence for
 LLM-proposed edits, and the verification action; `scripts/rebuild_from_manifest.py`
 regenerates the released files from it and checks their hashes.
+`benchmarks/removed_rows.jsonl` lists the 51 removed questions as they stood
+before verification (graph, question id, text, action); evaluation records
+made on an earlier copy are read against it, so they are scored on exactly
+the released rows.

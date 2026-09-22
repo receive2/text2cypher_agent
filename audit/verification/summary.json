@@ -1,21 +1,19 @@
 {
- "version": "v2.2-verified-2026-09-09",
+ "version": "v2.3-verified-2026-09-22",
  "rows_in": 4641,
- "rows_out": 4611,
+ "rows_out": 4590,
  "pending_policy": "block",
  "naturalness_policy": "drop-unnatural",
  "actions": {
-  "keep:valid": 1662,
+  "keep:valid": 1670,
   "keep:unsampled": 2854,
   "keep:calibration": 46,
-  "keep:naturalness_rate_only": 12,
   "revert:prior_algorithmic": 20,
-  "remove:invalid": 11,
-  "keep:invalid_rate_only": 17,
-  "remove:unnatural": 12,
+  "remove:invalid": 28,
+  "remove:unnatural": 16,
   "remove:calibration_key_invalid": 2,
   "remove:source_error": 5,
-  "remove_total": 30,
+  "remove_total": 51,
   "revert_total": 20
  },
  "contingency": {
@@ -30,8 +28,12 @@
   "row_count": 4641
  },
  "per_dataset_out": {
-  "cypherbench": 2099,
-  "mindthequery": 1222,
-  "zograscope": 1290
+  "cypherbench": 2090,
+  "mindthequery": 1217,
+  "zograscope": 1283
+ },
+ "removed_rows": {
+  "file": "removed_rows.jsonl",
+  "count": 51
  }
 }

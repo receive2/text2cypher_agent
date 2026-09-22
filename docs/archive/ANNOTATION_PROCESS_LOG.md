@@ -26,6 +26,7 @@ Annotator-facing instructions: `docs/ANNOTATION_QUICKSTART.md`.
 | 2026-09-07 | A, B, D returned main files (UTF-8, complete). |
 | 2026-09-09 | C returned main file (UTF-8, 664/664, 0 illegal values). **Collection complete: 5/5.** Five-annotator statistics computed; 55 items pending adjudication (worklist issued); release freeze tooling ready (§7). |
 | 2026-09-09 | Adjudication of the 55 pending items by the first author (29 valid / 26 invalid). **Release frozen as v2.2:** 4,641 → 4,611 rows (20 reverted, 30 removed); manifest + decision log + anonymised verdicts released in `audit/verification/`. |
+| 2026-09-22 | The rule-based tier's exception withdrawn (§9): its sampled items had been kept when judged invalid or unnatural and reported only as a rate; the same verdict rules now apply to every tier. 21 further questions removed (17 invalid, 4 unnatural — all from the 450-item rule-based sample; 8 of the 12 items only marked *awkward* stay, as in the other tiers). **Release frozen as v2.3:** 4,590 rows. Evaluation runs made on v2.2 are read against `benchmarks/removed_rows.jsonl` and scored on the v2.3 rows; nothing was re-run. |
 
 ## 2. Recruitment context
 
@@ -293,11 +294,34 @@ rows; 20 reverted to certified prior algorithmic forms, 30 removed (11
 invalid, 5 source-error, 12 unnatural, 2 calibration). Final numbers and
 policy statements: `docs/VERIFICATION_PROTOCOL.md` §5–6.
 
-## 8. Final outcome
+## 8. Adjudication outcome (2026-09-09)
 
 Adjudication of the 55 unresolved items was completed on 2026-09-09 and the
-verified release (v2.2, 4,611 questions) was frozen the same day. The final
-agreement figures, per-tier validity rates and verdict counts are in
-`docs/VERIFICATION_PROTOCOL.md` §4–6; the interim (pre-adjudication) numbers
-in §7 above are superseded by them.
+verified release v2.2 (4,611 questions) was frozen the same day. The interim
+(pre-adjudication) numbers in §7 above are superseded by the final figures in
+`docs/VERIFICATION_PROTOCOL.md` §4–6.
+
+## 9. Rule-based tier brought under the common rules (2026-09-22)
+
+The 2026-08-22 rules treated the sampled rule-based edits as a measurement
+only: an item the annotators judged invalid or unnatural stayed in the release
+and entered a rate. While the paper's verification section was being written,
+this was compared with how released benchmarks handle items their own
+annotators reject (Dr.Spider, WikiSQL, SParC, CoSQL, HSCodeComp, ZOGRASCOPE:
+removed or corrected; none keeps them), and the exception was withdrawn. The
+freeze script now applies one rule table to every tier
+(`docs/VERIFICATION_PROTOCOL.md` §5): a rejected rule-based edit is removed
+(it has no verified replacement form to revert to), a valid edit that either
+annotator marked *unnatural* is removed, *awkward* stays. Applied to the
+existing labels this removed 21 questions (17 invalid: 4 rejected by both
+annotators, 5 by adjudication, 8 by the single annotator who saw them; 4
+unnatural) and changed nothing else — `audit/verification/decisions.csv`
+differs from the v2.2 log in exactly those 21 rows plus 8 *awkward* rows whose
+action is now `keep:valid`. No label, adjudication or agreement statistic
+changed. The release is v2.3 (4,590 questions; CypherBench 2,090,
+Mind-the-Query 1,217, ZOGRASCOPE 1,283). The freeze writes
+`benchmarks/removed_rows.jsonl`, and every reader of evaluation records drops
+those rows, so the experiments already run on v2.2 were re-read on the v2.3
+rows rather than repeated (GPT-5.6, no grounding, 13 perturbed graphs:
+538/4,611 → 535/4,590 execution accuracy).
 

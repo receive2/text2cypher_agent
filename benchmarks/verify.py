@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-verify.py — check that this checkout's benchmark files are the released v2.2
+verify.py — check that this checkout's benchmark files are the released v2.3
 verified freeze, byte-for-byte in content.
 
 Run this BEFORE starting any experiment. Results from a mismatched copy cannot
@@ -23,15 +23,15 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 
-VERSION = "v2.2-verified-2026-09-09"
-ROW_COUNT = 4611
+VERSION = "v2.3-verified-2026-09-22"
+ROW_COUNT = 4590
 EXPECTED = {
-    "cypherbench_augmented_v2/test.json":          "535afb41c4498453a17b074371df89dbf5d3a70860dcaf5f747a18e61d623ff1",
-    "cypherbench_augmented_v2/test.probed.json":   "f7b0906dbef27f9141a46c05d9217fe1fb0b67d6c2fdc488d886da7768602139",
-    "mindthequery_augmented_v2/test.json":         "8b0c06e5f71b9f987402c382e04db96f4bfc54df8e1848d9f41f438eb0bd1e62",
-    "mindthequery_augmented_v2/test.probed.json":  "a3408dbbedca96bade330f30b945a69535eea244bb3ecf9accb0f6961a35dda5",
-    "zograscope_augmented_v2/test.json":           "6b224f4e89ab43532b2408dffd3d2266c46eca396891ab614e2c7ccdaddedd8d",
-    "zograscope_augmented_v2/test.probed.json":    "df167bb62da65dc31b702766bf5c4e386c24da0a9a058b4555b87c7326aa0f54",
+    "cypherbench_augmented_v2/test.json":          "13dcfd41a4468625007d12600378c20886debaf72b2c4fe8a57a18e15228f666",
+    "cypherbench_augmented_v2/test.probed.json":   "606977f8766338da5ff4ee9375dc8c421be47e27ae541bb624593d6d3b517181",
+    "mindthequery_augmented_v2/test.json":         "a5f49acad52d83ce714e75dd8672246c66bc31598ed2e6bb6f16f199ca9364b0",
+    "mindthequery_augmented_v2/test.probed.json":  "ba53b001974a158995922828e429a56f79fce4b846832b43857734e9c8a7e609",
+    "zograscope_augmented_v2/test.json":           "1a2b60095fa2c71beffb6eaed492fbed198d0ce6d8434707e3b5195da98d9e75",
+    "zograscope_augmented_v2/test.probed.json":    "5ca5ab505540292005208c0e9d5458d23565759d159bf20263e305ebc958cb14",
 }
 
 
@@ -68,7 +68,7 @@ def main() -> int:
         print("VERIFIED — safe to run experiments and pool results.")
         return 0
     print("\nFAILED — do NOT run experiments with this copy. Re-pull the repo; if it\n"
-          "still fails, ask the maintainer for the v2.2 verified release (results from a\n"
+          "still fails, ask the maintainer for the v2.3 verified release (results from a\n"
           "mismatched copy cannot be pooled).")
     return 1
 

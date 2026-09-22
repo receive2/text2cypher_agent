@@ -3,20 +3,23 @@
 """
 freeze_verified_release.py
 ==========================
-Apply the human-verification verdicts to the frozen v2.1 release and freeze
-the result as the verified release (v2.2): new benchmark files, a new decision
-manifest, and a complete row-level decision log.
+Apply the human-verification verdicts to the frozen v2.1 generation set and
+freeze the result as the verified release: new benchmark files, a new decision
+manifest, a complete row-level decision log, and the list of rows the
+verification removed (``removed_rows.jsonl`` next to the manifest — readers of
+evaluation records drop these rows, so runs made on an earlier release are
+re-read on the released rows without re-running anything).
 
-The rules are the ones pre-registered before annotation began
-(docs/DATASHEET.md curation log 2026-08-22; docs/VERIFICATION_PROTOCOL.md §3/§6):
+The verdict rules (docs/VERIFICATION_PROTOCOL.md §5) are the same for every
+tier:
 
-  source_error (any tier)                     -> remove
-  invalid, census tier (llm / attested),
+  source_error                                -> remove
+  invalid, LLM-proposed / attested edit,
       certified prior algorithmic form exists -> revert to that form
       no certified prior form                 -> remove
-  invalid, algorithmic tier                   -> keep (this tier estimates a
-                                                 rate; it triggers no removals)
-  valid + unnatural, census tier              -> remove   (--naturalness, default)
+  invalid, rule-based edit                    -> remove (a rule-based edit has
+                                                 no verified replacement form)
+  valid + unnatural (any rater)               -> remove   (--naturalness, default)
   valid + awkward                             -> keep     (--naturalness drop-both
                                                  removes these too)
   pending (raters disagree / unsure)          -> refuse to freeze (--pending block)
@@ -40,8 +43,8 @@ procedure; this script stops and says so (``--force`` to proceed anyway).
 
 Verdicts come from ``verification_stats.collect_labels`` — the same code the
 statistics report uses — so what the paper says was removed is exactly what
-was removed. The v2.2 manifest verifies with ``rebuild_from_manifest.py
---manifest``, and every v2.1 row's fate is in ``audit/verification/decisions.csv``.
+was removed. The new manifest verifies with ``rebuild_from_manifest.py``, and
+every v2.1 row's fate is in ``audit/verification/decisions.csv``.
 
 Usage
 -----
@@ -51,7 +54,7 @@ Usage
 
     # 2. after adjudication (verification/adjudicated.csv filled in):
     python scripts/freeze_verified_release.py --adjudicated verification/adjudicated.csv
-    python scripts/rebuild_from_manifest.py --manifest ~/datasets/release_manifest_v2.2.jsonl
+    python scripts/rebuild_from_manifest.py          # three-way check of the new manifest
     python scripts/render_datasheet_tables.py
 """
 from __future__ import annotations
@@ -96,7 +99,7 @@ def decide(tier: str, final: str, naturalness: List[str], has_prior: bool,
             if has_prior:
                 return "revert:prior_algorithmic", "census-rejected; certified prior algorithmic form exists"
             return "remove:invalid", "census-rejected; no certified prior form"
-        return "keep:invalid_rate_only", "algorithmic tier estimates a rate; pre-registered: no removals"
+        return "remove:invalid", "rejected rule-based edit; no verified replacement form"
     if final == "pending":
         if pending_policy == "keep":
             return "keep:pending", "provisional: unresolved disagreement kept"
@@ -105,13 +108,11 @@ def decide(tier: str, final: str, naturalness: List[str], has_prior: bool,
         return "pending", "awaiting adjudication"
     # valid
     nat = set(naturalness)
-    if tier in CENSUS and naturalness_policy != "keep":
+    if naturalness_policy != "keep":
         if "unnatural" in nat:
             return "remove:unnatural", "valid but a rater judged it a form nobody would write"
         if naturalness_policy == "drop-both" and "awkward" in nat:
             return "remove:awkward", "valid but a rater judged it stilted (drop-both policy)"
-    if tier not in CENSUS and ("unnatural" in nat or "awkward" in nat):
-        return "keep:naturalness_rate_only", "algorithmic tier: naturalness reported, no removals"
     return "keep:valid", "valid"
 
 
@@ -161,9 +162,13 @@ def main(argv: Optional[List[str]] = None) -> int:
     ap.add_argument("--calibration-key", default=None,
                     help="organizer reference answers (default: calibration_key.csv next to --key)")
     ap.add_argument("--prior-forms", default="audit/prior_forms.csv")
-    ap.add_argument("--manifest-in", default=str(rb.MANIFEST))
-    ap.add_argument("--manifest-out", default=str(Path.home() / "datasets" / "release_manifest_v2.2.jsonl"))
-    ap.add_argument("--version", default=f"v2.2-verified-{date.today().isoformat()}")
+    ap.add_argument("--manifest-in", default=str(rb.MANIFEST_V21),
+                    help="the frozen generation set the verdicts are applied to (v2.1)")
+    ap.add_argument("--manifest-out", default=str(REPO / "benchmarks" / "release_manifest_v2.3.jsonl"))
+    ap.add_argument("--removed-out", default=None,
+                    help="rows the verification removed, one JSON line each (default: removed_rows.jsonl "
+                         "next to --manifest-out)")
+    ap.add_argument("--version", default=f"v2.3-verified-{date.today().isoformat()}")
     ap.add_argument("--benchmarks-dir", default=None,
                     help="write <dir>/<dataset>/test.json instead of the configured release paths (tests)")
     ap.add_argument("--pending", choices=("block", "keep", "drop"), default="block")
@@ -216,7 +221,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         d = {"id": vid, "dataset": r["dataset"], "graph": r["graph"], "uuid": r["id"],
              "tier": tier or r["aug_meta"].get("edits", [{}])[0].get("source", ""),
              "strategy": e.get("strategy", ""), "in_queue": bool(k), "final_label": "",
-             "action": "", "reason": "", "revert_strategy": "", "revert_to": "", "v22_position": ""}
+             "action": "", "reason": "", "revert_strategy": "", "revert_to": "", "release_position": ""}
         if vid in cal_ids:
             ref = cal_key.get(vid, "")
             d["final_label"] = f"calibration:{ref or 'n/a'}"
@@ -294,7 +299,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         nr["verification"] = vb
         nr["position"] = pos[r["dataset"]]
         pos[r["dataset"]] += 1
-        d["v22_position"] = nr["position"]
+        d["release_position"] = nr["position"]
         new_recs.append(nr)
 
     rebuilt = rb.build_rows(new_recs)
@@ -332,13 +337,18 @@ def main(argv: Optional[List[str]] = None) -> int:
         json.dump(prows, open(Path(path).with_name("test.probed.json"), "w", encoding="utf-8"),
                   ensure_ascii=False, indent=1)
     _write_decisions(export / "decisions.csv", decisions)
+    removed_out = Path(args.removed_out) if args.removed_out else Path(args.manifest_out).with_name("removed_rows.jsonl")
+    n_removed = _write_removed_rows(removed_out, recs, decisions, args.version)
+    summary["removed_rows"] = {"file": removed_out.name, "count": n_removed}
     new_header = {"_manifest_header": True, "version": args.version, "row_count": len(new_recs),
                   "released_hashes": hashes,
                   "source_manifest": summary["source_manifest"],
                   "verification": {"pending_policy": args.pending,
                                    "naturalness_policy": args.naturalness,
                                    "actions": summary["actions"],
-                                   "decisions_csv_sha256": sha256_file(export / "decisions.csv")}}
+                                   "decisions_csv_sha256": sha256_file(export / "decisions.csv")},
+                  "removed_rows": {"file": removed_out.name, "count": n_removed,
+                                   "sha256": sha256_file(removed_out)}}
     Path(args.manifest_out).parent.mkdir(parents=True, exist_ok=True)
     with open(args.manifest_out, "w", encoding="utf-8") as fh:
         fh.write(json.dumps(new_header, ensure_ascii=False) + "\n")
@@ -362,7 +372,35 @@ def main(argv: Optional[List[str]] = None) -> int:
 # ── artifacts ─────────────────────────────────────────────────────────────────
 
 _DEC_COLS = ["id", "dataset", "graph", "uuid", "tier", "strategy", "in_queue", "final_label",
-             "action", "reason", "revert_strategy", "revert_to", "v22_position"]
+             "action", "reason", "revert_strategy", "revert_to", "release_position"]
+
+
+def _write_removed_rows(path: Path, recs: List[dict], decisions: List[dict], version: str) -> int:
+    """Every source row the verification removed, as it stood in the source
+    release: dataset, graph, question id, question text, the action and the
+    release that removed it. Readers of evaluation records (the sweep driver,
+    the report scripts) drop these rows, so a run made before the removal is
+    scored on exactly the released rows."""
+    removed = {d["id"]: d for d in decisions if d["action"].startswith("remove")}
+    rebuilt = rb.build_rows(recs)
+    out: List[dict] = []
+    for ds in sorted(rebuilt):
+        rows = rebuilt[ds][0]
+        srecs = sorted((r for r in recs if r["dataset"] == ds), key=lambda r: r["position"])
+        assert len(rows) == len(srecs)
+        for row, r in zip(rows, srecs):
+            assert row["id"] == r["id"]
+            vid = f"{r['dataset']}:{r['position']}"
+            d = removed.get(vid)
+            if d is None:
+                continue
+            out.append({"dataset": r["dataset"], "graph": r["graph"], "id": r["id"], "nl": row["nl"],
+                        "source_id": vid, "action": d["action"], "removed_in": version})
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with open(path, "w", encoding="utf-8") as fh:
+        for o in out:
+            fh.write(json.dumps(o, ensure_ascii=False) + "\n")
+    return len(out)
 
 
 def _write_decisions(path: Path, decisions: List[dict]) -> None:

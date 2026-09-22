@@ -28,7 +28,7 @@ database, attested resources, and human annotators --- never by an LLM ---
 so any LLM, including evaluated systems, can serve as proposer without
 contaminating the labels. Of the 879 released LLM-proposed edits, 852 carry their proposer model
 (\texttt{claude-opus-5}) and the evidence it cited in the released manifest
-(`release_manifest_v2.2.jsonl`); the remaining 27 predate per-edit pinning and
+(`release_manifest_v2.3.jsonl`); the remaining 27 predate per-edit pinning and
 were proposed by \texttt{gpt-4.1}. The released dataset is a verified
 deterministic function of that manifest.
 
@@ -46,7 +46,7 @@ results can be split by it.
 | Checklist item | Answer / pointer |
 |---|---|
 | Use of AI assistants disclosed? | Yes — section above; roles: proposer, engineering |
-| Models identified? | `claude-opus-5` (852 edits, pinned per edit in `release_manifest_v2.2.jsonl`); `gpt-4.1` (27 earlier edits, not pinned per edit) |
+| Models identified? | `claude-opus-5` (852 edits, pinned per edit in `release_manifest_v2.3.jsonl`); `gpt-4.1` (27 earlier edits, not pinned per edit) |
 | Human oversight of AI-generated content? | every LLM-proposed edit double-annotated and adjudicated; fixed verdict rules (`docs/VERIFICATION_PROTOCOL.md` §5) |
 | Contamination / circularity risk? | LLM never judges; DB + attested + human judges only; provenance ablation reported |
 | Artifacts released? | manifest (every released edit with proposer model + evidence), rebuild script, proposer prompts (`scripts/regenerate_llm_tier.py`), per-item verdicts (`audit/verification/`) |

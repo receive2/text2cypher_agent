@@ -44,7 +44,9 @@ for label, ret, cfg in _METHODS:
         d_path = eval_paths.latest_run_dir(dataset_key, g, cfg)
         rj = (d_path / "records.jsonl") if d_path else None
         if rj is not None and rj.exists():
-            lines += [l for l in rj.read_text().splitlines() if l.strip()]
+            recs = [json.loads(l) for l in rj.read_text(encoding="utf-8").splitlines() if l.strip()]
+            recs = eval_paths.drop_retired(dataset_key, g, recs)      # rows removed since the run was made
+            lines += [json.dumps(r, ensure_ascii=False) for r in recs]
     (pooled / "records.jsonl").write_text("\n".join(lines) + ("\n" if lines else ""))
     if lines:
         methods.append({"label": label, "retrieval": ret, "dir": str(pooled)})

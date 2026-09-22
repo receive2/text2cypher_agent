@@ -147,9 +147,12 @@ logs/runs/<dataset>__<graph>__<method_seg>@<model>__<YYYYMMDD-HHMMSS>/
 uses the newest run directory of the configured model, and accepts it only if
 it holds one record per question **and** every record was scored on the
 released benchmark rows — its `qid` is a release id of that graph and its
-`question` is the release text. A run made on an older copy of the benchmark
-(rows removed or rewritten since) shows `≠release` in the matrix, counts as ✗
-and is re-run. What the driver cannot see is which artifacts a run used:
+`question` is the release text. Records for rows that a later verified
+release removed (`benchmarks/removed_rows.jsonl`) are dropped before anything
+is counted, so a run made on v2.2 is complete on v2.3 and scored on the
+released rows. A run made on an older copy of the benchmark (rows rewritten
+since, or rows the release never had) shows `≠release` in the matrix, counts
+as ✗ and is re-run. What the driver cannot see is which artifacts a run used:
 nothing in a run directory records the artifact set, so on that axis a run is
 trusted only if it was made from a checkout that already enforced the published
 set (`be36c26`, 2026-09-10). `python scripts/audit_runs.py` applies both rules

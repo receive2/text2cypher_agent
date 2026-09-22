@@ -200,11 +200,11 @@ perturbed mention still uniquely denotes the original database value
 (`valid` / `invalid` / `source_error`) and whether the question still reads
 naturally (`natural` / `awkward` / `unnatural`); disagreements were
 adjudicated by the first author. Verdicts were applied by script under fixed
-rules: invalid LLM-proposed or attested edits revert to the question's
-certified algorithmic perturbation when one exists and are removed
-otherwise; source errors and valid-but-unnatural edits are removed; the
-sampled algorithmic tier is measured, not cleaned. Result: 4,641 → 4,611
-released questions (20 reverted, 30 removed). Full protocol, agreement and
+rules, the same for every tier: invalid LLM-proposed or attested edits revert
+to the question's certified algorithmic perturbation when one exists and are
+removed otherwise; invalid algorithmic edits are removed (they have no
+verified replacement form); source errors and valid-but-unnatural edits are
+removed. Result: 4,641 → 4,590 released questions (20 reverted, 51 removed). Full protocol, agreement and
 per-tier validity: `docs/VERIFICATION_PROTOCOL.md`.
 
 ## A.6 On the reliability of LLM-proposed forms

@@ -326,7 +326,7 @@ def main() -> int:
         graphs: List[str] = []
         for graph, rp in pairs:
             graphs.append(graph)
-            records.extend(_load_records(rp))
+            records.extend(eval_paths.drop_retired(dataset, graph, _load_records(rp)))
 
         if not records:
             report.append(f"\n### {label}")

@@ -37,13 +37,56 @@ themselves use single underscores (``cypherbench_augmented``,
 """
 from __future__ import annotations
 
+import json
 import re
 from datetime import datetime
 from pathlib import Path
-from typing import Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 
 # Canonical root for all per-run artifact directories.
 RUNS_ROOT = "logs/runs"
+
+# Rows the human verification removed from an earlier release, written by
+# scripts/freeze_verified_release.py next to the release manifest. A run made
+# before the removal still carries a record for each of them; every reader of
+# evaluation records drops those, so metrics are always computed over exactly
+# the released rows and no run has to be repeated after a removal.
+RETIRED_ROWS_FILE = Path(__file__).resolve().parent / "benchmarks" / "removed_rows.jsonl"
+_RETIRED: Optional[Dict[Tuple[str, str], Dict[str, str]]] = None
+
+
+def retired_rows() -> Dict[Tuple[str, str], Dict[str, str]]:
+    """(dataset key as in run-dir names, graph) -> {question id: question text}
+    of the rows removed from the benchmark by verification."""
+    global _RETIRED
+    if _RETIRED is None:
+        out: Dict[Tuple[str, str], Dict[str, str]] = {}
+        if RETIRED_ROWS_FILE.is_file():
+            for line in RETIRED_ROWS_FILE.read_text(encoding="utf-8").splitlines():
+                if line.strip():
+                    r = json.loads(line)
+                    out.setdefault((f"{r['dataset']}_augmented", r["graph"]), {})[str(r["id"])] = str(r["nl"])
+        _RETIRED = out
+    return _RETIRED
+
+
+def is_retired(dataset: str, graph: str, record: dict) -> bool:
+    """True when *record* was scored on a row that verification has since
+    removed: same graph, same question id and, when the record carries the
+    question text, the same text."""
+    want = retired_rows().get((dataset, graph))
+    if not want or not record.get("qid"):
+        return False
+    text = want.get(str(record["qid"]))
+    if text is None:
+        return False
+    q = record.get("question")
+    return q is None or str(q) == text
+
+
+def drop_retired(dataset: str, graph: str, records: List[dict]) -> List[dict]:
+    """*records* without the rows verification removed (see ``RETIRED_ROWS_FILE``)."""
+    return [r for r in records if not is_retired(dataset, graph, r)]
 
 # Timestamp segment appended to run dirs. No underscores (see module doc).
 STAMP_FMT = "%Y%m%d-%H%M%S"

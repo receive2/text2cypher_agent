@@ -9921,59 +9921,6 @@
  {
   "dataset": "mindthequery",
   "graph": "covid",
-  "id": "Complex_Retrieval_test:41",
-  "nl": "Retrieve the names of all 'Sikc' persons who have visited more than one place and return the names of the persons along with the count of places they visited.",
-  "gold_cypher": "MATCH (p:Person {healthstatus: 'Sick'})-[v:VISITS]->(pl:Place) WITH p, count(DISTINCT pl) AS placeCount WHERE placeCount > 1 RETURN p.name AS PersonName, placeCount",
-  "_aug_meta": {
-   "augmented": true,
-   "original_nl": "Retrieve the names of all 'Sick' persons who have visited more than one place and return the names of the persons along with the count of places they visited.",
-   "graph": "covid",
-   "edits": [
-    {
-     "strategy": "typo",
-     "from": "Sick",
-     "to": "Sikc",
-     "source": "algorithmic",
-     "needs_verification": false,
-     "label": "Person",
-     "prop": "healthstatus",
-     "occurrences": 1,
-     "validity": "ok",
-     "grounding_probe": {
-      "exact_ci": false,
-      "damerau": 1,
-      "substring": false,
-      "class": "edit_distance"
-     }
-    }
-   ],
-   "query_difficulty": "hard"
-  },
-  "_source_row": {
-   "NL Question": "Retrieve the names of all 'Sick' persons who have visited more than one place and return the names of the persons along with the count of places they visited.",
-   "Cypher": "MATCH (p:Person {healthstatus: 'Sick'})-[v:VISITS]->(pl:Place) WITH p, count(DISTINCT pl) AS placeCount WHERE placeCount > 1 RETURN p.name AS PersonName, placeCount",
-   "source_dataset": "covid",
-   "source_chunk": "data_3_2_2_6",
-   "original_file": "Complex_Retrieval.json",
-   "original_index": 274,
-   "unique_id": "covid_data_3_2_2_6_Complex_Retrieval_274",
-   "schema_validation_result": "✅ Query is valid according to schema!",
-   "schema_validation_passed": 1,
-   "value_validation_result": "✅ All values in Cypher are consistent with the NL question.",
-   "value_validation_passed": 1,
-   "neo4j_result_validation": "Results returned successfully.",
-   "neo4j_result_passed": 1,
-   "neo4j_runtime_validation": "No runtime errors.",
-   "neo4j_runtime_passed": 1,
-   "neo4j_content_validation": "Results contain non-null values.",
-   "neo4j_content_passed": 1,
-   "logical [0/1]": "",
-   "reason/observation [reason for why the query was not logical or was incorrect]": ""
-  }
- },
- {
-  "dataset": "mindthequery",
-  "graph": "covid",
   "id": "Complex_Retrieval_test:42",
   "nl": "Find the names of persons whose 'addresslocation' falls within the spatial boundary defined by x between 51.21 and 51.22 and y between 4.40 and 4.41, and who are also marked as 'SICK'. Return their names and their 'addresslocation'.",
   "gold_cypher": "MATCH (p:Person {healthstatus: 'Sick'}) WHERE p.addresslocation.x >= 51.21 AND p.addresslocation.x <= 51.22 AND p.addresslocation.y >= 4.40 AND p.addresslocation.y <= 4.41 RETURN p.name AS PersonName, p.addresslocation AS AddressLocation",
@@ -25593,60 +25540,6 @@
    "neo4j_runtime_validation": "No runtime errors.",
    "neo4j_runtime_passed": 1,
    "neo4j_content_validation": "Results contain non-null values.",
-   "neo4j_content_passed": 1,
-   "logical [0/1]": "1",
-   "reason/observation [reason for why the query was not logical or was incorrect]": ""
-  }
- },
- {
-  "dataset": "mindthequery",
-  "graph": "er",
-  "id": "Complex_Retrieval_test:161",
-  "nl": "What are the first names and last names of users who watched the movie 'Dear' and have a 'Female' gender?",
-  "gold_cypher": "MATCH (u:User)-[:WATCHED]->(m:Movie) WHERE u.gender = 'Female' AND m.title = 'Dear John' RETURN u.firstName, u.lastName",
-  "_aug_meta": {
-   "augmented": true,
-   "original_nl": "What are the first names and last names of users who watched the movie 'Dear John' and have a 'Female' gender?",
-   "graph": "er",
-   "edits": [
-    {
-     "strategy": "partial",
-     "from": "Dear John",
-     "to": "Dear",
-     "source": "algorithmic",
-     "needs_verification": false,
-     "label": "Movie",
-     "prop": "title",
-     "occurrences": 1,
-     "validity": "ok",
-     "regenerated": "partial_backfill_2026-08",
-     "grounding_probe": {
-      "exact_ci": false,
-      "damerau": 5,
-      "substring": true,
-      "class": "substring"
-     }
-    }
-   ],
-   "query_difficulty": "medium"
-  },
-  "_source_row": {
-   "NL Question": "What are the first names and last names of users who watched the movie 'Dear John' and have a 'Female' gender?",
-   "Cypher": "MATCH (u:User)-[:WATCHED]->(m:Movie) WHERE u.gender = 'Female' AND m.title = 'Dear John' RETURN u.firstName, u.lastName",
-   "source_dataset": "er",
-   "source_chunk": "data_3_2_2_6",
-   "original_file": "Complex_Retrieval.json",
-   "original_index": 443,
-   "unique_id": "er_data_3_2_2_6_Complex_Retrieval_443",
-   "schema_validation_result": "✅ Query is valid according to schema!",
-   "schema_validation_passed": 1,
-   "value_validation_result": "✅ All values in Cypher are consistent with the NL question.",
-   "value_validation_passed": 1,
-   "neo4j_result_validation": "No results returned.",
-   "neo4j_result_passed": 0,
-   "neo4j_runtime_validation": "No runtime errors.",
-   "neo4j_runtime_passed": 1,
-   "neo4j_content_validation": "No results returned.",
    "neo4j_content_passed": 1,
    "logical [0/1]": "1",
    "reason/observation [reason for why the query was not logical or was incorrect]": ""
@@ -43973,51 +43866,6 @@
  {
   "dataset": "mindthequery",
   "graph": "healthcare",
-  "id": "Complex_Retrieval_test:145",
-  "nl": "Find cases reported by 'Facility' where the patient's age is greater than 10 and the drug 'VALSARTAN AND HYDROCHLOROTHIAZIDE' is listed as a primary suspect.",
-  "gold_cypher": "MATCH (c:Case)-[:REPORTED_BY]->(r:ReportSource {name: 'User Facility'}), (c)-[:IS_PRIMARY_SUSPECT]->(d:Drug {name: 'VALSARTAN AND HYDROCHLOROTHIAZIDE'}) WHERE c.age > 10 RETURN c",
-  "_aug_meta": {
-   "augmented": true,
-   "original_nl": "Find cases reported by 'User Facility' where the patient's age is greater than 10 and the drug 'VALSARTAN AND HYDROCHLOROTHIAZIDE' is listed as a primary suspect.",
-   "graph": "healthcare",
-   "edits": [
-    {
-     "strategy": "partial",
-     "from": "User Facility",
-     "to": "Facility",
-     "source": "algorithmic",
-     "needs_verification": false,
-     "label": "ReportSource",
-     "prop": "name",
-     "occurrences": 1,
-     "validity": "ok",
-     "grounding_probe": {
-      "exact_ci": false,
-      "damerau": 5,
-      "substring": true,
-      "class": "substring"
-     }
-    }
-   ],
-   "query_difficulty": "medium"
-  },
-  "_source_row": {
-   "id": 705,
-   "original_index": 987,
-   "source_dataset": "healthcare",
-   "source_chunk": "data_3_1_2_6",
-   "original_file": "Complex_Retrieval.json",
-   "unique_id": "healthcare_data_3_1_2_6_Complex_Retrieval_987",
-   "NL Question": "Find cases reported by 'User Facility' where the patient's age is greater than 10 and the drug 'VALSARTAN AND HYDROCHLOROTHIAZIDE' is listed as a primary suspect.",
-   "Cypher": "MATCH (c:Case)-[:REPORTED_BY]->(r:ReportSource {name: 'User Facility'}), (c)-[:IS_PRIMARY_SUSPECT]->(d:Drug {name: 'VALSARTAN AND HYDROCHLOROTHIAZIDE'}) WHERE c.age > 10 RETURN c",
-   "result [0/1]": "0",
-   "logical [0/1]": "1",
-   "reason/observation [reason for why the query was not logical or was incorrect]": "Query is logical, but results are empty due to conditioned tuples do not exist in the dataset"
-  }
- },
- {
-  "dataset": "mindthequery",
-  "graph": "healthcare",
   "id": "Complex_Retrieval_test:146",
   "nl": "Retrieve all cases where the reaction description is 'Peripheral nervous system functino test abnormal' and the case resulted in 'Disability'. Also, return the age of the patient.",
   "gold_cypher": "MATCH (c:Case)-[:HAS_REACTION]->(r:Reaction {description: 'Peripheral nervous system function test abnormal'}), (c)-[:RESULTED_IN]->(o:Outcome {outcome: 'Disability'}) RETURN c.age AS PatientAge",
@@ -55873,98 +55721,6 @@
    "unique_id": "wwc_data_3_4_2_6_Complex_Retrieval_108",
    "NL Question": "Identify all players who scored goals in matches during the 'USA 2003' tournament. Return the player's name, the match ID, and the minute the goal was scored.",
    "Cypher": "MATCH (p:Person)-[sg:SCORED_GOAL]->(m:Match)-[:IN_TOURNAMENT]->(t:Tournament {name: 'USA 2003'}) RETURN p.name AS PlayerName, m.id AS MatchId, sg.minute AS GoalMinute",
-   "result [0/1]": "1",
-   "logical [0/1]": "1",
-   "reason/observation [reason for why the query was not logical or was incorrect]": ""
-  }
- },
- {
-  "dataset": "mindthequery",
-  "graph": "wwc",
-  "id": "Complex_Retrieval_test:117",
-  "nl": "Find the names of all players who scored goals in matches played in the 'PR 1991' tournament, along with the minute of each goal.",
-  "gold_cypher": "MATCH (p:Person)-[sg:SCORED_GOAL]->(m:Match)-[:IN_TOURNAMENT]->(t:Tournament {name: 'China PR 1991'}) RETURN p.name AS playerName, sg.minute AS goalMinute",
-  "_aug_meta": {
-   "augmented": true,
-   "original_nl": "Find the names of all players who scored goals in matches played in the 'China PR 1991' tournament, along with the minute of each goal.",
-   "graph": "wwc",
-   "edits": [
-    {
-     "strategy": "partial",
-     "from": "China PR 1991",
-     "to": "PR 1991",
-     "source": "algorithmic",
-     "needs_verification": false,
-     "label": "Tournament",
-     "prop": "name",
-     "occurrences": 1,
-     "validity": "ok",
-     "regenerated": "partial_backfill_2026-08",
-     "grounding_probe": {
-      "exact_ci": false,
-      "damerau": 6,
-      "substring": true,
-      "class": "substring"
-     }
-    }
-   ],
-   "query_difficulty": "easy"
-  },
-  "_source_row": {
-   "id": 660,
-   "original_index": 660,
-   "source_dataset": "wwc",
-   "source_chunk": "data_3_4_2_6",
-   "original_file": "Complex_Retrieval.json",
-   "unique_id": "wwc_data_3_4_2_6_Complex_Retrieval_112",
-   "NL Question": "Find the names of all players who scored goals in matches played in the 'China PR 1991' tournament, along with the minute of each goal.",
-   "Cypher": "MATCH (p:Person)-[sg:SCORED_GOAL]->(m:Match)-[:IN_TOURNAMENT]->(t:Tournament {name: 'China PR 1991'}) RETURN p.name AS playerName, sg.minute AS goalMinute",
-   "result [0/1]": "1",
-   "logical [0/1]": "1",
-   "reason/observation [reason for why the query was not logical or was incorrect]": ""
-  }
- },
- {
-  "dataset": "mindthequery",
-  "graph": "wwc",
-  "id": "Complex_Retrieval_test:118",
-  "nl": "Retrieve the names of all teams that participated in the 'PR 1991' tournament and also played in matches where the stage was 'First Stage'.",
-  "gold_cypher": "MATCH (t:Team)-[:PARTICIPATED_IN]->(tour:Tournament {name: 'China PR 1991'}), (t)-[:PLAYED_IN]->(m:Match {stage: 'First Stage'}) RETURN t.name AS teamName",
-  "_aug_meta": {
-   "augmented": true,
-   "original_nl": "Retrieve the names of all teams that participated in the 'China PR 1991' tournament and also played in matches where the stage was 'First Stage'.",
-   "graph": "wwc",
-   "edits": [
-    {
-     "strategy": "partial",
-     "from": "China PR 1991",
-     "to": "PR 1991",
-     "source": "algorithmic",
-     "needs_verification": false,
-     "label": "Tournament",
-     "prop": "name",
-     "occurrences": 1,
-     "validity": "ok",
-     "regenerated": "partial_backfill_2026-08",
-     "grounding_probe": {
-      "exact_ci": false,
-      "damerau": 6,
-      "substring": true,
-      "class": "substring"
-     }
-    }
-   ],
-   "query_difficulty": "easy"
-  },
-  "_source_row": {
-   "id": 661,
-   "original_index": 661,
-   "source_dataset": "wwc",
-   "source_chunk": "data_3_4_2_6",
-   "original_file": "Complex_Retrieval.json",
-   "unique_id": "wwc_data_3_4_2_6_Complex_Retrieval_113",
-   "NL Question": "Retrieve the names of all teams that participated in the 'China PR 1991' tournament and also played in matches where the stage was 'First Stage'.",
-   "Cypher": "MATCH (t:Team)-[:PARTICIPATED_IN]->(tour:Tournament {name: 'China PR 1991'}), (t)-[:PLAYED_IN]->(m:Match {stage: 'First Stage'}) RETURN t.name AS teamName",
    "result [0/1]": "1",
    "logical [0/1]": "1",
    "reason/observation [reason for why the query was not logical or was incorrect]": ""

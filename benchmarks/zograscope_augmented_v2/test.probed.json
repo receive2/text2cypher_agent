@@ -197,7 +197,7 @@
      "prop": "surname",
      "occurrences": 1,
      "validity": "ok",
-     "regenerated": "verification_revert_v2.2-verified-2026-09-09",
+     "regenerated": "verification_revert_v2.3-verified-2026-09-22",
      "reverted_from": {
       "strategy": "abbrev",
       "to": "FoMoCo",
@@ -7905,7 +7905,7 @@
      "prop": "surname",
      "occurrences": 1,
      "validity": "ok",
-     "regenerated": "verification_revert_v2.2-verified-2026-09-09",
+     "regenerated": "verification_revert_v2.3-verified-2026-09-22",
      "reverted_from": {
       "strategy": "abbrev",
       "to": "FoMoCo",
@@ -9327,7 +9327,7 @@
      "prop": "surname",
      "occurrences": 1,
      "validity": "ok",
-     "regenerated": "verification_revert_v2.2-verified-2026-09-09",
+     "regenerated": "verification_revert_v2.3-verified-2026-09-22",
      "reverted_from": {
       "strategy": "abbrev",
       "to": "JOR",
@@ -9602,7 +9602,7 @@
      "prop": "surname",
      "occurrences": 1,
      "validity": "ok",
-     "regenerated": "verification_revert_v2.2-verified-2026-09-09",
+     "regenerated": "verification_revert_v2.3-verified-2026-09-22",
      "reverted_from": {
       "strategy": "abbrev",
       "to": "ATX",
@@ -11211,7 +11211,7 @@
      "prop": "surname",
      "occurrences": 1,
      "validity": "ok",
-     "regenerated": "verification_revert_v2.2-verified-2026-09-09",
+     "regenerated": "verification_revert_v2.3-verified-2026-09-22",
      "reverted_from": {
       "strategy": "abbrev",
       "to": "FoMoCo",
@@ -14362,7 +14362,7 @@
      "prop": "surname",
      "occurrences": 1,
      "validity": "ok",
-     "regenerated": "verification_revert_v2.2-verified-2026-09-09",
+     "regenerated": "verification_revert_v2.3-verified-2026-09-22",
      "reverted_from": {
       "strategy": "abbrev",
       "to": "JOR",
@@ -15825,7 +15825,7 @@
      "prop": "surname",
      "occurrences": 1,
      "validity": "ok",
-     "regenerated": "verification_revert_v2.2-verified-2026-09-09",
+     "regenerated": "verification_revert_v2.3-verified-2026-09-22",
      "reverted_from": {
       "strategy": "abbrev",
       "to": "JOR",
@@ -20556,50 +20556,6 @@
  {
   "dataset": "zograscope",
   "graph": "pole",
-  "id": "3523",
-  "nl": "Which are the names of people that are acquainted with a Dana who was part of a crime on 27/08/2017?",
-  "gold_cypher": "MATCH (x0:Person)-[:KNOWS]-(x1:Person WHERE x1.name = \"Diana\")-[:PARTY_TO]-(x2:Crime WHERE x2.date = \"27/08/2017\")\nRETURN x0.name",
-  "_aug_meta": {
-   "augmented": true,
-   "original_nl": "Which are the names of people that are acquainted with a Diana who was part of a crime on 27/08/2017?",
-   "graph": "pole",
-   "edits": [
-    {
-     "strategy": "typo",
-     "from": "Diana",
-     "to": "Dana",
-     "source": "algorithmic",
-     "needs_verification": false,
-     "label": "Person",
-     "prop": "name",
-     "occurrences": 1,
-     "validity": "ok",
-     "grounding_probe": {
-      "exact_ci": false,
-      "damerau": 1,
-      "substring": false,
-      "class": "edit_distance"
-     }
-    }
-   ],
-   "query_difficulty": "medium"
-  },
-  "_source_row": {
-   "id": "3523",
-   "nl": "Which are the names of people that are acquainted with a Diana who was part of a crime on 27/08/2017?",
-   "mr": "MATCH (x0:Person)-[:KNOWS]-(x1:Person WHERE x1.name = \"Diana\")-[:PARTY_TO]-(x2:Crime WHERE x2.date = \"27/08/2017\")\nRETURN x0.name",
-   "nl_gold_linked": "[Person] = Diana\n[Crime] = 27/08/2017\nWhich are the names of people that are acquainted with a Diana who was part of a crime on 27/08/2017?",
-   "nl_bracketed": "Which are the names of people that are acquainted with a [x1.Person.name:Diana] who was part of a crime on [x2.Crime.date:27/08/2017]?",
-   "entities": "x1.Person.name:Diana = Diana\nx2.Crime.date:27/08/2017 = 27/08/2017",
-   "num_nodes": "3",
-   "template_id": "105",
-   "type": "attribute_set",
-   "return_count": "4"
-  }
- },
- {
-  "dataset": "zograscope",
-  "graph": "pole",
   "id": "3260",
   "nl": "What is the current status of crimes that took place on 6/08/2017 at Crispin Road, in area M22?",
   "gold_cypher": "MATCH (x0:Crime WHERE x0.date = \"6/08/2017\")-[:OCCURRED_AT]-(x1:Location WHERE x1.address = \"144 Crispin Road\")-[:LOCATION_IN_AREA]-(x2:Area WHERE x2.areaCode = \"M22\")\nRETURN x0.last_outcome",
@@ -22303,7 +22259,7 @@
      "prop": "surname",
      "occurrences": 1,
      "validity": "ok",
-     "regenerated": "verification_revert_v2.2-verified-2026-09-09",
+     "regenerated": "verification_revert_v2.3-verified-2026-09-22",
      "reverted_from": {
       "strategy": "abbrev",
       "to": "FoMoCo",
@@ -23152,7 +23108,7 @@
      "prop": "surname",
      "occurrences": 1,
      "validity": "ok",
-     "regenerated": "verification_revert_v2.2-verified-2026-09-09",
+     "regenerated": "verification_revert_v2.3-verified-2026-09-22",
      "reverted_from": {
       "strategy": "abbrev",
       "to": "ATX",
@@ -24073,50 +24029,6 @@
  {
   "dataset": "zograscope",
   "graph": "pole",
-  "id": "2545",
-  "nl": "Which emails belong to individuals residing at Queens Avenue with a phone number known to anyone with surname Ward?",
-  "gold_cypher": "MATCH (x0:Email)-[:HAS_EMAIL]-(x1:Person)-[:KNOWS_PHONE]-(x3:Person WHERE x3.surname = \"Ward\")\nMATCH (x1:Person)-[:CURRENT_ADDRESS]-(x2:Location WHERE x2.address = \"30 Queens Avenue\")\nRETURN x0",
-  "_aug_meta": {
-   "augmented": true,
-   "original_nl": "Which emails belong to individuals residing at 30 Queens Avenue with a phone number known to anyone with surname Ward?",
-   "graph": "pole",
-   "edits": [
-    {
-     "strategy": "partial",
-     "from": "30 Queens Avenue",
-     "to": "Queens Avenue",
-     "source": "algorithmic",
-     "needs_verification": false,
-     "label": "Location",
-     "prop": "address",
-     "occurrences": 1,
-     "validity": "ok",
-     "grounding_probe": {
-      "exact_ci": false,
-      "damerau": 3,
-      "substring": true,
-      "class": "substring"
-     }
-    }
-   ],
-   "query_difficulty": "medium"
-  },
-  "_source_row": {
-   "id": "2545",
-   "nl": "Which emails belong to individuals residing at 30 Queens Avenue with a phone number known to anyone with surname Ward?",
-   "mr": "MATCH (x0:Email)-[:HAS_EMAIL]-(x1:Person)-[:KNOWS_PHONE]-(x3:Person WHERE x3.surname = \"Ward\")\nMATCH (x1:Person)-[:CURRENT_ADDRESS]-(x2:Location WHERE x2.address = \"30 Queens Avenue\")\nRETURN x0",
-   "nl_gold_linked": "[Person] = Ward\n[Location] = 30 Queens Avenue\nWhich emails belong to individuals residing at 30 Queens Avenue with a phone number known to anyone with surname Ward?",
-   "nl_bracketed": "Which emails belong to individuals residing at [x2.Location.address:30 Queens Avenue] with a phone number known to anyone with surname [x3.Person.surname:Ward]?",
-   "entities": "x2.Location.address:30 Queens Avenue = 30 Queens Avenue\nx3.Person.surname:Ward = Ward",
-   "num_nodes": "4",
-   "template_id": "355",
-   "type": "entity_set",
-   "return_count": "1"
-  }
- },
- {
-  "dataset": "zograscope",
-  "graph": "pole",
   "id": "3820",
   "nl": "Can you provide the locations of Williams residences that have been investigated by Sgts for crimes?",
   "gold_cypher": "MATCH (x0:Location)-[:CURRENT_ADDRESS]-(x1:Person WHERE x1.surname = \"Williams\")\nMATCH (x0:Location)-[:OCCURRED_AT]-(x2:Crime)-[:INVESTIGATED_BY]-(x3:Officer WHERE x3.rank = \"Sergeant\")\nRETURN x0",
@@ -24599,50 +24511,6 @@
    "num_nodes": "4",
    "template_id": "48",
    "type": "entity_set",
-   "return_count": "1"
-  }
- },
- {
-  "dataset": "zograscope",
-  "graph": "pole",
-  "id": "2630",
-  "nl": "When did a crime first involve a VII and a person with surname Williamson?",
-  "gold_cypher": "MATCH (x0:Crime)-[:INVOLVED_IN]-(x2:Vehicle WHERE x2.model = \"Continental Mark VII\")\nMATCH (x0:Crime)-[:PARTY_TO]-(x1:Person WHERE x1.surname = \"Williamson\")\nRETURN x0.date\nORDER BY x0.date ASC\nLIMIT 1",
-  "_aug_meta": {
-   "augmented": true,
-   "original_nl": "When did a crime first involve a Continental Mark VII and a person with surname Williamson?",
-   "graph": "pole",
-   "edits": [
-    {
-     "strategy": "partial",
-     "from": "Continental Mark VII",
-     "to": "VII",
-     "source": "algorithmic",
-     "needs_verification": false,
-     "label": "Vehicle",
-     "prop": "model",
-     "occurrences": 1,
-     "validity": "ok",
-     "grounding_probe": {
-      "exact_ci": false,
-      "damerau": 17,
-      "substring": true,
-      "class": "substring"
-     }
-    }
-   ],
-   "query_difficulty": "hard"
-  },
-  "_source_row": {
-   "id": "2630",
-   "nl": "When did a crime first involve a Continental Mark VII and a person with surname Williamson?",
-   "mr": "MATCH (x0:Crime)-[:INVOLVED_IN]-(x2:Vehicle WHERE x2.model = \"Continental Mark VII\")\nMATCH (x0:Crime)-[:PARTY_TO]-(x1:Person WHERE x1.surname = \"Williamson\")\nRETURN x0.date\nORDER BY x0.date ASC\nLIMIT 1",
-   "nl_gold_linked": "[Vehicle] = Continental Mark VII\n[Person] = Williamson\nWhen did a crime first involve a Continental Mark VII and a person with surname Williamson?",
-   "nl_bracketed": "When did a crime first involve a [x2.Vehicle.model:Continental Mark VII] and a person with surname [x1.Person.surname:Williamson]?",
-   "entities": "x1.Person.surname:Williamson = Williamson\nx2.Vehicle.model:Continental Mark VII = Continental Mark VII",
-   "num_nodes": "3",
-   "template_id": "379",
-   "type": "argmin",
    "return_count": "1"
   }
  },
@@ -26504,50 +26372,6 @@
  {
   "dataset": "zograscope",
   "graph": "pole",
-  "id": "1869",
-  "nl": "How are named the officers who looked into the incidents at Lucas Road on 5/08/2017?",
-  "gold_cypher": "MATCH (x0:Officer)-[:INVESTIGATED_BY]-(x1:Crime WHERE x1.date = \"5/08/2017\")-[:OCCURRED_AT]-(x2:Location WHERE x2.address = \"51 Lucas Road\")\nRETURN x0.name",
-  "_aug_meta": {
-   "augmented": true,
-   "original_nl": "How are named the officers who looked into the incidents at 51 Lucas Road on 5/08/2017?",
-   "graph": "pole",
-   "edits": [
-    {
-     "strategy": "partial",
-     "from": "51 Lucas Road",
-     "to": "Lucas Road",
-     "source": "algorithmic",
-     "needs_verification": false,
-     "label": "Location",
-     "prop": "address",
-     "occurrences": 1,
-     "validity": "ok",
-     "grounding_probe": {
-      "exact_ci": false,
-      "damerau": 3,
-      "substring": true,
-      "class": "substring"
-     }
-    }
-   ],
-   "query_difficulty": "medium"
-  },
-  "_source_row": {
-   "id": "1869",
-   "nl": "How are named the officers who looked into the incidents at 51 Lucas Road on 5/08/2017?",
-   "mr": "MATCH (x0:Officer)-[:INVESTIGATED_BY]-(x1:Crime WHERE x1.date = \"5/08/2017\")-[:OCCURRED_AT]-(x2:Location WHERE x2.address = \"51 Lucas Road\")\nRETURN x0.name",
-   "nl_gold_linked": "[Crime] = 5/08/2017\n[Location] = 51 Lucas Road\nHow are named the officers who looked into the incidents at 51 Lucas Road on 5/08/2017?",
-   "nl_bracketed": "How are named the officers who looked into the incidents at [x2.Location.address:51 Lucas Road] on [x1.Crime.date:5/08/2017]?",
-   "entities": "x1.Crime.date:5/08/2017 = 5/08/2017\nx2.Location.address:51 Lucas Road = 51 Lucas Road",
-   "num_nodes": "3",
-   "template_id": "250",
-   "type": "attribute_set",
-   "return_count": "1"
-  }
- },
- {
-  "dataset": "zograscope",
-  "graph": "pole",
   "id": "3825",
   "nl": "What are the locations of Martin family residences that Insps have investigated as crime locations?",
   "gold_cypher": "MATCH (x0:Location)-[:CURRENT_ADDRESS]-(x1:Person WHERE x1.surname = \"Martin\")\nMATCH (x0:Location)-[:OCCURRED_AT]-(x2:Crime)-[:INVESTIGATED_BY]-(x3:Officer WHERE x3.rank = \"Inspector\")\nRETURN x0",
@@ -27009,7 +26833,7 @@
      "prop": "surname",
      "occurrences": 1,
      "validity": "ok",
-     "regenerated": "verification_revert_v2.2-verified-2026-09-09",
+     "regenerated": "verification_revert_v2.3-verified-2026-09-22",
      "reverted_from": {
       "strategy": "abbrev",
       "to": "ATX",
@@ -27952,7 +27776,7 @@
      "prop": "surname",
      "occurrences": 1,
      "validity": "ok",
-     "regenerated": "verification_revert_v2.2-verified-2026-09-09",
+     "regenerated": "verification_revert_v2.3-verified-2026-09-22",
      "reverted_from": {
       "strategy": "abbrev",
       "to": "ATX",
@@ -33241,7 +33065,7 @@
      "prop": "surname",
      "occurrences": 1,
      "validity": "ok",
-     "regenerated": "verification_revert_v2.2-verified-2026-09-09",
+     "regenerated": "verification_revert_v2.3-verified-2026-09-22",
      "reverted_from": {
       "strategy": "abbrev",
       "to": "ATX",
@@ -36880,7 +36704,7 @@
      "prop": "surname",
      "occurrences": 1,
      "validity": "ok",
-     "regenerated": "verification_revert_v2.2-verified-2026-09-09",
+     "regenerated": "verification_revert_v2.3-verified-2026-09-22",
      "reverted_from": {
       "strategy": "abbrev",
       "to": "FoMoCo",
@@ -38016,51 +37840,6 @@
    "num_nodes": "3",
    "template_id": "130",
    "type": "entity_set",
-   "return_count": "1"
-  }
- },
- {
-  "dataset": "zograscope",
-  "graph": "pole",
-  "id": "4363",
-  "nl": "How many Kia vehicles are part of investigations by the officer who dealt with violence and sexual at OL16 2JT?",
-  "gold_cypher": "MATCH (x0:Vehicle WHERE x0.make = \"Kia\")-[:INVOLVED_IN]-(x1:Crime)-[:INVESTIGATED_BY]-(x2:Officer)-[:INVESTIGATED_BY]-(x3:Crime WHERE x3.type = \"Violence and sexual offences\")-[:OCCURRED_AT]-(x4:Location WHERE x4.postcode = \"OL16 2JT\")\nRETURN COUNT(DISTINCT x0)",
-  "_aug_meta": {
-   "augmented": true,
-   "original_nl": "How many Kia vehicles are part of investigations by the officer who dealt with violence and sexual offences at OL16 2JT?",
-   "graph": "pole",
-   "edits": [
-    {
-     "strategy": "partial",
-     "from": "violence and sexual offences",
-     "to": "violence and sexual",
-     "source": "algorithmic",
-     "needs_verification": false,
-     "label": "Crime",
-     "prop": "type",
-     "occurrences": 1,
-     "validity": "ok",
-     "regenerated": "partial_rules_v2.1",
-     "grounding_probe": {
-      "exact_ci": false,
-      "damerau": 9,
-      "substring": true,
-      "class": "substring"
-     }
-    }
-   ],
-   "query_difficulty": "hard"
-  },
-  "_source_row": {
-   "id": "4363",
-   "nl": "How many Kia vehicles are part of investigations by the officer who dealt with violence and sexual offences at OL16 2JT?",
-   "mr": "MATCH (x0:Vehicle WHERE x0.make = \"Kia\")-[:INVOLVED_IN]-(x1:Crime)-[:INVESTIGATED_BY]-(x2:Officer)-[:INVESTIGATED_BY]-(x3:Crime WHERE x3.type = \"Violence and sexual offences\")-[:OCCURRED_AT]-(x4:Location WHERE x4.postcode = \"OL16 2JT\")\nRETURN COUNT(DISTINCT x0)",
-   "nl_gold_linked": "[Vehicle] = Kia\n[Crime] = Violence and sexual offences\n[Location] = OL16 2JT\nHow many Kia vehicles are part of investigations by the officer who dealt with violence and sexual offences at OL16 2JT?",
-   "nl_bracketed": "How many [x0.Vehicle.make:Kia] vehicles are part of investigations by the officer who dealt with [x3.Crime.type:Violence and sexual offences] at [x4.Location.postcode:OL16 2JT]?",
-   "entities": "x0.Vehicle.make:Kia = Kia\nx3.Crime.type:Violence and sexual offences = violence and sexual offences\nx4.Location.postcode:OL16 2JT = OL16 2JT",
-   "num_nodes": "5",
-   "template_id": "86",
-   "type": "count",
    "return_count": "1"
   }
  },
@@ -40656,7 +40435,7 @@
      "prop": "surname",
      "occurrences": 1,
      "validity": "ok",
-     "regenerated": "verification_revert_v2.2-verified-2026-09-09",
+     "regenerated": "verification_revert_v2.3-verified-2026-09-22",
      "reverted_from": {
       "strategy": "abbrev",
       "to": "FoMoCo",
@@ -44083,7 +43862,7 @@
      "prop": "surname",
      "occurrences": 1,
      "validity": "ok",
-     "regenerated": "verification_revert_v2.2-verified-2026-09-09",
+     "regenerated": "verification_revert_v2.3-verified-2026-09-22",
      "reverted_from": {
       "strategy": "abbrev",
       "to": "ATX",
@@ -44156,51 +43935,6 @@
    "template_id": "35",
    "type": "entity_set",
    "return_count": "9"
-  }
- },
- {
-  "dataset": "zograscope",
-  "graph": "pole",
-  "id": "3616",
-  "nl": "What are the statuses of investigations into Violence involving individuals, conducted by officers with the surname Orcott?",
-  "gold_cypher": "MATCH (x0:Crime WHERE x0.type = \"Violence and sexual offences\")-[:PARTY_TO]-(x2:Person)\nMATCH (x0:Crime WHERE x0.type = \"Violence and sexual offences\")-[:INVESTIGATED_BY]-(x1:Officer WHERE x1.surname = \"Orcott\")\nRETURN x0.last_outcome",
-  "_aug_meta": {
-   "augmented": true,
-   "original_nl": "What are the statuses of investigations into Violence and sexual offences involving individuals, conducted by officers with the surname Orcott?",
-   "graph": "pole",
-   "edits": [
-    {
-     "strategy": "partial",
-     "from": "Violence and sexual offences",
-     "to": "Violence",
-     "source": "algorithmic",
-     "needs_verification": false,
-     "label": "Crime",
-     "prop": "type",
-     "occurrences": 1,
-     "validity": "ok",
-     "regenerated": "partial_rules_v2.1",
-     "grounding_probe": {
-      "exact_ci": false,
-      "damerau": 20,
-      "substring": true,
-      "class": "substring"
-     }
-    }
-   ],
-   "query_difficulty": "medium"
-  },
-  "_source_row": {
-   "id": "3616",
-   "nl": "What are the statuses of investigations into Violence and sexual offences involving individuals, conducted by officers with the surname Orcott?",
-   "mr": "MATCH (x0:Crime WHERE x0.type = \"Violence and sexual offences\")-[:PARTY_TO]-(x2:Person)\nMATCH (x0:Crime WHERE x0.type = \"Violence and sexual offences\")-[:INVESTIGATED_BY]-(x1:Officer WHERE x1.surname = \"Orcott\")\nRETURN x0.last_outcome",
-   "nl_gold_linked": "[Crime] = Violence and sexual offences\n[Officer] = Orcott\nWhat are the statuses of investigations into Violence and sexual offences involving individuals, conducted by officers with the surname Orcott?",
-   "nl_bracketed": "What are the statuses of investigations into [x0.Crime.type:Violence and sexual offences] involving individuals, conducted by officers with the surname [x1.Officer.surname:Orcott]?",
-   "entities": "x0.Crime.type:Violence and sexual offences = Violence and sexual offences\nx1.Officer.surname:Orcott = Orcott",
-   "num_nodes": "3",
-   "template_id": "147",
-   "type": "attribute_set",
-   "return_count": "1"
   }
  },
  {
@@ -45154,7 +44888,7 @@
      "prop": "surname",
      "occurrences": 1,
      "validity": "ok",
-     "regenerated": "verification_revert_v2.2-verified-2026-09-09",
+     "regenerated": "verification_revert_v2.3-verified-2026-09-22",
      "reverted_from": {
       "strategy": "abbrev",
       "to": "FoMoCo",
@@ -45955,7 +45689,7 @@
      "prop": "surname",
      "occurrences": 1,
      "validity": "ok",
-     "regenerated": "verification_revert_v2.2-verified-2026-09-09",
+     "regenerated": "verification_revert_v2.3-verified-2026-09-22",
      "reverted_from": {
       "strategy": "abbrev",
       "to": "ATX",
@@ -47317,51 +47051,6 @@
    "num_nodes": "4",
    "template_id": "35",
    "type": "entity_set",
-   "return_count": "1"
-  }
- },
- {
-  "dataset": "zograscope",
-  "graph": "pole",
-  "id": "4232",
-  "nl": "What are the NHS numbers of individuals connected to someone with NHS number 329-25-8167 and who also know people linked to crimes at the Petrol?",
-  "gold_cypher": "MATCH (x0:Person)-[:KNOWS]-(x2:Person WHERE x2.nhs_no = \"329-25-8167\")\nMATCH (x0:Person)-[:KNOWS]-(x1:Person)-[:PARTY_TO]-(x3:Crime)-[:OCCURRED_AT]-(x4:Location WHERE x4.address = \"Petrol Station\")\nRETURN x0.nhs_no",
-  "_aug_meta": {
-   "augmented": true,
-   "original_nl": "What are the NHS numbers of individuals connected to someone with NHS number 329-25-8167 and who also know people linked to crimes at the Petrol Station?",
-   "graph": "pole",
-   "edits": [
-    {
-     "strategy": "partial",
-     "from": "Petrol Station",
-     "to": "Petrol",
-     "source": "algorithmic",
-     "needs_verification": false,
-     "label": "Location",
-     "prop": "address",
-     "occurrences": 1,
-     "validity": "ok",
-     "regenerated": "partial_backfill_2026-08",
-     "grounding_probe": {
-      "exact_ci": false,
-      "damerau": 8,
-      "substring": true,
-      "class": "substring"
-     }
-    }
-   ],
-   "query_difficulty": "medium"
-  },
-  "_source_row": {
-   "id": "4232",
-   "nl": "What are the NHS numbers of individuals connected to someone with NHS number 329-25-8167 and who also know people linked to crimes at the Petrol Station?",
-   "mr": "MATCH (x0:Person)-[:KNOWS]-(x2:Person WHERE x2.nhs_no = \"329-25-8167\")\nMATCH (x0:Person)-[:KNOWS]-(x1:Person)-[:PARTY_TO]-(x3:Crime)-[:OCCURRED_AT]-(x4:Location WHERE x4.address = \"Petrol Station\")\nRETURN x0.nhs_no",
-   "nl_gold_linked": "[Person] = 329-25-8167\n[Location] = Petrol Station\nWhat are the NHS numbers of individuals connected to someone with NHS number 329-25-8167 and who also know people linked to crimes at the Petrol Station?",
-   "nl_bracketed": "What are the NHS numbers of individuals connected to someone with NHS number [x2.Person.nhs_no:329-25-8167] and who also know people linked to crimes at the [x4.Location.address:Petrol Station]?",
-   "entities": "x2.Person.nhs_no:329-25-8167 = 329-25-8167\nx4.Location.address:Petrol Station = Petrol Station",
-   "num_nodes": "5",
-   "template_id": "19",
-   "type": "attribute_set",
    "return_count": "1"
   }
  },

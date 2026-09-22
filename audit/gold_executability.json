@@ -1,19 +1,19 @@
 {
-  "version": "v2.2-verified-2026-09-09",
+  "version": "v2.3-verified-2026-09-22",
   "method": "gold verdicts recorded by the evaluation harness in a complete run over the released rows, 30 s server-side timeout",
   "date": "2026-09-22",
   "graphs": [
     {
       "dataset": "cypherbench",
       "graph": "company",
-      "n": 305,
+      "n": 303,
       "gold_error": 0,
       "gold_timeout": 0
     },
     {
       "dataset": "cypherbench",
       "graph": "fictional_character",
-      "n": 324,
+      "n": 322,
       "gold_error": 0,
       "gold_timeout": 0
     },
@@ -34,7 +34,7 @@
     {
       "dataset": "cypherbench",
       "graph": "movie",
-      "n": 360,
+      "n": 359,
       "gold_error": 0,
       "gold_timeout": 0
     },
@@ -48,7 +48,7 @@
     {
       "dataset": "cypherbench",
       "graph": "politics",
-      "n": 360,
+      "n": 356,
       "gold_error": 0,
       "gold_timeout": 0
     },
@@ -62,35 +62,35 @@
     {
       "dataset": "mindthequery",
       "graph": "covid",
-      "n": 327,
+      "n": 326,
       "gold_error": 14,
       "gold_timeout": 0
     },
     {
       "dataset": "mindthequery",
       "graph": "er",
-      "n": 185,
+      "n": 184,
       "gold_error": 3,
       "gold_timeout": 0
     },
     {
       "dataset": "mindthequery",
       "graph": "healthcare",
-      "n": 419,
+      "n": 418,
       "gold_error": 4,
       "gold_timeout": 0
     },
     {
       "dataset": "mindthequery",
       "graph": "wwc",
-      "n": 267,
+      "n": 265,
       "gold_error": 10,
       "gold_timeout": 0
     },
     {
       "dataset": "zograscope",
       "graph": "pole",
-      "n": 1290,
+      "n": 1283,
       "gold_error": 0,
       "gold_timeout": 0
     }

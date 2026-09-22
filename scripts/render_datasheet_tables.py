@@ -244,7 +244,7 @@ def block_verification():
          "| provenance | n | validity % [95% CI] | α | AC1 | raw agr (n₂) | action |",
          "|---|--:|---|--:|--:|---|---|"]
     act = {"llm": "invalid → revert/remove", "attested": "invalid → revert/remove",
-           "algorithmic": "rate only (no removals)"}
+           "algorithmic": "invalid → remove"}
     for r in st["by_provenance"]:
         ci = "—" if not r["resolved"] else f"{100*r['validity']:.1f}% [{100*r['ci_lo']:.1f}, {100*r['ci_hi']:.1f}]"
         raw = "—" if r["raw_agreement"] is None else f"{100*r['raw_agreement']:.1f}% ({r['n_double']})"

@@ -36,7 +36,7 @@ _DATASETS = {
     "zograscope":   cfg.ZOGRASCOPE_AUGMENTED_PATH,
 }
 MANIFEST_V21 = Path.home() / "datasets" / "release_manifest_v2.1.jsonl"   # pre-verification freeze
-MANIFEST = _REPO / "benchmarks" / "release_manifest_v2.2.jsonl"           # verified release (in-repo)
+MANIFEST = _REPO / "benchmarks" / "release_manifest_v2.3.jsonl"           # verified release (in-repo)
 
 
 def canonical_hash(obj) -> str:
@@ -59,7 +59,7 @@ def build_rows(recs) -> dict:
     question is NOT copied — it is rebuilt from ``original_nl`` and the frozen
     edit through the same word-boundary replacement + splice guard used at
     generation time, so the manifest is the only input. This is the one place
-    the row shape is defined; the verified-release freeze reuses it so a v2.2
+    the row shape is defined; the verified-release freeze reuses it so a verified
     manifest verifies with exactly this code."""
     rebuilt = defaultdict(lambda: ([], []))
     for r in sorted(recs, key=lambda r: (r["dataset"], r["position"])):

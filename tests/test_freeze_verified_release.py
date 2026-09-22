@@ -31,7 +31,8 @@ import rebuild_from_manifest as rb            # noqa: E402
     ("llm", "invalid", [], True, "drop-unnatural", "block", "revert:prior_algorithmic"),
     ("attested", "invalid", [], True, "drop-unnatural", "block", "revert:prior_algorithmic"),
     ("llm", "invalid", [], False, "drop-unnatural", "block", "remove:invalid"),
-    ("algorithmic", "invalid", [], True, "drop-unnatural", "block", "keep:invalid_rate_only"),
+    ("algorithmic", "invalid", [], True, "drop-unnatural", "block", "remove:invalid"),
+    ("algorithmic", "invalid", [], False, "drop-unnatural", "block", "remove:invalid"),
     ("llm", "pending", [], False, "drop-unnatural", "block", "pending"),
     ("llm", "pending", [], False, "drop-unnatural", "keep", "keep:pending"),
     ("llm", "pending", [], False, "drop-unnatural", "drop", "remove:pending"),
@@ -40,16 +41,19 @@ import rebuild_from_manifest as rb            # noqa: E402
     ("llm", "valid", ["awkward"], False, "drop-unnatural", "block", "keep:valid"),
     ("llm", "valid", ["awkward"], False, "drop-both", "block", "remove:awkward"),
     ("llm", "valid", ["unnatural"], False, "keep", "block", "keep:valid"),
-    ("algorithmic", "valid", ["unnatural"], False, "drop-unnatural", "block", "keep:naturalness_rate_only"),
+    ("algorithmic", "valid", ["natural", "unnatural"], False, "drop-unnatural", "block", "remove:unnatural"),
+    ("algorithmic", "valid", ["natural", "awkward"], False, "drop-unnatural", "block", "keep:valid"),
 ])
 def test_decide_follows_the_preregistered_rules(tier, final, nat, prior, natpol, penpol, expect):
     action, _ = fz.decide(tier, final, nat, prior, natpol, penpol)
     assert action == expect
 
 
-def test_prior_form_never_used_for_algorithmic_tier():
-    # An algorithmic-tier invalid keeps the row even if a prior form exists.
-    assert fz.decide("algorithmic", "invalid", [], True, "drop-unnatural", "block")[0] == "keep:invalid_rate_only"
+def test_rule_based_invalid_is_removed_never_reverted():
+    # The revert path replaces an LLM/attested form with the question's rule-based
+    # form; a rejected rule-based edit has no verified replacement, so it is removed
+    # even when a prior form is on file.
+    assert fz.decide("algorithmic", "invalid", [], True, "drop-unnatural", "block")[0] == "remove:invalid"
 
 
 # ── end to end ────────────────────────────────────────────────────────────────
@@ -149,10 +153,10 @@ def _argv(w, extra=()):
             "--calibration",                                   # bare: no calibration exclusion
             "--prior-forms", str(w["prior"]),
             "--manifest-in", str(w["manifest"]),
-            "--manifest-out", str(w["tmp"] / "m22.jsonl"),
+            "--manifest-out", str(w["tmp"] / "m23.jsonl"),
             "--benchmarks-dir", str(w["bench"]),
             "--export-dir", str(w["tmp"] / "export"),
-            "--version", "v2.2-test", *extra]
+            "--version", "v2.3-test", *extra]
 
 
 def test_end_to_end_freeze(world, monkeypatch, capsys):
@@ -183,15 +187,22 @@ def test_end_to_end_freeze(world, monkeypatch, capsys):
     assert probed[1]["_aug_meta"]["edits"][0]["grounding_probe"]["class"] == "substring"
 
     # manifest: positions renumbered, provenance retained, verifies independently
-    h, recs = rb.load_manifest(w["tmp"] / "m22.jsonl")
-    assert h["version"] == "v2.2-test" and h["row_count"] == 3
+    h, recs = rb.load_manifest(w["tmp"] / "m23.jsonl")
+    assert h["version"] == "v2.3-test" and h["row_count"] == 3
     assert [r["position"] for r in recs] == [0, 1, 2]
     assert [r["v21_position"] for r in recs] == [0, 1, 3]
     assert recs[1]["verification"]["action"] == "revert:prior_algorithmic"
     assert recs[1]["verification"]["raters"]["A"]["validity"] == "invalid"
     datasets = {d: str(w["bench"] / d / "test.json") for d in ("cypherbench", "mindthequery", "zograscope")}
     assert rb.verify(h, rb.build_rows(recs), datasets=datasets)
-    assert dec["cypherbench:3"]["v22_position"] == "2"
+    assert dec["cypherbench:3"]["release_position"] == "2"
+
+    # the removed row is listed as it stood in the source release, so readers
+    # of old evaluation records can drop it
+    removed = [json.loads(l) for l in (w["tmp"] / "removed_rows.jsonl").read_text(encoding="utf-8").splitlines()]
+    assert [(r["id"], r["action"]) for r in removed] == [("u2", "remove:source_error")]
+    assert removed[0]["nl"] == _q("Boston Celtics", "BOS") and removed[0]["graph"] == "nba"
+    assert h["removed_rows"]["count"] == 1 and h["removed_rows"]["file"] == "removed_rows.jsonl"
 
 
 def test_pending_blocks_the_freeze(world, monkeypatch, capsys):
@@ -204,7 +215,7 @@ def test_pending_blocks_the_freeze(world, monkeypatch, capsys):
     rc = fz.main(_argv(w))
     out = capsys.readouterr().out
     assert rc == 4 and "await adjudication" in out
-    assert not (w["tmp"] / "m22.jsonl").exists()
+    assert not (w["tmp"] / "m23.jsonl").exists()
     # provisional build with the conservative bound drops it
     rc = fz.main(_argv(w, ["--pending", "drop"]))
     assert rc == 0
@@ -218,7 +229,7 @@ def test_dry_run_writes_nothing_but_the_plan(world, monkeypatch):
     before = (w["bench"] / w["ds"] / "test.json").read_bytes()
     assert fz.main(_argv(w, ["--dry-run"])) == 0
     assert (w["bench"] / w["ds"] / "test.json").read_bytes() == before
-    assert not (w["tmp"] / "m22.jsonl").exists()
+    assert not (w["tmp"] / "m23.jsonl").exists()
     assert (w["tmp"] / "export" / "decisions.preview.csv").exists()
 
 

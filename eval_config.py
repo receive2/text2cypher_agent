@@ -275,7 +275,7 @@ CYPHERBENCH_PATH  = os.path.join(_DATASETS_DIR, "cypherbench", "test.json")
 MINDTHEQUERY_PATH = os.path.join(_DATASETS_DIR, "mindthequery", "Train_Test_Splits", "Manual")
 ZOGRASCOPE_PATH   = os.path.join(_DATASETS_DIR, "zograscope", "data", "zograscope_test_v1.csv")
 
-# Augmented (entity-perturbed) test-set paths — the v2.2 verified release,
+# Augmented (entity-perturbed) test-set paths — the v2.3 verified release,
 # versioned in this repo under ``benchmarks/``.  Repo-relative on purpose: a fresh clone runs
 # without editing anything, and everyone evaluates the same bytes, which is what
 # makes results poolable.  Verify before running:  python benchmarks/verify.py

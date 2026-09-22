@@ -31,9 +31,12 @@ A cell (graph, method) is COMPLETE when the newest run for this model holds one
 record per question of that graph (``records.jsonl`` rows == question count in
 the benchmark file) and every record was scored on a question of the released
 benchmark (its ``qid`` and ``question`` match the shipped file; a run made on an
-older copy shows ``≠release``, counts as ✗ and is re-run). Errored questions are
-allowed: the eval scores them 0
-(denominator = all questions) and reports them in the ``err`` column.
+older copy shows ``≠release``, counts as ✗ and is re-run). Records for rows
+that verification removed after the run was made (``benchmarks/removed_rows.jsonl``)
+are dropped before anything is counted, so such a run stays complete and is
+scored on exactly the released rows. Errored questions are allowed: the eval
+scores them 0 (denominator = all questions) and reports them in the ``err``
+column.
 
 Errors are not all alike, so every errored record is classified by its
 ``error`` string:
@@ -232,6 +235,7 @@ def rows_match_release(dataset: str, graph: str, records: List[dict]) -> Tuple[b
     want = release_rows().get((dataset, graph))
     if not want or not records or not all(r.get("qid") for r in records):
         return True, ""
+    records = eval_paths.drop_retired(dataset, graph, records)
     unknown = sum(1 for r in records if str(r["qid"]) not in want)
     changed = sum(1 for r in records if str(r["qid"]) in want and r.get("question") is not None
                   and str(r["question"]) != want[str(r["qid"])])
@@ -329,7 +333,7 @@ def infra_suspect(bd: dict, n: int) -> bool:
 
 def cell_status(dataset: str, graph: str, method: str, expected: int, out_dir: str, model: str) -> dict:
     d = newest_run_dir(dataset, graph, method, out_dir, model)
-    recs = read_records(d)
+    recs = eval_paths.drop_retired(dataset, graph, read_records(d))   # rows removed since the run was made
     bd = error_breakdown(recs)
     rows_ok, rows_why = rows_match_release(dataset, graph, recs)
     return {"dir": str(d.relative_to(REPO)) if d else None, "n": len(recs), "err": n_err(recs),

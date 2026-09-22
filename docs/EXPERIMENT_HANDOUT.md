@@ -133,11 +133,14 @@ for `cypherbench`, `mindthequery` and `zograscope` — and `eval_run.py` reads i
 from there (`eval_config._BENCHMARKS_DIR`, repo-relative). Nothing to download,
 nothing to configure.
 
-This is not a formality. The benchmarks are the **v2.2 verified release,
-4,611 questions**; earlier checkouts carried the 4,641-row pre-verification
-v2.1 set or the 4,875-row pre-curation set, and results from different copies
-**cannot be pooled** — nothing downstream will warn you. If it fails:
-`git pull`, run it again, and if it still fails, ask before running anything.
+This is not a formality. The benchmarks are the **v2.3 verified release,
+4,590 questions**; earlier checkouts carried the 4,611-row v2.2 set, the
+4,641-row pre-verification v2.1 set or the 4,875-row pre-curation set, and
+results from different copies **cannot be pooled** — nothing downstream will
+warn you. If it fails: `git pull`, run it again, and if it still fails, ask
+before running anything. (Runs you made on v2.2 are still good: v2.3 only
+removes 21 of its rows, and the driver drops those records before counting
+anything, so a v2.2 run is complete and scored on the released rows.)
 
 ## 2. Choose your model — one line in `eval_config.py`
 
@@ -361,24 +364,24 @@ same command; it adds a commit on top of the existing branch. Do **not** delete
 | `llama-3.3-70b` | | `sweep/llama-3.3-70b` |
 | `qwen3-32b` | | `sweep/qwen3-32b` |
 
-Question counts (v2.2), so you know what `n` must be:
+Question counts (v2.3), so you know what `n` must be:
 
 | dataset | graph | questions |
 |---|---|--:|
-| `cypherbench_augmented` | `movie` | 360 |
-| `cypherbench_augmented` | `politics` | 360 |
+| `cypherbench_augmented` | `movie` | 359 |
+| `cypherbench_augmented` | `politics` | 356 |
 | `cypherbench_augmented` | `geography` | 331 |
-| `cypherbench_augmented` | `fictional_character` | 324 |
-| `cypherbench_augmented` | `company` | 305 |
+| `cypherbench_augmented` | `fictional_character` | 322 |
+| `cypherbench_augmented` | `company` | 303 |
 | `cypherbench_augmented` | `nba` | 251 |
 | `cypherbench_augmented` | `flight_accident` | 168 |
-| `mindthequery_augmented` | `healthcare` | 419 |
-| `mindthequery_augmented` | `covid` | 327 |
-| `mindthequery_augmented` | `wwc` | 267 |
-| `mindthequery_augmented` | `er` | 185 |
+| `mindthequery_augmented` | `healthcare` | 418 |
+| `mindthequery_augmented` | `covid` | 326 |
+| `mindthequery_augmented` | `wwc` | 265 |
+| `mindthequery_augmented` | `er` | 184 |
 | `mindthequery_augmented` | `bloom` | 24 |
-| `zograscope_augmented` | `pole` | 1,290 |
-| | **total** | **4,611** |
+| `zograscope_augmented` | `pole` | 1,283 |
+| | **total** | **4,590** |
 
 > `bloom50` in `GRAPH_CONNS` is the *same graph* as `bloom` (the dump is named
 > `bloom50`; the test data says `bloom`), and `terrorist_attack` is a

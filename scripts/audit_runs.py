@@ -151,7 +151,7 @@ def audit(runs_root: Path, model: Optional[str], all_models: bool,
         run_model = run_dir_model(d, seg)
         if not all_models and run_model != want_model:
             continue
-        recs = osw.read_records(d)
+        recs = eval_paths.drop_retired(dataset, graph, osw.read_records(d))
         dirs.append({"dir": d, "rel": str(d.relative_to(REPO)) if d.is_relative_to(REPO) else str(d),
                      "dataset": dataset, "graph": graph, "method": base, "model": run_model,
                      "stamp": stamp, "made": parse_stamp(stamp) if stamp else None,

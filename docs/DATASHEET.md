@@ -1,4 +1,4 @@
-# Datasheet — entity-perturbed text-to-Cypher benchmark (v2.2)
+# Datasheet — entity-perturbed text-to-Cypher benchmark (v2.3)
 
 Three open-source text-to-Cypher test sets — CypherBench, Mind-the-Query and
 ZOGRASCOPE — in which the entity mention of each question has been rewritten
@@ -16,19 +16,19 @@ shorten and mistype. Perturbing the mention creates a **grounding gap**: the
 system must map the surface form it sees to the value the database stores.
 
 <!-- AUTOGEN:HEADLINE -->
-**Headline:** across 4,611 perturbed examples, a baseline case-insensitive exact-match no longer recovers the canonical entity on **90.0%** of them (90.9 / 89.5 / 88.9% on the three datasets independently).
+**Headline:** across 4,590 perturbed examples, a baseline case-insensitive exact-match no longer recovers the canonical entity on **89.9%** of them (90.8 / 89.5 / 88.9% on the three datasets independently).
 <!-- /AUTOGEN:HEADLINE -->
 
 ## 2. Composition
 
 <!-- AUTOGEN:COMPOSITION -->
-3 source datasets, 13 property graphs, **4,611** perturbed questions.
+3 source datasets, 13 property graphs, **4,590** perturbed questions.
 
 | dataset | graphs | examples |
 |---|---|--:|
-| CypherBench | company, fictional_character, flight_accident, geography, movie, nba, politics | 2,099 |
-| Mind-the-Query | bloom, covid, er, healthcare, wwc | 1,222 |
-| ZOGRASCOPE | pole | 1,290 |
+| CypherBench | company, fictional_character, flight_accident, geography, movie, nba, politics | 2,090 |
+| Mind-the-Query | bloom, covid, er, healthcare, wwc | 1,217 |
+| ZOGRASCOPE | pole | 1,283 |
 <!-- /AUTOGEN:COMPOSITION -->
 
 Each question is one record in `benchmarks/<dataset>_augmented_v2/test.json`:
@@ -53,11 +53,11 @@ entities simply have no abbreviations or aliases (§6).
 <!-- AUTOGEN:STRATEGY -->
 | strategy | what changes | example | design share | released share |
 |---|---|---|--:|--:|
-| `casing` | re-case the mention (lower / UPPER) | `Sacramento Kings` → `SACRAMENTO KINGS` | 10.0% | 10.0% |
-| `typo` | one keyboard slip, transposition, deletion or doubling | `Barletta` → `Balretta` | 22.5% | 31.3% |
-| `partial` | drop words, keep a fragment that still identifies it | `Los Angeles Lakers` → `Lakers` | 22.5% | 18.1% |
-| `abbrev` | acronym or standard short form | `Golden State Warriors` → `GSW` | 22.5% | 22.4% |
-| `alias` | a different name for the same referent | `Tocilizumab` → `Actemra` | 22.5% | 18.2% |
+| `casing` | re-case the mention (lower / UPPER) | `Sacramento Kings` → `SACRAMENTO KINGS` | 10.0% | 10.1% |
+| `typo` | one keyboard slip, transposition, deletion or doubling | `Barletta` → `Balretta` | 22.5% | 31.4% |
+| `partial` | drop words, keep a fragment that still identifies it | `Los Angeles Lakers` → `Lakers` | 22.5% | 17.8% |
+| `abbrev` | acronym or standard short form | `Golden State Warriors` → `GSW` | 22.5% | 22.5% |
+| `alias` | a different name for the same referent | `Tocilizumab` → `Actemra` | 22.5% | 18.3% |
 <!-- /AUTOGEN:STRATEGY -->
 
 ### 2.2 Provenance
@@ -70,10 +70,10 @@ or reverted some edits.
 <!-- AUTOGEN:PROVENANCE -->
 | provenance | pre-verification rows | queued for verification | measured | released rows |
 |---|--:|--:|--:|--:|
-| algorithmic (rules for casing / typo / partial) | 2,673 | 450 | 448 | 2,689 |
+| algorithmic (rules for casing / typo / partial) | 2,673 | 450 | 448 | 2,668 |
 | attested (Wikidata aliases shipped with CypherBench, curated tables, RxNorm) | 1,052 | 400 | 393 | 1,043 |
 | LLM-proposed (abstention-first proposer, evidence required) | 916 | 916 | 898 | 879 |
-| **all** | 4,641 | 1,766 | 1,739 | 4,611 |
+| **all** | 4,641 | 1,766 | 1,739 | 4,590 |
 <!-- /AUTOGEN:PROVENANCE -->
 
 ### 2.3 Grounding classes
@@ -86,10 +86,10 @@ abbreviations in each domain.
 <!-- AUTOGEN:GROUNDING -->
 | class | relation of the perturbed mention to the database value | all | CypherBench | Mind-the-Query | ZOGRASCOPE |
 |---|---|--:|--:|--:|--:|
-| `exact_ci` | case-insensitive exact still matches (trivial) | 10.0% | 9.1% | 10.5% | 11.1% |
-| `edit_distance` | within Damerau ≤2 (fuzzy-recoverable) | 32.8% | 15.2% | 31.7% | 62.3% |
-| `substring` | perturbed ⊆ canonical (fulltext-recoverable) | 25.7% | 30.1% | 23.2% | 20.8% |
-| `semantic` | no surface overlap (needs world knowledge / vector) | 31.5% | 45.5% | 34.6% | 5.8% |
+| `exact_ci` | case-insensitive exact still matches (trivial) | 10.1% | 9.2% | 10.5% | 11.1% |
+| `edit_distance` | within Damerau ≤2 (fuzzy-recoverable) | 32.9% | 15.3% | 31.7% | 62.6% |
+| `substring` | perturbed ⊆ canonical (fulltext-recoverable) | 25.4% | 29.8% | 23.0% | 20.4% |
+| `semantic` | no surface overlap (needs world knowledge / vector) | 31.7% | 45.7% | 34.8% | 5.8% |
 <!-- /AUTOGEN:GROUNDING -->
 
 ### 2.4 Query-difficulty tiers
@@ -101,10 +101,10 @@ results are reported per tier.
 <!-- AUTOGEN:TIERS -->
 | dataset | n | easy | medium | hard |
 |---|--:|--:|--:|--:|
-| CypherBench | 2,099 | 16.2% | 53.0% | 30.9% |
-| Mind-the-Query | 1,222 | 6.5% | 61.7% | 31.8% |
-| ZOGRASCOPE | 1,290 | 6.3% | 74.3% | 19.4% |
-| **all** | 4,611 | **10.8%** | **61.3%** | **27.9%** |
+| CypherBench | 2,090 | 16.1% | 53.1% | 30.8% |
+| Mind-the-Query | 1,217 | 6.3% | 61.8% | 31.9% |
+| ZOGRASCOPE | 1,283 | 6.3% | 74.4% | 19.3% |
+| **all** | 4,590 | **10.8%** | **61.3%** | **27.9%** |
 <!-- /AUTOGEN:TIERS -->
 
 ### 2.5 Per-graph mix
@@ -114,22 +114,22 @@ Strategy shares per graph (%); `LLM+attested` counts the edits whose surface for
 
 | dataset | graph | n | casing | typo | partial | abbrev | alias | LLM+attested |
 |---|---|--:|--:|--:|--:|--:|--:|--:|
-| cypherbench | company | 305 | 10.2 | 14.1 | 20.7 | 26.2 | 28.9 | 170 |
-| cypherbench | fictional_character | 324 | 10.8 | 23.5 | 26.2 | 9.3 | 30.2 | 149 |
+| cypherbench | company | 303 | 10.2 | 14.2 | 20.1 | 26.4 | 29.0 | 170 |
+| cypherbench | fictional_character | 322 | 10.9 | 23.6 | 25.8 | 9.3 | 30.4 | 149 |
 | cypherbench | flight_accident | 168 | 8.9 | 6.0 | 10.7 | 53.0 | 21.4 | 127 |
 | cypherbench | geography | 331 | 10.9 | 14.5 | 16.6 | 23.9 | 34.1 | 194 |
-| cypherbench | movie | 360 | 8.9 | 16.7 | 18.6 | 28.1 | 27.8 | 208 |
+| cypherbench | movie | 359 | 8.9 | 16.7 | 18.4 | 28.1 | 27.9 | 208 |
 | cypherbench | nba | 251 | 10.0 | 2.8 | 23.5 | 25.9 | 37.8 | 173 |
-| cypherbench | politics | 360 | 5.0 | 5.8 | 13.6 | 48.1 | 27.5 | 272 |
+| cypherbench | politics | 356 | 5.1 | 5.9 | 12.6 | 48.6 | 27.8 | 272 |
 | mindthequery | bloom *(synthetic)* | 24 | 16.7 | 16.7 | 45.8 | 20.8 | 0.0 | 5 |
-| mindthequery | covid | 327 | 10.7 | 54.4 | 11.0 | 8.9 | 15.0 | 78 |
-| mindthequery | er *(synthetic)* | 185 | 9.2 | 32.4 | 14.1 | 44.3 | 0.0 | 82 |
-| mindthequery | healthcare | 419 | 10.5 | 18.9 | 10.3 | 30.8 | 29.6 | 255 |
-| mindthequery | wwc | 267 | 10.5 | 22.8 | 30.7 | 21.7 | 14.2 | 96 |
-| zograscope | pole *(synthetic)* | 1290 | 11.1 | 61.6 | 18.6 | 8.8 | 0.0 | 113 |
-| **ALL** | | 4611 | **10.0** | **31.3** | **18.1** | **22.4** | **18.2** | 1922 |
+| mindthequery | covid | 326 | 10.7 | 54.3 | 11.0 | 8.9 | 15.0 | 78 |
+| mindthequery | er *(synthetic)* | 184 | 9.2 | 32.6 | 13.6 | 44.6 | 0.0 | 82 |
+| mindthequery | healthcare | 418 | 10.5 | 18.9 | 10.0 | 30.9 | 29.7 | 255 |
+| mindthequery | wwc | 265 | 10.6 | 23.0 | 30.2 | 21.9 | 14.3 | 96 |
+| zograscope | pole *(synthetic)* | 1283 | 11.1 | 61.8 | 18.2 | 8.8 | 0.0 | 113 |
+| **ALL** | | 4590 | **10.1** | **31.4** | **17.8** | **22.5** | **18.3** | 1922 |
 
-Within the alias-applicable stratum (67.5% of rows; synthetic graphs are alias-zero by design) alias = **27.0%**. Where a graph's mix departs from the design shares, the cause is the measured supply of attested forms (`audit/APPLICABILITY_CEILING.md`), not allocation.
+Within the alias-applicable stratum (67.5% of rows; synthetic graphs are alias-zero by design) alias = **27.1%**. Where a graph's mix departs from the design shares, the cause is the measured supply of attested forms (`audit/APPLICABILITY_CEILING.md`), not allocation.
 <!-- /AUTOGEN:REALIZED -->
 
 ## 3. How the questions were produced
@@ -161,7 +161,7 @@ Within the alias-applicable stratum (67.5% of rows; synthetic graphs are alias-z
 
 Generation is deterministic given the seed and reads the graph only; the
 full specification is `docs/AUGMENTATION_METHODS.md`. The release is frozen
-as a decision manifest (`benchmarks/release_manifest_v2.2.jsonl`);
+as a decision manifest (`benchmarks/release_manifest_v2.3.jsonl`);
 `scripts/rebuild_from_manifest.py` regenerates every question from it and
 checks the released files' hashes.
 
@@ -176,13 +176,13 @@ agreement statistics and how they should be read, the verdict rules and the
 released artifacts are in `docs/VERIFICATION_PROTOCOL.md`.
 
 <!-- AUTOGEN:VERIFICATION -->
-**Release v2.2-verified-2026-09-09** — 4,641 rows in → **4,611** released (30 removed, 20 reverted to a certified prior algorithmic form, 0 pending). Naturalness policy: `drop-unnatural`. Verdicts from 5 annotators over 1,739 measured items (1,524 double-annotated; 27 calibration items excluded).
+**Release v2.3-verified-2026-09-22** — 4,641 rows in → **4,590** released (51 removed, 20 reverted to a certified prior algorithmic form, 0 pending). Naturalness policy: `drop-unnatural`. Verdicts from 5 annotators over 1,739 measured items (1,524 double-annotated; 27 calibration items excluded).
 
 Inter-annotator agreement (validity): Krippendorff's α = **0.354**, Gwet's AC1 = **0.964**, disagreement rate 3.5%.
 
 | provenance | n | validity % [95% CI] | α | AC1 | raw agr (n₂) | action |
 |---|--:|---|--:|--:|---|---|
-| algorithmic | 448 | 96.2% [94.0, 97.6] | 0.482 | 0.956 | 95.8% (238) | rate only (no removals) |
+| algorithmic | 448 | 96.2% [94.0, 97.6] | 0.482 | 0.956 | 95.8% (238) | invalid → remove |
 | attested | 393 | 98.5% [96.7, 99.3] | 0.390 | 0.977 | 97.7% (393) | invalid → revert/remove |
 | llm | 898 | 97.2% [95.9, 98.1] | 0.291 | 0.961 | 96.2% (898) | invalid → revert/remove |
 
@@ -208,7 +208,8 @@ Per-row verdicts (annotators as letters A–E), the blind key, the calibration r
 | 2026-08-22 | mid-word replacement bug fixed (`us` inside `users`); 47 questions repaired | 4,641 |
 | 2026-08-22 | strategy mix rebalanced to the measured supply of attested forms; no questions removed | 4,641 |
 | 2026-08-22 | generation frozen: decision manifest v2.1 | 4,641 |
-| 2026-09-09 | human-verification verdicts applied: 20 edits reverted to their rule-based form, 30 questions removed — **v2.2, the released set** | 4,611 |
+| 2026-09-09 | human-verification verdicts applied: 20 edits reverted to their rule-based form, 30 questions removed (v2.2) | 4,611 |
+| 2026-09-22 | the verdict rules applied uniformly to every tier: the 21 sampled rule-based edits that annotators had judged invalid or unnatural, until then kept and reported as a rate, removed — **v2.3, the released set** | 4,590 |
 
 Row-level logs for each step are in `audit/`; the day-by-day record of the
 annotation campaign is `docs/archive/ANNOTATION_PROCESS_LOG.md`.
@@ -223,14 +224,14 @@ annotation campaign is `docs/archive/ANNOTATION_PROCESS_LOG.md`.
 - **Gold queries that do not execute.**
 
 <!-- AUTOGEN:GOLD -->
-31 of the 4,611 released gold queries (0.7%) do not execute (gold verdicts recorded by the evaluation harness in a complete run over the released rows, 30 s server-side timeout; 2026-09-22). They are kept as shipped and score 0 for every system, so they lower every method equally.
+31 of the 4,590 released gold queries (0.7%) do not execute (gold verdicts recorded by the evaluation harness in a complete run over the released rows, 30 s server-side timeout; 2026-09-22). They are kept as shipped and score 0 for every system, so they lower every method equally.
 
 | dataset | graph | questions | non-executing golds |
 |---|---|--:|--:|
-| mindthequery | covid | 327 | 14 |
-| mindthequery | er | 185 | 3 |
-| mindthequery | healthcare | 419 | 4 |
-| mindthequery | wwc | 267 | 10 |
+| mindthequery | covid | 326 | 14 |
+| mindthequery | er | 184 | 3 |
+| mindthequery | healthcare | 418 | 4 |
+| mindthequery | wwc | 265 | 10 |
 <!-- /AUTOGEN:GOLD -->
 
 - **Gold queries with empty results.** On the Mind-the-Query graphs a
@@ -266,7 +267,8 @@ manifest and verification artifacts are released with this repository.
 benchmarks/<dataset>_augmented_v2/test.json      the benchmark
 benchmarks/<dataset>_augmented_v2/test.probed.json  + grounding classes
 benchmarks/verify.py                              release check (hashes)
-benchmarks/release_manifest_v2.2.jsonl            decision manifest, one record per question
+benchmarks/release_manifest_v2.3.jsonl            decision manifest, one record per question
+benchmarks/removed_rows.jsonl                     the 51 questions verification removed, as they stood before it
 audit/verification/                               verdicts, blind key, adjudications, statistics
 audit/gold_executability.json                     which golds do not execute
 docs/AUGMENTATION_METHODS.md                      how each strategy is generated and gated
@@ -277,7 +279,7 @@ docs/LLM_USE_DISCLOSURE.md                        the role of LLMs in constructi
 
 ## 9. Maintenance
 
-`v2.2-verified-2026-09-09` is the current release; `benchmarks/verify.py`
+`v2.3-verified-2026-09-22` is the current release; `benchmarks/verify.py`
 names the version and pins the file hashes, and any later release will carry
 a new version string, manifest and hashes. Issues with individual questions
 can be reported against the question's `graph` and `id`; the manifest and
