@@ -229,6 +229,14 @@ def block_verification():
     st = json.loads(stats_p.read_text(encoding="utf-8"))
     sm = json.loads(summ_p.read_text(encoding="utf-8"))
     f = lambda x: "—" if x is None else f"{x:.3f}"
+    # how many measured items carry two labels / one label (from the verdicts themselves)
+    import csv
+    per_item = Counter()
+    for r in csv.DictReader((VERIF_DIR / "verdicts_long.csv").open(encoding="utf-8-sig")):
+        if r.get("calibration_item", "no") != "yes":
+            per_item[r["id"]] += 1
+    n_two = sum(1 for n in per_item.values() if n == 2)
+    n_one = sum(1 for n in per_item.values() if n == 1)
     L = [f"**Release {sm['version']}** — {sm['rows_in']:,} rows in → "
          f"**{sm['rows_out']:,}** released "
          f"({sm['actions'].get('remove_total', 0)} removed, "
@@ -236,8 +244,9 @@ def block_verification():
          f"algorithmic form, {sm['actions'].get('pending', 0)} pending). "
          f"Naturalness policy: `{sm['naturalness_policy']}`. "
          f"Verdicts from {len(st['annotators'])} annotators over {st['items']:,} "
-         f"measured items ({st['double_annotated']:,} double-annotated; "
-         f"{st['calibration_ids_in_queue']} calibration items excluded).", "",
+         f"measured items: {n_two:,} labelled by two annotators ({st['double_annotated']:,} of them "
+         f"enter the agreement statistics; the rest were flagged as source errors) and {n_one:,} by one; "
+         f"{st['calibration_ids_in_queue']} calibration items excluded.", "",
          f"Inter-annotator agreement (validity): Krippendorff's α = **{f(st['alpha'])}**, "
          f"Gwet's AC1 = **{f(st['ac1'])}**, disagreement rate "
          f"{100*st['disagreements']/max(st['double_annotated'],1):.1f}%.", "",
