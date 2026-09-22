@@ -178,10 +178,12 @@ logs/runs/<dataset>__<graph>__<method>@<model>__<YYYYMMDD-HHMMSS>/
 
 and after each graph the driver regenerates `report/<model>/<Dataset>/<graph>.md`,
 after each dataset `report/<model>/<Dataset>/_summary.md`, and at the end
-**`report/<model>/SWEEP_<YYYYMMDD-HHMMSS>.md`** — one file per run, never
-overwritten (`SWEEP.md` is a copy of the latest): the completeness matrix plus
-every table the paper needs — EA / PSJS per dataset and overall, by
-perturbation strategy, by query difficulty.
+**`report/<model>/SWEEP.md`**: the completeness matrix plus every table the
+paper needs — EA / PSJS per dataset and overall, by perturbation strategy, by
+query difficulty. Every report file is regenerated in place (`--status`
+refreshes `SWEEP.md` too); every number in them is derived from the run
+directories, which are never deleted, and every `--publish` is a commit, so the
+branch history keeps each published version.
 
 The `<method>` segment spells out CyANCHOR's active retrieval arms, so the
 shipped default appears as `cyanchor_fl` (fuzzy + Levenshtein). If you ever see

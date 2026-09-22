@@ -77,11 +77,14 @@ run dirs (``gen_ablation_report.py``); after each dataset, its pooled
 ``_summary.md`` (``gen_pooled_report.py``). Pooling is over all questions
 (each question weighs one; an errored question scores 0) — the same arithmetic
 as the committed gpt-4.1 tables. Everything a model produces lives under
-``report/<model>/``: ``<Dataset>/<graph>.md``, ``<Dataset>/_summary.md`` and —
-written at the end of every driver invocation, never overwritten —
-``SWEEP_<YYYYMMDD-HHMMSS>.md``: the completeness matrix plus every table the
-paper needs (per dataset and overall; by perturbation strategy; by query
-difficulty), with ``SWEEP.md`` a copy of the latest one.
+``report/<model>/``: ``<Dataset>/<graph>.md``, ``<Dataset>/_summary.md`` and
+``SWEEP.md`` — the completeness matrix plus every table the paper needs (per
+dataset and overall; by perturbation strategy; by query difficulty). All of
+them are regenerated in place: every table is derived from the run dirs, which
+are the data of record and are never deleted. History is not kept in stamped
+copies — every ``--publish`` is a commit on ``sweep/<model>``, and
+``logs/sweep_<model>.log`` (published with it) holds one verdict line per
+driver invocation.
 """
 from __future__ import annotations
 
@@ -543,14 +546,28 @@ def render_status(status: dict) -> str:
 
 
 def write_status(status: dict) -> Path:
-    """One timestamped file per driver invocation (never overwritten) plus
-    SWEEP.md, a copy of the latest. Returns the timestamped path."""
+    """Regenerate ``report/<model>/SWEEP.md`` in place — one report file, like
+    the per-graph tables. History lives in the branch (every publish is a
+    commit) and in ``logs/sweep_<model>.log`` (one verdict line per invocation),
+    not in stamped copies; ``SWEEP_<stamp>.md`` files left by earlier drivers are
+    removed so no branch carries them. Returns the path."""
     root = report_root(status["model"]); root.mkdir(parents=True, exist_ok=True)
-    text = render_status(status)
-    out = root / f"SWEEP_{time.strftime('%Y%m%d-%H%M%S')}.md"
-    out.write_text(text, encoding="utf-8")
-    (root / "SWEEP.md").write_text(text, encoding="utf-8")
+    for stale in root.glob("SWEEP_*.md"):
+        stale.unlink()
+    out = root / "SWEEP.md"
+    out.write_text(render_status(status), encoding="utf-8")
     return out
+
+
+def verdict_line(status: dict, mode: str) -> str:
+    """The one log line every driver invocation leaves: mode (run / status /
+    publish), verdict, ✗ and ⚠ counts, the cells when there are few, and the
+    driver commit — ``logs/sweep_<model>.log`` is the sweep's history."""
+    missing, flagged = status.get("missing", []), status.get("flagged", [])
+    bad = [f"✗ {_cell_label(k)}" for k in missing] + [f"⚠ {_cell_label(k)}" for k in flagged]
+    cells = f" ({', '.join(bad)})" if 0 < len(bad) <= 8 else (" (see the matrix)" if bad else "")
+    return (f"=== {mode} {'COMPLETE' if status['complete'] else 'NOT CLEAN'} — "
+            f"{len(missing)} ✗, {len(flagged)} ⚠{cells} · driver {_git('rev-parse', '--short', 'HEAD')} ===")
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -955,7 +972,9 @@ def main(argv: Optional[List[str]] = None) -> int:
         text = render_status(status)
         print(text)
         if not args.smoke:
-            log(f"status written: {write_status(status).relative_to(REPO)}")
+            out = write_status(status)
+            log(verdict_line(status, "publish" if args.publish else "status"))
+            log(f"report: {out.relative_to(REPO)}")
         return publish(status, args.allow_incomplete) if args.publish else (0 if status["complete"] else 1)
 
     log(f"=== sweep start: model={model} graphs={len(pairs)} methods={methods} "
@@ -1026,15 +1045,13 @@ def main(argv: Optional[List[str]] = None) -> int:
             f"(a few errors are fine; a whole method erroring is not). Now run: {_cmd()}")
         return 0
     out = write_status(status)
-    log(f"=== sweep {'COMPLETE' if status['complete'] else 'NOT CLEAN'}: {out.relative_to(REPO)} ===")
+    log(verdict_line(status, "run"))
+    log(f"report: {out.relative_to(REPO)}")
     if status["complete"]:
         log(f"next: {_cmd('--publish')}")
     else:
-        if status.get("missing"):
-            log(f"{len(status['missing'])} cell(s) missing/truncated (✗); "
-                f"{len(status.get('flagged', []))} cell(s) failed on infrastructure (⚠).")
-        elif status.get("flagged"):
-            log(f"{len(status['flagged'])} cell(s) failed on infrastructure (⚠) — see 'Flagged cells' in the report.")
+        if status.get("flagged"):
+            log("⚠ cells: the report's 'Flagged cells' section has the error text and the re-run command for each.")
         log(f"next: {_cmd():<40} # re-runs only the ✗ / ⚠ cells")
         log(f"      {_cmd('--publish'):<40} # when every cell shows ✓")
         log(f"      (a cell that still shows ✗ or ⚠ after that: {_cmd('--publish --allow-incomplete')}, "

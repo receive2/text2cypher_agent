@@ -205,10 +205,12 @@ graph / manifest / fcav guards, `gen_ablation_report.py` and
 graphs; building a graph's FCAV index on first use; retry (3×) per cell; resume
 from disk (a cell is complete when its newest run holds one record per
 question — errored questions are allowed and score 0). Every driver invocation
-ends by writing `report/<model>/SWEEP_<YYYYMMDD-HHMMSS>.md` — never
-overwritten; `SWEEP.md` is a copy of the latest — holding the completeness
+ends by regenerating `report/<model>/SWEEP.md` in place — the completeness
 matrix and every table the paper needs: EA / PSJS per dataset and overall, by
-perturbation strategy, by query difficulty. Pooling is over all questions of a
+perturbation strategy, by query difficulty. Report files are derived from the
+run directories, which are never deleted; every `--publish` is a commit on
+`sweep/<model>`, and `logs/sweep_<model>.log` keeps one verdict line per
+invocation, so no stamped copies are kept. Pooling is over all questions of a
 dataset (each question weighs one), identical to the committed gpt-4.1 tables.
 
 The deliverable of a sweep is the branch `sweep/<model>`; `main` keeps the

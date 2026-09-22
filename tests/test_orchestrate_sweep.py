@@ -72,7 +72,9 @@ def test_status_complete_when_every_cell_is_full(tmp_path, monkeypatch):
     assert "**COMPLETE**" in text and "✓ 2/1" in text and "| No Val Link | 0.500 | 0.500 |" in text
 
 
-def test_write_status_keeps_one_file_per_invocation(tmp_path, monkeypatch):
+def test_write_status_regenerates_sweep_md_in_place(tmp_path, monkeypatch):
+    """One report file, overwritten like the per-graph tables; stamped copies
+    left by earlier drivers are removed so no branch carries them."""
     import eval_config as cfg
     monkeypatch.setattr(osw, "REPO", tmp_path)
     monkeypatch.setattr(cfg, "REPORT_DIR", "report")
@@ -80,14 +82,26 @@ def test_write_status_keeps_one_file_per_invocation(tmp_path, monkeypatch):
             {"ea": False, "psjs": 0.0, "strategy": "alias", "difficulty": "hard"}]
     _write_run(tmp_path, "mindthequery_augmented", "er", "no_val_link", "m1", "20260101-000000", rows)
     st = osw.build_status([("mindthequery_augmented", "er")], ["no_val_link"], {("mindthequery_augmented", "er"): 2}, "logs/x", "m1")
+    root = tmp_path / "report" / "m1"; root.mkdir(parents=True)
+    (root / "SWEEP_20260915-005322.md").write_text("stale", encoding="utf-8")
     p1 = osw.write_status(st)
-    import time; time.sleep(1.1)
     p2 = osw.write_status(st)
-    assert p1 != p2 and p1.parent == tmp_path / "report" / "m1" and p1.name.startswith("SWEEP_")
-    assert (tmp_path / "report" / "m1" / "SWEEP.md").read_text(encoding="utf-8") == p2.read_text(encoding="utf-8")
+    assert p1 == p2 == root / "SWEEP.md"
+    assert sorted(f.name for f in root.iterdir()) == ["SWEEP.md"]          # no stamped copies; the stale one is gone
     text = p2.read_text(encoding="utf-8")
-    assert "by perturbation strategy" in text and "| typo |" in text.replace("| typo | alias", "| typo |") or "typo" in text
+    assert "by perturbation strategy" in text and "typo" in text
     assert "by query difficulty" in text and "hard" in text
+
+
+def test_verdict_line_names_the_bad_cells(world):
+    pairs, expected = world
+    st = osw.build_status(pairs, ["no_val_link", "react"], expected, "logs/x", "m1")
+    line = osw.verdict_line(st, "status")
+    assert line.startswith("=== status NOT CLEAN — 3 ✗, 0 ⚠ (") and line.endswith("===")
+    assert "✗ CypherBench · movie · react" in line and "✗ ZOGRASCOPE · pole · no_val_link" in line and " · driver " in line
+    clean = osw.build_status([("cypherbench_augmented", "movie")], ["no_val_link"],
+                             {("cypherbench_augmented", "movie"): 3}, "logs/x", "m1")
+    assert osw.verdict_line(clean, "run").startswith("=== run COMPLETE — 0 ✗, 0 ⚠ · driver ")
 
 
 def test_model_name_rejects_unknown_preset(monkeypatch):
