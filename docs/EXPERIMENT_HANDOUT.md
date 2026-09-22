@@ -262,9 +262,9 @@ the ✗ / ⚠ cells and the exact commands to run next — follow them:
 1. `python orchestrate_sweep.py` — re-runs only those cells; everything else is
    kept.
 2. `python orchestrate_sweep.py --status` — every cell should now show ✓.
-3. If a ⚠ cell is *still* flagged after its automatic re-runs, publish anyway so
-   the finished records reach the repository, and paste the report's **Flagged
-   cells** section to the coordinator:
+3. If a cell *still* shows ✗ or ⚠ after step 1 (it was retried and keeps
+   failing), publish anyway so the finished records reach the repository, and
+   paste the report's matrix and **Flagged cells** section to the coordinator:
    `python orchestrate_sweep.py --publish --allow-incomplete`.
    The branch is labelled `PARTIAL` and lists the affected cells; nobody will
    mistake it for a finished sweep.

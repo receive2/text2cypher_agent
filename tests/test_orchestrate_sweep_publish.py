@@ -41,6 +41,10 @@ import orchestrate_sweep as osw  # noqa: E402
     ("Error code: 503 - {'error': {'message': 'overloaded'}}", "infra"),
     ("HTTP 502 Bad Gateway", "infra"),
     ("httpx.ReadTimeout: timed out", "infra"),
+    # Neo4j-side infrastructure: transient / session errors are not statement errors
+    ("agent: TransientError: {code: Neo.TransientError.General.DatabaseUnavailable} {message: x}", "infra"),
+    ("neo4j.exceptions.SessionExpired: Failed to read from defunct connection", "infra"),
+    ("neo4j.exceptions.ServiceUnavailable: Unable to retrieve routing information", "infra"),
 ])
 def test_classify_error(error, kind):
     assert osw.classify_error(error) == kind
@@ -272,3 +276,20 @@ def test_explicit_selection_reruns_a_parked_cell():
 def test_missing_budget_key_is_treated_as_zero():
     c = {"complete": True, "suspect": True, "n": 10, "err": 5, "why": "w"}
     assert osw.decide_cell(c, {"tries": 0}, False)[0] == "rerun"
+
+
+# ── state files: smoke never touches the full run's history ──────────────────
+
+def test_smoke_state_file_is_separate(tmp_path, monkeypatch):
+    monkeypatch.setattr(osw, "REPO", tmp_path)
+    expected = {("cypherbench_augmented", "flight_accident"): 3}
+    smoke = osw.load_state("m", expected, smoke=True)
+    smoke["cells"]["cypherbench_augmented__flight_accident__react"] = {"tries": 3, "suspect_reruns": 2}
+    osw.save_state(smoke)
+    full = osw.load_state("m", {("cypherbench_augmented", "flight_accident"): 500})
+    assert full["cells"] == {}                       # smoke tries do not consume the full run's budget
+    assert full["expected"]["cypherbench_augmented__flight_accident"] == 500
+    assert osw.state_path("m", True) != osw.state_path("m")
+    assert osw.state_path("m", True).is_file() and not osw.state_path("m").is_file()
+    osw.save_state(full)
+    assert osw.state_path("m").is_file()

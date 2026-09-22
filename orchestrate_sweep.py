@@ -150,7 +150,8 @@ _INFRA_PATTERNS = re.compile(
     r"example timeout|APITimeoutError|transaction timeout|timed out|"
     r"(?:Read|Write|Connect)?TimeoutError|(?:Read|Write|Connect)Timeout|"
     r"RateLimit|rate limit|\b429\b|(?:error code|status(?: code)?|http)\W{0,3}5\d\d\b|"
-    r"ServiceUnavailable|InternalServerError|APIConnectionError|"
+    r"ServiceUnavailable|SessionExpired|DatabaseUnavailable|Neo\.TransientError\.|"
+    r"InternalServerError|APIConnectionError|"
     r"Connection(?:Error|Reset|Refused)|overloaded|watchdog",
     re.IGNORECASE)
 
@@ -690,24 +691,27 @@ def preflight(pairs: List[Tuple[str, str]]) -> bool:
     return ok
 
 
-def state_path(model: str) -> Path:
-    return REPO / "logs" / f"sweep_{model}.json"
+def state_path(model: str, smoke: bool = False) -> Path:
+    """Per-cell history; the smoke run keeps its own file so its tries never
+    count against the full run's cells."""
+    return REPO / "logs" / f"sweep_{model}{'_smoke' if smoke else ''}.json"
 
 
-def load_state(model: str, expected: Dict[Tuple[str, str], int]) -> dict:
-    p = state_path(model)
-    st = {"model": model, "started": time.strftime("%Y-%m-%d %H:%M:%S"), "cells": {}}
+def load_state(model: str, expected: Dict[Tuple[str, str], int], smoke: bool = False) -> dict:
+    p = state_path(model, smoke)
+    st = {"model": model, "smoke": smoke, "started": time.strftime("%Y-%m-%d %H:%M:%S"), "cells": {}}
     if p.is_file():
         try:
             st = json.loads(p.read_text(encoding="utf-8"))
         except Exception:  # noqa: BLE001
             pass
+    st["model"], st["smoke"] = model, smoke
     st["expected"] = {f"{ds}__{g}": n for (ds, g), n in expected.items()}
     return st
 
 
 def save_state(st: dict) -> None:
-    p = state_path(st["model"]); p.parent.mkdir(parents=True, exist_ok=True)
+    p = state_path(st["model"], bool(st.get("smoke"))); p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(json.dumps(st, indent=2), encoding="utf-8")
 
 
@@ -809,8 +813,8 @@ def publish(status: dict, allow_incomplete: bool) -> int:
         log("  Next:")
         log("    1. python orchestrate_sweep.py            # re-runs only the ✗ and ⚠ cells; everything else is kept")
         log("    2. python orchestrate_sweep.py --status   # confirm every cell shows ✓")
-        log("    3. if a ⚠ cell is still flagged after its automatic re-runs, publish anyway so the finished")
-        log("       records reach the repository, and paste the 'Flagged cells' section to the coordinator:")
+        log("    3. if a cell still shows ✗ or ⚠ after step 1 (it was retried and keeps failing), publish anyway so")
+        log("       the finished records reach the repository, and paste the matrix + 'Flagged cells' to the coordinator:")
         log("       python orchestrate_sweep.py --publish --allow-incomplete")
         log("  Do not send report files by email or chat — the per-question records only exist on the branch.")
         return 1
@@ -938,7 +942,7 @@ def main(argv: Optional[List[str]] = None) -> int:
             log("✗ pre-flight failed — fix the red lines (see docs/EXPERIMENT_HANDOUT.md §4) before running")
             return 1
     user_shards = int(getattr(cfg, "SHARDS", 1) or 1)
-    state = load_state(model, expected)
+    state = load_state(model, expected, smoke=args.smoke)
     save_state(state)
 
     by_dataset: Dict[str, List[str]] = collections.OrderedDict()
@@ -952,6 +956,8 @@ def main(argv: Optional[List[str]] = None) -> int:
                 key = f"{ds}__{g}__{m}"
                 entry = state["cells"].setdefault(key, {"tries": 0})
                 action, note = decide_cell(c, entry, manual)
+                if args.smoke:
+                    action, note = "run", "smoke always re-runs"   # otherwise a fixed key/model would never be re-tested
                 if action == "skip":
                     log(f"  = {key}: clean ({c['n']} records, err={c['err']}) — skipped")
                     continue
@@ -1007,8 +1013,8 @@ def main(argv: Optional[List[str]] = None) -> int:
             log(f"{len(status['flagged'])} cell(s) failed on infrastructure (⚠) — see 'Flagged cells' in the report.")
         log("next: python orchestrate_sweep.py            # re-runs only the ✗ / ⚠ cells")
         log("      python orchestrate_sweep.py --publish  # when every cell shows ✓")
-        log("      (a ⚠ cell that persists after its automatic re-runs: --publish --allow-incomplete, "
-            "and send the 'Flagged cells' section to the coordinator)")
+        log("      (a cell that still shows ✗ or ⚠ after that: --publish --allow-incomplete, "
+            "and send the matrix + 'Flagged cells' section to the coordinator)")
     return 0 if status["complete"] else 1
 
 
