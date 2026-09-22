@@ -152,3 +152,6 @@ setup_artifacts/*_augmented__*/generated/*
 !setup_artifacts/*_augmented__*/generated/faiss/
 !setup_artifacts/*_augmented__*/schema_data/**
 !setup_artifacts/*_augmented__*/generated/faiss/**
+
+# The gold-executability record of the released benchmark (scripts/gold_executability.py) ships with the data.
+!audit/gold_executability.json

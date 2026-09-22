@@ -1,0 +1,98 @@
+{
+  "version": "v2.2-verified-2026-09-09",
+  "method": "gold verdicts recorded by the evaluation harness in a complete run over the released rows, 30 s server-side timeout",
+  "date": "2026-09-22",
+  "graphs": [
+    {
+      "dataset": "cypherbench",
+      "graph": "company",
+      "n": 305,
+      "gold_error": 0,
+      "gold_timeout": 0
+    },
+    {
+      "dataset": "cypherbench",
+      "graph": "fictional_character",
+      "n": 324,
+      "gold_error": 0,
+      "gold_timeout": 0
+    },
+    {
+      "dataset": "cypherbench",
+      "graph": "flight_accident",
+      "n": 168,
+      "gold_error": 0,
+      "gold_timeout": 0
+    },
+    {
+      "dataset": "cypherbench",
+      "graph": "geography",
+      "n": 331,
+      "gold_error": 0,
+      "gold_timeout": 0
+    },
+    {
+      "dataset": "cypherbench",
+      "graph": "movie",
+      "n": 360,
+      "gold_error": 0,
+      "gold_timeout": 0
+    },
+    {
+      "dataset": "cypherbench",
+      "graph": "nba",
+      "n": 251,
+      "gold_error": 0,
+      "gold_timeout": 0
+    },
+    {
+      "dataset": "cypherbench",
+      "graph": "politics",
+      "n": 360,
+      "gold_error": 0,
+      "gold_timeout": 0
+    },
+    {
+      "dataset": "mindthequery",
+      "graph": "bloom",
+      "n": 24,
+      "gold_error": 0,
+      "gold_timeout": 0
+    },
+    {
+      "dataset": "mindthequery",
+      "graph": "covid",
+      "n": 327,
+      "gold_error": 14,
+      "gold_timeout": 0
+    },
+    {
+      "dataset": "mindthequery",
+      "graph": "er",
+      "n": 185,
+      "gold_error": 3,
+      "gold_timeout": 0
+    },
+    {
+      "dataset": "mindthequery",
+      "graph": "healthcare",
+      "n": 419,
+      "gold_error": 4,
+      "gold_timeout": 0
+    },
+    {
+      "dataset": "mindthequery",
+      "graph": "wwc",
+      "n": 267,
+      "gold_error": 10,
+      "gold_timeout": 0
+    },
+    {
+      "dataset": "zograscope",
+      "graph": "pole",
+      "n": 1290,
+      "gold_error": 0,
+      "gold_timeout": 0
+    }
+  ]
+}
