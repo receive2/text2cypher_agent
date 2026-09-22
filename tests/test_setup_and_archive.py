@@ -808,3 +808,44 @@ def test_main_invokes_reset_for_each_attempted_pair(_sandbox, monkeypatch) -> No
 
 if __name__ == "__main__":
     sys.exit(pytest.main([__file__, "-v"]))
+
+
+# ── Published-set guard: runners never rebuild the shared artifacts ──────────
+
+def test_main_refuses_published_pairs_unless_republish(_sandbox, monkeypatch, capsys) -> None:
+    """A pair covered by setup_artifacts/MANIFEST.json is never rebuilt by a
+    runner: the script refuses and says what to do; --republish (coordinator)
+    goes ahead."""
+    import scripts.setup_and_archive as sa
+    monkeypatch.setattr(sa.cfg, "EVAL_PAIRS", [("cypherbench_augmented", "movie")], raising=False)
+    monkeypatch.setattr(sa, "_published_pairs", lambda pairs: (list(pairs), "abc123def456"))
+    ran: List[Tuple[str, str]] = []
+    monkeypatch.setattr(sa, "_run_one_pair", lambda ds, g: ran.append((ds, g)))
+    assert sa.main(["setup_and_archive.py"]) == 1
+    assert ran == []
+    err = capsys.readouterr().err
+    assert "refused" in err and "abc123def456" in err and "cypherbench_augmented__movie" in err
+    assert "git checkout setup_artifacts/" in err and "--republish" in err
+    assert sa.main(["setup_and_archive.py", "--republish"]) == 0
+    assert ran == [("cypherbench_augmented", "movie")]
+
+
+def test_main_unpublished_pairs_need_no_flag(_sandbox, monkeypatch) -> None:
+    import scripts.setup_and_archive as sa
+    monkeypatch.setattr(sa.cfg, "EVAL_PAIRS", [("ds", "g1")], raising=False)
+    monkeypatch.setattr(sa, "_run_one_pair", lambda *a, **kw: None)
+    assert sa.main(["setup_and_archive.py"]) == 0
+
+
+def test_published_pairs_reads_the_real_manifest() -> None:
+    import scripts.setup_and_archive as sa
+    hits, set_id = sa._published_pairs([("cypherbench_augmented", "movie"), ("nope", "nothing")])
+    assert hits == [("cypherbench_augmented", "movie")]
+    assert set_id not in ("", "?")
+
+
+def test_unknown_flag_is_rejected(_sandbox, capsys) -> None:
+    import scripts.setup_and_archive as sa
+    with pytest.raises(SystemExit) as exc:
+        sa.main(["setup_and_archive.py", "--bogus"])
+    assert exc.value.code == 2

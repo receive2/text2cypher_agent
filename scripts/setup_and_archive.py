@@ -684,7 +684,8 @@ _LEGACY_CLI_ERROR = (
     "[setup_and_archive] ERROR: positional CLI args have been removed.\n"
     "\n"
     "  Old:  python scripts/setup_and_archive.py <dataset> <graph> [flags]\n"
-    "  New:  python scripts/setup_and_archive.py        # no arguments\n"
+    "  New:  python scripts/setup_and_archive.py               # no arguments\n"
+    "        python scripts/setup_and_archive.py --republish   # coordinator: rebuild PUBLISHED pairs\n"
     "\n"
     "The script now reads eval_config.EVAL_PAIRS as the single source of\n"
     "truth and processes every listed pair in order. To set up a single\n"
@@ -695,12 +696,41 @@ _LEGACY_CLI_ERROR = (
 )
 
 
-def _reject_legacy_cli(argv: List[str]) -> None:
-    """Hard-fail if any positional / flag args are passed."""
+def _reject_legacy_cli(argv: List[str]) -> bool:
+    """Hard-fail on any positional / unknown flag; return whether ``--republish``
+    (the coordinator's opt-in to rebuild published pairs) was given."""
     # argv[0] is the script name; anything beyond is the legacy interface.
-    if len(argv) > 1:
+    if [a for a in argv[1:] if a != "--republish"]:
         print(_LEGACY_CLI_ERROR, file=sys.stderr)
         sys.exit(2)
+    return "--republish" in argv[1:]
+
+
+_PUBLISHED_GUARD_ERROR = (
+    "[setup_and_archive] ✗ refused: {n} of the pair(s) in EVAL_PAIRS belong to the published\n"
+    "artifact set (setup_artifacts/MANIFEST.json, set {set_id}):\n"
+    "{listing}\n"
+    "Runners never rebuild artifacts: every model must evaluate on the byte-identical\n"
+    "published prompts and tools (docs/EXPERIMENT_HANDOUT.md §3). If verify_setup.py or the\n"
+    "sweep driver reports MISMATCH, restore the published copy instead of rebuilding:\n"
+    "    git checkout setup_artifacts/\n"
+    "Coordinator re-publishing on purpose: re-run with --republish, then\n"
+    "    python scripts/artifact_manifest.py build --strict\n"
+)
+
+
+def _published_pairs(pairs: List[Tuple[str, str]]) -> Tuple[List[Tuple[str, str]], str]:
+    """The subset of *pairs* that the published set covers, and the set id."""
+    try:
+        from scripts import artifact_manifest as am
+        root = artifact_swap._setup_artifacts_root()
+        manifest = am.load_manifest(am.manifest_path(root))
+    except Exception:  # noqa: BLE001 — no manifest at all: nothing is published
+        return [], "?"
+    if not manifest:
+        return [], "?"
+    hits = [(ds, g) for ds, g in pairs if am.check_pair(manifest, root, ds, g)[0] != am.UNPUBLISHED]
+    return hits, str(manifest.get("set_id", "?"))
 
 
 def _print_summary(
@@ -765,7 +795,7 @@ def main(argv: List[str] | None = None) -> int:
     if argv is None:
         argv = sys.argv
 
-    _reject_legacy_cli(argv)
+    republish = _reject_legacy_cli(argv)
 
     pairs: List[Tuple[str, str]] = list(getattr(cfg, "EVAL_PAIRS", []) or [])
     if not pairs:
@@ -776,6 +806,14 @@ def main(argv: List[str] | None = None) -> int:
             "then re-run.",
             file=sys.stderr,
         )
+        return 1
+
+    # ── Published-set guard: runners never rebuild the shared artifacts ──
+    published, set_id = _published_pairs(pairs)
+    if published and not republish:
+        listing = "\n".join(f"    {ds}__{g}" for ds, g in published)
+        print(_PUBLISHED_GUARD_ERROR.format(n=len(published), set_id=set_id, listing=listing),
+              file=sys.stderr)
         return 1
 
     completed: List[Tuple[str, str]] = []

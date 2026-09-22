@@ -311,6 +311,13 @@ def main() -> int:
     report: List[str] = _render_meta_header(
         metas, all_datasets, all_graphs, out_dir, generated_at
     )
+    report += [
+        "",
+        f"> **Development view.** Aggregated from whatever run dirs are under `{out_dir}` for this "
+        "checkout's `GENERATOR_LLM`. Not a sweep deliverable and not to be sent as one: the model "
+        "sweep is run, checked for completeness and delivered with `python orchestrate_sweep.py` "
+        "(docs/EXPERIMENT_HANDOUT.md).",
+    ]
 
     for dataset, method in sorted(by_group):
         label = f"{dataset} [{method}]"
@@ -343,6 +350,8 @@ def main() -> int:
     report_path = out_dir / f"report_{stamp}.md"
     report_path.write_text(text, encoding="utf-8")
     print(f"[eval_aggregate] wrote report → {report_path}")
+    print("[eval_aggregate] development view only — the model sweep is run and delivered with "
+          "`python orchestrate_sweep.py` (docs/EXPERIMENT_HANDOUT.md); do not send this file as a result.")
     return 0
 
 
