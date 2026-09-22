@@ -170,6 +170,16 @@ to an older complete run, which the audit names); `logs/runs/report_*.md` from
 ⚠ re-run budgets and can be deleted to reset them — completeness is always
 read from the run directories, never from that file.
 
+```bash
+python scripts/audit_runs.py --model gpt-5.6-luna                 # verdict per run dir of that model; prints rm -rf lines for the unusable ones
+python scripts/audit_runs.py --all-models                         # the same for every model's run dirs
+python scripts/audit_runs.py --discard-all --model gpt-5.6-luna   # clean slate: every run dir of that model + its state files, after you type the name
+```
+
+The model must be a preset name (`config.MODEL_PRESETS`); the script refuses
+anything else and lists the presets. `EXPERIMENT_HANDOUT.md` (the box at the
+top) has the `--discard-all` line ready for each of the seven sweep models.
+
 ## 6. Reports
 
 The driver regenerates, in place: `report/<model>/<Dataset>/<graph>.md` after

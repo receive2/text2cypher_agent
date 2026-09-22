@@ -257,9 +257,12 @@ that errored. A cell is
 command again. Completion is read from disk, so every ✓ cell is skipped and
 only ✗ and ⚠ cells run; a re-run writes a new time-stamped directory and the
 newest one wins, so there is nothing to delete by hand — the only runs that
-must go are ones the driver cannot use, and `python scripts/audit_runs.py`
-names them (see the box at the top). A cell that keeps failing is retried three
-times, then reported and skipped so the rest of the suite continues. To re-run a subset on purpose:
+must go are ones the driver cannot use: `python scripts/audit_runs.py --model
+<preset>` names them, and `python scripts/audit_runs.py --discard-all --model
+<preset>` wipes every run of that model when the coordinator says to start
+clean (the box at the top has the line for each model). A cell that keeps
+failing is retried three times, then reported and skipped so the rest of the
+suite continues. To re-run a subset on purpose:
 
 ```bash
 python orchestrate_sweep.py --graphs movie nba       # these graphs, all methods
