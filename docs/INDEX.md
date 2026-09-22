@@ -20,12 +20,13 @@ the CyANCHOR method.
 |---|---|
 | [CYANCHOR_IMPLEMENTATION.md](CYANCHOR_IMPLEMENTATION.md) | **The method reference** for CyANCHOR — every stage traced to file/line (PLAN, EXECUTE's 3 retrieval arms + escalation + abstain judge, GENERATE injection, Cypher gen/error-retry/semantic repair, value-snap), the full config surface, safety/fairness invariants, and ablation axes. |
 | [multi_agent_graphrag.md](multi_agent_graphrag.md) | **Baseline writeup** — the Multi-Agent GraphRAG baseline (`METHOD=graphrag`): no pre-grounding; generate → execute → evaluate → structural/semantic repair loop, validating node labels, property values **and pairwise edge patterns** with normalized-Levenshtein value replacement. |
-| [report/](../report/) | **Current results** — per-graph entity-perturbation tables at `report/<dataset>/<graph>.md` (Overall + by perturbation strategy + by difficulty, EA & PSJS) over the 5 methods (No Val Link · FCAV · ReAct · GraphRAG · CyANCHOR), plus per-dataset cross-graph summaries. |
-| [CLEAN_VS_PERTURBED.md](CLEAN_VS_PERTURBED.md) | **Robustness snapshot** — clean (original) vs entity-perturbed EA/PSJS for all 5 methods on CypherBench `flight_accident` + Mind-the-Query `bloom50`. Clean benchmarks overestimate robustness; CyANCHOR loses the least under perturbation (highest "retained %"). |
+| [report/](../report/) | **Current results** — one folder per generator model: `report/<model>/<Dataset>/<graph>.md` (per-graph tables), `<Dataset>/_summary.md` (pooled per dataset) and `SWEEP.md` (completeness verdict + every paper table); `report/gpt-4.1/` is the committed reference. |
+| clean vs perturbed | `scripts/clean_vs_perturbed.py` writes `report/<model>/CLEAN_VS_PERTURBED.md` — the paired clean-vs-perturbed comparison for one model. The 2026-06 two-graph snapshot is kept in [archive/](archive/). |
 
 ## Infrastructure
 
 | doc | role |
 |---|---|
-| [RUNNING_EXPERIMENTS.md](RUNNING_EXPERIMENTS.md) | **Operational guide** — how to run multi-dataset / multi-graph eval batches safely. The single-live-tree swap trap, the `verify_setup.py` pre-flight, and how to recognise + fix a contaminated archive. Read before running a batch. |
+| [EXPERIMENT_HANDOUT.md](EXPERIMENT_HANDOUT.md) | **Runner checklist** — the only procedure for the model sweep (one generator model per person): prerequisites, dataset check, model choice, smoke test, full run, `--publish`. |
+| [RUNNING_EXPERIMENTS.md](RUNNING_EXPERIMENTS.md) | **Harness reference (developers & coordinator)** — what happens when a cell runs, the guards, config knobs, where results land, reports, publishing the artifact set, pre-flight words. Not a procedure. |
 | [GRAPHS.md](GRAPHS.md) | Live reference for the deployed Neo4j graphs (labels, rel types, ports). |

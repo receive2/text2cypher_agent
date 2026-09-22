@@ -100,8 +100,8 @@ by `qid` and edit its gold field (`gold_cypher` / `Cypher` / `mr`, per dataset).
   question itself is bad. Removing is legitimate (a benchmark item with no valid
   ground truth tests nothing) — but record it (step 5).
 
-**4. Re-run and confirm.** Re-evaluate the affected graph(s) (`eval_run.py`), then
-re-audit:
+**4. Re-run and confirm.** Re-evaluate the affected graph(s) — `python orchestrate_sweep.py --graphs <graph>`
+for a sweep model, `eval_run.py` for a development run — then re-audit:
 
 ```bash
 python audit_gold_errors.py --graph <graph>

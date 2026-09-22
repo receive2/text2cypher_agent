@@ -382,11 +382,14 @@ candidate list. It is deliberately conservative:
 Example invocations:
 
 ```bash
-# CyANCHOR, all three arms, node+rel tools
-METHOD=cyanchor RETRIEVAL_VECTOR=1 python eval_run.py
+# CyANCHOR, all three arms, node+rel tools — in eval_config.py:
+#   METHOD = "cyanchor"; RETRIEVAL_VECTOR = True; TOOL_TYPE = "node_rel"
+python eval_run.py
 
-# CyANCHOR, fuzzy+Levenshtein only (no embeddings needed) — the shipped default
-METHOD=cyanchor python eval_run.py
+# CyANCHOR, fuzzy+Levenshtein only (no embeddings needed) — the shipped default:
+#   METHOD = "cyanchor"; RETRIEVAL_VECTOR = False
+python eval_run.py
+# (eval_run reads eval_config.py only; METHOD=… on the shell is ignored)
 
 # Single question, verbose trace
 python ner_agent_auto.py "Who directed The Matrix?" --mode cyanchor_fl_node_rel --verbose

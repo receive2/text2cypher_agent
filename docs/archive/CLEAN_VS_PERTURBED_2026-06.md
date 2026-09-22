@@ -1,4 +1,6 @@
-# Clean vs. entity-perturbed — robustness snapshot
+# Clean vs. entity-perturbed — robustness snapshot (2026-06, gpt-4.1, two graphs — archived)
+
+> Superseded by `scripts/clean_vs_perturbed.py`, which writes `report/<model>/CLEAN_VS_PERTURBED.md` for any model.
 
 How the five methods behave on the **original (clean)** benchmark questions vs.
 their **entity-perturbed** versions, on one graph from each of two benchmarks.
@@ -81,7 +83,7 @@ needs to *ground* anything; perturbation exposes the gap, and value grounding
   not a per-question paired difference.
 - Mind-the-Query golds include some non-executing queries; under this eval they score
   0 for every method (curation is a dataset-audit task — see
-  [docs/GOLD_ERROR_AUDIT.md](GOLD_ERROR_AUDIT.md)). `bloom50` here had 0 such cases.
+  [docs/GOLD_ERROR_AUDIT.md](../GOLD_ERROR_AUDIT.md)). `bloom50` here had 0 such cases.
 
 ## Reproduce
 

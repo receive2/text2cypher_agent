@@ -616,8 +616,9 @@ PLAN_EXEC_ROUTE_FETCH     = int(os.getenv("PLAN_EXEC_ROUTE_FETCH", "6"))        
 #   …iterate up to GRAPHRAG_MAX_ITER rounds, then return the best attempt.
 #
 # Generator reuses CYPHER_LLM_CONFIG; evaluator/selector reuse NER_LLM_CONFIG.
-# Selection is purely env-driven, like the other baselines:
-#   VAL_LINK_MODE=graphrag python eval_run.py
+# Selection: METHOD = "graphrag" in eval_config.py for the eval harness (eval_run
+# injects it and ignores shell variables); VAL_LINK_MODE=graphrag still works for
+# ner_agent_auto.py.
 GRAPHRAG_MAX_ITER       = 4     # generate→execute→correct rounds (paper = 4)
 GRAPHRAG_CANDIDATE_K    = 10    # Levenshtein candidates retrieved per invalid value
 GRAPHRAG_LEV_THRESHOLD  = 0.0   # min normalized-Levenshtein sim to keep a candidate (0 = keep all)

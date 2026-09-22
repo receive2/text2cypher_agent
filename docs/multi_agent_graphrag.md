@@ -69,7 +69,9 @@ Generator = `CYPHER_LLM_CONFIG`; evaluator + selector = `NER_LLM_CONFIG`.
 ## Run
 
 ```bash
-VAL_LINK_MODE=graphrag python eval_run.py
+# eval harness: METHOD = "graphrag" in eval_config.py (eval_run ignores shell variables)
+python eval_run.py
+# single question:
 VAL_LINK_MODE=graphrag python ner_agent_auto.py "Who directed the matriks?" --verbose
 ```
 
@@ -111,8 +113,8 @@ errors, ~12 s/example.** By perturbation strategy (EA): casing 2/2, typo 3/6,
 partial 2/4, alias 1/5, **abbrev 0/3**. The profile matches the retrieval
 analysis above — char-level perturbations (casing/typo) are handled by normalized
 Levenshtein, while abbrev/alias collapse (no surface overlap for edit distance to
-exploit). Indicative only — run the full pair + `eval_aggregate.py` for headline
-numbers.
+exploit). Indicative only — headline numbers come from the sweep driver
+(`orchestrate_sweep.py`), never from a 20-example batch.
 
 Tests: [`tests/test_graphrag.py`](../tests/test_graphrag.py) (offline; extraction,
 normalized Levenshtein, selector fallback, loop stop conditions).

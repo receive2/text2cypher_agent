@@ -5,8 +5,6 @@ Ask questions in plain English → it **grounds** the (possibly perturbed)
 entities to canonical database values, generates Cypher, runs it, and returns a
 human-readable answer.
 
-> **New here? Start with [QUICKSTART.md](QUICKSTART.md)** — clone → run → experiments in ~10 minutes. This README is the full reference.
-
 ---
 
 ## How it works
@@ -62,7 +60,7 @@ baselines. Ablation: [report/gpt-4.1/CypherBench/flight_accident.md](report/gpt-
 
 > **Running the perturbed-benchmark experiments?** Follow
 > [`docs/EXPERIMENT_HANDOUT.md`](docs/EXPERIMENT_HANDOUT.md) — it is the
-> complete checklist (dataset check, model choice, keys, setup, run, send back).
+> complete checklist (dataset check, model choice, keys, smoke test, full run, `--publish`).
 > The steps below are for developing the agent itself.
 
 ### 1 — Install dependencies
@@ -521,147 +519,21 @@ Results: 5 passed, 0 failed, 5 total
 
 > **Note:** Requires a running Neo4j instance with the movies dataset loaded and `.env` configured.
 
-### Per-graph evaluation harness (CypherBench / Mind-the-Query / ZOGRASCOPE)
+### Evaluation
 
-The repo ships a **per-graph** evaluation harness that runs the live agent over one or more `(dataset, graph)` pairs, each pointing at its own Neo4j container, and reports bucketed metrics across all of them. The harness is a Python module + three top-level scripts — there is no CLI; you edit `eval_config.py` and re-run.
+The repo ships a per-graph evaluation harness over three entity-perturbed
+text-to-Cypher benchmarks — CypherBench, Mind-the-Query, ZOGRASCOPE; 13 graphs,
+each in its own Neo4j container — and the five value-linking methods (No Val
+Link, FCAV, ReAct, GraphRAG, CyANCHOR). Every run writes one record per question
+(`logs/runs/…/records.jsonl`), and every table is derived from those records.
 
-**Pipeline:**
-
-```
-eval_config.py            ← edit: connections, test paths, which pairs to run
-       │
-       ▼
-scripts/setup_and_archive.py        (no args — reads EVAL_PAIRS)
-       │   • For each pair in EVAL_PAIRS, runs setup_project.py against
-       │     that graph's Neo4j
-       │   • Archives schema_data/, generated/, agent/prompts.py,
-       │     FAISS index, EMBEDDABLE_PROPERTIES → setup_artifacts/<dataset>__<graph>/
-       │   • REFUSES to archive if the live tools don't match the graph
-       ▼
-verify_setup.py                     (pre-flight — run before every eval batch)
-       │   • For each pair, connects to its graph and confirms the
-       │     archive's node tools search labels that actually have nodes
-       │   • Green/red table; red = contaminated archive, do not evaluate
-       ▼
-eval_run.py
-       │   • For each pair in EVAL_PAIRS:
-       │       1. swap_in archived artifacts into the live repo
-       │       2. graph-identity guard — skip the pair if the live tools
-       │          don't match the graph (same check as verify_setup.py)
-       │       3. spawn `python -m eval._worker <dataset> <graph> ...`
-       │          with EVAL_NEO4J_* env vars pointing at that container
-       │       4. write logs/runs/<dataset>__<graph>__<method>__<stamp>/records.jsonl
-       │                   logs/runs/<dataset>__<graph>__<method>__<stamp>/summary.json
-       │          (fresh timestamped dir per invocation; summary.json carries
-       │           the run's model + knob config under `run_config`)
-       ▼
-eval_aggregate.py
-           • Re-aggregates every run dir on disk by difficulty
-             bucket and prints one table per (dataset, method)
-```
-
-#### 1 — Configure `eval_config.py`
-
-`eval_config.py` is **committed** — the eval Neo4j connection (host/password) is intentionally public so reviewers can reproduce. **Edit it in place; do not `cp eval_config_example.py` over it** (that wipes the shared `GRAPH_CONNS`). The example file is a field-shape reference only. Everything you tune for a run lives in the boxed **`★ EXPERIMENT PARAMETERS — EDIT THESE ★`** block at the top of the file (method + CyANCHOR ablation toggles + run size, each annotated inline); `GRAPH_CONNS` / `EVAL_PAIRS` below it choose which graphs. `EVAL_PAIRS` / `METHOD` / `LIMIT` / `SHARDS` are per-run scratch — set them to your slice and don't commit those edits; commit `eval_config.py` only to update the shared `GRAPH_CONNS`. Key fields:
-
-```python
-# Per-(dataset, graph) Neo4j connection registry.  Each graph runs in
-# its own Docker container with its own bolt port.
-GRAPH_CONNS: dict[tuple[str, str], GraphConn] = {
-    ("cypherbench",  "movie"):    GraphConn(uri="bolt://localhost:7687", user="neo4j", password="..."),
-    ("cypherbench",  "nba"):      GraphConn(uri="bolt://localhost:7688", user="neo4j", password="..."),
-    ("mindthequery", "bloom50"):  GraphConn(uri="bolt://localhost:7689", user="neo4j", password="..."),
-    ("zograscope",   "pole"):     GraphConn(uri="bolt://localhost:7690", user="neo4j", password="..."),
-}
-
-# Test-set paths (one combined file per dataset; the worker filters by graph).
-# resolved from T2C_DATASETS_DIR (default ~/datasets):
-CYPHERBENCH_PATH  = "<T2C_DATASETS_DIR>/cypherbench/test.json"
-MINDTHEQUERY_PATH = "<T2C_DATASETS_DIR>/mindthequery/Train_Test_Splits/Manual"
-ZOGRASCOPE_PATH   = "<T2C_DATASETS_DIR>/zograscope/data/zograscope_test_v1.csv"
-
-# Which pairs to evaluate on the next `python eval_run.py`.
-EVAL_PAIRS: list[tuple[str, str]] = [
-    ("cypherbench", "movie"),
-    ("cypherbench", "nba"),
-]
-
-LIMIT:   int | None = None      # cap examples per pair (None = all)
-VERBOSE: bool       = False     # per-example log lines
-SHARDS:  int        = 4         # intra-graph parallelism (1 = single process)
-OUT_DIR              = "logs/runs"
-REPORT_DIR           = "report" # gen_*_report.py write report/<model>/<dataset>/<graph>.md + _summary.md
-SETUP_ARTIFACTS_ROOT = "setup_artifacts"
-```
-
-> **`SHARDS`** splits each graph's examples into N stride-shards run as N
-> parallel worker processes against the same container, merged afterwards
-> (wall-clock ≈ 1/N). Graphs still run **sequentially** — a single shared live
-> artifact tree is swapped per graph, so only the examples *within* a graph
-> parallelise. `SHARDS=1` is the original single-process behaviour (identical
-> coverage). This supersedes the old movie-only `_run_sharded.py` script.
-
-#### 2 — Set up + archive each graph (one-time per graph)
-
-`setup_and_archive.py` takes **no arguments** — it reads `eval_config.EVAL_PAIRS` as the single source of truth and sets up + archives every pair listed there. To set up only a subset, shrink `EVAL_PAIRS` first.
-
-```bash
-python scripts/setup_and_archive.py
-```
-
-For each pair in `EVAL_PAIRS` the script:
-
-1. Wipes any live-state artifacts left by a previous run (so stale data can't be bundled into the new archive).
-2. Looks up the pair's `eval_config.GraphConn`.
-3. Drops every vector index and nulls every embedding property on that pair's live database, so setup re-embeds against the current `vector_config` identity.
-4. Subprocess-invokes `setup_project.py --yes` with the connection injected via `NEO4J_*` env vars and the pair's `database` passed on `--database`.
-5. Archives the per-graph outputs under `setup_artifacts/<dataset>__<graph>/` (always overwriting any existing archive), then runs a manifest round-trip check so a buggy archive is caught — and deleted — immediately.
-
-The run is **fail-fast**: if any pair fails (subprocess non-zero, archive/round-trip failure, Neo4j reset failure, …) the whole run aborts. On abort the script prints a per-pair summary plus a copy-pasteable `EVAL_PAIRS` retry block listing the failed pair and every pair skipped by the abort, so you can resume from where it broke. The working tree is always left clean (post-pair wipe runs in `finally`).
-
-> The legacy `python scripts/setup_and_archive.py <dataset> <graph>` positional-args form is intentionally rejected with a non-zero exit — drive everything through `EVAL_PAIRS`.
-
-#### 2½ — Verify each archive matches its graph (pre-flight)
-
-```bash
-python verify_setup.py          # checks every pair in EVAL_PAIRS
-python verify_setup.py --all    # checks every pair in GRAPH_CONNS
-python verify_setup.py --live   # checks the live tree vs .current_setup
-```
-
-**Why this matters for multi-graph runs.** The harness keeps a *single live copy* of each graph's artifacts (node tools, schema, prompts, FAISS / FCAV indexes) and swaps the right archive in per pair. If the wrong artifacts are live — an interrupted swap, a failed tool regen, a hand recovery — value linking runs against the wrong tools and **silently scores at the no-link floor with no error**. (Tell-tale sign: ReAct / CyANCHOR collapse to ≈ the `no_val_link` score while **FCAV still works**, because FCAV uses the schema + prompts, which stay correct, not the per-graph tools.)
-
-`verify_setup.py` connects to each graph and confirms the archive's node tools search labels that **actually have nodes** there — a count check, not just `db.labels()`, because Neo4j keeps emptied labels in the registry as ghosts. Green = safe to run; red names the offending labels and the fix. Full procedure for collaborators: [docs/RUNNING_EXPERIMENTS.md](docs/RUNNING_EXPERIMENTS.md).
-
-> Reaching the graphs needs the corporate VPN **disconnected**; an `UNREACH` row is a connection issue, not a contaminated archive.
-
-#### 3 — Run the evaluation
-
-```bash
-python eval_run.py
-```
-
-For each pair in `EVAL_PAIRS` the driver:
-
-1. Calls `eval.artifact_swap.swap_in(dataset, graph)` to copy the archived setup outputs into the live repo locations (so `agent/`, `generated/`, `schema_data/`, FAISS index all match that graph).
-2. **Graph-identity guard** — connects to the pair's graph and confirms the live node tools search labels that have nodes there. A mismatch (contaminated archive) is **skipped with a loud reason**, not silently mis-scored. This is the same check as `verify_setup.py`; bypass with `EVAL_SKIP_GRAPH_GUARD=1` only if you know what you're doing.
-3. Looks up the `GraphConn`, builds the worker env (`EVAL_NEO4J_URI` / `_USER` / `_PASSWORD` / `_DATABASE`).
-4. Spawns `python -m eval._worker <dataset> <graph> <test_path> <records_out> <summary_out>` as a fresh subprocess so each pair gets a clean Python interpreter.
-5. Writes a fresh, timestamped per-run dir (method derived from the resolved config, generator model appended; see `eval_paths.py`):
-   - `logs/runs/<dataset>__<graph>__<method>@<model>__<YYYYMMDD-HHMMSS>/records.jsonl` — one line per example (gold cypher, predicted cypher, EA / PSJS, normalised result-sets, error info)
-   - `logs/runs/<dataset>__<graph>__<method>@<model>__<YYYYMMDD-HHMMSS>/summary.json` — aggregate summary for that pair + the full run configuration
-   
-   For the full model sweep (all five methods × all 13 graphs, resume, per-model reports, publish as a branch) use `python orchestrate_sweep.py` — see [docs/EXPERIMENT_HANDOUT.md](docs/EXPERIMENT_HANDOUT.md).
-
-A failure on one pair (missing archive, worker crash, etc.) is logged and skipped — the rest of `EVAL_PAIRS` still runs. The driver only exits non-zero if **every** pair failed.
-
-#### 4 — Print the bucketed table
-
-```bash
-python eval_aggregate.py
-```
-
-Scans `logs/runs/` for every `*/summary.json`, keeps the newest run per `(dataset, graph, method, model)`, groups by `(dataset, method@model)`, re-aggregates the underlying `records.jsonl` files via `eval.difficulty.aggregate_by_difficulty`, and prints one bucketed table per group (rows: `all` / `easy` / `medium` / `hard` / `extra`, columns EA / PSJS / n / err) with a footer naming the graphs that contributed, plus one timestamped copy `logs/runs/report_<YYYYMMDD_HHMMSS>.md`. Every run writes its own directory, so a partial re-eval never touches other runs; the newest run of a cell is the one that counts.
+- **Running the model sweep** (one generator model per person):
+  [`docs/EXPERIMENT_HANDOUT.md`](docs/EXPERIMENT_HANDOUT.md) — the only
+  procedure. `python orchestrate_sweep.py` runs the suite, checks it for
+  completeness and publishes it as a branch.
+- **How the harness works, its knobs, developer runs on a single pair,
+  publishing the artifact set:**
+  [`docs/RUNNING_EXPERIMENTS.md`](docs/RUNNING_EXPERIMENTS.md).
 
 #### Metrics & normalisation
 
@@ -671,41 +543,6 @@ Offline unit tests for the normaliser:
 
 ```bash
 python -m pytest tests/test_cypher_eval_normalize.py
-```
-
-#### Typical workflows
-
-**Add one new graph and re-run the full table:**
-
-```bash
-# 1. Add a row to GRAPH_CONNS in eval_config.py
-# 2. Add ("cypherbench", "fictional_university") to EVAL_PAIRS
-# 3. Set up + archive every pair in EVAL_PAIRS:
-python scripts/setup_and_archive.py
-# 4. Pre-flight, then run + aggregate:
-python verify_setup.py
-python eval_run.py
-python eval_aggregate.py
-```
-
-**Re-run just one pair after a code change** (existing records for other pairs are reused):
-
-```bash
-# Set EVAL_PAIRS = [("cypherbench", "movie")] in eval_config.py
-python eval_run.py            # overwrites only that pair's two files
-python eval_aggregate.py      # table still includes every other pair on disk
-```
-
-**Smoke-test on 20 examples per pair:**
-
-```python
-# In eval_config.py
-LIMIT   = 20
-VERBOSE = True
-```
-
-```bash
-python eval_run.py
 ```
 
 ---
@@ -767,6 +604,9 @@ If you prefer to run each step individually or need to debug a specific stage:
 | `setup_project.py` | **One-click setup** — runs all 10 setup steps automatically |
 | `switch_embedding_backend.py` | **One-click backend swap** — re-embeds + rebuilds vector indexes after editing `EMBEDDING_BACKEND` in `vector_config.py`; does NOT regenerate tools / system prompt / FAISS |
 | `config.py` | **User-managed** runtime settings — LLM configs per stage, sampling/validation knobs, and the **resolver + shipped defaults** for the `METHOD` axis + CyANCHOR's `RETRIEVAL_FUZZY`/`RETRIEVAL_VECTOR`/`RETRIEVAL_LEVENSHTEIN`/`TOOL_TYPE`. **For eval runs these are set in `eval_config.py`** (the authoritative surface); `config.py` supplies the standalone-agent default. Not auto-generated; safe to edit by hand |
+| `orchestrate_sweep.py` | **Sweep driver** — one generator model over the 13 × 5 suite: resume, completeness verdict, reports, `--publish` (the runner's only interface; see `docs/EXPERIMENT_HANDOUT.md`) |
+| `eval_run.py` | Evaluates `eval_config.EVAL_PAIRS` with `eval_config.METHOD`, one worker per pair — called by the driver per cell; used directly only for development runs |
+| `eval_aggregate.py` | Development table over everything under `OUT_DIR` — never a deliverable |
 | `eval_config.py` | **The eval run config** (authoritative) — `GRAPH_CONNS`, `EVAL_PAIRS`, `METHOD` + the CyANCHOR arms, `LIMIT`, `SHARDS`, `OUT_DIR`. Committed (the eval Neo4j connection is public for reviewers) |
 | `vector_config.py` | Embedding **backend + model + dim**, ReAct retrieval mode (`TOOL_RETRIEVAL_MODE`: `fuzzy`/`vector`/`hybrid`), hybrid params, `EMBEDDABLE_PROPERTIES`. The single home for the embedding model — never an env var |
 | `paths.py` | Centralized filesystem-layout constants for every generated artifact |

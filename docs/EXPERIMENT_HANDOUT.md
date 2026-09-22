@@ -9,11 +9,31 @@ Everything below is a checklist. If a step does not print what it says it
 should, stop and ask — a run that starts from a bad state produces a
 plausible-looking score that is silently wrong, and we cannot tell afterwards.
 
-Depth, troubleshooting and every config knob: [`RUNNING_EXPERIMENTS.md`](RUNNING_EXPERIMENTS.md).
+How the harness works, every config knob and the pre-flight words: [`RUNNING_EXPERIMENTS.md`](RUNNING_EXPERIMENTS.md) — a reference; the sweep procedure is only here.
 
 > **What you hand in:** the branch `sweep/<model>` **pushed to this repository**,
 > plus its link (§6). A report sent as a file is not a deliverable — the
 > per-question records we need exist only on the branch.
+
+> **Set up before 2026-09-12, or ran `eval_run.py` / `eval_aggregate.py` by
+> hand?** The procedure changed on 2026-09-12, when `orchestrate_sweep.py`
+> arrived. The old steps — editing `EVAL_PAIRS` / `METHOD`, running
+> `scripts/setup_and_archive.py` or `setup_fcav.py` yourself, `eval_run.py` +
+> `eval_aggregate.py` once per method, zipping `logs/runs/` — are retired, and
+> running setup yourself is now forbidden (§3). Do this once, then continue
+> from §1:
+>
+> 1. **Before you pull**, send the coordinator the line printed by
+>    `git log -1 --format='%h %cd'`. Run directories you already produced are
+>    kept and reused automatically (§5), but only runs made on a checkout from
+>    the evening of 2026-09-10 or later used the shared artifact set and can be
+>    pooled; that line tells us which yours are.
+> 2. `git checkout setup_artifacts/ eval_config.py && git pull` (this discards
+>    your local edits to those files — you set the model again in §2). If
+>    `git pull` refuses because untracked files under `setup_artifacts/` would
+>    be overwritten: `mv setup_artifacts setup_artifacts.old && git pull &&
+>    git checkout setup_artifacts/` — the `generated/fcav/` folders in
+>    `setup_artifacts.old/<pair>/` can be copied back to skip the index rebuild.
 
 ---
 
@@ -40,8 +60,9 @@ cp .env.example .env                # then put the keys in (below)
   collaborator on GitHub and accept the invitation **on day 1** — do not find
   out after the sweep has finished. Check it once with
   `git push --dry-run origin main` — `Everything up-to-date` means you can push; `403` /
-  `denied` means you cannot. `--publish` runs the same check itself and stops with a
-  clear message, so this is just to find out early.
+  `denied` means you cannot (`rejected` / `fetch first` only means your `main` is
+  behind: `git pull`, then check again). `--publish` runs the same check itself and
+  stops with a clear message, so this is just to find out early.
 - **API keys.** `.env` holds keys and nothing else — the model is chosen in
   `eval_config.py` (step 2), never in `.env`. **Everyone needs
   `OPENAI_API_KEY`**, whatever model you run: at run time the tool router
