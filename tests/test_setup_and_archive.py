@@ -682,8 +682,37 @@ def test_run_one_pair_calls_reset_BEFORE_subprocess(_sandbox, monkeypatch) -> No
     monkeypatch.setattr(sa, "round_trip_check",  lambda *a, **kw: order.append("rtc"))
     monkeypatch.setattr(sa, "archive_dir_for",   lambda ds, gr: _sandbox["root"] / f"{ds}__{gr}")
 
+    import eval.graph_guard as graph_guard   # the live-tools guard needs a graph; the sandbox has none
+    monkeypatch.setattr(graph_guard, "check_tools_match_graph", lambda *a, **kw: (True, "ok"))
     sa._run_one_pair("ds", "g1")
     assert order == ["reset", "setup_project", "archive", "rtc"]
+
+
+def test_run_one_pair_refuses_to_archive_when_live_tools_do_not_match_graph(_sandbox, monkeypatch) -> None:
+    """A partial or stale setup can leave the previous graph's tools in the
+    live tree; the guard between setup_project and archiving must stop that
+    from being frozen into an archive."""
+    sa = _sandbox["module"]
+    import eval.graph_guard as graph_guard
+
+    monkeypatch.setattr(sa.cfg, "conn_for", lambda ds, gr: _make_conn(), raising=False)
+    monkeypatch.setattr(sa, "_reset_neo4j_embeddings", lambda conn: None)
+
+    class _Proc:
+        returncode = 0
+
+    monkeypatch.setattr(sa.subprocess, "run", lambda *a, **kw: _Proc())
+    archived: List[str] = []
+    monkeypatch.setattr(sa, "archive_current", lambda *a, **kw: archived.append("archive"))
+    monkeypatch.setattr(sa, "round_trip_check", lambda *a, **kw: None)
+    monkeypatch.setattr(sa, "archive_dir_for", lambda ds, gr: _sandbox["root"] / "x")
+    monkeypatch.setattr(graph_guard, "check_tools_match_graph",
+                        lambda *a, **kw: (False, "no node_label found in generated_node_tools.py"))
+
+    with pytest.raises(sa.PairFailure) as excinfo:
+        sa._run_one_pair("ds", "g1")
+    assert "refusing to archive ds__g1" in str(excinfo.value)
+    assert not archived, "a contaminated live tree must never be archived"
 
 
 def test_run_one_pair_subprocess_failure_skips_archive(_sandbox, monkeypatch) -> None:
@@ -738,6 +767,8 @@ def test_run_one_pair_round_trip_failure_deletes_archive(_sandbox, monkeypatch) 
         raise RuntimeError("manifest mismatch")
 
     monkeypatch.setattr(sa, "round_trip_check", boom)
+    import eval.graph_guard as graph_guard   # the live-tools guard needs a graph; the sandbox has none
+    monkeypatch.setattr(graph_guard, "check_tools_match_graph", lambda *a, **kw: (True, "ok"))
 
     with pytest.raises(sa.PairFailure) as excinfo:
         sa._run_one_pair("ds", "g1")
@@ -799,6 +830,8 @@ def test_main_invokes_reset_for_each_attempted_pair(_sandbox, monkeypatch) -> No
     monkeypatch.setattr(sa, "round_trip_check", lambda *a, **kw: None)
     monkeypatch.setattr(sa, "archive_dir_for",  lambda ds, gr: _sandbox["root"] / f"{ds}__{gr}")
 
+    import eval.graph_guard as graph_guard   # the live-tools guard needs a graph; the sandbox has none
+    monkeypatch.setattr(graph_guard, "check_tools_match_graph", lambda *a, **kw: (True, "ok"))
     rc = sa.main(["setup_and_archive.py"])
     assert rc == 2
     assert reset_calls == ["g1", "g2"], (

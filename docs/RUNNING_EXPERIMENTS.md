@@ -66,7 +66,7 @@ method, a handful of questions.
 #   EVAL_PAIRS = [("cypherbench_augmented", "movie")]
 #   METHOD     = "cyanchor"        # no_val_link | fcav | react | graphrag | cyanchor
 #   LIMIT      = 20                # None = every question
-python verify_setup.py             # pre-flight for EVAL_PAIRS (§8)
+python verify_setup.py             # pre-flight for EVAL_PAIRS (§8); --suite for the 13 sweep pairs
 python eval_run.py
 python eval_aggregate.py           # development table over everything under OUT_DIR
 git checkout eval_config.py        # EVAL_PAIRS / METHOD / LIMIT / SHARDS are per-run scratch — never commit them
@@ -219,15 +219,19 @@ The clean runs are made with `eval_run.py` on the bare graph names
 `eval_config.GENERATOR_LLM` names a preset from `config.MODEL_PRESETS`; it
 selects the LLM for all three stages (entity extraction, Cypher generation,
 answer formatting), tags every run directory, and is recorded in
-`summary.json`. An unknown name fails at once with the list of valid presets.
+`summary.json`. An unknown name fails at once with the list of valid presets,
+and `orchestrate_sweep.py` refuses to start while the value is still the one
+committed on `main` — nobody has chosen a model on that checkout (a fresh clone,
+or `git checkout eval_config.py` after a pull); `--committed-model` runs the
+committed value on purpose (the coordinator's reference runs).
 The presets in the sweep, and which key each needs in `.env`, are in
 `EXPERIMENT_HANDOUT.md` §0 and §2.
 
 ## 8. Pre-flight words and what to do
 
-`python verify_setup.py` checks every pair in `EVAL_PAIRS`; `--all` checks
-every pair in `GRAPH_CONNS`; `--live` checks the live tree instead of the
-archives. The driver runs the same checks for the whole suite before a run.
+`python verify_setup.py` checks every pair in `EVAL_PAIRS`; `--suite` checks
+the 13 sweep pairs (`FULL_EVAL_PAIRS_13_AUGMENTED`); `--all` checks every pair
+in `GRAPH_CONNS`; `--live` checks the live tree instead of the archives. The driver runs the same checks for the whole suite before a run.
 
 | word | meaning | do |
 |---|---|---|

@@ -49,6 +49,24 @@ if "agent.prompts" not in sys.modules:
     )
     sys.modules["agent.prompts"] = _pr
 
+# Other test modules (test_agent_helpers, test_data_augmentation) install their
+# own, thinner stubs for these two modules at import time. When they are
+# collected first, complete them with what graphrag imports — only on a stub
+# (no __file__), never on the real module — so collection order cannot break
+# this module's import.
+for _name, _attrs in (
+    ("agent.prompts", {"TEXT2CYPHER_SP": "Schema:\n{schema}\n\nEntities:\n{relevant_entities}\n\n"
+                                         "Question: {question}\nAnswer:"}),
+    ("agent.agent_helper", {"neo4j_graph": type("_StubGraph", (), {"schema": "(:Movie)-[:directedBy]->(:Person)",
+                                                                   "query": lambda self, *a, **kw: []})(),
+                            "cypher_llm": object(), "qa_llm": object(), "ner_llm": object()}),
+):
+    _mod = sys.modules.get(_name)
+    if _mod is not None and getattr(_mod, "__file__", None) is None:
+        for _k, _v in _attrs.items():
+            if getattr(_mod, _k, None) is None:      # missing, or a placeholder None
+                setattr(_mod, _k, _v)
+
 import config  # noqa: E402
 import graphrag  # noqa: E402
 

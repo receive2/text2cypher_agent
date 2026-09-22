@@ -87,6 +87,15 @@ cp .env.example .env                # then put the keys in (below)
   `denied` means you cannot (`rejected` / `fetch first` only means your `main` is
   behind: `git pull`, then check again). `--publish` runs the same check itself and
   stops with a clear message, so this is just to find out early.
+- **Updating your checkout.** When the coordinator asks you to pull, git refuses
+  to pull over your edited `eval_config.py`. Do this instead, then set
+  `GENERATOR_LLM` again (§2):
+  ```bash
+  git checkout eval_config.py && git pull
+  ```
+  Runs under `logs/runs/` are untouched. Forgetting the second step cannot go
+  unnoticed: the driver refuses to start while `GENERATOR_LLM` is still the
+  committed value.
 - **API keys.** `.env` holds keys and nothing else — the model is chosen in
   `eval_config.py` (step 2), never in `.env`. **Everyone needs
   `OPENAI_API_KEY`**, whatever model you run: at run time the tool router
@@ -137,8 +146,10 @@ GENERATOR_LLM = "gpt-5.6-terra"   # ← exact preset name from the table below
 **Nothing else.** `METHOD`, `EVAL_PAIRS`, `LIMIT` and `SHARDS` are set by the
 sweep driver (step 5); leave every other knob at its committed value — the
 defaults are the shipped configuration and every model must run under the
-same ones. The value already in the file is the last person's scratch, not a
-default.
+same ones. The value already in the file is the coordinator's reference model,
+not a default: the driver refuses to start while `GENERATOR_LLM` still holds
+the committed value, so a skipped step 2 — or a `git checkout eval_config.py`
+after a pull — is caught before anything runs.
 
 **The model presets** (`config.MODEL_PRESETS`; the name is what you type and
 what appears in every run directory). The seven in the sweep:
@@ -185,7 +196,7 @@ shared a pre-built bundle, unpack it there first and that step is skipped.
 python orchestrate_sweep.py --smoke
 ```
 
-Runs all **five methods** on the smallest graph (`flight_accident`, 3
+Runs all **five methods** on one small graph (`flight_accident`, 3
 questions each) into `logs/smoke/` and prints a 1×5 matrix. It passes when
 every method produced its 3 records. A method whose **every** example errored
 is a systematic rejection (bad key, unsupported parameter — on 2026-09-11
@@ -202,8 +213,9 @@ against the live graph and against the published set, and it stops on any ✗:
   regenerated): `git checkout setup_artifacts/` and retry;
 - artifacts `MISSING` — you have not pulled the archives: `git pull`.
 
-(`python verify_setup.py` prints the same table on its own if you want to look
-before running anything.)
+(`python verify_setup.py --suite` prints the same table for the 13 suite graphs
+on its own if you want to look before running anything; without `--suite` it
+checks `EVAL_PAIRS`, which is not the suite.)
 
 ## 5. The full run — one command, leave it running
 
@@ -261,7 +273,7 @@ must go are ones the driver cannot use: `python scripts/audit_runs.py --model
 <preset>` names them, and `python scripts/audit_runs.py --discard-all --model
 <preset>` wipes every run of that model when the coordinator says to start
 clean (the box at the top has the line for each model). A cell that keeps
-failing is retried three times, then reported and skipped so the rest of the
+failing is tried three times, then reported and skipped so the rest of the
 suite continues. To re-run a subset on purpose:
 
 ```bash

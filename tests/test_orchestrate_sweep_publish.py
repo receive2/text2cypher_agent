@@ -359,3 +359,37 @@ def test_rerun_that_produces_no_run_dir_is_not_reported_done(tmp_path, monkeypat
     assert entry["status"] == "failed" and "no run directory" in entry["last_error"]
     assert entry["tries"] == osw.MAX_TRIES
     assert c["complete"] and "finished_at" not in entry           # the old dir is still on disk, but it is not 'done'
+
+
+# ── nobody has chosen a model: the committed GENERATOR_LLM is refused ────────
+
+def test_committed_model_is_read_from_git_head():
+    import config
+    assert osw.committed_model() in config.MODEL_PRESETS
+
+
+def test_unchosen_model_text():
+    assert osw.unchosen_model("gpt-5.6-terra", False) is None                       # a different model was chosen
+    committed = osw.committed_model()
+    assert committed and "still the committed value" in osw.unchosen_model(committed, False)
+    assert osw.unchosen_model(committed, True) is None                              # coordinator override
+
+
+class _Reached(Exception):
+    pass
+
+
+def test_driver_refuses_to_start_on_the_committed_model(monkeypatch):
+    import eval_config as cfg
+    monkeypatch.setattr(osw, "committed_model", lambda: "gpt-5.6-luna")
+    monkeypatch.setattr(cfg, "GENERATOR_LLM", "gpt-5.6-luna")
+    monkeypatch.setattr(osw, "expected_counts", lambda: (_ for _ in ()).throw(_Reached()))
+    for argv in (["--status"], [], ["--smoke"], ["--publish"]):
+        with pytest.raises(SystemExit) as exc:
+            osw.main(argv)
+        assert exc.value.code == 2, argv
+    with pytest.raises(_Reached):                                                    # the override passes the guard
+        osw.main(["--status", "--committed-model"])
+    monkeypatch.setattr(cfg, "GENERATOR_LLM", "gpt-5.6-terra")                      # a chosen model passes it
+    with pytest.raises(_Reached):
+        osw.main(["--status"])

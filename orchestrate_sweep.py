@@ -17,6 +17,10 @@ One person, one model, one command.
     python orchestrate_sweep.py --publish --allow-incomplete   # push a PARTIAL branch (missing/⚠ cells listed)
 
 The model is ``eval_config.GENERATOR_LLM`` — the one line a participant edits.
+While that line still holds the value committed on ``main`` (a fresh clone, or
+``git checkout eval_config.py`` after a pull), nobody has chosen a model and the
+driver refuses to start; ``--committed-model`` runs the committed value on
+purpose (the coordinator's reference model).
 Graphs are ``eval_config.FULL_EVAL_PAIRS_13_AUGMENTED``; methods are the five
 below, in this order. The driver runs graph by graph (the live artifact tree is
 swapped once per graph) and, per graph, the five methods in turn.
@@ -172,6 +176,27 @@ def model_name() -> str:
     name = str(getattr(cfg, "GENERATOR_LLM", "") or "").strip()
     config.resolve_preset(name)   # raises KeyError with the valid list
     return name
+
+
+_MODEL_LINE = re.compile(r'^GENERATOR_LLM\s*(?::\s*str)?\s*=\s*"([^"]+)"', re.M)
+
+
+def committed_model() -> Optional[str]:
+    """``GENERATOR_LLM`` as committed at HEAD — the value nobody has chosen —
+    or None when there is no git history to read it from."""
+    text = _git("show", "HEAD:eval_config.py")
+    m = _MODEL_LINE.search(text) if text and text != "?" else None
+    return m.group(1) if m else None
+
+
+def unchosen_model(model: str, allow_committed: bool) -> Optional[str]:
+    """The refusal text when *model* is still the committed default, else None."""
+    if allow_committed or model != committed_model():
+        return None
+    return (f"eval_config.GENERATOR_LLM is still the committed value `{model}` — nobody has chosen a model on "
+            "this checkout (a fresh clone, or `git checkout eval_config.py` after a pull). Set the model assigned "
+            "to you in eval_config.py (handout §2) and run again. Coordinator: --committed-model runs the "
+            "committed value on purpose.")
 
 
 def suite_pairs() -> List[Tuple[str, str]]:
@@ -973,12 +998,17 @@ def main(argv: Optional[List[str]] = None) -> int:
     ap.add_argument("--skip-methods", nargs="+", metavar="METHOD", choices=[m for _, _, m in METHODS], default=[],
                     help="methods this model does NOT run (e.g. react for a model without tool calling): removed from the suite, so COMPLETE and --publish ignore them; recorded in the SWEEP file")
     ap.add_argument("--skip-preflight", action="store_true")
+    ap.add_argument("--committed-model", action="store_true",
+                    help="run although GENERATOR_LLM is still the value committed on main (coordinator only)")
     args = ap.parse_args(argv)
     if args.smoke and (args.publish or args.allow_incomplete):
         ap.error("--smoke is a local check that writes to logs/smoke/ and is never published; "
                  "run the full suite, then --publish")
 
     model = model_name()
+    refusal = unchosen_model(model, args.committed_model)
+    if refusal:
+        ap.error(refusal)
     _LOG_PATH = REPO / "logs" / f"sweep_{model}.log"
     all_methods = [m for _, _, m in METHODS if m not in set(args.skip_methods)]
     if not all_methods:

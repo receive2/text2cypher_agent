@@ -23,6 +23,7 @@ yourself.
 Usage
 -----
     python verify_setup.py            # check eval_config.EVAL_PAIRS (default)
+    python verify_setup.py --suite    # check the 13 sweep pairs — what the driver's pre-flight checks
     python verify_setup.py --all      # check every pair in GRAPH_CONNS
     python verify_setup.py --live     # check the LIVE tree vs .current_setup
 
@@ -98,16 +99,19 @@ def main(argv: list[str] | None = None) -> int:
     if "--live" in argv:
         return _check_live()
 
-    pairs = (
-        list(cfg.GRAPH_CONNS.keys())
-        if "--all" in argv
-        else list(getattr(cfg, "EVAL_PAIRS", []) or [])
-    )
+    if "--suite" in argv:
+        pairs = [tuple(p) for p in cfg.FULL_EVAL_PAIRS_13_AUGMENTED]
+        scope = "the sweep suite (--suite)"
+    elif "--all" in argv:
+        pairs = list(cfg.GRAPH_CONNS.keys())
+        scope = "GRAPH_CONNS (--all)"
+    else:
+        pairs = list(getattr(cfg, "EVAL_PAIRS", []) or [])
+        scope = "EVAL_PAIRS"
     if not pairs:
-        print("[verify_setup] nothing to check (EVAL_PAIRS empty; use --all).")
+        print("[verify_setup] nothing to check (EVAL_PAIRS empty; use --suite or --all).")
         return 1
 
-    scope = "GRAPH_CONNS (--all)" if "--all" in argv else "EVAL_PAIRS"
     print(f"[verify_setup] checking {len(pairs)} archive(s) from {scope}…\n")
 
     root = _setup_artifacts_root()
