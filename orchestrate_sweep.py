@@ -25,7 +25,10 @@ Completeness
 ------------
 A cell (graph, method) is COMPLETE when the newest run for this model holds one
 record per question of that graph (``records.jsonl`` rows == question count in
-the benchmark file). Errored questions are allowed: the eval scores them 0
+the benchmark file) and every record was scored on a question of the released
+benchmark (its ``qid`` and ``question`` match the shipped file; a run made on an
+older copy shows ``≠release``, counts as ✗ and is re-run). Errored questions are
+allowed: the eval scores them 0
 (denominator = all questions) and reports them in the ``err`` column.
 
 Errors are not all alike, so every errored record is classified by its
@@ -175,15 +178,42 @@ def suite_pairs() -> List[Tuple[str, str]]:
     return [tuple(p) for p in cfg.FULL_EVAL_PAIRS_13_AUGMENTED]
 
 
+_RELEASE_ROWS: Optional[Dict[Tuple[str, str], Dict[str, str]]] = None
+
+
+def release_rows() -> Dict[Tuple[str, str], Dict[str, str]]:
+    """(dataset, graph) -> {question id: question text} of the shipped benchmark files."""
+    global _RELEASE_ROWS
+    if _RELEASE_ROWS is None:
+        import eval_run
+        rows: Dict[Tuple[str, str], Dict[str, str]] = {}
+        for dataset in DATASET_INFO:
+            for r in json.load(open(eval_run._resolve_test_path(dataset), encoding="utf-8")):
+                rows.setdefault((dataset, r["graph"]), {})[str(r["id"])] = str(r["nl"])
+        _RELEASE_ROWS = rows
+    return _RELEASE_ROWS
+
+
 def expected_counts() -> Dict[Tuple[str, str], int]:
     """(dataset, graph) -> number of questions in the shipped benchmark file."""
-    import eval_run
-    counts: Dict[Tuple[str, str], int] = collections.Counter()
-    for dataset in DATASET_INFO:
-        rows = json.load(open(eval_run._resolve_test_path(dataset), encoding="utf-8"))
-        for r in rows:
-            counts[(dataset, r["graph"])] += 1
-    return dict(counts)
+    return {k: len(v) for k, v in release_rows().items()}
+
+
+def rows_match_release(dataset: str, graph: str, records: List[dict]) -> Tuple[bool, str]:
+    """Whether every record was scored on a question of the shipped benchmark
+    file: its ``qid`` is a release id of this graph and its ``question`` is the
+    release text. Catches a run made on an earlier copy of the benchmark (rows
+    removed or rewritten since). Records without ``qid`` cannot be checked."""
+    want = release_rows().get((dataset, graph))
+    if not want or not records or not all(r.get("qid") for r in records):
+        return True, ""
+    unknown = sum(1 for r in records if str(r["qid"]) not in want)
+    changed = sum(1 for r in records if str(r["qid"]) in want and r.get("question") is not None
+                  and str(r["question"]) != want[str(r["qid"])])
+    if unknown or changed:
+        return False, (f"{unknown} question(s) not in the released benchmark and {changed} with a different "
+                       "text — this run was made on an older copy of the benchmark")
+    return True, ""
 
 
 def method_seg(method: str) -> str:
@@ -276,9 +306,11 @@ def cell_status(dataset: str, graph: str, method: str, expected: int, out_dir: s
     d = newest_run_dir(dataset, graph, method, out_dir, model)
     recs = read_records(d)
     bd = error_breakdown(recs)
+    rows_ok, rows_why = rows_match_release(dataset, graph, recs)
     return {"dir": str(d.relative_to(REPO)) if d else None, "n": len(recs), "err": n_err(recs),
-            "expected": expected, "complete": bool(recs) and len(recs) == expected, "records": recs,
-            "breakdown": bd, "suspect": False, "why": ""}
+            "expected": expected, "complete": bool(recs) and len(recs) == expected and rows_ok,
+            "records": recs, "breakdown": bd, "suspect": False, "why": "",
+            "rows_ok": rows_ok, "rows_why": rows_why}
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -444,7 +476,8 @@ def render_status(status: dict) -> str:
     else:
         parts = []
         if n_missing:
-            parts.append(f"{n_missing} cell(s) marked ✗ are missing or truncated")
+            parts.append(f"{n_missing} cell(s) marked ✗ are missing, truncated or scored on an older copy "
+                         "of the benchmark (≠release)")
         if n_flag:
             parts.append(f"{n_flag} cell(s) marked ⚠ failed on infrastructure (timeouts / API) and were "
                          "never really evaluated — see *Flagged cells* below")
@@ -467,7 +500,8 @@ def render_status(status: dict) -> str:
         for m in methods:
             c = cells[(ds, g, m)]
             mark = "⚠ " if c["suspect"] else ("✓ " if c["complete"] else "✗ ")
-            row.append(mark + (f"{c['n']}/{c['err']}" if c["n"] else "missing"))
+            row.append(mark + (f"{c['n']}/{c['err']}" if c["n"] else "missing")
+                       + ("" if c.get("rows_ok", True) else " ≠release"))
         lines.append("| " + " | ".join(row) + " |")
     # ── flagged cells: what failed, why, and the one command that re-runs it ──
     flagged = [(k, cells[k]) for k in status.get("flagged", [])]
@@ -845,7 +879,8 @@ def publish(status: dict, allow_incomplete: bool) -> int:
         log("✗ publish refused — the sweep is not clean:")
         for k in missing:
             c = cells[k]
-            log(f"    ✗ {_cell_label(k)}: {c['n']}/{c['expected']} records" + ("" if c["n"] else " (missing)"))
+            log(f"    ✗ {_cell_label(k)}: {c['n']}/{c['expected']} records" + ("" if c["n"] else " (missing)")
+                + ("" if c.get("rows_ok", True) else f" — {c['rows_why']}"))
         for k in flagged:
             log(f"    ⚠ {_cell_label(k)}: {cells[k]['why']}")
         log("  Next:")
@@ -1007,6 +1042,8 @@ def main(argv: Optional[List[str]] = None) -> int:
                 if action == "persistent":
                     log(f"  ⚠ {key}: {c['why']} — {note}")
                     continue
+                if action == "run" and not c.get("rows_ok", True):
+                    log(f"  ✗ {key}: {c['rows_why']} — re-running")
                 if action == "rerun":
                     if not manual:
                         entry["suspect_reruns"] = int(entry.get("suspect_reruns", 0)) + 1

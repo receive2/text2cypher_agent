@@ -20,6 +20,7 @@ below is stated from the code (`orchestrate_sweep.py`, `eval_run.py`,
 | `eval_aggregate.py` | Development view: re-aggregates whatever run dirs are under `OUT_DIR` into per-difficulty / per-strategy tables and writes `logs/runs/report_<stamp>.md`. Not a deliverable; it says so in its output. |
 | `gen_ablation_report.py`, `gen_pooled_report.py` | The report renderers the driver calls (per graph, per dataset). |
 | `scripts/clean_vs_perturbed.py` | Paired clean-vs-perturbed comparison for one model → `report/<model>/CLEAN_VS_PERTURBED.md` (§6). |
+| `scripts/audit_runs.py` | Read-only audit of `logs/runs/`: which run directories the sweep can use and the exact `rm -rf` lines for the ones it cannot (§5). |
 
 ## 2. What happens when a cell runs
 
@@ -141,6 +142,28 @@ logs/runs/<dataset>__<graph>__<method_seg>@<model>__<YYYYMMDD-HHMMSS>/
 - `--smoke` writes to `logs/smoke/` and keeps its own state file
   (`logs/sweep_<model>_smoke.json`); the full run's state is
   `logs/sweep_<model>.json`, its log `logs/sweep_<model>.log`.
+
+**Which runs count, and deleting the ones that cannot.** Per cell the driver
+uses the newest run directory of the configured model, and accepts it only if
+it holds one record per question **and** every record was scored on the
+released benchmark rows — its `qid` is a release id of that graph and its
+`question` is the release text. A run made on an older copy of the benchmark
+(rows removed or rewritten since) shows `≠release` in the matrix, counts as ✗
+and is re-run. What the driver cannot see is which artifacts a run used:
+nothing in a run directory records the artifact set, so on that axis a run is
+trusted only if it was made from a checkout that already enforced the published
+set (`be36c26`, 2026-09-10). `python scripts/audit_runs.py` applies both rules
+to every directory under `logs/runs/` for one model (`--all-models` for all) —
+the second by reading `git reflog` for the first moment this checkout contained
+`be36c26` — and prints a verdict per directory plus the `rm -rf` lines for the
+ones to delete; it never deletes anything itself, and with no reflog evidence
+it says `CHECK` rather than guessing. Everything else can stay: a run
+superseded by a newer one is never published (only the newest per cell is
+mirrored); a truncated newest run is simply re-run (delete it only to fall back
+to an older complete run, which the audit names); `logs/runs/report_*.md` from
+`eval_aggregate.py` is ignored; `logs/sweep_<model>.json` holds the automatic
+⚠ re-run budgets and can be deleted to reset them — completeness is always
+read from the run directories, never from that file.
 
 ## 6. Reports
 

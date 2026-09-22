@@ -113,3 +113,28 @@ def test_model_name_rejects_unknown_preset(monkeypatch):
 
 if __name__ == "__main__":
     raise SystemExit(pytest.main([__file__, "-q"]))
+
+
+def test_rows_match_release_catches_an_older_benchmark_copy(monkeypatch):
+    monkeypatch.setattr(osw, "_RELEASE_ROWS", {("cypherbench_augmented", "movie"): {"a": "Who directed X?", "b": "Who wrote Y?"}})
+    ok, _ = osw.rows_match_release("cypherbench_augmented", "movie", [{"qid": "a", "question": "Who directed X?"}])
+    assert ok                                                                      # a subset (smoke / LIMIT) is fine
+    ok, why = osw.rows_match_release("cypherbench_augmented", "movie", [{"qid": "zzz", "question": "gone"}])
+    assert not ok and "1 question(s) not in the released benchmark" in why        # a row removed since
+    ok, why = osw.rows_match_release("cypherbench_augmented", "movie", [{"qid": "b", "question": "Who wrote Y (old text)?"}])
+    assert not ok and "1 with a different text" in why                            # a row rewritten since
+    assert osw.rows_match_release("cypherbench_augmented", "movie", [{"ea": True}])[0]    # no qid: cannot be checked
+    assert osw.rows_match_release("nope", "x", [{"qid": "a", "question": "?"}])[0]       # graph not in the release
+
+
+def test_cell_on_an_older_benchmark_copy_is_not_complete(tmp_path, monkeypatch):
+    monkeypatch.setattr(osw, "REPO", tmp_path)
+    monkeypatch.setattr(osw, "_RELEASE_ROWS", {("cypherbench_augmented", "movie"): {"a": "q-a", "b": "q-b"}})
+    _write_run(tmp_path, "cypherbench_augmented", "movie", "react", "m1", "20260101-000000",
+               [{"qid": "a", "question": "q-a", "ea": True, "psjs": 1.0},
+                {"qid": "old", "question": "removed since", "ea": True, "psjs": 1.0}])
+    st = osw.build_status([("cypherbench_augmented", "movie")], ["react"], {("cypherbench_augmented", "movie"): 2}, "logs/x", "m1")
+    c = st["cells"][("cypherbench_augmented", "movie", "react")]
+    assert c["n"] == 2 and not c["complete"] and not c["rows_ok"]                # right count, wrong rows
+    assert osw.decide_cell(c, {}, False)[0] == "run"                              # the driver re-runs it
+    assert "≠release" in osw.render_status(st)

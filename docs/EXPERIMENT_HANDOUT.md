@@ -23,17 +23,20 @@ How the harness works, every config knob and the pre-flight words: [`RUNNING_EXP
 > running setup yourself is now forbidden (§3). Do this once, then continue
 > from §1:
 >
-> 1. **Before you pull**, send the coordinator the line printed by
->    `git log -1 --format='%h %cd'`. Run directories you already produced are
->    kept and reused automatically (§5), but only runs made on a checkout from
->    the evening of 2026-09-10 or later used the shared artifact set and can be
->    pooled; that line tells us which yours are.
-> 2. `git checkout setup_artifacts/ eval_config.py && git pull` (this discards
+> 1. `git checkout setup_artifacts/ eval_config.py && git pull` (this discards
 >    your local edits to those files — you set the model again in §2). If
 >    `git pull` refuses because untracked files under `setup_artifacts/` would
 >    be overwritten: `mv setup_artifacts setup_artifacts.old && git pull &&
 >    git checkout setup_artifacts/` — the `generated/fcav/` folders in
 >    `setup_artifacts.old/<pair>/` can be copied back to skip the index rebuild.
+> 2. `python scripts/audit_runs.py` — one line per run directory you already
+>    have, with a verdict. A run can be used only if it was scored on the
+>    released benchmark rows (checked from the records themselves) **and** made
+>    after this checkout first had the shared artifact set (read from
+>    `git reflog`; 2026-09-10 or later — which artifacts a run saw is recorded
+>    nowhere else). For everything else it prints the exact `rm -rf` lines: run
+>    those, and only those, then paste the whole audit output to the
+>    coordinator. Usable runs are picked up by the driver automatically (§5).
 
 ---
 
@@ -218,8 +221,9 @@ that errored. A cell is
   allowed here: some questions error on every model because the benchmark's own
   gold query is broken (`gold`), and some because your model wrote invalid
   Cypher (`agent`). Both score 0 and are part of the result.
-- **✗** — missing or truncated: fewer records than questions. The run did not
-  finish.
+- **✗** — missing or truncated (fewer records than questions: the run did not
+  finish), or `≠release`: the run was scored on an older copy of the benchmark.
+  Either way the driver re-runs the cell.
 - **⚠** — complete, but a large share of the errors are **timeouts or API
   failures** (`infra`): the model never actually answered those questions.
   Such a score measures the provider's rate limit, not the model. The driver
@@ -231,9 +235,10 @@ that errored. A cell is
 **If it stops** (laptop asleep, rate-limit storm, network): run the same
 command again. Completion is read from disk, so every ✓ cell is skipped and
 only ✗ and ⚠ cells run; a re-run writes a new time-stamped directory and the
-newest one wins, so there is nothing to delete by hand. A cell that keeps
-failing is retried three times, then reported and skipped so the rest of the
-suite continues. To re-run a subset on purpose:
+newest one wins, so there is nothing to delete by hand — the only runs that
+must go are ones the driver cannot use, and `python scripts/audit_runs.py`
+names them (see the box at the top). A cell that keeps failing is retried three
+times, then reported and skipped so the rest of the suite continues. To re-run a subset on purpose:
 
 ```bash
 python orchestrate_sweep.py --graphs movie nba       # these graphs, all methods
@@ -299,7 +304,7 @@ files instead.
 
 Publishing again later (a refreshed branch, or after filling ⚠ cells) is the
 same command; it adds a commit on top of the existing branch. Do **not** delete
-`logs/runs/` and do **not** force-push.
+`logs/runs/` (only what `scripts/audit_runs.py` names) and do **not** force-push.
 
 ---
 
