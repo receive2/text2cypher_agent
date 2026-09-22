@@ -3,7 +3,7 @@
 How the entity perturbations in the released benchmark (v2.2, 4,611 questions
 over 13 graphs) were verified by human annotators, and what the verification
 found. Annotator-facing instructions are in `ANNOTATION_QUICKSTART.md`; the
-day-by-day record is in `ANNOTATION_PROCESS_LOG.md`; every number below can be
+day-by-day record is in `archive/ANNOTATION_PROCESS_LOG.md`; every number below can be
 recomputed from `audit/verification/` with `scripts/verification_stats.py`.
 
 ## 1. What is verified

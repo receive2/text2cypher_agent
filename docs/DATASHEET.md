@@ -1,19 +1,19 @@
-# Datasheet — Entity-Perturbed text2cypher Benchmark
+# Datasheet — entity-perturbed text-to-Cypher benchmark (v2.2)
 
-A robustness benchmark for natural-language→Cypher question answering. Built by
-perturbing the **entity mention** in each question of three existing
-text2cypher datasets, while leaving the gold Cypher (and thus the answer)
-unchanged. Status: **v2 staging** (pre-human-verification; see §7).
+Three open-source text-to-Cypher test sets — CypherBench, Mind-the-Query and
+ZOGRASCOPE — in which the entity mention of each question has been rewritten
+into a realistic variant (abbreviation, alias, typo, partial name or re-casing)
+while the gold Cypher and the graph are unchanged. Every number in this
+document is produced by `scripts/render_datasheet_tables.py` from the released
+files; the sections between `AUTOGEN` markers are never edited by hand.
 
 ## 1. Motivation
 
-Existing text2cypher benchmarks are unrealistically clean: the entity a user
-mentions almost always matches a graph value verbatim, so a system can succeed
-by exact string matching and reported accuracy overstates real-world
-robustness. Real users abbreviate, nickname, shorten, and mistype entities.
-This benchmark restores that realism by rewriting the entity mention into a
-plausible variant, creating a **grounding gap** that a value-grounding step
-must close.
+In the source benchmarks the entity a question mentions almost always matches
+a graph value verbatim, so a system can succeed by exact string matching and
+reported accuracy overstates robustness. Real users abbreviate, nickname,
+shorten and mistype. Perturbing the mention creates a **grounding gap**: the
+system must map the surface form it sees to the value the database stores.
 
 <!-- AUTOGEN:HEADLINE -->
 **Headline:** across 4,611 perturbed examples, a baseline case-insensitive exact-match no longer recovers the canonical entity on **90.0%** of them (90.9 / 89.5 / 88.9% on the three datasets independently).
@@ -22,7 +22,7 @@ must close.
 ## 2. Composition
 
 <!-- AUTOGEN:COMPOSITION -->
-3 datasets, 13 graphs, **4,611** perturbed examples (test split, post-curation; see §7 curation log).
+3 source datasets, 13 property graphs, **4,611** perturbed questions.
 
 | dataset | graphs | examples |
 |---|---|--:|
@@ -31,77 +31,88 @@ must close.
 | ZOGRASCOPE | pole | 1,290 |
 <!-- /AUTOGEN:COMPOSITION -->
 
-Each example preserves the original row (`_source_row`), the unchanged
-`gold_cypher`, the perturbed question (`nl`), and `_aug_meta` recording the
-single edit: `strategy`, `from` (canonical DB value), `to` (perturbed surface),
-`source` (provenance), `needs_verification`, `(label, prop)`, and the
-`grounding_probe` difficulty signals.
+Each question is one record in `benchmarks/<dataset>_augmented_v2/test.json`:
 
-## 3. Perturbation taxonomy
+| field | contents |
+|---|---|
+| `nl` | the perturbed question |
+| `gold_cypher` | the original gold query, unchanged |
+| `graph`, `id` | the graph and the source question's identifier |
+| `_source_row` | the original source row, verbatim |
+| `_aug_meta.edits[0]` | the single edit: `strategy`, `from` (database value), `to` (perturbed mention), `source` (provenance), `label`/`prop` (the property the value is compared against), and for LLM-proposed edits `proposer_model` and `evidence` |
 
-One edit per example. Five strategies, each a distinct grounding challenge:
+`test.probed.json` adds `grounding_probe`, the surface-relation class of §2.3.
 
-| strategy | what it does | example | target share |
-|---|---|---|--:|
-| `casing` | re-case (lower/UPPER) — difficulty floor / control | `Sacramento Kings`→`SACRAMENTO KINGS` | 10% |
-| `typo` | one keyboard-slip / transposition / deletion / doubling | `Barletta`→`Balretta` | 22.5% |
-| `partial` | drop words, keep the distinctive head | `Los Angeles Lakers`→`Lakers` | 22.5% |
-| `abbrev` | acronym / short form | `Golden State Warriors`→`GSW` | 22.5% |
-| `alias` | replacement nickname / brand–generic (no surface overlap) | `Tocilizumab`→`Actemra` | 22.5% |
+### 2.1 Perturbation strategies
 
-(`paraphrase` was excluded by design — it leaves the entity verbatim and so
-poses no value-grounding challenge.)
+One edit per question. Casing is a control (a case-insensitive match still
+recovers it); the other four are the informative strategies and were designed
+to be equal in share. Released shares differ from the design where a graph's
+entities simply have no abbreviations or aliases (§6).
 
-## 4. Difficulty spectrum (objective, model-independent)
+<!-- AUTOGEN:STRATEGY -->
+| strategy | what changes | example | design share | released share |
+|---|---|---|--:|--:|
+| `casing` | re-case the mention (lower / UPPER) | `Sacramento Kings` → `SACRAMENTO KINGS` | 10.0% | 10.0% |
+| `typo` | one keyboard slip, transposition, deletion or doubling | `Barletta` → `Balretta` | 22.5% | 31.3% |
+| `partial` | drop words, keep a fragment that still identifies it | `Los Angeles Lakers` → `Lakers` | 22.5% | 18.1% |
+| `abbrev` | acronym or standard short form | `Golden State Warriors` → `GSW` | 22.5% | 22.4% |
+| `alias` | a different name for the same referent | `Tocilizumab` → `Actemra` | 22.5% | 18.2% |
+<!-- /AUTOGEN:STRATEGY -->
 
-Each edit is classified by how the perturbed surface relates to the canonical
-value (DB- and model-free):
+### 2.2 Provenance
 
-<!-- AUTOGEN:DIFFICULTY -->
-| class | meaning | all | cypherbench | mtq | zograscope |
+Where the perturbed surface forms come from, and how many of each kind were
+checked by human annotators (§4). "Measured" excludes the 48-item calibration
+set; counts before and after verification differ because verification removed
+or reverted some edits.
+
+<!-- AUTOGEN:PROVENANCE -->
+| provenance | pre-verification rows | queued for verification | measured | released rows |
+|---|--:|--:|--:|--:|
+| algorithmic (rules for casing / typo / partial) | 2,673 | 450 | 448 | 2,689 |
+| attested (Wikidata aliases shipped with CypherBench, curated tables, RxNorm) | 1,052 | 400 | 393 | 1,043 |
+| LLM-proposed (abstention-first proposer, evidence required) | 916 | 916 | 898 | 879 |
+| **all** | 4,641 | 1,766 | 1,739 | 4,611 |
+<!-- /AUTOGEN:PROVENANCE -->
+
+### 2.3 Grounding classes
+
+How the perturbed mention relates to the stored value — computed from the two
+strings alone, without a model or the database. `semantic` is the tier that
+needs world knowledge; its share follows the availability of aliases and
+abbreviations in each domain.
+
+<!-- AUTOGEN:GROUNDING -->
+| class | relation of the perturbed mention to the database value | all | CypherBench | Mind-the-Query | ZOGRASCOPE |
 |---|---|--:|--:|--:|--:|
 | `exact_ci` | case-insensitive exact still matches (trivial) | 10.0% | 9.1% | 10.5% | 11.1% |
 | `edit_distance` | within Damerau ≤2 (fuzzy-recoverable) | 32.8% | 15.2% | 31.7% | 62.3% |
 | `substring` | perturbed ⊆ canonical (fulltext-recoverable) | 25.7% | 30.1% | 23.2% | 20.8% |
 | `semantic` | no surface overlap (needs world knowledge / vector) | 31.5% | 45.5% | 34.6% | 5.8% |
-<!-- /AUTOGEN:DIFFICULTY -->
+<!-- /AUTOGEN:GROUNDING -->
 
-`semantic` is the hardest tier and is where value-grounding / vector retrieval
-is required; its share tracks alias/abbrev availability per domain.
+### 2.4 Query-difficulty tiers
 
-## 5. Generation method
+A rule-based classifier over the gold Cypher (`eval/difficulty.py`: pattern
+reach, operations, filtering) assigns each question to one of three tiers;
+results are reported per tier.
 
-1. **Entity extraction** — the entity is the gold-Cypher string literal that
-   appears in the question; the `(label, property)` it is compared against is
-   parsed from the Cypher so checks can be scoped. Dates, times, emails, and
-   structured IDs/postcodes are excluded (low grounding value, collision-dense).
-2. **Strategy selection** — a deficit-greedy quota sampler targets the shares
-   in §3; `casing` is capped at its target so the trivial control never
-   inflates. A row is dropped (with reason) if no eligible strategy yields a
-   valid edit — never silently substituted.
-3. **Surface generation** — `casing`/`typo`/`partial` are algorithmic;
-   `abbrev`/`alias` prefer **attested sources** (CypherBench's shipped
-   Wikidata aliases; curated tables; RxNorm for drugs) and fall back to an
-   **LLM proposer** (gpt-4.1) only when attested misses. LLMs *propose*; they
-   never *judge* validity.
-4. **Validity gates (DB-grounded, model-free)** — every edit must (a) not
-   collide with a *different* value of the same `(label, prop)`, (b) for
-   `partial`, resolve uniquely by containment, (c) for `typo`, leave the
-   canonical the unique value within Damerau-1 (margin). A splice grammar guard
-   repairs article/word-doubling at the insertion seam.
-5. **Synthetic-domain rule** — fabricated graphs (`pole`, `bloom`, `er`) have
-   no real-world aliases, so the `alias` strategy is disabled there (preventing
-   hallucinated aliases for fabricated entities).
-6. **Reproducibility** — per-row RNG seeded from `(seed, dataset, row_id)`;
-   generation only reads the graph DB. Proposer model: `gpt-4.1`
-   (pin the exact snapshot used).
+<!-- AUTOGEN:TIERS -->
+| dataset | n | easy | medium | hard |
+|---|--:|--:|--:|--:|
+| CypherBench | 2,099 | 16.2% | 53.0% | 30.9% |
+| Mind-the-Query | 1,222 | 6.5% | 61.7% | 31.8% |
+| ZOGRASCOPE | 1,290 | 6.3% | 74.3% | 19.4% |
+| **all** | 4,611 | **10.8%** | **61.3%** | **27.9%** |
+<!-- /AUTOGEN:TIERS -->
 
-## 6. Realized distribution (per graph)
+### 2.5 Per-graph mix
 
 <!-- AUTOGEN:REALIZED -->
-Post-curation realized mix (regenerate with `scripts/render_datasheet_tables.py`; canonical figures are post-adjudication). `census` = LLM- + attested-provenance edits (all human-verified, Tier 1).
+Strategy shares per graph (%); `LLM+attested` counts the edits whose surface form came from a knowledge base or a language model rather than a rule.
 
-| dataset | graph | n | casing | typo | partial | abbrev | alias | census |
+| dataset | graph | n | casing | typo | partial | abbrev | alias | LLM+attested |
 |---|---|--:|--:|--:|--:|--:|--:|--:|
 | cypherbench | company | 305 | 10.2 | 14.1 | 20.7 | 26.2 | 28.9 | 170 |
 | cypherbench | fictional_character | 324 | 10.8 | 23.5 | 26.2 | 9.3 | 30.2 | 149 |
@@ -118,19 +129,51 @@ Post-curation realized mix (regenerate with `scripts/render_datasheet_tables.py`
 | zograscope | pole *(synthetic)* | 1290 | 11.1 | 61.6 | 18.6 | 8.8 | 0.0 | 113 |
 | **ALL** | | 4611 | **10.0** | **31.3** | **18.1** | **22.4** | **18.2** | 1922 |
 
-Within the alias-applicable stratum (67.5% of rows; synthetic graphs are alias-zero by design) alias = **27.0%**. Deviations from the §3 targets are supply ceilings, measured in `audit/APPLICABILITY_CEILING.md`; headline metrics macro-average over strategies.
+Within the alias-applicable stratum (67.5% of rows; synthetic graphs are alias-zero by design) alias = **27.0%**. Where a graph's mix departs from the design shares, the cause is the measured supply of attested forms (`audit/APPLICABILITY_CEILING.md`), not allocation.
 <!-- /AUTOGEN:REALIZED -->
 
-**Honest accounting.** `casing` is pinned at 10% everywhere. Where entities have
-abbreviations/aliases (all CypherBench except fictional_character; healthcare),
-the four informative strategies reach ~22.5% each. Where they do not
-(fictional_character, covid, wwc, and synthetic graphs where `alias` is off),
-the realized mix is `typo`/`partial`-heavy by supply, not by design — we report
-the per-graph mix rather than forcing abbreviations/aliases that do not exist.
+## 3. How the questions were produced
 
-## 7. Quality control & known limitations
+1. **Entity.** The entity is a string literal of the gold Cypher that also
+   occurs in the question; the `(label, property)` it is compared against is
+   parsed from the query so every check can be scoped to that property's
+   values. Dates, times, e-mail addresses and structured identifiers are never
+   perturbed (they are lookup keys, and collision-dense).
+2. **Strategy.** A quota sampler picks the strategy with the largest deficit
+   against the design shares among those that yield a valid edit for the
+   question; casing is capped at its share; a question with no valid edit is
+   dropped, never given a trivial edit instead.
+3. **Surface form.** Casing, typo and partial names are generated by rules.
+   Abbreviations and aliases come first from attested sources — Wikidata
+   aliases shipped with CypherBench, curated tables, RxNorm for drugs — and
+   only where none exists from an LLM proposer that must abstain unless a
+   real form exists and must cite one-sentence evidence. Aliasing is disabled
+   on the synthetic graphs (`pole`, `bloom`, `er`), whose entities have no
+   real-world names.
+4. **Database gates** (model-free, on the live graph): the new form must not
+   equal a different value of the same property; a partial name must resolve
+   to exactly one value; a typo must leave the original the unique value
+   within edit distance 1; the splice into the question is grammar-checked.
+5. **Proposer models.** LLM-proposed edits were produced by `claude-opus-5`
+   (852 released edits, each carrying `proposer_model` and `evidence`); 27
+   released edits come from an earlier `gpt-4.1` pass and carry no per-edit
+   pin. No LLM judged validity at any point.
 
-- **Human verification.** All **916 LLM-proposed edits (100%)** undergo a full double-annotated census — the tier that underpins the anti-circularity claim, and the only tier where verification *removes* items. The lower-risk tiers are *measured* by stratified sample rather than exhaustively cleaned: **400 of 1,052** attested/KB edits (double-annotated) and **450 of 2,673** algorithmic edits, each reported as a validity rate with a Wilson 95% CI; un-sampled rows of those two tiers remain in the release. Total queue 1,766 items / 3,322 judgments across 5 annotators. Queues are built blind by `scripts/verification_sample.py` (annotator instructions: `docs/ANNOTATION_QUICKSTART.md`; internal guideline: `docs/ANNOTATION_SHEET.md`; methodology: `docs/VERIFICATION_PROTOCOL.md`). Adjudication rules are pre-registered (§7 curation log, 2026-08-22); calibration items are excluded from all reported measurements. **Canonical figures are post-adjudication; this v2.1 freeze is pre-verification.**
+Generation is deterministic given the seed and reads the graph only; the
+full specification is `docs/AUGMENTATION_METHODS.md`. The release is frozen
+as a decision manifest (`benchmarks/release_manifest_v2.2.jsonl`);
+`scripts/rebuild_from_manifest.py` regenerates every question from it and
+checks the released files' hashes.
+
+## 4. Human verification
+
+Five annotators (graduate volunteers, not authors) checked whether perturbed
+mentions still denote the original value and whether the questions read
+naturally. Every LLM-proposed edit was labelled by two annotators; the
+attested and algorithmic tiers were labelled on stratified samples.
+Disagreements were adjudicated by the first author. The protocol, the
+agreement statistics and how they should be read, the verdict rules and the
+released artifacts are in `docs/VERIFICATION_PROTOCOL.md`.
 
 <!-- AUTOGEN:VERIFICATION -->
 **Release v2.2-verified-2026-09-09** — 4,641 rows in → **4,611** released (30 removed, 20 reverted to a certified prior algorithmic form, 0 pending). Naturalness policy: `drop-unnatural`. Verdicts from 5 annotators over 1,739 measured items (1,524 double-annotated; 27 calibration items excluded).
@@ -151,225 +194,92 @@ Inter-annotator agreement (validity): Krippendorff's α = **0.354**, Gwet's AC1 
 | partial | 192 | 92.1% [87.4, 95.2] | 0.438 | 0.921 | 92.6% (122) |
 | typo | 200 | 99.0% [96.4, 99.7] | 0.664 | 0.987 | 98.8% (80) |
 
-Per-row verdicts (anonymised annotator letters), the blind key, the calibration reference answers and the full statistics report ship in `audit/verification/`; `decisions.csv` maps every v2.1 row to its action and its position in the released files.
+Per-row verdicts (annotators as letters A–E), the blind key, the calibration reference answers and the statistics report ship in `audit/verification/`; `decisions.csv` maps every pre-verification row to its action and its position in the released files.
 <!-- /AUTOGEN:VERIFICATION -->
-- **Residual LLM noise** caught by verification: standings-code abbreviations
-  (`the CHI`) and invented nicknames for obscure entities. Closed-set categories
-  (≤30 distinct values: divisions, conferences, positions, awards) are excluded
-  from LLM aliasing to prevent sibling-swaps.
-- **Layout.** One consolidated `test.json` per source dataset; the evaluation
-  harness reads it directly (`_source_row` preserves the original row).
-- **Difficulty ranks.** `fulltext_rank`/`vector_rank` are not computed (the
-  benchmark graphs ship without those indexes); the §4 class spectrum is
-  index-free.
 
-### Curation log
+## 5. Curation history
 
-- **2026-08-09 — unchecked-edit backfill & entity-pool leak removal.** 356 edits
-  had shipped with `validity="unchecked"` (generation-time (label, prop)
-  resolution failed, so the DB checks never ran — and, same root cause, the
-  entity-pool type filter never ran either). A post-hoc backfill
-  (`scripts/backfill_unchecked_validity.py`) re-resolved each canonical value
-  across all node/relationship scalar and array string properties on the live
-  graphs and re-ran the §5 validity checks. Outcome: **147 confirmed valid**
-  (110 passed all checks, 37 casing — `validity` flipped to `ok` with
-  `validity_backfill` provenance); **186 rows removed** — their "entities" were
-  out-of-scope pool leaks, not stored DB values (structured-ID/descriptor
-  phrases 136, schema words & common nouns 32, dates/datetimes 10,
-  CONTAINS-fragments 8); **23 held** for hand-check (suspected format/unicode
-  drift). Every check that could be resolved passed (0 hard failures).
-- **2026-08-09 — E-class hand-check (DB-assisted).** Each of the 23 held items
-  was adjudicated against the live graph and the row's gold Cypher. **4 kept**
-  (typo/alias with a uniquely recoverable referent, DB-verified — e.g.
-  `National Assembly of Armenia → Armenian Parliament`); **19 removed**:
-  6 rows whose gold contains **no string literal** (the perturbation targeted a
-  non-value word — seeding-invariant violation), 4 **quoted-spec corruptions**
-  (the question quotes a literal, so aliasing/typoing it changes the query spec
-  — e.g. `STARTS WITH 'Muller'` vs question saying `'Miller'`), 3 referent
-  breaks, 2 DB-verified ambiguities (e.g. `TEVA` collides with a distinct
-  company named `Teva`), 2 not-unique partials (63 awards contain
-  `documentary`), 2 excluded-class postcode areas, 1 value lost entirely.
-  Dataset size 4,875 → **4,670**; zero `unchecked` edits remain.
-  Row-level log: `audit/unchecked_curation_log.csv` (verdicts + reasons also in
-  `audit/unchecked_E_handcheck.csv`); method: `audit/unchecked_backfill_summary.md`.
-- **2026-08-09 — partial-rule patch (v2.1) + regeneration of algorithmic
-  partials.** A heuristic sweep had flagged 263/1,069 algorithmic partials with
-  systematic defects (bare-number outputs like `Sweden 1995 → "1995"`, generic
-  single words, dangling punctuation `→ "Event)"`, status-sentence sources).
-  Root cause: the implementation lacked the designed distinctive-token logic and
-  ranked maximal reductions first. `augmenters/partial_name.py` was patched
-  (status/sentence-shape eligibility guard; edge-punctuation tokenization;
-  bare-number/too-short/unbalanced output guards; **DB-grounded
-  distinctive-token requirement** — every reduction must retain the token with
-  the lowest document frequency across that (label, prop)'s values, and a
-  single-token reduction may BE that token when capitalized). All algorithmic
-  partials were then re-validated against the live graphs
-  (`scripts/regenerate_partials.py`): **536 already compliant (kept), 264
-  regenerated as better partials** (e.g. `"Event)" → "Important Medical Event"`,
-  `"1363" → "Ontario Flight 1363"`), **121 fell back to algorithmic typo**
-  (status values, year-only tournaments — no natural partial exists), **6
-  removed** (bad outputs with no (label,prop) metadata to re-check), 33
-  backfill-verified rows left as-is. Human-verification census unaffected
-  (algorithmic edits are Tier-2-sampled, not censused). Defect-flag rate after:
-  ~1% (from 24.6%). Dataset size → **4,664**. Log:
-  `audit/partial_regen_log.csv`; existing unit tests (50) pass unchanged.
-- **2026-08-09 — LLM-tier regeneration (abstention-first, claude-opus-5).** A
-  pilot annotation of the LLM-proposed tier measured ~51% invalid proposals
-  (fabricated nicknames for entities that have none). A 50-item A/B
-  (`audit/llm_proposer_ab_results.md`) showed an **abstention-first +
-  evidence-required** prompt raises proposal precision to ~85%+ on
-  claude-opus-5, which also *repairs* invalid items with genuinely attested
-  forms. All 792 LLM-proposed edits were re-proposed
-  (`scripts/regenerate_llm_tier.py`; proposer model pinned: `claude-opus-5`,
-  direct SDK): **527 proposed / 265 abstained**; after shape guards
-  (replacement-style alias, partial word-subset + distinctive token) and DB
-  validity (10 collisions and 20 contains-original caught), **455 accepted**
-  — each carrying an `evidence` string and `proposer_model` in `_aug_meta`,
-  all still routed to the human census (`needs_verification`); **293 fell back
-  to algorithmic strategies** (typo 190 / partial 98 / casing 5 — DB-gated,
-  Tier-2-sampled); **16 rows removed** (no valid perturbation); 28 kept as-is
-  (no (label,prop) metadata to re-check). Dataset size 4,664 → **4,648**;
-  LLM-tier census shrinks 792 → 483. Anti-circularity note: Claude models
-  appear in the evaluation matrix; the proposer only *proposes* — every
-  LLM-proposed form remains 100% human-verified, and the LLM-proposed vs
-  attested provenance split supports the ablation. Log:
-  `audit/llm_regen_log.csv`; raw proposals: `audit/llm_regen_proposals.jsonl`.
+| date | change | questions |
+|---|---|--:|
+| 2026-06 | first complete perturbed set (v2) | 4,875 |
+| 2026-08-09 | edits whose validity checks had never run were re-checked; 186 out-of-scope "entities" (identifiers, schema words, dates) and 19 hand-checked defects removed | 4,670 |
+| 2026-08-09 | partial-name rule rewritten (distinctive-token requirement); all rule-based partials regenerated | 4,664 |
+| 2026-08-09 | LLM-proposed tier regenerated with an abstention-first, evidence-required proposer (`claude-opus-5`) | 4,648 |
+| 2026-08-22 | mid-word replacement bug fixed (`us` inside `users`); 47 questions repaired | 4,641 |
+| 2026-08-22 | strategy mix rebalanced to the measured supply of attested forms; no questions removed | 4,641 |
+| 2026-08-22 | generation frozen: decision manifest v2.1 | 4,641 |
+| 2026-09-09 | human-verification verdicts applied: 20 edits reverted to their rule-based form, 30 questions removed — **v2.2, the released set** | 4,611 |
 
-- **2026-08-22 — mid-word replacement repair.** The consistent-replacement
-  step matched surface strings without word boundaries, so a short value could
-  be replaced *inside another word* (`us` -> "United States" also rewrote
-  "users" into "United Statesers"). `pipeline._occurrences` is now
-  word-boundary-aware (a trailing plural `s` still counts as the same mention:
-  "shooting guards" -> "SGs"). All 4,648 question texts were recomputed from
-  `original_nl`: **4,594 unchanged, 47 repaired, 7 removed** (the surface only
-  ever occurred mid-word, so the question cannot carry the perturbation).
-  Dataset size -> **4,641**. Log: `audit/midword_fix_log.csv`; unit tests (50)
-  pass.
+Row-level logs for each step are in `audit/`; the day-by-day record of the
+annotation campaign is `docs/archive/ANNOTATION_PROCESS_LOG.md`.
 
-- **2026-08-22 — applicability-ceiling measurement + lossless mixture
-  rebalance.** External review flagged the typo share (44.3% vs the 22.5%
-  target). We measured the **applicability ceiling** per (graph, strategy)
-  (`audit/APPLICABILITY_CEILING.md`; `scripts/measure_applicability_ceiling.py`):
-  exact attested-KB scan over all rows + a claude-opus-5 abstention probe
-  (~1,000 entities), all candidates passed through shape rules and the live-DB
-  collision gate. Finding: large **unused attested supply** (e.g. nba alias
-  ceiling 79.7% vs 20.3% realized) alongside true structural zeros (synthetic
-  graphs have no aliases by design). `scripts/rebalance_mixture.py` then
-  performed **scarcity-first lossless reallocation** (abbrev before alias;
-  donors typo -> casing -> partial with 10%/18% floors; every conversion
-  re-passed shape + DB validity + splice): **725 rows converted** (typo 541,
-  partial 157, casing 27; 327 to attested forms, 398 to LLM-proposed forms
-  with evidence, all census-bound). Mixture: typo 44.3->32.7%, abbrev
-  12.8->21.9%, alias 10.9->17.4%, partial 18.0%, casing 10.0%. Alias remains
-  below target because verified supply is exhausted (synthetic graphs = 32.5%
-  of rows have zero alias ceiling) — the ceiling table is reported as a
-  finding, and headline metrics use macro-averaging over strategies. No rows
-  deleted. Log: `audit/rebalance_log.csv`.
+## 6. Known limitations
 
-- **2026-08-22 — partial backfill to supply exhaustion + PRE-REGISTERED
-  adjudication rules (generation-side freeze).** Final mixture lever per
-  external review: every typo row whose entity admits a fully-gated partial
-  form was converted (`scripts/backfill_partial_from_typo.py`; diagnostic found
-  **95 rows**, below the 208 needed for target — all 95 converted, algorithmic
-  provenance, zero census growth). **Generation-side frozen mixture: typo
-  30.6% / abbrev 21.9% / partial 20.1% / alias 17.4% / casing 10.0%.** Every
-  deviation now has a stated mechanism: abbrev at target; partial and alias
-  filled to measured supply exhaustion (`audit/APPLICABILITY_CEILING.md`);
-  within the alias-applicable stratum (67.5% of rows; synthetic graphs are
-  alias-zero by design) alias = **25.8%**, above the 22.5% design share — the
-  global 17.4% is a composition effect, not supply shortfall. Headline metrics
-  use macro-averaging over strategies.
-  **Pre-registered adjudication rules** (canonical figures are
-  POST-adjudication; these rules are fixed before annotation begins):
-  (1) a census-rejected edit (`invalid`) on a row with a prior
-  **algorithmic, machine-gated** form **reverts to that form** (provenance
-  updated); revert targets are enumerated per row in `audit/prior_forms.csv`,
-  rebuilt deterministically from the backup snapshot chain (this supersedes
-  the partially-overwritten per-wave logs). Reverting to prior LLM- or
-  KB-sourced forms is prohibited (they were never human-verified);
-  `source_error` rows are always removed;
-  **(1b, decision confirmed 2026-08-23)** rejected rows *without* a certified
-  prior form are **removed** (no substitution — deletion preserves the mixture
-  and difficulty shares better than any fill-in, and casing back-fill is
-  explicitly prohibited per the §5 design rule). Expected loss ≈100–150 rows.
-  **Contingency (pre-registered):** if the invalid rate among no-prior census
-  rows exceeds **20%** (>2× expectation, indicating a systematic issue), the
-  fallback switches to machine-generated algorithmic perturbations (full
-  current gates), each single-verified during adjudication before retention; (2) rows without a prior valid form follow protocol §6
-  (corrected_form supplied → fix + second-pass re-verify; otherwise drop and
-  log); (3) per-strategy proposal acceptance rates and IAA are auto-reported
-  post-adjudication as the generation-validation table; (4) all mixture/count
-  tables are regenerated from the data by script after adjudication — no
-  hand-edited numbers.
+- **Supply-driven mix.** Where entities have no abbreviations or aliases
+  (fictional characters, contact-tracing places, the synthetic graphs), the
+  mix is typo/partial-heavy. The attainable supply per graph and strategy was
+  measured (`audit/APPLICABILITY_CEILING.md`) and the mix filled to it;
+  headline metrics are macro-averaged over strategies.
+- **Gold queries that do not execute.**
 
-- **2026-08-22 — alias census probe, freeze decision, and reproducibility
-  manifest (FINAL generation-side state).** The 50-entity spot-check of the
-  no-alias claim (external review item #3) surfaced that the LLM probe had been
-  stratified-sampled, not exhaustive: 253 entities on alias-applicable rows had
-  never been probed. A census probe closed the gap (78/253 proposed, 31%);
-  coverage is now exhaustive (verified: zero unprobed alias-applicable rows;
-  1,278 successful probe calls total). The spot-check also confirmed three
-  DB-collision rejections were CORRECT (Coreg/Micardis/Hidden exist as other
-  values). One operational error is disclosed: an intermediate reallocation ran
-  against a stale strategy snapshot, causing redundant (but fully gated)
-  conversions before being corrected against current data. Post-census
-  reallocation converted 81 further rows. **Frozen mixture: typo 30.6 / abbrev
-  23.0 / alias 18.4 / partial 18.0 / casing 10.0** (alias = 27.2% within its
-  applicable stratum). Decision (documented): stop here — the combined
-  attested+LLM supply for abbrev+alias is 41.3% of rows vs a 45% combined
-  target; the residual gap is a measured supply ceiling, not an allocation
-  choice. The abbrev ceiling is a lower bound (rows holding attested-alias
-  forms were never abbrev-probed; immaterial as abbrev exceeds target).
-  **Reproducibility:** the release is frozen as a decision manifest
-  (`release_manifest_v2.1.jsonl`: per-row source row, unperturbed question,
-  gold, and the full edit decision incl. LLM proposals + evidence).
-  `scripts/rebuild_from_manifest.py` re-derives every perturbed question from
-  the frozen decisions and verifies canonical-hash equality with the released
-  files (verified: 6/6 files match). The manifest supersedes the per-wave
-  curation logs as the complete row-level provenance record.
+<!-- AUTOGEN:GOLD -->
+31 of the 4,611 released gold queries (0.7%) do not execute (gold verdicts recorded by the evaluation harness in a complete run over the released rows, 30 s server-side timeout; 2026-09-22). They are kept as shipped and score 0 for every system, so they lower every method equally.
 
-- **2026-09-09 — adjudication complete; VERIFIED RELEASE v2.2 frozen (4,641 →
-  4,611).** The 55 pending items were adjudicated by the first author (29
-  valid / 26 invalid; no model involved). Final validity (1,739 measured
-  items): LLM 97.2% [95.9, 98.1], attested 98.5% [96.7, 99.3], algorithmic
-  96.2% [94.0, 97.6]; AC1 0.964, raw agreement 96.5%, α 0.354 (prevalence-
-  deflated, as pre-registered). Verdicts applied by
-  `scripts/freeze_verified_release.py` under the 2026-08-22 rules: 20 rows
-  reverted to certified prior algorithmic forms (LLM 19, attested 1; question
-  re-derived, difficulty class recomputed), 30 removed (11 invalid without a
-  prior form, 5 source-error, 12 valid-but-unnatural, 2 calibration items
-  judged invalid by the organizer key); algorithmic-tier rejections (17) kept
-  and reported as a rate per protocol §3. Contingency rate 1.5% vs the 20%
-  stop; loss 30 rows vs the ≈100–150 pre-registered expectation. Headline
-  unchanged at **90.0%**; mixture typo 31.3 / abbrev 22.4 / alias 18.2 /
-  partial 18.1 / casing 10.0. Manifest `release_manifest_v2.2.jsonl` (each row
-  carries its v2.1 position, the raters' labels and the action); rebuild
-  verified three-way (rebuilt = frozen = on disk, 6/6). Row-level log:
-  `audit/verification/decisions.csv`; tables above regenerated by script.
+| dataset | graph | questions | non-executing golds |
+|---|---|--:|--:|
+| mindthequery | covid | 327 | 14 |
+| mindthequery | er | 185 | 3 |
+| mindthequery | healthcare | 419 | 4 |
+| mindthequery | wwc | 267 | 10 |
+<!-- /AUTOGEN:GOLD -->
+
+- **Gold queries with empty results.** On the Mind-the-Query graphs a
+  noticeable share of golds legitimately return no rows (healthcare 45%,
+  er 29%, bloom 21%, wwc 12%, covid 3%; `report/empty_gold_rates.md`). An
+  evaluation that compares result sets should treat empty-vs-empty
+  deliberately.
+- **Verification depth.** Only the LLM-proposed tier was checked
+  exhaustively; the attested and algorithmic tiers were sampled, so their
+  validity is an estimate with a confidence interval, and un-sampled rows of
+  those tiers were not individually inspected.
+- **Curated tables are small** (a few dozen acronym and nickname pairs);
+  the primary attested source is the Wikidata aliases shipped with
+  CypherBench.
+- **Synthetic graphs have no aliases**, so the `alias` strategy is absent
+  there by design.
+- **Only one perturbation per question**, always of one entity mention.
+
+## 7. Intended use and distribution
+
+The benchmark measures whether a text-to-Cypher system grounds a user's
+surface form to the stored value; it is not a test of Cypher generation on
+its own. Evaluate on the released rows exactly (`python benchmarks/verify.py`
+pins their hashes) so results are comparable across papers; compare against
+the original questions to isolate the effect of perturbation
+(`scripts/clean_vs_perturbed.py`). The source datasets' licences apply to
+the questions and graphs (`audit/LICENSE_AUDIT.md`); the perturbations,
+manifest and verification artifacts are released with this repository.
 
 ## 8. Files
 
 ```
-benchmarks/<dataset>_augmented_v2/
-  test.json                 # released examples (nl, gold_cypher, _aug_meta, _source_row)
-  test.probed.json          # + grounding_probe difficulty signals
-benchmarks/verify.py        # pins the v2.2 hashes — run before any experiment
-benchmarks/release_manifest_v2.2.jsonl   # verified release: one record per released row
-                                         #   (source row, unperturbed question, gold, edit
-                                         #   decision, raters' labels, action, v2.1 position)
-audit/verification/
-  decisions.csv             # every v2.1 row -> action (keep / revert / remove) + reason
-  verification_key.csv      # the blind queue key (provenance, strategy, assignment)
-  verdicts_long.csv         # every per-item judgment, annotators as letters A-E
-  adjudicated.csv           # the 55 adjudicated items
-  calibration_ids.csv, calibration_key.csv   # calibration set + organizer answers
-  stats.md, stats.json, summary.json         # IAA / validity report, freeze summary
-docs/ANNOTATION_QUICKSTART.md   # annotator-facing instructions (frozen)
+benchmarks/<dataset>_augmented_v2/test.json      the benchmark
+benchmarks/<dataset>_augmented_v2/test.probed.json  + grounding classes
+benchmarks/verify.py                              release check (hashes)
+benchmarks/release_manifest_v2.2.jsonl            decision manifest, one record per question
+audit/verification/                               verdicts, blind key, adjudications, statistics
+audit/gold_executability.json                     which golds do not execute
+docs/AUGMENTATION_METHODS.md                      how each strategy is generated and gated
+docs/VERIFICATION_PROTOCOL.md                     how the data was verified
+docs/ANNOTATION_QUICKSTART.md                     the guide the annotators worked from
+docs/LLM_USE_DISCLOSURE.md                        the role of LLMs in constructing the data
 ```
 
-`scripts/rebuild_from_manifest.py` re-derives every released question from the
-manifest and checks it three ways (rebuilt = frozen hash = file on disk);
-`scripts/freeze_verified_release.py` is how v2.2 was produced from v2.1 and the
-verdicts. Generated by `scripts/generate_augmented.py`; probed by
-`scripts/grounding_probe.py`; pipeline in `data_augmentation/` (see
-`docs/archive/AUGMENTATION_REDESIGN.md`).
+## 9. Maintenance
+
+`v2.2-verified-2026-09-09` is the current release; `benchmarks/verify.py`
+names the version and pins the file hashes, and any later release will carry
+a new version string, manifest and hashes. Issues with individual questions
+can be reported against the question's `graph` and `id`; the manifest and
+`audit/verification/decisions.csv` trace every released question back to its
+source row and to the decisions that produced it.

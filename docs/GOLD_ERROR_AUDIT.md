@@ -117,14 +117,13 @@ removal of inconvenient examples is not defensible, documented curation is.
 
 ## Current snapshot (for reference)
 
-On the released v2.2 benchmark, executing every gold query against the
-deployed graphs (`scripts/tuning/probe_empty_gold.py`, 2026-09-12;
-`report/empty_gold_rates.md`) finds **36** golds that do not execute, all in
-Mind-the-Query (covid 17, wwc 12, healthcare 4, er 3); CypherBench and
-ZOGRASCOPE have **0**. These golds are kept as shipped and score 0 for every
-method (the denominator is always all questions), so they lower every
-method equally and do not affect the comparison; the count is reported with
-the results.
+`audit/gold_executability.json` (written by `scripts/gold_executability.py`)
+is the record for the released v2.2 benchmark: **31** golds do not execute,
+all in Mind-the-Query (covid 14, wwc 10, healthcare 4, er 3); CypherBench and
+ZOGRASCOPE have 0. They are kept as shipped and score 0 for every method (the
+denominator is always all questions), so they lower every method equally; the
+datasheet reports the count. Empty-but-valid golds are a separate matter
+(`report/empty_gold_rates.md`).
 
 ## See also
 

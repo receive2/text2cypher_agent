@@ -103,8 +103,8 @@ generation procedure → category-specific validity → examples → provenance*
   token, the usual English head) and **prefix reductions** of length ≥2 (keep a
   leading head phrase). Candidates that start/end on a stopword are rejected. If
   no algorithmic candidate resolves uniquely, fall back to an **LLM proposer**
-  (gpt-4.1) constrained to output only words already present in the name (a
-  subset, not a rephrase); this is flagged for verification.
+  constrained to output only words already present in the name (a subset, not
+  a rephrase); this is flagged for verification.
 - **Validity.** Uniqueness (§A.5): the reduced surface, by case-insensitive
   containment over the `(label, property)` value set, must match the canonical
   value and **no other**. (This rejects `Los Angeles → Los Angeles Lakers` when
@@ -224,8 +224,10 @@ aliases 98.7%, partial names 92.1%; `docs/VERIFICATION_PROTOCOL.md` §6).
 
 Per-question randomness is seeded from `(seed, dataset, row_id)` (so adding or
 removing a source row does not reshuffle others); generation only **reads** the
-graph database; the proposer model is pinned (gpt-4.1; the exact snapshot should
-be recorded at release). One edit per question (`MAX_EDITS_PER_ROW = 1`).
+graph database. The proposer model is recorded per edit: `claude-opus-5` for
+852 of the 879 released LLM-proposed edits (with the evidence it cited); the
+remaining 27 come from an earlier `gpt-4.1` pass that predates per-edit
+pinning. One edit per question (`MAX_EDITS_PER_ROW = 1`).
 
 ## A.8 Difficulty annotation
 
