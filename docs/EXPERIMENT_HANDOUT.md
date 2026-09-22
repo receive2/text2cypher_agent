@@ -1,13 +1,18 @@
 # Running the perturbed-benchmark experiments — start here
 
-You are running a fixed evaluation harness over three entity-perturbed
-text-to-Cypher benchmarks with **one generator LLM assigned to you**. You do
-**not** need to understand the method: you set one line in one config file,
-run three commands, and the result is a branch in this repository.
+Thank you for running one of the generator models in this sweep. This page is
+the complete procedure. The evaluation harness is fixed so that every model is
+measured under identical conditions; your part is to point it at your model
+(one line in one config file), run four commands, and publish the result as a
+branch in this repository. None of the steps require the method's internals —
+[`RUNNING_EXPERIMENTS.md`](RUNNING_EXPERIMENTS.md) explains them if you are
+interested.
 
 Everything below is a checklist. If a step does not print what it says it
-should, stop and ask — a run that starts from a bad state produces a
-plausible-looking score that is silently wrong, and we cannot tell afterwards.
+should, please stop and ask rather than work around it: a run that starts from
+a bad state produces a plausible-looking score that is silently wrong, and we
+cannot tell afterwards. We would much rather answer a question than lose a
+week of your machine time.
 
 How the harness works, every config knob and the pre-flight words: [`RUNNING_EXPERIMENTS.md`](RUNNING_EXPERIMENTS.md) — a reference; the sweep procedure is only here.
 
@@ -178,7 +183,7 @@ The prompts, generated tools, schema files and tool-routing index for every
 graph were built **once** by the coordinator and ship in the repo
 (`setup_artifacts/`, ~8 MB, pinned file-by-file by
 `setup_artifacts/MANIFEST.json`). Everyone evaluates with byte-identical
-prompts and tools — that is what makes the six models comparable — so
+prompts and tools — that is what makes the seven models comparable — so
 **never run `scripts/setup_and_archive.py` and never edit anything under
 `setup_artifacts/`**; the driver refuses to start on an archive that differs
 from the published set.
@@ -290,7 +295,7 @@ example `react` on a model whose API has no function calling), add
 `--skip-methods react` to every `orchestrate_sweep.py` command. The method is
 then left out of the run *and* of the completeness verdict, `--publish`
 accepts the sweep, and the SWEEP file states which methods were skipped.
-Decide this with the coordinator, not on your own.
+Please decide this together with the coordinator rather than on your own.
 
 ## 6. Deliver — run `--publish`, send what it prints
 
@@ -396,5 +401,6 @@ Question counts (v2.2), so you know what `n` must be:
 
 ## Questions
 
-Ask before improvising. A wrong-but-plausible number costs far more than a
-delayed one, because we usually cannot tell from the output that it was wrong.
+Please ask before improvising — a message to the coordinator is always
+welcome. A wrong-but-plausible number costs far more than a delayed one,
+because we usually cannot tell from the output that it was wrong.
