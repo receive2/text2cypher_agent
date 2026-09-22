@@ -1,0 +1,82 @@
+{
+  "dataset": "cypherbench_augmented",
+  "n": 308,
+  "n_scored": {
+    "ea": 302,
+    "em": 302,
+    "psjs": 302
+  },
+  "n_errors": 6,
+  "ea": 0.08278145695364239,
+  "em": 0.0,
+  "psjs": 0.12298179227522871,
+  "by_difficulty": {
+    "all": {
+      "ea": 0.08278145695364239,
+      "em": 0.0,
+      "psjs": 0.12298179227522871,
+      "n": 308,
+      "n_scored": {
+        "ea": 302,
+        "em": 302,
+        "psjs": 302
+      },
+      "n_errors": 6
+    },
+    "easy": {
+      "ea": 0.0,
+      "em": 0.0,
+      "psjs": 0.07692410359077026,
+      "n": 39,
+      "n_scored": {
+        "ea": 39,
+        "em": 39,
+        "psjs": 39
+      },
+      "n_errors": 0
+    },
+    "medium": {
+      "ea": 0.05325443786982249,
+      "em": 0.0,
+      "psjs": 0.07179827985992748,
+      "n": 174,
+      "n_scored": {
+        "ea": 169,
+        "em": 169,
+        "psjs": 169
+      },
+      "n_errors": 5
+    },
+    "hard": {
+      "ea": 0.1702127659574468,
+      "em": 0.0,
+      "psjs": 0.23411225458246035,
+      "n": 95,
+      "n_scored": {
+        "ea": 94,
+        "em": 94,
+        "psjs": 94
+      },
+      "n_errors": 1
+    }
+  },
+  "elapsed_sec": 2192.96,
+  "run_meta": {
+    "generated_at": "2026-06-22T11:48:41+02:00",
+    "ner_mode": "fcav",
+    "method": "fcav",
+    "label": "FCAV",
+    "tool_type": null,
+    "retrieval": "fuzzy",
+    "ner_llm": "gpt-4.1",
+    "cypher_llm": "gpt-4.1",
+    "qa_llm": "gpt-4.1",
+    "tool_select_top_k": 15,
+    "values_per_tool": 10,
+    "plan_exec_tools_per_entity": 2,
+    "plan_exec_values_per_tool": 10,
+    "plan_exec_escalate": true,
+    "tool_retrieval_mode": "fuzzy",
+    "hybrid_strategy": "cascade"
+  }
+}

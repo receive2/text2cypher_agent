@@ -1,0 +1,82 @@
+{
+  "dataset": "cypherbench_augmented",
+  "n": 308,
+  "n_scored": {
+    "ea": 308,
+    "em": 308,
+    "psjs": 308
+  },
+  "n_errors": 0,
+  "ea": 0.5032467532467533,
+  "em": 0.0,
+  "psjs": 0.5295262774650092,
+  "by_difficulty": {
+    "all": {
+      "ea": 0.5032467532467533,
+      "em": 0.0,
+      "psjs": 0.5295262774650092,
+      "n": 308,
+      "n_scored": {
+        "ea": 308,
+        "em": 308,
+        "psjs": 308
+      },
+      "n_errors": 0
+    },
+    "easy": {
+      "ea": 0.46153846153846156,
+      "em": 0.0,
+      "psjs": 0.4785855170470555,
+      "n": 39,
+      "n_scored": {
+        "ea": 39,
+        "em": 39,
+        "psjs": 39
+      },
+      "n_errors": 0
+    },
+    "medium": {
+      "ea": 0.5057471264367817,
+      "em": 0.0,
+      "psjs": 0.5350249058540664,
+      "n": 174,
+      "n_scored": {
+        "ea": 174,
+        "em": 174,
+        "psjs": 174
+      },
+      "n_errors": 0
+    },
+    "hard": {
+      "ea": 0.5157894736842106,
+      "em": 0.0,
+      "psjs": 0.5403676281661068,
+      "n": 95,
+      "n_scored": {
+        "ea": 95,
+        "em": 95,
+        "psjs": 95
+      },
+      "n_errors": 0
+    }
+  },
+  "elapsed_sec": 4221.97,
+  "run_meta": {
+    "generated_at": "2026-06-22T12:22:30+02:00",
+    "ner_mode": "graphrag",
+    "method": "graphrag",
+    "label": "GraphRAG",
+    "tool_type": null,
+    "retrieval": "fuzzy",
+    "ner_llm": "gpt-4.1",
+    "cypher_llm": "gpt-4.1",
+    "qa_llm": "gpt-4.1",
+    "tool_select_top_k": 15,
+    "values_per_tool": 10,
+    "plan_exec_tools_per_entity": 2,
+    "plan_exec_values_per_tool": 10,
+    "plan_exec_escalate": true,
+    "tool_retrieval_mode": "fuzzy",
+    "hybrid_strategy": "cascade"
+  }
+}

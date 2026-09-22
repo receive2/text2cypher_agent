@@ -1,0 +1,82 @@
+{
+  "dataset": "cypherbench_augmented",
+  "n": 170,
+  "n_scored": {
+    "ea": 170,
+    "em": 170,
+    "psjs": 170
+  },
+  "n_errors": 0,
+  "ea": 0.40588235294117647,
+  "em": 0.0,
+  "psjs": 0.4101268363158203,
+  "by_difficulty": {
+    "all": {
+      "ea": 0.40588235294117647,
+      "em": 0.0,
+      "psjs": 0.4101268363158203,
+      "n": 170,
+      "n_scored": {
+        "ea": 170,
+        "em": 170,
+        "psjs": 170
+      },
+      "n_errors": 0
+    },
+    "easy": {
+      "ea": 0.46153846153846156,
+      "em": 0.0,
+      "psjs": 0.45952380952380945,
+      "n": 52,
+      "n_scored": {
+        "ea": 52,
+        "em": 52,
+        "psjs": 52
+      },
+      "n_errors": 0
+    },
+    "medium": {
+      "ea": 0.3698630136986301,
+      "em": 0.0,
+      "psjs": 0.3557154334669687,
+      "n": 73,
+      "n_scored": {
+        "ea": 73,
+        "em": 73,
+        "psjs": 73
+      },
+      "n_errors": 0
+    },
+    "hard": {
+      "ea": 0.4,
+      "em": 0.0,
+      "psjs": 0.4413132763413914,
+      "n": 45,
+      "n_scored": {
+        "ea": 45,
+        "em": 45,
+        "psjs": 45
+      },
+      "n_errors": 0
+    }
+  },
+  "elapsed_sec": 1563.5,
+  "run_meta": {
+    "generated_at": "2026-06-21T00:43:19+01:00",
+    "ner_mode": "react_node_rel",
+    "method": "react",
+    "label": "ReAct (Node + Rel)",
+    "tool_type": "node_rel",
+    "retrieval": "fuzzy",
+    "ner_llm": "gpt-4.1",
+    "cypher_llm": "gpt-4.1",
+    "qa_llm": "gpt-4.1",
+    "tool_select_top_k": 15,
+    "values_per_tool": 10,
+    "plan_exec_tools_per_entity": 2,
+    "plan_exec_values_per_tool": 10,
+    "plan_exec_escalate": true,
+    "tool_retrieval_mode": "fuzzy",
+    "hybrid_strategy": "cascade"
+  }
+}

@@ -1,0 +1,683 @@
+2026-06-21 00:17:16.012 | INFO     | eval.metrics_CypherBench:load_dataset:203 - Loaded 2136 examples from /Users/q0w01lh/datasets/cypherbench_augmented_v2/test.json
+2026-06-21 00:17:16.013 | INFO     | eval.metrics_CypherBench:evaluate_dataset:1135 - CypherBench graph_filter='flight_accident': kept 170/2136 examples (skipped 1966).
+2026-06-21 00:17:16.013 | INFO     | eval.metrics_CypherBench:evaluate_dataset:1159 - evaluate_dataset: per-example wall-clock cap = 60s (override via EVAL_PER_EXAMPLE_TIMEOUT env var or per_example_timeout= arg).
+[00:17:16] [   1/170] ▶ start  qid=ff429c7d-42b0-4b3b-972d-1284e0164e2c  q='What is the difference in range, in kilometers, between the Antonov An-12 and the ART 42?'
+[00:17:16] [   1/170] ▶ start  qid=ff429c7d-42b0-4b3b-972d-1284e0164e2c  q='What is the difference in range, in kilometers, between the Antonov An-12 and the ART 42?'
+[00:17:24] [   1/170] ✔ done   qid=ff429c7d-42b0-4b3b-972d-1284e0164e2c  ea=False em=False psjs=0.0  t=8.7s  runEA=0.000  wall=9s  ETA=24m38s
+[00:17:24] [   1/170] ✔ done   qid=ff429c7d-42b0-4b3b-972d-1284e0164e2c  ea=False em=False psjs=0.0  t=8.7s  runEA=0.000  wall=9s  ETA=24m38s
+[00:17:24] [   2/170] ▶ start  qid=93ab0e74-ae5c-45fa-8d5f-31fbf4d635a2  q='Which aircraft has a greater wingspan, the Mustang or the Boeing 737-500?'
+[00:17:24] [   2/170] ▶ start  qid=93ab0e74-ae5c-45fa-8d5f-31fbf4d635a2  q='Which aircraft has a greater wingspan, the Mustang or the Boeing 737-500?'
+[00:17:28] [   2/170] ✔ done   qid=93ab0e74-ae5c-45fa-8d5f-31fbf4d635a2  ea=False em=False psjs=0.0  t=4.0s  runEA=0.000  wall=13s  ETA=17m47s
+[00:17:28] [   2/170] ✔ done   qid=93ab0e74-ae5c-45fa-8d5f-31fbf4d635a2  ea=False em=False psjs=0.0  t=4.0s  runEA=0.000  wall=13s  ETA=17m47s
+[00:17:28] [   3/170] ▶ start  qid=d8dbaf06-d2fe-4e34-903d-63b37f155ebf  q='What is the earliest launch year among plane makers?'
+[00:17:28] [   3/170] ▶ start  qid=d8dbaf06-d2fe-4e34-903d-63b37f155ebf  q='What is the earliest launch year among plane makers?'
+[00:17:31] [   3/170] ✔ done   qid=d8dbaf06-d2fe-4e34-903d-63b37f155ebf  ea=True em=False psjs=0.9655172413793104  t=2.5s  runEA=0.333  wall=15s  ETA=14m07s
+[00:17:31] [   3/170] ✔ done   qid=d8dbaf06-d2fe-4e34-903d-63b37f155ebf  ea=True em=False psjs=0.9655172413793104  t=2.5s  runEA=0.333  wall=15s  ETA=14m07s
+[00:17:31] [   4/170] ▶ start  qid=2c69cbfb-5586-4fea-9362-dfca8d2b3974  q='Which aircraft model is longer, the RC-7B or the Bell 206?'
+[00:17:31] [   4/170] ▶ start  qid=2c69cbfb-5586-4fea-9362-dfca8d2b3974  q='Which aircraft model is longer, the RC-7B or the Bell 206?'
+[00:17:33] [   4/170] ✔ done   qid=2c69cbfb-5586-4fea-9362-dfca8d2b3974  ea=False em=False psjs=0.0  t=2.7s  runEA=0.250  wall=18s  ETA=12m22s
+[00:17:33] [   4/170] ✔ done   qid=2c69cbfb-5586-4fea-9362-dfca8d2b3974  ea=False em=False psjs=0.0  t=2.7s  runEA=0.250  wall=18s  ETA=12m22s
+[00:17:33] [   5/170] ▶ start  qid=62032476-9450-40a3-a93b-35153b58479d  q='What is the name of the airport from which SOUTH AFRICAN AIRWAYS FLIGHT 201 departed?'
+[00:17:33] [   5/170] ▶ start  qid=62032476-9450-40a3-a93b-35153b58479d  q='What is the name of the airport from which SOUTH AFRICAN AIRWAYS FLIGHT 201 departed?'
+[00:17:36] [   5/170] ✔ done   qid=62032476-9450-40a3-a93b-35153b58479d  ea=False em=False psjs=0.0  t=2.7s  runEA=0.200  wall=21s  ETA=11m19s
+[00:17:36] [   5/170] ✔ done   qid=62032476-9450-40a3-a93b-35153b58479d  ea=False em=False psjs=0.0  t=2.7s  runEA=0.200  wall=21s  ETA=11m19s
+[00:17:36] [   6/170] ▶ start  qid=6320e534-f0dd-4b28-8224-bbef3a5eb180  q='What are the names of operators involved in flight accidents that were headed to STRASBOURG-ENTZHEIM?'
+[00:17:36] [   6/170] ▶ start  qid=6320e534-f0dd-4b28-8224-bbef3a5eb180  q='What are the names of operators involved in flight accidents that were headed to STRASBOURG-ENTZHEIM?'
+[00:17:40] [   6/170] ✔ done   qid=6320e534-f0dd-4b28-8224-bbef3a5eb180  ea=False em=False psjs=0.0  t=3.5s  runEA=0.167  wall=24s  ETA=10m57s
+[00:17:40] [   6/170] ✔ done   qid=6320e534-f0dd-4b28-8224-bbef3a5eb180  ea=False em=False psjs=0.0  t=3.5s  runEA=0.167  wall=24s  ETA=10m57s
+[00:17:40] [   7/170] ▶ start  qid=77d6a1ae-1830-4943-a8d9-51a747ccb620  q='Do Tara Air Flight 193 and N388US have an equal number of fatalities?'
+[00:17:40] [   7/170] ▶ start  qid=77d6a1ae-1830-4943-a8d9-51a747ccb620  q='Do Tara Air Flight 193 and N388US have an equal number of fatalities?'
+[00:17:44] [   7/170] ✔ done   qid=77d6a1ae-1830-4943-a8d9-51a747ccb620  ea=False em=False psjs=0.0  t=4.0s  runEA=0.143  wall=28s  ETA=10m54s
+[00:17:44] [   7/170] ✔ done   qid=77d6a1ae-1830-4943-a8d9-51a747ccb620  ea=False em=False psjs=0.0  t=4.0s  runEA=0.143  wall=28s  ETA=10m54s
+[00:17:44] [   8/170] ▶ start  qid=b759ba57-97f5-4952-8566-58808efc4767  q='Who are the operators of Aeroflot Fllight 3603, and what countries are they from?'
+[00:17:44] [   8/170] ▶ start  qid=b759ba57-97f5-4952-8566-58808efc4767  q='Who are the operators of Aeroflot Fllight 3603, and what countries are they from?'
+[00:17:46] [   8/170] ✔ done   qid=b759ba57-97f5-4952-8566-58808efc4767  ea=False em=False psjs=0.0  t=2.6s  runEA=0.125  wall=31s  ETA=10m22s
+[00:17:46] [   8/170] ✔ done   qid=b759ba57-97f5-4952-8566-58808efc4767  ea=False em=False psjs=0.0  t=2.6s  runEA=0.125  wall=31s  ETA=10m22s
+[00:17:46] [   9/170] ▶ start  qid=91554936-08c9-4012-a49a-d756dca42d9f  q='How many more survivors were there on Noar Linhas Aéreas Flight 4896 compared to 1121?'
+[00:17:46] [   9/170] ▶ start  qid=91554936-08c9-4012-a49a-d756dca42d9f  q='How many more survivors were there on Noar Linhas Aéreas Flight 4896 compared to 1121?'
+[00:17:49] [   9/170] ✔ done   qid=91554936-08c9-4012-a49a-d756dca42d9f  ea=False em=False psjs=0.0  t=2.8s  runEA=0.111  wall=33s  ETA=9m59s
+[00:17:49] [   9/170] ✔ done   qid=91554936-08c9-4012-a49a-d756dca42d9f  ea=False em=False psjs=0.0  t=2.8s  runEA=0.111  wall=33s  ETA=9m59s
+[00:17:49] [  10/170] ▶ start  qid=79a90866-e0fd-457c-9977-ec710fb6899e  q='What are the names and lengths in meters of aircraft models involved in the 2015 Jub plane crash?'
+[00:17:49] [  10/170] ▶ start  qid=79a90866-e0fd-457c-9977-ec710fb6899e  q='What are the names and lengths in meters of aircraft models involved in the 2015 Jub plane crash?'
+[00:17:52] [  10/170] ✔ done   qid=79a90866-e0fd-457c-9977-ec710fb6899e  ea=False em=False psjs=0.0  t=2.8s  runEA=0.100  wall=36s  ETA=9m40s
+[00:17:52] [  10/170] ✔ done   qid=79a90866-e0fd-457c-9977-ec710fb6899e  ea=False em=False psjs=0.0  t=2.8s  runEA=0.100  wall=36s  ETA=9m40s
+[00:17:52] [  11/170] ▶ start  qid=a5b6a031-dbb2-4991-b5a0-b80124de5d14  q='Where did the Montserrat flight 107 accident occur?'
+[00:17:52] [  11/170] ▶ start  qid=a5b6a031-dbb2-4991-b5a0-b80124de5d14  q='Where did the Montserrat flight 107 accident occur?'
+[00:17:55] [  11/170] ✔ done   qid=a5b6a031-dbb2-4991-b5a0-b80124de5d14  ea=False em=False psjs=0.0  t=3.1s  runEA=0.091  wall=39s  ETA=9m29s
+[00:17:55] [  11/170] ✔ done   qid=a5b6a031-dbb2-4991-b5a0-b80124de5d14  ea=False em=False psjs=0.0  t=3.1s  runEA=0.091  wall=39s  ETA=9m29s
+[00:17:55] [  12/170] ▶ start  qid=f330a387-ba8d-4895-ac32-b4b4b53857af  q='Which aircraft has a greater length in meters, the A380 or the Beechcraft 99 Airliner?'
+[00:17:55] [  12/170] ▶ start  qid=f330a387-ba8d-4895-ac32-b4b4b53857af  q='Which aircraft has a greater length in meters, the A380 or the Beechcraft 99 Airliner?'
+[00:17:58] [  12/170] ✔ done   qid=f330a387-ba8d-4895-ac32-b4b4b53857af  ea=False em=False psjs=0.0  t=2.9s  runEA=0.083  wall=42s  ETA=9m16s
+[00:17:58] [  12/170] ✔ done   qid=f330a387-ba8d-4895-ac32-b4b4b53857af  ea=False em=False psjs=0.0  t=2.9s  runEA=0.083  wall=42s  ETA=9m16s
+[00:17:58] [  13/170] ▶ start  qid=9d8059ea-1d47-43c8-b2f0-0ce437036f4c  q='What are the names and locations of aviation accidents operated by ADC?'
+[00:17:58] [  13/170] ▶ start  qid=9d8059ea-1d47-43c8-b2f0-0ce437036f4c  q='What are the names and locations of aviation accidents operated by ADC?'
+[00:18:00] [  13/170] ✔ done   qid=9d8059ea-1d47-43c8-b2f0-0ce437036f4c  ea=False em=False psjs=0.0  t=2.5s  runEA=0.077  wall=45s  ETA=9m01s
+[00:18:00] [  13/170] ✔ done   qid=9d8059ea-1d47-43c8-b2f0-0ce437036f4c  ea=False em=False psjs=0.0  t=2.5s  runEA=0.077  wall=45s  ETA=9m01s
+[00:18:00] [  14/170] ▶ start  qid=cbccfce8-9347-442e-b67d-2d22a4fadc24  q='How many airports are either the departure point for Pan Am Flight 217 or the destination for avianca flight 052?'
+[00:18:00] [  14/170] ▶ start  qid=cbccfce8-9347-442e-b67d-2d22a4fadc24  q='How many airports are either the departure point for Pan Am Flight 217 or the destination for avianca flight 052?'
+[00:18:03] [  14/170] ✔ done   qid=cbccfce8-9347-442e-b67d-2d22a4fadc24  ea=True em=False psjs=0.6  t=3.1s  runEA=0.143  wall=48s  ETA=8m53s
+[00:18:03] [  14/170] ✔ done   qid=cbccfce8-9347-442e-b67d-2d22a4fadc24  ea=True em=False psjs=0.6  t=3.1s  runEA=0.143  wall=48s  ETA=8m53s
+[00:18:03] [  15/170] ▶ start  qid=3b544fc4-bb90-4859-afc8-914365f137fc  q='What are the names and service entry dates of aircraft models involved in the 2193 accident?'
+[00:18:03] [  15/170] ▶ start  qid=3b544fc4-bb90-4859-afc8-914365f137fc  q='What are the names and service entry dates of aircraft models involved in the 2193 accident?'
+[00:18:06] [  15/170] ✔ done   qid=3b544fc4-bb90-4859-afc8-914365f137fc  ea=False em=False psjs=0.0  t=2.8s  runEA=0.133  wall=51s  ETA=8m43s
+[00:18:06] [  15/170] ✔ done   qid=3b544fc4-bb90-4859-afc8-914365f137fc  ea=False em=False psjs=0.0  t=2.8s  runEA=0.133  wall=51s  ETA=8m43s
+[00:18:06] [  16/170] ▶ start  qid=0f3dbdb0-6b02-4ed8-8964-b6da3f0ae9c9  q='Who are the manufacturers of the Superhawk, and what are their launch years?'
+[00:18:06] [  16/170] ▶ start  qid=0f3dbdb0-6b02-4ed8-8964-b6da3f0ae9c9  q='Who are the manufacturers of the Superhawk, and what are their launch years?'
+[00:18:10] [  16/170] ✔ done   qid=0f3dbdb0-6b02-4ed8-8964-b6da3f0ae9c9  ea=False em=False psjs=0.0  t=3.5s  runEA=0.125  wall=54s  ETA=8m41s
+[00:18:10] [  16/170] ✔ done   qid=0f3dbdb0-6b02-4ed8-8964-b6da3f0ae9c9  ea=False em=False psjs=0.0  t=3.5s  runEA=0.125  wall=54s  ETA=8m41s
+[00:18:10] [  17/170] ▶ start  qid=cf67f0ab-d4d3-4e18-842b-47428dddce33  q='What are the names and injury counts of aviation accidents that took off from Yinchuan Hedong Internationall Airport?'
+[00:18:10] [  17/170] ▶ start  qid=cf67f0ab-d4d3-4e18-842b-47428dddce33  q='What are the names and injury counts of aviation accidents that took off from Yinchuan Hedong Internationall Airport?'
+[00:18:12] [  17/170] ✔ done   qid=cf67f0ab-d4d3-4e18-842b-47428dddce33  ea=False em=False psjs=0.0  t=2.6s  runEA=0.118  wall=57s  ETA=8m31s
+[00:18:12] [  17/170] ✔ done   qid=cf67f0ab-d4d3-4e18-842b-47428dddce33  ea=False em=False psjs=0.0  t=2.6s  runEA=0.118  wall=57s  ETA=8m31s
+[00:18:12] [  18/170] ▶ start  qid=9ced4ba6-f728-417e-a22c-fd4cc9366972  q='What are the names of operators involved in flight accidents departing from SKP?'
+[00:18:12] [  18/170] ▶ start  qid=9ced4ba6-f728-417e-a22c-fd4cc9366972  q='What are the names of operators involved in flight accidents departing from SKP?'
+[00:18:15] [  18/170] ✔ done   qid=9ced4ba6-f728-417e-a22c-fd4cc9366972  ea=True em=False psjs=1.0  t=2.7s  runEA=0.167  wall=59s  ETA=8m22s
+[00:18:15] [  18/170] ✔ done   qid=9ced4ba6-f728-417e-a22c-fd4cc9366972  ea=True em=False psjs=1.0  t=2.7s  runEA=0.167  wall=59s  ETA=8m22s
+[00:18:15] [  19/170] ▶ start  qid=e43d2907-daa4-4ac8-8725-ecac69a64848  q='What are the names and IATA codes of airports that were destinations for flights associated with the Ntaryamira?'
+[00:18:15] [  19/170] ▶ start  qid=e43d2907-daa4-4ac8-8725-ecac69a64848  q='What are the names and IATA codes of airports that were destinations for flights associated with the Ntaryamira?'
+[00:18:18] [  19/170] ✔ done   qid=e43d2907-daa4-4ac8-8725-ecac69a64848  ea=True em=False psjs=1.0  t=2.7s  runEA=0.211  wall=1m02s  ETA=8m14s
+[00:18:18] [  19/170] ✔ done   qid=e43d2907-daa4-4ac8-8725-ecac69a64848  ea=True em=False psjs=1.0  t=2.7s  runEA=0.211  wall=1m02s  ETA=8m14s
+[00:18:18] [  20/170] ▶ start  qid=06a0e95a-31a8-4b69-95af-24dc0d732b37  q='What is the height difference in meters between the Douglas A-26 Invader and the Junkres Ju 52?'
+[00:18:18] [  20/170] ▶ start  qid=06a0e95a-31a8-4b69-95af-24dc0d732b37  q='What is the height difference in meters between the Douglas A-26 Invader and the Junkres Ju 52?'
+[00:18:21] [  20/170] ✔ done   qid=06a0e95a-31a8-4b69-95af-24dc0d732b37  ea=False em=False psjs=0.0  t=2.8s  runEA=0.200  wall=1m05s  ETA=8m08s
+[00:18:21] [  20/170] ✔ done   qid=06a0e95a-31a8-4b69-95af-24dc0d732b37  ea=False em=False psjs=0.0  t=2.8s  runEA=0.200  wall=1m05s  ETA=8m08s
+[00:18:21] [  21/170] ▶ start  qid=0a81b219-7a72-4dd8-bdce-2cb4989216a6  q='What is the earliest launch year of operators that operated flights involved in accidents with the SF340 aircraft?'
+[00:18:21] [  21/170] ▶ start  qid=0a81b219-7a72-4dd8-bdce-2cb4989216a6  q='What is the earliest launch year of operators that operated flights involved in accidents with the SF340 aircraft?'
+[00:18:24] [  21/170] ✔ done   qid=0a81b219-7a72-4dd8-bdce-2cb4989216a6  ea=False em=False psjs=0.0  t=3.3s  runEA=0.190  wall=1m08s  ETA=8m05s
+[00:18:24] [  21/170] ✔ done   qid=0a81b219-7a72-4dd8-bdce-2cb4989216a6  ea=False em=False psjs=0.0  t=3.3s  runEA=0.190  wall=1m08s  ETA=8m05s
+[00:18:24] [  22/170] ▶ start  qid=909a26c2-37eb-49a4-9e2a-36688b8460f6  q='What are the names of the manufacturers of the Cline, and how many aircraft models has each of them produced?'
+[00:18:24] [  22/170] ▶ start  qid=909a26c2-37eb-49a4-9e2a-36688b8460f6  q='What are the names of the manufacturers of the Cline, and how many aircraft models has each of them produced?'
+[00:18:33] [  22/170] ✔ done   qid=909a26c2-37eb-49a4-9e2a-36688b8460f6  ea=False em=False psjs=0.0  t=9.5s  runEA=0.182  wall=1m18s  ETA=8m44s
+[00:18:33] [  22/170] ✔ done   qid=909a26c2-37eb-49a4-9e2a-36688b8460f6  ea=False em=False psjs=0.0  t=9.5s  runEA=0.182  wall=1m18s  ETA=8m44s
+[00:18:33] [  23/170] ▶ start  qid=0245150d-ce55-4900-abf7-37e7ac3ed0eb  q='What is the highest number of fatalities in aviation accidents that departed from Tan Son Nhat International Airport ...'
+[00:18:33] [  23/170] ▶ start  qid=0245150d-ce55-4900-abf7-37e7ac3ed0eb  q='What is the highest number of fatalities in aviation accidents that departed from Tan Son Nhat International Airport ...'
+[00:18:37] [  23/170] ✔ done   qid=0245150d-ce55-4900-abf7-37e7ac3ed0eb  ea=False em=False psjs=0.0  t=4.0s  runEA=0.174  wall=1m22s  ETA=8m43s
+[00:18:37] [  23/170] ✔ done   qid=0245150d-ce55-4900-abf7-37e7ac3ed0eb  ea=False em=False psjs=0.0  t=4.0s  runEA=0.174  wall=1m22s  ETA=8m43s
+[00:18:37] [  24/170] ▶ start  qid=34556a91-40cb-42d8-a297-7f112afb6a8b  q='What is the difference in length, in meters, between the Dashh 7 and the Bell 206?'
+[00:18:37] [  24/170] ▶ start  qid=34556a91-40cb-42d8-a297-7f112afb6a8b  q='What is the difference in length, in meters, between the Dashh 7 and the Bell 206?'
+[00:18:40] [  24/170] ✔ done   qid=34556a91-40cb-42d8-a297-7f112afb6a8b  ea=False em=False psjs=0.0  t=2.7s  runEA=0.167  wall=1m25s  ETA=8m34s
+[00:18:40] [  24/170] ✔ done   qid=34556a91-40cb-42d8-a297-7f112afb6a8b  ea=False em=False psjs=0.0  t=2.7s  runEA=0.167  wall=1m25s  ETA=8m34s
+[00:18:40] [  25/170] ▶ start  qid=916f5e4c-3cf6-4c00-aa24-5f3497f1ccc1  q='What are the names of airports that were the destination for flight accidents involving the Trimotor?'
+[00:18:40] [  25/170] ▶ start  qid=916f5e4c-3cf6-4c00-aa24-5f3497f1ccc1  q='What are the names of airports that were the destination for flight accidents involving the Trimotor?'
+[00:18:43] [  25/170] ✔ done   qid=916f5e4c-3cf6-4c00-aa24-5f3497f1ccc1  ea=False em=False psjs=0.0  t=2.7s  runEA=0.160  wall=1m27s  ETA=8m26s
+[00:18:43] [  25/170] ✔ done   qid=916f5e4c-3cf6-4c00-aa24-5f3497f1ccc1  ea=False em=False psjs=0.0  t=2.7s  runEA=0.160  wall=1m27s  ETA=8m26s
+[00:18:43] [  26/170] ▶ start  qid=0882a18e-e9ca-4d98-afef-70b3cfe557e6  q='What are the names of aircraft models produced by Bombi?'
+[00:18:43] [  26/170] ▶ start  qid=0882a18e-e9ca-4d98-afef-70b3cfe557e6  q='What are the names of aircraft models produced by Bombi?'
+[00:18:45] [  26/170] ✔ done   qid=0882a18e-e9ca-4d98-afef-70b3cfe557e6  ea=False em=False psjs=0.0  t=2.6s  runEA=0.154  wall=1m30s  ETA=8m18s
+[00:18:45] [  26/170] ✔ done   qid=0882a18e-e9ca-4d98-afef-70b3cfe557e6  ea=False em=False psjs=0.0  t=2.6s  runEA=0.154  wall=1m30s  ETA=8m18s
+[00:18:45] [  27/170] ▶ start  qid=1cfe704a-be27-4915-849d-ada3deea6e4c  q='What are the names of aircraft models produced by PZK Mielec?'
+[00:18:45] [  27/170] ▶ start  qid=1cfe704a-be27-4915-849d-ada3deea6e4c  q='What are the names of aircraft models produced by PZK Mielec?'
+[00:18:48] [  27/170] ✔ done   qid=1cfe704a-be27-4915-849d-ada3deea6e4c  ea=False em=False psjs=0.0  t=2.7s  runEA=0.148  wall=1m33s  ETA=8m10s
+[00:18:48] [  27/170] ✔ done   qid=1cfe704a-be27-4915-849d-ada3deea6e4c  ea=False em=False psjs=0.0  t=2.7s  runEA=0.148  wall=1m33s  ETA=8m10s
+[00:18:48] [  28/170] ▶ start  qid=cd33e17a-1109-44fb-93e9-5a651ccb835a  q='What are the names of aviation accidents that either departed from SABE or were headed to Ingeniero Aeronáutico Ambro...'
+[00:18:48] [  28/170] ▶ start  qid=cd33e17a-1109-44fb-93e9-5a651ccb835a  q='What are the names of aviation accidents that either departed from SABE or were headed to Ingeniero Aeronáutico Ambro...'
+[00:18:58] [  28/170] ✔ done   qid=cd33e17a-1109-44fb-93e9-5a651ccb835a  ea=False em=False psjs=0.42857142857142855  t=10.2s  runEA=0.143  wall=1m43s  ETA=8m41s
+[00:18:58] [  28/170] ✔ done   qid=cd33e17a-1109-44fb-93e9-5a651ccb835a  ea=False em=False psjs=0.42857142857142855  t=10.2s  runEA=0.143  wall=1m43s  ETA=8m41s
+[00:18:58] [  29/170] ▶ start  qid=f9b15e37-16ee-4ee6-af62-aea2d8d5f1e0  q='What is the wingspan in meters of the McDonnell Douglas DC-9 Super 80 aircraft model?'
+[00:18:58] [  29/170] ▶ start  qid=f9b15e37-16ee-4ee6-af62-aea2d8d5f1e0  q='What is the wingspan in meters of the McDonnell Douglas DC-9 Super 80 aircraft model?'
+[00:19:01] [  29/170] ✔ done   qid=f9b15e37-16ee-4ee6-af62-aea2d8d5f1e0  ea=False em=False psjs=0.0  t=3.0s  runEA=0.138  wall=1m46s  ETA=8m34s
+[00:19:01] [  29/170] ✔ done   qid=f9b15e37-16ee-4ee6-af62-aea2d8d5f1e0  ea=False em=False psjs=0.0  t=3.0s  runEA=0.138  wall=1m46s  ETA=8m34s
+[00:19:01] [  30/170] ▶ start  qid=1589d423-e502-4228-87af-dbdfb3e99f98  q='What are the names of aviation accidents involving the DC-7 that departed from Douala International Airport?'
+[00:19:01] [  30/170] ▶ start  qid=1589d423-e502-4228-87af-dbdfb3e99f98  q='What are the names of aviation accidents involving the DC-7 that departed from Douala International Airport?'
+[00:19:04] [  30/170] ✔ done   qid=1589d423-e502-4228-87af-dbdfb3e99f98  ea=False em=False psjs=0.0  t=2.8s  runEA=0.133  wall=1m49s  ETA=8m27s
+[00:19:04] [  30/170] ✔ done   qid=1589d423-e502-4228-87af-dbdfb3e99f98  ea=False em=False psjs=0.0  t=2.8s  runEA=0.133  wall=1m49s  ETA=8m27s
+[00:19:04] [  31/170] ▶ start  qid=36b522bb-62b6-45d4-aaf7-e87de99995ce  q='Which aircraft model is taller, the A26 or the Junkers Ju 52?'
+[00:19:04] [  31/170] ▶ start  qid=36b522bb-62b6-45d4-aaf7-e87de99995ce  q='Which aircraft model is taller, the A26 or the Junkers Ju 52?'
+[00:19:07] [  31/170] ✔ done   qid=36b522bb-62b6-45d4-aaf7-e87de99995ce  ea=False em=False psjs=0.0  t=3.4s  runEA=0.129  wall=1m52s  ETA=8m22s
+[00:19:07] [  31/170] ✔ done   qid=36b522bb-62b6-45d4-aaf7-e87de99995ce  ea=False em=False psjs=0.0  t=3.4s  runEA=0.129  wall=1m52s  ETA=8m22s
+[00:19:07] [  32/170] ▶ start  qid=d83aaaaf-508f-42df-9911-f4b60dd40e65  q='How many survivors were there from flymontserrat flight 107?'
+[00:19:07] [  32/170] ▶ start  qid=d83aaaaf-508f-42df-9911-f4b60dd40e65  q='How many survivors were there from flymontserrat flight 107?'
+[00:19:11] [  32/170] ✔ done   qid=d83aaaaf-508f-42df-9911-f4b60dd40e65  ea=False em=False psjs=0.0  t=3.1s  runEA=0.125  wall=1m55s  ETA=8m16s
+[00:19:11] [  32/170] ✔ done   qid=d83aaaaf-508f-42df-9911-f4b60dd40e65  ea=False em=False psjs=0.0  t=3.1s  runEA=0.125  wall=1m55s  ETA=8m16s
+[00:19:11] [  33/170] ▶ start  qid=2de16ac0-7626-4788-a91c-17b71454e1c8  q='What are the names and launch years of operators that were involved in both Flight 800 and TWA Flight 514?'
+[00:19:11] [  33/170] ▶ start  qid=2de16ac0-7626-4788-a91c-17b71454e1c8  q='What are the names and launch years of operators that were involved in both Flight 800 and TWA Flight 514?'
+[00:19:14] [  33/170] ✔ done   qid=2de16ac0-7626-4788-a91c-17b71454e1c8  ea=False em=False psjs=0.0  t=3.2s  runEA=0.121  wall=1m58s  ETA=8m11s
+[00:19:14] [  33/170] ✔ done   qid=2de16ac0-7626-4788-a91c-17b71454e1c8  ea=False em=False psjs=0.0  t=3.2s  runEA=0.121  wall=1m58s  ETA=8m11s
+[00:19:14] [  34/170] ▶ start  qid=f265c5e3-20d1-4481-92ca-4537f93466a2  q='What are the names of airports that were the destination for Pan Am Flight 830 and the departure point for 1771?'
+[00:19:14] [  34/170] ▶ start  qid=f265c5e3-20d1-4481-92ca-4537f93466a2  q='What are the names of airports that were the destination for Pan Am Flight 830 and the departure point for 1771?'
+[00:19:18] [  34/170] ✔ done   qid=f265c5e3-20d1-4481-92ca-4537f93466a2  ea=True em=False psjs=0.6  t=4.4s  runEA=0.147  wall=2m03s  ETA=8m10s
+[00:19:18] [  34/170] ✔ done   qid=f265c5e3-20d1-4481-92ca-4537f93466a2  ea=True em=False psjs=0.6  t=4.4s  runEA=0.147  wall=2m03s  ETA=8m10s
+[00:19:18] [  35/170] ▶ start  qid=2d5ca45f-f5e8-4258-8a76-35806e6d7f19  q='What are the names of aviation accidents that either involve the L-410 Tubolet aircraft or depart from Ramón Villeda ...'
+[00:19:18] [  35/170] ▶ start  qid=2d5ca45f-f5e8-4258-8a76-35806e6d7f19  q='What are the names of aviation accidents that either involve the L-410 Tubolet aircraft or depart from Ramón Villeda ...'
+[00:19:24] [  35/170] ✔ done   qid=2d5ca45f-f5e8-4258-8a76-35806e6d7f19  ea=False em=False psjs=0.23076923076923078  t=5.5s  runEA=0.143  wall=2m08s  ETA=8m14s
+[00:19:24] [  35/170] ✔ done   qid=2d5ca45f-f5e8-4258-8a76-35806e6d7f19  ea=False em=False psjs=0.23076923076923078  t=5.5s  runEA=0.143  wall=2m08s  ETA=8m14s
+[00:19:24] [  36/170] ▶ start  qid=39e262c4-4430-406f-8137-ef7271998775  q='What is the difference in launch years between Transair Sweden and LOT?'
+[00:19:24] [  36/170] ▶ start  qid=39e262c4-4430-406f-8137-ef7271998775  q='What is the difference in launch years between Transair Sweden and LOT?'
+[00:19:26] [  36/170] ✔ done   qid=39e262c4-4430-406f-8137-ef7271998775  ea=False em=False psjs=0.0  t=2.6s  runEA=0.139  wall=2m11s  ETA=8m06s
+[00:19:26] [  36/170] ✔ done   qid=39e262c4-4430-406f-8137-ef7271998775  ea=False em=False psjs=0.0  t=2.6s  runEA=0.139  wall=2m11s  ETA=8m06s
+[00:19:26] [  37/170] ▶ start  qid=76c911d1-148a-4dcc-95c7-cf49ed08801b  q='What are the names of airports from which both Luftthansa Flight 540 and Avianca Flight 011 departed?'
+[00:19:26] [  37/170] ▶ start  qid=76c911d1-148a-4dcc-95c7-cf49ed08801b  q='What are the names of airports from which both Luftthansa Flight 540 and Avianca Flight 011 departed?'
+[00:19:29] [  37/170] ✔ done   qid=76c911d1-148a-4dcc-95c7-cf49ed08801b  ea=False em=False psjs=0.0  t=2.8s  runEA=0.135  wall=2m13s  ETA=8m00s
+[00:19:29] [  37/170] ✔ done   qid=76c911d1-148a-4dcc-95c7-cf49ed08801b  ea=False em=False psjs=0.0  t=2.8s  runEA=0.135  wall=2m13s  ETA=8m00s
+[00:19:29] [  38/170] ▶ start  qid=9e39d828-775a-4b5a-9d81-6729fd59d7a3  q='What are the names and dates of aviation accidents that departed from the same airport as Austral Flight 046?'
+[00:19:29] [  38/170] ▶ start  qid=9e39d828-775a-4b5a-9d81-6729fd59d7a3  q='What are the names and dates of aviation accidents that departed from the same airport as Austral Flight 046?'
+[00:19:32] [  38/170] ✔ done   qid=9e39d828-775a-4b5a-9d81-6729fd59d7a3  ea=False em=False psjs=0.0  t=2.8s  runEA=0.132  wall=2m16s  ETA=7m53s
+[00:19:32] [  38/170] ✔ done   qid=9e39d828-775a-4b5a-9d81-6729fd59d7a3  ea=False em=False psjs=0.0  t=2.8s  runEA=0.132  wall=2m16s  ETA=7m53s
+[00:19:32] [  39/170] ▶ start  qid=29f698ad-ba1e-4717-b768-998349b62965  q='Which aircraft had its first flight later, the Eurocopter AS350 Écureuil or the Puma?'
+[00:19:32] [  39/170] ▶ start  qid=29f698ad-ba1e-4717-b768-998349b62965  q='Which aircraft had its first flight later, the Eurocopter AS350 Écureuil or the Puma?'
+[00:19:36] [  39/170] ✔ done   qid=29f698ad-ba1e-4717-b768-998349b62965  ea=False em=False psjs=0.0  t=3.7s  runEA=0.128  wall=2m20s  ETA=7m50s
+[00:19:36] [  39/170] ✔ done   qid=29f698ad-ba1e-4717-b768-998349b62965  ea=False em=False psjs=0.0  t=3.7s  runEA=0.128  wall=2m20s  ETA=7m50s
+[00:19:36] [  40/170] ▶ start  qid=ab891a64-2197-4f41-91e9-204b5538f3fd  q='Provide the names and death tolls of aviation accidents operated by ADC.'
+[00:19:36] [  40/170] ▶ start  qid=ab891a64-2197-4f41-91e9-204b5538f3fd  q='Provide the names and death tolls of aviation accidents operated by ADC.'
+[00:19:46] [  40/170] ✔ done   qid=ab891a64-2197-4f41-91e9-204b5538f3fd  ea=False em=False psjs=0.0  t=10.5s  runEA=0.125  wall=2m31s  ETA=8m09s
+[00:19:46] [  40/170] ✔ done   qid=ab891a64-2197-4f41-91e9-204b5538f3fd  ea=False em=False psjs=0.0  t=10.5s  runEA=0.125  wall=2m31s  ETA=8m09s
+[00:19:46] [  41/170] ▶ start  qid=d05655b0-454b-47e7-862f-5c6f362405f8  q='What are the names and wingspans in meters of aircraft models produced by WSK-Mielec?'
+[00:19:46] [  41/170] ▶ start  qid=d05655b0-454b-47e7-862f-5c6f362405f8  q='What are the names and wingspans in meters of aircraft models produced by WSK-Mielec?'
+[00:19:49] [  41/170] ✔ done   qid=d05655b0-454b-47e7-862f-5c6f362405f8  ea=False em=False psjs=0.0  t=3.2s  runEA=0.122  wall=2m34s  ETA=8m04s
+[00:19:49] [  41/170] ✔ done   qid=d05655b0-454b-47e7-862f-5c6f362405f8  ea=False em=False psjs=0.0  t=3.2s  runEA=0.122  wall=2m34s  ETA=8m04s
+[00:19:49] [  42/170] ▶ start  qid=17275690-a3df-415b-bfd1-c4f74f0d1e6e  q='What are the names and locations of airports from which Atlas Air Flight 3591 departed and to which American Arlines ...'
+[00:19:49] [  42/170] ▶ start  qid=17275690-a3df-415b-bfd1-c4f74f0d1e6e  q='What are the names and locations of airports from which Atlas Air Flight 3591 departed and to which American Arlines ...'
+[00:19:51] [  42/170] ✔ done   qid=17275690-a3df-415b-bfd1-c4f74f0d1e6e  ea=None em=None psjs=None  t=1.3s  runEA=0.122  wall=2m35s  ETA=7m53s  err=agent: CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message
+[00:19:51] [  42/170] ✔ done   qid=17275690-a3df-415b-bfd1-c4f74f0d1e6e  ea=None em=None psjs=None  t=1.3s  runEA=0.122  wall=2m35s  ETA=7m53s  err=agent: CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message
+[00:19:51] [  43/170] ▶ start  qid=281f4568-2e58-4d3f-8dff-1ce04afbc0df  q='What are the names of airports from which either SJY182 or Adam Air Flight 574 departed?'
+[00:19:51] [  43/170] ▶ start  qid=281f4568-2e58-4d3f-8dff-1ce04afbc0df  q='What are the names of airports from which either SJY182 or Adam Air Flight 574 departed?'
+[00:19:54] [  43/170] ✔ done   qid=281f4568-2e58-4d3f-8dff-1ce04afbc0df  ea=True em=False psjs=0.6  t=3.1s  runEA=0.143  wall=2m38s  ETA=7m47s
+[00:19:54] [  43/170] ✔ done   qid=281f4568-2e58-4d3f-8dff-1ce04afbc0df  ea=True em=False psjs=0.6  t=3.1s  runEA=0.143  wall=2m38s  ETA=7m47s
+[00:19:54] [  44/170] ▶ start  qid=f411e690-32a5-4488-82d7-3a724b517f99  q='Which flight, AMERICAN EAGLE FLIGHT 5456 or All Nippon Airways Flight 60, occurred more recently?'
+[00:19:54] [  44/170] ▶ start  qid=f411e690-32a5-4488-82d7-3a724b517f99  q='Which flight, AMERICAN EAGLE FLIGHT 5456 or All Nippon Airways Flight 60, occurred more recently?'
+[00:19:56] [  44/170] ✔ done   qid=f411e690-32a5-4488-82d7-3a724b517f99  ea=False em=False psjs=0.0  t=2.6s  runEA=0.140  wall=2m41s  ETA=7m40s
+[00:19:56] [  44/170] ✔ done   qid=f411e690-32a5-4488-82d7-3a724b517f99  ea=False em=False psjs=0.0  t=2.6s  runEA=0.140  wall=2m41s  ETA=7m40s
+[00:19:56] [  45/170] ▶ start  qid=64cf4f37-0e9a-4b2f-964f-58e569f46af3  q='What is the name of the airport that was the destination for 1363?'
+[00:19:56] [  45/170] ▶ start  qid=64cf4f37-0e9a-4b2f-964f-58e569f46af3  q='What is the name of the airport that was the destination for 1363?'
+[00:19:59] [  45/170] ✔ done   qid=64cf4f37-0e9a-4b2f-964f-58e569f46af3  ea=False em=False psjs=0.0  t=3.0s  runEA=0.136  wall=2m44s  ETA=7m35s
+[00:19:59] [  45/170] ✔ done   qid=64cf4f37-0e9a-4b2f-964f-58e569f46af3  ea=False em=False psjs=0.0  t=3.0s  runEA=0.136  wall=2m44s  ETA=7m35s
+[00:19:59] [  46/170] ▶ start  qid=f581c7e9-a189-47d1-8ab6-a489635f0bdf  q='How many aviation accidents either departed from Stockholm Arlanda Airport or involved a MD81?'
+[00:19:59] [  46/170] ▶ start  qid=f581c7e9-a189-47d1-8ab6-a489635f0bdf  q='How many aviation accidents either departed from Stockholm Arlanda Airport or involved a MD81?'
+[00:20:09] [  46/170] ✔ done   qid=f581c7e9-a189-47d1-8ab6-a489635f0bdf  ea=True em=False psjs=0.7142857142857143  t=10.0s  runEA=0.156  wall=2m54s  ETA=7m49s
+[00:20:09] [  46/170] ✔ done   qid=f581c7e9-a189-47d1-8ab6-a489635f0bdf  ea=True em=False psjs=0.7142857142857143  t=10.0s  runEA=0.156  wall=2m54s  ETA=7m49s
+[00:20:09] [  47/170] ▶ start  qid=22e968a6-b56b-42b2-9c13-83ad4383609b  q='What are the names and dates of aviation accidents involving aircraft models manufactured by Fjat Aviazione?'
+[00:20:09] [  47/170] ▶ start  qid=22e968a6-b56b-42b2-9c13-83ad4383609b  q='What are the names and dates of aviation accidents involving aircraft models manufactured by Fjat Aviazione?'
+[00:20:12] [  47/170] ✔ done   qid=22e968a6-b56b-42b2-9c13-83ad4383609b  ea=False em=False psjs=0.0  t=3.0s  runEA=0.152  wall=2m57s  ETA=7m43s
+[00:20:12] [  47/170] ✔ done   qid=22e968a6-b56b-42b2-9c13-83ad4383609b  ea=False em=False psjs=0.0  t=3.0s  runEA=0.152  wall=2m57s  ETA=7m43s
+[00:20:12] [  48/170] ▶ start  qid=17e8847e-ae80-450c-b7b0-e13a4fa94dcd  q='Which country is home to the UUAZ?'
+[00:20:12] [  48/170] ▶ start  qid=17e8847e-ae80-450c-b7b0-e13a4fa94dcd  q='Which country is home to the UUAZ?'
+[00:20:15] [  48/170] ✔ done   qid=17e8847e-ae80-450c-b7b0-e13a4fa94dcd  ea=False em=False psjs=0.0  t=2.6s  runEA=0.149  wall=2m59s  ETA=7m36s
+[00:20:15] [  48/170] ✔ done   qid=17e8847e-ae80-450c-b7b0-e13a4fa94dcd  ea=False em=False psjs=0.0  t=2.6s  runEA=0.149  wall=2m59s  ETA=7m36s
+[00:20:15] [  49/170] ▶ start  qid=2905b85e-9d10-4366-a7a6-defd89437225  q='Who are the operators of Flight 383, and what countries are they from?'
+[00:20:15] [  49/170] ▶ start  qid=2905b85e-9d10-4366-a7a6-defd89437225  q='Who are the operators of Flight 383, and what countries are they from?'
+[00:20:18] [  49/170] ✔ done   qid=2905b85e-9d10-4366-a7a6-defd89437225  ea=False em=False psjs=0.0  t=3.0s  runEA=0.146  wall=3m02s  ETA=7m31s
+[00:20:18] [  49/170] ✔ done   qid=2905b85e-9d10-4366-a7a6-defd89437225  ea=False em=False psjs=0.0  t=3.0s  runEA=0.146  wall=3m02s  ETA=7m31s
+[00:20:18] [  50/170] ▶ start  qid=168ce5e4-8b46-4a7a-a080-66f58fa95bd3  q='When did the Dubai crash flight accident occur?'
+[00:20:18] [  50/170] ▶ start  qid=168ce5e4-8b46-4a7a-a080-66f58fa95bd3  q='When did the Dubai crash flight accident occur?'
+[00:20:21] [  50/170] ✔ done   qid=168ce5e4-8b46-4a7a-a080-66f58fa95bd3  ea=False em=False psjs=0.0  t=2.8s  runEA=0.143  wall=3m05s  ETA=7m25s
+[00:20:21] [  50/170] ✔ done   qid=168ce5e4-8b46-4a7a-a080-66f58fa95bd3  ea=False em=False psjs=0.0  t=2.8s  runEA=0.143  wall=3m05s  ETA=7m25s
+[00:20:21] [  51/170] ▶ start  qid=91c17b7c-641c-4b18-9325-b6eccdf9f2e7  q='Who are the operators by whom Aerolot Flight 3603 is operated?'
+[00:20:21] [  51/170] ▶ start  qid=91c17b7c-641c-4b18-9325-b6eccdf9f2e7  q='Who are the operators by whom Aerolot Flight 3603 is operated?'
+[00:20:23] [  51/170] ✔ done   qid=91c17b7c-641c-4b18-9325-b6eccdf9f2e7  ea=False em=False psjs=0.0  t=2.5s  runEA=0.140  wall=3m08s  ETA=7m18s
+[00:20:23] [  51/170] ✔ done   qid=91c17b7c-641c-4b18-9325-b6eccdf9f2e7  ea=False em=False psjs=0.0  t=2.5s  runEA=0.140  wall=3m08s  ETA=7m18s
+[00:20:23] [  52/170] ▶ start  qid=b8bdc7b3-6b67-49e3-a211-b8ec455ad097  q='What are the names of airports from which flights involved in accidents were departing, if they were headed to ZYTL?'
+[00:20:23] [  52/170] ▶ start  qid=b8bdc7b3-6b67-49e3-a211-b8ec455ad097  q='What are the names of airports from which flights involved in accidents were departing, if they were headed to ZYTL?'
+[00:20:26] [  52/170] ✔ done   qid=b8bdc7b3-6b67-49e3-a211-b8ec455ad097  ea=False em=False psjs=0.0  t=2.7s  runEA=0.137  wall=3m10s  ETA=7m12s
+[00:20:26] [  52/170] ✔ done   qid=b8bdc7b3-6b67-49e3-a211-b8ec455ad097  ea=False em=False psjs=0.0  t=2.7s  runEA=0.137  wall=3m10s  ETA=7m12s
+[00:20:26] [  53/170] ▶ start  qid=1aa2c918-dea8-4c6b-82ac-708641302d78  q='Do Flight 363 and Mandala Airlines Flight 091 have an equal number of injuries?'
+[00:20:26] [  53/170] ▶ start  qid=1aa2c918-dea8-4c6b-82ac-708641302d78  q='Do Flight 363 and Mandala Airlines Flight 091 have an equal number of injuries?'
+[00:20:29] [  53/170] ✔ done   qid=1aa2c918-dea8-4c6b-82ac-708641302d78  ea=False em=False psjs=0.0  t=2.6s  runEA=0.135  wall=3m13s  ETA=7m06s
+[00:20:29] [  53/170] ✔ done   qid=1aa2c918-dea8-4c6b-82ac-708641302d78  ea=False em=False psjs=0.0  t=2.6s  runEA=0.135  wall=3m13s  ETA=7m06s
+[00:20:29] [  54/170] ▶ start  qid=498e4613-6c00-4e1c-aad4-8ef3857a775e  q='What are the names and countries of the airports that were the destination for AIR ONTARIO FLIGHT 1363?'
+[00:20:29] [  54/170] ▶ start  qid=498e4613-6c00-4e1c-aad4-8ef3857a775e  q='What are the names and countries of the airports that were the destination for AIR ONTARIO FLIGHT 1363?'
+[00:20:31] [  54/170] ✔ done   qid=498e4613-6c00-4e1c-aad4-8ef3857a775e  ea=False em=False psjs=0.0  t=2.8s  runEA=0.132  wall=3m16s  ETA=7m01s
+[00:20:31] [  54/170] ✔ done   qid=498e4613-6c00-4e1c-aad4-8ef3857a775e  ea=False em=False psjs=0.0  t=2.8s  runEA=0.132  wall=3m16s  ETA=7m01s
+[00:20:31] [  55/170] ▶ start  qid=3f7e1fa9-c3f5-462d-8f8f-9da98dd461a3  q='Which country is LEGE located in?'
+[00:20:31] [  55/170] ▶ start  qid=3f7e1fa9-c3f5-462d-8f8f-9da98dd461a3  q='Which country is LEGE located in?'
+[00:20:34] [  55/170] ✔ done   qid=3f7e1fa9-c3f5-462d-8f8f-9da98dd461a3  ea=False em=False psjs=0.0  t=2.9s  runEA=0.130  wall=3m19s  ETA=6m56s
+[00:20:34] [  55/170] ✔ done   qid=3f7e1fa9-c3f5-462d-8f8f-9da98dd461a3  ea=False em=False psjs=0.0  t=2.9s  runEA=0.130  wall=3m19s  ETA=6m56s
+[00:20:34] [  56/170] ▶ start  qid=16ec5e8c-b81f-489d-8b0b-21894bde152c  q='What are the names of aviation accidents that departed from the airport where 911 was headed?'
+[00:20:34] [  56/170] ▶ start  qid=16ec5e8c-b81f-489d-8b0b-21894bde152c  q='What are the names of aviation accidents that departed from the airport where 911 was headed?'
+[00:20:37] [  56/170] ✔ done   qid=16ec5e8c-b81f-489d-8b0b-21894bde152c  ea=False em=False psjs=0.0  t=2.7s  runEA=0.127  wall=3m21s  ETA=6m50s
+[00:20:37] [  56/170] ✔ done   qid=16ec5e8c-b81f-489d-8b0b-21894bde152c  ea=False em=False psjs=0.0  t=2.7s  runEA=0.127  wall=3m21s  ETA=6m50s
+[00:20:37] [  57/170] ▶ start  qid=4d74f7ef-33f7-48d2-a9b6-5cb9042c8f4b  q='What are the names of airports from which a flight accident involving an Aitbus A300 departed?'
+[00:20:37] [  57/170] ▶ start  qid=4d74f7ef-33f7-48d2-a9b6-5cb9042c8f4b  q='What are the names of airports from which a flight accident involving an Aitbus A300 departed?'
+[00:20:40] [  57/170] ✔ done   qid=4d74f7ef-33f7-48d2-a9b6-5cb9042c8f4b  ea=False em=False psjs=0.0  t=3.3s  runEA=0.125  wall=3m25s  ETA=6m46s
+[00:20:40] [  57/170] ✔ done   qid=4d74f7ef-33f7-48d2-a9b6-5cb9042c8f4b  ea=False em=False psjs=0.0  t=3.3s  runEA=0.125  wall=3m25s  ETA=6m46s
+[00:20:40] [  58/170] ▶ start  qid=a34701df-5ecd-4591-90e5-c1e530c23c7f  q='What are the names of aviation accidents that took off from Puerto Plata and were headed to Frankfurt Airport?'
+[00:20:40] [  58/170] ▶ start  qid=a34701df-5ecd-4591-90e5-c1e530c23c7f  q='What are the names of aviation accidents that took off from Puerto Plata and were headed to Frankfurt Airport?'
+[00:20:43] [  58/170] ✔ done   qid=a34701df-5ecd-4591-90e5-c1e530c23c7f  ea=False em=False psjs=0.0  t=2.8s  runEA=0.123  wall=3m28s  ETA=6m41s
+[00:20:43] [  58/170] ✔ done   qid=a34701df-5ecd-4591-90e5-c1e530c23c7f  ea=False em=False psjs=0.0  t=2.8s  runEA=0.123  wall=3m28s  ETA=6m41s
+[00:20:43] [  59/170] ▶ start  qid=6170926e-3f5e-4f07-ac53-0df9f2390ee5  q='What is the lowest number of injuries in flight accidents operated by LOT Poliish Airlines?'
+[00:20:43] [  59/170] ▶ start  qid=6170926e-3f5e-4f07-ac53-0df9f2390ee5  q='What is the lowest number of injuries in flight accidents operated by LOT Poliish Airlines?'
+[00:20:46] [  59/170] ✔ done   qid=6170926e-3f5e-4f07-ac53-0df9f2390ee5  ea=False em=False psjs=0.0  t=2.7s  runEA=0.121  wall=3m30s  ETA=6m36s
+[00:20:46] [  59/170] ✔ done   qid=6170926e-3f5e-4f07-ac53-0df9f2390ee5  ea=False em=False psjs=0.0  t=2.7s  runEA=0.121  wall=3m30s  ETA=6m36s
+[00:20:46] [  60/170] ▶ start  qid=821c6b82-d08c-4d70-b8f9-0cfcfa07dc00  q='How many more injuries were there in the Tatarstan Airlines Flight 363 incident compared to the 091 incident?'
+[00:20:46] [  60/170] ▶ start  qid=821c6b82-d08c-4d70-b8f9-0cfcfa07dc00  q='How many more injuries were there in the Tatarstan Airlines Flight 363 incident compared to the 091 incident?'
+[00:20:49] [  60/170] ✔ done   qid=821c6b82-d08c-4d70-b8f9-0cfcfa07dc00  ea=False em=False psjs=0.0  t=3.2s  runEA=0.119  wall=3m33s  ETA=6m31s
+[00:20:49] [  60/170] ✔ done   qid=821c6b82-d08c-4d70-b8f9-0cfcfa07dc00  ea=False em=False psjs=0.0  t=3.2s  runEA=0.119  wall=3m33s  ETA=6m31s
+[00:20:49] [  61/170] ▶ start  qid=6612f9a2-5f1d-42f6-aa51-59756b2a17ca  q='Provide the names of all aircraft models manufactured by Aerei da Trasporto Regionale, along with the number of fligh...'
+[00:20:49] [  61/170] ▶ start  qid=6612f9a2-5f1d-42f6-aa51-59756b2a17ca  q='Provide the names of all aircraft models manufactured by Aerei da Trasporto Regionale, along with the number of fligh...'
+[00:20:52] [  61/170] ✔ done   qid=6612f9a2-5f1d-42f6-aa51-59756b2a17ca  ea=False em=False psjs=0.0  t=2.7s  runEA=0.117  wall=3m36s  ETA=6m26s
+[00:20:52] [  61/170] ✔ done   qid=6612f9a2-5f1d-42f6-aa51-59756b2a17ca  ea=False em=False psjs=0.0  t=2.7s  runEA=0.117  wall=3m36s  ETA=6m26s
+[00:20:52] [  62/170] ▶ start  qid=d8ebd0aa-ec94-4635-a314-c1c33b659c5a  q='How many aviation accidents either departed from Narita International Airport or were operated by KAL?'
+[00:20:52] [  62/170] ▶ start  qid=d8ebd0aa-ec94-4635-a314-c1c33b659c5a  q='How many aviation accidents either departed from Narita International Airport or were operated by KAL?'
+[00:20:55] [  62/170] ✔ done   qid=d8ebd0aa-ec94-4635-a314-c1c33b659c5a  ea=False em=False psjs=0.4482758620689655  t=2.9s  runEA=0.115  wall=3m39s  ETA=6m22s
+[00:20:55] [  62/170] ✔ done   qid=d8ebd0aa-ec94-4635-a314-c1c33b659c5a  ea=False em=False psjs=0.4482758620689655  t=2.9s  runEA=0.115  wall=3m39s  ETA=6m22s
+[00:20:55] [  63/170] ▶ start  qid=ab2ad73f-ea17-4f7c-89fd-08c6b9933acd  q='Which country is home to the NOVOSIBIRSK AIRCRAFT PRODUCTION ASSOCIATION?'
+[00:20:55] [  63/170] ▶ start  qid=ab2ad73f-ea17-4f7c-89fd-08c6b9933acd  q='Which country is home to the NOVOSIBIRSK AIRCRAFT PRODUCTION ASSOCIATION?'
+[00:20:57] [  63/170] ✔ done   qid=ab2ad73f-ea17-4f7c-89fd-08c6b9933acd  ea=False em=False psjs=0.0  t=2.6s  runEA=0.113  wall=3m42s  ETA=6m17s
+[00:20:57] [  63/170] ✔ done   qid=ab2ad73f-ea17-4f7c-89fd-08c6b9933acd  ea=False em=False psjs=0.0  t=2.6s  runEA=0.113  wall=3m42s  ETA=6m17s
+[00:20:57] [  64/170] ▶ start  qid=785e9e15-8906-4a01-9cb2-7e2362a376d2  q='What is the name of the aircraft model, made by the same manufacturer as the Boeing 464-67, that had its first flight...'
+[00:20:57] [  64/170] ▶ start  qid=785e9e15-8906-4a01-9cb2-7e2362a376d2  q='What is the name of the aircraft model, made by the same manufacturer as the Boeing 464-67, that had its first flight...'
+[00:21:00] [  64/170] ✔ done   qid=785e9e15-8906-4a01-9cb2-7e2362a376d2  ea=False em=False psjs=0.0  t=3.1s  runEA=0.111  wall=3m45s  ETA=6m12s
+[00:21:00] [  64/170] ✔ done   qid=785e9e15-8906-4a01-9cb2-7e2362a376d2  ea=False em=False psjs=0.0  t=3.1s  runEA=0.111  wall=3m45s  ETA=6m12s
+[00:21:00] [  65/170] ▶ start  qid=e1f0ed29-4284-47eb-8895-37bbdca8e0d6  q='What is the difference in wingspan, in meters, between the Cnstellation and the Anson aircraft models?'
+[00:21:00] [  65/170] ▶ start  qid=e1f0ed29-4284-47eb-8895-37bbdca8e0d6  q='What is the difference in wingspan, in meters, between the Cnstellation and the Anson aircraft models?'
+[00:21:03] [  65/170] ✔ done   qid=e1f0ed29-4284-47eb-8895-37bbdca8e0d6  ea=False em=False psjs=0.0  t=3.0s  runEA=0.109  wall=3m48s  ETA=6m08s
+[00:21:03] [  65/170] ✔ done   qid=e1f0ed29-4284-47eb-8895-37bbdca8e0d6  ea=False em=False psjs=0.0  t=3.0s  runEA=0.109  wall=3m48s  ETA=6m08s
+[00:21:03] [  66/170] ▶ start  qid=8593b48b-329d-47b3-9a4d-ecbcffa185de  q='Who are the operators of the 383?'
+[00:21:03] [  66/170] ▶ start  qid=8593b48b-329d-47b3-9a4d-ecbcffa185de  q='Who are the operators of the 383?'
+[00:21:06] [  66/170] ✔ done   qid=8593b48b-329d-47b3-9a4d-ecbcffa185de  ea=False em=False psjs=0.0  t=2.9s  runEA=0.108  wall=3m51s  ETA=6m04s
+[00:21:06] [  66/170] ✔ done   qid=8593b48b-329d-47b3-9a4d-ecbcffa185de  ea=False em=False psjs=0.0  t=2.9s  runEA=0.108  wall=3m51s  ETA=6m04s
+[00:21:06] [  67/170] ▶ start  qid=ecff50a5-6cc7-49fc-b6bd-11ba37bd5b83  q='Did Production Corporation Polyot and SAAB start operations in the same year?'
+[00:21:06] [  67/170] ▶ start  qid=ecff50a5-6cc7-49fc-b6bd-11ba37bd5b83  q='Did Production Corporation Polyot and SAAB start operations in the same year?'
+[00:21:09] [  67/170] ✔ done   qid=ecff50a5-6cc7-49fc-b6bd-11ba37bd5b83  ea=False em=False psjs=0.0  t=2.7s  runEA=0.106  wall=3m54s  ETA=5m59s
+[00:21:09] [  67/170] ✔ done   qid=ecff50a5-6cc7-49fc-b6bd-11ba37bd5b83  ea=False em=False psjs=0.0  t=2.7s  runEA=0.106  wall=3m54s  ETA=5m59s
+[00:21:09] [  68/170] ▶ start  qid=87b87779-fb01-4097-b417-b029ec0e03c4  q='What are the names and flight numbers of aviation accidents that departed from Erhaç Airport and involved the McDonne...'
+[00:21:09] [  68/170] ▶ start  qid=87b87779-fb01-4097-b417-b029ec0e03c4  q='What are the names and flight numbers of aviation accidents that departed from Erhaç Airport and involved the McDonne...'
+[00:21:12] [  68/170] ✔ done   qid=87b87779-fb01-4097-b417-b029ec0e03c4  ea=False em=False psjs=0.0  t=3.0s  runEA=0.104  wall=3m57s  ETA=5m55s
+[00:21:12] [  68/170] ✔ done   qid=87b87779-fb01-4097-b417-b029ec0e03c4  ea=False em=False psjs=0.0  t=3.0s  runEA=0.104  wall=3m57s  ETA=5m55s
+[00:21:12] [  69/170] ▶ start  qid=210187aa-e490-431e-9e20-1375aa6cf3ee  q='What is the difference in length, in meters, between the A380 and the Beechcraft 99 Airliner?'
+[00:21:12] [  69/170] ▶ start  qid=210187aa-e490-431e-9e20-1375aa6cf3ee  q='What is the difference in length, in meters, between the A380 and the Beechcraft 99 Airliner?'
+[00:21:16] [  69/170] ✔ done   qid=210187aa-e490-431e-9e20-1375aa6cf3ee  ea=False em=False psjs=0.0  t=3.5s  runEA=0.103  wall=4m00s  ETA=5m51s
+[00:21:16] [  69/170] ✔ done   qid=210187aa-e490-431e-9e20-1375aa6cf3ee  ea=False em=False psjs=0.0  t=3.5s  runEA=0.103  wall=4m00s  ETA=5m51s
+[00:21:16] [  70/170] ▶ start  qid=0e209a1b-3460-4ce7-8aa3-81d6b0d22aa0  q='Did Transair Sweden and LOT Polish Airlinnes start operations in the same year?'
+[00:21:16] [  70/170] ▶ start  qid=0e209a1b-3460-4ce7-8aa3-81d6b0d22aa0  q='Did Transair Sweden and LOT Polish Airlinnes start operations in the same year?'
+[00:21:18] [  70/170] ✔ done   qid=0e209a1b-3460-4ce7-8aa3-81d6b0d22aa0  ea=False em=False psjs=0.0  t=2.8s  runEA=0.101  wall=4m03s  ETA=5m47s
+[00:21:18] [  70/170] ✔ done   qid=0e209a1b-3460-4ce7-8aa3-81d6b0d22aa0  ea=False em=False psjs=0.0  t=2.8s  runEA=0.101  wall=4m03s  ETA=5m47s
+[00:21:18] [  71/170] ▶ start  qid=c5f302f2-26cd-4733-a6f8-fe6fb410bc99  q='What are the names and dates of aviation accidents involving KAL that were headed to Mactan–Cebu International Airport?'
+[00:21:18] [  71/170] ▶ start  qid=c5f302f2-26cd-4733-a6f8-fe6fb410bc99  q='What are the names and dates of aviation accidents involving KAL that were headed to Mactan–Cebu International Airport?'
+[00:21:24] [  71/170] ✔ done   qid=c5f302f2-26cd-4733-a6f8-fe6fb410bc99  ea=False em=False psjs=0.0  t=5.5s  runEA=0.100  wall=4m08s  ETA=5m46s
+[00:21:24] [  71/170] ✔ done   qid=c5f302f2-26cd-4733-a6f8-fe6fb410bc99  ea=False em=False psjs=0.0  t=5.5s  runEA=0.100  wall=4m08s  ETA=5m46s
+[00:21:24] [  72/170] ▶ start  qid=203c08d7-5e3a-47f5-b05e-b2c6d27946c7  q='List the names of operators that have flights involved in accidents with the il-62 aircraft, and for each, provide th...'
+[00:21:24] [  72/170] ▶ start  qid=203c08d7-5e3a-47f5-b05e-b2c6d27946c7  q='List the names of operators that have flights involved in accidents with the il-62 aircraft, and for each, provide th...'
+[00:21:33] [  72/170] ✔ done   qid=203c08d7-5e3a-47f5-b05e-b2c6d27946c7  ea=False em=False psjs=0.0  t=9.1s  runEA=0.099  wall=4m17s  ETA=5m50s
+[00:21:33] [  72/170] ✔ done   qid=203c08d7-5e3a-47f5-b05e-b2c6d27946c7  ea=False em=False psjs=0.0  t=9.1s  runEA=0.099  wall=4m17s  ETA=5m50s
+[00:21:33] [  73/170] ▶ start  qid=34280834-51d2-4a51-be3a-02ae354ba3b7  q='Which aircraft had its first flight later, the Boeing 720 or the DC9?'
+[00:21:33] [  73/170] ▶ start  qid=34280834-51d2-4a51-be3a-02ae354ba3b7  q='Which aircraft had its first flight later, the Boeing 720 or the DC9?'
+[00:21:36] [  73/170] ✔ done   qid=34280834-51d2-4a51-be3a-02ae354ba3b7  ea=False em=False psjs=0.0  t=3.5s  runEA=0.097  wall=4m21s  ETA=5m47s
+[00:21:36] [  73/170] ✔ done   qid=34280834-51d2-4a51-be3a-02ae354ba3b7  ea=False em=False psjs=0.0  t=3.5s  runEA=0.097  wall=4m21s  ETA=5m47s
+[00:21:36] [  74/170] ▶ start  qid=b0b4cf12-dc8d-4d36-b516-0e1971f9abc9  q='What are the names of airports that were destinations for either LOT Polish Airlines Flight 16 or Gottröra accident?'
+[00:21:36] [  74/170] ▶ start  qid=b0b4cf12-dc8d-4d36-b516-0e1971f9abc9  q='What are the names of airports that were destinations for either LOT Polish Airlines Flight 16 or Gottröra accident?'
+[00:21:39] [  74/170] ✔ done   qid=b0b4cf12-dc8d-4d36-b516-0e1971f9abc9  ea=True em=False psjs=0.6  t=2.9s  runEA=0.110  wall=4m24s  ETA=5m42s
+[00:21:39] [  74/170] ✔ done   qid=b0b4cf12-dc8d-4d36-b516-0e1971f9abc9  ea=True em=False psjs=0.6  t=2.9s  runEA=0.110  wall=4m24s  ETA=5m42s
+[00:21:39] [  75/170] ▶ start  qid=63157043-2ca8-4416-bd83-87c89afe8cb8  q='When was A. launched?'
+[00:21:39] [  75/170] ▶ start  qid=63157043-2ca8-4416-bd83-87c89afe8cb8  q='When was A. launched?'
+[00:21:42] [  75/170] ✔ done   qid=63157043-2ca8-4416-bd83-87c89afe8cb8  ea=False em=False psjs=0.0  t=2.4s  runEA=0.108  wall=4m26s  ETA=5m37s
+[00:21:42] [  75/170] ✔ done   qid=63157043-2ca8-4416-bd83-87c89afe8cb8  ea=False em=False psjs=0.0  t=2.4s  runEA=0.108  wall=4m26s  ETA=5m37s
+[00:21:42] [  76/170] ▶ start  qid=adf3c4a8-916d-4092-ad56-74436f21807b  q='What are the names of airports from which flights involving the Arbus A321 have departed, and how many such flight ac...'
+[00:21:42] [  76/170] ▶ start  qid=adf3c4a8-916d-4092-ad56-74436f21807b  q='What are the names of airports from which flights involving the Arbus A321 have departed, and how many such flight ac...'
+[00:21:45] [  76/170] ✔ done   qid=adf3c4a8-916d-4092-ad56-74436f21807b  ea=False em=False psjs=0.0  t=3.3s  runEA=0.107  wall=4m29s  ETA=5m33s
+[00:21:45] [  76/170] ✔ done   qid=adf3c4a8-916d-4092-ad56-74436f21807b  ea=False em=False psjs=0.0  t=3.3s  runEA=0.107  wall=4m29s  ETA=5m33s
+[00:21:45] [  77/170] ▶ start  qid=7b450f61-fad7-4ca7-b408-1a6ebdfc098a  q='What is the ICAO code for Iwakuni Aie Base?'
+[00:21:45] [  77/170] ▶ start  qid=7b450f61-fad7-4ca7-b408-1a6ebdfc098a  q='What is the ICAO code for Iwakuni Aie Base?'
+[00:21:48] [  77/170] ✔ done   qid=7b450f61-fad7-4ca7-b408-1a6ebdfc098a  ea=False em=False psjs=0.0  t=2.6s  runEA=0.105  wall=4m32s  ETA=5m29s
+[00:21:48] [  77/170] ✔ done   qid=7b450f61-fad7-4ca7-b408-1a6ebdfc098a  ea=False em=False psjs=0.0  t=2.6s  runEA=0.105  wall=4m32s  ETA=5m29s
+[00:21:48] [  78/170] ▶ start  qid=d0ef7612-14b3-4755-8a6f-4ef4b24e99bb  q='What are the names of aviation accidents that were either headed to or departed from Rutan Field?'
+[00:21:48] [  78/170] ▶ start  qid=d0ef7612-14b3-4755-8a6f-4ef4b24e99bb  q='What are the names of aviation accidents that were either headed to or departed from Rutan Field?'
+[00:21:50] [  78/170] ✔ done   qid=d0ef7612-14b3-4755-8a6f-4ef4b24e99bb  ea=False em=False psjs=0.0  t=2.7s  runEA=0.104  wall=4m35s  ETA=5m24s
+[00:21:50] [  78/170] ✔ done   qid=d0ef7612-14b3-4755-8a6f-4ef4b24e99bb  ea=False em=False psjs=0.0  t=2.7s  runEA=0.104  wall=4m35s  ETA=5m24s
+[00:21:50] [  79/170] ▶ start  qid=9a82a465-6a85-42b3-b3e0-75299d1d68e1  q='What are the names of aviation accidents operated by Air New Zealand that departed from Auckland International Airport?'
+[00:21:50] [  79/170] ▶ start  qid=9a82a465-6a85-42b3-b3e0-75299d1d68e1  q='What are the names of aviation accidents operated by Air New Zealand that departed from Auckland International Airport?'
+[00:21:53] [  79/170] ✔ done   qid=9a82a465-6a85-42b3-b3e0-75299d1d68e1  ea=False em=False psjs=0.0  t=2.8s  runEA=0.103  wall=4m38s  ETA=5m20s
+[00:21:53] [  79/170] ✔ done   qid=9a82a465-6a85-42b3-b3e0-75299d1d68e1  ea=False em=False psjs=0.0  t=2.8s  runEA=0.103  wall=4m38s  ETA=5m20s
+[00:21:53] [  80/170] ▶ start  qid=75f53194-110b-45ff-80a5-ded7b57285de  q='Which has a later launch year, the 380 AEW or Air Botswana?'
+[00:21:53] [  80/170] ▶ start  qid=75f53194-110b-45ff-80a5-ded7b57285de  q='Which has a later launch year, the 380 AEW or Air Botswana?'
+[00:21:56] [  80/170] ✔ done   qid=75f53194-110b-45ff-80a5-ded7b57285de  ea=False em=False psjs=0.0  t=2.6s  runEA=0.101  wall=4m40s  ETA=5m15s
+[00:21:56] [  80/170] ✔ done   qid=75f53194-110b-45ff-80a5-ded7b57285de  ea=False em=False psjs=0.0  t=2.6s  runEA=0.101  wall=4m40s  ETA=5m15s
+[00:21:56] [  81/170] ▶ start  qid=52fcdd5b-ba15-4ca3-a0ed-1a56ed2c3b3c  q='What are the names of aircraft models either produced by LET Aircraft Industries or involved in the Kemerovo Let L-41...'
+[00:21:56] [  81/170] ▶ start  qid=52fcdd5b-ba15-4ca3-a0ed-1a56ed2c3b3c  q='What are the names of aircraft models either produced by LET Aircraft Industries or involved in the Kemerovo Let L-41...'
+[00:22:00] [  81/170] ✔ done   qid=52fcdd5b-ba15-4ca3-a0ed-1a56ed2c3b3c  ea=True em=False psjs=0.6  t=4.2s  runEA=0.113  wall=4m44s  ETA=5m12s
+[00:22:00] [  81/170] ✔ done   qid=52fcdd5b-ba15-4ca3-a0ed-1a56ed2c3b3c  ea=True em=False psjs=0.6  t=4.2s  runEA=0.113  wall=4m44s  ETA=5m12s
+[00:22:00] [  82/170] ▶ start  qid=62878d72-3f00-4a63-8893-fce72a4633e5  q='What is the name of the airport that was the destination for the assassination of Juvenal Habyarimana and Cyprien Nta...'
+[00:22:00] [  82/170] ▶ start  qid=62878d72-3f00-4a63-8893-fce72a4633e5  q='What is the name of the airport that was the destination for the assassination of Juvenal Habyarimana and Cyprien Nta...'
+[00:22:08] [  82/170] ✔ done   qid=62878d72-3f00-4a63-8893-fce72a4633e5  ea=False em=False psjs=0.0  t=8.3s  runEA=0.111  wall=4m53s  ETA=5m14s
+[00:22:08] [  82/170] ✔ done   qid=62878d72-3f00-4a63-8893-fce72a4633e5  ea=False em=False psjs=0.0  t=8.3s  runEA=0.111  wall=4m53s  ETA=5m14s
+[00:22:08] [  83/170] ▶ start  qid=0548c291-bf76-4df1-b9ef-8ec933b067f9  q='What are the names and flight numbers of aviation accidents involving the CRJ200 and operated by Endeavor Air?'
+[00:22:08] [  83/170] ▶ start  qid=0548c291-bf76-4df1-b9ef-8ec933b067f9  q='What are the names and flight numbers of aviation accidents involving the CRJ200 and operated by Endeavor Air?'
+[00:22:13] [  83/170] ✔ done   qid=0548c291-bf76-4df1-b9ef-8ec933b067f9  ea=False em=False psjs=0.0  t=4.8s  runEA=0.110  wall=4m57s  ETA=5m12s
+[00:22:13] [  83/170] ✔ done   qid=0548c291-bf76-4df1-b9ef-8ec933b067f9  ea=False em=False psjs=0.0  t=4.8s  runEA=0.110  wall=4m57s  ETA=5m12s
+[00:22:13] [  84/170] ▶ start  qid=df049c23-0a66-4290-a8ab-7d1ac1969705  q='What is the name of the flight accident headed to Swmui Airport that had the fewest survivors?'
+[00:22:13] [  84/170] ▶ start  qid=df049c23-0a66-4290-a8ab-7d1ac1969705  q='What is the name of the flight accident headed to Swmui Airport that had the fewest survivors?'
+[00:22:16] [  84/170] ✔ done   qid=df049c23-0a66-4290-a8ab-7d1ac1969705  ea=False em=False psjs=0.0  t=3.0s  runEA=0.108  wall=5m00s  ETA=5m08s
+[00:22:16] [  84/170] ✔ done   qid=df049c23-0a66-4290-a8ab-7d1ac1969705  ea=False em=False psjs=0.0  t=3.0s  runEA=0.108  wall=5m00s  ETA=5m08s
+[00:22:16] [  85/170] ▶ start  qid=da5ce835-6066-4424-a009-0fa57d5f9f63  q='What are the names and locations of aviation accidents involving the dash 7 aircraft model?'
+[00:22:16] [  85/170] ▶ start  qid=da5ce835-6066-4424-a009-0fa57d5f9f63  q='What are the names and locations of aviation accidents involving the dash 7 aircraft model?'
+[00:22:19] [  85/170] ✔ done   qid=da5ce835-6066-4424-a009-0fa57d5f9f63  ea=False em=False psjs=0.0  t=2.7s  runEA=0.107  wall=5m03s  ETA=5m03s
+[00:22:19] [  85/170] ✔ done   qid=da5ce835-6066-4424-a009-0fa57d5f9f63  ea=False em=False psjs=0.0  t=2.7s  runEA=0.107  wall=5m03s  ETA=5m03s
+[00:22:19] [  86/170] ▶ start  qid=6f17abc8-a541-4e77-9e77-1851477f6e57  q='What are the names of airports that were destinations for both Chinna Airlines Flight 006 and American Airlines Fligh...'
+[00:22:19] [  86/170] ▶ start  qid=6f17abc8-a541-4e77-9e77-1851477f6e57  q='What are the names of airports that were destinations for both Chinna Airlines Flight 006 and American Airlines Fligh...'
+[00:22:21] [  86/170] ✔ done   qid=6f17abc8-a541-4e77-9e77-1851477f6e57  ea=False em=False psjs=0.0  t=2.7s  runEA=0.106  wall=5m06s  ETA=4m59s
+[00:22:21] [  86/170] ✔ done   qid=6f17abc8-a541-4e77-9e77-1851477f6e57  ea=False em=False psjs=0.0  t=2.7s  runEA=0.106  wall=5m06s  ETA=4m59s
+[00:22:21] [  87/170] ▶ start  qid=ef21d702-743f-4623-8537-754611c84765  q='Do Noar 4896 and Air Moorea Flight 1121 have an equal number of survivors?'
+[00:22:21] [  87/170] ▶ start  qid=ef21d702-743f-4623-8537-754611c84765  q='Do Noar 4896 and Air Moorea Flight 1121 have an equal number of survivors?'
+[00:22:24] [  87/170] ✔ done   qid=ef21d702-743f-4623-8537-754611c84765  ea=False em=False psjs=0.0  t=2.8s  runEA=0.105  wall=5m09s  ETA=4m54s
+[00:22:24] [  87/170] ✔ done   qid=ef21d702-743f-4623-8537-754611c84765  ea=False em=False psjs=0.0  t=2.8s  runEA=0.105  wall=5m09s  ETA=4m54s
+[00:22:24] [  88/170] ▶ start  qid=0deee737-e2e5-40d3-a188-c54bdfd5a268  q='What year did the Association launch?'
+[00:22:24] [  88/170] ▶ start  qid=0deee737-e2e5-40d3-a188-c54bdfd5a268  q='What year did the Association launch?'
+[00:22:27] [  88/170] ✔ done   qid=0deee737-e2e5-40d3-a188-c54bdfd5a268  ea=False em=False psjs=0.0  t=2.4s  runEA=0.103  wall=5m11s  ETA=4m50s
+[00:22:27] [  88/170] ✔ done   qid=0deee737-e2e5-40d3-a188-c54bdfd5a268  ea=False em=False psjs=0.0  t=2.4s  runEA=0.103  wall=5m11s  ETA=4m50s
+[00:22:27] [  89/170] ▶ start  qid=a03ad403-9d4f-4aa5-87cc-1c4004de8804  q='What are the names of aviation accidents that were headed to YWG and departed from Toronto Pearson International Airp...'
+[00:22:27] [  89/170] ▶ start  qid=a03ad403-9d4f-4aa5-87cc-1c4004de8804  q='What are the names of aviation accidents that were headed to YWG and departed from Toronto Pearson International Airp...'
+[00:22:30] [  89/170] ✔ done   qid=a03ad403-9d4f-4aa5-87cc-1c4004de8804  ea=False em=False psjs=0.0  t=3.2s  runEA=0.102  wall=5m14s  ETA=4m46s
+[00:22:30] [  89/170] ✔ done   qid=a03ad403-9d4f-4aa5-87cc-1c4004de8804  ea=False em=False psjs=0.0  t=3.2s  runEA=0.102  wall=5m14s  ETA=4m46s
+[00:22:30] [  90/170] ▶ start  qid=d37d6da4-7814-4f5d-af68-698f941c570e  q='What are the names of aviation accidents operated by the same airline that operated Iberka Airlines Flight 1456?'
+[00:22:30] [  90/170] ▶ start  qid=d37d6da4-7814-4f5d-af68-698f941c570e  q='What are the names of aviation accidents operated by the same airline that operated Iberka Airlines Flight 1456?'
+[00:22:33] [  90/170] ✔ done   qid=d37d6da4-7814-4f5d-af68-698f941c570e  ea=False em=False psjs=0.0  t=3.0s  runEA=0.101  wall=5m17s  ETA=4m42s
+[00:22:33] [  90/170] ✔ done   qid=d37d6da4-7814-4f5d-af68-698f941c570e  ea=False em=False psjs=0.0  t=3.0s  runEA=0.101  wall=5m17s  ETA=4m42s
+[00:22:33] [  91/170] ▶ start  qid=81b1f0da-6037-45bf-a541-9141d56b5012  q='What are the names of aviation accidents either operated by the Philippine Air Force or headed for Jolo?'
+[00:22:33] [  91/170] ▶ start  qid=81b1f0da-6037-45bf-a541-9141d56b5012  q='What are the names of aviation accidents either operated by the Philippine Air Force or headed for Jolo?'
+[00:22:35] [  91/170] ✔ done   qid=81b1f0da-6037-45bf-a541-9141d56b5012  ea=True em=False psjs=0.6  t=2.8s  runEA=0.111  wall=5m20s  ETA=4m38s
+[00:22:35] [  91/170] ✔ done   qid=81b1f0da-6037-45bf-a541-9141d56b5012  ea=True em=False psjs=0.6  t=2.8s  runEA=0.111  wall=5m20s  ETA=4m38s
+[00:22:35] [  92/170] ▶ start  qid=a9de2625-45ff-45f4-b832-c2637dc46d48  q='Which aircraft has a greater range, the Mitchell aircraft or the Airbus A340?'
+[00:22:35] [  92/170] ▶ start  qid=a9de2625-45ff-45f4-b832-c2637dc46d48  q='Which aircraft has a greater range, the Mitchell aircraft or the Airbus A340?'
+[00:22:38] [  92/170] ✔ done   qid=a9de2625-45ff-45f4-b832-c2637dc46d48  ea=False em=False psjs=0.0  t=2.6s  runEA=0.110  wall=5m23s  ETA=4m34s
+[00:22:38] [  92/170] ✔ done   qid=a9de2625-45ff-45f4-b832-c2637dc46d48  ea=False em=False psjs=0.0  t=2.6s  runEA=0.110  wall=5m23s  ETA=4m34s
+[00:22:38] [  93/170] ▶ start  qid=c0a24565-b569-4e65-a946-7c9a4a7d2d65  q='What are the names and flight numbers of aviation accidents that involve the same aircraft model as southern airways ...'
+[00:22:38] [  93/170] ▶ start  qid=c0a24565-b569-4e65-a946-7c9a4a7d2d65  q='What are the names and flight numbers of aviation accidents that involve the same aircraft model as southern airways ...'
+[00:22:42] [  93/170] ✔ done   qid=c0a24565-b569-4e65-a946-7c9a4a7d2d65  ea=False em=False psjs=1.0  t=3.8s  runEA=0.109  wall=5m26s  ETA=4m30s
+[00:22:42] [  93/170] ✔ done   qid=c0a24565-b569-4e65-a946-7c9a4a7d2d65  ea=False em=False psjs=1.0  t=3.8s  runEA=0.109  wall=5m26s  ETA=4m30s
+[00:22:42] [  94/170] ▶ start  qid=b1f5e46e-125a-4954-ae0c-88536f946e4b  q='What are the names of operators involved in aviation accidents destined for THR, and how many such accidents did each...'
+[00:22:42] [  94/170] ▶ start  qid=b1f5e46e-125a-4954-ae0c-88536f946e4b  q='What are the names of operators involved in aviation accidents destined for THR, and how many such accidents did each...'
+[00:22:45] [  94/170] ✔ done   qid=b1f5e46e-125a-4954-ae0c-88536f946e4b  ea=False em=False psjs=0.0  t=3.0s  runEA=0.108  wall=5m29s  ETA=4m26s
+[00:22:45] [  94/170] ✔ done   qid=b1f5e46e-125a-4954-ae0c-88536f946e4b  ea=False em=False psjs=0.0  t=3.0s  runEA=0.108  wall=5m29s  ETA=4m26s
+[00:22:45] [  95/170] ▶ start  qid=9ebd6b65-44fc-4c08-a2e6-dc8f38870132  q='Which company, Siddeley or Tupolev, was launched later?'
+[00:22:45] [  95/170] ▶ start  qid=9ebd6b65-44fc-4c08-a2e6-dc8f38870132  q='Which company, Siddeley or Tupolev, was launched later?'
+[00:22:48] [  95/170] ✔ done   qid=9ebd6b65-44fc-4c08-a2e6-dc8f38870132  ea=False em=False psjs=0.0  t=3.3s  runEA=0.106  wall=5m33s  ETA=4m23s
+[00:22:48] [  95/170] ✔ done   qid=9ebd6b65-44fc-4c08-a2e6-dc8f38870132  ea=False em=False psjs=0.0  t=3.3s  runEA=0.106  wall=5m33s  ETA=4m23s
+[00:22:48] [  96/170] ▶ start  qid=8485d8b6-8b58-4c80-91c5-e15f2d7c6bf8  q='Which country is Ukraine Airline based in?'
+[00:22:48] [  96/170] ▶ start  qid=8485d8b6-8b58-4c80-91c5-e15f2d7c6bf8  q='Which country is Ukraine Airline based in?'
+[00:22:50] [  96/170] ✔ done   qid=8485d8b6-8b58-4c80-91c5-e15f2d7c6bf8  ea=False em=False psjs=0.0  t=2.3s  runEA=0.105  wall=5m35s  ETA=4m18s
+[00:22:50] [  96/170] ✔ done   qid=8485d8b6-8b58-4c80-91c5-e15f2d7c6bf8  ea=False em=False psjs=0.0  t=2.3s  runEA=0.105  wall=5m35s  ETA=4m18s
+[00:22:50] [  97/170] ▶ start  qid=45d72249-f82d-4f74-b7fe-c04d94496fc7  q='What is the difference in wingspan, in meters, between the North American P-51 Mustang and the Boing 737-500?'
+[00:22:50] [  97/170] ▶ start  qid=45d72249-f82d-4f74-b7fe-c04d94496fc7  q='What is the difference in wingspan, in meters, between the North American P-51 Mustang and the Boing 737-500?'
+[00:22:53] [  97/170] ✔ done   qid=45d72249-f82d-4f74-b7fe-c04d94496fc7  ea=False em=False psjs=0.0  t=2.5s  runEA=0.104  wall=5m37s  ETA=4m14s
+[00:22:53] [  97/170] ✔ done   qid=45d72249-f82d-4f74-b7fe-c04d94496fc7  ea=False em=False psjs=0.0  t=2.5s  runEA=0.104  wall=5m37s  ETA=4m14s
+[00:22:53] [  98/170] ▶ start  qid=9d21a2b8-fcb1-4f0c-8631-a7470d481c85  q='What are the names of aircraft models made by Bombi that had their first flight after 1978?'
+[00:22:53] [  98/170] ▶ start  qid=9d21a2b8-fcb1-4f0c-8631-a7470d481c85  q='What are the names of aircraft models made by Bombi that had their first flight after 1978?'
+[00:22:56] [  98/170] ✔ done   qid=9d21a2b8-fcb1-4f0c-8631-a7470d481c85  ea=False em=False psjs=0.0  t=2.9s  runEA=0.103  wall=5m40s  ETA=4m10s
+[00:22:56] [  98/170] ✔ done   qid=9d21a2b8-fcb1-4f0c-8631-a7470d481c85  ea=False em=False psjs=0.0  t=2.9s  runEA=0.103  wall=5m40s  ETA=4m10s
+[00:22:56] [  99/170] ▶ start  qid=1a05bc3a-5cd7-43b1-b6ee-880941e8c7d8  q='Which aircraft has a greater wingspan, the Constellation or the Ansln?'
+[00:22:56] [  99/170] ▶ start  qid=1a05bc3a-5cd7-43b1-b6ee-880941e8c7d8  q='Which aircraft has a greater wingspan, the Constellation or the Ansln?'
+[00:22:59] [  99/170] ✔ done   qid=1a05bc3a-5cd7-43b1-b6ee-880941e8c7d8  ea=False em=False psjs=0.0  t=3.0s  runEA=0.102  wall=5m43s  ETA=4m06s
+[00:22:59] [  99/170] ✔ done   qid=1a05bc3a-5cd7-43b1-b6ee-880941e8c7d8  ea=False em=False psjs=0.0  t=3.0s  runEA=0.102  wall=5m43s  ETA=4m06s
+[00:22:59] [ 100/170] ▶ start  qid=7eef8610-a154-4d72-8db0-a0f9b5dae221  q='What are the names of aviation accidents that were either headed to RKSS or involved a Boeing 707?'
+[00:22:59] [ 100/170] ▶ start  qid=7eef8610-a154-4d72-8db0-a0f9b5dae221  q='What are the names of aviation accidents that were either headed to RKSS or involved a Boeing 707?'
+[00:23:02] [ 100/170] ✔ done   qid=7eef8610-a154-4d72-8db0-a0f9b5dae221  ea=False em=False psjs=1.0  t=3.0s  runEA=0.101  wall=5m46s  ETA=4m03s
+[00:23:02] [ 100/170] ✔ done   qid=7eef8610-a154-4d72-8db0-a0f9b5dae221  ea=False em=False psjs=1.0  t=3.0s  runEA=0.101  wall=5m46s  ETA=4m03s
+[00:23:02] [ 101/170] ▶ start  qid=da09e771-9079-4f29-9fb6-80f257485500  q='What are the names of aviation accidents that either involved the DC10 or were headed to Aeropuerto Internacional Ben...'
+[00:23:02] [ 101/170] ▶ start  qid=da09e771-9079-4f29-9fb6-80f257485500  q='What are the names of aviation accidents that either involved the DC10 or were headed to Aeropuerto Internacional Ben...'
+[00:23:05] [ 101/170] ✔ done   qid=da09e771-9079-4f29-9fb6-80f257485500  ea=False em=False psjs=0.23076923076923078  t=3.0s  runEA=0.100  wall=5m49s  ETA=3m59s
+[00:23:05] [ 101/170] ✔ done   qid=da09e771-9079-4f29-9fb6-80f257485500  ea=False em=False psjs=0.23076923076923078  t=3.0s  runEA=0.100  wall=5m49s  ETA=3m59s
+[00:23:05] [ 102/170] ▶ start  qid=4597621d-99ec-4059-82ee-372813631e84  q='Which aircraft has a greater range in kilometers, the antonov an-12 or the ATR 42?'
+[00:23:05] [ 102/170] ▶ start  qid=4597621d-99ec-4059-82ee-372813631e84  q='Which aircraft has a greater range in kilometers, the antonov an-12 or the ATR 42?'
+[00:23:15] [ 102/170] ✔ done   qid=4597621d-99ec-4059-82ee-372813631e84  ea=False em=False psjs=0.0  t=10.3s  runEA=0.099  wall=6m00s  ETA=4m00s
+[00:23:15] [ 102/170] ✔ done   qid=4597621d-99ec-4059-82ee-372813631e84  ea=False em=False psjs=0.0  t=10.3s  runEA=0.099  wall=6m00s  ETA=4m00s
+[00:23:15] [ 103/170] ▶ start  qid=3663de88-5f9a-4064-9a98-c103bfd42bf6  q='What are the names of aviation accidents that originated from Hedong International Airport?'
+[00:23:15] [ 103/170] ▶ start  qid=3663de88-5f9a-4064-9a98-c103bfd42bf6  q='What are the names of aviation accidents that originated from Hedong International Airport?'
+[00:23:18] [ 103/170] ✔ done   qid=3663de88-5f9a-4064-9a98-c103bfd42bf6  ea=False em=False psjs=0.0  t=2.7s  runEA=0.098  wall=6m02s  ETA=3m56s
+[00:23:18] [ 103/170] ✔ done   qid=3663de88-5f9a-4064-9a98-c103bfd42bf6  ea=False em=False psjs=0.0  t=2.7s  runEA=0.098  wall=6m02s  ETA=3m56s
+[00:23:18] [ 104/170] ▶ start  qid=75235715-7599-4a36-ae17-f1f3ad87360a  q='What is the difference in range, in kilometers, between the B-25 Mitchell and the A340?'
+[00:23:18] [ 104/170] ▶ start  qid=75235715-7599-4a36-ae17-f1f3ad87360a  q='What is the difference in range, in kilometers, between the B-25 Mitchell and the A340?'
+[00:23:21] [ 104/170] ✔ done   qid=75235715-7599-4a36-ae17-f1f3ad87360a  ea=False em=False psjs=0.0  t=3.0s  runEA=0.097  wall=6m05s  ETA=3m52s
+[00:23:21] [ 104/170] ✔ done   qid=75235715-7599-4a36-ae17-f1f3ad87360a  ea=False em=False psjs=0.0  t=3.0s  runEA=0.097  wall=6m05s  ETA=3m52s
+[00:23:21] [ 105/170] ▶ start  qid=17e9f281-1c7c-43f6-aab1-823a4bd4413e  q='What are the names and launch years of aircraft manufacturers that produced models involved in the Lukla crash accident?'
+[00:23:21] [ 105/170] ▶ start  qid=17e9f281-1c7c-43f6-aab1-823a4bd4413e  q='What are the names and launch years of aircraft manufacturers that produced models involved in the Lukla crash accident?'
+[00:23:24] [ 105/170] ✔ done   qid=17e9f281-1c7c-43f6-aab1-823a4bd4413e  ea=False em=False psjs=0.0  t=3.0s  runEA=0.096  wall=6m08s  ETA=3m48s
+[00:23:24] [ 105/170] ✔ done   qid=17e9f281-1c7c-43f6-aab1-823a4bd4413e  ea=False em=False psjs=0.0  t=3.0s  runEA=0.096  wall=6m08s  ETA=3m48s
+[00:23:24] [ 106/170] ▶ start  qid=d3359ea1-8082-4c6d-a64a-54a1de41f7c0  q='Provide the names of all aircraft models produced by Sukyoi, along with the number of flight accidents each has been ...'
+[00:23:24] [ 106/170] ▶ start  qid=d3359ea1-8082-4c6d-a64a-54a1de41f7c0  q='Provide the names of all aircraft models produced by Sukyoi, along with the number of flight accidents each has been ...'
+[00:23:27] [ 106/170] ✔ done   qid=d3359ea1-8082-4c6d-a64a-54a1de41f7c0  ea=False em=False psjs=0.0  t=3.3s  runEA=0.095  wall=6m12s  ETA=3m44s
+[00:23:27] [ 106/170] ✔ done   qid=d3359ea1-8082-4c6d-a64a-54a1de41f7c0  ea=False em=False psjs=0.0  t=3.3s  runEA=0.095  wall=6m12s  ETA=3m44s
+[00:23:27] [ 107/170] ▶ start  qid=839115e8-6788-428f-be5a-25c04257f57f  q='What are the names of aircraft models made by MDC that were involved in the Austral Líneas Aéreas Flight 2553 accident?'
+[00:23:27] [ 107/170] ▶ start  qid=839115e8-6788-428f-be5a-25c04257f57f  q='What are the names of aircraft models made by MDC that were involved in the Austral Líneas Aéreas Flight 2553 accident?'
+[00:23:30] [ 107/170] ✔ done   qid=839115e8-6788-428f-be5a-25c04257f57f  ea=False em=False psjs=0.0  t=2.8s  runEA=0.094  wall=6m14s  ETA=3m40s
+[00:23:30] [ 107/170] ✔ done   qid=839115e8-6788-428f-be5a-25c04257f57f  ea=False em=False psjs=0.0  t=2.8s  runEA=0.094  wall=6m14s  ETA=3m40s
+[00:23:30] [ 108/170] ▶ start  qid=eeef1ecf-6f47-418a-b466-cb69c7d043e0  q='Do FedEx Express Flight 14 and the Caratinga plane crash result in the same number of fatalities?'
+[00:23:30] [ 108/170] ▶ start  qid=eeef1ecf-6f47-418a-b466-cb69c7d043e0  q='Do FedEx Express Flight 14 and the Caratinga plane crash result in the same number of fatalities?'
+[00:23:33] [ 108/170] ✔ done   qid=eeef1ecf-6f47-418a-b466-cb69c7d043e0  ea=False em=False psjs=0.0  t=2.7s  runEA=0.093  wall=6m17s  ETA=3m37s
+[00:23:33] [ 108/170] ✔ done   qid=eeef1ecf-6f47-418a-b466-cb69c7d043e0  ea=False em=False psjs=0.0  t=2.7s  runEA=0.093  wall=6m17s  ETA=3m37s
+[00:23:33] [ 109/170] ▶ start  qid=c34ad241-00b9-483d-a52c-6e460f29988a  q='What is the name of the flight accident operated by Polish Airlines that resulted in the fewest injuries?'
+[00:23:33] [ 109/170] ▶ start  qid=c34ad241-00b9-483d-a52c-6e460f29988a  q='What is the name of the flight accident operated by Polish Airlines that resulted in the fewest injuries?'
+[00:23:35] [ 109/170] ✔ done   qid=c34ad241-00b9-483d-a52c-6e460f29988a  ea=False em=False psjs=0.0  t=2.7s  runEA=0.093  wall=6m20s  ETA=3m33s
+[00:23:35] [ 109/170] ✔ done   qid=c34ad241-00b9-483d-a52c-6e460f29988a  ea=False em=False psjs=0.0  t=2.7s  runEA=0.093  wall=6m20s  ETA=3m33s
+[00:23:35] [ 110/170] ▶ start  qid=3578bb63-d6da-48ab-bb1f-95829e158bca  q='How many more fatalities occurred in Tara Air Flight 193 compared to N388US?'
+[00:23:35] [ 110/170] ▶ start  qid=3578bb63-d6da-48ab-bb1f-95829e158bca  q='How many more fatalities occurred in Tara Air Flight 193 compared to N388US?'
+[00:23:39] [ 110/170] ✔ done   qid=3578bb63-d6da-48ab-bb1f-95829e158bca  ea=False em=False psjs=0.0  t=3.9s  runEA=0.092  wall=6m24s  ETA=3m29s
+[00:23:39] [ 110/170] ✔ done   qid=3578bb63-d6da-48ab-bb1f-95829e158bca  ea=False em=False psjs=0.0  t=3.9s  runEA=0.092  wall=6m24s  ETA=3m29s
+[00:23:39] [ 111/170] ▶ start  qid=93ab6592-24f8-42b4-b91a-9ad3136dce9d  q='What are the names and dates of aviation accidents that were headed to the same airport as Ibeira Airlines Flight 610?'
+[00:23:39] [ 111/170] ▶ start  qid=93ab6592-24f8-42b4-b91a-9ad3136dce9d  q='What are the names and dates of aviation accidents that were headed to the same airport as Ibeira Airlines Flight 610?'
+[00:23:50] [ 111/170] ✔ done   qid=93ab6592-24f8-42b4-b91a-9ad3136dce9d  ea=False em=False psjs=0.0  t=11.2s  runEA=0.091  wall=6m35s  ETA=3m30s
+[00:23:50] [ 111/170] ✔ done   qid=93ab6592-24f8-42b4-b91a-9ad3136dce9d  ea=False em=False psjs=0.0  t=11.2s  runEA=0.091  wall=6m35s  ETA=3m30s
+[00:23:50] [ 112/170] ▶ start  qid=737ff3ee-a333-4c81-9f60-5a60eae0ed87  q='What are the names of aviation accidents that departed from ZVARTNOTS INTERNATIONAL AIRPORT, along with the number of...'
+[00:23:50] [ 112/170] ▶ start  qid=737ff3ee-a333-4c81-9f60-5a60eae0ed87  q='What are the names of aviation accidents that departed from ZVARTNOTS INTERNATIONAL AIRPORT, along with the number of...'
+[00:23:53] [ 112/170] ✔ done   qid=737ff3ee-a333-4c81-9f60-5a60eae0ed87  ea=False em=False psjs=0.0  t=3.0s  runEA=0.090  wall=6m38s  ETA=3m26s
+[00:23:53] [ 112/170] ✔ done   qid=737ff3ee-a333-4c81-9f60-5a60eae0ed87  ea=False em=False psjs=0.0  t=3.0s  runEA=0.090  wall=6m38s  ETA=3m26s
+[00:23:53] [ 113/170] ▶ start  qid=76fff9e8-22e8-4ea4-84ee-5b4a6b4b3ecd  q='What are the names of aviation accidents involving the ATR 72 aircraft that were headed to Shang Yi Airport, along wi...'
+[00:23:53] [ 113/170] ▶ start  qid=76fff9e8-22e8-4ea4-84ee-5b4a6b4b3ecd  q='What are the names of aviation accidents involving the ATR 72 aircraft that were headed to Shang Yi Airport, along wi...'
+[00:23:57] [ 113/170] ✔ done   qid=76fff9e8-22e8-4ea4-84ee-5b4a6b4b3ecd  ea=False em=False psjs=0.0  t=3.3s  runEA=0.089  wall=6m41s  ETA=3m22s
+[00:23:57] [ 113/170] ✔ done   qid=76fff9e8-22e8-4ea4-84ee-5b4a6b4b3ecd  ea=False em=False psjs=0.0  t=3.3s  runEA=0.089  wall=6m41s  ETA=3m22s
+[00:23:57] [ 114/170] ▶ start  qid=667e5b1a-1bea-4d32-8062-db1d7953f1e9  q='What are the names of airports from which flights involved in accidents were departing, with each flight destined for...'
+[00:23:57] [ 114/170] ▶ start  qid=667e5b1a-1bea-4d32-8062-db1d7953f1e9  q='What are the names of airports from which flights involved in accidents were departing, with each flight destined for...'
+[00:23:59] [ 114/170] ✔ done   qid=667e5b1a-1bea-4d32-8062-db1d7953f1e9  ea=False em=False psjs=0.0  t=2.7s  runEA=0.088  wall=6m44s  ETA=3m18s
+[00:23:59] [ 114/170] ✔ done   qid=667e5b1a-1bea-4d32-8062-db1d7953f1e9  ea=False em=False psjs=0.0  t=2.7s  runEA=0.088  wall=6m44s  ETA=3m18s
+[00:23:59] [ 115/170] ▶ start  qid=69c6a32c-d7da-44b1-ba9f-ae0cf6590f18  q='Which aircraft entered service later, the Lockheed L-1011 TriStar or the A-7?'
+[00:23:59] [ 115/170] ▶ start  qid=69c6a32c-d7da-44b1-ba9f-ae0cf6590f18  q='Which aircraft entered service later, the Lockheed L-1011 TriStar or the A-7?'
+[00:24:03] [ 115/170] ✔ done   qid=69c6a32c-d7da-44b1-ba9f-ae0cf6590f18  ea=False em=False psjs=0.0  t=3.1s  runEA=0.088  wall=6m47s  ETA=3m15s
+[00:24:03] [ 115/170] ✔ done   qid=69c6a32c-d7da-44b1-ba9f-ae0cf6590f18  ea=False em=False psjs=0.0  t=3.1s  runEA=0.088  wall=6m47s  ETA=3m15s
+[00:24:03] [ 116/170] ▶ start  qid=6460b43f-4950-437a-ad9e-dd4408cb5d88  q='How many more survivors were there on Ciugar Helicopters Flight 91 compared to Yemenia Flight 626?'
+[00:24:03] [ 116/170] ▶ start  qid=6460b43f-4950-437a-ad9e-dd4408cb5d88  q='How many more survivors were there on Ciugar Helicopters Flight 91 compared to Yemenia Flight 626?'
+[00:24:05] [ 116/170] ✔ done   qid=6460b43f-4950-437a-ad9e-dd4408cb5d88  ea=False em=False psjs=0.0  t=2.6s  runEA=0.087  wall=6m50s  ETA=3m11s
+[00:24:05] [ 116/170] ✔ done   qid=6460b43f-4950-437a-ad9e-dd4408cb5d88  ea=False em=False psjs=0.0  t=2.6s  runEA=0.087  wall=6m50s  ETA=3m11s
+[00:24:05] [ 117/170] ▶ start  qid=92e12ff9-cadd-49f6-996b-a229e6739840  q='Which flight, Brktish Airways Flight 268 or Austral Líneas Aéreas Flight 2553, occurred more recently?'
+[00:24:05] [ 117/170] ▶ start  qid=92e12ff9-cadd-49f6-996b-a229e6739840  q='Which flight, Brktish Airways Flight 268 or Austral Líneas Aéreas Flight 2553, occurred more recently?'
+[00:24:08] [ 117/170] ✔ done   qid=92e12ff9-cadd-49f6-996b-a229e6739840  ea=False em=False psjs=0.0  t=3.2s  runEA=0.086  wall=6m53s  ETA=3m07s
+[00:24:08] [ 117/170] ✔ done   qid=92e12ff9-cadd-49f6-996b-a229e6739840  ea=False em=False psjs=0.0  t=3.2s  runEA=0.086  wall=6m53s  ETA=3m07s
+[00:24:08] [ 118/170] ▶ start  qid=2767bf08-ef16-4634-b9fe-33430935b319  q='What are the names and locations of airports that were the destination for any flight accident departing from Kandaha...'
+[00:24:08] [ 118/170] ▶ start  qid=2767bf08-ef16-4634-b9fe-33430935b319  q='What are the names and locations of airports that were the destination for any flight accident departing from Kandaha...'
+[00:24:12] [ 118/170] ✔ done   qid=2767bf08-ef16-4634-b9fe-33430935b319  ea=False em=False psjs=0.0  t=4.2s  runEA=0.085  wall=6m57s  ETA=3m04s
+[00:24:12] [ 118/170] ✔ done   qid=2767bf08-ef16-4634-b9fe-33430935b319  ea=False em=False psjs=0.0  t=4.2s  runEA=0.085  wall=6m57s  ETA=3m04s
+[00:24:12] [ 119/170] ▶ start  qid=d0658a9a-4fb0-4803-a136-80adafdf7e49  q='Which aircraft has a greater height, the B-25 Mitchell or the F28?'
+[00:24:12] [ 119/170] ▶ start  qid=d0658a9a-4fb0-4803-a136-80adafdf7e49  q='Which aircraft has a greater height, the B-25 Mitchell or the F28?'
+[00:24:15] [ 119/170] ✔ done   qid=d0658a9a-4fb0-4803-a136-80adafdf7e49  ea=False em=False psjs=0.0  t=2.9s  runEA=0.085  wall=7m00s  ETA=3m00s
+[00:24:15] [ 119/170] ✔ done   qid=d0658a9a-4fb0-4803-a136-80adafdf7e49  ea=False em=False psjs=0.0  t=2.9s  runEA=0.085  wall=7m00s  ETA=3m00s
+[00:24:15] [ 120/170] ▶ start  qid=47fe58b8-1678-4dc1-b979-9514508acebd  q='Who are the manufacturers of the Beaver aircraft model?'
+[00:24:15] [ 120/170] ▶ start  qid=47fe58b8-1678-4dc1-b979-9514508acebd  q='Who are the manufacturers of the Beaver aircraft model?'
+[00:24:18] [ 120/170] ✔ done   qid=47fe58b8-1678-4dc1-b979-9514508acebd  ea=False em=False psjs=0.0  t=2.3s  runEA=0.084  wall=7m02s  ETA=2m56s
+[00:24:18] [ 120/170] ✔ done   qid=47fe58b8-1678-4dc1-b979-9514508acebd  ea=False em=False psjs=0.0  t=2.3s  runEA=0.084  wall=7m02s  ETA=2m56s
+[00:24:18] [ 121/170] ▶ start  qid=0510a184-0934-48e2-af9d-75482987130b  q='Which aircraft, the Boeing 737 or the One-Eleven, entered service later?'
+[00:24:18] [ 121/170] ▶ start  qid=0510a184-0934-48e2-af9d-75482987130b  q='Which aircraft, the Boeing 737 or the One-Eleven, entered service later?'
+[00:24:20] [ 121/170] ✔ done   qid=0510a184-0934-48e2-af9d-75482987130b  ea=False em=False psjs=0.0  t=2.5s  runEA=0.083  wall=7m05s  ETA=2m52s
+[00:24:20] [ 121/170] ✔ done   qid=0510a184-0934-48e2-af9d-75482987130b  ea=False em=False psjs=0.0  t=2.5s  runEA=0.083  wall=7m05s  ETA=2m52s
+[00:24:20] [ 122/170] ▶ start  qid=7691948b-7a81-4643-8a8a-1901612ab989  q='What are the names of aviation accidents that originated from EVN?'
+[00:24:20] [ 122/170] ▶ start  qid=7691948b-7a81-4643-8a8a-1901612ab989  q='What are the names of aviation accidents that originated from EVN?'
+[00:24:23] [ 122/170] ✔ done   qid=7691948b-7a81-4643-8a8a-1901612ab989  ea=True em=False psjs=1.0  t=2.8s  runEA=0.091  wall=7m07s  ETA=2m48s
+[00:24:23] [ 122/170] ✔ done   qid=7691948b-7a81-4643-8a8a-1901612ab989  ea=True em=False psjs=1.0  t=2.8s  runEA=0.091  wall=7m07s  ETA=2m48s
+[00:24:23] [ 123/170] ▶ start  qid=9e25aa42-b560-449a-91e4-9b6a8e8620bc  q='What are the names of aircraft models involved in both the Minsk flight incident and the 1983 TAAG Angola Airlines 73...'
+[00:24:23] [ 123/170] ▶ start  qid=9e25aa42-b560-449a-91e4-9b6a8e8620bc  q='What are the names of aircraft models involved in both the Minsk flight incident and the 1983 TAAG Angola Airlines 73...'
+[00:24:26] [ 123/170] ✔ done   qid=9e25aa42-b560-449a-91e4-9b6a8e8620bc  ea=False em=False psjs=0.0  t=3.2s  runEA=0.090  wall=7m11s  ETA=2m45s
+[00:24:26] [ 123/170] ✔ done   qid=9e25aa42-b560-449a-91e4-9b6a8e8620bc  ea=False em=False psjs=0.0  t=3.2s  runEA=0.090  wall=7m11s  ETA=2m45s
+[00:24:26] [ 124/170] ▶ start  qid=cd852481-e1cb-4920-a90d-84ecc005ee11  q='What are the names of aircraft models involved in flight accidents departing from Crnl. FAP Francisc Secada Vignetta ...'
+[00:24:26] [ 124/170] ▶ start  qid=cd852481-e1cb-4920-a90d-84ecc005ee11  q='What are the names of aircraft models involved in flight accidents departing from Crnl. FAP Francisc Secada Vignetta ...'
+[00:24:29] [ 124/170] ✔ done   qid=cd852481-e1cb-4920-a90d-84ecc005ee11  ea=False em=False psjs=0.0  t=2.7s  runEA=0.089  wall=7m13s  ETA=2m41s
+[00:24:29] [ 124/170] ✔ done   qid=cd852481-e1cb-4920-a90d-84ecc005ee11  ea=False em=False psjs=0.0  t=2.7s  runEA=0.089  wall=7m13s  ETA=2m41s
+[00:24:29] [ 125/170] ▶ start  qid=a669524d-71f1-491b-aa36-b6c89180c5a1  q='When was ukraine international airlines launched?'
+[00:24:29] [ 125/170] ▶ start  qid=a669524d-71f1-491b-aa36-b6c89180c5a1  q='When was ukraine international airlines launched?'
+[00:24:31] [ 125/170] ✔ done   qid=a669524d-71f1-491b-aa36-b6c89180c5a1  ea=True em=False psjs=1.0  t=2.6s  runEA=0.097  wall=7m16s  ETA=2m37s
+[00:24:31] [ 125/170] ✔ done   qid=a669524d-71f1-491b-aa36-b6c89180c5a1  ea=True em=False psjs=1.0  t=2.6s  runEA=0.097  wall=7m16s  ETA=2m37s
+[00:24:31] [ 126/170] ▶ start  qid=273a8763-5c31-429c-b8e9-78ad89efb39e  q='What is the difference in launch years between Hzwker Siddeley and Tupolev?'
+[00:24:31] [ 126/170] ▶ start  qid=273a8763-5c31-429c-b8e9-78ad89efb39e  q='What is the difference in launch years between Hzwker Siddeley and Tupolev?'
+[00:24:34] [ 126/170] ✔ done   qid=273a8763-5c31-429c-b8e9-78ad89efb39e  ea=False em=False psjs=0.0  t=2.7s  runEA=0.096  wall=7m19s  ETA=2m33s
+[00:24:34] [ 126/170] ✔ done   qid=273a8763-5c31-429c-b8e9-78ad89efb39e  ea=False em=False psjs=0.0  t=2.7s  runEA=0.096  wall=7m19s  ETA=2m33s
+[00:24:34] [ 127/170] ▶ start  qid=c6b5eee2-20b5-4240-9443-6fbc960acfd1  q='Which country is A. based in?'
+[00:24:34] [ 127/170] ▶ start  qid=c6b5eee2-20b5-4240-9443-6fbc960acfd1  q='Which country is A. based in?'
+[00:24:37] [ 127/170] ✔ done   qid=c6b5eee2-20b5-4240-9443-6fbc960acfd1  ea=False em=False psjs=0.0  t=2.6s  runEA=0.095  wall=7m21s  ETA=2m29s
+[00:24:37] [ 127/170] ✔ done   qid=c6b5eee2-20b5-4240-9443-6fbc960acfd1  ea=False em=False psjs=0.0  t=2.6s  runEA=0.095  wall=7m21s  ETA=2m29s
+[00:24:37] [ 128/170] ▶ start  qid=11e8d87d-b916-4a26-bb09-f3b52045a138  q='What are the names of the manufacturers of either the Super Constellation or the KC-130 Hercules?'
+[00:24:37] [ 128/170] ▶ start  qid=11e8d87d-b916-4a26-bb09-f3b52045a138  q='What are the names of the manufacturers of either the Super Constellation or the KC-130 Hercules?'
+[00:24:40] [ 128/170] ✔ done   qid=11e8d87d-b916-4a26-bb09-f3b52045a138  ea=True em=False psjs=0.6  t=3.2s  runEA=0.102  wall=7m24s  ETA=2m26s
+[00:24:40] [ 128/170] ✔ done   qid=11e8d87d-b916-4a26-bb09-f3b52045a138  ea=True em=False psjs=0.6  t=3.2s  runEA=0.102  wall=7m24s  ETA=2m26s
+[00:24:40] [ 129/170] ▶ start  qid=dff0e555-97ef-4a00-968a-67903ffb7d38  q='What is the difference in launch years between the 380 AEW and Air Botswana?'
+[00:24:40] [ 129/170] ▶ start  qid=dff0e555-97ef-4a00-968a-67903ffb7d38  q='What is the difference in launch years between the 380 AEW and Air Botswana?'
+[00:24:43] [ 129/170] ✔ done   qid=dff0e555-97ef-4a00-968a-67903ffb7d38  ea=False em=False psjs=0.0  t=3.3s  runEA=0.102  wall=7m28s  ETA=2m22s
+[00:24:43] [ 129/170] ✔ done   qid=dff0e555-97ef-4a00-968a-67903ffb7d38  ea=False em=False psjs=0.0  t=3.3s  runEA=0.102  wall=7m28s  ETA=2m22s
+[00:24:43] [ 130/170] ▶ start  qid=60ed8d2a-cb01-4b59-8604-5abccd125ed6  q='What are the names of aviation accidents that were headed to ZYLD and operated by Henan Airlines?'
+[00:24:43] [ 130/170] ▶ start  qid=60ed8d2a-cb01-4b59-8604-5abccd125ed6  q='What are the names of aviation accidents that were headed to ZYLD and operated by Henan Airlines?'
+[00:24:46] [ 130/170] ✔ done   qid=60ed8d2a-cb01-4b59-8604-5abccd125ed6  ea=True em=False psjs=1.0  t=2.6s  runEA=0.109  wall=7m30s  ETA=2m19s
+[00:24:46] [ 130/170] ✔ done   qid=60ed8d2a-cb01-4b59-8604-5abccd125ed6  ea=True em=False psjs=1.0  t=2.6s  runEA=0.109  wall=7m30s  ETA=2m19s
+[00:24:46] [ 131/170] ▶ start  qid=71fde40d-fc49-48c4-a1b2-e4e3085f756c  q='What are the names of aviation accidents involving the Condor strategic airlifter aircraft model?'
+[00:24:46] [ 131/170] ▶ start  qid=71fde40d-fc49-48c4-a1b2-e4e3085f756c  q='What are the names of aviation accidents involving the Condor strategic airlifter aircraft model?'
+[00:24:49] [ 131/170] ✔ done   qid=71fde40d-fc49-48c4-a1b2-e4e3085f756c  ea=False em=False psjs=0.0  t=2.9s  runEA=0.108  wall=7m33s  ETA=2m15s
+[00:24:49] [ 131/170] ✔ done   qid=71fde40d-fc49-48c4-a1b2-e4e3085f756c  ea=False em=False psjs=0.0  t=2.9s  runEA=0.108  wall=7m33s  ETA=2m15s
+[00:24:49] [ 132/170] ▶ start  qid=e2513aae-318f-4c8a-bf39-3d38011c84dc  q='What is the name of the aircraft model involved in a Swisdair flight accident that has the shortest range in kilometers?'
+[00:24:49] [ 132/170] ▶ start  qid=e2513aae-318f-4c8a-bf39-3d38011c84dc  q='What is the name of the aircraft model involved in a Swisdair flight accident that has the shortest range in kilometers?'
+[00:24:51] [ 132/170] ✔ done   qid=e2513aae-318f-4c8a-bf39-3d38011c84dc  ea=False em=False psjs=0.0  t=2.6s  runEA=0.107  wall=7m36s  ETA=2m11s
+[00:24:51] [ 132/170] ✔ done   qid=e2513aae-318f-4c8a-bf39-3d38011c84dc  ea=False em=False psjs=0.0  t=2.6s  runEA=0.107  wall=7m36s  ETA=2m11s
+[00:24:51] [ 133/170] ▶ start  qid=758a29ae-3b7e-4598-acd9-76215273c0c7  q='What are the names of airports that were either the destination for 781 or the departure point for Pan Am Flight 103?'
+[00:24:51] [ 133/170] ▶ start  qid=758a29ae-3b7e-4598-acd9-76215273c0c7  q='What are the names of airports that were either the destination for 781 or the departure point for Pan Am Flight 103?'
+[00:24:55] [ 133/170] ✔ done   qid=758a29ae-3b7e-4598-acd9-76215273c0c7  ea=True em=False psjs=0.7142857142857143  t=3.5s  runEA=0.114  wall=7m39s  ETA=2m08s
+[00:24:55] [ 133/170] ✔ done   qid=758a29ae-3b7e-4598-acd9-76215273c0c7  ea=True em=False psjs=0.7142857142857143  t=3.5s  runEA=0.114  wall=7m39s  ETA=2m08s
+[00:24:55] [ 134/170] ▶ start  qid=fcd2adb6-2269-4f86-b7b7-887245234be6  q='Which had more injuries: the 2008 mexico city learjet crash or PIA Flight 705?'
+[00:24:55] [ 134/170] ▶ start  qid=fcd2adb6-2269-4f86-b7b7-887245234be6  q='Which had more injuries: the 2008 mexico city learjet crash or PIA Flight 705?'
+[00:24:57] [ 134/170] ✔ done   qid=fcd2adb6-2269-4f86-b7b7-887245234be6  ea=False em=False psjs=0.0  t=2.6s  runEA=0.113  wall=7m42s  ETA=2m04s
+[00:24:57] [ 134/170] ✔ done   qid=fcd2adb6-2269-4f86-b7b7-887245234be6  ea=False em=False psjs=0.0  t=2.6s  runEA=0.113  wall=7m42s  ETA=2m04s
+[00:24:57] [ 135/170] ▶ start  qid=8617ce5b-3bfc-4e4f-b116-48668fc7f115  q='What are the names of airports involved in flight accidents as both departure and destination points, excluding those...'
+[00:24:57] [ 135/170] ▶ start  qid=8617ce5b-3bfc-4e4f-b116-48668fc7f115  q='What are the names of airports involved in flight accidents as both departure and destination points, excluding those...'
+[00:25:01] [ 135/170] ✔ done   qid=8617ce5b-3bfc-4e4f-b116-48668fc7f115  ea=False em=False psjs=0.9285714285714286  t=3.9s  runEA=0.112  wall=7m46s  ETA=2m01s
+[00:25:01] [ 135/170] ✔ done   qid=8617ce5b-3bfc-4e4f-b116-48668fc7f115  ea=False em=False psjs=0.9285714285714286  t=3.9s  runEA=0.112  wall=7m46s  ETA=2m01s
+[00:25:01] [ 136/170] ▶ start  qid=23c6b9bd-a6c1-4c0d-a1c9-d45625b56f6e  q='What are the names of aviation accidents that were headed to Heathrow, sorted by the number of injuries from highest ...'
+[00:25:01] [ 136/170] ▶ start  qid=23c6b9bd-a6c1-4c0d-a1c9-d45625b56f6e  q='What are the names of aviation accidents that were headed to Heathrow, sorted by the number of injuries from highest ...'
+[00:25:04] [ 136/170] ✔ done   qid=23c6b9bd-a6c1-4c0d-a1c9-d45625b56f6e  ea=False em=False psjs=0.0  t=3.1s  runEA=0.111  wall=7m49s  ETA=1m57s
+[00:25:04] [ 136/170] ✔ done   qid=23c6b9bd-a6c1-4c0d-a1c9-d45625b56f6e  ea=False em=False psjs=0.0  t=3.1s  runEA=0.111  wall=7m49s  ETA=1m57s
+[00:25:04] [ 137/170] ▶ start  qid=5a003f58-ef11-44cf-9eff-e2d1720b1b2f  q='Do the City Learjet crash and PIA Flight 705 have an identical number of injuries?'
+[00:25:04] [ 137/170] ▶ start  qid=5a003f58-ef11-44cf-9eff-e2d1720b1b2f  q='Do the City Learjet crash and PIA Flight 705 have an identical number of injuries?'
+[00:25:08] [ 137/170] ✔ done   qid=5a003f58-ef11-44cf-9eff-e2d1720b1b2f  ea=False em=False psjs=0.0  t=3.4s  runEA=0.110  wall=7m52s  ETA=1m54s
+[00:25:08] [ 137/170] ✔ done   qid=5a003f58-ef11-44cf-9eff-e2d1720b1b2f  ea=False em=False psjs=0.0  t=3.4s  runEA=0.110  wall=7m52s  ETA=1m54s
+[00:25:08] [ 138/170] ▶ start  qid=64ea27de-d134-474c-8082-47ddd3cb5f91  q='How many aviation accidents involved the Douglas DC-7 or were operated by NWA?'
+[00:25:08] [ 138/170] ▶ start  qid=64ea27de-d134-474c-8082-47ddd3cb5f91  q='How many aviation accidents involved the Douglas DC-7 or were operated by NWA?'
+[00:25:11] [ 138/170] ✔ done   qid=64ea27de-d134-474c-8082-47ddd3cb5f91  ea=False em=False psjs=0.4117647058823529  t=3.0s  runEA=0.109  wall=7m55s  ETA=1m50s
+[00:25:11] [ 138/170] ✔ done   qid=64ea27de-d134-474c-8082-47ddd3cb5f91  ea=False em=False psjs=0.4117647058823529  t=3.0s  runEA=0.109  wall=7m55s  ETA=1m50s
+[00:25:11] [ 139/170] ▶ start  qid=8d614117-e38b-44ec-9f7a-3c0bad0c996b  q='What are the names and first flight dates of aircraft models involved in the 2193 accident?'
+[00:25:11] [ 139/170] ▶ start  qid=8d614117-e38b-44ec-9f7a-3c0bad0c996b  q='What are the names and first flight dates of aircraft models involved in the 2193 accident?'
+[00:25:13] [ 139/170] ✔ done   qid=8d614117-e38b-44ec-9f7a-3c0bad0c996b  ea=False em=False psjs=0.0  t=2.5s  runEA=0.109  wall=7m58s  ETA=1m47s
+[00:25:13] [ 139/170] ✔ done   qid=8d614117-e38b-44ec-9f7a-3c0bad0c996b  ea=False em=False psjs=0.0  t=2.5s  runEA=0.109  wall=7m58s  ETA=1m47s
+[00:25:13] [ 140/170] ▶ start  qid=93ddfe79-a307-4728-9e4f-ef66a9de3d45  q='What are the names of aviation accidents that were headed to Heahrow Airport, sorted by the number of survivors from ...'
+[00:25:13] [ 140/170] ▶ start  qid=93ddfe79-a307-4728-9e4f-ef66a9de3d45  q='What are the names of aviation accidents that were headed to Heahrow Airport, sorted by the number of survivors from ...'
+[00:25:16] [ 140/170] ✔ done   qid=93ddfe79-a307-4728-9e4f-ef66a9de3d45  ea=False em=False psjs=0.0  t=2.7s  runEA=0.108  wall=8m01s  ETA=1m43s
+[00:25:16] [ 140/170] ✔ done   qid=93ddfe79-a307-4728-9e4f-ef66a9de3d45  ea=False em=False psjs=0.0  t=2.7s  runEA=0.108  wall=8m01s  ETA=1m43s
+[00:25:16] [ 141/170] ▶ start  qid=09648530-5fbf-419d-af64-1bad55e9a834  q='What are the names of aircraft models involved in flight accidents that were headed to Changi International Airport?'
+[00:25:16] [ 141/170] ▶ start  qid=09648530-5fbf-419d-af64-1bad55e9a834  q='What are the names of aircraft models involved in flight accidents that were headed to Changi International Airport?'
+[00:25:19] [ 141/170] ✔ done   qid=09648530-5fbf-419d-af64-1bad55e9a834  ea=False em=False psjs=0.0  t=2.7s  runEA=0.107  wall=8m03s  ETA=1m39s
+[00:25:19] [ 141/170] ✔ done   qid=09648530-5fbf-419d-af64-1bad55e9a834  ea=False em=False psjs=0.0  t=2.7s  runEA=0.107  wall=8m03s  ETA=1m39s
+[00:25:19] [ 142/170] ▶ start  qid=b6dd3572-7ad6-4813-918d-915c4c34cf4e  q='What are the names and death tolls of aviation accidents involving a B-737 that were headed to Francisco Bangoy Inter...'
+[00:25:19] [ 142/170] ▶ start  qid=b6dd3572-7ad6-4813-918d-915c4c34cf4e  q='What are the names and death tolls of aviation accidents involving a B-737 that were headed to Francisco Bangoy Inter...'
+[00:25:22] [ 142/170] ✔ done   qid=b6dd3572-7ad6-4813-918d-915c4c34cf4e  ea=False em=False psjs=0.0  t=3.3s  runEA=0.106  wall=8m07s  ETA=1m36s
+[00:25:22] [ 142/170] ✔ done   qid=b6dd3572-7ad6-4813-918d-915c4c34cf4e  ea=False em=False psjs=0.0  t=3.3s  runEA=0.106  wall=8m07s  ETA=1m36s
+[00:25:22] [ 143/170] ▶ start  qid=ac64c65a-fb34-4942-9767-2c79411ffe4c  q='What are the names of aviation accidents that were either headed to MANCHESTER AIRPORT or operated by British Midland...'
+[00:25:22] [ 143/170] ▶ start  qid=ac64c65a-fb34-4942-9767-2c79411ffe4c  q='What are the names of aviation accidents that were either headed to MANCHESTER AIRPORT or operated by British Midland...'
+[00:25:25] [ 143/170] ✔ done   qid=ac64c65a-fb34-4942-9767-2c79411ffe4c  ea=True em=False psjs=0.7142857142857143  t=2.8s  runEA=0.113  wall=8m09s  ETA=1m32s
+[00:25:25] [ 143/170] ✔ done   qid=ac64c65a-fb34-4942-9767-2c79411ffe4c  ea=True em=False psjs=0.7142857142857143  t=2.8s  runEA=0.113  wall=8m09s  ETA=1m32s
+[00:25:25] [ 144/170] ▶ start  qid=2aa3ad2f-b114-4669-b6ae-b7b39733c1ea  q='What are the names and locations of aviation accidents involving the Antonov An-124 Russlan?'
+[00:25:25] [ 144/170] ▶ start  qid=2aa3ad2f-b114-4669-b6ae-b7b39733c1ea  q='What are the names and locations of aviation accidents involving the Antonov An-124 Russlan?'
+[00:25:28] [ 144/170] ✔ done   qid=2aa3ad2f-b114-4669-b6ae-b7b39733c1ea  ea=False em=False psjs=0.0  t=2.6s  runEA=0.112  wall=8m12s  ETA=1m29s
+[00:25:28] [ 144/170] ✔ done   qid=2aa3ad2f-b114-4669-b6ae-b7b39733c1ea  ea=False em=False psjs=0.0  t=2.6s  runEA=0.112  wall=8m12s  ETA=1m29s
+[00:25:28] [ 145/170] ▶ start  qid=a5c7a80b-2e71-4767-ba1b-e3f151a0e15b  q='How many aviation accidents involved either Southwest Airlines as the operator or a 737 aircraft?'
+[00:25:28] [ 145/170] ▶ start  qid=a5c7a80b-2e71-4767-ba1b-e3f151a0e15b  q='How many aviation accidents involved either Southwest Airlines as the operator or a 737 aircraft?'
+[00:25:29] [ 145/170] ✔ done   qid=a5c7a80b-2e71-4767-ba1b-e3f151a0e15b  ea=None em=None psjs=None  t=1.3s  runEA=0.112  wall=8m13s  ETA=1m25s  err=agent: CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message
+[00:25:29] [ 145/170] ✔ done   qid=a5c7a80b-2e71-4767-ba1b-e3f151a0e15b  ea=None em=None psjs=None  t=1.3s  runEA=0.112  wall=8m13s  ETA=1m25s  err=agent: CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message
+[00:25:29] [ 146/170] ▶ start  qid=b5c8ecfb-b8fe-46f1-a71a-815fc25176e5  q='What are the names of aviation accidents that involved the RC-7B aircraft model?'
+[00:25:29] [ 146/170] ▶ start  qid=b5c8ecfb-b8fe-46f1-a71a-815fc25176e5  q='What are the names of aviation accidents that involved the RC-7B aircraft model?'
+[00:25:31] [ 146/170] ✔ done   qid=b5c8ecfb-b8fe-46f1-a71a-815fc25176e5  ea=False em=False psjs=0.0  t=2.6s  runEA=0.111  wall=8m16s  ETA=1m22s
+[00:25:31] [ 146/170] ✔ done   qid=b5c8ecfb-b8fe-46f1-a71a-815fc25176e5  ea=False em=False psjs=0.0  t=2.6s  runEA=0.111  wall=8m16s  ETA=1m22s
+[00:25:31] [ 147/170] ▶ start  qid=a55f2df9-de1b-4e03-a7f5-808c474db7f3  q='How many aircraft models are involved in either the Cubana de Aviación Flight 972 or the 653?'
+[00:25:31] [ 147/170] ▶ start  qid=a55f2df9-de1b-4e03-a7f5-808c474db7f3  q='How many aircraft models are involved in either the Cubana de Aviación Flight 972 or the 653?'
+[00:25:35] [ 147/170] ✔ done   qid=a55f2df9-de1b-4e03-a7f5-808c474db7f3  ea=True em=False psjs=0.6  t=3.4s  runEA=0.117  wall=8m19s  ETA=1m18s
+[00:25:35] [ 147/170] ✔ done   qid=a55f2df9-de1b-4e03-a7f5-808c474db7f3  ea=True em=False psjs=0.6  t=3.4s  runEA=0.117  wall=8m19s  ETA=1m18s
+[00:25:35] [ 148/170] ▶ start  qid=d55c79cb-75f8-40d0-ac74-e6619b5211cb  q='What are the names of operators responsible for aviation accidents departing from Jiangbei International Airport, and...'
+[00:25:35] [ 148/170] ▶ start  qid=d55c79cb-75f8-40d0-ac74-e6619b5211cb  q='What are the names of operators responsible for aviation accidents departing from Jiangbei International Airport, and...'
+[00:25:38] [ 148/170] ✔ done   qid=d55c79cb-75f8-40d0-ac74-e6619b5211cb  ea=False em=False psjs=0.0  t=3.2s  runEA=0.116  wall=8m23s  ETA=1m15s
+[00:25:38] [ 148/170] ✔ done   qid=d55c79cb-75f8-40d0-ac74-e6619b5211cb  ea=False em=False psjs=0.0  t=3.2s  runEA=0.116  wall=8m23s  ETA=1m15s
+[00:25:38] [ 149/170] ▶ start  qid=c35d9fa7-690b-4573-b027-f0a5e510ce2b  q='What is the ICAO code for LEGE?'
+[00:25:38] [ 149/170] ▶ start  qid=c35d9fa7-690b-4573-b027-f0a5e510ce2b  q='What is the ICAO code for LEGE?'
+[00:25:41] [ 149/170] ✔ done   qid=c35d9fa7-690b-4573-b027-f0a5e510ce2b  ea=False em=False psjs=0.0  t=2.7s  runEA=0.116  wall=8m25s  ETA=1m11s
+[00:25:41] [ 149/170] ✔ done   qid=c35d9fa7-690b-4573-b027-f0a5e510ce2b  ea=False em=False psjs=0.0  t=2.7s  runEA=0.116  wall=8m25s  ETA=1m11s
+[00:25:41] [ 150/170] ▶ start  qid=b68ffcb4-82cc-4dad-8007-c563f0ac3125  q='Which aircraft model is involved in the Juba air disaster?'
+[00:25:41] [ 150/170] ▶ start  qid=b68ffcb4-82cc-4dad-8007-c563f0ac3125  q='Which aircraft model is involved in the Juba air disaster?'
+[00:25:43] [ 150/170] ✔ done   qid=b68ffcb4-82cc-4dad-8007-c563f0ac3125  ea=False em=False psjs=0.0  t=2.5s  runEA=0.115  wall=8m28s  ETA=1m08s
+[00:25:43] [ 150/170] ✔ done   qid=b68ffcb4-82cc-4dad-8007-c563f0ac3125  ea=False em=False psjs=0.0  t=2.5s  runEA=0.115  wall=8m28s  ETA=1m08s
+[00:25:43] [ 151/170] ▶ start  qid=c79f6f7a-52ee-4d7b-b420-802c19a7c0e2  q='What are the names and countries of airports from which a flight accident operated by Conviasz departed?'
+[00:25:43] [ 151/170] ▶ start  qid=c79f6f7a-52ee-4d7b-b420-802c19a7c0e2  q='What are the names and countries of airports from which a flight accident operated by Conviasz departed?'
+[00:25:46] [ 151/170] ✔ done   qid=c79f6f7a-52ee-4d7b-b420-802c19a7c0e2  ea=False em=False psjs=0.0  t=2.7s  runEA=0.114  wall=8m30s  ETA=1m04s
+[00:25:46] [ 151/170] ✔ done   qid=c79f6f7a-52ee-4d7b-b420-802c19a7c0e2  ea=False em=False psjs=0.0  t=2.7s  runEA=0.114  wall=8m30s  ETA=1m04s
+[00:25:46] [ 152/170] ▶ start  qid=063f4b61-0848-4ec8-afa4-60f353894e05  q='Which airport did WEST CARIBBEAN AIRWAYS FLIGHT 9955 departed from?'
+[00:25:46] [ 152/170] ▶ start  qid=063f4b61-0848-4ec8-afa4-60f353894e05  q='Which airport did WEST CARIBBEAN AIRWAYS FLIGHT 9955 departed from?'
+[00:25:49] [ 152/170] ✔ done   qid=063f4b61-0848-4ec8-afa4-60f353894e05  ea=False em=False psjs=0.0  t=2.6s  runEA=0.113  wall=8m33s  ETA=1m01s
+[00:25:49] [ 152/170] ✔ done   qid=063f4b61-0848-4ec8-afa4-60f353894e05  ea=False em=False psjs=0.0  t=2.6s  runEA=0.113  wall=8m33s  ETA=1m01s
+[00:25:49] [ 153/170] ▶ start  qid=1da3b437-281e-42dc-9dac-f617d2f50859  q='Who are the manufacturers of the S92 aircraft model?'
+[00:25:49] [ 153/170] ▶ start  qid=1da3b437-281e-42dc-9dac-f617d2f50859  q='Who are the manufacturers of the S92 aircraft model?'
+[00:25:52] [ 153/170] ✔ done   qid=1da3b437-281e-42dc-9dac-f617d2f50859  ea=False em=False psjs=0.0  t=3.1s  runEA=0.113  wall=8m36s  ETA=57s
+[00:25:52] [ 153/170] ✔ done   qid=1da3b437-281e-42dc-9dac-f617d2f50859  ea=False em=False psjs=0.0  t=3.1s  runEA=0.113  wall=8m36s  ETA=57s
+[00:25:52] [ 154/170] ▶ start  qid=9af6d17e-0214-4cb4-8a66-635230fd7813  q='How many injuries were reported in the Dubai crash flight incident?'
+[00:25:52] [ 154/170] ▶ start  qid=9af6d17e-0214-4cb4-8a66-635230fd7813  q='How many injuries were reported in the Dubai crash flight incident?'
+[00:25:54] [ 154/170] ✔ done   qid=9af6d17e-0214-4cb4-8a66-635230fd7813  ea=False em=False psjs=0.3333333333333333  t=2.5s  runEA=0.112  wall=8m39s  ETA=54s
+[00:25:54] [ 154/170] ✔ done   qid=9af6d17e-0214-4cb4-8a66-635230fd7813  ea=False em=False psjs=0.3333333333333333  t=2.5s  runEA=0.112  wall=8m39s  ETA=54s
+[00:25:54] [ 155/170] ▶ start  qid=78d5740d-f6bb-490d-b350-cc90cd7e3aff  q='How many aviation accidents were either operated by China Eastern Airlines or departed from Kunming Changshui Interna...'
+[00:25:54] [ 155/170] ▶ start  qid=78d5740d-f6bb-490d-b350-cc90cd7e3aff  q='How many aviation accidents were either operated by China Eastern Airlines or departed from Kunming Changshui Interna...'
+[00:25:59] [ 155/170] ✔ done   qid=78d5740d-f6bb-490d-b350-cc90cd7e3aff  ea=True em=False psjs=0.7777777777777778  t=4.3s  runEA=0.118  wall=8m43s  ETA=51s
+[00:25:59] [ 155/170] ✔ done   qid=78d5740d-f6bb-490d-b350-cc90cd7e3aff  ea=True em=False psjs=0.7777777777777778  t=4.3s  runEA=0.118  wall=8m43s  ETA=51s
+[00:25:59] [ 156/170] ▶ start  qid=e4e05191-dcc2-420c-ac5d-88877b7d2473  q='Which company, between Polyot and Saab Group, was launched more recently?'
+[00:25:59] [ 156/170] ▶ start  qid=e4e05191-dcc2-420c-ac5d-88877b7d2473  q='Which company, between Polyot and Saab Group, was launched more recently?'
+[00:26:01] [ 156/170] ✔ done   qid=e4e05191-dcc2-420c-ac5d-88877b7d2473  ea=False em=False psjs=0.0  t=2.6s  runEA=0.117  wall=8m46s  ETA=47s
+[00:26:01] [ 156/170] ✔ done   qid=e4e05191-dcc2-420c-ac5d-88877b7d2473  ea=False em=False psjs=0.0  t=2.6s  runEA=0.117  wall=8m46s  ETA=47s
+[00:26:01] [ 157/170] ▶ start  qid=de14261c-2e97-4730-8f99-de4e91c87369  q='What is the difference in height, in meters, between the Mitchell and the Fokker F28 Fellowship?'
+[00:26:01] [ 157/170] ▶ start  qid=de14261c-2e97-4730-8f99-de4e91c87369  q='What is the difference in height, in meters, between the Mitchell and the Fokker F28 Fellowship?'
+[00:26:04] [ 157/170] ✔ done   qid=de14261c-2e97-4730-8f99-de4e91c87369  ea=False em=False psjs=0.0  t=2.6s  runEA=0.116  wall=8m48s  ETA=44s
+[00:26:04] [ 157/170] ✔ done   qid=de14261c-2e97-4730-8f99-de4e91c87369  ea=False em=False psjs=0.0  t=2.6s  runEA=0.116  wall=8m48s  ETA=44s
+[00:26:04] [ 158/170] ▶ start  qid=50bbcdc9-707d-4c8c-8dfa-25061a72369e  q='Do Cougar Helicopters Fliggt 91 and Yemenia Flight 626 have an equal number of survivors?'
+[00:26:04] [ 158/170] ▶ start  qid=50bbcdc9-707d-4c8c-8dfa-25061a72369e  q='Do Cougar Helicopters Fliggt 91 and Yemenia Flight 626 have an equal number of survivors?'
+[00:26:07] [ 158/170] ✔ done   qid=50bbcdc9-707d-4c8c-8dfa-25061a72369e  ea=False em=False psjs=0.0  t=3.1s  runEA=0.115  wall=8m51s  ETA=40s
+[00:26:07] [ 158/170] ✔ done   qid=50bbcdc9-707d-4c8c-8dfa-25061a72369e  ea=False em=False psjs=0.0  t=3.1s  runEA=0.115  wall=8m51s  ETA=40s
+[00:26:07] [ 159/170] ▶ start  qid=c7ea6bfe-380c-43f9-8a60-51a996938744  q='What are the names of manufacturers that produced both the B-52 and the Boeing 737?'
+[00:26:07] [ 159/170] ▶ start  qid=c7ea6bfe-380c-43f9-8a60-51a996938744  q='What are the names of manufacturers that produced both the B-52 and the Boeing 737?'
+[00:26:10] [ 159/170] ✔ done   qid=c7ea6bfe-380c-43f9-8a60-51a996938744  ea=False em=False psjs=0.0  t=2.8s  runEA=0.115  wall=8m54s  ETA=37s
+[00:26:10] [ 159/170] ✔ done   qid=c7ea6bfe-380c-43f9-8a60-51a996938744  ea=False em=False psjs=0.0  t=2.8s  runEA=0.115  wall=8m54s  ETA=37s
+[00:26:10] [ 160/170] ▶ start  qid=0c26b909-4545-4656-bc14-c86aa3c6eab2  q='What are the names of aviation accidents that were headed to VTSM and occurred in the year 2009?'
+[00:26:10] [ 160/170] ▶ start  qid=0c26b909-4545-4656-bc14-c86aa3c6eab2  q='What are the names of aviation accidents that were headed to VTSM and occurred in the year 2009?'
+[00:26:13] [ 160/170] ✔ done   qid=0c26b909-4545-4656-bc14-c86aa3c6eab2  ea=False em=False psjs=0.0  t=3.1s  runEA=0.114  wall=8m57s  ETA=34s
+[00:26:13] [ 160/170] ✔ done   qid=0c26b909-4545-4656-bc14-c86aa3c6eab2  ea=False em=False psjs=0.0  t=3.1s  runEA=0.114  wall=8m57s  ETA=34s
+[00:26:13] [ 161/170] ▶ start  qid=2d155826-7a57-4012-a300-d3856662ca00  q='What are the names of aviation accidents operated by LATAM Airlines that involve the Hawker Siddeley BAe 146 aircraft...'
+[00:26:13] [ 161/170] ▶ start  qid=2d155826-7a57-4012-a300-d3856662ca00  q='What are the names of aviation accidents operated by LATAM Airlines that involve the Hawker Siddeley BAe 146 aircraft...'
+[00:26:15] [ 161/170] ✔ done   qid=2d155826-7a57-4012-a300-d3856662ca00  ea=False em=False psjs=0.0  t=2.6s  runEA=0.113  wall=9m00s  ETA=30s
+[00:26:15] [ 161/170] ✔ done   qid=2d155826-7a57-4012-a300-d3856662ca00  ea=False em=False psjs=0.0  t=2.6s  runEA=0.113  wall=9m00s  ETA=30s
+[00:26:15] [ 162/170] ▶ start  qid=00c50f73-b5ed-4ee2-9d0d-8d86d21b81e8  q='What are the names and ICAO codes of airports that were destinations for flight accidents operated by Ukraine Interna...'
+[00:26:15] [ 162/170] ▶ start  qid=00c50f73-b5ed-4ee2-9d0d-8d86d21b81e8  q='What are the names and ICAO codes of airports that were destinations for flight accidents operated by Ukraine Interna...'
+[00:26:18] [ 162/170] ✔ done   qid=00c50f73-b5ed-4ee2-9d0d-8d86d21b81e8  ea=False em=False psjs=0.0  t=2.6s  runEA=0.113  wall=9m02s  ETA=27s
+[00:26:18] [ 162/170] ✔ done   qid=00c50f73-b5ed-4ee2-9d0d-8d86d21b81e8  ea=False em=False psjs=0.0  t=2.6s  runEA=0.113  wall=9m02s  ETA=27s
+[00:26:18] [ 163/170] ▶ start  qid=acaf73a9-a2c2-470e-8da6-95bed6eaf54c  q='What are the names and countries of the manufacturers of the De Havilland Beaver?'
+[00:26:18] [ 163/170] ▶ start  qid=acaf73a9-a2c2-470e-8da6-95bed6eaf54c  q='What are the names and countries of the manufacturers of the De Havilland Beaver?'
+[00:26:21] [ 163/170] ✔ done   qid=acaf73a9-a2c2-470e-8da6-95bed6eaf54c  ea=False em=False psjs=0.0  t=3.3s  runEA=0.112  wall=9m06s  ETA=23s
+[00:26:21] [ 163/170] ✔ done   qid=acaf73a9-a2c2-470e-8da6-95bed6eaf54c  ea=False em=False psjs=0.0  t=3.3s  runEA=0.112  wall=9m06s  ETA=23s
+[00:26:21] [ 164/170] ▶ start  qid=2fffb0a9-e821-475a-90d4-324468d2df9a  q='Which had more fatalities: FeEx Express Flight 14 or the 2021 Piedade de Caratinga Beechcraft King Air crash?'
+[00:26:21] [ 164/170] ▶ start  qid=2fffb0a9-e821-475a-90d4-324468d2df9a  q='Which had more fatalities: FeEx Express Flight 14 or the 2021 Piedade de Caratinga Beechcraft King Air crash?'
+[00:26:24] [ 164/170] ✔ done   qid=2fffb0a9-e821-475a-90d4-324468d2df9a  ea=False em=False psjs=0.0  t=2.8s  runEA=0.111  wall=9m09s  ETA=20s
+[00:26:24] [ 164/170] ✔ done   qid=2fffb0a9-e821-475a-90d4-324468d2df9a  ea=False em=False psjs=0.0  t=2.8s  runEA=0.111  wall=9m09s  ETA=20s
+[00:26:24] [ 165/170] ▶ start  qid=eadf52cf-f7c1-4b3a-a17d-176f98ad249b  q='What are the names of airports that were destinations for flight accidents, excluding those with the ICAO code omaa?'
+[00:26:24] [ 165/170] ▶ start  qid=eadf52cf-f7c1-4b3a-a17d-176f98ad249b  q='What are the names of airports that were destinations for flight accidents, excluding those with the ICAO code omaa?'
+[00:26:29] [ 165/170] ✔ done   qid=eadf52cf-f7c1-4b3a-a17d-176f98ad249b  ea=False em=False psjs=1.0  t=5.0s  runEA=0.110  wall=9m14s  ETA=17s
+[00:26:29] [ 165/170] ✔ done   qid=eadf52cf-f7c1-4b3a-a17d-176f98ad249b  ea=False em=False psjs=1.0  t=5.0s  runEA=0.110  wall=9m14s  ETA=17s
+[00:26:29] [ 166/170] ▶ start  qid=c54b9f25-1d3b-4df6-88e8-bd37b9eb305e  q='What year was the UUAZ launched?'
+[00:26:29] [ 166/170] ▶ start  qid=c54b9f25-1d3b-4df6-88e8-bd37b9eb305e  q='What year was the UUAZ launched?'
+[00:26:32] [ 166/170] ✔ done   qid=c54b9f25-1d3b-4df6-88e8-bd37b9eb305e  ea=False em=False psjs=0.0  t=2.9s  runEA=0.110  wall=9m16s  ETA=13s
+[00:26:32] [ 166/170] ✔ done   qid=c54b9f25-1d3b-4df6-88e8-bd37b9eb305e  ea=False em=False psjs=0.0  t=2.9s  runEA=0.110  wall=9m16s  ETA=13s
+[00:26:32] [ 167/170] ▶ start  qid=8a16ac1f-e3f9-42ea-a5db-c2c04aed8de5  q='What are the names and IATA codes of the airports from which Soth African Airways Flight 201 departed?'
+[00:26:32] [ 167/170] ▶ start  qid=8a16ac1f-e3f9-42ea-a5db-c2c04aed8de5  q='What are the names and IATA codes of the airports from which Soth African Airways Flight 201 departed?'
+[00:26:35] [ 167/170] ✔ done   qid=8a16ac1f-e3f9-42ea-a5db-c2c04aed8de5  ea=False em=False psjs=0.0  t=3.5s  runEA=0.109  wall=9m20s  ETA=10s
+[00:26:35] [ 167/170] ✔ done   qid=8a16ac1f-e3f9-42ea-a5db-c2c04aed8de5  ea=False em=False psjs=0.0  t=3.5s  runEA=0.109  wall=9m20s  ETA=10s
+[00:26:35] [ 168/170] ▶ start  qid=c81fbb3e-741c-49b1-a940-6e081ba1842b  q='What is the IATA code for RJOI?'
+[00:26:35] [ 168/170] ▶ start  qid=c81fbb3e-741c-49b1-a940-6e081ba1842b  q='What is the IATA code for RJOI?'
+[00:26:38] [ 168/170] ✔ done   qid=c81fbb3e-741c-49b1-a940-6e081ba1842b  ea=False em=False psjs=0.0  t=2.5s  runEA=0.108  wall=9m22s  ETA=7s
+[00:26:38] [ 168/170] ✔ done   qid=c81fbb3e-741c-49b1-a940-6e081ba1842b  ea=False em=False psjs=0.0  t=2.5s  runEA=0.108  wall=9m22s  ETA=7s
+[00:26:38] [ 169/170] ▶ start  qid=1a362a72-8818-458e-a676-ea0fe100a795  q='What are the names and ICAO codes of the airports from which 9955 departed?'
+[00:26:38] [ 169/170] ▶ start  qid=1a362a72-8818-458e-a676-ea0fe100a795  q='What are the names and ICAO codes of the airports from which 9955 departed?'
+[00:26:40] [ 169/170] ✔ done   qid=1a362a72-8818-458e-a676-ea0fe100a795  ea=False em=False psjs=0.0  t=2.5s  runEA=0.108  wall=9m25s  ETA=3s
+[00:26:40] [ 169/170] ✔ done   qid=1a362a72-8818-458e-a676-ea0fe100a795  ea=False em=False psjs=0.0  t=2.5s  runEA=0.108  wall=9m25s  ETA=3s
+[00:26:40] [ 170/170] ▶ start  qid=0ef793f7-1a2d-4dc7-8b8d-0942c32c08c6  q='What are the names of aviation accidents that were headed to the same airport from which the Montego Bay crash depart...'
+[00:26:40] [ 170/170] ▶ start  qid=0ef793f7-1a2d-4dc7-8b8d-0942c32c08c6  q='What are the names of aviation accidents that were headed to the same airport from which the Montego Bay crash depart...'
+[00:26:43] [ 170/170] ✔ done   qid=0ef793f7-1a2d-4dc7-8b8d-0942c32c08c6  ea=False em=False psjs=0.0  t=2.8s  runEA=0.107  wall=9m28s  ETA=--
+[00:26:43] [ 170/170] ✔ done   qid=0ef793f7-1a2d-4dc7-8b8d-0942c32c08c6  ea=False em=False psjs=0.0  t=2.8s  runEA=0.107  wall=9m28s  ETA=--

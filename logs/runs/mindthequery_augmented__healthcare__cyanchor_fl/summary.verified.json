@@ -1,0 +1,16 @@
+{
+  "dataset": "mindthequery_augmented",
+  "n": 438,
+  "n_scored": {
+    "ea": 433,
+    "em": 438,
+    "psjs": 433
+  },
+  "n_errors": 5,
+  "ea": 0.7031963470319634,
+  "em": 0.0,
+  "psjs": 0.7425719564566876,
+  "verified_subset": true,
+  "dropped_by_verification": 1,
+  "pending_policy": "keep"
+}

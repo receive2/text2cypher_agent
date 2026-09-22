@@ -1,0 +1,1037 @@
+2026-06-21 20:41:31.765 | INFO     | eval.metrics_CypherBench:load_dataset:203 - Loaded 2136 examples from /Users/q0w01lh/datasets/cypherbench_augmented_v2/test.json
+2026-06-21 20:41:31.766 | INFO     | eval.metrics_CypherBench:evaluate_dataset:1135 - CypherBench graph_filter='nba': kept 258/2136 examples (skipped 1878).
+2026-06-21 20:41:31.766 | INFO     | eval.metrics_CypherBench:evaluate_dataset:1159 - evaluate_dataset: per-example wall-clock cap = 600s (override via EVAL_PER_EXAMPLE_TIMEOUT env var or per_example_timeout= arg).
+[20:41:31] [   1/258] ▶ start  qid=2d5f1e6f-ae3c-4e71-8fbe-e05f69294e46  q='How many players have been part of either the Sacramento Kings or the CHI at any time?'
+[20:41:31] [   1/258] ▶ start  qid=2d5f1e6f-ae3c-4e71-8fbe-e05f69294e46  q='How many players have been part of either the Sacramento Kings or the CHI at any time?'
+[20:41:38] [   1/258] ✔ done   qid=2d5f1e6f-ae3c-4e71-8fbe-e05f69294e46  ea=False em=False psjs=0.47539797395079597  t=6.2s  runEA=0.000  wall=6s  ETA=26m46s
+[20:41:38] [   1/258] ✔ done   qid=2d5f1e6f-ae3c-4e71-8fbe-e05f69294e46  ea=False em=False psjs=0.47539797395079597  t=6.2s  runEA=0.000  wall=6s  ETA=26m46s
+[20:41:38] [   2/258] ▶ start  qid=3f28fa8b-8b37-46ad-ab48-d4e573500312  q='How many players are there who play as either a two guard or a swingman?'
+[20:41:38] [   2/258] ▶ start  qid=3f28fa8b-8b37-46ad-ab48-d4e573500312  q='How many players are there who play as either a two guard or a swingman?'
+[20:41:43] [   2/258] ✔ done   qid=3f28fa8b-8b37-46ad-ab48-d4e573500312  ea=False em=False psjs=0.0031861629494765588  t=5.8s  runEA=0.000  wall=12s  ETA=25m47s
+[20:41:43] [   2/258] ✔ done   qid=3f28fa8b-8b37-46ad-ab48-d4e573500312  ea=False em=False psjs=0.0031861629494765588  t=5.8s  runEA=0.000  wall=12s  ETA=25m47s
+[20:41:43] [   3/258] ▶ start  qid=0174ba44-5756-4cfd-9ff3-103a4b131721  q='What are the names of positions played by players who have received the ACB Most Valuable Player, and how many such p...'
+[20:41:43] [   3/258] ▶ start  qid=0174ba44-5756-4cfd-9ff3-103a4b131721  q='What are the names of positions played by players who have received the ACB Most Valuable Player, and how many such p...'
+[20:41:50] [   3/258] ✔ done   qid=0174ba44-5756-4cfd-9ff3-103a4b131721  ea=True em=False psjs=1.0  t=6.9s  runEA=0.333  wall=19s  ETA=26m54s
+[20:41:50] [   3/258] ✔ done   qid=0174ba44-5756-4cfd-9ff3-103a4b131721  ea=True em=False psjs=1.0  t=6.9s  runEA=0.333  wall=19s  ETA=26m54s
+[20:41:50] [   4/258] ▶ start  qid=8c2683f2-d6ec-491d-8200-d1019ce7afb2  q='What are the names of the teams Robert Rrid played for during the year 1983?'
+[20:41:50] [   4/258] ▶ start  qid=8c2683f2-d6ec-491d-8200-d1019ce7afb2  q='What are the names of the teams Robert Rrid played for during the year 1983?'
+[20:42:03] [   4/258] ✔ done   qid=8c2683f2-d6ec-491d-8200-d1019ce7afb2  ea=False em=False psjs=0.42857142857142855  t=12.3s  runEA=0.250  wall=31s  ETA=33m05s
+[20:42:03] [   4/258] ✔ done   qid=8c2683f2-d6ec-491d-8200-d1019ce7afb2  ea=False em=False psjs=0.42857142857142855  t=12.3s  runEA=0.250  wall=31s  ETA=33m05s
+[20:42:03] [   5/258] ▶ start  qid=829e543d-503e-45a1-aa9a-8a14ae871d47  q='How many awards have been received by either Wilt Chamberlain or bob lanier?'
+[20:42:03] [   5/258] ▶ start  qid=829e543d-503e-45a1-aa9a-8a14ae871d47  q='How many awards have been received by either Wilt Chamberlain or bob lanier?'
+[20:42:09] [   5/258] ✔ done   qid=829e543d-503e-45a1-aa9a-8a14ae871d47  ea=True em=False psjs=0.9  t=6.0s  runEA=0.400  wall=37s  ETA=31m26s
+[20:42:09] [   5/258] ✔ done   qid=829e543d-503e-45a1-aa9a-8a14ae871d47  ea=True em=False psjs=0.9  t=6.0s  runEA=0.400  wall=37s  ETA=31m26s
+[20:42:09] [   6/258] ▶ start  qid=0834680e-22f8-4e23-84e8-7807640928ab  q='How many teams are either part of the Southwest Divisioon or have drafted Lucious Harris?'
+[20:42:09] [   6/258] ▶ start  qid=0834680e-22f8-4e23-84e8-7807640928ab  q='How many teams are either part of the Southwest Divisioon or have drafted Lucious Harris?'
+[20:42:15] [   6/258] ✔ done   qid=0834680e-22f8-4e23-84e8-7807640928ab  ea=True em=False psjs=1.0  t=6.9s  runEA=0.500  wall=44s  ETA=30m56s
+[20:42:15] [   6/258] ✔ done   qid=0834680e-22f8-4e23-84e8-7807640928ab  ea=True em=False psjs=1.0  t=6.9s  runEA=0.500  wall=44s  ETA=30m56s
+[20:42:15] [   7/258] ▶ start  qid=5d04cdc7-8f1b-4d57-b469-d601bdc9806a  q='Provide the names of players who have been part of teams in the Central, along with the number of such teams each has...'
+[20:42:15] [   7/258] ▶ start  qid=5d04cdc7-8f1b-4d57-b469-d601bdc9806a  q='Provide the names of players who have been part of teams in the Central, along with the number of such teams each has...'
+[20:42:27] [   7/258] ✔ done   qid=5d04cdc7-8f1b-4d57-b469-d601bdc9806a  ea=True em=False psjs=1.0  t=12.0s  runEA=0.571  wall=56s  ETA=33m35s
+[20:42:27] [   7/258] ✔ done   qid=5d04cdc7-8f1b-4d57-b469-d601bdc9806a  ea=True em=False psjs=1.0  t=12.0s  runEA=0.571  wall=56s  ETA=33m35s
+[20:42:27] [   8/258] ▶ start  qid=bbbf9f6d-0ccd-4e42-8b6b-20d2af3addd2  q='Which teams have had the Coliseum and the International Amphitheatre as their home venues at some point, and who are ...'
+[20:42:27] [   8/258] ▶ start  qid=bbbf9f6d-0ccd-4e42-8b6b-20d2af3addd2  q='Which teams have had the Coliseum and the International Amphitheatre as their home venues at some point, and who are ...'
+[20:42:39] [   8/258] ✔ done   qid=bbbf9f6d-0ccd-4e42-8b6b-20d2af3addd2  ea=False em=False psjs=0.0  t=11.6s  runEA=0.500  wall=1m08s  ETA=35m20s
+[20:42:39] [   8/258] ✔ done   qid=bbbf9f6d-0ccd-4e42-8b6b-20d2af3addd2  ea=False em=False psjs=0.0  t=11.6s  runEA=0.500  wall=1m08s  ETA=35m20s
+[20:42:39] [   9/258] ▶ start  qid=1f022688-7b01-4c44-a38f-96efdb8a25a5  q='How many positions are played by either Buddy Hielld or John Laskowski?'
+[20:42:39] [   9/258] ▶ start  qid=1f022688-7b01-4c44-a38f-96efdb8a25a5  q='How many positions are played by either Buddy Hielld or John Laskowski?'
+[20:42:43] [   9/258] ✔ done   qid=1f022688-7b01-4c44-a38f-96efdb8a25a5  ea=True em=False psjs=0.6  t=4.0s  runEA=0.556  wall=1m12s  ETA=33m08s
+[20:42:43] [   9/258] ✔ done   qid=1f022688-7b01-4c44-a38f-96efdb8a25a5  ea=True em=False psjs=0.6  t=4.0s  runEA=0.556  wall=1m12s  ETA=33m08s
+[20:42:43] [  10/258] ▶ start  qid=590f51a4-1dae-412d-974b-d4113c8c20c3  q='Provide the names of all players who have received the ACB Most Valuable Player, along with the number of positions e...'
+[20:42:43] [  10/258] ▶ start  qid=590f51a4-1dae-412d-974b-d4113c8c20c3  q='Provide the names of all players who have received the ACB Most Valuable Player, along with the number of positions e...'
+[20:42:49] [  10/258] ✔ done   qid=590f51a4-1dae-412d-974b-d4113c8c20c3  ea=True em=False psjs=1.0  t=6.3s  runEA=0.600  wall=1m18s  ETA=32m19s
+[20:42:49] [  10/258] ✔ done   qid=590f51a4-1dae-412d-974b-d4113c8c20c3  ea=True em=False psjs=1.0  t=6.3s  runEA=0.600  wall=1m18s  ETA=32m19s
+[20:42:49] [  11/258] ▶ start  qid=7f7a952a-81e4-4c6a-b454-d8b53911f991  q='What are the names of awards received by players who have been part of the DET?'
+[20:42:49] [  11/258] ▶ start  qid=7f7a952a-81e4-4c6a-b454-d8b53911f991  q='What are the names of awards received by players who have been part of the DET?'
+[20:42:56] [  11/258] ✔ done   qid=7f7a952a-81e4-4c6a-b454-d8b53911f991  ea=True em=False psjs=1.0  t=6.8s  runEA=0.636  wall=1m25s  ETA=31m50s
+[20:42:56] [  11/258] ✔ done   qid=7f7a952a-81e4-4c6a-b454-d8b53911f991  ea=True em=False psjs=1.0  t=6.8s  runEA=0.636  wall=1m25s  ETA=31m50s
+[20:42:56] [  12/258] ▶ start  qid=4a506094-e930-4c8f-be3e-a72b0d8b280b  q='How many divisions have teams that Howard Jonathan Eisley has played for?'
+[20:42:56] [  12/258] ▶ start  qid=4a506094-e930-4c8f-be3e-a72b0d8b280b  q='How many divisions have teams that Howard Jonathan Eisley has played for?'
+[20:43:00] [  12/258] ✔ done   qid=4a506094-e930-4c8f-be3e-a72b0d8b280b  ea=False em=False psjs=0.0  t=3.5s  runEA=0.583  wall=1m29s  ETA=30m15s
+[20:43:00] [  12/258] ✔ done   qid=4a506094-e930-4c8f-be3e-a72b0d8b280b  ea=False em=False psjs=0.0  t=3.5s  runEA=0.583  wall=1m29s  ETA=30m15s
+[20:43:00] [  13/258] ▶ start  qid=5715c139-758a-48e4-af9f-dcebb56721d7  q='What are the names of all teams in the northwest division, and how many venues have each of them called home at any t...'
+[20:43:00] [  13/258] ▶ start  qid=5715c139-758a-48e4-af9f-dcebb56721d7  q='What are the names of all teams in the northwest division, and how many venues have each of them called home at any t...'
+[20:43:07] [  13/258] ✔ done   qid=5715c139-758a-48e4-af9f-dcebb56721d7  ea=True em=False psjs=1.0  t=6.7s  runEA=0.615  wall=1m35s  ETA=29m56s
+[20:43:07] [  13/258] ✔ done   qid=5715c139-758a-48e4-af9f-dcebb56721d7  ea=True em=False psjs=1.0  t=6.7s  runEA=0.615  wall=1m35s  ETA=29m56s
+[20:43:07] [  14/258] ▶ start  qid=dc90d247-c0f6-4411-904a-33c6da3058ce  q='What are the names of players drafted by the same team that drafted James Earl Ray, sorted by their date of birth fro...'
+[20:43:07] [  14/258] ▶ start  qid=dc90d247-c0f6-4411-904a-33c6da3058ce  q='What are the names of players drafted by the same team that drafted James Earl Ray, sorted by their date of birth fro...'
+[20:43:16] [  14/258] ✔ done   qid=dc90d247-c0f6-4411-904a-33c6da3058ce  ea=False em=False psjs=1.0  t=9.9s  runEA=0.571  wall=1m45s  ETA=30m34s
+[20:43:16] [  14/258] ✔ done   qid=dc90d247-c0f6-4411-904a-33c6da3058ce  ea=False em=False psjs=1.0  t=9.9s  runEA=0.571  wall=1m45s  ETA=30m34s
+[20:43:16] [  15/258] ▶ start  qid=c7ccd057-43f3-482b-b78a-a176f92d9e16  q='Who is the oldest player drafted by the MIA?'
+[20:43:16] [  15/258] ▶ start  qid=c7ccd057-43f3-482b-b78a-a176f92d9e16  q='Who is the oldest player drafted by the MIA?'
+[20:43:23] [  15/258] ✔ done   qid=c7ccd057-43f3-482b-b78a-a176f92d9e16  ea=True em=False psjs=1.0  t=6.7s  runEA=0.600  wall=1m52s  ETA=30m13s
+[20:43:23] [  15/258] ✔ done   qid=c7ccd057-43f3-482b-b78a-a176f92d9e16  ea=True em=False psjs=1.0  t=6.7s  runEA=0.600  wall=1m52s  ETA=30m13s
+[20:43:23] [  16/258] ▶ start  qid=eec765d7-ebd3-4828-8041-e698f81a9bab  q='What are the names of teams that Walt Hazzard has played for, excluding those owned by Lacob?'
+[20:43:23] [  16/258] ▶ start  qid=eec765d7-ebd3-4828-8041-e698f81a9bab  q='What are the names of teams that Walt Hazzard has played for, excluding those owned by Lacob?'
+[20:43:27] [  16/258] ✔ done   qid=eec765d7-ebd3-4828-8041-e698f81a9bab  ea=False em=False psjs=0.7142857142857143  t=3.6s  runEA=0.562  wall=1m55s  ETA=29m07s
+[20:43:27] [  16/258] ✔ done   qid=eec765d7-ebd3-4828-8041-e698f81a9bab  ea=False em=False psjs=0.7142857142857143  t=3.6s  runEA=0.562  wall=1m55s  ETA=29m07s
+[20:43:27] [  17/258] ▶ start  qid=1e60e349-2eb1-4da0-950b-2e0a5cf0f4d3  q='What are the names of teams in the WC?'
+[20:43:27] [  17/258] ▶ start  qid=1e60e349-2eb1-4da0-950b-2e0a5cf0f4d3  q='What are the names of teams in the WC?'
+[20:43:38] [  17/258] ✔ done   qid=1e60e349-2eb1-4da0-950b-2e0a5cf0f4d3  ea=True em=False psjs=1.0  t=11.7s  runEA=0.588  wall=2m07s  ETA=30m03s
+[20:43:38] [  17/258] ✔ done   qid=1e60e349-2eb1-4da0-950b-2e0a5cf0f4d3  ea=True em=False psjs=1.0  t=11.7s  runEA=0.588  wall=2m07s  ETA=30m03s
+[20:43:38] [  18/258] ▶ start  qid=c1d20c6f-ee69-4307-ae76-d720a4fc27cb  q='What is the earliest founding year of teams that have had players drafted by the San Antonio Sputs?'
+[20:43:38] [  18/258] ▶ start  qid=c1d20c6f-ee69-4307-ae76-d720a4fc27cb  q='What is the earliest founding year of teams that have had players drafted by the San Antonio Sputs?'
+[20:43:45] [  18/258] ✔ done   qid=c1d20c6f-ee69-4307-ae76-d720a4fc27cb  ea=True em=False psjs=1.0  t=6.2s  runEA=0.611  wall=2m13s  ETA=29m39s
+[20:43:45] [  18/258] ✔ done   qid=c1d20c6f-ee69-4307-ae76-d720a4fc27cb  ea=True em=False psjs=1.0  t=6.2s  runEA=0.611  wall=2m13s  ETA=29m39s
+[20:43:45] [  19/258] ▶ start  qid=e8ec051a-c81d-4675-96bf-2fde120a3078  q='Who are the players drafted by the New Yokr Knicks, listed from the oldest to the youngest based on their date of birth?'
+[20:43:45] [  19/258] ▶ start  qid=e8ec051a-c81d-4675-96bf-2fde120a3078  q='Who are the players drafted by the New Yokr Knicks, listed from the oldest to the youngest based on their date of birth?'
+[20:43:52] [  19/258] ✔ done   qid=e8ec051a-c81d-4675-96bf-2fde120a3078  ea=True em=False psjs=1.0  t=7.3s  runEA=0.632  wall=2m21s  ETA=29m30s
+[20:43:52] [  19/258] ✔ done   qid=e8ec051a-c81d-4675-96bf-2fde120a3078  ea=True em=False psjs=1.0  t=7.3s  runEA=0.632  wall=2m21s  ETA=29m30s
+[20:43:52] [  20/258] ▶ start  qid=f0052196-f3fa-4178-8063-2a5196717aa7  q='What are the positions played by players who have been part of the POR, and how many players have played each position?'
+[20:43:52] [  20/258] ▶ start  qid=f0052196-f3fa-4178-8063-2a5196717aa7  q='What are the positions played by players who have been part of the POR, and how many players have played each position?'
+[20:44:03] [  20/258] ✔ done   qid=f0052196-f3fa-4178-8063-2a5196717aa7  ea=False em=False psjs=0.0  t=11.1s  runEA=0.600  wall=2m32s  ETA=30m07s
+[20:44:03] [  20/258] ✔ done   qid=f0052196-f3fa-4178-8063-2a5196717aa7  ea=False em=False psjs=0.0  t=11.1s  runEA=0.600  wall=2m32s  ETA=30m07s
+[20:44:03] [  21/258] ▶ start  qid=d6badaed-4add-4b95-a078-68bf10f3541f  q='What are the names of awards received by Guard-forward players, and how many Guard-forward players have received each...'
+[20:44:03] [  21/258] ▶ start  qid=d6badaed-4add-4b95-a078-68bf10f3541f  q='What are the names of awards received by Guard-forward players, and how many Guard-forward players have received each...'
+[20:44:16] [  21/258] ✔ done   qid=d6badaed-4add-4b95-a078-68bf10f3541f  ea=False em=False psjs=0.06896551724137931  t=13.0s  runEA=0.571  wall=2m45s  ETA=31m01s
+[20:44:16] [  21/258] ✔ done   qid=d6badaed-4add-4b95-a078-68bf10f3541f  ea=False em=False psjs=0.06896551724137931  t=13.0s  runEA=0.571  wall=2m45s  ETA=31m01s
+[20:44:16] [  22/258] ▶ start  qid=048c39e7-9056-42b3-931a-d7016ed96490  q='Which teams have players who were drafted by the Jazz, and how many such players have played for each team at any time?'
+[20:44:16] [  22/258] ▶ start  qid=048c39e7-9056-42b3-931a-d7016ed96490  q='Which teams have players who were drafted by the Jazz, and how many such players have played for each team at any time?'
+[20:44:24] [  22/258] ✔ done   qid=048c39e7-9056-42b3-931a-d7016ed96490  ea=True em=False psjs=1.0  t=8.2s  runEA=0.591  wall=2m53s  ETA=30m57s
+[20:44:24] [  22/258] ✔ done   qid=048c39e7-9056-42b3-931a-d7016ed96490  ea=True em=False psjs=1.0  t=8.2s  runEA=0.591  wall=2m53s  ETA=30m57s
+[20:44:24] [  23/258] ▶ start  qid=9e194653-50e4-4ca2-8721-9b8a874679e3  q='What are the names of all the awards received by RUSSELL WESTBROOK, and how many players have received each of those ...'
+[20:44:24] [  23/258] ▶ start  qid=9e194653-50e4-4ca2-8721-9b8a874679e3  q='What are the names of all the awards received by RUSSELL WESTBROOK, and how many players have received each of those ...'
+[20:44:32] [  23/258] ✔ done   qid=9e194653-50e4-4ca2-8721-9b8a874679e3  ea=True em=False psjs=1.0  t=7.3s  runEA=0.609  wall=3m00s  ETA=30m44s
+[20:44:32] [  23/258] ✔ done   qid=9e194653-50e4-4ca2-8721-9b8a874679e3  ea=True em=False psjs=1.0  t=7.3s  runEA=0.609  wall=3m00s  ETA=30m44s
+[20:44:32] [  24/258] ▶ start  qid=58d1ad18-29ef-45bb-ad70-faf82dc5ac18  q='What are the names of teams in the Sutheast Division and who are their head coaches?'
+[20:44:32] [  24/258] ▶ start  qid=58d1ad18-29ef-45bb-ad70-faf82dc5ac18  q='What are the names of teams in the Sutheast Division and who are their head coaches?'
+[20:44:43] [  24/258] ✔ done   qid=58d1ad18-29ef-45bb-ad70-faf82dc5ac18  ea=True em=False psjs=1.0  t=11.0s  runEA=0.625  wall=3m11s  ETA=31m07s
+[20:44:43] [  24/258] ✔ done   qid=58d1ad18-29ef-45bb-ad70-faf82dc5ac18  ea=True em=False psjs=1.0  t=11.0s  runEA=0.625  wall=3m11s  ETA=31m07s
+[20:44:43] [  25/258] ▶ start  qid=be667a90-0313-4806-a6ca-e7d1d69e5303  q='What are the names and owners of teams that both Herman L. Gilliam Jr. and Scoot Henderson have played for at any time?'
+[20:44:43] [  25/258] ▶ start  qid=be667a90-0313-4806-a6ca-e7d1d69e5303  q='What are the names and owners of teams that both Herman L. Gilliam Jr. and Scoot Henderson have played for at any time?'
+[20:44:56] [  25/258] ✔ done   qid=be667a90-0313-4806-a6ca-e7d1d69e5303  ea=True em=False psjs=1.0  t=12.9s  runEA=0.640  wall=3m24s  ETA=31m45s
+[20:44:56] [  25/258] ✔ done   qid=be667a90-0313-4806-a6ca-e7d1d69e5303  ea=True em=False psjs=1.0  t=12.9s  runEA=0.640  wall=3m24s  ETA=31m45s
+[20:44:56] [  26/258] ▶ start  qid=777d9ce9-a708-4eca-b669-526f54523d2f  q="Which teams have players who have received the L'Équipe award, and how many such players have been part of each team?"
+[20:44:56] [  26/258] ▶ start  qid=777d9ce9-a708-4eca-b669-526f54523d2f  q="Which teams have players who have received the L'Équipe award, and how many such players have been part of each team?"
+[20:45:03] [  26/258] ✔ done   qid=777d9ce9-a708-4eca-b669-526f54523d2f  ea=False em=False psjs=0.0  t=6.9s  runEA=0.615  wall=3m31s  ETA=31m26s
+[20:45:03] [  26/258] ✔ done   qid=777d9ce9-a708-4eca-b669-526f54523d2f  ea=False em=False psjs=0.0  t=6.9s  runEA=0.615  wall=3m31s  ETA=31m26s
+[20:45:03] [  27/258] ▶ start  qid=61ff55fc-962f-42fb-8ddd-66791d0f75c8  q='How many teams are either part of the Atlantic or have had Jim McMillian as a player at some point?'
+[20:45:03] [  27/258] ▶ start  qid=61ff55fc-962f-42fb-8ddd-66791d0f75c8  q='How many teams are either part of the Atlantic or have had Jim McMillian as a player at some point?'
+[20:45:08] [  27/258] ✔ done   qid=61ff55fc-962f-42fb-8ddd-66791d0f75c8  ea=False em=False psjs=0.47368421052631576  t=5.5s  runEA=0.593  wall=3m37s  ETA=30m55s
+[20:45:08] [  27/258] ✔ done   qid=61ff55fc-962f-42fb-8ddd-66791d0f75c8  ea=False em=False psjs=0.47368421052631576  t=5.5s  runEA=0.593  wall=3m37s  ETA=30m55s
+[20:45:08] [  28/258] ▶ start  qid=3c61a785-dd4f-4246-8c10-937e21f19b72  q='What are the names and owners of teams that have used State Fair Coliseum as their home venue at any time?'
+[20:45:08] [  28/258] ▶ start  qid=3c61a785-dd4f-4246-8c10-937e21f19b72  q='What are the names and owners of teams that have used State Fair Coliseum as their home venue at any time?'
+[20:45:19] [  28/258] ✔ done   qid=3c61a785-dd4f-4246-8c10-937e21f19b72  ea=False em=False psjs=0.0  t=10.8s  runEA=0.571  wall=3m48s  ETA=31m09s
+[20:45:19] [  28/258] ✔ done   qid=3c61a785-dd4f-4246-8c10-937e21f19b72  ea=False em=False psjs=0.0  t=10.8s  runEA=0.571  wall=3m48s  ETA=31m09s
+[20:45:19] [  29/258] ▶ start  qid=8a980812-f705-434c-8917-990558916d43  q='Which teams currently call Bal Arena their home venue?'
+[20:45:19] [  29/258] ▶ start  qid=8a980812-f705-434c-8917-990558916d43  q='Which teams currently call Bal Arena their home venue?'
+[20:45:29] [  29/258] ✔ done   qid=8a980812-f705-434c-8917-990558916d43  ea=True em=False psjs=1.0  t=10.3s  runEA=0.586  wall=3m58s  ETA=31m18s
+[20:45:29] [  29/258] ✔ done   qid=8a980812-f705-434c-8917-990558916d43  ea=True em=False psjs=1.0  t=10.3s  runEA=0.586  wall=3m58s  ETA=31m18s
+[20:45:29] [  30/258] ▶ start  qid=da76e12b-4f31-496b-8575-4a4ed8c1d1f6  q='Provide the names of all players drafted by the IND, along with the number of positions each player plays.'
+[20:45:29] [  30/258] ▶ start  qid=da76e12b-4f31-496b-8575-4a4ed8c1d1f6  q='Provide the names of all players drafted by the IND, along with the number of positions each player plays.'
+[20:45:38] [  30/258] ✔ done   qid=da76e12b-4f31-496b-8575-4a4ed8c1d1f6  ea=True em=False psjs=1.0  t=8.5s  runEA=0.600  wall=4m06s  ETA=31m12s
+[20:45:38] [  30/258] ✔ done   qid=da76e12b-4f31-496b-8575-4a4ed8c1d1f6  ea=True em=False psjs=1.0  t=8.5s  runEA=0.600  wall=4m06s  ETA=31m12s
+[20:45:38] [  31/258] ▶ start  qid=169efd3d-5147-4a6e-98c3-826eef355b3a  q='List the names of players who have received the same awards as Bdudy Hield, along with the count of such awards each ...'
+[20:45:38] [  31/258] ▶ start  qid=169efd3d-5147-4a6e-98c3-826eef355b3a  q='List the names of players who have received the same awards as Bdudy Hield, along with the count of such awards each ...'
+[20:45:47] [  31/258] ✔ done   qid=169efd3d-5147-4a6e-98c3-826eef355b3a  ea=False em=False psjs=0.12  t=9.8s  runEA=0.581  wall=4m16s  ETA=31m16s
+[20:45:47] [  31/258] ✔ done   qid=169efd3d-5147-4a6e-98c3-826eef355b3a  ea=False em=False psjs=0.12  t=9.8s  runEA=0.581  wall=4m16s  ETA=31m16s
+[20:45:47] [  32/258] ▶ start  qid=f1a0ab55-fdf4-4d8c-b5ef-ab2395fa4504  q='Who is younger, Jim Burns or JEAN PRIOLEAU?'
+[20:45:47] [  32/258] ▶ start  qid=f1a0ab55-fdf4-4d8c-b5ef-ab2395fa4504  q='Who is younger, Jim Burns or JEAN PRIOLEAU?'
+[20:45:54] [  32/258] ✔ done   qid=f1a0ab55-fdf4-4d8c-b5ef-ab2395fa4504  ea=True em=False psjs=1.0  t=6.7s  runEA=0.594  wall=4m23s  ETA=30m56s
+[20:45:54] [  32/258] ✔ done   qid=f1a0ab55-fdf4-4d8c-b5ef-ab2395fa4504  ea=True em=False psjs=1.0  t=6.7s  runEA=0.594  wall=4m23s  ETA=30m56s
+[20:45:54] [  33/258] ▶ start  qid=047e97cb-44fb-4148-b36e-c539e0340d16  q='What are the names of awards received by players who play the SF position?'
+[20:45:54] [  33/258] ▶ start  qid=047e97cb-44fb-4148-b36e-c539e0340d16  q='What are the names of awards received by players who play the SF position?'
+[20:46:02] [  33/258] ✔ done   qid=047e97cb-44fb-4148-b36e-c539e0340d16  ea=True em=False psjs=1.0  t=7.6s  runEA=0.606  wall=4m30s  ETA=30m44s
+[20:46:02] [  33/258] ✔ done   qid=047e97cb-44fb-4148-b36e-c539e0340d16  ea=True em=False psjs=1.0  t=7.6s  runEA=0.606  wall=4m30s  ETA=30m44s
+[20:46:02] [  34/258] ▶ start  qid=93830abd-079d-43de-b596-3e3b98ab7fa7  q='Which teams drafted Robert L. Dandridge, Jr., and who are their head coaches?'
+[20:46:02] [  34/258] ▶ start  qid=93830abd-079d-43de-b596-3e3b98ab7fa7  q='Which teams drafted Robert L. Dandridge, Jr., and who are their head coaches?'
+[20:46:13] [  34/258] ✔ done   qid=93830abd-079d-43de-b596-3e3b98ab7fa7  ea=True em=False psjs=1.0  t=11.7s  runEA=0.618  wall=4m42s  ETA=30m58s
+[20:46:13] [  34/258] ✔ done   qid=93830abd-079d-43de-b596-3e3b98ab7fa7  ea=True em=False psjs=1.0  t=11.7s  runEA=0.618  wall=4m42s  ETA=30m58s
+[20:46:13] [  35/258] ▶ start  qid=4e5ed21a-4d0a-418d-98a9-cde47903857b  q='Who weighs more, JaVale McGee or Grevey?'
+[20:46:13] [  35/258] ▶ start  qid=4e5ed21a-4d0a-418d-98a9-cde47903857b  q='Who weighs more, JaVale McGee or Grevey?'
+[20:46:27] [  35/258] ✔ done   qid=4e5ed21a-4d0a-418d-98a9-cde47903857b  ea=True em=False psjs=1.0  t=13.6s  runEA=0.629  wall=4m56s  ETA=31m24s
+[20:46:27] [  35/258] ✔ done   qid=4e5ed21a-4d0a-418d-98a9-cde47903857b  ea=True em=False psjs=1.0  t=13.6s  runEA=0.629  wall=4m56s  ETA=31m24s
+[20:46:27] [  36/258] ▶ start  qid=65b5ad24-2869-44ad-a5f9-18fdb2bf2a66  q='Who are the players who were part of the WAS roster in the year 1964?'
+[20:46:27] [  36/258] ▶ start  qid=65b5ad24-2869-44ad-a5f9-18fdb2bf2a66  q='Who are the players who were part of the WAS roster in the year 1964?'
+[20:46:37] [  36/258] ✔ done   qid=65b5ad24-2869-44ad-a5f9-18fdb2bf2a66  ea=False em=False psjs=0.0  t=10.5s  runEA=0.611  wall=5m06s  ETA=31m28s
+[20:46:37] [  36/258] ✔ done   qid=65b5ad24-2869-44ad-a5f9-18fdb2bf2a66  ea=False em=False psjs=0.0  t=10.5s  runEA=0.611  wall=5m06s  ETA=31m28s
+[20:46:37] [  37/258] ▶ start  qid=cb34bff2-f55d-4155-9cbb-723d9ba17ff2  q='What are the names of the teams that LeBroj James is currently playing for?'
+[20:46:37] [  37/258] ▶ start  qid=cb34bff2-f55d-4155-9cbb-723d9ba17ff2  q='What are the names of the teams that LeBroj James is currently playing for?'
+[20:46:49] [  37/258] ✔ done   qid=cb34bff2-f55d-4155-9cbb-723d9ba17ff2  ea=True em=False psjs=1.0  t=11.2s  runEA=0.622  wall=5m17s  ETA=31m36s
+[20:46:49] [  37/258] ✔ done   qid=cb34bff2-f55d-4155-9cbb-723d9ba17ff2  ea=True em=False psjs=1.0  t=11.2s  runEA=0.622  wall=5m17s  ETA=31m36s
+[20:46:49] [  38/258] ▶ start  qid=26a87c72-1215-40a2-bf9e-393434267cf4  q='What are the names of teams that have drafted players who have played for the BKN, listed from the earliest to the mo...'
+[20:46:49] [  38/258] ▶ start  qid=26a87c72-1215-40a2-bf9e-393434267cf4  q='What are the names of teams that have drafted players who have played for the BKN, listed from the earliest to the mo...'
+[20:46:57] [  38/258] ✔ done   qid=26a87c72-1215-40a2-bf9e-393434267cf4  ea=True em=False psjs=1.0  t=8.6s  runEA=0.632  wall=5m26s  ETA=31m27s
+[20:46:57] [  38/258] ✔ done   qid=26a87c72-1215-40a2-bf9e-393434267cf4  ea=True em=False psjs=1.0  t=8.6s  runEA=0.632  wall=5m26s  ETA=31m27s
+[20:46:57] [  39/258] ▶ start  qid=4c1e37f4-4105-4bb8-81e7-a9fcbad651c1  q='How many players have either played for the Rockets at some point or have received the NBA Coach of the Year Award?'
+[20:46:57] [  39/258] ▶ start  qid=4c1e37f4-4105-4bb8-81e7-a9fcbad651c1  q='How many players have either played for the Rockets at some point or have received the NBA Coach of the Year Award?'
+[20:47:03] [  39/258] ✔ done   qid=4c1e37f4-4105-4bb8-81e7-a9fcbad651c1  ea=False em=False psjs=0.07838179519595449  t=5.3s  runEA=0.615  wall=5m31s  ETA=31m00s
+[20:47:03] [  39/258] ✔ done   qid=4c1e37f4-4105-4bb8-81e7-a9fcbad651c1  ea=False em=False psjs=0.07838179519595449  t=5.3s  runEA=0.615  wall=5m31s  ETA=31m00s
+[20:47:03] [  40/258] ▶ start  qid=54f574bd-53ff-42cd-be6b-a2ffade30007  q='Who are the unique owners of teams in the Southeast Divison?'
+[20:47:03] [  40/258] ▶ start  qid=54f574bd-53ff-42cd-be6b-a2ffade30007  q='Who are the unique owners of teams in the Southeast Divison?'
+[20:47:06] [  40/258] ✔ done   qid=54f574bd-53ff-42cd-be6b-a2ffade30007  ea=True em=False psjs=1.0  t=3.8s  runEA=0.625  wall=5m35s  ETA=30m26s
+[20:47:06] [  40/258] ✔ done   qid=54f574bd-53ff-42cd-be6b-a2ffade30007  ea=True em=False psjs=1.0  t=3.8s  runEA=0.625  wall=5m35s  ETA=30m26s
+[20:47:06] [  41/258] ▶ start  qid=f6e463fd-b5da-40ff-ac8e-f92d6313894b  q='Are William Lange and Thomas Francis Xavier Smith of the same gender?'
+[20:47:06] [  41/258] ▶ start  qid=f6e463fd-b5da-40ff-ac8e-f92d6313894b  q='Are William Lange and Thomas Francis Xavier Smith of the same gender?'
+[20:47:18] [  41/258] ✔ done   qid=f6e463fd-b5da-40ff-ac8e-f92d6313894b  ea=True em=False psjs=1.0  t=11.6s  runEA=0.634  wall=5m47s  ETA=30m35s
+[20:47:18] [  41/258] ✔ done   qid=f6e463fd-b5da-40ff-ac8e-f92d6313894b  ea=True em=False psjs=1.0  t=11.6s  runEA=0.634  wall=5m47s  ETA=30m35s
+[20:47:18] [  42/258] ▶ start  qid=f070dc0e-8c06-437d-a889-5ef6008d5806  q='What are the positions played by both Ehlers and Derek Anderson?'
+[20:47:18] [  42/258] ▶ start  qid=f070dc0e-8c06-437d-a889-5ef6008d5806  q='What are the positions played by both Ehlers and Derek Anderson?'
+[20:47:25] [  42/258] ✔ done   qid=f070dc0e-8c06-437d-a889-5ef6008d5806  ea=True em=False psjs=1.0  t=6.6s  runEA=0.643  wall=5m53s  ETA=30m17s
+[20:47:25] [  42/258] ✔ done   qid=f070dc0e-8c06-437d-a889-5ef6008d5806  ea=True em=False psjs=1.0  t=6.6s  runEA=0.643  wall=5m53s  ETA=30m17s
+[20:47:25] [  43/258] ▶ start  qid=452aab89-80b8-4b69-8d1a-4cbfd98dc024  q='Who are the players currently playing for the Tri-Cities Blackhawks?'
+[20:47:25] [  43/258] ▶ start  qid=452aab89-80b8-4b69-8d1a-4cbfd98dc024  q='Who are the players currently playing for the Tri-Cities Blackhawks?'
+[20:47:37] [  43/258] ✔ done   qid=452aab89-80b8-4b69-8d1a-4cbfd98dc024  ea=False em=False psjs=0.013079667063020214  t=12.7s  runEA=0.628  wall=6m06s  ETA=30m30s
+[20:47:37] [  43/258] ✔ done   qid=452aab89-80b8-4b69-8d1a-4cbfd98dc024  ea=False em=False psjs=0.013079667063020214  t=12.7s  runEA=0.628  wall=6m06s  ETA=30m30s
+[20:47:37] [  44/258] ▶ start  qid=59cf99b7-51f8-4c7c-a7e7-9a58e5ce69a2  q='Provide the names of all players who have played as SGs, along with the number of teams they have been part of, wheth...'
+[20:47:37] [  44/258] ▶ start  qid=59cf99b7-51f8-4c7c-a7e7-9a58e5ce69a2  q='Provide the names of all players who have played as SGs, along with the number of teams they have been part of, wheth...'
+[20:47:50] [  44/258] ✔ done   qid=59cf99b7-51f8-4c7c-a7e7-9a58e5ce69a2  ea=True em=False psjs=1.0  t=12.6s  runEA=0.636  wall=6m19s  ETA=30m41s
+[20:47:50] [  44/258] ✔ done   qid=59cf99b7-51f8-4c7c-a7e7-9a58e5ce69a2  ea=True em=False psjs=1.0  t=12.6s  runEA=0.636  wall=6m19s  ETA=30m41s
+[20:47:50] [  45/258] ▶ start  qid=39425312-ac63-44c2-a8ae-bca437f11406  q='What are the names of teams that SIDNEY WICKS was drafted by?'
+[20:47:50] [  45/258] ▶ start  qid=39425312-ac63-44c2-a8ae-bca437f11406  q='What are the names of teams that SIDNEY WICKS was drafted by?'
+[20:47:57] [  45/258] ✔ done   qid=39425312-ac63-44c2-a8ae-bca437f11406  ea=True em=False psjs=1.0  t=7.5s  runEA=0.644  wall=6m26s  ETA=30m27s
+[20:47:57] [  45/258] ✔ done   qid=39425312-ac63-44c2-a8ae-bca437f11406  ea=True em=False psjs=1.0  t=7.5s  runEA=0.644  wall=6m26s  ETA=30m27s
+[20:47:57] [  46/258] ▶ start  qid=b08c1bf4-6125-4e60-b895-46488a92ab2c  q='Provide the names of all players who have been part of the San Diego Rockets at any time, along with the number of aw...'
+[20:47:57] [  46/258] ▶ start  qid=b08c1bf4-6125-4e60-b895-46488a92ab2c  q='Provide the names of all players who have been part of the San Diego Rockets at any time, along with the number of aw...'
+[20:48:11] [  46/258] ✔ done   qid=b08c1bf4-6125-4e60-b895-46488a92ab2c  ea=True em=False psjs=1.0  t=13.7s  runEA=0.652  wall=6m40s  ETA=30m42s
+[20:48:11] [  46/258] ✔ done   qid=b08c1bf4-6125-4e60-b895-46488a92ab2c  ea=True em=False psjs=1.0  t=13.7s  runEA=0.652  wall=6m40s  ETA=30m42s
+[20:48:11] [  47/258] ▶ start  qid=ace37a08-2323-4bf0-9e5d-e0cc837dee05  q='What are the names of players who have received either the Ksreem Abdul-Jabbar Award or the Oscar Robertson Trophy?'
+[20:48:11] [  47/258] ▶ start  qid=ace37a08-2323-4bf0-9e5d-e0cc837dee05  q='What are the names of players who have received either the Ksreem Abdul-Jabbar Award or the Oscar Robertson Trophy?'
+[20:48:16] [  47/258] ✔ done   qid=ace37a08-2323-4bf0-9e5d-e0cc837dee05  ea=False em=False psjs=0.8620689655172413  t=4.7s  runEA=0.638  wall=6m44s  ETA=30m16s
+[20:48:16] [  47/258] ✔ done   qid=ace37a08-2323-4bf0-9e5d-e0cc837dee05  ea=False em=False psjs=0.8620689655172413  t=4.7s  runEA=0.638  wall=6m44s  ETA=30m16s
+[20:48:16] [  48/258] ▶ start  qid=1a0d94f4-f266-4645-8147-fdfae100b0de  q='What are the names of awards received by players drafted by the Lakers, and how many such players have received each ...'
+[20:48:16] [  48/258] ▶ start  qid=1a0d94f4-f266-4645-8147-fdfae100b0de  q='What are the names of awards received by players drafted by the Lakers, and how many such players have received each ...'
+[20:48:22] [  48/258] ✔ done   qid=1a0d94f4-f266-4645-8147-fdfae100b0de  ea=True em=False psjs=1.0  t=6.4s  runEA=0.646  wall=6m51s  ETA=29m57s
+[20:48:22] [  48/258] ✔ done   qid=1a0d94f4-f266-4645-8147-fdfae100b0de  ea=True em=False psjs=1.0  t=6.4s  runEA=0.646  wall=6m51s  ETA=29m57s
+[20:48:22] [  49/258] ▶ start  qid=27c8c0f4-feb3-4de2-b801-47b5af2020f3  q='What divisions are in the WC?'
+[20:48:22] [  49/258] ▶ start  qid=27c8c0f4-feb3-4de2-b801-47b5af2020f3  q='What divisions are in the WC?'
+[20:48:29] [  49/258] ✔ done   qid=27c8c0f4-feb3-4de2-b801-47b5af2020f3  ea=True em=False psjs=1.0  t=6.5s  runEA=0.653  wall=6m57s  ETA=29m40s
+[20:48:29] [  49/258] ✔ done   qid=27c8c0f4-feb3-4de2-b801-47b5af2020f3  ea=True em=False psjs=1.0  t=6.5s  runEA=0.653  wall=6m57s  ETA=29m40s
+[20:48:29] [  50/258] ▶ start  qid=e19cf399-3883-4d92-aded-88d82fb3ccfb  q='How many players either play as a sholting guard or have received the Merited Master of Sports of the USSR award?'
+[20:48:29] [  50/258] ▶ start  qid=e19cf399-3883-4d92-aded-88d82fb3ccfb  q='How many players either play as a sholting guard or have received the Merited Master of Sports of the USSR award?'
+[20:48:34] [  50/258] ✔ done   qid=e19cf399-3883-4d92-aded-88d82fb3ccfb  ea=False em=False psjs=0.00408905043162199  t=5.1s  runEA=0.640  wall=7m02s  ETA=29m17s
+[20:48:34] [  50/258] ✔ done   qid=e19cf399-3883-4d92-aded-88d82fb3ccfb  ea=False em=False psjs=0.00408905043162199  t=5.1s  runEA=0.640  wall=7m02s  ETA=29m17s
+[20:48:34] [  51/258] ▶ start  qid=79ed0971-42c7-4a89-be4c-02b695b12f54  q='What are the names of the venues that currently serve as the home for the CLE?'
+[20:48:34] [  51/258] ▶ start  qid=79ed0971-42c7-4a89-be4c-02b695b12f54  q='What are the names of the venues that currently serve as the home for the CLE?'
+[20:48:45] [  51/258] ✔ done   qid=79ed0971-42c7-4a89-be4c-02b695b12f54  ea=True em=False psjs=1.0  t=11.0s  runEA=0.647  wall=7m13s  ETA=29m19s
+[20:48:45] [  51/258] ✔ done   qid=79ed0971-42c7-4a89-be4c-02b695b12f54  ea=True em=False psjs=1.0  t=11.0s  runEA=0.647  wall=7m13s  ETA=29m19s
+[20:48:45] [  52/258] ▶ start  qid=f0286ead-19cd-4a2b-80ac-45bf53611953  q='Who are the players drafted by the Philadelphia 76ers and who have played for the Bulls, listed from the lightest to ...'
+[20:48:45] [  52/258] ▶ start  qid=f0286ead-19cd-4a2b-80ac-45bf53611953  q='Who are the players drafted by the Philadelphia 76ers and who have played for the Bulls, listed from the lightest to ...'
+[20:48:54] [  52/258] ✔ done   qid=f0286ead-19cd-4a2b-80ac-45bf53611953  ea=False em=False psjs=1.0  t=9.6s  runEA=0.635  wall=7m23s  ETA=29m15s
+[20:48:54] [  52/258] ✔ done   qid=f0286ead-19cd-4a2b-80ac-45bf53611953  ea=False em=False psjs=1.0  t=9.6s  runEA=0.635  wall=7m23s  ETA=29m15s
+[20:48:54] [  53/258] ▶ start  qid=db8afe3d-a67c-4f78-9602-0cc823dc39d5  q='Provide the names of all players who have been part of the Dub Nation at any time, along with the number of positions...'
+[20:48:54] [  53/258] ▶ start  qid=db8afe3d-a67c-4f78-9602-0cc823dc39d5  q='Provide the names of all players who have been part of the Dub Nation at any time, along with the number of positions...'
+[20:49:04] [  53/258] ✔ done   qid=db8afe3d-a67c-4f78-9602-0cc823dc39d5  ea=True em=False psjs=1.0  t=9.4s  runEA=0.642  wall=7m32s  ETA=29m10s
+[20:49:04] [  53/258] ✔ done   qid=db8afe3d-a67c-4f78-9602-0cc823dc39d5  ea=True em=False psjs=1.0  t=9.4s  runEA=0.642  wall=7m32s  ETA=29m10s
+[20:49:04] [  54/258] ▶ start  qid=e0edce9f-b01e-4a89-ab2f-71a2ebf8360f  q='List the names of all divisions in the western conference, along with the number of teams in each division.'
+[20:49:04] [  54/258] ▶ start  qid=e0edce9f-b01e-4a89-ab2f-71a2ebf8360f  q='List the names of all divisions in the western conference, along with the number of teams in each division.'
+[20:49:08] [  54/258] ✔ done   qid=e0edce9f-b01e-4a89-ab2f-71a2ebf8360f  ea=True em=False psjs=1.0  t=4.5s  runEA=0.648  wall=7m37s  ETA=28m46s
+[20:49:08] [  54/258] ✔ done   qid=e0edce9f-b01e-4a89-ab2f-71a2ebf8360f  ea=True em=False psjs=1.0  t=4.5s  runEA=0.648  wall=7m37s  ETA=28m46s
+[20:49:08] [  55/258] ▶ start  qid=64b5710f-ef46-4e79-80ac-99660231cd2d  q='Provide the names of all players drafted by the Portland Trail Blaers, along with the number of teams each player has...'
+[20:49:08] [  55/258] ▶ start  qid=64b5710f-ef46-4e79-80ac-99660231cd2d  q='Provide the names of all players drafted by the Portland Trail Blaers, along with the number of teams each player has...'
+[20:49:17] [  55/258] ✔ done   qid=64b5710f-ef46-4e79-80ac-99660231cd2d  ea=True em=False psjs=1.0  t=9.3s  runEA=0.655  wall=7m46s  ETA=28m41s
+[20:49:17] [  55/258] ✔ done   qid=64b5710f-ef46-4e79-80ac-99660231cd2d  ea=True em=False psjs=1.0  t=9.3s  runEA=0.655  wall=7m46s  ETA=28m41s
+[20:49:17] [  56/258] ▶ start  qid=3c847c81-e000-4031-b1bc-d039f1594816  q='List the names of all players drafted by the New Orleans Hornets, along with the number of positions each player plays.'
+[20:49:17] [  56/258] ▶ start  qid=3c847c81-e000-4031-b1bc-d039f1594816  q='List the names of all players drafted by the New Orleans Hornets, along with the number of positions each player plays.'
+[20:49:30] [  56/258] ✔ done   qid=3c847c81-e000-4031-b1bc-d039f1594816  ea=True em=False psjs=1.0  t=12.7s  runEA=0.661  wall=7m59s  ETA=28m48s
+[20:49:30] [  56/258] ✔ done   qid=3c847c81-e000-4031-b1bc-d039f1594816  ea=True em=False psjs=1.0  t=12.7s  runEA=0.661  wall=7m59s  ETA=28m48s
+[20:49:30] [  57/258] ▶ start  qid=35d4cf0b-db94-4958-99a8-7e948aa4805d  q="What is Padgett's country of citizenship?"
+[20:49:30] [  57/258] ▶ start  qid=35d4cf0b-db94-4958-99a8-7e948aa4805d  q="What is Padgett's country of citizenship?"
+[20:49:37] [  57/258] ✔ done   qid=35d4cf0b-db94-4958-99a8-7e948aa4805d  ea=True em=False psjs=1.0  t=6.5s  runEA=0.667  wall=8m05s  ETA=28m32s
+[20:49:37] [  57/258] ✔ done   qid=35d4cf0b-db94-4958-99a8-7e948aa4805d  ea=True em=False psjs=1.0  t=6.5s  runEA=0.667  wall=8m05s  ETA=28m32s
+[20:49:37] [  58/258] ▶ start  qid=98412f9e-dbff-45fd-8025-71659fe7cdb0  q='What are the names of positions played by players who have received the Kraeem Abdul-Jabbar Award, and how many such ...'
+[20:49:37] [  58/258] ▶ start  qid=98412f9e-dbff-45fd-8025-71659fe7cdb0  q='What are the names of positions played by players who have received the Kraeem Abdul-Jabbar Award, and how many such ...'
+[20:49:43] [  58/258] ✔ done   qid=98412f9e-dbff-45fd-8025-71659fe7cdb0  ea=True em=False psjs=1.0  t=6.1s  runEA=0.672  wall=8m11s  ETA=28m15s
+[20:49:43] [  58/258] ✔ done   qid=98412f9e-dbff-45fd-8025-71659fe7cdb0  ea=True em=False psjs=1.0  t=6.1s  runEA=0.672  wall=8m11s  ETA=28m15s
+[20:49:43] [  59/258] ▶ start  qid=fa814366-30bf-4c2c-9edb-2fc947a82ef9  q='Provide the names of all players who have been part of the TOR at any time, along with the number of positions each p...'
+[20:49:43] [  59/258] ▶ start  qid=fa814366-30bf-4c2c-9edb-2fc947a82ef9  q='Provide the names of all players who have been part of the TOR at any time, along with the number of positions each p...'
+[20:49:51] [  59/258] ✔ done   qid=fa814366-30bf-4c2c-9edb-2fc947a82ef9  ea=True em=False psjs=1.0  t=8.4s  runEA=0.678  wall=8m20s  ETA=28m06s
+[20:49:51] [  59/258] ✔ done   qid=fa814366-30bf-4c2c-9edb-2fc947a82ef9  ea=True em=False psjs=1.0  t=8.4s  runEA=0.678  wall=8m20s  ETA=28m06s
+[20:49:51] [  60/258] ▶ start  qid=896b0995-efa7-4f6d-ac57-4993dac258a1  q='What positions have been played by Raptors members?'
+[20:49:51] [  60/258] ▶ start  qid=896b0995-efa7-4f6d-ac57-4993dac258a1  q='What positions have been played by Raptors members?'
+[20:49:58] [  60/258] ✔ done   qid=896b0995-efa7-4f6d-ac57-4993dac258a1  ea=True em=False psjs=1.0  t=6.7s  runEA=0.683  wall=8m27s  ETA=27m52s
+[20:49:58] [  60/258] ✔ done   qid=896b0995-efa7-4f6d-ac57-4993dac258a1  ea=True em=False psjs=1.0  t=6.7s  runEA=0.683  wall=8m27s  ETA=27m52s
+[20:49:58] [  61/258] ▶ start  qid=958ba905-ee0c-4a0f-8a5a-250fab423c92  q='Which conference is Atlantic Divsion part of?'
+[20:49:58] [  61/258] ▶ start  qid=958ba905-ee0c-4a0f-8a5a-250fab423c92  q='Which conference is Atlantic Divsion part of?'
+[20:50:04] [  61/258] ✔ done   qid=958ba905-ee0c-4a0f-8a5a-250fab423c92  ea=True em=False psjs=1.0  t=6.4s  runEA=0.689  wall=8m33s  ETA=27m37s
+[20:50:04] [  61/258] ✔ done   qid=958ba905-ee0c-4a0f-8a5a-250fab423c92  ea=True em=False psjs=1.0  t=6.4s  runEA=0.689  wall=8m33s  ETA=27m37s
+[20:50:04] [  62/258] ▶ start  qid=3076cf23-5469-4453-b8a8-a3d09f6e255a  q='What are the names of the divisions that include the Syracuse Nationals?'
+[20:50:04] [  62/258] ▶ start  qid=3076cf23-5469-4453-b8a8-a3d09f6e255a  q='What are the names of the divisions that include the Syracuse Nationals?'
+[20:50:16] [  62/258] ✔ done   qid=3076cf23-5469-4453-b8a8-a3d09f6e255a  ea=False em=False psjs=0.0  t=11.3s  runEA=0.677  wall=8m44s  ETA=27m37s
+[20:50:16] [  62/258] ✔ done   qid=3076cf23-5469-4453-b8a8-a3d09f6e255a  ea=False em=False psjs=0.0  t=11.3s  runEA=0.677  wall=8m44s  ETA=27m37s
+[20:50:16] [  63/258] ▶ start  qid=a9d24b7a-4f99-40b2-ac81-b63b3fc01bab  q='How many different genders are there among players who have received the same awards as isiah thomas?'
+[20:50:16] [  63/258] ▶ start  qid=a9d24b7a-4f99-40b2-ac81-b63b3fc01bab  q='How many different genders are there among players who have received the same awards as isiah thomas?'
+[20:50:20] [  63/258] ✔ done   qid=a9d24b7a-4f99-40b2-ac81-b63b3fc01bab  ea=False em=False psjs=0.0  t=4.3s  runEA=0.667  wall=8m49s  ETA=27m16s
+[20:50:20] [  63/258] ✔ done   qid=a9d24b7a-4f99-40b2-ac81-b63b3fc01bab  ea=False em=False psjs=0.0  t=4.3s  runEA=0.667  wall=8m49s  ETA=27m16s
+[20:50:20] [  64/258] ▶ start  qid=d70022fe-68d7-4f80-a2a6-8a821d06ee54  q='Who are the players who have received the Lorbeerblatt award?'
+[20:50:20] [  64/258] ▶ start  qid=d70022fe-68d7-4f80-a2a6-8a821d06ee54  q='Who are the players who have received the Lorbeerblatt award?'
+[20:50:28] [  64/258] ✔ done   qid=d70022fe-68d7-4f80-a2a6-8a821d06ee54  ea=True em=False psjs=1.0  t=8.2s  runEA=0.672  wall=8m57s  ETA=27m07s
+[20:50:28] [  64/258] ✔ done   qid=d70022fe-68d7-4f80-a2a6-8a821d06ee54  ea=True em=False psjs=1.0  t=8.2s  runEA=0.672  wall=8m57s  ETA=27m07s
+[20:50:28] [  65/258] ▶ start  qid=0480c6db-ae32-442b-97c8-9cd76c99b9fd  q="When was Stormin' George born?"
+[20:50:28] [  65/258] ▶ start  qid=0480c6db-ae32-442b-97c8-9cd76c99b9fd  q="When was Stormin' George born?"
+[20:50:37] [  65/258] ✔ done   qid=0480c6db-ae32-442b-97c8-9cd76c99b9fd  ea=False em=False psjs=0.0  t=9.2s  runEA=0.662  wall=9m06s  ETA=27m01s
+[20:50:37] [  65/258] ✔ done   qid=0480c6db-ae32-442b-97c8-9cd76c99b9fd  ea=False em=False psjs=0.0  t=9.2s  runEA=0.662  wall=9m06s  ETA=27m01s
+[20:50:37] [  66/258] ▶ start  qid=88ab24c3-8798-49a0-90e6-7143a5cb7370  q='What are the names of players who were either drafted by the BOS or play as a center?'
+[20:50:37] [  66/258] ▶ start  qid=88ab24c3-8798-49a0-90e6-7143a5cb7370  q='What are the names of players who were either drafted by the BOS or play as a center?'
+[20:50:44] [  66/258] ✔ done   qid=88ab24c3-8798-49a0-90e6-7143a5cb7370  ea=False em=False psjs=0.8677570093457944  t=6.6s  runEA=0.652  wall=9m13s  ETA=26m47s
+[20:50:44] [  66/258] ✔ done   qid=88ab24c3-8798-49a0-90e6-7143a5cb7370  ea=False em=False psjs=0.8677570093457944  t=6.6s  runEA=0.652  wall=9m13s  ETA=26m47s
+[20:50:44] [  67/258] ▶ start  qid=2daca1ae-e59e-4241-8cf3-ba1cf07680aa  q='Do the PHX and the Charlotte Hornets share the same year of inception?'
+[20:50:44] [  67/258] ▶ start  qid=2daca1ae-e59e-4241-8cf3-ba1cf07680aa  q='Do the PHX and the Charlotte Hornets share the same year of inception?'
+[20:50:56] [  67/258] ✔ done   qid=2daca1ae-e59e-4241-8cf3-ba1cf07680aa  ea=False em=False psjs=1.0  t=12.6s  runEA=0.642  wall=9m25s  ETA=26m51s
+[20:50:56] [  67/258] ✔ done   qid=2daca1ae-e59e-4241-8cf3-ba1cf07680aa  ea=False em=False psjs=1.0  t=12.6s  runEA=0.642  wall=9m25s  ETA=26m51s
+[20:50:56] [  68/258] ▶ start  qid=6b6c8c33-0bd8-4ad9-bd64-03239ef2548d  q='What are the names and owners of the teams that Wicks was drafted by?'
+[20:50:56] [  68/258] ▶ start  qid=6b6c8c33-0bd8-4ad9-bd64-03239ef2548d  q='What are the names and owners of the teams that Wicks was drafted by?'
+[20:51:04] [  68/258] ✔ done   qid=6b6c8c33-0bd8-4ad9-bd64-03239ef2548d  ea=True em=False psjs=1.0  t=7.0s  runEA=0.647  wall=9m32s  ETA=26m39s
+[20:51:04] [  68/258] ✔ done   qid=6b6c8c33-0bd8-4ad9-bd64-03239ef2548d  ea=True em=False psjs=1.0  t=7.0s  runEA=0.647  wall=9m32s  ETA=26m39s
+[20:51:04] [  69/258] ▶ start  qid=d4edad10-9ccb-49b2-a26d-e49e42452d1d  q='Who are the players who have won the Bill Russell NBA Finals Most Valuable Player Award and were drafted by the India...'
+[20:51:04] [  69/258] ▶ start  qid=d4edad10-9ccb-49b2-a26d-e49e42452d1d  q='Who are the players who have won the Bill Russell NBA Finals Most Valuable Player Award and were drafted by the India...'
+[20:51:11] [  69/258] ✔ done   qid=d4edad10-9ccb-49b2-a26d-e49e42452d1d  ea=True em=False psjs=1.0  t=7.6s  runEA=0.652  wall=9m40s  ETA=26m28s
+[20:51:11] [  69/258] ✔ done   qid=d4edad10-9ccb-49b2-a26d-e49e42452d1d  ea=True em=False psjs=1.0  t=7.6s  runEA=0.652  wall=9m40s  ETA=26m28s
+[20:51:11] [  70/258] ▶ start  qid=b9fd3905-8968-45ee-a3c0-e0609e6a82d8  q='How many teams have either drafted Tom Hawkins or had George Aaron McCloud play for them at any time?'
+[20:51:11] [  70/258] ▶ start  qid=b9fd3905-8968-45ee-a3c0-e0609e6a82d8  q='How many teams have either drafted Tom Hawkins or had George Aaron McCloud play for them at any time?'
+[20:51:15] [  70/258] ✔ done   qid=b9fd3905-8968-45ee-a3c0-e0609e6a82d8  ea=False em=False psjs=0.23076923076923078  t=3.7s  runEA=0.643  wall=9m44s  ETA=26m07s
+[20:51:15] [  70/258] ✔ done   qid=b9fd3905-8968-45ee-a3c0-e0609e6a82d8  ea=False em=False psjs=0.23076923076923078  t=3.7s  runEA=0.643  wall=9m44s  ETA=26m07s
+[20:51:15] [  71/258] ▶ start  qid=64a7213d-069c-4ab2-98dd-a023d713a331  q='What is the height difference in centimeters between Jordan Farmar and Mcihael Cooper?'
+[20:51:15] [  71/258] ▶ start  qid=64a7213d-069c-4ab2-98dd-a023d713a331  q='What is the height difference in centimeters between Jordan Farmar and Mcihael Cooper?'
+[20:51:28] [  71/258] ✔ done   qid=64a7213d-069c-4ab2-98dd-a023d713a331  ea=False em=False psjs=1.0  t=12.8s  runEA=0.634  wall=9m56s  ETA=26m11s
+[20:51:28] [  71/258] ✔ done   qid=64a7213d-069c-4ab2-98dd-a023d713a331  ea=False em=False psjs=1.0  t=12.8s  runEA=0.634  wall=9m56s  ETA=26m11s
+[20:51:28] [  72/258] ▶ start  qid=899a8595-8d60-47d6-ab37-ae3bd7a60909  q='How much heavier is bud olsen than Jerry Rullo in kilograms?'
+[20:51:28] [  72/258] ▶ start  qid=899a8595-8d60-47d6-ab37-ae3bd7a60909  q='How much heavier is bud olsen than Jerry Rullo in kilograms?'
+[20:51:35] [  72/258] ✔ done   qid=899a8595-8d60-47d6-ab37-ae3bd7a60909  ea=True em=False psjs=1.0  t=7.0s  runEA=0.639  wall=10m03s  ETA=25m58s
+[20:51:35] [  72/258] ✔ done   qid=899a8595-8d60-47d6-ab37-ae3bd7a60909  ea=True em=False psjs=1.0  t=7.0s  runEA=0.639  wall=10m03s  ETA=25m58s
+[20:51:35] [  73/258] ▶ start  qid=6497340e-a859-4483-9ab6-ac83a0400b2a  q='List the names of all National Basketball Association teams.'
+[20:51:35] [  73/258] ▶ start  qid=6497340e-a859-4483-9ab6-ac83a0400b2a  q='List the names of all National Basketball Association teams.'
+[20:51:43] [  73/258] ✔ done   qid=6497340e-a859-4483-9ab6-ac83a0400b2a  ea=True em=False psjs=0.40540540540540543  t=8.3s  runEA=0.644  wall=10m12s  ETA=25m50s
+[20:51:43] [  73/258] ✔ done   qid=6497340e-a859-4483-9ab6-ac83a0400b2a  ea=True em=False psjs=0.40540540540540543  t=8.3s  runEA=0.644  wall=10m12s  ETA=25m50s
+[20:51:43] [  74/258] ▶ start  qid=bca2820b-7edb-4322-ba52-8bc894d4839e  q='What are the names of positions played by players who also play as PFs, and how many such players are there for each ...'
+[20:51:43] [  74/258] ▶ start  qid=bca2820b-7edb-4322-ba52-8bc894d4839e  q='What are the names of positions played by players who also play as PFs, and how many such players are there for each ...'
+[20:51:53] [  74/258] ✔ done   qid=bca2820b-7edb-4322-ba52-8bc894d4839e  ea=False em=False psjs=0.6171032357473035  t=9.9s  runEA=0.635  wall=10m22s  ETA=25m46s
+[20:51:53] [  74/258] ✔ done   qid=bca2820b-7edb-4322-ba52-8bc894d4839e  ea=False em=False psjs=0.6171032357473035  t=9.9s  runEA=0.635  wall=10m22s  ETA=25m46s
+[20:51:53] [  75/258] ▶ start  qid=543ea313-3750-42a7-b6cd-415cfc19469b  q='Provide the names of all players who have been part of the L.A. Clippers at any time, along with the count of awards ...'
+[20:51:53] [  75/258] ▶ start  qid=543ea313-3750-42a7-b6cd-415cfc19469b  q='Provide the names of all players who have been part of the L.A. Clippers at any time, along with the count of awards ...'
+[20:52:02] [  75/258] ✔ done   qid=543ea313-3750-42a7-b6cd-415cfc19469b  ea=True em=False psjs=1.0  t=9.6s  runEA=0.640  wall=10m31s  ETA=25m40s
+[20:52:02] [  75/258] ✔ done   qid=543ea313-3750-42a7-b6cd-415cfc19469b  ea=True em=False psjs=1.0  t=9.6s  runEA=0.640  wall=10m31s  ETA=25m40s
+[20:52:02] [  76/258] ▶ start  qid=6cd21454-d5db-408f-9eb8-700c620efd7c  q='What are the names of awards received by players who have been part of the Pacers, and how many such players have rec...'
+[20:52:02] [  76/258] ▶ start  qid=6cd21454-d5db-408f-9eb8-700c620efd7c  q='What are the names of awards received by players who have been part of the Pacers, and how many such players have rec...'
+[20:52:10] [  76/258] ✔ done   qid=6cd21454-d5db-408f-9eb8-700c620efd7c  ea=True em=False psjs=1.0  t=7.4s  runEA=0.645  wall=10m39s  ETA=25m29s
+[20:52:10] [  76/258] ✔ done   qid=6cd21454-d5db-408f-9eb8-700c620efd7c  ea=True em=False psjs=1.0  t=7.4s  runEA=0.645  wall=10m39s  ETA=25m29s
+[20:52:10] [  77/258] ▶ start  qid=0486ad8d-495e-4116-b4b5-f0b38bf0914b  q='What are the names of all the teams Jumaine Jonnes has played for, and how many venues has each of those teams called...'
+[20:52:10] [  77/258] ▶ start  qid=0486ad8d-495e-4116-b4b5-f0b38bf0914b  q='What are the names of all the teams Jumaine Jonnes has played for, and how many venues has each of those teams called...'
+[20:52:17] [  77/258] ✔ done   qid=0486ad8d-495e-4116-b4b5-f0b38bf0914b  ea=True em=False psjs=1.0  t=7.5s  runEA=0.649  wall=10m46s  ETA=25m18s
+[20:52:17] [  77/258] ✔ done   qid=0486ad8d-495e-4116-b4b5-f0b38bf0914b  ea=True em=False psjs=1.0  t=7.5s  runEA=0.649  wall=10m46s  ETA=25m18s
+[20:52:17] [  78/258] ▶ start  qid=6b3e04ef-80e2-43e7-b7ea-fdcc0aaf11c9  q='What is the latest birthdate among players who have played for a team that Christofer Antwone Whitney was drafted by?'
+[20:52:17] [  78/258] ▶ start  qid=6b3e04ef-80e2-43e7-b7ea-fdcc0aaf11c9  q='What is the latest birthdate among players who have played for a team that Christofer Antwone Whitney was drafted by?'
+[20:52:21] [  78/258] ✔ done   qid=6b3e04ef-80e2-43e7-b7ea-fdcc0aaf11c9  ea=False em=False psjs=0.0  t=3.8s  runEA=0.641  wall=10m50s  ETA=24m59s
+[20:52:21] [  78/258] ✔ done   qid=6b3e04ef-80e2-43e7-b7ea-fdcc0aaf11c9  ea=False em=False psjs=0.0  t=3.8s  runEA=0.641  wall=10m50s  ETA=24m59s
+[20:52:21] [  79/258] ▶ start  qid=a9ced4d1-6f09-42f3-beeb-1638eccea8d2  q='How many teams are either part of the Pacific or have had the Los Angeles Memorial Sports Arena as their home venue?'
+[20:52:21] [  79/258] ▶ start  qid=a9ced4d1-6f09-42f3-beeb-1638eccea8d2  q='How many teams are either part of the Pacific or have had the Los Angeles Memorial Sports Arena as their home venue?'
+[20:52:25] [  79/258] ✔ done   qid=a9ced4d1-6f09-42f3-beeb-1638eccea8d2  ea=False em=False psjs=0.35714285714285715  t=3.7s  runEA=0.633  wall=10m53s  ETA=24m41s
+[20:52:25] [  79/258] ✔ done   qid=a9ced4d1-6f09-42f3-beeb-1638eccea8d2  ea=False em=False psjs=0.35714285714285715  t=3.7s  runEA=0.633  wall=10m53s  ETA=24m41s
+[20:52:25] [  80/258] ▶ start  qid=9a4685c2-cb2d-4ede-a508-ce077526051b  q='How many divisions are part of the EC?'
+[20:52:25] [  80/258] ▶ start  qid=9a4685c2-cb2d-4ede-a508-ce077526051b  q='How many divisions are part of the EC?'
+[20:52:29] [  80/258] ✔ done   qid=9a4685c2-cb2d-4ede-a508-ce077526051b  ea=False em=False psjs=0.0  t=4.2s  runEA=0.625  wall=10m58s  ETA=24m23s
+[20:52:29] [  80/258] ✔ done   qid=9a4685c2-cb2d-4ede-a508-ce077526051b  ea=False em=False psjs=0.0  t=4.2s  runEA=0.625  wall=10m58s  ETA=24m23s
+[20:52:29] [  81/258] ▶ start  qid=2342d395-d41a-49ad-ac01-0a095d805658  q='When was the Golden Stste Warriors team founded?'
+[20:52:29] [  81/258] ▶ start  qid=2342d395-d41a-49ad-ac01-0a095d805658  q='When was the Golden Stste Warriors team founded?'
+[20:52:35] [  81/258] ✔ done   qid=2342d395-d41a-49ad-ac01-0a095d805658  ea=True em=False psjs=1.0  t=6.2s  runEA=0.630  wall=11m04s  ETA=24m11s
+[20:52:35] [  81/258] ✔ done   qid=2342d395-d41a-49ad-ac01-0a095d805658  ea=True em=False psjs=1.0  t=6.2s  runEA=0.630  wall=11m04s  ETA=24m11s
+[20:52:35] [  82/258] ▶ start  qid=3dffa227-502f-42e3-bffb-09947424be00  q='What are the names of conferences that include both the Northwest Division and the Southwest?'
+[20:52:35] [  82/258] ▶ start  qid=3dffa227-502f-42e3-bffb-09947424be00  q='What are the names of conferences that include both the Northwest Division and the Southwest?'
+[20:52:44] [  82/258] ✔ done   qid=3dffa227-502f-42e3-bffb-09947424be00  ea=True em=False psjs=1.0  t=9.1s  runEA=0.634  wall=11m13s  ETA=24m04s
+[20:52:44] [  82/258] ✔ done   qid=3dffa227-502f-42e3-bffb-09947424be00  ea=True em=False psjs=1.0  t=9.1s  runEA=0.634  wall=11m13s  ETA=24m04s
+[20:52:44] [  83/258] ▶ start  qid=b8e6e457-0c08-4b03-b922-f70dd4c696ee  q='Provide the names of all teams in the pacific division, along with the number of players each team has drafted.'
+[20:52:44] [  83/258] ▶ start  qid=b8e6e457-0c08-4b03-b922-f70dd4c696ee  q='Provide the names of all teams in the pacific division, along with the number of players each team has drafted.'
+[20:52:49] [  83/258] ✔ done   qid=b8e6e457-0c08-4b03-b922-f70dd4c696ee  ea=True em=False psjs=1.0  t=4.6s  runEA=0.639  wall=11m18s  ETA=23m49s
+[20:52:49] [  83/258] ✔ done   qid=b8e6e457-0c08-4b03-b922-f70dd4c696ee  ea=True em=False psjs=1.0  t=4.6s  runEA=0.639  wall=11m18s  ETA=23m49s
+[20:52:49] [  84/258] ▶ start  qid=81fbe95c-c86d-4ea4-a414-53dcc7c0aa81  q='What are the positions played by athletes who have received the German Sporttspersonality of the Year award?'
+[20:52:49] [  84/258] ▶ start  qid=81fbe95c-c86d-4ea4-a414-53dcc7c0aa81  q='What are the positions played by athletes who have received the German Sporttspersonality of the Year award?'
+[20:52:56] [  84/258] ✔ done   qid=81fbe95c-c86d-4ea4-a414-53dcc7c0aa81  ea=True em=False psjs=1.0  t=7.5s  runEA=0.643  wall=11m25s  ETA=23m39s
+[20:52:56] [  84/258] ✔ done   qid=81fbe95c-c86d-4ea4-a414-53dcc7c0aa81  ea=True em=False psjs=1.0  t=7.5s  runEA=0.643  wall=11m25s  ETA=23m39s
+[20:52:56] [  85/258] ▶ start  qid=b497abff-4bba-4f4d-a53b-dd3a35fc93ab  q='Which teams have drafted players who received the Team award, and how many such players has each team drafted?'
+[20:52:56] [  85/258] ▶ start  qid=b497abff-4bba-4f4d-a53b-dd3a35fc93ab  q='Which teams have drafted players who received the Team award, and how many such players has each team drafted?'
+[20:53:07] [  85/258] ✔ done   qid=b497abff-4bba-4f4d-a53b-dd3a35fc93ab  ea=False em=False psjs=0.0  t=10.8s  runEA=0.635  wall=11m36s  ETA=23m36s
+[20:53:07] [  85/258] ✔ done   qid=b497abff-4bba-4f4d-a53b-dd3a35fc93ab  ea=False em=False psjs=0.0  t=10.8s  runEA=0.635  wall=11m36s  ETA=23m36s
+[20:53:07] [  86/258] ▶ start  qid=8b7627b8-30d3-4989-a8d4-cdda65f572f2  q='What are the names of players who play as the fives and were drafted by the Atlanta Hawks, listed from the oldest to ...'
+[20:53:07] [  86/258] ▶ start  qid=8b7627b8-30d3-4989-a8d4-cdda65f572f2  q='What are the names of players who play as the fives and were drafted by the Atlanta Hawks, listed from the oldest to ...'
+[20:53:15] [  86/258] ✔ done   qid=8b7627b8-30d3-4989-a8d4-cdda65f572f2  ea=True em=False psjs=1.0  t=7.6s  runEA=0.640  wall=11m43s  ETA=23m27s
+[20:53:15] [  86/258] ✔ done   qid=8b7627b8-30d3-4989-a8d4-cdda65f572f2  ea=True em=False psjs=1.0  t=7.6s  runEA=0.640  wall=11m43s  ETA=23m27s
+[20:53:15] [  87/258] ▶ start  qid=fc233aa5-328c-4f5a-a18e-19ee17dd24d6  q='What are the unique genders of players who have been part of a team in the Northwest?'
+[20:53:15] [  87/258] ▶ start  qid=fc233aa5-328c-4f5a-a18e-19ee17dd24d6  q='What are the unique genders of players who have been part of a team in the Northwest?'
+[20:53:25] [  87/258] ✔ done   qid=fc233aa5-328c-4f5a-a18e-19ee17dd24d6  ea=False em=False psjs=0.0  t=9.9s  runEA=0.632  wall=11m53s  ETA=23m22s
+[20:53:25] [  87/258] ✔ done   qid=fc233aa5-328c-4f5a-a18e-19ee17dd24d6  ea=False em=False psjs=0.0  t=9.9s  runEA=0.632  wall=11m53s  ETA=23m22s
+[20:53:25] [  88/258] ▶ start  qid=c960408d-76ca-492c-88d0-ea4088ea4e7b  q='How many divisions are in the same conference as the Centra Division?'
+[20:53:25] [  88/258] ▶ start  qid=c960408d-76ca-492c-88d0-ea4088ea4e7b  q='How many divisions are in the same conference as the Centra Division?'
+[20:53:29] [  88/258] ✔ done   qid=c960408d-76ca-492c-88d0-ea4088ea4e7b  ea=False em=False psjs=0.0  t=4.9s  runEA=0.625  wall=11m58s  ETA=23m07s
+[20:53:29] [  88/258] ✔ done   qid=c960408d-76ca-492c-88d0-ea4088ea4e7b  ea=False em=False psjs=0.0  t=4.9s  runEA=0.625  wall=11m58s  ETA=23m07s
+[20:53:29] [  89/258] ▶ start  qid=0e2bba75-f73f-4cee-956a-687dd1142f2d  q='What are the names of teams that have had players in the PF position, and how many such players have been on each team?'
+[20:53:29] [  89/258] ▶ start  qid=0e2bba75-f73f-4cee-956a-687dd1142f2d  q='What are the names of teams that have had players in the PF position, and how many such players have been on each team?'
+[20:53:47] [  89/258] ✔ done   qid=0e2bba75-f73f-4cee-956a-687dd1142f2d  ea=True em=False psjs=1.0  t=17.5s  runEA=0.629  wall=12m16s  ETA=23m17s
+[20:53:47] [  89/258] ✔ done   qid=0e2bba75-f73f-4cee-956a-687dd1142f2d  ea=True em=False psjs=1.0  t=17.5s  runEA=0.629  wall=12m16s  ETA=23m17s
+[20:53:47] [  90/258] ▶ start  qid=da96ea74-2f63-4d96-babe-ea303c02dae8  q='Provide the names of all players who have received the Gold Medal of the Royal Order of Spoorts Merit, along with the...'
+[20:53:47] [  90/258] ▶ start  qid=da96ea74-2f63-4d96-babe-ea303c02dae8  q='Provide the names of all players who have received the Gold Medal of the Royal Order of Spoorts Merit, along with the...'
+[20:53:54] [  90/258] ✔ done   qid=da96ea74-2f63-4d96-babe-ea303c02dae8  ea=True em=False psjs=1.0  t=6.7s  runEA=0.633  wall=12m22s  ETA=23m06s
+[20:53:54] [  90/258] ✔ done   qid=da96ea74-2f63-4d96-babe-ea303c02dae8  ea=True em=False psjs=1.0  t=6.7s  runEA=0.633  wall=12m22s  ETA=23m06s
+[20:53:54] [  91/258] ▶ start  qid=b99c2c82-5424-4fb2-95c9-b7dcbb87b8ab  q='What are the names of awards received by players who were drafted by the Dallas Chaparrals?'
+[20:53:54] [  91/258] ▶ start  qid=b99c2c82-5424-4fb2-95c9-b7dcbb87b8ab  q='What are the names of awards received by players who were drafted by the Dallas Chaparrals?'
+[20:54:05] [  91/258] ✔ done   qid=b99c2c82-5424-4fb2-95c9-b7dcbb87b8ab  ea=False em=False psjs=0.023809523809523808  t=11.3s  runEA=0.626  wall=12m34s  ETA=23m03s
+[20:54:05] [  91/258] ✔ done   qid=b99c2c82-5424-4fb2-95c9-b7dcbb87b8ab  ea=False em=False psjs=0.023809523809523808  t=11.3s  runEA=0.626  wall=12m34s  ETA=23m03s
+[20:54:05] [  92/258] ▶ start  qid=0ca8e2d8-6c25-4108-a5aa-d5c2a83d711d  q='Provide the names of all players who have received the Sportsman of the Year award, along with the total number of aw...'
+[20:54:05] [  92/258] ▶ start  qid=0ca8e2d8-6c25-4108-a5aa-d5c2a83d711d  q='Provide the names of all players who have received the Sportsman of the Year award, along with the total number of aw...'
+[20:54:12] [  92/258] ✔ done   qid=0ca8e2d8-6c25-4108-a5aa-d5c2a83d711d  ea=True em=False psjs=1.0  t=7.3s  runEA=0.630  wall=12m41s  ETA=22m53s
+[20:54:12] [  92/258] ✔ done   qid=0ca8e2d8-6c25-4108-a5aa-d5c2a83d711d  ea=True em=False psjs=1.0  t=7.3s  runEA=0.630  wall=12m41s  ETA=22m53s
+[20:54:12] [  93/258] ▶ start  qid=a0e95770-7dad-49a3-ba30-8be6b9e09c4c  q='What are the names of players who have been part of the Denver Nuggets but did not attend TJC?'
+[20:54:12] [  93/258] ▶ start  qid=a0e95770-7dad-49a3-ba30-8be6b9e09c4c  q='What are the names of players who have been part of the Denver Nuggets but did not attend TJC?'
+[20:54:17] [  93/258] ✔ done   qid=a0e95770-7dad-49a3-ba30-8be6b9e09c4c  ea=False em=False psjs=0.9972640218878249  t=4.6s  runEA=0.624  wall=12m46s  ETA=22m38s
+[20:54:17] [  93/258] ✔ done   qid=a0e95770-7dad-49a3-ba30-8be6b9e09c4c  ea=False em=False psjs=0.9972640218878249  t=4.6s  runEA=0.624  wall=12m46s  ETA=22m38s
+[20:54:17] [  94/258] ▶ start  qid=4cbfd81b-f7d7-42df-b67a-9b3fc942c36f  q='How many different positions are played by players who also play as PFs?'
+[20:54:17] [  94/258] ▶ start  qid=4cbfd81b-f7d7-42df-b67a-9b3fc942c36f  q='How many different positions are played by players who also play as PFs?'
+[20:54:21] [  94/258] ✔ done   qid=4cbfd81b-f7d7-42df-b67a-9b3fc942c36f  ea=False em=False psjs=0.0  t=4.3s  runEA=0.617  wall=12m50s  ETA=22m23s
+[20:54:21] [  94/258] ✔ done   qid=4cbfd81b-f7d7-42df-b67a-9b3fc942c36f  ea=False em=False psjs=0.0  t=4.3s  runEA=0.617  wall=12m50s  ETA=22m23s
+[20:54:21] [  95/258] ▶ start  qid=6ca84420-ea44-44aa-b31f-d373bf45f0ae  q='Who are the players who have been on the same teams as ARON BAYNES, and how many of those teams has each player been ...'
+[20:54:21] [  95/258] ▶ start  qid=6ca84420-ea44-44aa-b31f-d373bf45f0ae  q='Who are the players who have been on the same teams as ARON BAYNES, and how many of those teams has each player been ...'
+[20:54:36] [  95/258] ✔ done   qid=6ca84420-ea44-44aa-b31f-d373bf45f0ae  ea=True em=False psjs=1.0  t=15.1s  runEA=0.621  wall=13m05s  ETA=22m27s
+[20:54:36] [  95/258] ✔ done   qid=6ca84420-ea44-44aa-b31f-d373bf45f0ae  ea=True em=False psjs=1.0  t=15.1s  runEA=0.621  wall=13m05s  ETA=22m27s
+[20:54:36] [  96/258] ▶ start  qid=3580a4db-292d-4dbe-906e-e00dfbaf0fb6  q='Who is the lightest player to have ever played for the Jazz?'
+[20:54:36] [  96/258] ▶ start  qid=3580a4db-292d-4dbe-906e-e00dfbaf0fb6  q='Who is the lightest player to have ever played for the Jazz?'
+[20:54:44] [  96/258] ✔ done   qid=3580a4db-292d-4dbe-906e-e00dfbaf0fb6  ea=True em=False psjs=1.0  t=7.6s  runEA=0.625  wall=13m13s  ETA=22m18s
+[20:54:44] [  96/258] ✔ done   qid=3580a4db-292d-4dbe-906e-e00dfbaf0fb6  ea=True em=False psjs=1.0  t=7.6s  runEA=0.625  wall=13m13s  ETA=22m18s
+[20:54:44] [  97/258] ▶ start  qid=5257c6c3-779f-4b96-90d8-aaf6083d9e27  q='What are the names and founding years of teams that have had a player in the pooint forward position at any time?'
+[20:54:44] [  97/258] ▶ start  qid=5257c6c3-779f-4b96-90d8-aaf6083d9e27  q='What are the names and founding years of teams that have had a player in the pooint forward position at any time?'
+[20:54:50] [  97/258] ✔ done   qid=5257c6c3-779f-4b96-90d8-aaf6083d9e27  ea=True em=False psjs=1.0  t=6.0s  runEA=0.629  wall=13m19s  ETA=22m06s
+[20:54:50] [  97/258] ✔ done   qid=5257c6c3-779f-4b96-90d8-aaf6083d9e27  ea=True em=False psjs=1.0  t=6.0s  runEA=0.629  wall=13m19s  ETA=22m06s
+[20:54:50] [  98/258] ▶ start  qid=4ff544f2-5ff0-47fa-8ff3-818c73cd83e8  q='What are the names of conferences that include either the Northwest Division or the Pacific?'
+[20:54:50] [  98/258] ▶ start  qid=4ff544f2-5ff0-47fa-8ff3-818c73cd83e8  q='What are the names of conferences that include either the Northwest Division or the Pacific?'
+[20:54:54] [  98/258] ✔ done   qid=4ff544f2-5ff0-47fa-8ff3-818c73cd83e8  ea=True em=False psjs=0.6  t=4.3s  runEA=0.633  wall=13m23s  ETA=21m51s
+[20:54:54] [  98/258] ✔ done   qid=4ff544f2-5ff0-47fa-8ff3-818c73cd83e8  ea=True em=False psjs=0.6  t=4.3s  runEA=0.633  wall=13m23s  ETA=21m51s
+[20:54:54] [  99/258] ▶ start  qid=4bdecfd4-4b6c-4c70-a077-026ecb1989c3  q='What are the names and owners of teams that have had the Coliseum as their home venue at any time?'
+[20:54:54] [  99/258] ▶ start  qid=4bdecfd4-4b6c-4c70-a077-026ecb1989c3  q='What are the names and owners of teams that have had the Coliseum as their home venue at any time?'
+[20:55:04] [  99/258] ✔ done   qid=4bdecfd4-4b6c-4c70-a077-026ecb1989c3  ea=False em=False psjs=0.09090909090909091  t=9.4s  runEA=0.626  wall=13m32s  ETA=21m45s
+[20:55:04] [  99/258] ✔ done   qid=4bdecfd4-4b6c-4c70-a077-026ecb1989c3  ea=False em=False psjs=0.09090909090909091  t=9.4s  runEA=0.626  wall=13m32s  ETA=21m45s
+[20:55:04] [ 100/258] ▶ start  qid=110334f1-21c2-4784-b215-120b6383ac4e  q='What is the difference in the founding years between the Portland Trail Blazers and the LAL?'
+[20:55:04] [ 100/258] ▶ start  qid=110334f1-21c2-4784-b215-120b6383ac4e  q='What is the difference in the founding years between the Portland Trail Blazers and the LAL?'
+[20:55:17] [ 100/258] ✔ done   qid=110334f1-21c2-4784-b215-120b6383ac4e  ea=True em=False psjs=1.0  t=13.3s  runEA=0.630  wall=13m46s  ETA=21m45s
+[20:55:17] [ 100/258] ✔ done   qid=110334f1-21c2-4784-b215-120b6383ac4e  ea=True em=False psjs=1.0  t=13.3s  runEA=0.630  wall=13m46s  ETA=21m45s
+[20:55:17] [ 101/258] ▶ start  qid=6a803862-a32e-458d-b368-833fc7973c91  q='What are the names of teams that currently play at the Vivint Smart Home Arena?'
+[20:55:17] [ 101/258] ▶ start  qid=6a803862-a32e-458d-b368-833fc7973c91  q='What are the names of teams that currently play at the Vivint Smart Home Arena?'
+[20:55:28] [ 101/258] ✔ done   qid=6a803862-a32e-458d-b368-833fc7973c91  ea=False em=False psjs=0.0  t=10.9s  runEA=0.624  wall=13m57s  ETA=21m40s
+[20:55:28] [ 101/258] ✔ done   qid=6a803862-a32e-458d-b368-833fc7973c91  ea=False em=False psjs=0.0  t=10.9s  runEA=0.624  wall=13m57s  ETA=21m40s
+[20:55:28] [ 102/258] ▶ start  qid=737d13a2-ac2b-49ff-b517-2f83d1745cc3  q="What are the names of awards received by players who have also won the L'ÉQUIPE CHAMPION OF CHAMPIONS, and how many s..."
+[20:55:28] [ 102/258] ▶ start  qid=737d13a2-ac2b-49ff-b517-2f83d1745cc3  q="What are the names of awards received by players who have also won the L'ÉQUIPE CHAMPION OF CHAMPIONS, and how many s..."
+2026-06-21 20:55:35.875 | WARNING  | eval.psjs:compute_psjs:580 - PSJS execution failed — returning 0.0.  gold_err=None pred_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Variable `rtmp1` not defined (line 2, column 138 (offset: 295))\n"} WITH collect(distinct elementId(a)) + collect(distinct elementId(p)) + collect(distinct elementId(rtmp0)) + collect(distinct elementId(rtmp1)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId2"\n                                                                                                                                          ^}'
+[20:55:35] [ 102/258] ✔ done   qid=737d13a2-ac2b-49ff-b517-2f83d1745cc3  ea=False em=False psjs=0.0  t=7.6s  runEA=0.618  wall=14m04s  ETA=21m31s
+[20:55:35] [ 102/258] ✔ done   qid=737d13a2-ac2b-49ff-b517-2f83d1745cc3  ea=False em=False psjs=0.0  t=7.6s  runEA=0.618  wall=14m04s  ETA=21m31s
+[20:55:35] [ 103/258] ▶ start  qid=e15b64e4-7dd9-4b3c-ae55-b3ab0ad5f861  q='Provide the names of all teams in the Atlantic, along with the number of venues they have had as home venues at any t...'
+[20:55:35] [ 103/258] ▶ start  qid=e15b64e4-7dd9-4b3c-ae55-b3ab0ad5f861  q='Provide the names of all teams in the Atlantic, along with the number of venues they have had as home venues at any t...'
+[20:55:44] [ 103/258] ✔ done   qid=e15b64e4-7dd9-4b3c-ae55-b3ab0ad5f861  ea=True em=False psjs=1.0  t=8.9s  runEA=0.621  wall=14m13s  ETA=21m24s
+[20:55:44] [ 103/258] ✔ done   qid=e15b64e4-7dd9-4b3c-ae55-b3ab0ad5f861  ea=True em=False psjs=1.0  t=8.9s  runEA=0.621  wall=14m13s  ETA=21m24s
+[20:55:44] [ 104/258] ▶ start  qid=2583a5a3-b4e9-4334-a4e0-c75aa804a875  q='Which teams have drafted players who have played for the SAC, and how many such players has each team drafted?'
+[20:55:44] [ 104/258] ▶ start  qid=2583a5a3-b4e9-4334-a4e0-c75aa804a875  q='Which teams have drafted players who have played for the SAC, and how many such players has each team drafted?'
+[20:55:53] [ 104/258] ✔ done   qid=2583a5a3-b4e9-4334-a4e0-c75aa804a875  ea=True em=False psjs=1.0  t=8.7s  runEA=0.625  wall=14m22s  ETA=21m16s
+[20:55:53] [ 104/258] ✔ done   qid=2583a5a3-b4e9-4334-a4e0-c75aa804a875  ea=True em=False psjs=1.0  t=8.7s  runEA=0.625  wall=14m22s  ETA=21m16s
+[20:55:53] [ 105/258] ▶ start  qid=cda3e6ed-7ca2-43ac-80c8-e851b7116153  q='What are the unique nicknames of players who have been part of the DEN at any time?'
+[20:55:53] [ 105/258] ▶ start  qid=cda3e6ed-7ca2-43ac-80c8-e851b7116153  q='What are the unique nicknames of players who have been part of the DEN at any time?'
+[20:56:00] [ 105/258] ✔ done   qid=cda3e6ed-7ca2-43ac-80c8-e851b7116153  ea=True em=False psjs=1.0  t=7.0s  runEA=0.629  wall=14m29s  ETA=21m06s
+[20:56:00] [ 105/258] ✔ done   qid=cda3e6ed-7ca2-43ac-80c8-e851b7116153  ea=True em=False psjs=1.0  t=7.0s  runEA=0.629  wall=14m29s  ETA=21m06s
+[20:56:00] [ 106/258] ▶ start  qid=2e548453-7ec9-452d-aaf6-66847b9d242f  q='What are the names of players who either play as shootinv guards or have been part of the Dallas Mavericks at some po...'
+[20:56:00] [ 106/258] ▶ start  qid=2e548453-7ec9-452d-aaf6-66847b9d242f  q='What are the names of players who either play as shootinv guards or have been part of the Dallas Mavericks at some po...'
+[20:56:10] [ 106/258] ✔ done   qid=2e548453-7ec9-452d-aaf6-66847b9d242f  ea=False em=False psjs=1.0  t=9.8s  runEA=0.623  wall=14m39s  ETA=21m00s
+[20:56:10] [ 106/258] ✔ done   qid=2e548453-7ec9-452d-aaf6-66847b9d242f  ea=False em=False psjs=1.0  t=9.8s  runEA=0.623  wall=14m39s  ETA=21m00s
+[20:56:10] [ 107/258] ▶ start  qid=34f89205-bc56-4d35-942d-478b0ab73d1b  q='What are the names of the teams that Walt the Wizard has played for at any time, whether in the past or present?'
+[20:56:10] [ 107/258] ▶ start  qid=34f89205-bc56-4d35-942d-478b0ab73d1b  q='What are the names of the teams that Walt the Wizard has played for at any time, whether in the past or present?'
+[20:56:23] [ 107/258] ✔ done   qid=34f89205-bc56-4d35-942d-478b0ab73d1b  ea=True em=False psjs=1.0  t=12.9s  runEA=0.626  wall=14m51s  ETA=20m58s
+[20:56:23] [ 107/258] ✔ done   qid=34f89205-bc56-4d35-942d-478b0ab73d1b  ea=True em=False psjs=1.0  t=12.9s  runEA=0.626  wall=14m51s  ETA=20m58s
+[20:56:23] [ 108/258] ▶ start  qid=b0285463-0a21-4600-afc4-2d72c94e0efe  q='What are the names of teams that drafted both Dennis Hopson and Marcus Darrell Williams?'
+[20:56:23] [ 108/258] ▶ start  qid=b0285463-0a21-4600-afc4-2d72c94e0efe  q='What are the names of teams that drafted both Dennis Hopson and Marcus Darrell Williams?'
+[20:56:36] [ 108/258] ✔ done   qid=b0285463-0a21-4600-afc4-2d72c94e0efe  ea=True em=False psjs=1.0  t=12.9s  runEA=0.630  wall=15m04s  ETA=20m56s
+[20:56:36] [ 108/258] ✔ done   qid=b0285463-0a21-4600-afc4-2d72c94e0efe  ea=True em=False psjs=1.0  t=12.9s  runEA=0.630  wall=15m04s  ETA=20m56s
+[20:56:36] [ 109/258] ▶ start  qid=6f6470c7-185b-4331-a6e7-adc86dfbc523  q='What are the names of teams in the Pacific that Cheick Diallo has played for at some point?'
+[20:56:36] [ 109/258] ▶ start  qid=6f6470c7-185b-4331-a6e7-adc86dfbc523  q='What are the names of teams in the Pacific that Cheick Diallo has played for at some point?'
+[20:56:42] [ 109/258] ✔ done   qid=6f6470c7-185b-4331-a6e7-adc86dfbc523  ea=True em=False psjs=1.0  t=6.7s  runEA=0.633  wall=15m11s  ETA=20m45s
+[20:56:42] [ 109/258] ✔ done   qid=6f6470c7-185b-4331-a6e7-adc86dfbc523  ea=True em=False psjs=1.0  t=6.7s  runEA=0.633  wall=15m11s  ETA=20m45s
+[20:56:42] [ 110/258] ▶ start  qid=77fe76ea-bccd-461e-82f8-40effb448738  q='What are the names of teams in the Pacific Division that drafted Deerk Fisher?'
+[20:56:42] [ 110/258] ▶ start  qid=77fe76ea-bccd-461e-82f8-40effb448738  q='What are the names of teams in the Pacific Division that drafted Deerk Fisher?'
+[20:56:54] [ 110/258] ✔ done   qid=77fe76ea-bccd-461e-82f8-40effb448738  ea=True em=False psjs=1.0  t=11.8s  runEA=0.636  wall=15m23s  ETA=20m42s
+[20:56:54] [ 110/258] ✔ done   qid=77fe76ea-bccd-461e-82f8-40effb448738  ea=True em=False psjs=1.0  t=11.8s  runEA=0.636  wall=15m23s  ETA=20m42s
+[20:56:54] [ 111/258] ▶ start  qid=cb5e298f-9275-42a8-a0a1-c3abeee8dc96  q='What are the names of positions played by players drafted by the BKN, and how many such players are there for each po...'
+[20:56:54] [ 111/258] ▶ start  qid=cb5e298f-9275-42a8-a0a1-c3abeee8dc96  q='What are the names of positions played by players drafted by the BKN, and how many such players are there for each po...'
+[20:57:01] [ 111/258] ✔ done   qid=cb5e298f-9275-42a8-a0a1-c3abeee8dc96  ea=True em=False psjs=1.0  t=6.9s  runEA=0.640  wall=15m30s  ETA=20m31s
+[20:57:01] [ 111/258] ✔ done   qid=cb5e298f-9275-42a8-a0a1-c3abeee8dc96  ea=True em=False psjs=1.0  t=6.9s  runEA=0.640  wall=15m30s  ETA=20m31s
+[20:57:01] [ 112/258] ▶ start  qid=50c09ddc-f73d-4f75-b73b-7c9afa53ff5e  q='What are the names of positions played by players who also play as CENTER, and how many such players are there for ea...'
+[20:57:01] [ 112/258] ▶ start  qid=50c09ddc-f73d-4f75-b73b-7c9afa53ff5e  q='What are the names of positions played by players who also play as CENTER, and how many such players are there for ea...'
+2026-06-21 20:57:09.211 | WARNING  | eval.psjs:compute_psjs:580 - PSJS execution failed — returning 0.0.  gold_err=None pred_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Variable `rtmp1` not defined (line 2, column 140 (offset: 279))\n"} WITH collect(distinct elementId(p)) + collect(distinct elementId(pos)) + collect(distinct elementId(rtmp0)) + collect(distinct elementId(rtmp1)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId2"\n                                                                                                                                            ^}'
+[20:57:09] [ 112/258] ✔ done   qid=50c09ddc-f73d-4f75-b73b-7c9afa53ff5e  ea=False em=False psjs=0.0  t=7.7s  runEA=0.634  wall=15m37s  ETA=20m22s
+[20:57:09] [ 112/258] ✔ done   qid=50c09ddc-f73d-4f75-b73b-7c9afa53ff5e  ea=False em=False psjs=0.0  t=7.7s  runEA=0.634  wall=15m37s  ETA=20m22s
+[20:57:09] [ 113/258] ▶ start  qid=e3518c25-3bb1-41d3-b3f2-e1677096ee67  q='What are the names of awards received by players who play the centter position, and how many such players have receiv...'
+[20:57:09] [ 113/258] ▶ start  qid=e3518c25-3bb1-41d3-b3f2-e1677096ee67  q='What are the names of awards received by players who play the centter position, and how many such players have receiv...'
+[20:57:20] [ 113/258] ✔ done   qid=e3518c25-3bb1-41d3-b3f2-e1677096ee67  ea=True em=False psjs=1.0  t=11.1s  runEA=0.637  wall=15m49s  ETA=20m17s
+[20:57:20] [ 113/258] ✔ done   qid=e3518c25-3bb1-41d3-b3f2-e1677096ee67  ea=True em=False psjs=1.0  t=11.1s  runEA=0.637  wall=15m49s  ETA=20m17s
+[20:57:20] [ 114/258] ▶ start  qid=38066bd3-418d-4368-9d54-46461091f57a  q='How many players have either been part of the Utah Jazz or played as a SF?'
+[20:57:20] [ 114/258] ▶ start  qid=38066bd3-418d-4368-9d54-46461091f57a  q='How many players have either been part of the Utah Jazz or played as a SF?'
+[20:57:25] [ 114/258] ✔ done   qid=38066bd3-418d-4368-9d54-46461091f57a  ea=False em=False psjs=0.17389605314576007  t=5.4s  runEA=0.632  wall=15m54s  ETA=20m05s
+[20:57:25] [ 114/258] ✔ done   qid=38066bd3-418d-4368-9d54-46461091f57a  ea=False em=False psjs=0.17389605314576007  t=5.4s  runEA=0.632  wall=15m54s  ETA=20m05s
+[20:57:25] [ 115/258] ▶ start  qid=032f1ce7-3acb-4de9-b37d-290c512a5c2f  q='What positions does Rob Rose play?'
+[20:57:25] [ 115/258] ▶ start  qid=032f1ce7-3acb-4de9-b37d-290c512a5c2f  q='What positions does Rob Rose play?'
+[20:57:37] [ 115/258] ✔ done   qid=032f1ce7-3acb-4de9-b37d-290c512a5c2f  ea=True em=False psjs=1.0  t=11.5s  runEA=0.635  wall=16m05s  ETA=20m00s
+[20:57:37] [ 115/258] ✔ done   qid=032f1ce7-3acb-4de9-b37d-290c512a5c2f  ea=True em=False psjs=1.0  t=11.5s  runEA=0.635  wall=16m05s  ETA=20m00s
+[20:57:37] [ 116/258] ▶ start  qid=ffee6402-a29f-498d-85d8-8c8669f2afa5  q='What are the names of teams that have played at Indiana Farmers Coliseum and are part of the Central?'
+[20:57:37] [ 116/258] ▶ start  qid=ffee6402-a29f-498d-85d8-8c8669f2afa5  q='What are the names of teams that have played at Indiana Farmers Coliseum and are part of the Central?'
+[20:57:43] [ 116/258] ✔ done   qid=ffee6402-a29f-498d-85d8-8c8669f2afa5  ea=True em=False psjs=1.0  t=6.6s  runEA=0.638  wall=16m12s  ETA=19m50s
+[20:57:43] [ 116/258] ✔ done   qid=ffee6402-a29f-498d-85d8-8c8669f2afa5  ea=True em=False psjs=1.0  t=6.6s  runEA=0.638  wall=16m12s  ETA=19m50s
+[20:57:43] [ 117/258] ▶ start  qid=d837eba0-6d59-40a7-8f33-6e6facccea23  q='Which teams played their home games at Madisoon Square Garden in the year 1946?'
+[20:57:43] [ 117/258] ▶ start  qid=d837eba0-6d59-40a7-8f33-6e6facccea23  q='Which teams played their home games at Madisoon Square Garden in the year 1946?'
+[20:57:56] [ 117/258] ✔ done   qid=d837eba0-6d59-40a7-8f33-6e6facccea23  ea=True em=False psjs=1.0  t=12.4s  runEA=0.641  wall=16m24s  ETA=19m46s
+[20:57:56] [ 117/258] ✔ done   qid=d837eba0-6d59-40a7-8f33-6e6facccea23  ea=True em=False psjs=1.0  t=12.4s  runEA=0.641  wall=16m24s  ETA=19m46s
+[20:57:56] [ 118/258] ▶ start  qid=ddf26fab-79e3-43e7-80ba-7e9c62217385  q='What are the unique handedness types of players drafted by teams in the Atlantic?'
+[20:57:56] [ 118/258] ▶ start  qid=ddf26fab-79e3-43e7-80ba-7e9c62217385  q='What are the unique handedness types of players drafted by teams in the Atlantic?'
+[20:58:03] [ 118/258] ✔ done   qid=ddf26fab-79e3-43e7-80ba-7e9c62217385  ea=True em=False psjs=1.0  t=7.5s  runEA=0.644  wall=16m32s  ETA=19m37s
+[20:58:03] [ 118/258] ✔ done   qid=ddf26fab-79e3-43e7-80ba-7e9c62217385  ea=True em=False psjs=1.0  t=7.5s  runEA=0.644  wall=16m32s  ETA=19m37s
+[20:58:03] [ 119/258] ▶ start  qid=092279f0-c321-4d43-86c3-61eb970139a9  q='Provide the names of all players who have received the Sports Merit, along with the total number of awards each playe...'
+[20:58:03] [ 119/258] ▶ start  qid=092279f0-c321-4d43-86c3-61eb970139a9  q='Provide the names of all players who have received the Sports Merit, along with the total number of awards each playe...'
+[20:58:12] [ 119/258] ✔ done   qid=092279f0-c321-4d43-86c3-61eb970139a9  ea=False em=False psjs=0.7777777777777778  t=8.6s  runEA=0.639  wall=16m40s  ETA=19m29s
+[20:58:12] [ 119/258] ✔ done   qid=092279f0-c321-4d43-86c3-61eb970139a9  ea=False em=False psjs=0.7777777777777778  t=8.6s  runEA=0.639  wall=16m40s  ETA=19m29s
+[20:58:12] [ 120/258] ▶ start  qid=5ce28bbd-d6c8-49e6-9d79-ddc07e77fa6c  q='What are the names of the awards received by José Manuel Calderón Borrallo?'
+[20:58:12] [ 120/258] ▶ start  qid=5ce28bbd-d6c8-49e6-9d79-ddc07e77fa6c  q='What are the names of the awards received by José Manuel Calderón Borrallo?'
+[20:58:23] [ 120/258] ✔ done   qid=5ce28bbd-d6c8-49e6-9d79-ddc07e77fa6c  ea=True em=False psjs=1.0  t=10.8s  runEA=0.642  wall=16m51s  ETA=19m23s
+[20:58:23] [ 120/258] ✔ done   qid=5ce28bbd-d6c8-49e6-9d79-ddc07e77fa6c  ea=True em=False psjs=1.0  t=10.8s  runEA=0.642  wall=16m51s  ETA=19m23s
+[20:58:23] [ 121/258] ▶ start  qid=84db92d8-6589-4714-9d29-72a4bfe23469  q='Who is the player associated with a team that has used Conseco Fieldhouse as their home venue, and has the earliest r...'
+[20:58:23] [ 121/258] ▶ start  qid=84db92d8-6589-4714-9d29-72a4bfe23469  q='Who is the player associated with a team that has used Conseco Fieldhouse as their home venue, and has the earliest r...'
+[20:58:35] [ 121/258] ✔ done   qid=84db92d8-6589-4714-9d29-72a4bfe23469  ea=True em=False psjs=0.11390532544378698  t=12.8s  runEA=0.645  wall=17m04s  ETA=19m19s
+[20:58:35] [ 121/258] ✔ done   qid=84db92d8-6589-4714-9d29-72a4bfe23469  ea=True em=False psjs=0.11390532544378698  t=12.8s  runEA=0.645  wall=17m04s  ETA=19m19s
+[20:58:35] [ 122/258] ▶ start  qid=6b0ce2fe-f6ab-4f9a-89e6-53df6622c36a  q='Which National Basketball Association team was established the earliest?'
+[20:58:35] [ 122/258] ▶ start  qid=6b0ce2fe-f6ab-4f9a-89e6-53df6622c36a  q='Which National Basketball Association team was established the earliest?'
+[20:58:39] [ 122/258] ✔ done   qid=6b0ce2fe-f6ab-4f9a-89e6-53df6622c36a  ea=True em=False psjs=1.0  t=3.5s  runEA=0.648  wall=17m08s  ETA=19m06s
+[20:58:39] [ 122/258] ✔ done   qid=6b0ce2fe-f6ab-4f9a-89e6-53df6622c36a  ea=True em=False psjs=1.0  t=3.5s  runEA=0.648  wall=17m08s  ETA=19m06s
+[20:58:39] [ 123/258] ▶ start  qid=f9f4c195-929a-4922-a5a0-e804df936190  q='Who passed away later, Geg Jackson or Nate Hawthorne?'
+[20:58:39] [ 123/258] ▶ start  qid=f9f4c195-929a-4922-a5a0-e804df936190  q='Who passed away later, Geg Jackson or Nate Hawthorne?'
+[20:58:52] [ 123/258] ✔ done   qid=f9f4c195-929a-4922-a5a0-e804df936190  ea=True em=False psjs=1.0  t=12.7s  runEA=0.650  wall=17m20s  ETA=19m02s
+[20:58:52] [ 123/258] ✔ done   qid=f9f4c195-929a-4922-a5a0-e804df936190  ea=True em=False psjs=1.0  t=12.7s  runEA=0.650  wall=17m20s  ETA=19m02s
+[20:58:52] [ 124/258] ▶ start  qid=25f770ce-ef0f-4c72-91cd-353fbaf1007d  q='Who are the unique owners of teams that have drafted a player who plays the SF position?'
+[20:58:52] [ 124/258] ▶ start  qid=25f770ce-ef0f-4c72-91cd-353fbaf1007d  q='Who are the unique owners of teams that have drafted a player who plays the SF position?'
+[20:59:01] [ 124/258] ✔ done   qid=25f770ce-ef0f-4c72-91cd-353fbaf1007d  ea=True em=False psjs=1.0  t=9.2s  runEA=0.653  wall=17m30s  ETA=18m54s
+[20:59:01] [ 124/258] ✔ done   qid=25f770ce-ef0f-4c72-91cd-353fbaf1007d  ea=True em=False psjs=1.0  t=9.2s  runEA=0.653  wall=17m30s  ETA=18m54s
+[20:59:01] [ 125/258] ▶ start  qid=9973aa44-a59a-4f3c-a664-eebe7794893e  q='What are the names of teams that have the LOS ANGELES MEMORIAL SPORTS ARENA as their home venue and that drafted Dave...'
+[20:59:01] [ 125/258] ▶ start  qid=9973aa44-a59a-4f3c-a664-eebe7794893e  q='What are the names of teams that have the LOS ANGELES MEMORIAL SPORTS ARENA as their home venue and that drafted Dave...'
+[20:59:08] [ 125/258] ✔ done   qid=9973aa44-a59a-4f3c-a664-eebe7794893e  ea=True em=False psjs=1.0  t=6.9s  runEA=0.656  wall=17m36s  ETA=18m44s
+[20:59:08] [ 125/258] ✔ done   qid=9973aa44-a59a-4f3c-a664-eebe7794893e  ea=True em=False psjs=1.0  t=6.9s  runEA=0.656  wall=17m36s  ETA=18m44s
+[20:59:08] [ 126/258] ▶ start  qid=cc4636c5-3c72-4dd7-8faa-20718aa96cbb  q='Provide the names of all players who have been part of the Chicago Bluls at any time, along with the number of differ...'
+[20:59:08] [ 126/258] ▶ start  qid=cc4636c5-3c72-4dd7-8faa-20718aa96cbb  q='Provide the names of all players who have been part of the Chicago Bluls at any time, along with the number of differ...'
+[20:59:23] [ 126/258] ✔ done   qid=cc4636c5-3c72-4dd7-8faa-20718aa96cbb  ea=True em=False psjs=1.0  t=15.1s  runEA=0.659  wall=17m51s  ETA=18m43s
+[20:59:23] [ 126/258] ✔ done   qid=cc4636c5-3c72-4dd7-8faa-20718aa96cbb  ea=True em=False psjs=1.0  t=15.1s  runEA=0.659  wall=17m51s  ETA=18m43s
+[20:59:23] [ 127/258] ▶ start  qid=d94d0061-7000-4478-b913-15d833f73958  q='List the names of players who play the same positions as Stevo, along with the number of those positions each plays.'
+[20:59:23] [ 127/258] ▶ start  qid=d94d0061-7000-4478-b913-15d833f73958  q='List the names of players who play the same positions as Stevo, along with the number of those positions each plays.'
+[20:59:37] [ 127/258] ✔ done   qid=d94d0061-7000-4478-b913-15d833f73958  ea=False em=False psjs=0.0  t=14.7s  runEA=0.654  wall=18m06s  ETA=18m40s
+[20:59:37] [ 127/258] ✔ done   qid=d94d0061-7000-4478-b913-15d833f73958  ea=False em=False psjs=0.0  t=14.7s  runEA=0.654  wall=18m06s  ETA=18m40s
+[20:59:37] [ 128/258] ▶ start  qid=f58f6ea7-8297-45df-aae2-d3591e411e37  q='What are the names of teams that have had the Spectrum as their home venue and for which Kukoč has played, along with...'
+[20:59:37] [ 128/258] ▶ start  qid=f58f6ea7-8297-45df-aae2-d3591e411e37  q='What are the names of teams that have had the Spectrum as their home venue and for which Kukoč has played, along with...'
+[20:59:45] [ 128/258] ✔ done   qid=f58f6ea7-8297-45df-aae2-d3591e411e37  ea=True em=False psjs=1.0  t=7.3s  runEA=0.656  wall=18m13s  ETA=18m30s
+[20:59:45] [ 128/258] ✔ done   qid=f58f6ea7-8297-45df-aae2-d3591e411e37  ea=True em=False psjs=1.0  t=7.3s  runEA=0.656  wall=18m13s  ETA=18m30s
+[20:59:45] [ 129/258] ▶ start  qid=b297f41f-f097-46fb-9971-1390033e183e  q='What are the names and head coaches of teams that have the Coliseum as their home venue?'
+[20:59:45] [ 129/258] ▶ start  qid=b297f41f-f097-46fb-9971-1390033e183e  q='What are the names and head coaches of teams that have the Coliseum as their home venue?'
+[20:59:54] [ 129/258] ✔ done   qid=b297f41f-f097-46fb-9971-1390033e183e  ea=False em=False psjs=0.0  t=9.7s  runEA=0.651  wall=18m23s  ETA=18m23s
+[20:59:54] [ 129/258] ✔ done   qid=b297f41f-f097-46fb-9971-1390033e183e  ea=False em=False psjs=0.0  t=9.7s  runEA=0.651  wall=18m23s  ETA=18m23s
+[20:59:54] [ 130/258] ▶ start  qid=3b35e5ef-144d-4554-bbc4-ffee3a4bad1b  q='Who weighs more, Bdu Olsen or Jerry Rullo?'
+[20:59:54] [ 130/258] ▶ start  qid=3b35e5ef-144d-4554-bbc4-ffee3a4bad1b  q='Who weighs more, Bdu Olsen or Jerry Rullo?'
+[21:00:07] [ 130/258] ✔ done   qid=3b35e5ef-144d-4554-bbc4-ffee3a4bad1b  ea=True em=False psjs=1.0  t=12.8s  runEA=0.654  wall=18m36s  ETA=18m19s
+[21:00:07] [ 130/258] ✔ done   qid=3b35e5ef-144d-4554-bbc4-ffee3a4bad1b  ea=True em=False psjs=1.0  t=12.8s  runEA=0.654  wall=18m36s  ETA=18m19s
+[21:00:07] [ 131/258] ▶ start  qid=50d44b7a-64e6-49f6-8ba2-602c29e3ef9e  q='What are the names of players who have been part of the UTA and were born on February 28th, 1978?'
+[21:00:07] [ 131/258] ▶ start  qid=50d44b7a-64e6-49f6-8ba2-602c29e3ef9e  q='What are the names of players who have been part of the UTA and were born on February 28th, 1978?'
+[21:00:26] [ 131/258] ✔ done   qid=50d44b7a-64e6-49f6-8ba2-602c29e3ef9e  ea=False em=False psjs=0.0  t=18.9s  runEA=0.649  wall=18m55s  ETA=18m20s
+[21:00:26] [ 131/258] ✔ done   qid=50d44b7a-64e6-49f6-8ba2-602c29e3ef9e  ea=False em=False psjs=0.0  t=18.9s  runEA=0.649  wall=18m55s  ETA=18m20s
+[21:00:26] [ 132/258] ▶ start  qid=fe1bf035-136a-430d-b98c-3c5d5dfdb37d  q='Provide the names of all players who play as a SF, along with the number of different positions each player plays.'
+[21:00:26] [ 132/258] ▶ start  qid=fe1bf035-136a-430d-b98c-3c5d5dfdb37d  q='Provide the names of all players who play as a SF, along with the number of different positions each player plays.'
+[21:00:38] [ 132/258] ✔ done   qid=fe1bf035-136a-430d-b98c-3c5d5dfdb37d  ea=True em=False psjs=1.0  t=12.1s  runEA=0.652  wall=19m07s  ETA=18m15s
+[21:00:38] [ 132/258] ✔ done   qid=fe1bf035-136a-430d-b98c-3c5d5dfdb37d  ea=True em=False psjs=1.0  t=12.1s  runEA=0.652  wall=19m07s  ETA=18m15s
+[21:00:38] [ 133/258] ▶ start  qid=76db58f6-8e70-42d7-9ab3-29660ba8b9ae  q='Provide the names of all players drafted by the Cavaliers, along with the number of teams each player has played for,...'
+[21:00:38] [ 133/258] ▶ start  qid=76db58f6-8e70-42d7-9ab3-29660ba8b9ae  q='Provide the names of all players drafted by the Cavaliers, along with the number of teams each player has played for,...'
+[21:00:48] [ 133/258] ✔ done   qid=76db58f6-8e70-42d7-9ab3-29660ba8b9ae  ea=True em=False psjs=1.0  t=9.4s  runEA=0.654  wall=19m16s  ETA=18m07s
+[21:00:48] [ 133/258] ✔ done   qid=76db58f6-8e70-42d7-9ab3-29660ba8b9ae  ea=True em=False psjs=1.0  t=9.4s  runEA=0.654  wall=19m16s  ETA=18m07s
+[21:00:48] [ 134/258] ▶ start  qid=44e56e56-e9d2-4efb-87fa-1b9673e881e8  q='What are the positions played by players who have been part of the ATLANTA HAWKS, and how many such players have play...'
+[21:00:48] [ 134/258] ▶ start  qid=44e56e56-e9d2-4efb-87fa-1b9673e881e8  q='What are the positions played by players who have been part of the ATLANTA HAWKS, and how many such players have play...'
+[21:00:57] [ 134/258] ✔ done   qid=44e56e56-e9d2-4efb-87fa-1b9673e881e8  ea=True em=False psjs=1.0  t=9.1s  runEA=0.657  wall=19m25s  ETA=17m58s
+[21:00:57] [ 134/258] ✔ done   qid=44e56e56-e9d2-4efb-87fa-1b9673e881e8  ea=True em=False psjs=1.0  t=9.1s  runEA=0.657  wall=19m25s  ETA=17m58s
+[21:00:57] [ 135/258] ▶ start  qid=18201426-24e8-4c45-9b6f-8b12b7c4f5a3  q='What are the names and head coaches of teams that have used the State Fair Coliseum as their home venue at some point?'
+[21:00:57] [ 135/258] ▶ start  qid=18201426-24e8-4c45-9b6f-8b12b7c4f5a3  q='What are the names and head coaches of teams that have used the State Fair Coliseum as their home venue at some point?'
+[21:01:08] [ 135/258] ✔ done   qid=18201426-24e8-4c45-9b6f-8b12b7c4f5a3  ea=False em=False psjs=0.0  t=11.8s  runEA=0.652  wall=19m37s  ETA=17m53s
+[21:01:08] [ 135/258] ✔ done   qid=18201426-24e8-4c45-9b6f-8b12b7c4f5a3  ea=False em=False psjs=0.0  t=11.8s  runEA=0.652  wall=19m37s  ETA=17m53s
+[21:01:08] [ 136/258] ▶ start  qid=3043b730-ff1a-4ecc-9970-aed55ba7512e  q='What are the names of the teams that Elfid Payton is currently playing for?'
+[21:01:08] [ 136/258] ▶ start  qid=3043b730-ff1a-4ecc-9970-aed55ba7512e  q='What are the names of the teams that Elfid Payton is currently playing for?'
+[21:01:19] [ 136/258] ✔ done   qid=3043b730-ff1a-4ecc-9970-aed55ba7512e  ea=False em=False psjs=0.6  t=10.9s  runEA=0.647  wall=19m48s  ETA=17m46s
+[21:01:19] [ 136/258] ✔ done   qid=3043b730-ff1a-4ecc-9970-aed55ba7512e  ea=False em=False psjs=0.6  t=10.9s  runEA=0.647  wall=19m48s  ETA=17m46s
+[21:01:19] [ 137/258] ▶ start  qid=60f51daa-d6f7-4f29-a101-87cd09850353  q='How many players have either received the NBA Most Valuable Player Award or been drafted by the UTA?'
+[21:01:19] [ 137/258] ▶ start  qid=60f51daa-d6f7-4f29-a101-87cd09850353  q='How many players have either received the NBA Most Valuable Player Award or been drafted by the UTA?'
+[21:01:24] [ 137/258] ✔ done   qid=60f51daa-d6f7-4f29-a101-87cd09850353  ea=False em=False psjs=0.38461538461538464  t=4.5s  runEA=0.642  wall=19m53s  ETA=17m33s
+[21:01:24] [ 137/258] ✔ done   qid=60f51daa-d6f7-4f29-a101-87cd09850353  ea=False em=False psjs=0.38461538461538464  t=4.5s  runEA=0.642  wall=19m53s  ETA=17m33s
+[21:01:24] [ 138/258] ▶ start  qid=d8947542-8e7d-4a1f-9513-b8576feccd26  q='What are the names of divisions that include a team which drafted Kieth Booth?'
+[21:01:24] [ 138/258] ▶ start  qid=d8947542-8e7d-4a1f-9513-b8576feccd26  q='What are the names of divisions that include a team which drafted Kieth Booth?'
+[21:01:37] [ 138/258] ✔ done   qid=d8947542-8e7d-4a1f-9513-b8576feccd26  ea=True em=False psjs=1.0  t=12.7s  runEA=0.645  wall=20m05s  ETA=17m28s
+[21:01:37] [ 138/258] ✔ done   qid=d8947542-8e7d-4a1f-9513-b8576feccd26  ea=True em=False psjs=1.0  t=12.7s  runEA=0.645  wall=20m05s  ETA=17m28s
+[21:01:37] [ 139/258] ▶ start  qid=eac8346f-ae9c-467a-a714-75484a454074  q='What are the names of teams that have either played at Baltimore Arena or have drafted McKee?'
+[21:01:37] [ 139/258] ▶ start  qid=eac8346f-ae9c-467a-a714-75484a454074  q='What are the names of teams that have either played at Baltimore Arena or have drafted McKee?'
+[21:01:40] [ 139/258] ✔ done   qid=eac8346f-ae9c-467a-a714-75484a454074  ea=True em=False psjs=0.6  t=3.7s  runEA=0.647  wall=20m09s  ETA=17m15s
+[21:01:40] [ 139/258] ✔ done   qid=eac8346f-ae9c-467a-a714-75484a454074  ea=True em=False psjs=0.6  t=3.7s  runEA=0.647  wall=20m09s  ETA=17m15s
+[21:01:40] [ 140/258] ▶ start  qid=a45276ae-ac0b-43f9-a182-912eff75f6b1  q='What are the names of teams that have had players in the five position, and how many such players have been on each t...'
+[21:01:40] [ 140/258] ▶ start  qid=a45276ae-ac0b-43f9-a182-912eff75f6b1  q='What are the names of teams that have had players in the five position, and how many such players have been on each t...'
+[21:01:57] [ 140/258] ✔ done   qid=a45276ae-ac0b-43f9-a182-912eff75f6b1  ea=True em=False psjs=1.0  t=17.0s  runEA=0.650  wall=20m26s  ETA=17m13s
+[21:01:57] [ 140/258] ✔ done   qid=a45276ae-ac0b-43f9-a182-912eff75f6b1  ea=True em=False psjs=1.0  t=17.0s  runEA=0.650  wall=20m26s  ETA=17m13s
+[21:01:57] [ 141/258] ▶ start  qid=69867d8c-6c35-4c3e-a1ae-d62bcde56b7a  q='What are the names of venues that have served as the home for the Hawks at any time?'
+[21:01:57] [ 141/258] ▶ start  qid=69867d8c-6c35-4c3e-a1ae-d62bcde56b7a  q='What are the names of venues that have served as the home for the Hawks at any time?'
+[21:02:04] [ 141/258] ✔ done   qid=69867d8c-6c35-4c3e-a1ae-d62bcde56b7a  ea=True em=False psjs=1.0  t=6.7s  runEA=0.652  wall=20m33s  ETA=17m03s
+[21:02:04] [ 141/258] ✔ done   qid=69867d8c-6c35-4c3e-a1ae-d62bcde56b7a  ea=True em=False psjs=1.0  t=6.7s  runEA=0.652  wall=20m33s  ETA=17m03s
+[21:02:04] [ 142/258] ▶ start  qid=e7d7ac09-21e7-4da8-b389-2d42d404bbf9  q='Who is the head coach of the BKN?'
+[21:02:04] [ 142/258] ▶ start  qid=e7d7ac09-21e7-4da8-b389-2d42d404bbf9  q='Who is the head coach of the BKN?'
+[21:02:10] [ 142/258] ✔ done   qid=e7d7ac09-21e7-4da8-b389-2d42d404bbf9  ea=True em=False psjs=1.0  t=6.4s  runEA=0.655  wall=20m39s  ETA=16m52s
+[21:02:10] [ 142/258] ✔ done   qid=e7d7ac09-21e7-4da8-b389-2d42d404bbf9  ea=True em=False psjs=1.0  t=6.4s  runEA=0.655  wall=20m39s  ETA=16m52s
+[21:02:10] [ 143/258] ▶ start  qid=359697f9-878a-444a-b952-c43edfef5641  q='Which conference does the MEMPHIS GRIZZLIES belong to?'
+[21:02:10] [ 143/258] ▶ start  qid=359697f9-878a-444a-b952-c43edfef5641  q='Which conference does the MEMPHIS GRIZZLIES belong to?'
+[21:02:17] [ 143/258] ✔ done   qid=359697f9-878a-444a-b952-c43edfef5641  ea=True em=False psjs=1.0  t=6.3s  runEA=0.657  wall=20m45s  ETA=16m41s
+[21:02:17] [ 143/258] ✔ done   qid=359697f9-878a-444a-b952-c43edfef5641  ea=True em=False psjs=1.0  t=6.3s  runEA=0.657  wall=20m45s  ETA=16m41s
+[21:02:17] [ 144/258] ▶ start  qid=7ee9045b-2a28-48dd-82dd-9256673e3135  q='What is the earliest date of death among players who have received the All-NBA Team award and played as a five?'
+[21:02:17] [ 144/258] ▶ start  qid=7ee9045b-2a28-48dd-82dd-9256673e3135  q='What is the earliest date of death among players who have received the All-NBA Team award and played as a five?'
+[21:02:22] [ 144/258] ✔ done   qid=7ee9045b-2a28-48dd-82dd-9256673e3135  ea=False em=False psjs=0.0  t=5.0s  runEA=0.653  wall=20m50s  ETA=16m30s
+[21:02:22] [ 144/258] ✔ done   qid=7ee9045b-2a28-48dd-82dd-9256673e3135  ea=False em=False psjs=0.0  t=5.0s  runEA=0.653  wall=20m50s  ETA=16m30s
+[21:02:22] [ 145/258] ▶ start  qid=c21c5900-7028-4de2-a792-1459cf645449  q='What are the names and owners of teams that drafted Ket Benson and have Jabari Parker as a player, either currently o...'
+[21:02:22] [ 145/258] ▶ start  qid=c21c5900-7028-4de2-a792-1459cf645449  q='What are the names and owners of teams that drafted Ket Benson and have Jabari Parker as a player, either currently o...'
+[21:02:34] [ 145/258] ✔ done   qid=c21c5900-7028-4de2-a792-1459cf645449  ea=True em=False psjs=1.0  t=12.9s  runEA=0.655  wall=21m03s  ETA=16m24s
+[21:02:34] [ 145/258] ✔ done   qid=c21c5900-7028-4de2-a792-1459cf645449  ea=True em=False psjs=1.0  t=12.9s  runEA=0.655  wall=21m03s  ETA=16m24s
+[21:02:34] [ 146/258] ▶ start  qid=34c88f84-1297-48aa-8f12-2a14ee597e19  q='What year were the BKN founded?'
+[21:02:34] [ 146/258] ▶ start  qid=34c88f84-1297-48aa-8f12-2a14ee597e19  q='What year were the BKN founded?'
+[21:02:40] [ 146/258] ✔ done   qid=34c88f84-1297-48aa-8f12-2a14ee597e19  ea=True em=False psjs=1.0  t=5.7s  runEA=0.658  wall=21m09s  ETA=16m13s
+[21:02:40] [ 146/258] ✔ done   qid=34c88f84-1297-48aa-8f12-2a14ee597e19  ea=True em=False psjs=1.0  t=5.7s  runEA=0.658  wall=21m09s  ETA=16m13s
+[21:02:40] [ 147/258] ▶ start  qid=29bb366e-8b46-48bf-a5b6-c9125bc7b64a  q='What are the names of teams that have either played at Square Garden or are part of the Atlantic Division?'
+[21:02:40] [ 147/258] ▶ start  qid=29bb366e-8b46-48bf-a5b6-c9125bc7b64a  q='What are the names of teams that have either played at Square Garden or are part of the Atlantic Division?'
+[21:02:44] [ 147/258] ✔ done   qid=29bb366e-8b46-48bf-a5b6-c9125bc7b64a  ea=True em=False psjs=0.7333333333333333  t=4.0s  runEA=0.660  wall=21m13s  ETA=16m01s
+[21:02:44] [ 147/258] ✔ done   qid=29bb366e-8b46-48bf-a5b6-c9125bc7b64a  ea=True em=False psjs=0.7333333333333333  t=4.0s  runEA=0.660  wall=21m13s  ETA=16m01s
+[21:02:44] [ 148/258] ▶ start  qid=adc5d3af-fd77-4a53-af32-452d9c51f015  q='Provide the names of all players who have played as pont guards, along with the number of teams they have been part o...'
+[21:02:44] [ 148/258] ▶ start  qid=adc5d3af-fd77-4a53-af32-452d9c51f015  q='Provide the names of all players who have played as pont guards, along with the number of teams they have been part o...'
+[21:02:55] [ 148/258] ✔ done   qid=adc5d3af-fd77-4a53-af32-452d9c51f015  ea=True em=False psjs=1.0  t=10.4s  runEA=0.662  wall=21m23s  ETA=15m54s
+[21:02:55] [ 148/258] ✔ done   qid=adc5d3af-fd77-4a53-af32-452d9c51f015  ea=True em=False psjs=1.0  t=10.4s  runEA=0.662  wall=21m23s  ETA=15m54s
+[21:02:55] [ 149/258] ▶ start  qid=4e2dd668-77c3-4ad2-a5ad-7520194e8809  q='What are the names of the venues that currently serve as the home venue for the MEM?'
+[21:02:55] [ 149/258] ▶ start  qid=4e2dd668-77c3-4ad2-a5ad-7520194e8809  q='What are the names of the venues that currently serve as the home venue for the MEM?'
+[21:03:07] [ 149/258] ✔ done   qid=4e2dd668-77c3-4ad2-a5ad-7520194e8809  ea=True em=False psjs=0.6666666666666666  t=12.2s  runEA=0.664  wall=21m36s  ETA=15m48s
+[21:03:07] [ 149/258] ✔ done   qid=4e2dd668-77c3-4ad2-a5ad-7520194e8809  ea=True em=False psjs=0.6666666666666666  t=12.2s  runEA=0.664  wall=21m36s  ETA=15m48s
+[21:03:07] [ 150/258] ▶ start  qid=6a0e3125-a01a-4106-8bf8-5dedf4dad1a8  q='Which teams have had players drafted by the Raptors, and how many such players have played for each team?'
+[21:03:07] [ 150/258] ▶ start  qid=6a0e3125-a01a-4106-8bf8-5dedf4dad1a8  q='Which teams have had players drafted by the Raptors, and how many such players have played for each team?'
+[21:03:14] [ 150/258] ✔ done   qid=6a0e3125-a01a-4106-8bf8-5dedf4dad1a8  ea=True em=False psjs=1.0  t=7.6s  runEA=0.667  wall=21m43s  ETA=15m38s
+[21:03:14] [ 150/258] ✔ done   qid=6a0e3125-a01a-4106-8bf8-5dedf4dad1a8  ea=True em=False psjs=1.0  t=7.6s  runEA=0.667  wall=21m43s  ETA=15m38s
+[21:03:14] [ 151/258] ▶ start  qid=a9e50885-4a72-4f47-b146-c38f8f41e266  q='Which team was founded more recently, the Portland Blazers or the Los Angeles Lakers?'
+[21:03:14] [ 151/258] ▶ start  qid=a9e50885-4a72-4f47-b146-c38f8f41e266  q='Which team was founded more recently, the Portland Blazers or the Los Angeles Lakers?'
+[21:03:22] [ 151/258] ✔ done   qid=a9e50885-4a72-4f47-b146-c38f8f41e266  ea=True em=False psjs=1.0  t=7.6s  runEA=0.669  wall=21m51s  ETA=15m29s
+[21:03:22] [ 151/258] ✔ done   qid=a9e50885-4a72-4f47-b146-c38f8f41e266  ea=True em=False psjs=1.0  t=7.6s  runEA=0.669  wall=21m51s  ETA=15m29s
+[21:03:22] [ 152/258] ▶ start  qid=5be4f84c-fd63-4782-90bc-4c23634ffdef  q='Which teams have drafted players who received the MERITED MASTER OF SPORTS OF THE USSR award, and how many such playe...'
+[21:03:22] [ 152/258] ▶ start  qid=5be4f84c-fd63-4782-90bc-4c23634ffdef  q='Which teams have drafted players who received the MERITED MASTER OF SPORTS OF THE USSR award, and how many such playe...'
+[21:03:30] [ 152/258] ✔ done   qid=5be4f84c-fd63-4782-90bc-4c23634ffdef  ea=True em=False psjs=1.0  t=7.6s  runEA=0.671  wall=21m58s  ETA=15m19s
+[21:03:30] [ 152/258] ✔ done   qid=5be4f84c-fd63-4782-90bc-4c23634ffdef  ea=True em=False psjs=1.0  t=7.6s  runEA=0.671  wall=21m58s  ETA=15m19s
+[21:03:30] [ 153/258] ▶ start  qid=1f38fc20-60f8-4f77-8555-50ba18a84f05  q='What are the names of the divisions that include either the ATL or the Washington Wizards?'
+[21:03:30] [ 153/258] ▶ start  qid=1f38fc20-60f8-4f77-8555-50ba18a84f05  q='What are the names of the divisions that include either the ATL or the Washington Wizards?'
+[21:03:34] [ 153/258] ✔ done   qid=1f38fc20-60f8-4f77-8555-50ba18a84f05  ea=True em=False psjs=0.6  t=4.2s  runEA=0.673  wall=22m03s  ETA=15m08s
+[21:03:34] [ 153/258] ✔ done   qid=1f38fc20-60f8-4f77-8555-50ba18a84f05  ea=True em=False psjs=0.6  t=4.2s  runEA=0.673  wall=22m03s  ETA=15m08s
+[21:03:34] [ 154/258] ▶ start  qid=a550e214-eb55-452c-8416-75f3e9044d79  q='What are the names of the teams that Orms has played for, either currently or in the past?'
+[21:03:34] [ 154/258] ▶ start  qid=a550e214-eb55-452c-8416-75f3e9044d79  q='What are the names of the teams that Orms has played for, either currently or in the past?'
+[21:03:40] [ 154/258] ✔ done   qid=a550e214-eb55-452c-8416-75f3e9044d79  ea=True em=False psjs=1.0  t=6.3s  runEA=0.675  wall=22m09s  ETA=14m57s
+[21:03:40] [ 154/258] ✔ done   qid=a550e214-eb55-452c-8416-75f3e9044d79  ea=True em=False psjs=1.0  t=6.3s  runEA=0.675  wall=22m09s  ETA=14m57s
+[21:03:40] [ 155/258] ▶ start  qid=87016d06-6db8-47c8-be60-994f58d67561  q='How many divisions are part of the Wesern Conference?'
+[21:03:40] [ 155/258] ▶ start  qid=87016d06-6db8-47c8-be60-994f58d67561  q='How many divisions are part of the Wesern Conference?'
+[21:03:51] [ 155/258] ✔ done   qid=87016d06-6db8-47c8-be60-994f58d67561  ea=True em=False psjs=1.0  t=10.7s  runEA=0.677  wall=22m20s  ETA=14m50s
+[21:03:51] [ 155/258] ✔ done   qid=87016d06-6db8-47c8-be60-994f58d67561  ea=True em=False psjs=1.0  t=10.7s  runEA=0.677  wall=22m20s  ETA=14m50s
+[21:03:51] [ 156/258] ▶ start  qid=930cb5de-91ac-4934-8b0d-dfd69fb7c5b9  q='What are the names of awards received by players drafted by the New Orleans Jazz, and how many such players have rece...'
+[21:03:51] [ 156/258] ▶ start  qid=930cb5de-91ac-4934-8b0d-dfd69fb7c5b9  q='What are the names of awards received by players drafted by the New Orleans Jazz, and how many such players have rece...'
+[21:04:03] [ 156/258] ✔ done   qid=930cb5de-91ac-4934-8b0d-dfd69fb7c5b9  ea=True em=False psjs=1.0  t=12.3s  runEA=0.679  wall=22m32s  ETA=14m44s
+[21:04:03] [ 156/258] ✔ done   qid=930cb5de-91ac-4934-8b0d-dfd69fb7c5b9  ea=True em=False psjs=1.0  t=12.3s  runEA=0.679  wall=22m32s  ETA=14m44s
+[21:04:03] [ 157/258] ▶ start  qid=9bfc2e59-1348-4667-90fc-779016840ec5  q='Which teams have drafted players who have received the Spain award?'
+[21:04:03] [ 157/258] ▶ start  qid=9bfc2e59-1348-4667-90fc-779016840ec5  q='Which teams have drafted players who have received the Spain award?'
+[21:04:10] [ 157/258] ✔ done   qid=9bfc2e59-1348-4667-90fc-779016840ec5  ea=True em=False psjs=1.0  t=6.5s  runEA=0.682  wall=22m38s  ETA=14m34s
+[21:04:10] [ 157/258] ✔ done   qid=9bfc2e59-1348-4667-90fc-779016840ec5  ea=True em=False psjs=1.0  t=6.5s  runEA=0.682  wall=22m38s  ETA=14m34s
+[21:04:10] [ 158/258] ▶ start  qid=56e62758-4355-47e3-ab35-27f316d2a681  q='What are the names and heights in centimeters of players who play the bigman position?'
+[21:04:10] [ 158/258] ▶ start  qid=56e62758-4355-47e3-ab35-27f316d2a681  q='What are the names and heights in centimeters of players who play the bigman position?'
+[21:04:24] [ 158/258] ✔ done   qid=56e62758-4355-47e3-ab35-27f316d2a681  ea=False em=False psjs=0.0002842524161455372  t=14.4s  runEA=0.677  wall=22m53s  ETA=14m29s
+[21:04:24] [ 158/258] ✔ done   qid=56e62758-4355-47e3-ab35-27f316d2a681  ea=False em=False psjs=0.0002842524161455372  t=14.4s  runEA=0.677  wall=22m53s  ETA=14m29s
+[21:04:24] [ 159/258] ▶ start  qid=3d3b116c-6da1-4cce-9080-e08f1c4ba87a  q='What are the names of players who were drafted by the same team that Khlaid El-Amin has played for, and who passed aw...'
+[21:04:24] [ 159/258] ▶ start  qid=3d3b116c-6da1-4cce-9080-e08f1c4ba87a  q='What are the names of players who were drafted by the same team that Khlaid El-Amin has played for, and who passed aw...'
+[21:04:34] [ 159/258] ✔ done   qid=3d3b116c-6da1-4cce-9080-e08f1c4ba87a  ea=True em=False psjs=1.0  t=10.0s  runEA=0.679  wall=23m03s  ETA=14m21s
+[21:04:34] [ 159/258] ✔ done   qid=3d3b116c-6da1-4cce-9080-e08f1c4ba87a  ea=True em=False psjs=1.0  t=10.0s  runEA=0.679  wall=23m03s  ETA=14m21s
+[21:04:34] [ 160/258] ▶ start  qid=1b62d569-60ef-422a-8d44-58d9fbd9b7be  q='What are the names and inception years of teams that Frederick Terrell Jones has played for and that drafted Rik Smits?'
+[21:04:34] [ 160/258] ▶ start  qid=1b62d569-60ef-422a-8d44-58d9fbd9b7be  q='What are the names and inception years of teams that Frederick Terrell Jones has played for and that drafted Rik Smits?'
+[21:04:46] [ 160/258] ✔ done   qid=1b62d569-60ef-422a-8d44-58d9fbd9b7be  ea=True em=False psjs=1.0  t=12.2s  runEA=0.681  wall=23m15s  ETA=14m14s
+[21:04:46] [ 160/258] ✔ done   qid=1b62d569-60ef-422a-8d44-58d9fbd9b7be  ea=True em=False psjs=1.0  t=12.2s  runEA=0.681  wall=23m15s  ETA=14m14s
+[21:04:46] [ 161/258] ▶ start  qid=99d50929-5675-4f6c-919c-f80f5241a955  q='Who passed away later, Skeeter Switf or Lee Knorek?'
+[21:04:46] [ 161/258] ▶ start  qid=99d50929-5675-4f6c-919c-f80f5241a955  q='Who passed away later, Skeeter Switf or Lee Knorek?'
+[21:04:53] [ 161/258] ✔ done   qid=99d50929-5675-4f6c-919c-f80f5241a955  ea=True em=False psjs=1.0  t=7.1s  runEA=0.683  wall=23m22s  ETA=14m05s
+[21:04:53] [ 161/258] ✔ done   qid=99d50929-5675-4f6c-919c-f80f5241a955  ea=True em=False psjs=1.0  t=7.1s  runEA=0.683  wall=23m22s  ETA=14m05s
+[21:04:53] [ 162/258] ▶ start  qid=6544cdcb-6324-4881-8e6b-0c1c07736b99  q='What are the unique nicknames of players who were drafted by the MEM and play as centers?'
+[21:04:53] [ 162/258] ▶ start  qid=6544cdcb-6324-4881-8e6b-0c1c07736b99  q='What are the unique nicknames of players who were drafted by the MEM and play as centers?'
+[21:05:01] [ 162/258] ✔ done   qid=6544cdcb-6324-4881-8e6b-0c1c07736b99  ea=True em=False psjs=1.0  t=7.3s  runEA=0.685  wall=23m29s  ETA=13m55s
+[21:05:01] [ 162/258] ✔ done   qid=6544cdcb-6324-4881-8e6b-0c1c07736b99  ea=True em=False psjs=1.0  t=7.3s  runEA=0.685  wall=23m29s  ETA=13m55s
+[21:05:01] [ 163/258] ▶ start  qid=470cd22d-40b3-4459-9649-1ca3d6c47c13  q='What is the earliest year of death among players who play the PF position?'
+[21:05:01] [ 163/258] ▶ start  qid=470cd22d-40b3-4459-9649-1ca3d6c47c13  q='What is the earliest year of death among players who play the PF position?'
+[21:05:06] [ 163/258] ✔ done   qid=470cd22d-40b3-4459-9649-1ca3d6c47c13  ea=False em=False psjs=0.0  t=5.1s  runEA=0.681  wall=23m34s  ETA=13m44s
+[21:05:06] [ 163/258] ✔ done   qid=470cd22d-40b3-4459-9649-1ca3d6c47c13  ea=False em=False psjs=0.0  t=5.1s  runEA=0.681  wall=23m34s  ETA=13m44s
+[21:05:06] [ 164/258] ▶ start  qid=57681808-232d-49c0-8d3f-452d7171c945  q='What are the names of divisions that include a team which has played at the Graham Civic Auditorium?'
+[21:05:06] [ 164/258] ▶ start  qid=57681808-232d-49c0-8d3f-452d7171c945  q='What are the names of divisions that include a team which has played at the Graham Civic Auditorium?'
+[21:05:12] [ 164/258] ✔ done   qid=57681808-232d-49c0-8d3f-452d7171c945  ea=True em=False psjs=1.0  t=6.5s  runEA=0.683  wall=23m41s  ETA=13m34s
+[21:05:12] [ 164/258] ✔ done   qid=57681808-232d-49c0-8d3f-452d7171c945  ea=True em=False psjs=1.0  t=6.5s  runEA=0.683  wall=23m41s  ETA=13m34s
+[21:05:12] [ 165/258] ▶ start  qid=cfcf8b07-15eb-4617-9096-23bbfb3b8d62  q='Provide the names of all players drafted by the indiana pacers, along with the number of awards each player has recei...'
+[21:05:12] [ 165/258] ▶ start  qid=cfcf8b07-15eb-4617-9096-23bbfb3b8d62  q='Provide the names of all players drafted by the indiana pacers, along with the number of awards each player has recei...'
+[21:05:21] [ 165/258] ✔ done   qid=cfcf8b07-15eb-4617-9096-23bbfb3b8d62  ea=True em=False psjs=1.0  t=8.4s  runEA=0.685  wall=23m49s  ETA=13m26s
+[21:05:21] [ 165/258] ✔ done   qid=cfcf8b07-15eb-4617-9096-23bbfb3b8d62  ea=True em=False psjs=1.0  t=8.4s  runEA=0.685  wall=23m49s  ETA=13m26s
+[21:05:21] [ 166/258] ▶ start  qid=16725cad-e28c-4b23-8d61-c5c86740b740  q='How much heavier is JaVale McGee than Grevey in kilograms?'
+[21:05:21] [ 166/258] ▶ start  qid=16725cad-e28c-4b23-8d61-c5c86740b740  q='How much heavier is JaVale McGee than Grevey in kilograms?'
+[21:05:30] [ 166/258] ✔ done   qid=16725cad-e28c-4b23-8d61-c5c86740b740  ea=True em=False psjs=1.0  t=9.2s  runEA=0.687  wall=23m59s  ETA=13m17s
+[21:05:30] [ 166/258] ✔ done   qid=16725cad-e28c-4b23-8d61-c5c86740b740  ea=True em=False psjs=1.0  t=9.2s  runEA=0.687  wall=23m59s  ETA=13m17s
+[21:05:30] [ 167/258] ▶ start  qid=673e5888-d9d9-4f05-b843-e8722712bd48  q='Provide the names of all players who have been part of the Broolkyn Nets at any time, along with the number of differ...'
+[21:05:30] [ 167/258] ▶ start  qid=673e5888-d9d9-4f05-b843-e8722712bd48  q='Provide the names of all players who have been part of the Broolkyn Nets at any time, along with the number of differ...'
+[21:05:41] [ 167/258] ✔ done   qid=673e5888-d9d9-4f05-b843-e8722712bd48  ea=True em=False psjs=1.0  t=11.4s  runEA=0.689  wall=24m10s  ETA=13m10s
+[21:05:41] [ 167/258] ✔ done   qid=673e5888-d9d9-4f05-b843-e8722712bd48  ea=True em=False psjs=1.0  t=11.4s  runEA=0.689  wall=24m10s  ETA=13m10s
+[21:05:41] [ 168/258] ▶ start  qid=03f17d98-a4a9-4287-9f4c-217a37ba6b9e  q='Which teams played their home games at the Hartford Civic Center in the year 1975?'
+[21:05:41] [ 168/258] ▶ start  qid=03f17d98-a4a9-4287-9f4c-217a37ba6b9e  q='Which teams played their home games at the Hartford Civic Center in the year 1975?'
+[21:05:52] [ 168/258] ✔ done   qid=03f17d98-a4a9-4287-9f4c-217a37ba6b9e  ea=False em=False psjs=0.0  t=11.1s  runEA=0.685  wall=24m21s  ETA=13m03s
+[21:05:52] [ 168/258] ✔ done   qid=03f17d98-a4a9-4287-9f4c-217a37ba6b9e  ea=False em=False psjs=0.0  t=11.1s  runEA=0.685  wall=24m21s  ETA=13m03s
+[21:05:52] [ 169/258] ▶ start  qid=b3ed9c15-8d20-401b-ab16-795eff573a2e  q='What are the names of the teams William Russell played for during the year 1956?'
+[21:05:52] [ 169/258] ▶ start  qid=b3ed9c15-8d20-401b-ab16-795eff573a2e  q='What are the names of the teams William Russell played for during the year 1956?'
+[21:06:04] [ 169/258] ✔ done   qid=b3ed9c15-8d20-401b-ab16-795eff573a2e  ea=True em=False psjs=1.0  t=11.8s  runEA=0.686  wall=24m33s  ETA=12m56s
+[21:06:04] [ 169/258] ✔ done   qid=b3ed9c15-8d20-401b-ab16-795eff573a2e  ea=True em=False psjs=1.0  t=11.8s  runEA=0.686  wall=24m33s  ETA=12m56s
+[21:06:04] [ 170/258] ▶ start  qid=9949be94-04e8-4e5f-97a3-6b0337882684  q='Who is the head coach of the GSW?'
+[21:06:04] [ 170/258] ▶ start  qid=9949be94-04e8-4e5f-97a3-6b0337882684  q='Who is the head coach of the GSW?'
+[21:06:11] [ 170/258] ✔ done   qid=9949be94-04e8-4e5f-97a3-6b0337882684  ea=True em=False psjs=1.0  t=7.0s  runEA=0.688  wall=24m40s  ETA=12m46s
+[21:06:11] [ 170/258] ✔ done   qid=9949be94-04e8-4e5f-97a3-6b0337882684  ea=True em=False psjs=1.0  t=7.0s  runEA=0.688  wall=24m40s  ETA=12m46s
+[21:06:11] [ 171/258] ▶ start  qid=df1a1489-cdae-457e-9d7c-accb98d9507c  q='Are Herb Williams and Edd Mikan of the same gender?'
+[21:06:11] [ 171/258] ▶ start  qid=df1a1489-cdae-457e-9d7c-accb98d9507c  q='Are Herb Williams and Edd Mikan of the same gender?'
+[21:06:23] [ 171/258] ✔ done   qid=df1a1489-cdae-457e-9d7c-accb98d9507c  ea=True em=False psjs=1.0  t=11.2s  runEA=0.690  wall=24m51s  ETA=12m39s
+[21:06:23] [ 171/258] ✔ done   qid=df1a1489-cdae-457e-9d7c-accb98d9507c  ea=True em=False psjs=1.0  t=11.2s  runEA=0.690  wall=24m51s  ETA=12m39s
+[21:06:23] [ 172/258] ▶ start  qid=6cfe27cd-d135-4369-879c-c22ca9a29755  q='What is the name of the conference that the Southwest is part of?'
+[21:06:23] [ 172/258] ▶ start  qid=6cfe27cd-d135-4369-879c-c22ca9a29755  q='What is the name of the conference that the Southwest is part of?'
+[21:06:34] [ 172/258] ✔ done   qid=6cfe27cd-d135-4369-879c-c22ca9a29755  ea=True em=False psjs=1.0  t=11.2s  runEA=0.692  wall=25m02s  ETA=12m31s
+[21:06:34] [ 172/258] ✔ done   qid=6cfe27cd-d135-4369-879c-c22ca9a29755  ea=True em=False psjs=1.0  t=11.2s  runEA=0.692  wall=25m02s  ETA=12m31s
+[21:06:34] [ 173/258] ▶ start  qid=d79d2251-db04-4a52-8de9-6752d8262ce2  q='What are the names of teams that have had their home venue at either the GEORGIA DOME or Kiel Auditorium at some poin...'
+[21:06:34] [ 173/258] ▶ start  qid=d79d2251-db04-4a52-8de9-6752d8262ce2  q='What are the names of teams that have had their home venue at either the GEORGIA DOME or Kiel Auditorium at some poin...'
+[21:06:38] [ 173/258] ✔ done   qid=d79d2251-db04-4a52-8de9-6752d8262ce2  ea=True em=False psjs=0.6  t=4.2s  runEA=0.694  wall=25m07s  ETA=12m20s
+[21:06:38] [ 173/258] ✔ done   qid=d79d2251-db04-4a52-8de9-6752d8262ce2  ea=True em=False psjs=0.6  t=4.2s  runEA=0.694  wall=25m07s  ETA=12m20s
+[21:06:38] [ 174/258] ▶ start  qid=6da9e493-aa84-4bf9-a7ca-3f2d6bb32379  q='What awards has Drexler received?'
+[21:06:38] [ 174/258] ▶ start  qid=6da9e493-aa84-4bf9-a7ca-3f2d6bb32379  q='What awards has Drexler received?'
+[21:06:47] [ 174/258] ✔ done   qid=6da9e493-aa84-4bf9-a7ca-3f2d6bb32379  ea=True em=False psjs=1.0  t=8.6s  runEA=0.695  wall=25m15s  ETA=12m12s
+[21:06:47] [ 174/258] ✔ done   qid=6da9e493-aa84-4bf9-a7ca-3f2d6bb32379  ea=True em=False psjs=1.0  t=8.6s  runEA=0.695  wall=25m15s  ETA=12m12s
+[21:06:47] [ 175/258] ▶ start  qid=c1985c8d-170e-414f-a2d9-58cd52ff5aca  q='What are the names of venues that served as the home for the BKN in the year 1972?'
+[21:06:47] [ 175/258] ▶ start  qid=c1985c8d-170e-414f-a2d9-58cd52ff5aca  q='What are the names of venues that served as the home for the BKN in the year 1972?'
+[21:06:59] [ 175/258] ✔ done   qid=c1985c8d-170e-414f-a2d9-58cd52ff5aca  ea=False em=False psjs=0.0  t=12.7s  runEA=0.691  wall=25m28s  ETA=12m05s
+[21:06:59] [ 175/258] ✔ done   qid=c1985c8d-170e-414f-a2d9-58cd52ff5aca  ea=False em=False psjs=0.0  t=12.7s  runEA=0.691  wall=25m28s  ETA=12m05s
+[21:06:59] [ 176/258] ▶ start  qid=7960644e-99f8-48c8-9b43-729dd97a0a3f  q='What are the unique genders of Pro basketball league players?'
+[21:06:59] [ 176/258] ▶ start  qid=7960644e-99f8-48c8-9b43-729dd97a0a3f  q='What are the unique genders of Pro basketball league players?'
+[21:07:13] [ 176/258] ✔ done   qid=7960644e-99f8-48c8-9b43-729dd97a0a3f  ea=True em=False psjs=1.0  t=13.3s  runEA=0.693  wall=25m41s  ETA=11m58s
+[21:07:13] [ 176/258] ✔ done   qid=7960644e-99f8-48c8-9b43-729dd97a0a3f  ea=True em=False psjs=1.0  t=13.3s  runEA=0.693  wall=25m41s  ETA=11m58s
+[21:07:13] [ 177/258] ▶ start  qid=99689270-dae4-4a80-9991-b8a2b7248c5d  q='What are the names of divisions in the Easten Conference, and how many teams are part of each division?'
+[21:07:13] [ 177/258] ▶ start  qid=99689270-dae4-4a80-9991-b8a2b7248c5d  q='What are the names of divisions in the Easten Conference, and how many teams are part of each division?'
+[21:07:19] [ 177/258] ✔ done   qid=99689270-dae4-4a80-9991-b8a2b7248c5d  ea=True em=False psjs=1.0  t=6.5s  runEA=0.695  wall=25m48s  ETA=11m48s
+[21:07:19] [ 177/258] ✔ done   qid=99689270-dae4-4a80-9991-b8a2b7248c5d  ea=True em=False psjs=1.0  t=6.5s  runEA=0.695  wall=25m48s  ETA=11m48s
+[21:07:19] [ 178/258] ▶ start  qid=9a3be261-90d1-405a-adcc-d5b833ee5032  q='What are the names and owners of the teams that B.J. Orms has played for, whether in the past or currently?'
+[21:07:19] [ 178/258] ▶ start  qid=9a3be261-90d1-405a-adcc-d5b833ee5032  q='What are the names and owners of the teams that B.J. Orms has played for, whether in the past or currently?'
+[21:07:35] [ 178/258] ✔ done   qid=9a3be261-90d1-405a-adcc-d5b833ee5032  ea=False em=False psjs=0.6  t=15.6s  runEA=0.691  wall=26m03s  ETA=11m43s
+[21:07:35] [ 178/258] ✔ done   qid=9a3be261-90d1-405a-adcc-d5b833ee5032  ea=False em=False psjs=0.6  t=15.6s  runEA=0.691  wall=26m03s  ETA=11m43s
+[21:07:35] [ 179/258] ▶ start  qid=08bbf296-e39e-42d9-a650-53a8c33144ee  q='Which teams drafted Bob Danrdidge?'
+[21:07:35] [ 179/258] ▶ start  qid=08bbf296-e39e-42d9-a650-53a8c33144ee  q='Which teams drafted Bob Danrdidge?'
+[21:07:47] [ 179/258] ✔ done   qid=08bbf296-e39e-42d9-a650-53a8c33144ee  ea=True em=False psjs=1.0  t=12.1s  runEA=0.693  wall=26m16s  ETA=11m35s
+[21:07:47] [ 179/258] ✔ done   qid=08bbf296-e39e-42d9-a650-53a8c33144ee  ea=True em=False psjs=1.0  t=12.1s  runEA=0.693  wall=26m16s  ETA=11m35s
+[21:07:47] [ 180/258] ▶ start  qid=d775cbb0-4f5f-4217-b2f3-b8b0ae778a04  q='Which teams have had players who also played for the CHI at some point, and how many such players have been on each o...'
+[21:07:47] [ 180/258] ▶ start  qid=d775cbb0-4f5f-4217-b2f3-b8b0ae778a04  q='Which teams have had players who also played for the CHI at some point, and how many such players have been on each o...'
+[21:07:56] [ 180/258] ✔ done   qid=d775cbb0-4f5f-4217-b2f3-b8b0ae778a04  ea=False em=False psjs=1.0  t=9.2s  runEA=0.689  wall=26m25s  ETA=11m27s
+[21:07:56] [ 180/258] ✔ done   qid=d775cbb0-4f5f-4217-b2f3-b8b0ae778a04  ea=False em=False psjs=1.0  t=9.2s  runEA=0.689  wall=26m25s  ETA=11m27s
+[21:07:56] [ 181/258] ▶ start  qid=3b950840-1d21-4843-a82a-5a4102405a0c  q='Who are the players who have received the Lorbeerblatt award, and which schools did they attend?'
+[21:07:56] [ 181/258] ▶ start  qid=3b950840-1d21-4843-a82a-5a4102405a0c  q='Who are the players who have received the Lorbeerblatt award, and which schools did they attend?'
+[21:08:02] [ 181/258] ✔ done   qid=3b950840-1d21-4843-a82a-5a4102405a0c  ea=True em=False psjs=1.0  t=6.1s  runEA=0.691  wall=26m31s  ETA=11m17s
+[21:08:02] [ 181/258] ✔ done   qid=3b950840-1d21-4843-a82a-5a4102405a0c  ea=True em=False psjs=1.0  t=6.1s  runEA=0.691  wall=26m31s  ETA=11m17s
+[21:08:02] [ 182/258] ▶ start  qid=362e614b-168a-478c-98db-a0fafce1b1e0  q='What are the names of all the teams vander blue has played for, along with the number of players who have been part o...'
+[21:08:02] [ 182/258] ▶ start  qid=362e614b-168a-478c-98db-a0fafce1b1e0  q='What are the names of all the teams vander blue has played for, along with the number of players who have been part o...'
+[21:08:08] [ 182/258] ✔ done   qid=362e614b-168a-478c-98db-a0fafce1b1e0  ea=True em=False psjs=1.0  t=5.9s  runEA=0.692  wall=26m37s  ETA=11m07s
+[21:08:08] [ 182/258] ✔ done   qid=362e614b-168a-478c-98db-a0fafce1b1e0  ea=True em=False psjs=1.0  t=5.9s  runEA=0.692  wall=26m37s  ETA=11m07s
+[21:08:08] [ 183/258] ▶ start  qid=7def5609-998a-4326-b7a4-f1dba4a57e30  q='What are the names of venues that have been home to a team that also calls FedEx Forum their home venue?'
+[21:08:08] [ 183/258] ▶ start  qid=7def5609-998a-4326-b7a4-f1dba4a57e30  q='What are the names of venues that have been home to a team that also calls FedEx Forum their home venue?'
+[21:08:16] [ 183/258] ✔ done   qid=7def5609-998a-4326-b7a4-f1dba4a57e30  ea=True em=False psjs=1.0  t=7.6s  runEA=0.694  wall=26m44s  ETA=10m57s
+[21:08:16] [ 183/258] ✔ done   qid=7def5609-998a-4326-b7a4-f1dba4a57e30  ea=True em=False psjs=1.0  t=7.6s  runEA=0.694  wall=26m44s  ETA=10m57s
+[21:08:16] [ 184/258] ▶ start  qid=f9e315dc-8671-44a0-8c52-414533604dcb  q='Who are the players that were part of the MIA roster in the year 1996?'
+[21:08:16] [ 184/258] ▶ start  qid=f9e315dc-8671-44a0-8c52-414533604dcb  q='Who are the players that were part of the MIA roster in the year 1996?'
+[21:08:22] [ 184/258] ✔ done   qid=f9e315dc-8671-44a0-8c52-414533604dcb  ea=True em=False psjs=1.0  t=6.5s  runEA=0.696  wall=26m51s  ETA=10m48s
+[21:08:22] [ 184/258] ✔ done   qid=f9e315dc-8671-44a0-8c52-414533604dcb  ea=True em=False psjs=1.0  t=6.5s  runEA=0.696  wall=26m51s  ETA=10m48s
+[21:08:22] [ 185/258] ▶ start  qid=7bd31ea5-9bdd-4733-af1a-29a164a5387a  q='What are the names of the divisions that include the Raptors?'
+[21:08:22] [ 185/258] ▶ start  qid=7bd31ea5-9bdd-4733-af1a-29a164a5387a  q='What are the names of the divisions that include the Raptors?'
+[21:08:29] [ 185/258] ✔ done   qid=7bd31ea5-9bdd-4733-af1a-29a164a5387a  ea=True em=False psjs=1.0  t=7.0s  runEA=0.697  wall=26m58s  ETA=10m38s
+[21:08:29] [ 185/258] ✔ done   qid=7bd31ea5-9bdd-4733-af1a-29a164a5387a  ea=True em=False psjs=1.0  t=7.0s  runEA=0.697  wall=26m58s  ETA=10m38s
+[21:08:29] [ 186/258] ▶ start  qid=f29c01d9-fb9f-4384-b5fa-77a0538d9943  q='What are the names of divisions that are part of the WC and include the Sacramento Kings?'
+[21:08:29] [ 186/258] ▶ start  qid=f29c01d9-fb9f-4384-b5fa-77a0538d9943  q='What are the names of divisions that are part of the WC and include the Sacramento Kings?'
+[21:08:37] [ 186/258] ✔ done   qid=f29c01d9-fb9f-4384-b5fa-77a0538d9943  ea=True em=False psjs=1.0  t=7.7s  runEA=0.699  wall=27m05s  ETA=10m29s
+[21:08:37] [ 186/258] ✔ done   qid=f29c01d9-fb9f-4384-b5fa-77a0538d9943  ea=True em=False psjs=1.0  t=7.7s  runEA=0.699  wall=27m05s  ETA=10m29s
+[21:08:37] [ 187/258] ▶ start  qid=a6530611-68f5-41b4-947e-df9599ef0401  q='What are the names of all the teams Dc Rivers has played for, and how many players have been part of each of those te...'
+[21:08:37] [ 187/258] ▶ start  qid=a6530611-68f5-41b4-947e-df9599ef0401  q='What are the names of all the teams Dc Rivers has played for, and how many players have been part of each of those te...'
+[21:08:49] [ 187/258] ✔ done   qid=a6530611-68f5-41b4-947e-df9599ef0401  ea=True em=False psjs=1.0  t=12.3s  runEA=0.701  wall=27m18s  ETA=10m22s
+[21:08:49] [ 187/258] ✔ done   qid=a6530611-68f5-41b4-947e-df9599ef0401  ea=True em=False psjs=1.0  t=12.3s  runEA=0.701  wall=27m18s  ETA=10m22s
+[21:08:49] [ 188/258] ▶ start  qid=0057ca47-ddfa-410f-9634-a4400849ee20  q='Who are the players currently playing for the Magic?'
+[21:08:49] [ 188/258] ▶ start  qid=0057ca47-ddfa-410f-9634-a4400849ee20  q='Who are the players currently playing for the Magic?'
+[21:08:55] [ 188/258] ✔ done   qid=0057ca47-ddfa-410f-9634-a4400849ee20  ea=False em=False psjs=0.03875968992248062  t=6.2s  runEA=0.697  wall=27m24s  ETA=10m12s
+[21:08:55] [ 188/258] ✔ done   qid=0057ca47-ddfa-410f-9634-a4400849ee20  ea=False em=False psjs=0.03875968992248062  t=6.2s  runEA=0.697  wall=27m24s  ETA=10m12s
+[21:08:55] [ 189/258] ▶ start  qid=27225d97-4d5c-4b73-b28e-05520a7aa9f1  q='What are the names of teams in the Southwest Division that have Steve Silas as their head coach?'
+[21:08:55] [ 189/258] ▶ start  qid=27225d97-4d5c-4b73-b28e-05520a7aa9f1  q='What are the names of teams in the Southwest Division that have Steve Silas as their head coach?'
+[21:09:08] [ 189/258] ✔ done   qid=27225d97-4d5c-4b73-b28e-05520a7aa9f1  ea=True em=False psjs=1.0  t=13.2s  runEA=0.698  wall=27m37s  ETA=10m05s
+[21:09:08] [ 189/258] ✔ done   qid=27225d97-4d5c-4b73-b28e-05520a7aa9f1  ea=True em=False psjs=1.0  t=13.2s  runEA=0.698  wall=27m37s  ETA=10m05s
+[21:09:08] [ 190/258] ▶ start  qid=a922af23-a03c-4e4c-a267-f6e5535eea7f  q='List the names of all teams in the Atlaantic Division, along with the number of players each have drafted.'
+[21:09:08] [ 190/258] ▶ start  qid=a922af23-a03c-4e4c-a267-f6e5535eea7f  q='List the names of all teams in the Atlaantic Division, along with the number of players each have drafted.'
+[21:09:15] [ 190/258] ✔ done   qid=a922af23-a03c-4e4c-a267-f6e5535eea7f  ea=True em=False psjs=1.0  t=7.0s  runEA=0.700  wall=27m44s  ETA=9m56s
+[21:09:15] [ 190/258] ✔ done   qid=a922af23-a03c-4e4c-a267-f6e5535eea7f  ea=True em=False psjs=1.0  t=7.0s  runEA=0.700  wall=27m44s  ETA=9m56s
+[21:09:15] [ 191/258] ▶ start  qid=e01ace2f-7bde-4e43-9d56-1d65f52ef670  q='Which teams have drafted players who have played for the MEM at some point, and how many such players did each team d...'
+[21:09:15] [ 191/258] ▶ start  qid=e01ace2f-7bde-4e43-9d56-1d65f52ef670  q='Which teams have drafted players who have played for the MEM at some point, and how many such players did each team d...'
+[21:09:23] [ 191/258] ✔ done   qid=e01ace2f-7bde-4e43-9d56-1d65f52ef670  ea=True em=False psjs=1.0  t=7.8s  runEA=0.702  wall=27m52s  ETA=9m47s
+[21:09:23] [ 191/258] ✔ done   qid=e01ace2f-7bde-4e43-9d56-1d65f52ef670  ea=True em=False psjs=1.0  t=7.8s  runEA=0.702  wall=27m52s  ETA=9m47s
+[21:09:23] [ 192/258] ▶ start  qid=d3827784-7139-4952-af2c-ce949e880ceb  q='What are the names of teams in the southwest division that were established in 1980?'
+[21:09:23] [ 192/258] ▶ start  qid=d3827784-7139-4952-af2c-ce949e880ceb  q='What are the names of teams in the southwest division that were established in 1980?'
+[21:09:27] [ 192/258] ✔ done   qid=d3827784-7139-4952-af2c-ce949e880ceb  ea=True em=False psjs=1.0  t=3.3s  runEA=0.703  wall=27m55s  ETA=9m36s
+[21:09:27] [ 192/258] ✔ done   qid=d3827784-7139-4952-af2c-ce949e880ceb  ea=True em=False psjs=1.0  t=3.3s  runEA=0.703  wall=27m55s  ETA=9m36s
+[21:09:27] [ 193/258] ▶ start  qid=e66f1f03-39da-426f-8b8e-158d804347a0  q='What are the unique schools attended by players who were drafted by the MIA?'
+[21:09:27] [ 193/258] ▶ start  qid=e66f1f03-39da-426f-8b8e-158d804347a0  q='What are the unique schools attended by players who were drafted by the MIA?'
+[21:09:34] [ 193/258] ✔ done   qid=e66f1f03-39da-426f-8b8e-158d804347a0  ea=True em=False psjs=1.0  t=7.8s  runEA=0.705  wall=28m03s  ETA=9m27s
+[21:09:34] [ 193/258] ✔ done   qid=e66f1f03-39da-426f-8b8e-158d804347a0  ea=True em=False psjs=1.0  t=7.8s  runEA=0.705  wall=28m03s  ETA=9m27s
+[21:09:34] [ 194/258] ▶ start  qid=9e00c9ea-7cd4-4e44-8934-3656a6498bb4  q='Provide the names and genders of players who have been awarded the Australian Sports Medal and have played for the Ho...'
+[21:09:34] [ 194/258] ▶ start  qid=9e00c9ea-7cd4-4e44-8934-3656a6498bb4  q='Provide the names and genders of players who have been awarded the Australian Sports Medal and have played for the Ho...'
+[21:09:41] [ 194/258] ✔ done   qid=9e00c9ea-7cd4-4e44-8934-3656a6498bb4  ea=True em=False psjs=1.0  t=6.8s  runEA=0.706  wall=28m10s  ETA=9m17s
+[21:09:41] [ 194/258] ✔ done   qid=9e00c9ea-7cd4-4e44-8934-3656a6498bb4  ea=True em=False psjs=1.0  t=6.8s  runEA=0.706  wall=28m10s  ETA=9m17s
+[21:09:41] [ 195/258] ▶ start  qid=92ad9905-dbac-47b8-9d19-bab0ee2316fe  q='List the names of players who play the same positions as Joel Bruce Kramer, along with the number of those positions ...'
+[21:09:41] [ 195/258] ▶ start  qid=92ad9905-dbac-47b8-9d19-bab0ee2316fe  q='List the names of players who play the same positions as Joel Bruce Kramer, along with the number of those positions ...'
+[21:09:53] [ 195/258] ✔ done   qid=92ad9905-dbac-47b8-9d19-bab0ee2316fe  ea=False em=False psjs=0.0013831258644536654  t=12.3s  runEA=0.703  wall=28m22s  ETA=9m10s
+[21:09:53] [ 195/258] ✔ done   qid=92ad9905-dbac-47b8-9d19-bab0ee2316fe  ea=False em=False psjs=0.0013831258644536654  t=12.3s  runEA=0.703  wall=28m22s  ETA=9m10s
+[21:09:53] [ 196/258] ▶ start  qid=df3389b0-1ba2-4dea-9216-b1c5eabd79e8  q='What are the names of teams that are in the same division as the Pelicans?'
+[21:09:53] [ 196/258] ▶ start  qid=df3389b0-1ba2-4dea-9216-b1c5eabd79e8  q='What are the names of teams that are in the same division as the Pelicans?'
+[21:10:01] [ 196/258] ✔ done   qid=df3389b0-1ba2-4dea-9216-b1c5eabd79e8  ea=True em=False psjs=1.0  t=7.1s  runEA=0.704  wall=28m29s  ETA=9m01s
+[21:10:01] [ 196/258] ✔ done   qid=df3389b0-1ba2-4dea-9216-b1c5eabd79e8  ea=True em=False psjs=1.0  t=7.1s  runEA=0.704  wall=28m29s  ETA=9m01s
+[21:10:01] [ 197/258] ▶ start  qid=c00cad2c-7c11-40de-8f19-fc661b304f8e  q='How many positions does Rob Rose play?'
+[21:10:01] [ 197/258] ▶ start  qid=c00cad2c-7c11-40de-8f19-fc661b304f8e  q='How many positions does Rob Rose play?'
+[21:10:04] [ 197/258] ✔ done   qid=c00cad2c-7c11-40de-8f19-fc661b304f8e  ea=False em=False psjs=0.0  t=3.4s  runEA=0.701  wall=28m33s  ETA=8m50s
+[21:10:04] [ 197/258] ✔ done   qid=c00cad2c-7c11-40de-8f19-fc661b304f8e  ea=False em=False psjs=0.0  t=3.4s  runEA=0.701  wall=28m33s  ETA=8m50s
+[21:10:04] [ 198/258] ▶ start  qid=d946ab81-43b7-4b81-9db6-345deffac0fe  q='What are the names of teams that Bob Christian or Dwight Jonnes have played for at any time?'
+[21:10:04] [ 198/258] ▶ start  qid=d946ab81-43b7-4b81-9db6-345deffac0fe  q='What are the names of teams that Bob Christian or Dwight Jonnes have played for at any time?'
+[21:10:08] [ 198/258] ✔ done   qid=d946ab81-43b7-4b81-9db6-345deffac0fe  ea=False em=False psjs=0.5294117647058824  t=3.9s  runEA=0.697  wall=28m37s  ETA=8m40s
+[21:10:08] [ 198/258] ✔ done   qid=d946ab81-43b7-4b81-9db6-345deffac0fe  ea=False em=False psjs=0.5294117647058824  t=3.9s  runEA=0.697  wall=28m37s  ETA=8m40s
+[21:10:08] [ 199/258] ▶ start  qid=d1187032-d527-4f03-9db9-2b8ee7056acf  q='What are the positions played by players drafted by the Jazz, and how many such players are there for each position?'
+[21:10:08] [ 199/258] ▶ start  qid=d1187032-d527-4f03-9db9-2b8ee7056acf  q='What are the positions played by players drafted by the Jazz, and how many such players are there for each position?'
+[21:10:15] [ 199/258] ✔ done   qid=d1187032-d527-4f03-9db9-2b8ee7056acf  ea=True em=False psjs=1.0  t=6.8s  runEA=0.698  wall=28m43s  ETA=8m31s
+[21:10:15] [ 199/258] ✔ done   qid=d1187032-d527-4f03-9db9-2b8ee7056acf  ea=True em=False psjs=1.0  t=6.8s  runEA=0.698  wall=28m43s  ETA=8m31s
+[21:10:15] [ 200/258] ▶ start  qid=0f76e925-cb2e-46c6-8a73-cdb9478a6df1  q='Do Mark McNamara and CP3 have the same handedness?'
+[21:10:15] [ 200/258] ▶ start  qid=0f76e925-cb2e-46c6-8a73-cdb9478a6df1  q='Do Mark McNamara and CP3 have the same handedness?'
+[21:10:24] [ 200/258] ✔ done   qid=0f76e925-cb2e-46c6-8a73-cdb9478a6df1  ea=False em=False psjs=1.0  t=8.9s  runEA=0.695  wall=28m52s  ETA=8m22s
+[21:10:24] [ 200/258] ✔ done   qid=0f76e925-cb2e-46c6-8a73-cdb9478a6df1  ea=False em=False psjs=1.0  t=8.9s  runEA=0.695  wall=28m52s  ETA=8m22s
+[21:10:24] [ 201/258] ▶ start  qid=9d779813-fa5d-4d4a-9760-d5465e5cd6b2  q='How many teams have drafted either Cotton or John Block?'
+[21:10:24] [ 201/258] ▶ start  qid=9d779813-fa5d-4d4a-9760-d5465e5cd6b2  q='How many teams have drafted either Cotton or John Block?'
+[21:10:28] [ 201/258] ✔ done   qid=9d779813-fa5d-4d4a-9760-d5465e5cd6b2  ea=True em=False psjs=0.4  t=4.5s  runEA=0.697  wall=28m57s  ETA=8m13s
+[21:10:28] [ 201/258] ✔ done   qid=9d779813-fa5d-4d4a-9760-d5465e5cd6b2  ea=True em=False psjs=0.4  t=4.5s  runEA=0.697  wall=28m57s  ETA=8m13s
+[21:10:28] [ 202/258] ▶ start  qid=65eb9ed3-3ad2-4438-99fe-76f8fbbdc1d4  q='What are the names of players who either play as shooting guards or were drafted by the Rockets?'
+[21:10:28] [ 202/258] ▶ start  qid=65eb9ed3-3ad2-4438-99fe-76f8fbbdc1d4  q='What are the names of players who either play as shooting guards or were drafted by the Rockets?'
+[21:10:37] [ 202/258] ✔ done   qid=65eb9ed3-3ad2-4438-99fe-76f8fbbdc1d4  ea=False em=False psjs=0.9245362563237775  t=9.3s  runEA=0.693  wall=29m06s  ETA=8m04s
+[21:10:37] [ 202/258] ✔ done   qid=65eb9ed3-3ad2-4438-99fe-76f8fbbdc1d4  ea=False em=False psjs=0.9245362563237775  t=9.3s  runEA=0.693  wall=29m06s  ETA=8m04s
+[21:10:37] [ 203/258] ▶ start  qid=5c4218c5-4f9e-435b-8f09-af57060e9ad7  q='Provide the names of all teams in the Attlantic Division, along with the number of players who have played for each t...'
+[21:10:37] [ 203/258] ▶ start  qid=5c4218c5-4f9e-435b-8f09-af57060e9ad7  q='Provide the names of all teams in the Attlantic Division, along with the number of players who have played for each t...'
+[21:10:48] [ 203/258] ✔ done   qid=5c4218c5-4f9e-435b-8f09-af57060e9ad7  ea=True em=False psjs=1.0  t=10.3s  runEA=0.695  wall=29m16s  ETA=7m56s
+[21:10:48] [ 203/258] ✔ done   qid=5c4218c5-4f9e-435b-8f09-af57060e9ad7  ea=True em=False psjs=1.0  t=10.3s  runEA=0.695  wall=29m16s  ETA=7m56s
+[21:10:48] [ 204/258] ▶ start  qid=fa32b281-08f9-4efa-808a-44fe04d081a5  q="What is SCOTT PADGETT's weight in kilograms?"
+[21:10:48] [ 204/258] ▶ start  qid=fa32b281-08f9-4efa-808a-44fe04d081a5  q="What is SCOTT PADGETT's weight in kilograms?"
+[21:10:54] [ 204/258] ✔ done   qid=fa32b281-08f9-4efa-808a-44fe04d081a5  ea=True em=False psjs=1.0  t=6.1s  runEA=0.696  wall=29m23s  ETA=7m47s
+[21:10:54] [ 204/258] ✔ done   qid=fa32b281-08f9-4efa-808a-44fe04d081a5  ea=True em=False psjs=1.0  t=6.1s  runEA=0.696  wall=29m23s  ETA=7m47s
+[21:10:54] [ 205/258] ▶ start  qid=eed738c7-f7f7-4058-b8b9-27c70431015d  q='What are the names of divisions that include both the Golden State Warriors and the LAC?'
+[21:10:54] [ 205/258] ▶ start  qid=eed738c7-f7f7-4058-b8b9-27c70431015d  q='What are the names of divisions that include both the Golden State Warriors and the LAC?'
+[21:11:06] [ 205/258] ✔ done   qid=eed738c7-f7f7-4058-b8b9-27c70431015d  ea=True em=False psjs=1.0  t=12.6s  runEA=0.698  wall=29m35s  ETA=7m39s
+[21:11:06] [ 205/258] ✔ done   qid=eed738c7-f7f7-4058-b8b9-27c70431015d  ea=True em=False psjs=1.0  t=12.6s  runEA=0.698  wall=29m35s  ETA=7m39s
+[21:11:06] [ 206/258] ▶ start  qid=048783df-791f-494d-a6a7-9d20529f9559  q='What are the names of teams that are part of the Pacific and have had the Golden 1 Center as their home venue?'
+[21:11:06] [ 206/258] ▶ start  qid=048783df-791f-494d-a6a7-9d20529f9559  q='What are the names of teams that are part of the Pacific and have had the Golden 1 Center as their home venue?'
+[21:11:13] [ 206/258] ✔ done   qid=048783df-791f-494d-a6a7-9d20529f9559  ea=True em=False psjs=1.0  t=7.0s  runEA=0.699  wall=29m42s  ETA=7m30s
+[21:11:13] [ 206/258] ✔ done   qid=048783df-791f-494d-a6a7-9d20529f9559  ea=True em=False psjs=1.0  t=7.0s  runEA=0.699  wall=29m42s  ETA=7m30s
+[21:11:13] [ 207/258] ▶ start  qid=10bd954c-faad-48fc-bba8-93c7ab8e7fed  q='How many venues have served as the home venue for the Atpanta Hawks at any time, past or present?'
+[21:11:13] [ 207/258] ▶ start  qid=10bd954c-faad-48fc-bba8-93c7ab8e7fed  q='How many venues have served as the home venue for the Atpanta Hawks at any time, past or present?'
+[21:11:17] [ 207/258] ✔ done   qid=10bd954c-faad-48fc-bba8-93c7ab8e7fed  ea=False em=False psjs=0.0  t=3.7s  runEA=0.696  wall=29m46s  ETA=7m20s
+[21:11:17] [ 207/258] ✔ done   qid=10bd954c-faad-48fc-bba8-93c7ab8e7fed  ea=False em=False psjs=0.0  t=3.7s  runEA=0.696  wall=29m46s  ETA=7m20s
+[21:11:17] [ 208/258] ▶ start  qid=62fa1d94-cc62-461e-aaef-2d0e7e56e32c  q='What are the names of awards received by players who have also been honored with the アストゥリアス皇太子スポーツ賞?'
+[21:11:17] [ 208/258] ▶ start  qid=62fa1d94-cc62-461e-aaef-2d0e7e56e32c  q='What are the names of awards received by players who have also been honored with the アストゥリアス皇太子スポーツ賞?'
+[21:11:29] [ 208/258] ✔ done   qid=62fa1d94-cc62-461e-aaef-2d0e7e56e32c  ea=False em=False psjs=0.45454545454545453  t=11.9s  runEA=0.692  wall=29m58s  ETA=7m12s
+[21:11:29] [ 208/258] ✔ done   qid=62fa1d94-cc62-461e-aaef-2d0e7e56e32c  ea=False em=False psjs=0.45454545454545453  t=11.9s  runEA=0.692  wall=29m58s  ETA=7m12s
+[21:11:29] [ 209/258] ▶ start  qid=1299c4cf-de88-4603-95b0-1dc278bb66ee  q='Who are the players who have been on the same teams as Marcuss Camby, and how many of those teams has each of them pl...'
+[21:11:29] [ 209/258] ▶ start  qid=1299c4cf-de88-4603-95b0-1dc278bb66ee  q='Who are the players who have been on the same teams as Marcuss Camby, and how many of those teams has each of them pl...'
+[21:11:40] [ 209/258] ✔ done   qid=1299c4cf-de88-4603-95b0-1dc278bb66ee  ea=False em=False psjs=1.0  t=11.0s  runEA=0.689  wall=30m09s  ETA=7m04s
+[21:11:40] [ 209/258] ✔ done   qid=1299c4cf-de88-4603-95b0-1dc278bb66ee  ea=False em=False psjs=1.0  t=11.0s  runEA=0.689  wall=30m09s  ETA=7m04s
+[21:11:40] [ 210/258] ▶ start  qid=2eae7020-d970-42fb-9f2a-8308e63eec8f  q='Provide the names of all players who play the PG position, along with the number of awards each has received.'
+[21:11:40] [ 210/258] ▶ start  qid=2eae7020-d970-42fb-9f2a-8308e63eec8f  q='Provide the names of all players who play the PG position, along with the number of awards each has received.'
+[21:11:57] [ 210/258] ✔ done   qid=2eae7020-d970-42fb-9f2a-8308e63eec8f  ea=True em=False psjs=1.0  t=16.9s  runEA=0.690  wall=30m26s  ETA=6m57s
+[21:11:57] [ 210/258] ✔ done   qid=2eae7020-d970-42fb-9f2a-8308e63eec8f  ea=True em=False psjs=1.0  t=16.9s  runEA=0.690  wall=30m26s  ETA=6m57s
+[21:11:57] [ 211/258] ▶ start  qid=4615e1e9-a9be-49ac-8aee-0085570c7a7a  q='What are the names of players who play the same position as Charles Linwood Williams and weigh 130 kg or less?'
+[21:11:57] [ 211/258] ▶ start  qid=4615e1e9-a9be-49ac-8aee-0085570c7a7a  q='What are the names of players who play the same position as Charles Linwood Williams and weigh 130 kg or less?'
+[21:12:14] [ 211/258] ✔ done   qid=4615e1e9-a9be-49ac-8aee-0085570c7a7a  ea=False em=False psjs=0.0008119079837618403  t=16.9s  runEA=0.687  wall=30m43s  ETA=6m50s
+[21:12:14] [ 211/258] ✔ done   qid=4615e1e9-a9be-49ac-8aee-0085570c7a7a  ea=False em=False psjs=0.0008119079837618403  t=16.9s  runEA=0.687  wall=30m43s  ETA=6m50s
+[21:12:14] [ 212/258] ▶ start  qid=7535ba70-b009-43a3-8eab-3f6fac5d8edd  q='How many National Basketball Association divisions are there?'
+[21:12:14] [ 212/258] ▶ start  qid=7535ba70-b009-43a3-8eab-3f6fac5d8edd  q='How many National Basketball Association divisions are there?'
+[21:12:20] [ 212/258] ✔ done   qid=7535ba70-b009-43a3-8eab-3f6fac5d8edd  ea=True em=False psjs=1.0  t=6.1s  runEA=0.689  wall=30m49s  ETA=6m41s
+[21:12:20] [ 212/258] ✔ done   qid=7535ba70-b009-43a3-8eab-3f6fac5d8edd  ea=True em=False psjs=1.0  t=6.1s  runEA=0.689  wall=30m49s  ETA=6m41s
+[21:12:20] [ 213/258] ▶ start  qid=b36d681d-2911-4d69-8e69-d03cb5570de8  q='Can you provide the names of players who have been part of teams in the Pacific, along with the number of such teams ...'
+[21:12:20] [ 213/258] ▶ start  qid=b36d681d-2911-4d69-8e69-d03cb5570de8  q='Can you provide the names of players who have been part of teams in the Pacific, along with the number of such teams ...'
+[21:12:31] [ 213/258] ✔ done   qid=b36d681d-2911-4d69-8e69-d03cb5570de8  ea=True em=False psjs=1.0  t=10.8s  runEA=0.690  wall=31m00s  ETA=6m33s
+[21:12:31] [ 213/258] ✔ done   qid=b36d681d-2911-4d69-8e69-d03cb5570de8  ea=True em=False psjs=1.0  t=10.8s  runEA=0.690  wall=31m00s  ETA=6m33s
+[21:12:31] [ 214/258] ▶ start  qid=c4e0c873-fc3b-4a28-88fa-ba111e2e9256  q='How many venues have served as the home venue for the LOS ANGELES CLIPPERS at any time, past or present?'
+[21:12:31] [ 214/258] ▶ start  qid=c4e0c873-fc3b-4a28-88fa-ba111e2e9256  q='How many venues have served as the home venue for the LOS ANGELES CLIPPERS at any time, past or present?'
+[21:12:35] [ 214/258] ✔ done   qid=c4e0c873-fc3b-4a28-88fa-ba111e2e9256  ea=False em=False psjs=0.0  t=3.9s  runEA=0.687  wall=31m03s  ETA=6m23s
+[21:12:35] [ 214/258] ✔ done   qid=c4e0c873-fc3b-4a28-88fa-ba111e2e9256  ea=False em=False psjs=0.0  t=3.9s  runEA=0.687  wall=31m03s  ETA=6m23s
+[21:12:35] [ 215/258] ▶ start  qid=104ae671-8b3d-47eb-affd-070ec693f1e5  q='What are the names of venues that served as the home for the Atlanta Haks in the year 1946?'
+[21:12:35] [ 215/258] ▶ start  qid=104ae671-8b3d-47eb-affd-070ec693f1e5  q='What are the names of venues that served as the home for the Atlanta Haks in the year 1946?'
+[21:12:50] [ 215/258] ✔ done   qid=104ae671-8b3d-47eb-affd-070ec693f1e5  ea=True em=False psjs=1.0  t=14.9s  runEA=0.688  wall=31m18s  ETA=6m16s
+[21:12:50] [ 215/258] ✔ done   qid=104ae671-8b3d-47eb-affd-070ec693f1e5  ea=True em=False psjs=1.0  t=14.9s  runEA=0.688  wall=31m18s  ETA=6m16s
+[21:12:50] [ 216/258] ▶ start  qid=9bf0c917-b7a2-4c1e-9b3e-9661030b372f  q='What are the names of venues that have served as the home venue for the LAC at any time?'
+[21:12:50] [ 216/258] ▶ start  qid=9bf0c917-b7a2-4c1e-9b3e-9661030b372f  q='What are the names of venues that have served as the home venue for the LAC at any time?'
+[21:12:57] [ 216/258] ✔ done   qid=9bf0c917-b7a2-4c1e-9b3e-9661030b372f  ea=True em=False psjs=1.0  t=7.1s  runEA=0.690  wall=31m25s  ETA=6m07s
+[21:12:57] [ 216/258] ✔ done   qid=9bf0c917-b7a2-4c1e-9b3e-9661030b372f  ea=True em=False psjs=1.0  t=7.1s  runEA=0.690  wall=31m25s  ETA=6m07s
+[21:12:57] [ 217/258] ▶ start  qid=37442066-46ba-4366-8fc1-554ebd96a739  q='Which teams have had players who also played for the Tri-Cities Blackhawks at some point, and how many such players h...'
+[21:12:57] [ 217/258] ▶ start  qid=37442066-46ba-4366-8fc1-554ebd96a739  q='Which teams have had players who also played for the Tri-Cities Blackhawks at some point, and how many such players h...'
+[21:13:15] [ 217/258] ✔ done   qid=37442066-46ba-4366-8fc1-554ebd96a739  ea=False em=False psjs=1.0  t=17.9s  runEA=0.687  wall=31m43s  ETA=6m00s
+[21:13:15] [ 217/258] ✔ done   qid=37442066-46ba-4366-8fc1-554ebd96a739  ea=False em=False psjs=1.0  t=17.9s  runEA=0.687  wall=31m43s  ETA=6m00s
+[21:13:15] [ 218/258] ▶ start  qid=c6c6699e-c63a-4c0d-87d8-6efc71b8c2fa  q='Which team was established later, the Phoenix Suns or the Hornets?'
+[21:13:15] [ 218/258] ▶ start  qid=c6c6699e-c63a-4c0d-87d8-6efc71b8c2fa  q='Which team was established later, the Phoenix Suns or the Hornets?'
+[21:13:24] [ 218/258] ✔ done   qid=c6c6699e-c63a-4c0d-87d8-6efc71b8c2fa  ea=True em=False psjs=1.0  t=9.7s  runEA=0.688  wall=31m53s  ETA=5m51s
+[21:13:24] [ 218/258] ✔ done   qid=c6c6699e-c63a-4c0d-87d8-6efc71b8c2fa  ea=True em=False psjs=1.0  t=9.7s  runEA=0.688  wall=31m53s  ETA=5m51s
+[21:13:24] [ 219/258] ▶ start  qid=75362c1e-12f9-4b88-8550-56f9e878c525  q='Which teams have drafted players who play the Guard-forward position, and how many such players has each team drafted?'
+[21:13:24] [ 219/258] ▶ start  qid=75362c1e-12f9-4b88-8550-56f9e878c525  q='Which teams have drafted players who play the Guard-forward position, and how many such players has each team drafted?'
+[21:13:36] [ 219/258] ✔ done   qid=75362c1e-12f9-4b88-8550-56f9e878c525  ea=False em=False psjs=0.0  t=11.7s  runEA=0.685  wall=32m05s  ETA=5m43s
+[21:13:36] [ 219/258] ✔ done   qid=75362c1e-12f9-4b88-8550-56f9e878c525  ea=False em=False psjs=0.0  t=11.7s  runEA=0.685  wall=32m05s  ETA=5m43s
+[21:13:36] [ 220/258] ▶ start  qid=b8db7ffe-dc7b-4fc0-836c-3535b1f4ca16  q='How many venues have served as the home ground for any team that Pete Brennna has played for, either currently or in ...'
+[21:13:36] [ 220/258] ▶ start  qid=b8db7ffe-dc7b-4fc0-836c-3535b1f4ca16  q='How many venues have served as the home ground for any team that Pete Brennna has played for, either currently or in ...'
+[21:13:48] [ 220/258] ✔ done   qid=b8db7ffe-dc7b-4fc0-836c-3535b1f4ca16  ea=False em=False psjs=0.0  t=11.6s  runEA=0.682  wall=32m16s  ETA=5m34s
+[21:13:48] [ 220/258] ✔ done   qid=b8db7ffe-dc7b-4fc0-836c-3535b1f4ca16  ea=False em=False psjs=0.0  t=11.6s  runEA=0.682  wall=32m16s  ETA=5m34s
+[21:13:48] [ 221/258] ▶ start  qid=3f18ff61-188a-448c-a377-f6cdb283f964  q='What are the names of awards received by players who have been part of the Celtics, and how many such players have re...'
+[21:13:48] [ 221/258] ▶ start  qid=3f18ff61-188a-448c-a377-f6cdb283f964  q='What are the names of awards received by players who have been part of the Celtics, and how many such players have re...'
+[21:13:54] [ 221/258] ✔ done   qid=3f18ff61-188a-448c-a377-f6cdb283f964  ea=True em=False psjs=1.0  t=6.9s  runEA=0.683  wall=32m23s  ETA=5m25s
+[21:13:54] [ 221/258] ✔ done   qid=3f18ff61-188a-448c-a377-f6cdb283f964  ea=True em=False psjs=1.0  t=6.9s  runEA=0.683  wall=32m23s  ETA=5m25s
+[21:13:54] [ 222/258] ▶ start  qid=77741715-db78-4186-a03b-146bfce2ba79  q='Who are the point guards who have played for the TOR?'
+[21:13:54] [ 222/258] ▶ start  qid=77741715-db78-4186-a03b-146bfce2ba79  q='Who are the point guards who have played for the TOR?'
+[21:14:03] [ 222/258] ✔ done   qid=77741715-db78-4186-a03b-146bfce2ba79  ea=True em=False psjs=1.0  t=8.8s  runEA=0.685  wall=32m32s  ETA=5m17s
+[21:14:03] [ 222/258] ✔ done   qid=77741715-db78-4186-a03b-146bfce2ba79  ea=True em=False psjs=1.0  t=8.8s  runEA=0.685  wall=32m32s  ETA=5m17s
+[21:14:03] [ 223/258] ▶ start  qid=d0fae0dc-8ab8-4c35-a1c2-79c6bebe4a0d  q='Who are the players that have received the NBA ALL-STAR GAME KOBE BRYANT MOST VALUABLE PLAYER AWARD?'
+[21:14:03] [ 223/258] ▶ start  qid=d0fae0dc-8ab8-4c35-a1c2-79c6bebe4a0d  q='Who are the players that have received the NBA ALL-STAR GAME KOBE BRYANT MOST VALUABLE PLAYER AWARD?'
+[21:14:13] [ 223/258] ✔ done   qid=d0fae0dc-8ab8-4c35-a1c2-79c6bebe4a0d  ea=True em=False psjs=1.0  t=9.8s  runEA=0.686  wall=32m42s  ETA=5m08s
+[21:14:13] [ 223/258] ✔ done   qid=d0fae0dc-8ab8-4c35-a1c2-79c6bebe4a0d  ea=True em=False psjs=1.0  t=9.8s  runEA=0.686  wall=32m42s  ETA=5m08s
+[21:14:13] [ 224/258] ▶ start  qid=2066785e-837a-4e4d-871b-a483636f6deb  q='How many divisions are either part of the Westen Conference or include the Golden State Warriors?'
+[21:14:13] [ 224/258] ▶ start  qid=2066785e-837a-4e4d-871b-a483636f6deb  q='How many divisions are either part of the Westen Conference or include the Golden State Warriors?'
+[21:14:17] [ 224/258] ✔ done   qid=2066785e-837a-4e4d-871b-a483636f6deb  ea=False em=False psjs=0.3333333333333333  t=4.1s  runEA=0.683  wall=32m46s  ETA=4m58s
+[21:14:17] [ 224/258] ✔ done   qid=2066785e-837a-4e4d-871b-a483636f6deb  ea=False em=False psjs=0.3333333333333333  t=4.1s  runEA=0.683  wall=32m46s  ETA=4m58s
+[21:14:17] [ 225/258] ▶ start  qid=f0824791-26e5-46e3-8d92-609937ab1af9  q='Do Kevin Durant and Ferdinand Lewis Alcindor, Jr. use the same hand for playing?'
+[21:14:17] [ 225/258] ▶ start  qid=f0824791-26e5-46e3-8d92-609937ab1af9  q='Do Kevin Durant and Ferdinand Lewis Alcindor, Jr. use the same hand for playing?'
+[21:14:29] [ 225/258] ✔ done   qid=f0824791-26e5-46e3-8d92-609937ab1af9  ea=False em=False psjs=0.3333333333333333  t=12.0s  runEA=0.680  wall=32m58s  ETA=4m50s
+[21:14:29] [ 225/258] ✔ done   qid=f0824791-26e5-46e3-8d92-609937ab1af9  ea=False em=False psjs=0.3333333333333333  t=12.0s  runEA=0.680  wall=32m58s  ETA=4m50s
+[21:14:29] [ 226/258] ▶ start  qid=a535cd95-402c-429b-8939-68d143eaa700  q='What are the names of awards received by both "Tiny" Archibald and Lenny Wilkens?'
+[21:14:29] [ 226/258] ▶ start  qid=a535cd95-402c-429b-8939-68d143eaa700  q='What are the names of awards received by both "Tiny" Archibald and Lenny Wilkens?'
+[21:14:41] [ 226/258] ✔ done   qid=a535cd95-402c-429b-8939-68d143eaa700  ea=False em=False psjs=0.0  t=11.8s  runEA=0.677  wall=33m10s  ETA=4m42s
+[21:14:41] [ 226/258] ✔ done   qid=a535cd95-402c-429b-8939-68d143eaa700  ea=False em=False psjs=0.0  t=11.8s  runEA=0.677  wall=33m10s  ETA=4m42s
+[21:14:41] [ 227/258] ▶ start  qid=8ace4649-473b-4df5-a0d1-500e4bc0d51c  q="What positions does Royce Khalil O'Neale play?"
+[21:14:41] [ 227/258] ▶ start  qid=8ace4649-473b-4df5-a0d1-500e4bc0d51c  q="What positions does Royce Khalil O'Neale play?"
+[21:14:53] [ 227/258] ✔ done   qid=8ace4649-473b-4df5-a0d1-500e4bc0d51c  ea=True em=False psjs=1.0  t=12.3s  runEA=0.678  wall=33m22s  ETA=4m33s
+[21:14:53] [ 227/258] ✔ done   qid=8ace4649-473b-4df5-a0d1-500e4bc0d51c  ea=True em=False psjs=1.0  t=12.3s  runEA=0.678  wall=33m22s  ETA=4m33s
+[21:14:53] [ 228/258] ▶ start  qid=4f663af5-dab4-4246-bd48-df2f50302e4f  q='What are the names of all National Basketball Association divisions?'
+[21:14:53] [ 228/258] ▶ start  qid=4f663af5-dab4-4246-bd48-df2f50302e4f  q='What are the names of all National Basketball Association divisions?'
+[21:14:57] [ 228/258] ✔ done   qid=4f663af5-dab4-4246-bd48-df2f50302e4f  ea=True em=False psjs=1.0  t=3.4s  runEA=0.680  wall=33m25s  ETA=4m24s
+[21:14:57] [ 228/258] ✔ done   qid=4f663af5-dab4-4246-bd48-df2f50302e4f  ea=True em=False psjs=1.0  t=3.4s  runEA=0.680  wall=33m25s  ETA=4m24s
+[21:14:57] [ 229/258] ▶ start  qid=5169000c-5ebe-4757-a5b5-3920ad6241e2  q='What are the names of venues that have been home to a team that drafted Bo Erjas?'
+[21:14:57] [ 229/258] ▶ start  qid=5169000c-5ebe-4757-a5b5-3920ad6241e2  q='What are the names of venues that have been home to a team that drafted Bo Erjas?'
+[21:15:09] [ 229/258] ✔ done   qid=5169000c-5ebe-4757-a5b5-3920ad6241e2  ea=True em=False psjs=1.0  t=12.1s  runEA=0.681  wall=33m37s  ETA=4m15s
+[21:15:09] [ 229/258] ✔ done   qid=5169000c-5ebe-4757-a5b5-3920ad6241e2  ea=True em=False psjs=1.0  t=12.1s  runEA=0.681  wall=33m37s  ETA=4m15s
+[21:15:09] [ 230/258] ▶ start  qid=a6d6ac03-64e2-4625-be95-9e77b57d461e  q='What are the names of players who have either played for the BOS or were drafted by the Miami Heat?'
+[21:15:09] [ 230/258] ▶ start  qid=a6d6ac03-64e2-4625-be95-9e77b57d461e  q='What are the names of players who have either played for the BOS or were drafted by the Miami Heat?'
+[21:15:14] [ 230/258] ✔ done   qid=a6d6ac03-64e2-4625-be95-9e77b57d461e  ea=False em=False psjs=0.08781869688385269  t=5.4s  runEA=0.678  wall=33m43s  ETA=4m06s
+[21:15:14] [ 230/258] ✔ done   qid=a6d6ac03-64e2-4625-be95-9e77b57d461e  ea=False em=False psjs=0.08781869688385269  t=5.4s  runEA=0.678  wall=33m43s  ETA=4m06s
+[21:15:14] [ 231/258] ▶ start  qid=c3de4204-22b3-4a1e-bd43-99fb555b8900  q='What positions are played by players who were drafted by the Suns?'
+[21:15:14] [ 231/258] ▶ start  qid=c3de4204-22b3-4a1e-bd43-99fb555b8900  q='What positions are played by players who were drafted by the Suns?'
+[21:15:21] [ 231/258] ✔ done   qid=c3de4204-22b3-4a1e-bd43-99fb555b8900  ea=True em=False psjs=1.0  t=7.0s  runEA=0.680  wall=33m50s  ETA=3m57s
+[21:15:21] [ 231/258] ✔ done   qid=c3de4204-22b3-4a1e-bd43-99fb555b8900  ea=True em=False psjs=1.0  t=7.0s  runEA=0.680  wall=33m50s  ETA=3m57s
+[21:15:21] [ 232/258] ▶ start  qid=66818788-9342-460b-9a4b-7d26cc3f73bc  q='What are the names of divisions that are part of the EASTERN CONFERENCE?'
+[21:15:21] [ 232/258] ▶ start  qid=66818788-9342-460b-9a4b-7d26cc3f73bc  q='What are the names of divisions that are part of the EASTERN CONFERENCE?'
+[21:15:27] [ 232/258] ✔ done   qid=66818788-9342-460b-9a4b-7d26cc3f73bc  ea=True em=False psjs=1.0  t=5.9s  runEA=0.681  wall=33m56s  ETA=3m48s
+[21:15:27] [ 232/258] ✔ done   qid=66818788-9342-460b-9a4b-7d26cc3f73bc  ea=True em=False psjs=1.0  t=5.9s  runEA=0.681  wall=33m56s  ETA=3m48s
+[21:15:27] [ 233/258] ▶ start  qid=7117ce19-29c8-45ae-8b6d-f02c7f5149f9  q='Who is the youngest player to have ever played for the same team as William John Donovan?'
+[21:15:27] [ 233/258] ▶ start  qid=7117ce19-29c8-45ae-8b6d-f02c7f5149f9  q='Who is the youngest player to have ever played for the same team as William John Donovan?'
+[21:15:38] [ 233/258] ✔ done   qid=7117ce19-29c8-45ae-8b6d-f02c7f5149f9  ea=True em=False psjs=1.0  t=11.4s  runEA=0.682  wall=34m07s  ETA=3m40s
+[21:15:38] [ 233/258] ✔ done   qid=7117ce19-29c8-45ae-8b6d-f02c7f5149f9  ea=True em=False psjs=1.0  t=11.4s  runEA=0.682  wall=34m07s  ETA=3m40s
+[21:15:38] [ 234/258] ▶ start  qid=9e9c32cf-8e1c-460d-8d9c-8a6b2b53696f  q='How many players have either received the NBA All-Star Game Kobe Bryant Most Valuable Player Award or have played for...'
+[21:15:38] [ 234/258] ▶ start  qid=9e9c32cf-8e1c-460d-8d9c-8a6b2b53696f  q='How many players have either received the NBA All-Star Game Kobe Bryant Most Valuable Player Award or have played for...'
+[21:15:49] [ 234/258] ✔ done   qid=9e9c32cf-8e1c-460d-8d9c-8a6b2b53696f  ea=True em=False psjs=1.0  t=10.8s  runEA=0.684  wall=34m18s  ETA=3m31s
+[21:15:49] [ 234/258] ✔ done   qid=9e9c32cf-8e1c-460d-8d9c-8a6b2b53696f  ea=True em=False psjs=1.0  t=10.8s  runEA=0.684  wall=34m18s  ETA=3m31s
+[21:15:49] [ 235/258] ▶ start  qid=06435451-b21c-4944-a27f-94078c07e06b  q='What are the names of players drafted by the Knicks, along with the schools they attended?'
+[21:15:49] [ 235/258] ▶ start  qid=06435451-b21c-4944-a27f-94078c07e06b  q='What are the names of players drafted by the Knicks, along with the schools they attended?'
+[21:15:58] [ 235/258] ✔ done   qid=06435451-b21c-4944-a27f-94078c07e06b  ea=True em=False psjs=1.0  t=8.7s  runEA=0.685  wall=34m27s  ETA=3m22s
+[21:15:58] [ 235/258] ✔ done   qid=06435451-b21c-4944-a27f-94078c07e06b  ea=True em=False psjs=1.0  t=8.7s  runEA=0.685  wall=34m27s  ETA=3m22s
+[21:15:58] [ 236/258] ▶ start  qid=ddea610c-00bc-444c-85b0-a5b15b93ac4c  q='What are the names of venues that have served as home venues for teams in the Atlantic at any time?'
+[21:15:58] [ 236/258] ▶ start  qid=ddea610c-00bc-444c-85b0-a5b15b93ac4c  q='What are the names of venues that have served as home venues for teams in the Atlantic at any time?'
+[21:16:06] [ 236/258] ✔ done   qid=ddea610c-00bc-444c-85b0-a5b15b93ac4c  ea=False em=False psjs=1.0  t=7.7s  runEA=0.682  wall=34m34s  ETA=3m13s
+[21:16:06] [ 236/258] ✔ done   qid=ddea610c-00bc-444c-85b0-a5b15b93ac4c  ea=False em=False psjs=1.0  t=7.7s  runEA=0.682  wall=34m34s  ETA=3m13s
+[21:16:06] [ 237/258] ▶ start  qid=49b5b6a9-b72d-4152-a7d0-edd85bdf301d  q='How many teams have players who have also played for the WAS at some point?'
+[21:16:06] [ 237/258] ▶ start  qid=49b5b6a9-b72d-4152-a7d0-edd85bdf301d  q='How many teams have players who have also played for the WAS at some point?'
+[21:16:10] [ 237/258] ✔ done   qid=49b5b6a9-b72d-4152-a7d0-edd85bdf301d  ea=False em=False psjs=0.0  t=4.5s  runEA=0.679  wall=34m39s  ETA=3m04s
+[21:16:10] [ 237/258] ✔ done   qid=49b5b6a9-b72d-4152-a7d0-edd85bdf301d  ea=False em=False psjs=0.0  t=4.5s  runEA=0.679  wall=34m39s  ETA=3m04s
+[21:16:10] [ 238/258] ▶ start  qid=75295cc6-0576-4131-9226-11efc882228d  q='Who is taller, Jordan Farmar or Mike Cooper?'
+[21:16:10] [ 238/258] ▶ start  qid=75295cc6-0576-4131-9226-11efc882228d  q='Who is taller, Jordan Farmar or Mike Cooper?'
+[21:16:23] [ 238/258] ✔ done   qid=75295cc6-0576-4131-9226-11efc882228d  ea=True em=False psjs=1.0  t=12.7s  runEA=0.681  wall=34m52s  ETA=2m56s
+[21:16:23] [ 238/258] ✔ done   qid=75295cc6-0576-4131-9226-11efc882228d  ea=True em=False psjs=1.0  t=12.7s  runEA=0.681  wall=34m52s  ETA=2m56s
+[21:16:23] [ 239/258] ▶ start  qid=d332a07b-c0a7-4b9c-985d-e1aedfffc886  q='What are the names of players born before January 22, 1950, who were drafted by a team that has played at Hy-Veee Arena?'
+[21:16:23] [ 239/258] ▶ start  qid=d332a07b-c0a7-4b9c-985d-e1aedfffc886  q='What are the names of players born before January 22, 1950, who were drafted by a team that has played at Hy-Veee Arena?'
+[21:16:31] [ 239/258] ✔ done   qid=d332a07b-c0a7-4b9c-985d-e1aedfffc886  ea=True em=False psjs=1.0  t=8.0s  runEA=0.682  wall=35m00s  ETA=2m47s
+[21:16:31] [ 239/258] ✔ done   qid=d332a07b-c0a7-4b9c-985d-e1aedfffc886  ea=True em=False psjs=1.0  t=8.0s  runEA=0.682  wall=35m00s  ETA=2m47s
+[21:16:31] [ 240/258] ▶ start  qid=a657a788-c2d4-4eb0-aeac-066c20685ad8  q='What are the names of PFs who have won the Princess of Asturias Award for Sports and attended Lausanne Collegiate Sch...'
+[21:16:31] [ 240/258] ▶ start  qid=a657a788-c2d4-4eb0-aeac-066c20685ad8  q='What are the names of PFs who have won the Princess of Asturias Award for Sports and attended Lausanne Collegiate Sch...'
+[21:16:37] [ 240/258] ✔ done   qid=a657a788-c2d4-4eb0-aeac-066c20685ad8  ea=True em=False psjs=1.0  t=6.6s  runEA=0.683  wall=35m06s  ETA=2m38s
+[21:16:37] [ 240/258] ✔ done   qid=a657a788-c2d4-4eb0-aeac-066c20685ad8  ea=True em=False psjs=1.0  t=6.6s  runEA=0.683  wall=35m06s  ETA=2m38s
+[21:16:37] [ 241/258] ▶ start  qid=1d1022b9-209b-4f78-84c9-8784e8dc22de  q='What are the names of all teams in the Southwest, and how many players have been part of each team at any time?'
+[21:16:37] [ 241/258] ▶ start  qid=1d1022b9-209b-4f78-84c9-8784e8dc22de  q='What are the names of all teams in the Southwest, and how many players have been part of each team at any time?'
+[21:16:46] [ 241/258] ✔ done   qid=1d1022b9-209b-4f78-84c9-8784e8dc22de  ea=True em=False psjs=1.0  t=9.0s  runEA=0.685  wall=35m15s  ETA=2m29s
+[21:16:46] [ 241/258] ✔ done   qid=1d1022b9-209b-4f78-84c9-8784e8dc22de  ea=True em=False psjs=1.0  t=9.0s  runEA=0.685  wall=35m15s  ETA=2m29s
+[21:16:46] [ 242/258] ▶ start  qid=f7ab951c-44d8-4085-8d0c-f8ce94fdbef8  q='How many teams have either used the International Ampitheatre as their home venue or have had Barney Cable as a playe...'
+[21:16:46] [ 242/258] ▶ start  qid=f7ab951c-44d8-4085-8d0c-f8ce94fdbef8  q='How many teams have either used the International Ampitheatre as their home venue or have had Barney Cable as a playe...'
+[21:16:51] [ 242/258] ✔ done   qid=f7ab951c-44d8-4085-8d0c-f8ce94fdbef8  ea=False em=False psjs=0.6363636363636364  t=4.5s  runEA=0.682  wall=35m20s  ETA=2m20s
+[21:16:51] [ 242/258] ✔ done   qid=f7ab951c-44d8-4085-8d0c-f8ce94fdbef8  ea=False em=False psjs=0.6363636363636364  t=4.5s  runEA=0.682  wall=35m20s  ETA=2m20s
+[21:16:51] [ 243/258] ▶ start  qid=1149e1e6-a5af-4763-8fbc-ca4b18764859  q='Provide the names of all players drafted by the OKC, along with the number of awards each player has received.'
+[21:16:51] [ 243/258] ▶ start  qid=1149e1e6-a5af-4763-8fbc-ca4b18764859  q='Provide the names of all players drafted by the OKC, along with the number of awards each player has received.'
+[21:16:58] [ 243/258] ✔ done   qid=1149e1e6-a5af-4763-8fbc-ca4b18764859  ea=True em=False psjs=1.0  t=7.2s  runEA=0.683  wall=35m27s  ETA=2m11s
+[21:16:58] [ 243/258] ✔ done   qid=1149e1e6-a5af-4763-8fbc-ca4b18764859  ea=True em=False psjs=1.0  t=7.2s  runEA=0.683  wall=35m27s  ETA=2m11s
+[21:16:58] [ 244/258] ▶ start  qid=d92ea44f-f80c-4ed2-b662-3653600af70c  q='List the NBAA conferences.'
+[21:16:58] [ 244/258] ▶ start  qid=d92ea44f-f80c-4ed2-b662-3653600af70c  q='List the NBAA conferences.'
+[21:17:02] [ 244/258] ✔ done   qid=d92ea44f-f80c-4ed2-b662-3653600af70c  ea=True em=False psjs=1.0  t=4.2s  runEA=0.684  wall=35m31s  ETA=2m02s
+[21:17:02] [ 244/258] ✔ done   qid=d92ea44f-f80c-4ed2-b662-3653600af70c  ea=True em=False psjs=1.0  t=4.2s  runEA=0.684  wall=35m31s  ETA=2m02s
+[21:17:02] [ 245/258] ▶ start  qid=7427da01-2c98-4f7e-9d27-774839ca147c  q='What are the names of teams that mark strickland has played for or that drafted Raul Neto?'
+[21:17:02] [ 245/258] ▶ start  qid=7427da01-2c98-4f7e-9d27-774839ca147c  q='What are the names of teams that mark strickland has played for or that drafted Raul Neto?'
+[21:17:06] [ 245/258] ✔ done   qid=7427da01-2c98-4f7e-9d27-774839ca147c  ea=False em=False psjs=0.23076923076923078  t=3.7s  runEA=0.682  wall=35m35s  ETA=1m53s
+[21:17:06] [ 245/258] ✔ done   qid=7427da01-2c98-4f7e-9d27-774839ca147c  ea=False em=False psjs=0.23076923076923078  t=3.7s  runEA=0.682  wall=35m35s  ETA=1m53s
+[21:17:06] [ 246/258] ▶ start  qid=f0519f0b-778e-42b3-bbba-6787e29d0e9b  q='How many players have been drafted by the Phoneix Suns or have played for the Golden State Warriors at any time?'
+[21:17:06] [ 246/258] ▶ start  qid=f0519f0b-778e-42b3-bbba-6787e29d0e9b  q='How many players have been drafted by the Phoneix Suns or have played for the Golden State Warriors at any time?'
+[21:17:14] [ 246/258] ✔ done   qid=f0519f0b-778e-42b3-bbba-6787e29d0e9b  ea=True em=False psjs=1.0  t=7.9s  runEA=0.683  wall=35m43s  ETA=1m45s
+[21:17:14] [ 246/258] ✔ done   qid=f0519f0b-778e-42b3-bbba-6787e29d0e9b  ea=True em=False psjs=1.0  t=7.9s  runEA=0.683  wall=35m43s  ETA=1m45s
+[21:17:14] [ 247/258] ▶ start  qid=5687cb19-549e-4111-94e9-d23594a7f7e1  q='What are the names and genders of players who have received both the NBA Finals MVP and the German Sportspersonality ...'
+[21:17:14] [ 247/258] ▶ start  qid=5687cb19-549e-4111-94e9-d23594a7f7e1  q='What are the names and genders of players who have received both the NBA Finals MVP and the German Sportspersonality ...'
+[21:17:21] [ 247/258] ✔ done   qid=5687cb19-549e-4111-94e9-d23594a7f7e1  ea=True em=False psjs=1.0  t=7.2s  runEA=0.684  wall=35m50s  ETA=1m36s
+[21:17:21] [ 247/258] ✔ done   qid=5687cb19-549e-4111-94e9-d23594a7f7e1  ea=True em=False psjs=1.0  t=7.2s  runEA=0.684  wall=35m50s  ETA=1m36s
+[21:17:21] [ 248/258] ▶ start  qid=a7bfa0a6-69dc-4639-bccf-6ff8dafc2b6b  q='Who are the unique owners of teams that have had a player who received the Year award?'
+[21:17:21] [ 248/258] ▶ start  qid=a7bfa0a6-69dc-4639-bccf-6ff8dafc2b6b  q='Who are the unique owners of teams that have had a player who received the Year award?'
+[21:17:31] [ 248/258] ✔ done   qid=a7bfa0a6-69dc-4639-bccf-6ff8dafc2b6b  ea=False em=False psjs=0.06810035842293907  t=10.1s  runEA=0.681  wall=36m00s  ETA=1m27s
+[21:17:31] [ 248/258] ✔ done   qid=a7bfa0a6-69dc-4639-bccf-6ff8dafc2b6b  ea=False em=False psjs=0.06810035842293907  t=10.1s  runEA=0.681  wall=36m00s  ETA=1m27s
+[21:17:31] [ 249/258] ▶ start  qid=70338d8d-1a76-44bd-911d-413d96a0972e  q='What are the names of players who have been part of both the DAL and the Indiana Pacers, sorted by their weight from ...'
+[21:17:31] [ 249/258] ▶ start  qid=70338d8d-1a76-44bd-911d-413d96a0972e  q='What are the names of players who have been part of both the DAL and the Indiana Pacers, sorted by their weight from ...'
+[21:17:39] [ 249/258] ✔ done   qid=70338d8d-1a76-44bd-911d-413d96a0972e  ea=True em=False psjs=1.0  t=7.9s  runEA=0.683  wall=36m08s  ETA=1m18s
+[21:17:39] [ 249/258] ✔ done   qid=70338d8d-1a76-44bd-911d-413d96a0972e  ea=True em=False psjs=1.0  t=7.9s  runEA=0.683  wall=36m08s  ETA=1m18s
+[21:17:39] [ 250/258] ▶ start  qid=26414c4a-54c7-4266-8f15-f7854fd714cb  q='What are the names of players who have either received the NBA All-Star Game Kobe Bryant MVP Award or play as a power...'
+[21:17:39] [ 250/258] ▶ start  qid=26414c4a-54c7-4266-8f15-f7854fd714cb  q='What are the names of players who have either received the NBA All-Star Game Kobe Bryant MVP Award or play as a power...'
+[21:17:47] [ 250/258] ✔ done   qid=26414c4a-54c7-4266-8f15-f7854fd714cb  ea=False em=False psjs=0.95067473243369  t=8.3s  runEA=0.680  wall=36m16s  ETA=1m10s
+[21:17:47] [ 250/258] ✔ done   qid=26414c4a-54c7-4266-8f15-f7854fd714cb  ea=False em=False psjs=0.95067473243369  t=8.3s  runEA=0.680  wall=36m16s  ETA=1m10s
+[21:17:47] [ 251/258] ▶ start  qid=72441cdf-1658-4aec-9a74-58d51653b9bc  q='Who are the players drafted by the Indiana Pacwrs who have also received the Bill Russell NBA Finals Most Valuable Pl...'
+[21:17:47] [ 251/258] ▶ start  qid=72441cdf-1658-4aec-9a74-58d51653b9bc  q='Who are the players drafted by the Indiana Pacwrs who have also received the Bill Russell NBA Finals Most Valuable Pl...'
+[21:18:00] [ 251/258] ✔ done   qid=72441cdf-1658-4aec-9a74-58d51653b9bc  ea=True em=False psjs=1.0  t=12.1s  runEA=0.681  wall=36m28s  ETA=1m01s
+[21:18:00] [ 251/258] ✔ done   qid=72441cdf-1658-4aec-9a74-58d51653b9bc  ea=True em=False psjs=1.0  t=12.1s  runEA=0.681  wall=36m28s  ETA=1m01s
+[21:18:00] [ 252/258] ▶ start  qid=6392f8db-296a-48dd-892e-72d3e4e371dc  q='How many players were either drafted by the LAL or have received the All-NBA Team award?'
+[21:18:00] [ 252/258] ▶ start  qid=6392f8db-296a-48dd-892e-72d3e4e371dc  q='How many players were either drafted by the LAL or have received the All-NBA Team award?'
+[21:18:04] [ 252/258] ✔ done   qid=6392f8db-296a-48dd-892e-72d3e4e371dc  ea=False em=False psjs=0.5616641901931649  t=4.4s  runEA=0.679  wall=36m33s  ETA=52s
+[21:18:04] [ 252/258] ✔ done   qid=6392f8db-296a-48dd-892e-72d3e4e371dc  ea=False em=False psjs=0.5616641901931649  t=4.4s  runEA=0.679  wall=36m33s  ETA=52s
+[21:18:04] [ 253/258] ▶ start  qid=b5c759bb-c89b-4d32-b063-4909efc645dd  q='How much taller is Bonga compared to Linas Kleiza in centimeters?'
+[21:18:04] [ 253/258] ▶ start  qid=b5c759bb-c89b-4d32-b063-4909efc645dd  q='How much taller is Bonga compared to Linas Kleiza in centimeters?'
+[21:18:16] [ 253/258] ✔ done   qid=b5c759bb-c89b-4d32-b063-4909efc645dd  ea=True em=False psjs=1.0  t=11.9s  runEA=0.680  wall=36m45s  ETA=44s
+[21:18:16] [ 253/258] ✔ done   qid=b5c759bb-c89b-4d32-b063-4909efc645dd  ea=True em=False psjs=1.0  t=11.9s  runEA=0.680  wall=36m45s  ETA=44s
+[21:18:16] [ 254/258] ▶ start  qid=2a814f17-2928-47ff-a560-d6894ca3e414  q='Identify the players who have received the same awards as wilt chamberlain, and specify how many of those awards each...'
+[21:18:16] [ 254/258] ▶ start  qid=2a814f17-2928-47ff-a560-d6894ca3e414  q='Identify the players who have received the same awards as wilt chamberlain, and specify how many of those awards each...'
+[21:18:31] [ 254/258] ✔ done   qid=2a814f17-2928-47ff-a560-d6894ca3e414  ea=False em=False psjs=1.0  t=15.3s  runEA=0.677  wall=37m00s  ETA=35s
+[21:18:31] [ 254/258] ✔ done   qid=2a814f17-2928-47ff-a560-d6894ca3e414  ea=False em=False psjs=1.0  t=15.3s  runEA=0.677  wall=37m00s  ETA=35s
+[21:18:31] [ 255/258] ▶ start  qid=ac5fae91-630e-4df7-aaf1-070cede1c006  q='What are the names and schools attended of players who play both point guard and the five positions?'
+[21:18:31] [ 255/258] ▶ start  qid=ac5fae91-630e-4df7-aaf1-070cede1c006  q='What are the names and schools attended of players who play both point guard and the five positions?'
+[21:18:42] [ 255/258] ✔ done   qid=ac5fae91-630e-4df7-aaf1-070cede1c006  ea=True em=False psjs=0.45454545454545453  t=10.5s  runEA=0.678  wall=37m10s  ETA=26s
+[21:18:42] [ 255/258] ✔ done   qid=ac5fae91-630e-4df7-aaf1-070cede1c006  ea=True em=False psjs=0.45454545454545453  t=10.5s  runEA=0.678  wall=37m10s  ETA=26s
+[21:18:42] [ 256/258] ▶ start  qid=7950c517-8360-4905-879b-3b987f68a48a  q='Provide the names of all players who play the singman position, along with the number of different positions each pla...'
+[21:18:42] [ 256/258] ▶ start  qid=7950c517-8360-4905-879b-3b987f68a48a  q='Provide the names of all players who play the singman position, along with the number of different positions each pla...'
+[21:18:53] [ 256/258] ✔ done   qid=7950c517-8360-4905-879b-3b987f68a48a  ea=True em=False psjs=1.0  t=11.7s  runEA=0.680  wall=37m22s  ETA=18s
+[21:18:53] [ 256/258] ✔ done   qid=7950c517-8360-4905-879b-3b987f68a48a  ea=True em=False psjs=1.0  t=11.7s  runEA=0.680  wall=37m22s  ETA=18s
+[21:18:53] [ 257/258] ▶ start  qid=e7a681b6-d97e-46bf-a413-f354f7784ff9  q='Who is younger, Elbert J. Butler or Jerry Kelly?'
+[21:18:53] [ 257/258] ▶ start  qid=e7a681b6-d97e-46bf-a413-f354f7784ff9  q='Who is younger, Elbert J. Butler or Jerry Kelly?'
+[21:19:05] [ 257/258] ✔ done   qid=e7a681b6-d97e-46bf-a413-f354f7784ff9  ea=True em=False psjs=1.0  t=11.7s  runEA=0.681  wall=37m34s  ETA=9s
+[21:19:05] [ 257/258] ✔ done   qid=e7a681b6-d97e-46bf-a413-f354f7784ff9  ea=True em=False psjs=1.0  t=11.7s  runEA=0.681  wall=37m34s  ETA=9s
+[21:19:05] [ 258/258] ▶ start  qid=63f60dba-c276-412c-9f8a-45d9aa6d3b28  q='Provide the names of all players who play the swinggman position, along with the number of awards each has received.'
+[21:19:05] [ 258/258] ▶ start  qid=63f60dba-c276-412c-9f8a-45d9aa6d3b28  q='Provide the names of all players who play the swinggman position, along with the number of awards each has received.'
+[21:19:11] [ 258/258] ✔ done   qid=63f60dba-c276-412c-9f8a-45d9aa6d3b28  ea=True em=False psjs=1.0  t=6.4s  runEA=0.682  wall=37m40s  ETA=--
+[21:19:11] [ 258/258] ✔ done   qid=63f60dba-c276-412c-9f8a-45d9aa6d3b28  ea=True em=False psjs=1.0  t=6.4s  runEA=0.682  wall=37m40s  ETA=--

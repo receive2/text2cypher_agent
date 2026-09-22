@@ -1,0 +1,82 @@
+{
+  "dataset": "mindthequery_augmented",
+  "n": 439,
+  "n_scored": {
+    "ea": 429,
+    "em": 439,
+    "psjs": 429
+  },
+  "n_errors": 10,
+  "ea": 0.4801864801864802,
+  "em": 0.0,
+  "psjs": 0.47294172378089355,
+  "by_difficulty": {
+    "all": {
+      "ea": 0.4801864801864802,
+      "em": 0.0,
+      "psjs": 0.47294172378089355,
+      "n": 439,
+      "n_scored": {
+        "ea": 429,
+        "em": 439,
+        "psjs": 429
+      },
+      "n_errors": 10
+    },
+    "easy": {
+      "ea": 0.0,
+      "em": 0.0,
+      "psjs": 0.0,
+      "n": 2,
+      "n_scored": {
+        "ea": 2,
+        "em": 2,
+        "psjs": 2
+      },
+      "n_errors": 0
+    },
+    "medium": {
+      "ea": 0.48338368580060426,
+      "em": 0.0,
+      "psjs": 0.48024463040479176,
+      "n": 335,
+      "n_scored": {
+        "ea": 331,
+        "em": 335,
+        "psjs": 331
+      },
+      "n_errors": 4
+    },
+    "hard": {
+      "ea": 0.4791666666666667,
+      "em": 0.0,
+      "psjs": 0.4576148628960131,
+      "n": 102,
+      "n_scored": {
+        "ea": 96,
+        "em": 102,
+        "psjs": 96
+      },
+      "n_errors": 6
+    }
+  },
+  "elapsed_sec": 2761.75,
+  "run_meta": {
+    "generated_at": "2026-06-22T15:39:51+02:00",
+    "ner_mode": "fcav",
+    "method": "fcav",
+    "label": "FCAV",
+    "tool_type": null,
+    "retrieval": "fuzzy",
+    "ner_llm": "gpt-4.1",
+    "cypher_llm": "gpt-4.1",
+    "qa_llm": "gpt-4.1",
+    "tool_select_top_k": 15,
+    "values_per_tool": 10,
+    "plan_exec_tools_per_entity": 2,
+    "plan_exec_values_per_tool": 10,
+    "plan_exec_escalate": true,
+    "tool_retrieval_mode": "fuzzy",
+    "hybrid_strategy": "cascade"
+  }
+}

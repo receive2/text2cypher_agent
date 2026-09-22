@@ -1,0 +1,82 @@
+{
+  "dataset": "mindthequery_augmented",
+  "n": 40,
+  "n_scored": {
+    "ea": 39,
+    "em": 40,
+    "psjs": 39
+  },
+  "n_errors": 1,
+  "ea": 0.28205128205128205,
+  "em": 0.0,
+  "psjs": 0.3836029058141595,
+  "by_difficulty": {
+    "all": {
+      "ea": 0.28205128205128205,
+      "em": 0.0,
+      "psjs": 0.3836029058141595,
+      "n": 40,
+      "n_scored": {
+        "ea": 39,
+        "em": 40,
+        "psjs": 39
+      },
+      "n_errors": 1
+    },
+    "easy": {
+      "ea": 1.0,
+      "em": 0.0,
+      "psjs": 1.0,
+      "n": 1,
+      "n_scored": {
+        "ea": 1,
+        "em": 1,
+        "psjs": 1
+      },
+      "n_errors": 0
+    },
+    "medium": {
+      "ea": 0.25,
+      "em": 0.0,
+      "psjs": 0.36001425907645057,
+      "n": 37,
+      "n_scored": {
+        "ea": 36,
+        "em": 37,
+        "psjs": 36
+      },
+      "n_errors": 1
+    },
+    "hard": {
+      "ea": 0.5,
+      "em": 0.0,
+      "psjs": 0.5,
+      "n": 2,
+      "n_scored": {
+        "ea": 2,
+        "em": 2,
+        "psjs": 2
+      },
+      "n_errors": 0
+    }
+  },
+  "elapsed_sec": 328.49,
+  "run_meta": {
+    "generated_at": "2026-06-22T17:13:06+02:00",
+    "ner_mode": "no_ner",
+    "method": "no_val_link",
+    "label": "No Val Link",
+    "tool_type": null,
+    "retrieval": "fuzzy",
+    "ner_llm": "gpt-4.1",
+    "cypher_llm": "gpt-4.1",
+    "qa_llm": "gpt-4.1",
+    "tool_select_top_k": 15,
+    "values_per_tool": 10,
+    "plan_exec_tools_per_entity": 2,
+    "plan_exec_values_per_tool": 10,
+    "plan_exec_escalate": true,
+    "tool_retrieval_mode": "fuzzy",
+    "hybrid_strategy": "cascade"
+  }
+}

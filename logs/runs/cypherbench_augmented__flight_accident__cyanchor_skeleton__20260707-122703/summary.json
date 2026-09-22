@@ -1,0 +1,95 @@
+{
+  "dataset": "cypherbench_augmented",
+  "n": 170,
+  "n_scored": {
+    "ea": 168,
+    "em": 168,
+    "psjs": 168
+  },
+  "n_errors": 2,
+  "ea": 0.7202380952380952,
+  "em": 0.0,
+  "psjs": 0.7476556459918464,
+  "elapsed_sec": 610.63,
+  "shards": 4,
+  "run_meta": {
+    "generated_at": "2026-07-07T12:32:47-05:00",
+    "ner_mode": "cyanchor_fl_node_only",
+    "method": "cyanchor",
+    "label": "CyANCHOR [fuzzy+lev] (Node)",
+    "tool_type": "node",
+    "retrieval": "fuzzy+lev",
+    "ner_llm": "gpt-4.1",
+    "cypher_llm": "gpt-4.1",
+    "qa_llm": "gpt-4.1",
+    "tool_select_top_k": 15,
+    "values_per_tool": 10,
+    "plan_exec_tools_per_entity": 2,
+    "plan_exec_values_per_tool": 10,
+    "plan_exec_escalate": false,
+    "plan_exec_max_iter": 3,
+    "retrieval_levenshtein_k": 10,
+    "cypher_semantic_repair": false,
+    "cypher_repair_max_rounds": 4,
+    "cypher_empty_is_wrong": false,
+    "cypher_retry_max_rounds": 1,
+    "plan_exec_value_snap": false,
+    "plan_exec_skip_grounded": true,
+    "plan_exec_parallel_mentions": true,
+    "graphrag_empty_is_wrong": true,
+    "graphrag_llm_evaluator": true,
+    "tool_retrieval_mode": "fuzzy",
+    "hybrid_strategy": "cascade"
+  },
+  "run_config": {
+    "stamp": "20260707-122703",
+    "dataset": "cypherbench_augmented",
+    "graph": "flight_accident",
+    "method": "cyanchor_skeleton",
+    "llm": {
+      "ner": {
+        "provider": "openai",
+        "model": "gpt-4.1"
+      },
+      "cypher": {
+        "provider": "openai",
+        "model": "gpt-4.1"
+      },
+      "qa": {
+        "provider": "openai",
+        "model": "gpt-4.1"
+      }
+    },
+    "embedding": {
+      "backend": "openai",
+      "model": "text-embedding-3-small"
+    },
+    "knobs": {
+      "METHOD": "cyanchor_skeleton",
+      "TOOL_TYPE": "node",
+      "RETRIEVAL_FUZZY": "1",
+      "RETRIEVAL_VECTOR": "0",
+      "RETRIEVAL_LEVENSHTEIN": "1",
+      "CYPHER_SEMANTIC_REPAIR": "0",
+      "CYPHER_EMPTY_IS_WRONG": "0",
+      "PLAN_EXEC_ESCALATE": "0",
+      "PLAN_EXEC_VALUE_SNAP": "0",
+      "PLAN_EXEC_SKIP_GROUNDED": "1",
+      "PLAN_EXEC_SELECT_JUDGE": "0",
+      "PLAN_EXEC_PARALLEL_MENTIONS": "1",
+      "GRAPHRAG_EMPTY_IS_WRONG": "1",
+      "GRAPHRAG_LLM_EVALUATOR": "1",
+      "CYPHER_REPAIR_MAX_ROUNDS": "4",
+      "CYPHER_RETRY_MAX_ROUNDS": "1",
+      "RETRIEVAL_LEVENSHTEIN_K": "10",
+      "CHESS_LSH_CAP": "50",
+      "CHESS_EDIT_TOPN": "10",
+      "CHESS_RERANK_TOPK": "5",
+      "CHESS_NUM_PERM": "128",
+      "CHESS_NGRAM": "3",
+      "CHESS_LSH_THRESHOLD": "0.3"
+    },
+    "shards": 4,
+    "limit": null
+  }
+}

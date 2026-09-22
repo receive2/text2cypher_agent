@@ -1,0 +1,82 @@
+{
+  "dataset": "zograscope_augmented",
+  "n": 200,
+  "n_scored": {
+    "ea": 200,
+    "em": 200,
+    "psjs": 200
+  },
+  "n_errors": 0,
+  "ea": 0.035,
+  "em": 0.0,
+  "psjs": 0.04098864934094917,
+  "by_difficulty": {
+    "all": {
+      "ea": 0.035,
+      "em": 0.0,
+      "psjs": 0.04098864934094917,
+      "n": 200,
+      "n_scored": {
+        "ea": 200,
+        "em": 200,
+        "psjs": 200
+      },
+      "n_errors": 0
+    },
+    "easy": {
+      "ea": 0.0,
+      "em": 0.0,
+      "psjs": 0.1,
+      "n": 20,
+      "n_scored": {
+        "ea": 20,
+        "em": 20,
+        "psjs": 20
+      },
+      "n_errors": 0
+    },
+    "medium": {
+      "ea": 0.03571428571428571,
+      "em": 0.0,
+      "psjs": 0.03467766232380494,
+      "n": 140,
+      "n_scored": {
+        "ea": 140,
+        "em": 140,
+        "psjs": 140
+      },
+      "n_errors": 0
+    },
+    "hard": {
+      "ea": 0.05,
+      "em": 0.0,
+      "psjs": 0.03357142857142857,
+      "n": 40,
+      "n_scored": {
+        "ea": 40,
+        "em": 40,
+        "psjs": 40
+      },
+      "n_errors": 0
+    }
+  },
+  "elapsed_sec": 593.76,
+  "run_meta": {
+    "generated_at": "2026-06-21T05:47:44+01:00",
+    "ner_mode": "no_ner",
+    "method": "no_val_link",
+    "label": "No Val Link",
+    "tool_type": null,
+    "retrieval": "fuzzy",
+    "ner_llm": "gpt-4.1",
+    "cypher_llm": "gpt-4.1",
+    "qa_llm": "gpt-4.1",
+    "tool_select_top_k": 15,
+    "values_per_tool": 10,
+    "plan_exec_tools_per_entity": 2,
+    "plan_exec_values_per_tool": 10,
+    "plan_exec_escalate": true,
+    "tool_retrieval_mode": "fuzzy",
+    "hybrid_strategy": "cascade"
+  }
+}

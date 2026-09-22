@@ -1,0 +1,33 @@
+{
+  "dataset": "mindthequery_augmented",
+  "n": 342,
+  "n_scored": {
+    "ea": 283,
+    "em": 342,
+    "psjs": 283
+  },
+  "n_errors": 59,
+  "ea": 0.4169611307420495,
+  "em": 0.0,
+  "psjs": 0.21412207502943226,
+  "elapsed_sec": 881.12,
+  "shards": 8,
+  "run_meta": {
+    "generated_at": "2026-06-23T10:31:18+02:00",
+    "ner_mode": "cyanchor_fl_node_rel",
+    "method": "cyanchor",
+    "label": "CyANCHOR [fuzzy+lev] (Node + Rel)",
+    "tool_type": "node_rel",
+    "retrieval": "fuzzy+lev",
+    "ner_llm": "gpt-4.1",
+    "cypher_llm": "gpt-4.1",
+    "qa_llm": "gpt-4.1",
+    "tool_select_top_k": 15,
+    "values_per_tool": 10,
+    "plan_exec_tools_per_entity": 2,
+    "plan_exec_values_per_tool": 10,
+    "plan_exec_escalate": true,
+    "tool_retrieval_mode": "fuzzy",
+    "hybrid_strategy": "cascade"
+  }
+}

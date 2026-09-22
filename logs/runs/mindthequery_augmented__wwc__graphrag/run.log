@@ -1,0 +1,1104 @@
+2026-06-22 13:31:14.147 | INFO     | eval.metrics_MindTheQuery:load_dataset:230 - Loaded 1298 Mind-the-Query examples from /Users/q0w01lh/datasets/mindthequery_augmented_v2/test.json
+2026-06-22 13:31:14.148 | INFO     | eval.metrics_MindTheQuery:evaluate_dataset:429 - Mind-the-Query graph_filter='wwc': kept 275/1298 examples (skipped 1023).
+[13:31:14] [   1/275] ▶ start  qid=Complex_Aggregation_test:7  q="For the '2019' tournament, calculate the average number of goals scored per match and the total number of matches pla..."
+[13:31:14] [   1/275] ▶ start  qid=Complex_Aggregation_test:7  q="For the '2019' tournament, calculate the average number of goals scored per match and the total number of matches pla..."
+[13:31:20] [   1/275] ✔ done   qid=Complex_Aggregation_test:7  ea=True em=False psjs=1.0  t=?  runEA=1.000  wall=6s  ETA=28m56s
+[13:31:20] [   1/275] ✔ done   qid=Complex_Aggregation_test:7  ea=True em=False psjs=1.0  t=?  runEA=1.000  wall=6s  ETA=28m56s
+[13:31:20] [   2/275] ▶ start  qid=Complex_Aggregation_test:8  q="For each team that participated in the 'Caada 2015' tournament, find the average number of players who scored goals i..."
+[13:31:20] [   2/275] ▶ start  qid=Complex_Aggregation_test:8  q="For each team that participated in the 'Caada 2015' tournament, find the average number of players who scored goals i..."
+[13:31:40] [   2/275] ✔ done   qid=Complex_Aggregation_test:8  ea=False em=False psjs=0.4086772486772487  t=?  runEA=0.500  wall=27s  ETA=1h00m26s
+[13:31:40] [   2/275] ✔ done   qid=Complex_Aggregation_test:8  ea=False em=False psjs=0.4086772486772487  t=?  runEA=0.500  wall=27s  ETA=1h00m26s
+[13:31:40] [   3/275] ▶ start  qid=Complex_Aggregation_test:13  q='For each squad, calculate the total number of players and the average number of matches played by each player in the ...'
+[13:31:40] [   3/275] ▶ start  qid=Complex_Aggregation_test:13  q='For each squad, calculate the total number of players and the average number of matches played by each player in the ...'
+[13:32:09] [   3/275] ✔ done   qid=Complex_Aggregation_test:13  ea=None em=False psjs=None  t=?  runEA=0.500  wall=55s  ETA=1h23m23s  err=gold: CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message:
+[13:32:09] [   3/275] ✔ done   qid=Complex_Aggregation_test:13  ea=None em=False psjs=None  t=?  runEA=0.500  wall=55s  ETA=1h23m23s  err=gold: CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message:
+[13:32:09] [   4/275] ▶ start  qid=Complex_Aggregation_test:15  q="For each team that played in the 'Cihna 2007' tournament, find the average number of goals scored per match and the t..."
+[13:32:09] [   4/275] ▶ start  qid=Complex_Aggregation_test:15  q="For each team that played in the 'Cihna 2007' tournament, find the average number of goals scored per match and the t..."
+[13:32:20] [   4/275] ✔ done   qid=Complex_Aggregation_test:15  ea=True em=False psjs=0.9006211180124224  t=?  runEA=0.667  wall=1m06s  ETA=1h14m39s
+[13:32:20] [   4/275] ✔ done   qid=Complex_Aggregation_test:15  ea=True em=False psjs=0.9006211180124224  t=?  runEA=0.667  wall=1m06s  ETA=1h14m39s
+[13:32:20] [   5/275] ▶ start  qid=Complex_Aggregation_test:22  q="For each team that participated in the '2011' tournament, find the average number of goals scored per match and the t..."
+[13:32:20] [   5/275] ▶ start  qid=Complex_Aggregation_test:22  q="For each team that participated in the '2011' tournament, find the average number of goals scored per match and the t..."
+[13:32:30] [   5/275] ✔ done   qid=Complex_Aggregation_test:22  ea=None em=False psjs=None  t=?  runEA=0.667  wall=1m17s  ETA=1h08m59s  err=gold: CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message:
+[13:32:30] [   5/275] ✔ done   qid=Complex_Aggregation_test:22  ea=None em=False psjs=None  t=?  runEA=0.667  wall=1m17s  ETA=1h08m59s  err=gold: CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message:
+[13:32:30] [   6/275] ▶ start  qid=Complex_Aggregation_test:23  q="For each player who played in matches during the '1995' tournament, calculate the total number of minutes they played..."
+[13:32:30] [   6/275] ▶ start  qid=Complex_Aggregation_test:23  q="For each player who played in matches during the '1995' tournament, calculate the total number of minutes they played..."
+[13:33:00] [   6/275] ✔ done   qid=Complex_Aggregation_test:23  ea=None em=False psjs=None  t=?  runEA=0.667  wall=1m46s  ETA=1h19m24s  err=gold: CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message:
+[13:33:00] [   6/275] ✔ done   qid=Complex_Aggregation_test:23  ea=None em=False psjs=None  t=?  runEA=0.667  wall=1m46s  ETA=1h19m24s  err=gold: CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message:
+[13:33:00] [   7/275] ▶ start  qid=Complex_Aggregation_test:24  q="For each squad in the 'US 2003' tournament, determine the number of players and calculate the average number of match..."
+[13:33:00] [   7/275] ▶ start  qid=Complex_Aggregation_test:24  q="For each squad in the 'US 2003' tournament, determine the number of players and calculate the average number of match..."
+[13:33:15] [   7/275] ✔ done   qid=Complex_Aggregation_test:24  ea=False em=False psjs=0.22867696440564136  t=?  runEA=0.500  wall=2m02s  ETA=1h17m39s
+[13:33:15] [   7/275] ✔ done   qid=Complex_Aggregation_test:24  ea=False em=False psjs=0.22867696440564136  t=?  runEA=0.500  wall=2m02s  ETA=1h17m39s
+[13:33:15] [   8/275] ▶ start  qid=Complex_Aggregation_test:27  q="For each team that participated in the '2015' tournament, find the average number of goals scored by players represen..."
+[13:33:15] [   8/275] ▶ start  qid=Complex_Aggregation_test:27  q="For each team that participated in the '2015' tournament, find the average number of goals scored by players represen..."
+[13:33:34] [   8/275] ✔ done   qid=Complex_Aggregation_test:27  ea=False em=False psjs=0.13896296296296295  t=?  runEA=0.400  wall=2m21s  ETA=1h18m09s
+[13:33:34] [   8/275] ✔ done   qid=Complex_Aggregation_test:27  ea=False em=False psjs=0.13896296296296295  t=?  runEA=0.400  wall=2m21s  ETA=1h18m09s
+[13:33:34] [   9/275] ▶ start  qid=Complex_Aggregation_test:28  q="For each squad in the 'Fracne 2019' tournament, determine the average age of the players in the squad at the time of ..."
+[13:33:34] [   9/275] ▶ start  qid=Complex_Aggregation_test:28  q="For each squad in the 'Fracne 2019' tournament, determine the average age of the players in the squad at the time of ..."
+[13:33:51] [   9/275] ✔ done   qid=Complex_Aggregation_test:28  ea=False em=False psjs=0.41023417172593235  t=?  runEA=0.333  wall=2m38s  ETA=1h17m44s
+[13:33:51] [   9/275] ✔ done   qid=Complex_Aggregation_test:28  ea=False em=False psjs=0.41023417172593235  t=?  runEA=0.333  wall=2m38s  ETA=1h17m44s
+[13:33:51] [  10/275] ▶ start  qid=Complex_Aggregation_test:31  q="For the tournament '1995', what is the average number of goals scored per match, considering only matches where goals..."
+[13:33:51] [  10/275] ▶ start  qid=Complex_Aggregation_test:31  q="For the tournament '1995', what is the average number of goals scored per match, considering only matches where goals..."
+[13:34:06] [  10/275] ✔ done   qid=Complex_Aggregation_test:31  ea=True em=False psjs=1.0  t=?  runEA=0.429  wall=2m52s  ETA=1h16m08s
+[13:34:06] [  10/275] ✔ done   qid=Complex_Aggregation_test:31  ea=True em=False psjs=1.0  t=?  runEA=0.429  wall=2m52s  ETA=1h16m08s
+[13:34:06] [  11/275] ▶ start  qid=Complex_Aggregation_test:32  q="For each team that participated in the 'Swedeen 1995' tournament, calculate the average number of players in their sq..."
+[13:34:06] [  11/275] ▶ start  qid=Complex_Aggregation_test:32  q="For each team that participated in the 'Swedeen 1995' tournament, calculate the average number of players in their sq..."
+[13:34:29] [  11/275] ✔ done   qid=Complex_Aggregation_test:32  ea=True em=False psjs=1.0  t=?  runEA=0.500  wall=3m15s  ETA=1h18m04s
+[13:34:29] [  11/275] ✔ done   qid=Complex_Aggregation_test:32  ea=True em=False psjs=1.0  t=?  runEA=0.500  wall=3m15s  ETA=1h18m04s
+[13:34:29] [  12/275] ▶ start  qid=Complex_Aggregation_test:33  q="What is the average age of players who scored goals in matches during the 'sweden 1995' tournament, considering their..."
+[13:34:29] [  12/275] ▶ start  qid=Complex_Aggregation_test:33  q="What is the average age of players who scored goals in matches during the 'sweden 1995' tournament, considering their..."
+[13:34:44] [  12/275] ✔ done   qid=Complex_Aggregation_test:33  ea=False em=False psjs=0.9857142857142858  t=?  runEA=0.444  wall=3m30s  ETA=1h16m46s
+[13:34:44] [  12/275] ✔ done   qid=Complex_Aggregation_test:33  ea=False em=False psjs=0.9857142857142858  t=?  runEA=0.444  wall=3m30s  ETA=1h16m46s
+[13:34:44] [  13/275] ▶ start  qid=Complex_Aggregation_test:34  q="For each stage of matches in the 'Sween 1995' tournament, determine the average number of teams that played in matche..."
+[13:34:44] [  13/275] ▶ start  qid=Complex_Aggregation_test:34  q="For each stage of matches in the 'Sween 1995' tournament, determine the average number of teams that played in matche..."
+[13:34:56] [  13/275] ✔ done   qid=Complex_Aggregation_test:34  ea=False em=False psjs=0.452991452991453  t=?  runEA=0.400  wall=3m43s  ETA=1h14m49s
+[13:34:56] [  13/275] ✔ done   qid=Complex_Aggregation_test:34  ea=False em=False psjs=0.452991452991453  t=?  runEA=0.400  wall=3m43s  ETA=1h14m49s
+[13:34:56] [  14/275] ▶ start  qid=Complex_Aggregation_test:35  q="Considering only matches where the 'score' property is available in the 'PLAYED_IN' relationship, what is the average..."
+[13:34:56] [  14/275] ▶ start  qid=Complex_Aggregation_test:35  q="Considering only matches where the 'score' property is available in the 'PLAYED_IN' relationship, what is the average..."
+[13:35:01] [  14/275] ✔ done   qid=Complex_Aggregation_test:35  ea=True em=False psjs=1.0  t=?  runEA=0.455  wall=3m48s  ETA=1h10m42s
+[13:35:01] [  14/275] ✔ done   qid=Complex_Aggregation_test:35  ea=True em=False psjs=1.0  t=?  runEA=0.455  wall=3m48s  ETA=1h10m42s
+[13:35:01] [  15/275] ▶ start  qid=Complex_Aggregation_test:39  q="For the '1991' tournament, calculate the average age of all players who scored goals in the matches. Return the avera..."
+[13:35:01] [  15/275] ▶ start  qid=Complex_Aggregation_test:39  q="For the '1991' tournament, calculate the average age of all players who scored goals in the matches. Return the avera..."
+[13:35:11] [  15/275] ✔ done   qid=Complex_Aggregation_test:39  ea=False em=False psjs=1.0  t=?  runEA=0.417  wall=3m57s  ETA=1h08m28s
+[13:35:11] [  15/275] ✔ done   qid=Complex_Aggregation_test:39  ea=False em=False psjs=1.0  t=?  runEA=0.417  wall=3m57s  ETA=1h08m28s
+[13:35:11] [  16/275] ▶ start  qid=Complex_Aggregation_test:41  q="For each team that participated in the 'Gerany 2011' tournament, calculate the total number of matches they played an..."
+[13:35:11] [  16/275] ▶ start  qid=Complex_Aggregation_test:41  q="For each team that participated in the 'Gerany 2011' tournament, calculate the total number of matches they played an..."
+[13:35:24] [  16/275] ✔ done   qid=Complex_Aggregation_test:41  ea=True em=False psjs=0.9006211180124224  t=?  runEA=0.462  wall=4m11s  ETA=1h07m36s
+[13:35:24] [  16/275] ✔ done   qid=Complex_Aggregation_test:41  ea=True em=False psjs=0.9006211180124224  t=?  runEA=0.462  wall=4m11s  ETA=1h07m36s
+[13:35:24] [  17/275] ▶ start  qid=Complex_Aggregation_test:45  q="For each tournament, calculate the average number of goals scored by players who were 'Brought Off The Bench' and the..."
+[13:35:24] [  17/275] ▶ start  qid=Complex_Aggregation_test:45  q="For each tournament, calculate the average number of goals scored by players who were 'Brought Off The Bench' and the..."
+[13:35:45] [  17/275] ✔ done   qid=Complex_Aggregation_test:45  ea=False em=False psjs=0.2009068712940356  t=?  runEA=0.429  wall=4m31s  ETA=1h08m34s
+[13:35:45] [  17/275] ✔ done   qid=Complex_Aggregation_test:45  ea=False em=False psjs=0.2009068712940356  t=?  runEA=0.429  wall=4m31s  ETA=1h08m34s
+[13:35:45] [  18/275] ▶ start  qid=Complex_Aggregation_test:51  q="For each team that participated in the 'UDA 1999' tournament, calculate the average number of goals scored per match...."
+[13:35:45] [  18/275] ▶ start  qid=Complex_Aggregation_test:51  q="For each team that participated in the 'UDA 1999' tournament, calculate the average number of goals scored per match...."
+[13:36:04] [  18/275] ✔ done   qid=Complex_Aggregation_test:51  ea=True em=False psjs=0.9006211180124224  t=?  runEA=0.467  wall=4m51s  ETA=1h09m08s
+[13:36:04] [  18/275] ✔ done   qid=Complex_Aggregation_test:51  ea=True em=False psjs=0.9006211180124224  t=?  runEA=0.467  wall=4m51s  ETA=1h09m08s
+[13:36:04] [  19/275] ▶ start  qid=Complex_Aggregation_test:52  q="For the '2019' tournament, what is the average number of players per squad? Return the tournament name and the averag..."
+[13:36:04] [  19/275] ▶ start  qid=Complex_Aggregation_test:52  q="For the '2019' tournament, what is the average number of players per squad? Return the tournament name and the averag..."
+[13:36:13] [  19/275] ✔ done   qid=Complex_Aggregation_test:52  ea=True em=False psjs=1.0  t=?  runEA=0.500  wall=4m59s  ETA=1h07m10s
+[13:36:13] [  19/275] ✔ done   qid=Complex_Aggregation_test:52  ea=True em=False psjs=1.0  t=?  runEA=0.500  wall=4m59s  ETA=1h07m10s
+[13:36:13] [  20/275] ▶ start  qid=Complex_Aggregation_test:56  q="For the tournament 'Chinz PR 1991', what is the average number of players per squad and the total number of players a..."
+[13:36:13] [  20/275] ▶ start  qid=Complex_Aggregation_test:56  q="For the tournament 'Chinz PR 1991', what is the average number of players per squad and the total number of players a..."
+[13:36:25] [  20/275] ✔ done   qid=Complex_Aggregation_test:56  ea=False em=False psjs=0.0  t=?  runEA=0.471  wall=5m12s  ETA=1h06m12s
+[13:36:25] [  20/275] ✔ done   qid=Complex_Aggregation_test:56  ea=False em=False psjs=0.0  t=?  runEA=0.471  wall=5m12s  ETA=1h06m12s
+[13:36:25] [  21/275] ▶ start  qid=Complex_Aggregation_test:57  q="Calculate the average number of goals scored per match for each team that participated in the '2011' tournament, and ..."
+[13:36:25] [  21/275] ▶ start  qid=Complex_Aggregation_test:57  q="Calculate the average number of goals scored per match for each team that participated in the '2011' tournament, and ..."
+[13:36:37] [  21/275] ✔ done   qid=Complex_Aggregation_test:57  ea=True em=False psjs=0.9006211180124224  t=?  runEA=0.500  wall=5m23s  ETA=1h05m06s
+[13:36:37] [  21/275] ✔ done   qid=Complex_Aggregation_test:57  ea=True em=False psjs=0.9006211180124224  t=?  runEA=0.500  wall=5m23s  ETA=1h05m06s
+[13:36:37] [  22/275] ▶ start  qid=Complex_Aggregation_test:59  q='For each team, calculate the total number of goals scored in all matches and the average number of goals scored per m...'
+[13:36:37] [  22/275] ▶ start  qid=Complex_Aggregation_test:59  q='For each team, calculate the total number of goals scored in all matches and the average number of goals scored per m...'
+[13:36:51] [  22/275] ✔ done   qid=Complex_Aggregation_test:59  ea=False em=False psjs=0.0  t=?  runEA=0.474  wall=5m38s  ETA=1h04m44s
+[13:36:51] [  22/275] ✔ done   qid=Complex_Aggregation_test:59  ea=False em=False psjs=0.0  t=?  runEA=0.474  wall=5m38s  ETA=1h04m44s
+[13:36:51] [  23/275] ▶ start  qid=Complex_Aggregation_test:61  q="For each team that participated in the 'sweden 1995' tournament, calculate the average score of their players across ..."
+[13:36:51] [  23/275] ▶ start  qid=Complex_Aggregation_test:61  q="For each team that participated in the 'sweden 1995' tournament, calculate the average score of their players across ..."
+[13:37:05] [  23/275] ✔ done   qid=Complex_Aggregation_test:61  ea=None em=False psjs=None  t=?  runEA=0.474  wall=5m51s  ETA=1h04m10s  err=gold: CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message:
+[13:37:05] [  23/275] ✔ done   qid=Complex_Aggregation_test:61  ea=None em=False psjs=None  t=?  runEA=0.474  wall=5m51s  ETA=1h04m10s  err=gold: CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message:
+[13:37:05] [  24/275] ▶ start  qid=Complex_Aggregation_test:65  q="For each team that participated in the '2011' tournament, compute the total number of goals scored and the average nu..."
+[13:37:05] [  24/275] ▶ start  qid=Complex_Aggregation_test:65  q="For each team that participated in the '2011' tournament, compute the total number of goals scored and the average nu..."
+[13:37:23] [  24/275] ✔ done   qid=Complex_Aggregation_test:65  ea=None em=False psjs=None  t=?  runEA=0.474  wall=6m10s  ETA=1h04m24s  err=gold: CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message:
+[13:37:23] [  24/275] ✔ done   qid=Complex_Aggregation_test:65  ea=None em=False psjs=None  t=?  runEA=0.474  wall=6m10s  ETA=1h04m24s  err=gold: CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message:
+[13:37:23] [  25/275] ▶ start  qid=Complex_Aggregation_test:68  q="For the tournament 'Gerrmany 2011', calculate the average number of goals scored per match and the total number of ma..."
+[13:37:23] [  25/275] ▶ start  qid=Complex_Aggregation_test:68  q="For the tournament 'Gerrmany 2011', calculate the average number of goals scored per match and the total number of ma..."
+[13:37:33] [  25/275] ✔ done   qid=Complex_Aggregation_test:68  ea=True em=False psjs=1.0  t=?  runEA=0.500  wall=6m19s  ETA=1h03m10s
+[13:37:33] [  25/275] ✔ done   qid=Complex_Aggregation_test:68  ea=True em=False psjs=1.0  t=?  runEA=0.500  wall=6m19s  ETA=1h03m10s
+[13:37:33] [  26/275] ▶ start  qid=Complex_Aggregation_test:69  q="For each team that participated in the '2011' tournament, find the average number of goals scored by players from tha..."
+[13:37:33] [  26/275] ▶ start  qid=Complex_Aggregation_test:69  q="For each team that participated in the '2011' tournament, find the average number of goals scored by players from tha..."
+[13:37:49] [  26/275] ✔ done   qid=Complex_Aggregation_test:69  ea=True em=False psjs=0.6388020833333333  t=?  runEA=0.524  wall=6m36s  ETA=1h03m08s
+[13:37:49] [  26/275] ✔ done   qid=Complex_Aggregation_test:69  ea=True em=False psjs=0.6388020833333333  t=?  runEA=0.524  wall=6m36s  ETA=1h03m08s
+[13:37:49] [  27/275] ▶ start  qid=Complex_Aggregation_test:75  q='For each competition, calculate the average number of players in each squad participating in that competition and the...'
+[13:37:49] [  27/275] ▶ start  qid=Complex_Aggregation_test:75  q='For each competition, calculate the average number of players in each squad participating in that competition and the...'
+[13:37:59] [  27/275] ✔ done   qid=Complex_Aggregation_test:75  ea=True em=False psjs=0.9673003802281369  t=?  runEA=0.545  wall=6m45s  ETA=1h02m00s
+[13:37:59] [  27/275] ✔ done   qid=Complex_Aggregation_test:75  ea=True em=False psjs=0.9673003802281369  t=?  runEA=0.545  wall=6m45s  ETA=1h02m00s
+[13:37:59] [  28/275] ▶ start  qid=Complex_Aggregation_test:76  q="For each team that participated in the 'Canda 2015' tournament, determine the average number of goals scored by playe..."
+[13:37:59] [  28/275] ▶ start  qid=Complex_Aggregation_test:76  q="For each team that participated in the 'Canda 2015' tournament, determine the average number of goals scored by playe..."
+[13:38:08] [  28/275] ✔ done   qid=Complex_Aggregation_test:76  ea=None em=False psjs=None  t=?  runEA=0.545  wall=6m55s  ETA=1h00m58s  err=gold: CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message:
+[13:38:08] [  28/275] ✔ done   qid=Complex_Aggregation_test:76  ea=None em=False psjs=None  t=?  runEA=0.545  wall=6m55s  ETA=1h00m58s  err=gold: CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message:
+[13:38:08] [  29/275] ▶ start  qid=Complex_Aggregation_test:77  q="For each team that participated in the '2011' tournament, calculate the total number of matches they played and the a..."
+[13:38:08] [  29/275] ▶ start  qid=Complex_Aggregation_test:77  q="For each team that participated in the '2011' tournament, calculate the total number of matches they played and the a..."
+[13:38:18] [  29/275] ✔ done   qid=Complex_Aggregation_test:77  ea=True em=False psjs=0.9006211180124224  t=?  runEA=0.565  wall=7m04s  ETA=1h00m01s
+[13:38:18] [  29/275] ✔ done   qid=Complex_Aggregation_test:77  ea=True em=False psjs=0.9006211180124224  t=?  runEA=0.565  wall=7m04s  ETA=1h00m01s
+[13:38:18] [  30/275] ▶ start  qid=Complex_Aggregation_test:84  q="For each squad participating in the 'USSA 1999' tournament, calculate the average age of the players in the squad and..."
+[13:38:18] [  30/275] ▶ start  qid=Complex_Aggregation_test:84  q="For each squad participating in the 'USSA 1999' tournament, calculate the average age of the players in the squad and..."
+[13:38:36] [  30/275] ✔ done   qid=Complex_Aggregation_test:84  ea=False em=False psjs=0.20281359906213364  t=?  runEA=0.542  wall=7m22s  ETA=1h00m12s
+[13:38:36] [  30/275] ✔ done   qid=Complex_Aggregation_test:84  ea=False em=False psjs=0.20281359906213364  t=?  runEA=0.542  wall=7m22s  ETA=1h00m12s
+[13:38:36] [  31/275] ▶ start  qid=Complex_Aggregation_test:88  q="For each team that participated in the '2011' tournament, calculate the total number of goals scored by all players r..."
+[13:38:36] [  31/275] ▶ start  qid=Complex_Aggregation_test:88  q="For each team that participated in the '2011' tournament, calculate the total number of goals scored by all players r..."
+[13:38:47] [  31/275] ✔ done   qid=Complex_Aggregation_test:88  ea=False em=False psjs=0.18288456411623566  t=?  runEA=0.520  wall=7m34s  ETA=59m32s
+[13:38:47] [  31/275] ✔ done   qid=Complex_Aggregation_test:88  ea=False em=False psjs=0.18288456411623566  t=?  runEA=0.520  wall=7m34s  ETA=59m32s
+[13:38:47] [  32/275] ▶ start  qid=Complex_Aggregation_test:91  q="For each team that participated in the 'usa 2003' tournament, calculate the average number of goals scored in matches..."
+[13:38:47] [  32/275] ▶ start  qid=Complex_Aggregation_test:91  q="For each team that participated in the 'usa 2003' tournament, calculate the average number of goals scored in matches..."
+[13:38:59] [  32/275] ✔ done   qid=Complex_Aggregation_test:91  ea=False em=False psjs=0.17315436241610738  t=?  runEA=0.500  wall=7m45s  ETA=58m54s
+[13:38:59] [  32/275] ✔ done   qid=Complex_Aggregation_test:91  ea=False em=False psjs=0.17315436241610738  t=?  runEA=0.500  wall=7m45s  ETA=58m54s
+[13:38:59] [  33/275] ▶ start  qid=Complex_Aggregation_test:95  q="For each team that participated in the 'Caanda 2015' tournament, calculate the total number of matches they played an..."
+[13:38:59] [  33/275] ▶ start  qid=Complex_Aggregation_test:95  q="For each team that participated in the 'Caanda 2015' tournament, calculate the total number of matches they played an..."
+[13:39:16] [  33/275] ✔ done   qid=Complex_Aggregation_test:95  ea=True em=False psjs=0.9066147859922179  t=?  runEA=0.519  wall=8m02s  ETA=58m54s
+[13:39:16] [  33/275] ✔ done   qid=Complex_Aggregation_test:95  ea=True em=False psjs=0.9066147859922179  t=?  runEA=0.519  wall=8m02s  ETA=58m54s
+[13:39:16] [  34/275] ▶ start  qid=Complex_Aggregation_test:96  q="For each player, calculate the total number of matches played in the '2019' tournament and the average 'score' they a..."
+[13:39:16] [  34/275] ▶ start  qid=Complex_Aggregation_test:96  q="For each player, calculate the total number of matches played in the '2019' tournament and the average 'score' they a..."
+2026-06-22 13:39:32.552 | WARNING  | eval.psjs:compute_psjs:580 - PSJS execution failed — returning 0.0.  gold_err=None pred_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: The property existence syntax `... exists(variable.property)` is no longer supported. Please use `variable.property IS NOT NULL` instead. (line 1, column 101 (offset: 100))\n"MATCH (p:Person)-[pi:PLAYED_IN]->(m:Match)-[rtmp0:IN_TOURNAMENT]->(t:Tournament {year: 2019}) WHERE exists(pi.score) AND pi.score IS NOT NULL WITH collect(distinct elementId(m)) + collect(distinct elementId(p)) + collect(distinct elementId(t)) + collect(distinct elementId(pi)) + collect(distinct elementId(rtmp0)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId2"\n                                                                                                     ^}'
+[13:39:32] [  34/275] ✔ done   qid=Complex_Aggregation_test:96  ea=True em=False psjs=0.0  t=?  runEA=0.536  wall=8m18s  ETA=58m53s
+[13:39:32] [  34/275] ✔ done   qid=Complex_Aggregation_test:96  ea=True em=False psjs=0.0  t=?  runEA=0.536  wall=8m18s  ETA=58m53s
+[13:39:32] [  35/275] ▶ start  qid=Complex_Aggregation_test:99  q="For each team, calculate the total number of matches they played in the 'Farnce 2019' tournament and the average numb..."
+[13:39:32] [  35/275] ▶ start  qid=Complex_Aggregation_test:99  q="For each team, calculate the total number of matches they played in the 'Farnce 2019' tournament and the average numb..."
+[13:39:45] [  35/275] ✔ done   qid=Complex_Aggregation_test:99  ea=False em=False psjs=0.46506986027944114  t=?  runEA=0.517  wall=8m31s  ETA=58m25s
+[13:39:45] [  35/275] ✔ done   qid=Complex_Aggregation_test:99  ea=False em=False psjs=0.46506986027944114  t=?  runEA=0.517  wall=8m31s  ETA=58m25s
+[13:39:45] [  36/275] ▶ start  qid=Complex_Aggregation_test:100  q="For the 'USSA 1999' tournament, determine the average number of players per squad and the total number of matches pla..."
+[13:39:45] [  36/275] ▶ start  qid=Complex_Aggregation_test:100  q="For the 'USSA 1999' tournament, determine the average number of players per squad and the total number of matches pla..."
+[13:39:56] [  36/275] ✔ done   qid=Complex_Aggregation_test:100  ea=True em=False psjs=1.0  t=?  runEA=0.533  wall=8m42s  ETA=57m48s
+[13:39:56] [  36/275] ✔ done   qid=Complex_Aggregation_test:100  ea=True em=False psjs=1.0  t=?  runEA=0.533  wall=8m42s  ETA=57m48s
+[13:39:56] [  37/275] ▶ start  qid=Complex_Aggregation_test:104  q="For each team that participated in the tournament '2015', calculate the average number of goals scored by players of ..."
+[13:39:56] [  37/275] ▶ start  qid=Complex_Aggregation_test:104  q="For each team that participated in the tournament '2015', calculate the average number of goals scored by players of ..."
+[13:40:18] [  37/275] ✔ done   qid=Complex_Aggregation_test:104  ea=False em=False psjs=1.0  t=?  runEA=0.516  wall=9m05s  ETA=58m24s
+[13:40:18] [  37/275] ✔ done   qid=Complex_Aggregation_test:104  ea=False em=False psjs=1.0  t=?  runEA=0.516  wall=9m05s  ETA=58m24s
+[13:40:18] [  38/275] ▶ start  qid=Complex_Aggregation_test:106  q='For each squad, determine the total number of players and the average number of goals scored by players in matches of...'
+[13:40:18] [  38/275] ▶ start  qid=Complex_Aggregation_test:106  q='For each squad, determine the total number of players and the average number of goals scored by players in matches of...'
+[13:40:40] [  38/275] ✔ done   qid=Complex_Aggregation_test:106  ea=False em=False psjs=1.0  t=?  runEA=0.500  wall=9m27s  ETA=58m55s
+[13:40:40] [  38/275] ✔ done   qid=Complex_Aggregation_test:106  ea=False em=False psjs=1.0  t=?  runEA=0.500  wall=9m27s  ETA=58m55s
+[13:40:40] [  39/275] ▶ start  qid=Complex_Aggregation_test:111  q="For each team, calculate the average number of goals scored in matches played in the 'Matches' stage and the total nu..."
+[13:40:40] [  39/275] ▶ start  qid=Complex_Aggregation_test:111  q="For each team, calculate the average number of goals scored in matches played in the 'Matches' stage and the total nu..."
+[13:41:02] [  39/275] ✔ done   qid=Complex_Aggregation_test:111  ea=False em=False psjs=0.07369553523399677  t=?  runEA=0.485  wall=9m48s  ETA=59m18s
+[13:41:02] [  39/275] ✔ done   qid=Complex_Aggregation_test:111  ea=False em=False psjs=0.07369553523399677  t=?  runEA=0.485  wall=9m48s  ETA=59m18s
+[13:41:02] [  40/275] ▶ start  qid=Complex_Aggregation_test:113  q="For each team that participated in the '2015' tournament, calculate the average number of goals scored by their playe..."
+[13:41:02] [  40/275] ▶ start  qid=Complex_Aggregation_test:113  q="For each team that participated in the '2015' tournament, calculate the average number of goals scored by their playe..."
+[13:41:22] [  40/275] ✔ done   qid=Complex_Aggregation_test:113  ea=False em=False psjs=0.4140472878998609  t=?  runEA=0.471  wall=10m08s  ETA=59m33s
+[13:41:22] [  40/275] ✔ done   qid=Complex_Aggregation_test:113  ea=False em=False psjs=0.4140472878998609  t=?  runEA=0.471  wall=10m08s  ETA=59m33s
+[13:41:22] [  41/275] ▶ start  qid=Complex_Aggregation_test:118  q="For each team that participated in the 'Frane 2019' tournament, determine the total number of goals scored by all pla..."
+[13:41:22] [  41/275] ▶ start  qid=Complex_Aggregation_test:118  q="For each team that participated in the 'Frane 2019' tournament, determine the total number of goals scored by all pla..."
+[13:41:37] [  41/275] ✔ done   qid=Complex_Aggregation_test:118  ea=False em=False psjs=0.11815995189416717  t=?  runEA=0.457  wall=10m23s  ETA=59m17s
+[13:41:37] [  41/275] ✔ done   qid=Complex_Aggregation_test:118  ea=False em=False psjs=0.11815995189416717  t=?  runEA=0.457  wall=10m23s  ETA=59m17s
+[13:41:37] [  42/275] ▶ start  qid=Complex_Aggregation_test:126  q='For each competition held after the year 2000, determine the average number of players per squad and the total number...'
+[13:41:37] [  42/275] ▶ start  qid=Complex_Aggregation_test:126  q='For each competition held after the year 2000, determine the average number of players per squad and the total number...'
+[13:41:49] [  42/275] ✔ done   qid=Complex_Aggregation_test:126  ea=True em=False psjs=1.0  t=?  runEA=0.472  wall=10m35s  ETA=58m43s
+[13:41:49] [  42/275] ✔ done   qid=Complex_Aggregation_test:126  ea=True em=False psjs=1.0  t=?  runEA=0.472  wall=10m35s  ETA=58m43s
+[13:41:49] [  43/275] ▶ start  qid=Complex_Aggregation_test:128  q="For each team that participated in the 'sweden 1995' tournament, calculate the total number of goals scored and the a..."
+[13:41:49] [  43/275] ▶ start  qid=Complex_Aggregation_test:128  q="For each team that participated in the 'sweden 1995' tournament, calculate the total number of goals scored and the a..."
+[13:42:10] [  43/275] ✔ done   qid=Complex_Aggregation_test:128  ea=False em=False psjs=0.9901693063899508  t=?  runEA=0.459  wall=10m56s  ETA=59m02s
+[13:42:10] [  43/275] ✔ done   qid=Complex_Aggregation_test:128  ea=False em=False psjs=0.9901693063899508  t=?  runEA=0.459  wall=10m56s  ETA=59m02s
+[13:42:10] [  44/275] ▶ start  qid=Complex_Aggregation_test:130  q="For each team that participated in the 'Chinaa 2007' tournament, find the average number of players who scored goals ..."
+[13:42:10] [  44/275] ▶ start  qid=Complex_Aggregation_test:130  q="For each team that participated in the 'Chinaa 2007' tournament, find the average number of players who scored goals ..."
+[13:42:33] [  44/275] ✔ done   qid=Complex_Aggregation_test:130  ea=False em=False psjs=0.15356773526370218  t=?  runEA=0.447  wall=11m19s  ETA=59m27s
+[13:42:33] [  44/275] ✔ done   qid=Complex_Aggregation_test:130  ea=False em=False psjs=0.15356773526370218  t=?  runEA=0.447  wall=11m19s  ETA=59m27s
+[13:42:33] [  45/275] ▶ start  qid=Complex_Aggregation_test:133  q="For the '1995' tournament, what is the average number of goals scored by each team in their matches, and what is the ..."
+[13:42:33] [  45/275] ▶ start  qid=Complex_Aggregation_test:133  q="For the '1995' tournament, what is the average number of goals scored by each team in their matches, and what is the ..."
+[13:42:42] [  45/275] ✔ done   qid=Complex_Aggregation_test:133  ea=None em=False psjs=None  t=?  runEA=0.447  wall=11m29s  ETA=58m40s  err=gold: CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message:
+[13:42:42] [  45/275] ✔ done   qid=Complex_Aggregation_test:133  ea=None em=False psjs=None  t=?  runEA=0.447  wall=11m29s  ETA=58m40s  err=gold: CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message:
+[13:42:42] [  46/275] ▶ start  qid=Complex_Aggregation_test:137  q="For each player who played in a match during the '1991' tournament, determine the total number of goals they scored a..."
+[13:42:42] [  46/275] ▶ start  qid=Complex_Aggregation_test:137  q="For each player who played in a match during the '1991' tournament, determine the total number of goals they scored a..."
+[13:43:05] [  46/275] ✔ done   qid=Complex_Aggregation_test:137  ea=False em=False psjs=1.0  t=?  runEA=0.436  wall=11m51s  ETA=59m01s
+[13:43:05] [  46/275] ✔ done   qid=Complex_Aggregation_test:137  ea=False em=False psjs=1.0  t=?  runEA=0.436  wall=11m51s  ETA=59m01s
+[13:43:05] [  47/275] ▶ start  qid=Complex_Aggregation_test:139  q="For each player who played in a match during 'Cahada 2015', determine the total number of goals they scored and the a..."
+[13:43:05] [  47/275] ▶ start  qid=Complex_Aggregation_test:139  q="For each player who played in a match during 'Cahada 2015', determine the total number of goals they scored and the a..."
+[13:43:22] [  47/275] ✔ done   qid=Complex_Aggregation_test:139  ea=None em=False psjs=None  t=?  runEA=0.436  wall=12m09s  ETA=58m55s  err=gold: CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message:
+[13:43:22] [  47/275] ✔ done   qid=Complex_Aggregation_test:139  ea=None em=False psjs=None  t=?  runEA=0.436  wall=12m09s  ETA=58m55s  err=gold: CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message:
+[13:43:22] [  48/275] ▶ start  qid=Complex_Aggregation_test:141  q="For each squad that participated in '2019', determine the average age of the players in the squad at the time of the ..."
+[13:43:22] [  48/275] ▶ start  qid=Complex_Aggregation_test:141  q="For each squad that participated in '2019', determine the average age of the players in the squad at the time of the ..."
+[13:43:38] [  48/275] ✔ done   qid=Complex_Aggregation_test:141  ea=False em=False psjs=0.3267950963222417  t=?  runEA=0.425  wall=12m24s  ETA=58m40s
+[13:43:38] [  48/275] ✔ done   qid=Complex_Aggregation_test:141  ea=False em=False psjs=0.3267950963222417  t=?  runEA=0.425  wall=12m24s  ETA=58m40s
+[13:43:38] [  49/275] ▶ start  qid=Complex_Aggregation_test:142  q="For each team that participated in the 'Getmany 2011' tournament, calculate the average number of goals scored in mat..."
+[13:43:38] [  49/275] ▶ start  qid=Complex_Aggregation_test:142  q="For each team that participated in the 'Getmany 2011' tournament, calculate the average number of goals scored in mat..."
+[13:43:48] [  49/275] ✔ done   qid=Complex_Aggregation_test:142  ea=False em=False psjs=0.1539509536784741  t=?  runEA=0.415  wall=12m34s  ETA=57m57s
+[13:43:48] [  49/275] ✔ done   qid=Complex_Aggregation_test:142  ea=False em=False psjs=0.1539509536784741  t=?  runEA=0.415  wall=12m34s  ETA=57m57s
+[13:43:48] [  50/275] ▶ start  qid=Complex_Aggregation_test:146  q="For the '2015' tournament, calculate the average number of goals scored per match and the total number of teams that ..."
+[13:43:48] [  50/275] ▶ start  qid=Complex_Aggregation_test:146  q="For the '2015' tournament, calculate the average number of goals scored per match and the total number of teams that ..."
+[13:43:54] [  50/275] ✔ done   qid=Complex_Aggregation_test:146  ea=False em=False psjs=0.8746736292428199  t=?  runEA=0.405  wall=12m40s  ETA=57m00s
+[13:43:54] [  50/275] ✔ done   qid=Complex_Aggregation_test:146  ea=False em=False psjs=0.8746736292428199  t=?  runEA=0.405  wall=12m40s  ETA=57m00s
+[13:43:54] [  51/275] ▶ start  qid=Complex_Aggregation_test:154  q="For each team that participated in the 'USAA 1999' tournament, determine the average number of goals scored per match..."
+[13:43:54] [  51/275] ▶ start  qid=Complex_Aggregation_test:154  q="For each team that participated in the 'USAA 1999' tournament, determine the average number of goals scored per match..."
+[13:44:19] [  51/275] ✔ done   qid=Complex_Aggregation_test:154  ea=False em=False psjs=0.1295442908346134  t=?  runEA=0.395  wall=13m05s  ETA=57m28s
+[13:44:19] [  51/275] ✔ done   qid=Complex_Aggregation_test:154  ea=False em=False psjs=0.1295442908346134  t=?  runEA=0.395  wall=13m05s  ETA=57m28s
+[13:44:19] [  52/275] ▶ start  qid=Complex_Aggregation_test:156  q="For each team that participated in the 'usa 2003' tournament, find the average number of players who scored goals in ..."
+[13:44:19] [  52/275] ▶ start  qid=Complex_Aggregation_test:156  q="For each team that participated in the 'usa 2003' tournament, find the average number of players who scored goals in ..."
+[13:44:32] [  52/275] ✔ done   qid=Complex_Aggregation_test:156  ea=False em=False psjs=0.9134360063728093  t=?  runEA=0.386  wall=13m18s  ETA=57m02s
+[13:44:32] [  52/275] ✔ done   qid=Complex_Aggregation_test:156  ea=False em=False psjs=0.9134360063728093  t=?  runEA=0.386  wall=13m18s  ETA=57m02s
+[13:44:32] [  53/275] ▶ start  qid=Complex_Aggregation_test:159  q="For each team, calculate the total number of goals scored in matches played during the 'Frist Stage' and the average ..."
+[13:44:32] [  53/275] ▶ start  qid=Complex_Aggregation_test:159  q="For each team, calculate the total number of goals scored in matches played during the 'Frist Stage' and the average ..."
+[13:44:44] [  53/275] ✔ done   qid=Complex_Aggregation_test:159  ea=False em=False psjs=0.4249667994687915  t=?  runEA=0.378  wall=13m31s  ETA=56m35s
+[13:44:44] [  53/275] ✔ done   qid=Complex_Aggregation_test:159  ea=False em=False psjs=0.4249667994687915  t=?  runEA=0.378  wall=13m31s  ETA=56m35s
+[13:44:44] [  54/275] ▶ start  qid=Complex_Aggregation_test:160  q="For each team that participated in the '2011' tournament, calculate the average number of goals scored by its players..."
+[13:44:44] [  54/275] ▶ start  qid=Complex_Aggregation_test:160  q="For each team that participated in the '2011' tournament, calculate the average number of goals scored by its players..."
+[13:45:03] [  54/275] ✔ done   qid=Complex_Aggregation_test:160  ea=True em=False psjs=0.6633944717127357  t=?  runEA=0.391  wall=13m49s  ETA=56m34s
+[13:45:03] [  54/275] ✔ done   qid=Complex_Aggregation_test:160  ea=True em=False psjs=0.6633944717127357  t=?  runEA=0.391  wall=13m49s  ETA=56m34s
+[13:45:03] [  55/275] ▶ start  qid=Complex_Aggregation_test:163  q="For the '2015' tournament, what is the average number of goals scored in matches played by teams representing countri..."
+[13:45:03] [  55/275] ▶ start  qid=Complex_Aggregation_test:163  q="For the '2015' tournament, what is the average number of goals scored in matches played by teams representing countri..."
+2026-06-22 13:45:09.393 | WARNING  | eval.psjs:compute_psjs:580 - PSJS execution failed — returning 0.0.  gold_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input \'*\': expected "+" or "-" (line 1, column 106 (offset: 105))\n"MATCH (t:Team)-[rtmp0:PARTICIPATED_IN]->(tour:Tournament {name: \'Canada 2015\'}) WHERE t.name STARTS WITH * MATCH (t)-[rtmp1:PLAYED_IN]->(m:Match) OPTIONAL MATCH (p:Person)-[sg:SCORED_GOAL]->(m) WITH collect(distinct id(m)) + collect(distinct id(p)) + collect(distinct id(t)) + collect(distinct id(tour)) + collect(distinct id(rtmp0)) + collect(distinct id(rtmp1)) + collect(distinct id(sg)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId1"\n                                                                                                          ^}' pred_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input \'*\': expected "+" or "-" (line 1, column 152 (offset: 151))\n"MATCH (t:Tournament {year: 2015}) MATCH (m:Match)-[rtmp0:IN_TOURNAMENT]->(t) MATCH (tm:Team)-[rtmp1:PLAYED_IN]->(m) WHERE toLower(tm.name) STARTS WITH * MATCH (p:Person)-[sg:SCORED_GOAL]->(m) WHERE (p)-[:REPRESENTS]->(tm) WITH collect(distinct id(m)) + collect(distinct id(p)) + collect(distinct id(t)) + collect(distinct id(tm)) + collect(distinct id(rtmp0)) + collect(distinct id(rtmp1)) + collect(distinct id(sg)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId2"\n                                                                                                                                                        ^}'
+[13:45:09] [  55/275] ✔ done   qid=Complex_Aggregation_test:163  ea=False em=False psjs=0.0  t=?  runEA=0.383  wall=13m55s  ETA=55m41s
+[13:45:09] [  55/275] ✔ done   qid=Complex_Aggregation_test:163  ea=False em=False psjs=0.0  t=?  runEA=0.383  wall=13m55s  ETA=55m41s
+[13:45:09] [  56/275] ▶ start  qid=Complex_Aggregation_test:165  q="For the 'Chins PR 1991' tournament, what is the average number of goals scored per match, considering only matches wh..."
+[13:45:09] [  56/275] ▶ start  qid=Complex_Aggregation_test:165  q="For the 'Chins PR 1991' tournament, what is the average number of goals scored per match, considering only matches wh..."
+[13:45:18] [  56/275] ✔ done   qid=Complex_Aggregation_test:165  ea=False em=False psjs=1.0  t=?  runEA=0.375  wall=14m04s  ETA=55m01s
+[13:45:18] [  56/275] ✔ done   qid=Complex_Aggregation_test:165  ea=False em=False psjs=1.0  t=?  runEA=0.375  wall=14m04s  ETA=55m01s
+[13:45:18] [  57/275] ▶ start  qid=Complex_Aggregation_test:166  q="For each team that participated in the '1991' tournament, determine the average number of players who scored goals in..."
+[13:45:18] [  57/275] ▶ start  qid=Complex_Aggregation_test:166  q="For each team that participated in the '1991' tournament, determine the average number of players who scored goals in..."
+[13:45:30] [  57/275] ✔ done   qid=Complex_Aggregation_test:166  ea=False em=False psjs=0.14505624629958555  t=?  runEA=0.367  wall=14m16s  ETA=54m34s
+[13:45:30] [  57/275] ✔ done   qid=Complex_Aggregation_test:166  ea=False em=False psjs=0.14505624629958555  t=?  runEA=0.367  wall=14m16s  ETA=54m34s
+[13:45:30] [  58/275] ▶ start  qid=Complex_Aggregation_test:167  q="Calculate the average number of goals scored per match for each stage of matches in the 'Frande 2019' tournament."
+[13:45:30] [  58/275] ▶ start  qid=Complex_Aggregation_test:167  q="Calculate the average number of goals scored per match for each stage of matches in the 'Frande 2019' tournament."
+[13:45:38] [  58/275] ✔ done   qid=Complex_Aggregation_test:167  ea=False em=False psjs=0.9885386819484241  t=?  runEA=0.360  wall=14m25s  ETA=53m56s
+[13:45:38] [  58/275] ✔ done   qid=Complex_Aggregation_test:167  ea=False em=False psjs=0.9885386819484241  t=?  runEA=0.360  wall=14m25s  ETA=53m56s
+[13:45:38] [  59/275] ▶ start  qid=Complex_Aggregation_test:168  q="For each team, what is the average number of goals scored in matches played in the '2015' tournament, and how many pl..."
+[13:45:38] [  59/275] ▶ start  qid=Complex_Aggregation_test:168  q="For each team, what is the average number of goals scored in matches played in the '2015' tournament, and how many pl..."
+[13:45:53] [  59/275] ✔ done   qid=Complex_Aggregation_test:168  ea=False em=False psjs=0.09449192782526115  t=?  runEA=0.353  wall=14m39s  ETA=53m38s
+[13:45:53] [  59/275] ✔ done   qid=Complex_Aggregation_test:168  ea=False em=False psjs=0.09449192782526115  t=?  runEA=0.353  wall=14m39s  ETA=53m38s
+[13:45:53] [  60/275] ▶ start  qid=Complex_Aggregation_test:173  q="For each team that participated in the 'USSA 1999' tournament, calculate the total number of matches they played and ..."
+[13:45:53] [  60/275] ▶ start  qid=Complex_Aggregation_test:173  q="For each team that participated in the 'USSA 1999' tournament, calculate the total number of matches they played and ..."
+[13:46:14] [  60/275] ✔ done   qid=Complex_Aggregation_test:173  ea=False em=False psjs=0.17408906882591094  t=?  runEA=0.346  wall=15m00s  ETA=53m45s
+[13:46:14] [  60/275] ✔ done   qid=Complex_Aggregation_test:173  ea=False em=False psjs=0.17408906882591094  t=?  runEA=0.346  wall=15m00s  ETA=53m45s
+[13:46:14] [  61/275] ▶ start  qid=Complex_Aggregation_test:174  q='For each competition, determine the average number of players per squad and the total number of goals scored across a...'
+[13:46:14] [  61/275] ▶ start  qid=Complex_Aggregation_test:174  q='For each competition, determine the average number of players per squad and the total number of goals scored across a...'
+[13:46:27] [  61/275] ✔ done   qid=Complex_Aggregation_test:174  ea=False em=False psjs=1.0  t=?  runEA=0.340  wall=15m13s  ETA=53m24s
+[13:46:27] [  61/275] ✔ done   qid=Complex_Aggregation_test:174  ea=False em=False psjs=1.0  t=?  runEA=0.340  wall=15m13s  ETA=53m24s
+[13:46:27] [  62/275] ▶ start  qid=Complex_Aggregation_test:178  q="For each team that participated in the 'usa 2003' tournament, find the average number of goals scored by players from..."
+[13:46:27] [  62/275] ▶ start  qid=Complex_Aggregation_test:178  q="For each team that participated in the 'usa 2003' tournament, find the average number of goals scored by players from..."
+[13:46:52] [  62/275] ✔ done   qid=Complex_Aggregation_test:178  ea=False em=False psjs=0.07021393307734504  t=?  runEA=0.333  wall=15m38s  ETA=53m44s
+[13:46:52] [  62/275] ✔ done   qid=Complex_Aggregation_test:178  ea=False em=False psjs=0.07021393307734504  t=?  runEA=0.333  wall=15m38s  ETA=53m44s
+[13:46:52] [  63/275] ▶ start  qid=Complex_Aggregation_test:182  q="For each team that participated in the '2019' tournament, find the average number of goals scored by players from tha..."
+[13:46:52] [  63/275] ▶ start  qid=Complex_Aggregation_test:182  q="For each team that participated in the '2019' tournament, find the average number of goals scored by players from tha..."
+[13:47:07] [  63/275] ✔ done   qid=Complex_Aggregation_test:182  ea=None em=False psjs=None  t=?  runEA=0.333  wall=15m53s  ETA=53m28s  err=gold: CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message:
+[13:47:07] [  63/275] ✔ done   qid=Complex_Aggregation_test:182  ea=None em=False psjs=None  t=?  runEA=0.333  wall=15m53s  ETA=53m28s  err=gold: CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message:
+[13:47:07] [  64/275] ▶ start  qid=Complex_Aggregation_test:193  q="For each team that participated in the 'Chia PR 1991' tournament, find the average number of goals scored per match a..."
+[13:47:07] [  64/275] ▶ start  qid=Complex_Aggregation_test:193  q="For each team that participated in the 'Chia PR 1991' tournament, find the average number of goals scored per match a..."
+[13:47:25] [  64/275] ✔ done   qid=Complex_Aggregation_test:193  ea=False em=False psjs=0.24367088607594936  t=?  runEA=0.327  wall=16m11s  ETA=53m23s
+[13:47:25] [  64/275] ✔ done   qid=Complex_Aggregation_test:193  ea=False em=False psjs=0.24367088607594936  t=?  runEA=0.327  wall=16m11s  ETA=53m23s
+[13:47:25] [  65/275] ▶ start  qid=Complex_Aggregation_test:194  q="For the 'Swwden 1995' tournament, what is the average number of goals scored per team and the total number of matches..."
+[13:47:25] [  65/275] ▶ start  qid=Complex_Aggregation_test:194  q="For the 'Swwden 1995' tournament, what is the average number of goals scored per team and the total number of matches..."
+[13:47:34] [  65/275] ✔ done   qid=Complex_Aggregation_test:194  ea=None em=False psjs=None  t=?  runEA=0.327  wall=16m20s  ETA=52m46s  err=gold: CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message:
+[13:47:34] [  65/275] ✔ done   qid=Complex_Aggregation_test:194  ea=None em=False psjs=None  t=?  runEA=0.327  wall=16m20s  ETA=52m46s  err=gold: CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message:
+[13:47:34] [  66/275] ▶ start  qid=Complex_Aggregation_test:195  q="For each team that participated in the '1995' tournament, calculate the total number of goals scored and the average ..."
+[13:47:34] [  66/275] ▶ start  qid=Complex_Aggregation_test:195  q="For each team that participated in the '1995' tournament, calculate the total number of goals scored and the average ..."
+[13:47:44] [  66/275] ✔ done   qid=Complex_Aggregation_test:195  ea=False em=False psjs=0.9069767441860465  t=?  runEA=0.321  wall=16m30s  ETA=52m15s
+[13:47:44] [  66/275] ✔ done   qid=Complex_Aggregation_test:195  ea=False em=False psjs=0.9069767441860465  t=?  runEA=0.321  wall=16m30s  ETA=52m15s
+[13:47:44] [  67/275] ▶ start  qid=Complex_Aggregation_test:199  q="For each team that participated in the 'USQ 1999' tournament, calculate the average number of goals scored per match...."
+[13:47:44] [  67/275] ▶ start  qid=Complex_Aggregation_test:199  q="For each team that participated in the 'USQ 1999' tournament, calculate the average number of goals scored per match...."
+[13:47:58] [  67/275] ✔ done   qid=Complex_Aggregation_test:199  ea=False em=False psjs=0.17408906882591094  t=?  runEA=0.316  wall=16m45s  ETA=51m59s
+[13:47:58] [  67/275] ✔ done   qid=Complex_Aggregation_test:199  ea=False em=False psjs=0.17408906882591094  t=?  runEA=0.316  wall=16m45s  ETA=51m59s
+[13:47:58] [  68/275] ▶ start  qid=Complex_Aggregation_test:202  q="For matches played in the '1999' tournament, find the average 'score' value for each 'stage' of the tournament. Retur..."
+[13:47:58] [  68/275] ▶ start  qid=Complex_Aggregation_test:202  q="For matches played in the '1999' tournament, find the average 'score' value for each 'stage' of the tournament. Retur..."
+[13:48:09] [  68/275] ✔ done   qid=Complex_Aggregation_test:202  ea=False em=False psjs=0.0  t=?  runEA=0.310  wall=16m56s  ETA=51m31s
+[13:48:09] [  68/275] ✔ done   qid=Complex_Aggregation_test:202  ea=False em=False psjs=0.0  t=?  runEA=0.310  wall=16m56s  ETA=51m31s
+[13:48:09] [  69/275] ▶ start  qid=Complex_Aggregation_test:203  q="For each team that participated in the 'Swweden 1995' tournament, find the average number of players who scored goals..."
+[13:48:09] [  69/275] ▶ start  qid=Complex_Aggregation_test:203  q="For each team that participated in the 'Swweden 1995' tournament, find the average number of players who scored goals..."
+[13:48:27] [  69/275] ✔ done   qid=Complex_Aggregation_test:203  ea=False em=False psjs=0.12661987041036718  t=?  runEA=0.305  wall=17m14s  ETA=51m26s
+[13:48:27] [  69/275] ✔ done   qid=Complex_Aggregation_test:203  ea=False em=False psjs=0.12661987041036718  t=?  runEA=0.305  wall=17m14s  ETA=51m26s
+[13:48:27] [  70/275] ▶ start  qid=Complex_Aggregation_test:208  q="For the tournament '2011', find the average number of goals scored by players in each match. Return the average goals..."
+[13:48:27] [  70/275] ▶ start  qid=Complex_Aggregation_test:208  q="For the tournament '2011', find the average number of goals scored by players in each match. Return the average goals..."
+[13:48:36] [  70/275] ✔ done   qid=Complex_Aggregation_test:208  ea=False em=False psjs=1.0  t=?  runEA=0.300  wall=17m22s  ETA=50m51s
+[13:48:36] [  70/275] ✔ done   qid=Complex_Aggregation_test:208  ea=False em=False psjs=1.0  t=?  runEA=0.300  wall=17m22s  ETA=50m51s
+[13:48:36] [  71/275] ▶ start  qid=Complex_Aggregation_test:211  q="For the team 'Sverige', calculate the total number of goals scored in all matches they played in the 'Germany 2011' t..."
+[13:48:36] [  71/275] ▶ start  qid=Complex_Aggregation_test:211  q="For the team 'Sverige', calculate the total number of goals scored in all matches they played in the 'Germany 2011' t..."
+[13:48:41] [  71/275] ✔ done   qid=Complex_Aggregation_test:211  ea=False em=False psjs=0.0  t=?  runEA=0.295  wall=17m27s  ETA=50m08s
+[13:48:41] [  71/275] ✔ done   qid=Complex_Aggregation_test:211  ea=False em=False psjs=0.0  t=?  runEA=0.295  wall=17m27s  ETA=50m08s
+[13:48:41] [  72/275] ▶ start  qid=Complex_Aggregation_test:212  q="For each team that participated in the 'germany 2011' tournament, calculate the average number of goals scored per ma..."
+[13:48:41] [  72/275] ▶ start  qid=Complex_Aggregation_test:212  q="For each team that participated in the 'germany 2011' tournament, calculate the average number of goals scored per ma..."
+[13:48:57] [  72/275] ✔ done   qid=Complex_Aggregation_test:212  ea=True em=False psjs=0.9006211180124224  t=?  runEA=0.306  wall=17m44s  ETA=49m59s
+[13:48:57] [  72/275] ✔ done   qid=Complex_Aggregation_test:212  ea=True em=False psjs=0.9006211180124224  t=?  runEA=0.306  wall=17m44s  ETA=49m59s
+[13:48:57] [  73/275] ▶ start  qid=Complex_Aggregation_test:213  q="For each person who played in a match during the '2011' tournament, compute the total number of goals they scored and..."
+[13:48:57] [  73/275] ▶ start  qid=Complex_Aggregation_test:213  q="For each person who played in a match during the '2011' tournament, compute the total number of goals they scored and..."
+[13:49:20] [  73/275] ✔ done   qid=Complex_Aggregation_test:213  ea=None em=False psjs=None  t=?  runEA=0.306  wall=18m06s  ETA=50m05s  err=gold: CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message:
+[13:49:20] [  73/275] ✔ done   qid=Complex_Aggregation_test:213  ea=None em=False psjs=None  t=?  runEA=0.306  wall=18m06s  ETA=50m05s  err=gold: CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message:
+[13:49:20] [  74/275] ▶ start  qid=Complex_Aggregation_test:217  q="For the tournament 'USS 2003', find the youngest player based on their age at the time of the tournament. Return the ..."
+[13:49:20] [  74/275] ▶ start  qid=Complex_Aggregation_test:217  q="For the tournament 'USS 2003', find the youngest player based on their age at the time of the tournament. Return the ..."
+[13:49:36] [  74/275] ✔ done   qid=Complex_Aggregation_test:217  ea=False em=False psjs=0.16677076826983137  t=?  runEA=0.302  wall=18m23s  ETA=49m55s
+[13:49:36] [  74/275] ✔ done   qid=Complex_Aggregation_test:217  ea=False em=False psjs=0.16677076826983137  t=?  runEA=0.302  wall=18m23s  ETA=49m55s
+[13:49:36] [  75/275] ▶ start  qid=Complex_Retrieval_test:0  q="Find all players who represented the team 'Sverige' and played in matches during the 'Canada 2015' tournament. Return..."
+[13:49:36] [  75/275] ▶ start  qid=Complex_Retrieval_test:0  q="Find all players who represented the team 'Sverige' and played in matches during the 'Canada 2015' tournament. Return..."
+[13:49:54] [  75/275] ✔ done   qid=Complex_Retrieval_test:0  ea=True em=False psjs=1.0  t=?  runEA=0.312  wall=18m41s  ETA=49m49s
+[13:49:54] [  75/275] ✔ done   qid=Complex_Retrieval_test:0  ea=True em=False psjs=1.0  t=?  runEA=0.312  wall=18m41s  ETA=49m49s
+[13:49:54] [  76/275] ▶ start  qid=Complex_Retrieval_test:1  q="For the '2015' tournament, retrieve all teams that participated and list the names of players who scored goals in mat..."
+[13:49:54] [  76/275] ▶ start  qid=Complex_Retrieval_test:1  q="For the '2015' tournament, retrieve all teams that participated and list the names of players who scored goals in mat..."
+[13:50:09] [  76/275] ✔ done   qid=Complex_Retrieval_test:1  ea=False em=False psjs=0.22573260073260074  t=?  runEA=0.308  wall=18m56s  ETA=49m34s
+[13:50:09] [  76/275] ✔ done   qid=Complex_Retrieval_test:1  ea=False em=False psjs=0.22573260073260074  t=?  runEA=0.308  wall=18m56s  ETA=49m34s
+[13:50:09] [  77/275] ▶ start  qid=Complex_Retrieval_test:2  q="Find all matches in which the team 'Nippon' played, and for each match, list the players who scored goals, along with..."
+[13:50:09] [  77/275] ▶ start  qid=Complex_Retrieval_test:2  q="Find all matches in which the team 'Nippon' played, and for each match, list the players who scored goals, along with..."
+[13:50:36] [  77/275] ✔ done   qid=Complex_Retrieval_test:2  ea=False em=False psjs=0.37751004016064255  t=?  runEA=0.303  wall=19m22s  ETA=49m48s
+[13:50:36] [  77/275] ✔ done   qid=Complex_Retrieval_test:2  ea=False em=False psjs=0.37751004016064255  t=?  runEA=0.303  wall=19m22s  ETA=49m48s
+[13:50:36] [  78/275] ▶ start  qid=Complex_Retrieval_test:4  q="Find all players who played in a match on '2019-06-08' and represent the team 'Nippon'. List their names and the stag..."
+[13:50:36] [  78/275] ▶ start  qid=Complex_Retrieval_test:4  q="Find all players who played in a match on '2019-06-08' and represent the team 'Nippon'. List their names and the stag..."
+[13:50:48] [  78/275] ✔ done   qid=Complex_Retrieval_test:4  ea=True em=False psjs=1.0  t=?  runEA=0.313  wall=19m34s  ETA=49m26s
+[13:50:48] [  78/275] ✔ done   qid=Complex_Retrieval_test:4  ea=True em=False psjs=1.0  t=?  runEA=0.313  wall=19m34s  ETA=49m26s
+[13:50:48] [  79/275] ▶ start  qid=Complex_Retrieval_test:5  q="Find all the players who scored goals in matches that took place in the 'Caada 2015' tournament. List their names and..."
+[13:50:48] [  79/275] ▶ start  qid=Complex_Retrieval_test:5  q="Find all the players who scored goals in matches that took place in the 'Caada 2015' tournament. List their names and..."
+[13:50:59] [  79/275] ✔ done   qid=Complex_Retrieval_test:5  ea=False em=False psjs=1.0  t=?  runEA=0.309  wall=19m46s  ETA=49m02s
+[13:50:59] [  79/275] ✔ done   qid=Complex_Retrieval_test:5  ea=False em=False psjs=1.0  t=?  runEA=0.309  wall=19m46s  ETA=49m02s
+[13:50:59] [  80/275] ▶ start  qid=Complex_Retrieval_test:6  q="For each team that participated in the 'Cnada 2015' tournament, find the names of the players who represent that team..."
+[13:50:59] [  80/275] ▶ start  qid=Complex_Retrieval_test:6  q="For each team that participated in the 'Cnada 2015' tournament, find the names of the players who represent that team..."
+[13:51:13] [  80/275] ✔ done   qid=Complex_Retrieval_test:6  ea=False em=False psjs=0.22072072072072071  t=?  runEA=0.304  wall=19m59s  ETA=48m43s
+[13:51:13] [  80/275] ✔ done   qid=Complex_Retrieval_test:6  ea=False em=False psjs=0.22072072072072071  t=?  runEA=0.304  wall=19m59s  ETA=48m43s
+[13:51:13] [  81/275] ▶ start  qid=Complex_Retrieval_test:7  q="Retrieve the names of all coaches who coached a squad that participated in the '2015' tournament, along with the ID o..."
+[13:51:13] [  81/275] ▶ start  qid=Complex_Retrieval_test:7  q="Retrieve the names of all coaches who coached a squad that participated in the '2015' tournament, along with the ID o..."
+[13:51:21] [  81/275] ✔ done   qid=Complex_Retrieval_test:7  ea=True em=False psjs=1.0  t=?  runEA=0.314  wall=20m07s  ETA=48m11s
+[13:51:21] [  81/275] ✔ done   qid=Complex_Retrieval_test:7  ea=True em=False psjs=1.0  t=?  runEA=0.314  wall=20m07s  ETA=48m11s
+[13:51:21] [  82/275] ▶ start  qid=Complex_Retrieval_test:8  q="Find teams which had a player who scored a goal in a match that was part of the 'canada 2015' tournament. Return the ..."
+[13:51:21] [  82/275] ▶ start  qid=Complex_Retrieval_test:8  q="Find teams which had a player who scored a goal in a match that was part of the 'canada 2015' tournament. Return the ..."
+[13:51:31] [  82/275] ✔ done   qid=Complex_Retrieval_test:8  ea=False em=False psjs=1.0  t=?  runEA=0.310  wall=20m18s  ETA=47m46s
+[13:51:31] [  82/275] ✔ done   qid=Complex_Retrieval_test:8  ea=False em=False psjs=1.0  t=?  runEA=0.310  wall=20m18s  ETA=47m46s
+[13:51:31] [  83/275] ▶ start  qid=Complex_Retrieval_test:10  q="Find the names of all players who scored goals in matches that took place in the tournament 'UAS 2003'. Also, list th..."
+[13:51:31] [  83/275] ▶ start  qid=Complex_Retrieval_test:10  q="Find the names of all players who scored goals in matches that took place in the tournament 'UAS 2003'. Also, list th..."
+[13:51:51] [  83/275] ✔ done   qid=Complex_Retrieval_test:10  ea=False em=False psjs=1.0  t=?  runEA=0.306  wall=20m38s  ETA=47m43s
+[13:51:51] [  83/275] ✔ done   qid=Complex_Retrieval_test:10  ea=False em=False psjs=1.0  t=?  runEA=0.306  wall=20m38s  ETA=47m43s
+[13:51:51] [  84/275] ▶ start  qid=Complex_Retrieval_test:11  q="Retrieve the names of teams that participated in the '2003' tournament and the names of the players who played in mat..."
+[13:51:51] [  84/275] ▶ start  qid=Complex_Retrieval_test:11  q="Retrieve the names of teams that participated in the '2003' tournament and the names of the players who played in mat..."
+[13:52:25] [  84/275] ✔ done   qid=Complex_Retrieval_test:11  ea=True em=False psjs=1.0  t=?  runEA=0.315  wall=21m12s  ETA=48m12s
+[13:52:25] [  84/275] ✔ done   qid=Complex_Retrieval_test:11  ea=True em=False psjs=1.0  t=?  runEA=0.315  wall=21m12s  ETA=48m12s
+[13:52:25] [  85/275] ▶ start  qid=Complex_Retrieval_test:12  q="For the tournament '2003', find all matches and list the names of the players who scored goals in those matches, alon..."
+[13:52:25] [  85/275] ▶ start  qid=Complex_Retrieval_test:12  q="For the tournament '2003', find all matches and list the names of the players who scored goals in those matches, alon..."
+[13:52:43] [  85/275] ✔ done   qid=Complex_Retrieval_test:12  ea=True em=False psjs=1.0  t=?  runEA=0.324  wall=21m29s  ETA=48m02s
+[13:52:43] [  85/275] ✔ done   qid=Complex_Retrieval_test:12  ea=True em=False psjs=1.0  t=?  runEA=0.324  wall=21m29s  ETA=48m02s
+[13:52:43] [  86/275] ▶ start  qid=Complex_Retrieval_test:13  q="Find the names of all teams that participated in the 'USQ 2003' tournament and the number of matches each team played..."
+[13:52:43] [  86/275] ▶ start  qid=Complex_Retrieval_test:13  q="Find the names of all teams that participated in the 'USQ 2003' tournament and the number of matches each team played..."
+[13:53:03] [  86/275] ✔ done   qid=Complex_Retrieval_test:13  ea=True em=False psjs=1.0  t=?  runEA=0.333  wall=21m49s  ETA=47m57s
+[13:53:03] [  86/275] ✔ done   qid=Complex_Retrieval_test:13  ea=True em=False psjs=1.0  t=?  runEA=0.333  wall=21m49s  ETA=47m57s
+[13:53:03] [  87/275] ▶ start  qid=Complex_Retrieval_test:14  q="Retrieve the names of all players who represent the team 'The Rock' and played in matches during the 'USA 2003' tourn..."
+[13:53:03] [  87/275] ▶ start  qid=Complex_Retrieval_test:14  q="Retrieve the names of all players who represent the team 'The Rock' and played in matches during the 'USA 2003' tourn..."
+[13:53:17] [  87/275] ✔ done   qid=Complex_Retrieval_test:14  ea=True em=False psjs=1.0  t=?  runEA=0.342  wall=22m03s  ETA=47m39s
+[13:53:17] [  87/275] ✔ done   qid=Complex_Retrieval_test:14  ea=True em=False psjs=1.0  t=?  runEA=0.342  wall=22m03s  ETA=47m39s
+[13:53:17] [  88/275] ▶ start  qid=Complex_Retrieval_test:15  q="Find all teams that participated in the 'Chian PR 1991' tournament and retrieve the names of the players who represen..."
+[13:53:17] [  88/275] ▶ start  qid=Complex_Retrieval_test:15  q="Find all teams that participated in the 'Chian PR 1991' tournament and retrieve the names of the players who represen..."
+[13:53:31] [  88/275] ✔ done   qid=Complex_Retrieval_test:15  ea=False em=False psjs=0.0  t=?  runEA=0.338  wall=22m17s  ETA=47m21s
+[13:53:31] [  88/275] ✔ done   qid=Complex_Retrieval_test:15  ea=False em=False psjs=0.0  t=?  runEA=0.338  wall=22m17s  ETA=47m21s
+[13:53:31] [  89/275] ▶ start  qid=Complex_Retrieval_test:18  q="Find the names of all teams that participated in both the 'China PR 1991' tournament and matches where players named ..."
+[13:53:31] [  89/275] ▶ start  qid=Complex_Retrieval_test:18  q="Find the names of all teams that participated in both the 'China PR 1991' tournament and matches where players named ..."
+[13:53:43] [  89/275] ✔ done   qid=Complex_Retrieval_test:18  ea=True em=False psjs=1.0  t=?  runEA=0.346  wall=22m29s  ETA=46m59s
+[13:53:43] [  89/275] ✔ done   qid=Complex_Retrieval_test:18  ea=True em=False psjs=1.0  t=?  runEA=0.346  wall=22m29s  ETA=46m59s
+[13:53:43] [  90/275] ▶ start  qid=Complex_Retrieval_test:19  q="Find all tournaments in which a squad named 'Naija in '91' participated and retrieve the names of any coaches associa..."
+[13:53:43] [  90/275] ▶ start  qid=Complex_Retrieval_test:19  q="Find all tournaments in which a squad named 'Naija in '91' participated and retrieve the names of any coaches associa..."
+[13:53:56] [  90/275] ✔ done   qid=Complex_Retrieval_test:19  ea=False em=False psjs=0.0  t=?  runEA=0.342  wall=22m43s  ETA=46m41s
+[13:53:56] [  90/275] ✔ done   qid=Complex_Retrieval_test:19  ea=False em=False psjs=0.0  t=?  runEA=0.342  wall=22m43s  ETA=46m41s
+[13:53:56] [  91/275] ▶ start  qid=Complex_Retrieval_test:20  q="Find all players who represented the 'Holland' team and played in matches during the 'Sweden 1995' tournament. Return..."
+[13:53:56] [  91/275] ▶ start  qid=Complex_Retrieval_test:20  q="Find all players who represented the 'Holland' team and played in matches during the 'Sweden 1995' tournament. Return..."
+[13:54:11] [  91/275] ✔ done   qid=Complex_Retrieval_test:20  ea=True em=False psjs=1.0  t=?  runEA=0.350  wall=22m58s  ETA=46m26s
+[13:54:11] [  91/275] ✔ done   qid=Complex_Retrieval_test:20  ea=True em=False psjs=1.0  t=?  runEA=0.350  wall=22m58s  ETA=46m26s
+[13:54:11] [  92/275] ▶ start  qid=Complex_Retrieval_test:21  q="Retrieve the names of all teams that participated in the 'SWEDEN 1995' tournament and also played in matches with 'Fi..."
+[13:54:11] [  92/275] ▶ start  qid=Complex_Retrieval_test:21  q="Retrieve the names of all teams that participated in the 'SWEDEN 1995' tournament and also played in matches with 'Fi..."
+[13:54:21] [  92/275] ✔ done   qid=Complex_Retrieval_test:21  ea=False em=False psjs=0.0  t=?  runEA=0.346  wall=23m07s  ETA=45m59s
+[13:54:21] [  92/275] ✔ done   qid=Complex_Retrieval_test:21  ea=False em=False psjs=0.0  t=?  runEA=0.346  wall=23m07s  ETA=45m59s
+[13:54:21] [  93/275] ▶ start  qid=Complex_Retrieval_test:22  q="For the 'Swedwn 1995' tournament, find all matches where players scored goals. Return the match ID, the names of the ..."
+[13:54:21] [  93/275] ▶ start  qid=Complex_Retrieval_test:22  q="For the 'Swedwn 1995' tournament, find all matches where players scored goals. Return the match ID, the names of the ..."
+[13:54:32] [  93/275] ✔ done   qid=Complex_Retrieval_test:22  ea=True em=False psjs=1.0  t=?  runEA=0.354  wall=23m18s  ETA=45m36s
+[13:54:32] [  93/275] ✔ done   qid=Complex_Retrieval_test:22  ea=True em=False psjs=1.0  t=?  runEA=0.354  wall=23m18s  ETA=45m36s
+[13:54:32] [  94/275] ▶ start  qid=Complex_Retrieval_test:23  q="Find the names of all players who represent the 'Holland' and have been coached by 'Sarina Wiegman'. Also, return the..."
+[13:54:32] [  94/275] ▶ start  qid=Complex_Retrieval_test:23  q="Find the names of all players who represent the 'Holland' and have been coached by 'Sarina Wiegman'. Also, return the..."
+[13:54:49] [  94/275] ✔ done   qid=Complex_Retrieval_test:23  ea=True em=False psjs=1.0  t=?  runEA=0.361  wall=23m35s  ETA=45m24s
+[13:54:49] [  94/275] ✔ done   qid=Complex_Retrieval_test:23  ea=True em=False psjs=1.0  t=?  runEA=0.361  wall=23m35s  ETA=45m24s
+[13:54:49] [  95/275] ▶ start  qid=Complex_Retrieval_test:24  q="Retrieve the names of all players who played in a match on '2007-09-20' and also represent the 'Holland' team. Return..."
+[13:54:49] [  95/275] ▶ start  qid=Complex_Retrieval_test:24  q="Retrieve the names of all players who played in a match on '2007-09-20' and also represent the 'Holland' team. Return..."
+[13:55:00] [  95/275] ✔ done   qid=Complex_Retrieval_test:24  ea=True em=False psjs=1.0  t=?  runEA=0.369  wall=23m46s  ETA=45m02s
+[13:55:00] [  95/275] ✔ done   qid=Complex_Retrieval_test:24  ea=True em=False psjs=1.0  t=?  runEA=0.369  wall=23m46s  ETA=45m02s
+[13:55:00] [  96/275] ▶ start  qid=Complex_Retrieval_test:25  q="Find the names of all players who both represented a team and scored a goal in a match that took place in the '1991' ..."
+[13:55:00] [  96/275] ▶ start  qid=Complex_Retrieval_test:25  q="Find the names of all players who both represented a team and scored a goal in a match that took place in the '1991' ..."
+[13:55:09] [  96/275] ✔ done   qid=Complex_Retrieval_test:25  ea=True em=False psjs=1.0  t=?  runEA=0.376  wall=23m56s  ETA=44m37s
+[13:55:09] [  96/275] ✔ done   qid=Complex_Retrieval_test:25  ea=True em=False psjs=1.0  t=?  runEA=0.376  wall=23m56s  ETA=44m37s
+[13:55:09] [  97/275] ▶ start  qid=Complex_Retrieval_test:26  q="Find all matches played by the team 'Gold Coast' and list the names of the players who played in those matches, along..."
+[13:55:09] [  97/275] ▶ start  qid=Complex_Retrieval_test:26  q="Find all matches played by the team 'Gold Coast' and list the names of the players who played in those matches, along..."
+[13:55:26] [  97/275] ✔ done   qid=Complex_Retrieval_test:26  ea=False em=False psjs=1.0  t=?  runEA=0.372  wall=24m12s  ETA=44m24s
+[13:55:26] [  97/275] ✔ done   qid=Complex_Retrieval_test:26  ea=False em=False psjs=1.0  t=?  runEA=0.372  wall=24m12s  ETA=44m24s
+[13:55:26] [  98/275] ▶ start  qid=Complex_Retrieval_test:27  q="Retrieve the names of all coaches who coached a squad that participated in the 'Geramny 2011' tournament, and also fi..."
+[13:55:26] [  98/275] ▶ start  qid=Complex_Retrieval_test:27  q="Retrieve the names of all coaches who coached a squad that participated in the 'Geramny 2011' tournament, and also fi..."
+[13:55:34] [  98/275] ✔ done   qid=Complex_Retrieval_test:27  ea=True em=False psjs=1.0  t=?  runEA=0.379  wall=24m21s  ETA=43m58s
+[13:55:34] [  98/275] ✔ done   qid=Complex_Retrieval_test:27  ea=True em=False psjs=1.0  t=?  runEA=0.379  wall=24m21s  ETA=43m58s
+[13:55:34] [  99/275] ▶ start  qid=Complex_Retrieval_test:29  q="For the '1995' tournament, find all the teams that participated and the number of matches each team played in that to..."
+[13:55:34] [  99/275] ▶ start  qid=Complex_Retrieval_test:29  q="For the '1995' tournament, find all the teams that participated and the number of matches each team played in that to..."
+[13:55:40] [  99/275] ✔ done   qid=Complex_Retrieval_test:29  ea=True em=False psjs=1.0  t=?  runEA=0.386  wall=24m26s  ETA=43m26s
+[13:55:40] [  99/275] ✔ done   qid=Complex_Retrieval_test:29  ea=True em=False psjs=1.0  t=?  runEA=0.386  wall=24m26s  ETA=43m26s
+[13:55:40] [ 100/275] ▶ start  qid=Complex_Retrieval_test:30  q="Find all players who scored goals in matches during the 'Sewden 1995' tournament. Return the player's name, the match..."
+[13:55:40] [ 100/275] ▶ start  qid=Complex_Retrieval_test:30  q="Find all players who scored goals in matches during the 'Sewden 1995' tournament. Return the player's name, the match..."
+[13:55:52] [ 100/275] ✔ done   qid=Complex_Retrieval_test:30  ea=True em=False psjs=1.0  t=?  runEA=0.393  wall=24m39s  ETA=43m08s
+[13:55:52] [ 100/275] ✔ done   qid=Complex_Retrieval_test:30  ea=True em=False psjs=1.0  t=?  runEA=0.393  wall=24m39s  ETA=43m08s
+[13:55:52] [ 101/275] ▶ start  qid=Complex_Retrieval_test:31  q="Retrieve the names of all teams that participated in the '1995' tournament and also played in a match on '2015-06-11'."
+[13:55:52] [ 101/275] ▶ start  qid=Complex_Retrieval_test:31  q="Retrieve the names of all teams that participated in the '1995' tournament and also played in a match on '2015-06-11'."
+[13:55:57] [ 101/275] ✔ done   qid=Complex_Retrieval_test:31  ea=True em=False psjs=1.0  t=?  runEA=0.400  wall=24m43s  ETA=42m35s
+[13:55:57] [ 101/275] ✔ done   qid=Complex_Retrieval_test:31  ea=True em=False psjs=1.0  t=?  runEA=0.400  wall=24m43s  ETA=42m35s
+[13:55:57] [ 102/275] ▶ start  qid=Complex_Retrieval_test:32  q="Find all players who represent 'AUS' and played in matches during the 'Sweden 1995' tournament. Return the player's n..."
+[13:55:57] [ 102/275] ▶ start  qid=Complex_Retrieval_test:32  q="Find all players who represent 'AUS' and played in matches during the 'Sweden 1995' tournament. Return the player's n..."
+[13:56:10] [ 102/275] ✔ done   qid=Complex_Retrieval_test:32  ea=True em=False psjs=1.0  t=?  runEA=0.407  wall=24m56s  ETA=42m17s
+[13:56:10] [ 102/275] ✔ done   qid=Complex_Retrieval_test:32  ea=True em=False psjs=1.0  t=?  runEA=0.407  wall=24m56s  ETA=42m17s
+[13:56:10] [ 103/275] ▶ start  qid=Complex_Retrieval_test:33  q="Retrieve the names of all players who are in the 'Fourth Republic Nigeria' squad and scored a goal in any match. Also..."
+[13:56:10] [ 103/275] ▶ start  qid=Complex_Retrieval_test:33  q="Retrieve the names of all players who are in the 'Fourth Republic Nigeria' squad and scored a goal in any match. Also..."
+[13:56:22] [ 103/275] ✔ done   qid=Complex_Retrieval_test:33  ea=False em=False psjs=0.0  t=?  runEA=0.402  wall=25m09s  ETA=41m59s
+[13:56:22] [ 103/275] ✔ done   qid=Complex_Retrieval_test:33  ea=False em=False psjs=0.0  t=?  runEA=0.402  wall=25m09s  ETA=41m59s
+[13:56:22] [ 104/275] ▶ start  qid=Complex_Retrieval_test:34  q="Find all players who represented the 'The Alps' team and played in matches that occurred in the 'Canada 2015' tournam..."
+[13:56:22] [ 104/275] ▶ start  qid=Complex_Retrieval_test:34  q="Find all players who represented the 'The Alps' team and played in matches that occurred in the 'Canada 2015' tournam..."
+[13:56:43] [ 104/275] ✔ done   qid=Complex_Retrieval_test:34  ea=False em=False psjs=0.005128205128205128  t=?  runEA=0.398  wall=25m30s  ETA=41m55s
+[13:56:43] [ 104/275] ✔ done   qid=Complex_Retrieval_test:34  ea=False em=False psjs=0.005128205128205128  t=?  runEA=0.398  wall=25m30s  ETA=41m55s
+[13:56:43] [ 105/275] ▶ start  qid=Complex_Retrieval_test:35  q="Retrieve the names of all teams that participated in the 'usa 1999' tournament, along with the names of the players w..."
+[13:56:43] [ 105/275] ▶ start  qid=Complex_Retrieval_test:35  q="Retrieve the names of all teams that participated in the 'usa 1999' tournament, along with the names of the players w..."
+[13:56:58] [ 105/275] ✔ done   qid=Complex_Retrieval_test:35  ea=False em=False psjs=0.7990314769975787  t=?  runEA=0.394  wall=25m45s  ETA=41m41s
+[13:56:58] [ 105/275] ✔ done   qid=Complex_Retrieval_test:35  ea=False em=False psjs=0.7990314769975787  t=?  runEA=0.394  wall=25m45s  ETA=41m41s
+[13:56:58] [ 106/275] ▶ start  qid=Complex_Retrieval_test:36  q="Find the names of all players who played in matches staged as 'First Stage' and also represent the team 'The Alps'."
+[13:56:58] [ 106/275] ▶ start  qid=Complex_Retrieval_test:36  q="Find the names of all players who played in matches staged as 'First Stage' and also represent the team 'The Alps'."
+[13:57:12] [ 106/275] ✔ done   qid=Complex_Retrieval_test:36  ea=False em=False psjs=0.0  t=?  runEA=0.389  wall=25m59s  ETA=41m25s
+[13:57:12] [ 106/275] ✔ done   qid=Complex_Retrieval_test:36  ea=False em=False psjs=0.0  t=?  runEA=0.389  wall=25m59s  ETA=41m25s
+[13:57:12] [ 107/275] ▶ start  qid=Complex_Retrieval_test:37  q="For the 'Canafa 2015' tournament, find the names of all teams that participated and the number of matches they played..."
+[13:57:12] [ 107/275] ▶ start  qid=Complex_Retrieval_test:37  q="For the 'Canafa 2015' tournament, find the names of all teams that participated and the number of matches they played..."
+[13:57:23] [ 107/275] ✔ done   qid=Complex_Retrieval_test:37  ea=True em=False psjs=1.0  t=?  runEA=0.396  wall=26m09s  ETA=41m04s
+[13:57:23] [ 107/275] ✔ done   qid=Complex_Retrieval_test:37  ea=True em=False psjs=1.0  t=?  runEA=0.396  wall=26m09s  ETA=41m04s
+[13:57:23] [ 108/275] ▶ start  qid=Complex_Retrieval_test:39  q="Find all players who represented the 'Nippon' team and played in matches during the 'China 2007' tournament. Return t..."
+[13:57:23] [ 108/275] ▶ start  qid=Complex_Retrieval_test:39  q="Find all players who represented the 'Nippon' team and played in matches during the 'China 2007' tournament. Return t..."
+[13:57:43] [ 108/275] ✔ done   qid=Complex_Retrieval_test:39  ea=True em=False psjs=1.0  t=?  runEA=0.402  wall=26m29s  ETA=40m57s
+[13:57:43] [ 108/275] ✔ done   qid=Complex_Retrieval_test:39  ea=True em=False psjs=1.0  t=?  runEA=0.402  wall=26m29s  ETA=40m57s
+[13:57:43] [ 109/275] ▶ start  qid=Complex_Retrieval_test:40  q="Retrieve the names of all coaches who coached a squad that participated in the '2007' tournament, along with the name..."
+[13:57:43] [ 109/275] ▶ start  qid=Complex_Retrieval_test:40  q="Retrieve the names of all coaches who coached a squad that participated in the '2007' tournament, along with the name..."
+[13:57:51] [ 109/275] ✔ done   qid=Complex_Retrieval_test:40  ea=False em=False psjs=0.10891089108910891  t=?  runEA=0.398  wall=26m37s  ETA=40m32s
+[13:57:51] [ 109/275] ✔ done   qid=Complex_Retrieval_test:40  ea=False em=False psjs=0.10891089108910891  t=?  runEA=0.398  wall=26m37s  ETA=40m32s
+[13:57:51] [ 110/275] ▶ start  qid=Complex_Retrieval_test:41  q="List all matches played by the 'Nippon' team in the 'China 2007' tournament, showing the match ID and the number of g..."
+[13:57:51] [ 110/275] ▶ start  qid=Complex_Retrieval_test:41  q="List all matches played by the 'Nippon' team in the 'China 2007' tournament, showing the match ID and the number of g..."
+[13:58:09] [ 110/275] ✔ done   qid=Complex_Retrieval_test:41  ea=False em=False psjs=0.07462686567164178  t=?  runEA=0.394  wall=26m55s  ETA=40m23s
+[13:58:09] [ 110/275] ✔ done   qid=Complex_Retrieval_test:41  ea=False em=False psjs=0.07462686567164178  t=?  runEA=0.394  wall=26m55s  ETA=40m23s
+[13:58:09] [ 111/275] ▶ start  qid=Complex_Retrieval_test:43  q="For each team that participated in the 'Chinna 2007' tournament, find the player who scored the most goals in any sin..."
+[13:58:09] [ 111/275] ▶ start  qid=Complex_Retrieval_test:43  q="For each team that participated in the 'Chinna 2007' tournament, find the player who scored the most goals in any sin..."
+[13:58:28] [ 111/275] ✔ done   qid=Complex_Retrieval_test:43  ea=False em=False psjs=0.8807588075880759  t=?  runEA=0.390  wall=27m14s  ETA=40m15s
+[13:58:28] [ 111/275] ✔ done   qid=Complex_Retrieval_test:43  ea=False em=False psjs=0.8807588075880759  t=?  runEA=0.390  wall=27m14s  ETA=40m15s
+[13:58:28] [ 112/275] ▶ start  qid=Complex_Retrieval_test:44  q="Find all the players who played in matches during the 'sweden 1995' tournament. For each player, list the names of th..."
+[13:58:28] [ 112/275] ▶ start  qid=Complex_Retrieval_test:44  q="Find all the players who played in matches during the 'sweden 1995' tournament. For each player, list the names of th..."
+[13:58:41] [ 112/275] ✔ done   qid=Complex_Retrieval_test:44  ea=False em=False psjs=1.0  t=?  runEA=0.386  wall=27m28s  ETA=39m58s
+[13:58:41] [ 112/275] ✔ done   qid=Complex_Retrieval_test:44  ea=False em=False psjs=1.0  t=?  runEA=0.386  wall=27m28s  ETA=39m58s
+[13:58:41] [ 113/275] ▶ start  qid=Complex_Retrieval_test:46  q="Retrieve the names of all teams that participated in the '2015' tournament, along with the total number of players wh..."
+[13:58:41] [ 113/275] ▶ start  qid=Complex_Retrieval_test:46  q="Retrieve the names of all teams that participated in the '2015' tournament, along with the total number of players wh..."
+[13:58:50] [ 113/275] ✔ done   qid=Complex_Retrieval_test:46  ea=True em=False psjs=0.6716001716001716  t=?  runEA=0.392  wall=27m37s  ETA=39m35s
+[13:58:50] [ 113/275] ✔ done   qid=Complex_Retrieval_test:46  ea=True em=False psjs=0.6716001716001716  t=?  runEA=0.392  wall=27m37s  ETA=39m35s
+[13:58:50] [ 114/275] ▶ start  qid=Complex_Retrieval_test:47  q="Find the names of all players who represent 'Mex' and played in a match staged as 'First stage'."
+[13:58:50] [ 114/275] ▶ start  qid=Complex_Retrieval_test:47  q="Find the names of all players who represent 'Mex' and played in a match staged as 'First stage'."
+[13:59:05] [ 114/275] ✔ done   qid=Complex_Retrieval_test:47  ea=True em=False psjs=1.0  t=?  runEA=0.398  wall=27m51s  ETA=39m20s
+[13:59:05] [ 114/275] ✔ done   qid=Complex_Retrieval_test:47  ea=True em=False psjs=1.0  t=?  runEA=0.398  wall=27m51s  ETA=39m20s
+[13:59:05] [ 115/275] ▶ start  qid=Complex_Retrieval_test:48  q="Identify all tournaments in which a squad named 'Camroon in 2015' participated, and for each tournament, list the nam..."
+[13:59:05] [ 115/275] ▶ start  qid=Complex_Retrieval_test:48  q="Identify all tournaments in which a squad named 'Camroon in 2015' participated, and for each tournament, list the nam..."
+[13:59:25] [ 115/275] ✔ done   qid=Complex_Retrieval_test:48  ea=False em=False psjs=1.0  t=?  runEA=0.394  wall=28m11s  ETA=39m13s
+[13:59:25] [ 115/275] ✔ done   qid=Complex_Retrieval_test:48  ea=False em=False psjs=1.0  t=?  runEA=0.394  wall=28m11s  ETA=39m13s
+[13:59:25] [ 116/275] ▶ start  qid=Complex_Retrieval_test:49  q="Retrieve the names of all players who scored goals in matches played in the '2015' tournament, along with the minute ..."
+[13:59:25] [ 116/275] ▶ start  qid=Complex_Retrieval_test:49  q="Retrieve the names of all players who scored goals in matches played in the '2015' tournament, along with the minute ..."
+[13:59:35] [ 116/275] ✔ done   qid=Complex_Retrieval_test:49  ea=True em=False psjs=1.0  t=?  runEA=0.400  wall=28m22s  ETA=38m52s
+[13:59:35] [ 116/275] ✔ done   qid=Complex_Retrieval_test:49  ea=True em=False psjs=1.0  t=?  runEA=0.400  wall=28m22s  ETA=38m52s
+[13:59:35] [ 117/275] ▶ start  qid=Complex_Retrieval_test:50  q="Find all teams that participated in the 'Canaada 2015' tournament and list the names of players who played in any mat..."
+[13:59:35] [ 117/275] ▶ start  qid=Complex_Retrieval_test:50  q="Find all teams that participated in the 'Canaada 2015' tournament and list the names of players who played in any mat..."
+[14:00:12] [ 117/275] ✔ done   qid=Complex_Retrieval_test:50  ea=False em=False psjs=0.1988663656451148  t=?  runEA=0.396  wall=28m58s  ETA=39m08s
+[14:00:12] [ 117/275] ✔ done   qid=Complex_Retrieval_test:50  ea=False em=False psjs=0.1988663656451148  t=?  runEA=0.396  wall=28m58s  ETA=39m08s
+[14:00:12] [ 118/275] ▶ start  qid=Complex_Retrieval_test:51  q="For the '2015' tournament, identify all the coaches and the teams they coached. Also, list the players who were in th..."
+[14:00:12] [ 118/275] ▶ start  qid=Complex_Retrieval_test:51  q="For the '2015' tournament, identify all the coaches and the teams they coached. Also, list the players who were in th..."
+[14:00:29] [ 118/275] ✔ done   qid=Complex_Retrieval_test:51  ea=False em=False psjs=0.6801552106430155  t=?  runEA=0.393  wall=29m15s  ETA=38m55s
+[14:00:29] [ 118/275] ✔ done   qid=Complex_Retrieval_test:51  ea=False em=False psjs=0.6801552106430155  t=?  runEA=0.393  wall=29m15s  ETA=38m55s
+[14:00:29] [ 119/275] ▶ start  qid=Complex_Retrieval_test:52  q="Identify all the players who represent 'La República Cafetera' and played in matches during the 'Canada 2015' tournam..."
+[14:00:29] [ 119/275] ▶ start  qid=Complex_Retrieval_test:52  q="Identify all the players who represent 'La República Cafetera' and played in matches during the 'Canada 2015' tournam..."
+[14:00:46] [ 119/275] ✔ done   qid=Complex_Retrieval_test:52  ea=False em=False psjs=0.004878048780487805  t=?  runEA=0.389  wall=29m32s  ETA=38m43s
+[14:00:46] [ 119/275] ✔ done   qid=Complex_Retrieval_test:52  ea=False em=False psjs=0.004878048780487805  t=?  runEA=0.389  wall=29m32s  ETA=38m43s
+[14:00:46] [ 120/275] ▶ start  qid=Complex_Retrieval_test:53  q="Find all players who scored goals in matches played in the 'Cihna 2007' tournament. Return the player's name, the mat..."
+[14:00:46] [ 120/275] ▶ start  qid=Complex_Retrieval_test:53  q="Find all players who scored goals in matches played in the 'Cihna 2007' tournament. Return the player's name, the mat..."
+[14:00:59] [ 120/275] ✔ done   qid=Complex_Retrieval_test:53  ea=True em=False psjs=1.0  t=?  runEA=0.394  wall=29m45s  ETA=38m26s
+[14:00:59] [ 120/275] ✔ done   qid=Complex_Retrieval_test:53  ea=True em=False psjs=1.0  t=?  runEA=0.394  wall=29m45s  ETA=38m26s
+[14:00:59] [ 121/275] ▶ start  qid=Complex_Retrieval_test:54  q="Retrieve the names of all teams that participated in the '2007' tournament and also played in a match on '1999-07-10'."
+[14:00:59] [ 121/275] ▶ start  qid=Complex_Retrieval_test:54  q="Retrieve the names of all teams that participated in the '2007' tournament and also played in a match on '1999-07-10'."
+[14:01:06] [ 121/275] ✔ done   qid=Complex_Retrieval_test:54  ea=True em=False psjs=1.0  t=?  runEA=0.400  wall=29m53s  ETA=38m02s
+[14:01:06] [ 121/275] ✔ done   qid=Complex_Retrieval_test:54  ea=True em=False psjs=1.0  t=?  runEA=0.400  wall=29m53s  ETA=38m02s
+[14:01:06] [ 122/275] ▶ start  qid=Complex_Retrieval_test:55  q="Find all coaches who coached a squad that participated in the 'CHINA 2007' tournament. Return the coach's name and th..."
+[14:01:06] [ 122/275] ▶ start  qid=Complex_Retrieval_test:55  q="Find all coaches who coached a squad that participated in the 'CHINA 2007' tournament. Return the coach's name and th..."
+[14:01:18] [ 122/275] ✔ done   qid=Complex_Retrieval_test:55  ea=True em=False psjs=1.0  t=?  runEA=0.405  wall=30m05s  ETA=37m43s
+[14:01:18] [ 122/275] ✔ done   qid=Complex_Retrieval_test:55  ea=True em=False psjs=1.0  t=?  runEA=0.405  wall=30m05s  ETA=37m43s
+[14:01:18] [ 123/275] ▶ start  qid=Complex_Retrieval_test:56  q="For the team 'Tico Land', find all the players who represent them and scored a goal in any match. Return the player's..."
+[14:01:18] [ 123/275] ▶ start  qid=Complex_Retrieval_test:56  q="For the team 'Tico Land', find all the players who represent them and scored a goal in any match. Return the player's..."
+[14:01:34] [ 123/275] ✔ done   qid=Complex_Retrieval_test:56  ea=False em=False psjs=0.0  t=?  runEA=0.402  wall=30m21s  ETA=37m30s
+[14:01:34] [ 123/275] ✔ done   qid=Complex_Retrieval_test:56  ea=False em=False psjs=0.0  t=?  runEA=0.402  wall=30m21s  ETA=37m30s
+[14:01:34] [ 124/275] ▶ start  qid=Complex_Retrieval_test:57  q="Find all players who represent a team that participated in the '2007' tournament and played in a match with the stage..."
+[14:01:34] [ 124/275] ▶ start  qid=Complex_Retrieval_test:57  q="Find all players who represent a team that participated in the '2007' tournament and played in a match with the stage..."
+[14:01:46] [ 124/275] ✔ done   qid=Complex_Retrieval_test:57  ea=False em=False psjs=0.20344387755102042  t=?  runEA=0.398  wall=30m32s  ETA=37m11s
+[14:01:46] [ 124/275] ✔ done   qid=Complex_Retrieval_test:57  ea=False em=False psjs=0.20344387755102042  t=?  runEA=0.398  wall=30m32s  ETA=37m11s
+[14:01:46] [ 125/275] ▶ start  qid=Complex_Retrieval_test:58  q="Find all players who scored goals in matches that took place in the 'Chinna PR 1991' tournament. Return the player's ..."
+[14:01:46] [ 125/275] ▶ start  qid=Complex_Retrieval_test:58  q="Find all players who scored goals in matches that took place in the 'Chinna PR 1991' tournament. Return the player's ..."
+[14:02:05] [ 125/275] ✔ done   qid=Complex_Retrieval_test:58  ea=False em=False psjs=0.0  t=?  runEA=0.395  wall=30m51s  ETA=37m01s
+[14:02:05] [ 125/275] ✔ done   qid=Complex_Retrieval_test:58  ea=False em=False psjs=0.0  t=?  runEA=0.395  wall=30m51s  ETA=37m01s
+[14:02:05] [ 126/275] ▶ start  qid=Complex_Retrieval_test:59  q="For each team that participated in the 'Chiina PR 1991' tournament, retrieve the team's name and the names of all pla..."
+[14:02:05] [ 126/275] ▶ start  qid=Complex_Retrieval_test:59  q="For each team that participated in the 'Chiina PR 1991' tournament, retrieve the team's name and the names of all pla..."
+[14:02:25] [ 126/275] ✔ done   qid=Complex_Retrieval_test:59  ea=True em=False psjs=1.0  t=?  runEA=0.400  wall=31m11s  ETA=36m53s
+[14:02:25] [ 126/275] ✔ done   qid=Complex_Retrieval_test:59  ea=True em=False psjs=1.0  t=?  runEA=0.400  wall=31m11s  ETA=36m53s
+[14:02:25] [ 127/275] ▶ start  qid=Complex_Retrieval_test:60  q="Retrieve the names of all coaches who coached squads that participated in the '1991' tournament, along with the squad..."
+[14:02:25] [ 127/275] ▶ start  qid=Complex_Retrieval_test:60  q="Retrieve the names of all coaches who coached squads that participated in the '1991' tournament, along with the squad..."
+[14:02:30] [ 127/275] ✔ done   qid=Complex_Retrieval_test:60  ea=True em=False psjs=1.0  t=?  runEA=0.405  wall=31m17s  ETA=36m27s
+[14:02:30] [ 127/275] ✔ done   qid=Complex_Retrieval_test:60  ea=True em=False psjs=1.0  t=?  runEA=0.405  wall=31m17s  ETA=36m27s
+[14:02:30] [ 128/275] ▶ start  qid=Complex_Retrieval_test:61  q="Find the names of all teams that played in matches during the 'China PRR 1991' tournament, and for each team, count t..."
+[14:02:30] [ 128/275] ▶ start  qid=Complex_Retrieval_test:61  q="Find the names of all teams that played in matches during the 'China PRR 1991' tournament, and for each team, count t..."
+[14:02:40] [ 128/275] ✔ done   qid=Complex_Retrieval_test:61  ea=True em=False psjs=1.0  t=?  runEA=0.410  wall=31m26s  ETA=36m06s
+[14:02:40] [ 128/275] ✔ done   qid=Complex_Retrieval_test:61  ea=True em=False psjs=1.0  t=?  runEA=0.410  wall=31m26s  ETA=36m06s
+[14:02:40] [ 129/275] ▶ start  qid=Complex_Retrieval_test:62  q="Identify all players who both represented 'CHN' and scored a goal in a match that took place on '2003-10-03'. Return ..."
+[14:02:40] [ 129/275] ▶ start  qid=Complex_Retrieval_test:62  q="Identify all players who both represented 'CHN' and scored a goal in a match that took place on '2003-10-03'. Return ..."
+[14:02:54] [ 129/275] ✔ done   qid=Complex_Retrieval_test:62  ea=True em=False psjs=1.0  t=?  runEA=0.415  wall=31m40s  ETA=35m51s
+[14:02:54] [ 129/275] ✔ done   qid=Complex_Retrieval_test:62  ea=True em=False psjs=1.0  t=?  runEA=0.415  wall=31m40s  ETA=35m51s
+[14:02:54] [ 130/275] ▶ start  qid=Complex_Retrieval_test:63  q="Find all players who represented the team 'Ecuador' and played in matches during the '2007' tournament. Return each p..."
+[14:02:54] [ 130/275] ▶ start  qid=Complex_Retrieval_test:63  q="Find all players who represented the team 'Ecuador' and played in matches during the '2007' tournament. Return each p..."
+[14:03:07] [ 130/275] ✔ done   qid=Complex_Retrieval_test:63  ea=True em=False psjs=1.0  t=?  runEA=0.420  wall=31m53s  ETA=35m34s
+[14:03:07] [ 130/275] ✔ done   qid=Complex_Retrieval_test:63  ea=True em=False psjs=1.0  t=?  runEA=0.420  wall=31m53s  ETA=35m34s
+[14:03:07] [ 131/275] ▶ start  qid=Complex_Retrieval_test:64  q="Retrieve the names of all players who scored goals in matches that took place in the '1995' tournament. Also, return ..."
+[14:03:07] [ 131/275] ▶ start  qid=Complex_Retrieval_test:64  q="Retrieve the names of all players who scored goals in matches that took place in the '1995' tournament. Also, return ..."
+[14:03:18] [ 131/275] ✔ done   qid=Complex_Retrieval_test:64  ea=True em=False psjs=1.0  t=?  runEA=0.425  wall=32m04s  ETA=35m15s
+[14:03:18] [ 131/275] ✔ done   qid=Complex_Retrieval_test:64  ea=True em=False psjs=1.0  t=?  runEA=0.425  wall=32m04s  ETA=35m15s
+[14:03:18] [ 132/275] ▶ start  qid=Complex_Retrieval_test:65  q="Identify all teams that participated in the 'China PR 1991' tournament. For each team, list the names of the players ..."
+[14:03:18] [ 132/275] ▶ start  qid=Complex_Retrieval_test:65  q="Identify all teams that participated in the 'China PR 1991' tournament. For each team, list the names of the players ..."
+[14:03:45] [ 132/275] ✔ done   qid=Complex_Retrieval_test:65  ea=False em=False psjs=0.7160493827160493  t=?  runEA=0.421  wall=32m31s  ETA=35m14s
+[14:03:45] [ 132/275] ✔ done   qid=Complex_Retrieval_test:65  ea=False em=False psjs=0.7160493827160493  t=?  runEA=0.421  wall=32m31s  ETA=35m14s
+[14:03:45] [ 133/275] ▶ start  qid=Complex_Retrieval_test:66  q="Find the names of all coaches who coached squads that participated in the 'Chinna 2007' tournament. Also, return the ..."
+[14:03:45] [ 133/275] ▶ start  qid=Complex_Retrieval_test:66  q="Find the names of all coaches who coached squads that participated in the 'Chinna 2007' tournament. Also, return the ..."
+[14:04:02] [ 133/275] ✔ done   qid=Complex_Retrieval_test:66  ea=True em=False psjs=1.0  t=?  runEA=0.426  wall=32m48s  ETA=35m01s
+[14:04:02] [ 133/275] ✔ done   qid=Complex_Retrieval_test:66  ea=True em=False psjs=1.0  t=?  runEA=0.426  wall=32m48s  ETA=35m01s
+[14:04:02] [ 134/275] ▶ start  qid=Complex_Retrieval_test:68  q="Retrieve the names of all teams that participated in the 'Chima 2007' tournament, along with the names of the players..."
+[14:04:02] [ 134/275] ▶ start  qid=Complex_Retrieval_test:68  q="Retrieve the names of all teams that participated in the 'Chima 2007' tournament, along with the names of the players..."
+[14:04:13] [ 134/275] ✔ done   qid=Complex_Retrieval_test:68  ea=True em=False psjs=1.0  t=?  runEA=0.431  wall=33m00s  ETA=34m43s
+[14:04:13] [ 134/275] ✔ done   qid=Complex_Retrieval_test:68  ea=True em=False psjs=1.0  t=?  runEA=0.431  wall=33m00s  ETA=34m43s
+[14:04:13] [ 135/275] ▶ start  qid=Complex_Retrieval_test:69  q="For the '2007' tournament, find all the matches and list the teams that played in those matches. Return the match ID,..."
+[14:04:13] [ 135/275] ▶ start  qid=Complex_Retrieval_test:69  q="For the '2007' tournament, find all the matches and list the teams that played in those matches. Return the match ID,..."
+[14:04:23] [ 135/275] ✔ done   qid=Complex_Retrieval_test:69  ea=False em=False psjs=1.0  t=?  runEA=0.427  wall=33m10s  ETA=34m23s
+[14:04:23] [ 135/275] ✔ done   qid=Complex_Retrieval_test:69  ea=False em=False psjs=1.0  t=?  runEA=0.427  wall=33m10s  ETA=34m23s
+[14:04:23] [ 136/275] ▶ start  qid=Complex_Retrieval_test:70  q="Find all the players who were coached by 'Arthur Elias' and played in matches in the 'China 2007' tournament. Return ..."
+[14:04:23] [ 136/275] ▶ start  qid=Complex_Retrieval_test:70  q="Find all the players who were coached by 'Arthur Elias' and played in matches in the 'China 2007' tournament. Return ..."
+[14:04:42] [ 136/275] ✔ done   qid=Complex_Retrieval_test:70  ea=True em=False psjs=1.0  t=?  runEA=0.432  wall=33m28s  ETA=34m13s
+[14:04:42] [ 136/275] ✔ done   qid=Complex_Retrieval_test:70  ea=True em=False psjs=1.0  t=?  runEA=0.432  wall=33m28s  ETA=34m13s
+[14:04:42] [ 137/275] ▶ start  qid=Complex_Retrieval_test:71  q="Retrieve the names of all players who represent 'Brasil' and scored a goal in a match that occurred before '2003-10-1..."
+[14:04:42] [ 137/275] ▶ start  qid=Complex_Retrieval_test:71  q="Retrieve the names of all players who represent 'Brasil' and scored a goal in a match that occurred before '2003-10-1..."
+[14:05:09] [ 137/275] ✔ done   qid=Complex_Retrieval_test:71  ea=True em=False psjs=1.0  t=?  runEA=0.437  wall=33m56s  ETA=34m10s
+[14:05:09] [ 137/275] ✔ done   qid=Complex_Retrieval_test:71  ea=True em=False psjs=1.0  t=?  runEA=0.437  wall=33m56s  ETA=34m10s
+[14:05:09] [ 138/275] ▶ start  qid=Complex_Retrieval_test:72  q="Find all players who scored goals in matches played in the '1999' tournament. Return the player's name, the match dat..."
+[14:05:09] [ 138/275] ▶ start  qid=Complex_Retrieval_test:72  q="Find all players who scored goals in matches played in the '1999' tournament. Return the player's name, the match dat..."
+[14:05:24] [ 138/275] ✔ done   qid=Complex_Retrieval_test:72  ea=True em=False psjs=1.0  t=?  runEA=0.441  wall=34m10s  ETA=33m56s
+[14:05:24] [ 138/275] ✔ done   qid=Complex_Retrieval_test:72  ea=True em=False psjs=1.0  t=?  runEA=0.441  wall=34m10s  ETA=33m56s
+[14:05:24] [ 139/275] ▶ start  qid=Complex_Retrieval_test:73  q="For the 'Seden 1995' tournament, find all teams that participated and list the names of players who represented those..."
+[14:05:24] [ 139/275] ▶ start  qid=Complex_Retrieval_test:73  q="For the 'Seden 1995' tournament, find all teams that participated and list the names of players who represented those..."
+[14:05:39] [ 139/275] ✔ done   qid=Complex_Retrieval_test:73  ea=True em=False psjs=1.0  t=?  runEA=0.445  wall=34m25s  ETA=33m40s
+[14:05:39] [ 139/275] ✔ done   qid=Complex_Retrieval_test:73  ea=True em=False psjs=1.0  t=?  runEA=0.445  wall=34m25s  ETA=33m40s
+[14:05:39] [ 140/275] ▶ start  qid=Complex_Retrieval_test:74  q="Find all matches in which 'Norge' played and list the players who played in those matches. Also, return the match dat..."
+[14:05:39] [ 140/275] ▶ start  qid=Complex_Retrieval_test:74  q="Find all matches in which 'Norge' played and list the players who played in those matches. Also, return the match dat..."
+[14:06:00] [ 140/275] ✔ done   qid=Complex_Retrieval_test:74  ea=False em=False psjs=0.3726012793176972  t=?  runEA=0.442  wall=34m46s  ETA=33m32s
+[14:06:00] [ 140/275] ✔ done   qid=Complex_Retrieval_test:74  ea=False em=False psjs=0.3726012793176972  t=?  runEA=0.442  wall=34m46s  ETA=33m32s
+[14:06:00] [ 141/275] ▶ start  qid=Complex_Retrieval_test:75  q="Retrieve the names of all coaches who coached squads that participated in the '1999' tournament, along with the squad..."
+[14:06:00] [ 141/275] ▶ start  qid=Complex_Retrieval_test:75  q="Retrieve the names of all coaches who coached squads that participated in the '1999' tournament, along with the squad..."
+[14:06:06] [ 141/275] ✔ done   qid=Complex_Retrieval_test:75  ea=True em=False psjs=1.0  t=?  runEA=0.446  wall=34m52s  ETA=33m08s
+[14:06:06] [ 141/275] ✔ done   qid=Complex_Retrieval_test:75  ea=True em=False psjs=1.0  t=?  runEA=0.446  wall=34m52s  ETA=33m08s
+[14:06:06] [ 142/275] ▶ start  qid=Complex_Retrieval_test:76  q="For each team that participated in the 'usa 1999' tournament, find the total number of goals scored by players repres..."
+[14:06:06] [ 142/275] ▶ start  qid=Complex_Retrieval_test:76  q="For each team that participated in the 'usa 1999' tournament, find the total number of goals scored by players repres..."
+[14:06:18] [ 142/275] ✔ done   qid=Complex_Retrieval_test:76  ea=True em=False psjs=1.0  t=?  runEA=0.450  wall=35m04s  ETA=32m51s
+[14:06:18] [ 142/275] ✔ done   qid=Complex_Retrieval_test:76  ea=True em=False psjs=1.0  t=?  runEA=0.450  wall=35m04s  ETA=32m51s
+[14:06:18] [ 143/275] ▶ start  qid=Complex_Retrieval_test:77  q="Find all the teams that participated in the 'USQ 2003' tournament, and for each team, list the names of players who r..."
+[14:06:18] [ 143/275] ▶ start  qid=Complex_Retrieval_test:77  q="Find all the teams that participated in the 'USQ 2003' tournament, and for each team, list the names of players who r..."
+[14:06:53] [ 143/275] ✔ done   qid=Complex_Retrieval_test:77  ea=True em=False psjs=0.1726950354609929  t=?  runEA=0.455  wall=35m40s  ETA=32m55s
+[14:06:53] [ 143/275] ✔ done   qid=Complex_Retrieval_test:77  ea=True em=False psjs=0.1726950354609929  t=?  runEA=0.455  wall=35m40s  ETA=32m55s
+[14:06:53] [ 144/275] ▶ start  qid=Complex_Retrieval_test:78  q="For the tournament 'US 2003', identify all matches and list the players who scored goals in those matches along with ..."
+[14:06:53] [ 144/275] ▶ start  qid=Complex_Retrieval_test:78  q="For the tournament 'US 2003', identify all matches and list the players who scored goals in those matches along with ..."
+[14:07:08] [ 144/275] ✔ done   qid=Complex_Retrieval_test:78  ea=True em=False psjs=1.0  t=?  runEA=0.459  wall=35m54s  ETA=32m40s
+[14:07:08] [ 144/275] ✔ done   qid=Complex_Retrieval_test:78  ea=True em=False psjs=1.0  t=?  runEA=0.459  wall=35m54s  ETA=32m40s
+[14:07:08] [ 145/275] ▶ start  qid=Complex_Retrieval_test:79  q="Find all squads that participated in the '2003' tournament and list the names of the players who are in those squads."
+[14:07:08] [ 145/275] ▶ start  qid=Complex_Retrieval_test:79  q="Find all squads that participated in the '2003' tournament and list the names of the players who are in those squads."
+[14:07:17] [ 145/275] ✔ done   qid=Complex_Retrieval_test:79  ea=False em=False psjs=1.0  t=?  runEA=0.455  wall=36m03s  ETA=32m19s
+[14:07:17] [ 145/275] ✔ done   qid=Complex_Retrieval_test:79  ea=False em=False psjs=1.0  t=?  runEA=0.455  wall=36m03s  ETA=32m19s
+[14:07:17] [ 146/275] ▶ start  qid=Complex_Retrieval_test:81  q="Find all players who represented the 'Brasil' team and played in matches during the 'China 2007' tournament. Return t..."
+[14:07:17] [ 146/275] ▶ start  qid=Complex_Retrieval_test:81  q="Find all players who represented the 'Brasil' team and played in matches during the 'China 2007' tournament. Return t..."
+[14:07:29] [ 146/275] ✔ done   qid=Complex_Retrieval_test:81  ea=True em=False psjs=1.0  t=?  runEA=0.459  wall=36m16s  ETA=32m02s
+[14:07:29] [ 146/275] ✔ done   qid=Complex_Retrieval_test:81  ea=True em=False psjs=1.0  t=?  runEA=0.459  wall=36m16s  ETA=32m02s
+[14:07:29] [ 147/275] ▶ start  qid=Complex_Retrieval_test:82  q="For the '2007' tournament, retrieve all teams that participated and the total number of matches each team played in t..."
+[14:07:29] [ 147/275] ▶ start  qid=Complex_Retrieval_test:82  q="For the '2007' tournament, retrieve all teams that participated and the total number of matches each team played in t..."
+[14:07:37] [ 147/275] ✔ done   qid=Complex_Retrieval_test:82  ea=True em=False psjs=1.0  t=?  runEA=0.463  wall=36m24s  ETA=31m41s
+[14:07:37] [ 147/275] ✔ done   qid=Complex_Retrieval_test:82  ea=True em=False psjs=1.0  t=?  runEA=0.463  wall=36m24s  ETA=31m41s
+[14:07:37] [ 148/275] ▶ start  qid=Complex_Retrieval_test:83  q="Retrieve the names of all coaches who coached squads that participated in the 'Cihna 2007' tournament."
+[14:07:37] [ 148/275] ▶ start  qid=Complex_Retrieval_test:83  q="Retrieve the names of all coaches who coached squads that participated in the 'Cihna 2007' tournament."
+[14:07:56] [ 148/275] ✔ done   qid=Complex_Retrieval_test:83  ea=True em=False psjs=1.0  t=?  runEA=0.467  wall=36m42s  ETA=31m30s
+[14:07:56] [ 148/275] ✔ done   qid=Complex_Retrieval_test:83  ea=True em=False psjs=1.0  t=?  runEA=0.467  wall=36m42s  ETA=31m30s
+[14:07:56] [ 149/275] ▶ start  qid=Complex_Retrieval_test:84  q="Find all players who played in a match on '2007-09-30' and represent the 'Brasil' team. Return their names and the st..."
+[14:07:56] [ 149/275] ▶ start  qid=Complex_Retrieval_test:84  q="Find all players who played in a match on '2007-09-30' and represent the 'Brasil' team. Return their names and the st..."
+[14:08:14] [ 149/275] ✔ done   qid=Complex_Retrieval_test:84  ea=True em=False psjs=1.0  t=?  runEA=0.471  wall=37m01s  ETA=31m18s
+[14:08:14] [ 149/275] ✔ done   qid=Complex_Retrieval_test:84  ea=True em=False psjs=1.0  t=?  runEA=0.471  wall=37m01s  ETA=31m18s
+[14:08:14] [ 150/275] ▶ start  qid=Complex_Retrieval_test:85  q="For the tournament '2015', find all teams that participated and the names of the players who represented those teams ..."
+[14:08:14] [ 150/275] ▶ start  qid=Complex_Retrieval_test:85  q="For the tournament '2015', find all teams that participated and the names of the players who represented those teams ..."
+[14:08:23] [ 150/275] ✔ done   qid=Complex_Retrieval_test:85  ea=True em=False psjs=0.6758426966292135  t=?  runEA=0.475  wall=37m09s  ETA=30m58s
+[14:08:23] [ 150/275] ✔ done   qid=Complex_Retrieval_test:85  ea=True em=False psjs=0.6758426966292135  t=?  runEA=0.475  wall=37m09s  ETA=30m58s
+[14:08:23] [ 151/275] ▶ start  qid=Complex_Retrieval_test:86  q="Retrieve the names of all teams that played in matches in the 'Swedne 1995' tournament and list the stages of those m..."
+[14:08:23] [ 151/275] ▶ start  qid=Complex_Retrieval_test:86  q="Retrieve the names of all teams that played in matches in the 'Swedne 1995' tournament and list the stages of those m..."
+[14:08:38] [ 151/275] ✔ done   qid=Complex_Retrieval_test:86  ea=False em=False psjs=1.0  t=?  runEA=0.471  wall=37m24s  ETA=30m43s
+[14:08:38] [ 151/275] ✔ done   qid=Complex_Retrieval_test:86  ea=False em=False psjs=1.0  t=?  runEA=0.471  wall=37m24s  ETA=30m43s
+[14:08:38] [ 152/275] ▶ start  qid=Complex_Retrieval_test:87  q="Find the names of all players who represent 'Gold Coast' and have played in matches before '1996-01-01'."
+[14:08:38] [ 152/275] ▶ start  qid=Complex_Retrieval_test:87  q="Find the names of all players who represent 'Gold Coast' and have played in matches before '1996-01-01'."
+[14:08:52] [ 152/275] ✔ done   qid=Complex_Retrieval_test:87  ea=True em=False psjs=1.0  t=?  runEA=0.475  wall=37m38s  ETA=30m27s
+[14:08:52] [ 152/275] ✔ done   qid=Complex_Retrieval_test:87  ea=True em=False psjs=1.0  t=?  runEA=0.475  wall=37m38s  ETA=30m27s
+[14:08:52] [ 153/275] ▶ start  qid=Complex_Retrieval_test:88  q="Find all teams that participated in the 'CHINA 2007' tournament and list the names of players who represented those t..."
+[14:08:52] [ 153/275] ▶ start  qid=Complex_Retrieval_test:88  q="Find all teams that participated in the 'CHINA 2007' tournament and list the names of players who represented those t..."
+[14:09:09] [ 153/275] ✔ done   qid=Complex_Retrieval_test:88  ea=True em=False psjs=1.0  t=?  runEA=0.479  wall=37m56s  ETA=30m14s
+[14:09:09] [ 153/275] ✔ done   qid=Complex_Retrieval_test:88  ea=True em=False psjs=1.0  t=?  runEA=0.479  wall=37m56s  ETA=30m14s
+[14:09:09] [ 154/275] ▶ start  qid=Complex_Retrieval_test:90  q="Retrieve the names of all teams that participated in the 'Cihna 2007' tournament and also played in a match on '2019-..."
+[14:09:09] [ 154/275] ▶ start  qid=Complex_Retrieval_test:90  q="Retrieve the names of all teams that participated in the 'Cihna 2007' tournament and also played in a match on '2019-..."
+[14:09:21] [ 154/275] ✔ done   qid=Complex_Retrieval_test:90  ea=True em=False psjs=1.0  t=?  runEA=0.483  wall=38m07s  ETA=29m57s
+[14:09:21] [ 154/275] ✔ done   qid=Complex_Retrieval_test:90  ea=True em=False psjs=1.0  t=?  runEA=0.483  wall=38m07s  ETA=29m57s
+[14:09:21] [ 155/275] ▶ start  qid=Complex_Retrieval_test:91  q="Find the names of all coaches who coached a squad participating in the '2007' tournament."
+[14:09:21] [ 155/275] ▶ start  qid=Complex_Retrieval_test:91  q="Find the names of all coaches who coached a squad participating in the '2007' tournament."
+[14:09:26] [ 155/275] ✔ done   qid=Complex_Retrieval_test:91  ea=True em=False psjs=1.0  t=?  runEA=0.486  wall=38m13s  ETA=29m35s
+[14:09:26] [ 155/275] ✔ done   qid=Complex_Retrieval_test:91  ea=True em=False psjs=1.0  t=?  runEA=0.486  wall=38m13s  ETA=29m35s
+[14:09:26] [ 156/275] ▶ start  qid=Complex_Retrieval_test:92  q="List all players who played in a match on '2019-06-27' and represent the team 'United States of America'."
+[14:09:26] [ 156/275] ▶ start  qid=Complex_Retrieval_test:92  q="List all players who played in a match on '2019-06-27' and represent the team 'United States of America'."
+[14:09:44] [ 156/275] ✔ done   qid=Complex_Retrieval_test:92  ea=True em=False psjs=1.0  t=?  runEA=0.490  wall=38m30s  ETA=29m22s
+[14:09:44] [ 156/275] ✔ done   qid=Complex_Retrieval_test:92  ea=True em=False psjs=1.0  t=?  runEA=0.490  wall=38m30s  ETA=29m22s
+[14:09:44] [ 157/275] ▶ start  qid=Complex_Retrieval_test:93  q="Find the names of all players who scored goals in matches that took place in the tournament '1991'. Also, return the ..."
+[14:09:44] [ 157/275] ▶ start  qid=Complex_Retrieval_test:93  q="Find the names of all players who scored goals in matches that took place in the tournament '1991'. Also, return the ..."
+[14:09:54] [ 157/275] ✔ done   qid=Complex_Retrieval_test:93  ea=True em=False psjs=1.0  t=?  runEA=0.493  wall=38m40s  ETA=29m04s
+[14:09:54] [ 157/275] ✔ done   qid=Complex_Retrieval_test:93  ea=True em=False psjs=1.0  t=?  runEA=0.493  wall=38m40s  ETA=29m04s
+[14:09:54] [ 158/275] ▶ start  qid=Complex_Retrieval_test:94  q="Retrieve the names of all teams that participated in the 'Swedn 1995' tournament and list the names of the players wh..."
+[14:09:54] [ 158/275] ▶ start  qid=Complex_Retrieval_test:94  q="Retrieve the names of all teams that participated in the 'Swedn 1995' tournament and list the names of the players wh..."
+[14:10:16] [ 158/275] ✔ done   qid=Complex_Retrieval_test:94  ea=True em=False psjs=1.0  t=?  runEA=0.497  wall=39m03s  ETA=28m55s
+[14:10:16] [ 158/275] ✔ done   qid=Complex_Retrieval_test:94  ea=True em=False psjs=1.0  t=?  runEA=0.497  wall=39m03s  ETA=28m55s
+[14:10:16] [ 159/275] ▶ start  qid=Complex_Retrieval_test:95  q="For the team 'La Albiceleste', find all matches they played in and retrieve the names of the players who played in th..."
+[14:10:16] [ 159/275] ▶ start  qid=Complex_Retrieval_test:95  q="For the team 'La Albiceleste', find all matches they played in and retrieve the names of the players who played in th..."
+[14:10:39] [ 159/275] ✔ done   qid=Complex_Retrieval_test:95  ea=False em=False psjs=0.009693053311793215  t=?  runEA=0.493  wall=39m25s  ETA=28m46s
+[14:10:39] [ 159/275] ✔ done   qid=Complex_Retrieval_test:95  ea=False em=False psjs=0.009693053311793215  t=?  runEA=0.493  wall=39m25s  ETA=28m46s
+[14:10:39] [ 160/275] ▶ start  qid=Complex_Retrieval_test:96  q="Find all coaches who coached squads that participated in the '2019' tournament and return their names along with the ..."
+[14:10:39] [ 160/275] ▶ start  qid=Complex_Retrieval_test:96  q="Find all coaches who coached squads that participated in the '2019' tournament and return their names along with the ..."
+[14:10:46] [ 160/275] ✔ done   qid=Complex_Retrieval_test:96  ea=True em=False psjs=1.0  t=?  runEA=0.497  wall=39m33s  ETA=28m25s
+[14:10:46] [ 160/275] ✔ done   qid=Complex_Retrieval_test:96  ea=True em=False psjs=1.0  t=?  runEA=0.497  wall=39m33s  ETA=28m25s
+[14:10:46] [ 161/275] ▶ start  qid=Complex_Retrieval_test:97  q="Retrieve the names of all players who scored goals in matches played on '2019-06-14' and also played for a team that ..."
+[14:10:46] [ 161/275] ▶ start  qid=Complex_Retrieval_test:97  q="Retrieve the names of all players who scored goals in matches played on '2019-06-14' and also played for a team that ..."
+[14:10:55] [ 161/275] ✔ done   qid=Complex_Retrieval_test:97  ea=False em=False psjs=1.0  t=?  runEA=0.493  wall=39m41s  ETA=28m06s
+[14:10:55] [ 161/275] ✔ done   qid=Complex_Retrieval_test:97  ea=False em=False psjs=1.0  t=?  runEA=0.493  wall=39m41s  ETA=28m06s
+[14:10:55] [ 162/275] ▶ start  qid=Complex_Retrieval_test:98  q="Retrieve the names of all teams that participated in the 'canada 2015' tournament and list the names of players who r..."
+[14:10:55] [ 162/275] ▶ start  qid=Complex_Retrieval_test:98  q="Retrieve the names of all teams that participated in the 'canada 2015' tournament and list the names of players who r..."
+[14:11:08] [ 162/275] ✔ done   qid=Complex_Retrieval_test:98  ea=True em=False psjs=1.0  t=?  runEA=0.497  wall=39m54s  ETA=27m50s
+[14:11:08] [ 162/275] ✔ done   qid=Complex_Retrieval_test:98  ea=True em=False psjs=1.0  t=?  runEA=0.497  wall=39m54s  ETA=27m50s
+[14:11:08] [ 163/275] ▶ start  qid=Complex_Retrieval_test:99  q="For each match played in the 'Francr 2019' tournament, find the teams that played in the match and the number of goal..."
+[14:11:08] [ 163/275] ▶ start  qid=Complex_Retrieval_test:99  q="For each match played in the 'Francr 2019' tournament, find the teams that played in the match and the number of goal..."
+[14:11:23] [ 163/275] ✔ done   qid=Complex_Retrieval_test:99  ea=False em=False psjs=0.1565982404692082  t=?  runEA=0.493  wall=40m09s  ETA=27m35s
+[14:11:23] [ 163/275] ✔ done   qid=Complex_Retrieval_test:99  ea=False em=False psjs=0.1565982404692082  t=?  runEA=0.493  wall=40m09s  ETA=27m35s
+[14:11:23] [ 164/275] ▶ start  qid=Complex_Retrieval_test:100  q="Find the names of all coaches who coached a squad that participated in the '2003' tournament, and also list the names..."
+[14:11:23] [ 164/275] ▶ start  qid=Complex_Retrieval_test:100  q="Find the names of all coaches who coached a squad that participated in the '2003' tournament, and also list the names..."
+[14:11:35] [ 164/275] ✔ done   qid=Complex_Retrieval_test:100  ea=True em=False psjs=1.0  t=?  runEA=0.497  wall=40m21s  ETA=27m19s
+[14:11:35] [ 164/275] ✔ done   qid=Complex_Retrieval_test:100  ea=True em=False psjs=1.0  t=?  runEA=0.497  wall=40m21s  ETA=27m19s
+[14:11:35] [ 165/275] ▶ start  qid=Complex_Retrieval_test:101  q="Identify all players who played in a match on '2015-06-12' and also represent the team 'Danmark'. Return the player's..."
+[14:11:35] [ 165/275] ▶ start  qid=Complex_Retrieval_test:101  q="Identify all players who played in a match on '2015-06-12' and also represent the team 'Danmark'. Return the player's..."
+[14:11:46] [ 165/275] ✔ done   qid=Complex_Retrieval_test:101  ea=True em=False psjs=1.0  t=?  runEA=0.500  wall=40m32s  ETA=27m01s
+[14:11:46] [ 165/275] ✔ done   qid=Complex_Retrieval_test:101  ea=True em=False psjs=1.0  t=?  runEA=0.500  wall=40m32s  ETA=27m01s
+[14:11:46] [ 166/275] ▶ start  qid=Complex_Retrieval_test:102  q="Find the names of all players who scored goals in matches that took place in the '1991' tournament, along with the mi..."
+[14:11:46] [ 166/275] ▶ start  qid=Complex_Retrieval_test:102  q="Find the names of all players who scored goals in matches that took place in the '1991' tournament, along with the mi..."
+[14:11:55] [ 166/275] ✔ done   qid=Complex_Retrieval_test:102  ea=False em=False psjs=1.0  t=?  runEA=0.497  wall=40m41s  ETA=26m43s
+[14:11:55] [ 166/275] ✔ done   qid=Complex_Retrieval_test:102  ea=False em=False psjs=1.0  t=?  runEA=0.497  wall=40m41s  ETA=26m43s
+[14:11:55] [ 167/275] ▶ start  qid=Complex_Retrieval_test:103  q="Retrieve the names of all teams that participated in the 'Cina PR 1991' tournament and also played in matches staged ..."
+[14:11:55] [ 167/275] ▶ start  qid=Complex_Retrieval_test:103  q="Retrieve the names of all teams that participated in the 'Cina PR 1991' tournament and also played in matches staged ..."
+[14:12:05] [ 167/275] ✔ done   qid=Complex_Retrieval_test:103  ea=False em=False psjs=1.0  t=?  runEA=0.494  wall=40m52s  ETA=26m25s
+[14:12:05] [ 167/275] ✔ done   qid=Complex_Retrieval_test:103  ea=False em=False psjs=1.0  t=?  runEA=0.494  wall=40m52s  ETA=26m25s
+[14:12:05] [ 168/275] ▶ start  qid=Complex_Retrieval_test:105  q="List all the coaches who coached a squad that participated in the '1991' tournament, and also list the names of the t..."
+[14:12:05] [ 168/275] ▶ start  qid=Complex_Retrieval_test:105  q="List all the coaches who coached a squad that participated in the '1991' tournament, and also list the names of the t..."
+[14:12:11] [ 168/275] ✔ done   qid=Complex_Retrieval_test:105  ea=True em=False psjs=1.0  t=?  runEA=0.497  wall=40m57s  ETA=26m05s
+[14:12:11] [ 168/275] ✔ done   qid=Complex_Retrieval_test:105  ea=True em=False psjs=1.0  t=?  runEA=0.497  wall=40m57s  ETA=26m05s
+[14:12:11] [ 169/275] ▶ start  qid=Complex_Retrieval_test:106  q="Retrieve the names of all players who played in a match in the 'China PR 1991' tournament and also represent the 'Nor..."
+[14:12:11] [ 169/275] ▶ start  qid=Complex_Retrieval_test:106  q="Retrieve the names of all players who played in a match in the 'China PR 1991' tournament and also represent the 'Nor..."
+[14:12:23] [ 169/275] ✔ done   qid=Complex_Retrieval_test:106  ea=True em=False psjs=1.0  t=?  runEA=0.500  wall=41m10s  ETA=25m49s
+[14:12:23] [ 169/275] ✔ done   qid=Complex_Retrieval_test:106  ea=True em=False psjs=1.0  t=?  runEA=0.500  wall=41m10s  ETA=25m49s
+[14:12:23] [ 170/275] ▶ start  qid=Complex_Retrieval_test:107  q="Find all players who scored goals in matches that took place in the 'Chinna PR 1991' tournament, and return the names..."
+[14:12:23] [ 170/275] ▶ start  qid=Complex_Retrieval_test:107  q="Find all players who scored goals in matches that took place in the 'Chinna PR 1991' tournament, and return the names..."
+[14:12:33] [ 170/275] ✔ done   qid=Complex_Retrieval_test:107  ea=False em=False psjs=1.0  t=?  runEA=0.497  wall=41m20s  ETA=25m31s
+[14:12:33] [ 170/275] ✔ done   qid=Complex_Retrieval_test:107  ea=False em=False psjs=1.0  t=?  runEA=0.497  wall=41m20s  ETA=25m31s
+[14:12:33] [ 171/275] ▶ start  qid=Complex_Retrieval_test:108  q="Retrieve all teams that participated in the '2019' tournament, and for each team, list the names of the players who r..."
+[14:12:33] [ 171/275] ▶ start  qid=Complex_Retrieval_test:108  q="Retrieve all teams that participated in the '2019' tournament, and for each team, list the names of the players who r..."
+[14:12:51] [ 171/275] ✔ done   qid=Complex_Retrieval_test:108  ea=False em=False psjs=1.0  t=?  runEA=0.494  wall=41m37s  ETA=25m19s
+[14:12:51] [ 171/275] ✔ done   qid=Complex_Retrieval_test:108  ea=False em=False psjs=1.0  t=?  runEA=0.494  wall=41m37s  ETA=25m19s
+[14:12:51] [ 172/275] ▶ start  qid=Complex_Retrieval_test:110  q="Find the names of all coaches who coached a squad that participated in the 'china pr 1991' tournament."
+[14:12:51] [ 172/275] ▶ start  qid=Complex_Retrieval_test:110  q="Find the names of all coaches who coached a squad that participated in the 'china pr 1991' tournament."
+[14:13:00] [ 172/275] ✔ done   qid=Complex_Retrieval_test:110  ea=True em=False psjs=1.0  t=?  runEA=0.497  wall=41m46s  ETA=25m01s
+[14:13:00] [ 172/275] ✔ done   qid=Complex_Retrieval_test:110  ea=True em=False psjs=1.0  t=?  runEA=0.497  wall=41m46s  ETA=25m01s
+[14:13:00] [ 173/275] ▶ start  qid=Complex_Retrieval_test:111  q="For each team that participated in the 'Frnace 2019' tournament, find the total number of players who represent them ..."
+[14:13:00] [ 173/275] ▶ start  qid=Complex_Retrieval_test:111  q="For each team that participated in the 'Frnace 2019' tournament, find the total number of players who represent them ..."
+[14:13:14] [ 173/275] ✔ done   qid=Complex_Retrieval_test:111  ea=True em=False psjs=0.5369649805447471  t=?  runEA=0.500  wall=42m00s  ETA=24m46s
+[14:13:14] [ 173/275] ✔ done   qid=Complex_Retrieval_test:111  ea=True em=False psjs=0.5369649805447471  t=?  runEA=0.500  wall=42m00s  ETA=24m46s
+[14:13:14] [ 174/275] ▶ start  qid=Complex_Retrieval_test:112  q="Find all players who played in matches during the tournament '2003', and for each player, list the stages of the matc..."
+[14:13:14] [ 174/275] ▶ start  qid=Complex_Retrieval_test:112  q="Find all players who played in matches during the tournament '2003', and for each player, list the stages of the matc..."
+[14:13:31] [ 174/275] ✔ done   qid=Complex_Retrieval_test:112  ea=True em=False psjs=1.0  t=?  runEA=0.503  wall=42m17s  ETA=24m33s
+[14:13:31] [ 174/275] ✔ done   qid=Complex_Retrieval_test:112  ea=True em=False psjs=1.0  t=?  runEA=0.503  wall=42m17s  ETA=24m33s
+[14:13:31] [ 175/275] ▶ start  qid=Complex_Retrieval_test:113  q="Retrieve the names of all teams that participated in the 'Chian PR 1991' tournament, and for each team, list the name..."
+[14:13:31] [ 175/275] ▶ start  qid=Complex_Retrieval_test:113  q="Retrieve the names of all teams that participated in the 'Chian PR 1991' tournament, and for each team, list the name..."
+[14:13:55] [ 175/275] ✔ done   qid=Complex_Retrieval_test:113  ea=False em=False psjs=1.0  t=?  runEA=0.500  wall=42m42s  ETA=24m24s
+[14:13:55] [ 175/275] ✔ done   qid=Complex_Retrieval_test:113  ea=False em=False psjs=1.0  t=?  runEA=0.500  wall=42m42s  ETA=24m24s
+[14:13:55] [ 176/275] ▶ start  qid=Complex_Retrieval_test:114  q="Find all tournaments in which the team 'Blighty' played, and for each tournament, list the dates of the matches 'Blig..."
+[14:13:55] [ 176/275] ▶ start  qid=Complex_Retrieval_test:114  q="Find all tournaments in which the team 'Blighty' played, and for each tournament, list the dates of the matches 'Blig..."
+[14:14:09] [ 176/275] ✔ done   qid=Complex_Retrieval_test:114  ea=False em=False psjs=0.007633587786259542  t=?  runEA=0.497  wall=42m56s  ETA=24m09s
+[14:14:09] [ 176/275] ✔ done   qid=Complex_Retrieval_test:114  ea=False em=False psjs=0.007633587786259542  t=?  runEA=0.497  wall=42m56s  ETA=24m09s
+[14:14:09] [ 177/275] ▶ start  qid=Complex_Retrieval_test:115  q="Identify all players who scored goals in matches during the '2003' tournament. Return the player's name, the match ID..."
+[14:14:09] [ 177/275] ▶ start  qid=Complex_Retrieval_test:115  q="Identify all players who scored goals in matches during the '2003' tournament. Return the player's name, the match ID..."
+[14:14:20] [ 177/275] ✔ done   qid=Complex_Retrieval_test:115  ea=True em=False psjs=1.0  t=?  runEA=0.500  wall=43m06s  ETA=23m52s
+[14:14:20] [ 177/275] ✔ done   qid=Complex_Retrieval_test:115  ea=True em=False psjs=1.0  t=?  runEA=0.500  wall=43m06s  ETA=23m52s
+[14:14:20] [ 178/275] ▶ start  qid=Complex_Retrieval_test:117  q="Find the names of all players who scored goals in matches played in the 'Cihna PR 1991' tournament, along with the mi..."
+[14:14:20] [ 178/275] ▶ start  qid=Complex_Retrieval_test:117  q="Find the names of all players who scored goals in matches played in the 'Cihna PR 1991' tournament, along with the mi..."
+[14:14:38] [ 178/275] ✔ done   qid=Complex_Retrieval_test:117  ea=True em=False psjs=1.0  t=?  runEA=0.503  wall=43m24s  ETA=23m39s
+[14:14:38] [ 178/275] ✔ done   qid=Complex_Retrieval_test:117  ea=True em=False psjs=1.0  t=?  runEA=0.503  wall=43m24s  ETA=23m39s
+[14:14:38] [ 179/275] ▶ start  qid=Complex_Retrieval_test:118  q="Retrieve the names of all teams that participated in the 'Cina PR 1991' tournament and also played in matches where t..."
+[14:14:38] [ 179/275] ▶ start  qid=Complex_Retrieval_test:118  q="Retrieve the names of all teams that participated in the 'Cina PR 1991' tournament and also played in matches where t..."
+[14:14:53] [ 179/275] ✔ done   qid=Complex_Retrieval_test:118  ea=False em=False psjs=1.0  t=?  runEA=0.500  wall=43m39s  ETA=23m25s
+[14:14:53] [ 179/275] ✔ done   qid=Complex_Retrieval_test:118  ea=False em=False psjs=1.0  t=?  runEA=0.500  wall=43m39s  ETA=23m25s
+[14:14:53] [ 180/275] ▶ start  qid=Complex_Retrieval_test:119  q="List the names of all players who represent the 'CHN' team and have played in matches that occurred on '2011-06-26'."
+[14:14:53] [ 180/275] ▶ start  qid=Complex_Retrieval_test:119  q="List the names of all players who represent the 'CHN' team and have played in matches that occurred on '2011-06-26'."
+[14:15:04] [ 180/275] ✔ done   qid=Complex_Retrieval_test:119  ea=True em=False psjs=1.0  t=?  runEA=0.503  wall=43m51s  ETA=23m08s
+[14:15:04] [ 180/275] ✔ done   qid=Complex_Retrieval_test:119  ea=True em=False psjs=1.0  t=?  runEA=0.503  wall=43m51s  ETA=23m08s
+[14:15:04] [ 181/275] ▶ start  qid=Complex_Retrieval_test:120  q="Find the names of all players who are in the 'North Korea' squad and also scored goals in matches."
+[14:15:04] [ 181/275] ▶ start  qid=Complex_Retrieval_test:120  q="Find the names of all players who are in the 'North Korea' squad and also scored goals in matches."
+[14:15:13] [ 181/275] ✔ done   qid=Complex_Retrieval_test:120  ea=False em=False psjs=0.3191489361702128  t=?  runEA=0.500  wall=43m59s  ETA=22m51s
+[14:15:13] [ 181/275] ✔ done   qid=Complex_Retrieval_test:120  ea=False em=False psjs=0.3191489361702128  t=?  runEA=0.500  wall=43m59s  ETA=22m51s
+[14:15:13] [ 182/275] ▶ start  qid=Complex_Retrieval_test:121  q="For the 'china pr 1991' tournament, retrieve the names of teams that participated, along with the number of players w..."
+[14:15:13] [ 182/275] ▶ start  qid=Complex_Retrieval_test:121  q="For the 'china pr 1991' tournament, retrieve the names of teams that participated, along with the number of players w..."
+[14:15:29] [ 182/275] ✔ done   qid=Complex_Retrieval_test:121  ea=False em=False psjs=0.1983149708360337  t=?  runEA=0.497  wall=44m15s  ETA=22m37s
+[14:15:29] [ 182/275] ✔ done   qid=Complex_Retrieval_test:121  ea=False em=False psjs=0.1983149708360337  t=?  runEA=0.497  wall=44m15s  ETA=22m37s
+[14:15:29] [ 183/275] ▶ start  qid=Complex_Retrieval_test:122  q="Find all players who represented 'Land of Smiles' and played in matches during the 'France 2019' tournament. Return t..."
+[14:15:29] [ 183/275] ▶ start  qid=Complex_Retrieval_test:122  q="Find all players who represented 'Land of Smiles' and played in matches during the 'France 2019' tournament. Return t..."
+[14:15:42] [ 183/275] ✔ done   qid=Complex_Retrieval_test:122  ea=False em=False psjs=0.0  t=?  runEA=0.494  wall=44m29s  ETA=22m22s
+[14:15:42] [ 183/275] ✔ done   qid=Complex_Retrieval_test:122  ea=False em=False psjs=0.0  t=?  runEA=0.494  wall=44m29s  ETA=22m22s
+[14:15:42] [ 184/275] ▶ start  qid=Complex_Retrieval_test:123  q="For each match in the '2019' tournament, list the teams that played in it. Return the match ID and the names of the t..."
+[14:15:42] [ 184/275] ▶ start  qid=Complex_Retrieval_test:123  q="For each match in the '2019' tournament, list the teams that played in it. Return the match ID and the names of the t..."
+[14:15:48] [ 184/275] ✔ done   qid=Complex_Retrieval_test:123  ea=False em=False psjs=1.0  t=?  runEA=0.491  wall=44m34s  ETA=22m03s
+[14:15:48] [ 184/275] ✔ done   qid=Complex_Retrieval_test:123  ea=False em=False psjs=1.0  t=?  runEA=0.491  wall=44m34s  ETA=22m03s
+[14:15:48] [ 185/275] ▶ start  qid=Complex_Retrieval_test:125  q="Retrieve the names of all teams that participated in the '2019' tournament and also the names of the squads that are ..."
+[14:15:48] [ 185/275] ▶ start  qid=Complex_Retrieval_test:125  q="Retrieve the names of all teams that participated in the '2019' tournament and also the names of the squads that are ..."
+[14:16:03] [ 185/275] ✔ done   qid=Complex_Retrieval_test:125  ea=False em=False psjs=0.3265993265993266  t=?  runEA=0.489  wall=44m50s  ETA=21m49s
+[14:16:03] [ 185/275] ✔ done   qid=Complex_Retrieval_test:125  ea=False em=False psjs=0.3265993265993266  t=?  runEA=0.489  wall=44m50s  ETA=21m49s
+[14:16:03] [ 186/275] ▶ start  qid=Complex_Retrieval_test:127  q="Find all the teams that participated in the 'Grmany 2011' tournament and list the names of players who represented th..."
+[14:16:03] [ 186/275] ▶ start  qid=Complex_Retrieval_test:127  q="Find all the teams that participated in the 'Grmany 2011' tournament and list the names of players who represented th..."
+[14:16:22] [ 186/275] ✔ done   qid=Complex_Retrieval_test:127  ea=True em=False psjs=1.0  t=?  runEA=0.491  wall=45m08s  ETA=21m36s
+[14:16:22] [ 186/275] ✔ done   qid=Complex_Retrieval_test:127  ea=True em=False psjs=1.0  t=?  runEA=0.491  wall=45m08s  ETA=21m36s
+[14:16:22] [ 187/275] ▶ start  qid=Complex_Retrieval_test:128  q="For the '2011' tournament, identify all matches and the teams that played in those matches. Return the match ID and t..."
+[14:16:22] [ 187/275] ▶ start  qid=Complex_Retrieval_test:128  q="For the '2011' tournament, identify all matches and the teams that played in those matches. Return the match ID and t..."
+[14:16:30] [ 187/275] ✔ done   qid=Complex_Retrieval_test:128  ea=True em=False psjs=1.0  t=?  runEA=0.494  wall=45m17s  ETA=21m18s
+[14:16:30] [ 187/275] ✔ done   qid=Complex_Retrieval_test:128  ea=True em=False psjs=1.0  t=?  runEA=0.494  wall=45m17s  ETA=21m18s
+[14:16:30] [ 188/275] ▶ start  qid=Complex_Retrieval_test:130  q="Retrieve the names of all coaches who coach squads that participated in the 'Germmany 2011' tournament."
+[14:16:30] [ 188/275] ▶ start  qid=Complex_Retrieval_test:130  q="Retrieve the names of all coaches who coach squads that participated in the 'Germmany 2011' tournament."
+[14:16:40] [ 188/275] ✔ done   qid=Complex_Retrieval_test:130  ea=True em=False psjs=1.0  t=?  runEA=0.497  wall=45m26s  ETA=21m02s
+[14:16:40] [ 188/275] ✔ done   qid=Complex_Retrieval_test:130  ea=True em=False psjs=1.0  t=?  runEA=0.497  wall=45m26s  ETA=21m02s
+[14:16:40] [ 189/275] ▶ start  qid=Complex_Retrieval_test:131  q="Find the names of all players who played in matches in the 'Germany 2011' tournament and also represent the 'Russiz' ..."
+[14:16:40] [ 189/275] ▶ start  qid=Complex_Retrieval_test:131  q="Find the names of all players who played in matches in the 'Germany 2011' tournament and also represent the 'Russiz' ..."
+[14:16:53] [ 189/275] ✔ done   qid=Complex_Retrieval_test:131  ea=True em=False psjs=1.0  t=?  runEA=0.500  wall=45m39s  ETA=20m46s
+[14:16:53] [ 189/275] ✔ done   qid=Complex_Retrieval_test:131  ea=True em=False psjs=1.0  t=?  runEA=0.500  wall=45m39s  ETA=20m46s
+[14:16:53] [ 190/275] ▶ start  qid=Complex_Retrieval_test:132  q="Find all the players who played in a match in the '2003' tournament and scored a goal. Return the player's name, the ..."
+[14:16:53] [ 190/275] ▶ start  qid=Complex_Retrieval_test:132  q="Find all the players who played in a match in the '2003' tournament and scored a goal. Return the player's name, the ..."
+[14:17:03] [ 190/275] ✔ done   qid=Complex_Retrieval_test:132  ea=False em=False psjs=0.6645367412140575  t=?  runEA=0.497  wall=45m49s  ETA=20m30s
+[14:17:03] [ 190/275] ✔ done   qid=Complex_Retrieval_test:132  ea=False em=False psjs=0.6645367412140575  t=?  runEA=0.497  wall=45m49s  ETA=20m30s
+[14:17:03] [ 191/275] ▶ start  qid=Complex_Retrieval_test:133  q="For the 'La República Cafetera' team, identify all tournaments they participated in. For each tournament, list the na..."
+[14:17:03] [ 191/275] ▶ start  qid=Complex_Retrieval_test:133  q="For the 'La República Cafetera' team, identify all tournaments they participated in. For each tournament, list the na..."
+[14:17:17] [ 191/275] ✔ done   qid=Complex_Retrieval_test:133  ea=False em=False psjs=0.002890173410404624  t=?  runEA=0.494  wall=46m04s  ETA=20m15s
+[14:17:17] [ 191/275] ✔ done   qid=Complex_Retrieval_test:133  ea=False em=False psjs=0.002890173410404624  t=?  runEA=0.494  wall=46m04s  ETA=20m15s
+[14:17:17] [ 192/275] ▶ start  qid=Complex_Retrieval_test:134  q="Retrieve the names of all teams that participated in the 'CHINA 2007' tournament and the number of matches each team ..."
+[14:17:17] [ 192/275] ▶ start  qid=Complex_Retrieval_test:134  q="Retrieve the names of all teams that participated in the 'CHINA 2007' tournament and the number of matches each team ..."
+[14:17:30] [ 192/275] ✔ done   qid=Complex_Retrieval_test:134  ea=True em=False psjs=1.0  t=?  runEA=0.497  wall=46m17s  ETA=20m00s
+[14:17:30] [ 192/275] ✔ done   qid=Complex_Retrieval_test:134  ea=True em=False psjs=1.0  t=?  runEA=0.497  wall=46m17s  ETA=20m00s
+[14:17:30] [ 193/275] ▶ start  qid=Complex_Retrieval_test:135  q="Find all matches played on '2019-06-23' where a player from 'La República Cafetera' participated. Return the match ID..."
+[14:17:30] [ 193/275] ▶ start  qid=Complex_Retrieval_test:135  q="Find all matches played on '2019-06-23' where a player from 'La República Cafetera' participated. Return the match ID..."
+[14:17:42] [ 193/275] ✔ done   qid=Complex_Retrieval_test:135  ea=True em=False psjs=1.0  t=?  runEA=0.500  wall=46m29s  ETA=19m45s
+[14:17:42] [ 193/275] ✔ done   qid=Complex_Retrieval_test:135  ea=True em=False psjs=1.0  t=?  runEA=0.500  wall=46m29s  ETA=19m45s
+[14:17:42] [ 194/275] ▶ start  qid=Complex_Retrieval_test:136  q="Identify all squads that participated in the '2003' tournament. For each squad, find the coaches associated with that..."
+[14:17:42] [ 194/275] ▶ start  qid=Complex_Retrieval_test:136  q="Identify all squads that participated in the '2003' tournament. For each squad, find the coaches associated with that..."
+[14:17:48] [ 194/275] ✔ done   qid=Complex_Retrieval_test:136  ea=True em=False psjs=1.0  t=?  runEA=0.503  wall=46m34s  ETA=19m27s
+[14:17:48] [ 194/275] ✔ done   qid=Complex_Retrieval_test:136  ea=True em=False psjs=1.0  t=?  runEA=0.503  wall=46m34s  ETA=19m27s
+[14:17:48] [ 195/275] ▶ start  qid=Complex_Retrieval_test:137  q="Find all the players who scored goals in matches played in the 'Cbina 2007' tournament. Return the player's name and ..."
+[14:17:48] [ 195/275] ▶ start  qid=Complex_Retrieval_test:137  q="Find all the players who scored goals in matches played in the 'Cbina 2007' tournament. Return the player's name and ..."
+[14:18:06] [ 195/275] ✔ done   qid=Complex_Retrieval_test:137  ea=True em=False psjs=1.0  t=?  runEA=0.505  wall=46m52s  ETA=19m14s
+[14:18:06] [ 195/275] ✔ done   qid=Complex_Retrieval_test:137  ea=True em=False psjs=1.0  t=?  runEA=0.505  wall=46m52s  ETA=19m14s
+[14:18:06] [ 196/275] ▶ start  qid=Complex_Retrieval_test:138  q="Retrieve the names of all teams that participated in the '2007' tournament and the names of all players who represent..."
+[14:18:06] [ 196/275] ▶ start  qid=Complex_Retrieval_test:138  q="Retrieve the names of all teams that participated in the '2007' tournament and the names of all players who represent..."
+[14:18:17] [ 196/275] ✔ done   qid=Complex_Retrieval_test:138  ea=False em=False psjs=1.0  t=?  runEA=0.503  wall=47m04s  ETA=18m58s
+[14:18:17] [ 196/275] ✔ done   qid=Complex_Retrieval_test:138  ea=False em=False psjs=1.0  t=?  runEA=0.503  wall=47m04s  ETA=18m58s
+[14:18:17] [ 197/275] ▶ start  qid=Complex_Retrieval_test:139  q="For the team 'Land of Smiles', find all the matches they played in, along with the names of the players who played in..."
+[14:18:17] [ 197/275] ▶ start  qid=Complex_Retrieval_test:139  q="For the team 'Land of Smiles', find all the matches they played in, along with the names of the players who played in..."
+[14:18:35] [ 197/275] ✔ done   qid=Complex_Retrieval_test:139  ea=False em=False psjs=0.02127659574468085  t=?  runEA=0.500  wall=47m21s  ETA=18m45s
+[14:18:35] [ 197/275] ✔ done   qid=Complex_Retrieval_test:139  ea=False em=False psjs=0.02127659574468085  t=?  runEA=0.500  wall=47m21s  ETA=18m45s
+[14:18:35] [ 198/275] ▶ start  qid=Complex_Retrieval_test:140  q="Find the names of all coaches who coached a squad that participated in the 'Cyina 2007' tournament."
+[14:18:35] [ 198/275] ▶ start  qid=Complex_Retrieval_test:140  q="Find the names of all coaches who coached a squad that participated in the 'Cyina 2007' tournament."
+[14:18:48] [ 198/275] ✔ done   qid=Complex_Retrieval_test:140  ea=True em=False psjs=1.0  t=?  runEA=0.503  wall=47m34s  ETA=18m30s
+[14:18:48] [ 198/275] ✔ done   qid=Complex_Retrieval_test:140  ea=True em=False psjs=1.0  t=?  runEA=0.503  wall=47m34s  ETA=18m30s
+[14:18:48] [ 199/275] ▶ start  qid=Complex_Retrieval_test:142  q="Find all the players who represented the 'Danmark' team and played in matches during the 'Sweden 1995' tournament. Li..."
+[14:18:48] [ 199/275] ▶ start  qid=Complex_Retrieval_test:142  q="Find all the players who represented the 'Danmark' team and played in matches during the 'Sweden 1995' tournament. Li..."
+[14:19:03] [ 199/275] ✔ done   qid=Complex_Retrieval_test:142  ea=False em=False psjs=1.0  t=?  runEA=0.500  wall=47m49s  ETA=18m16s
+[14:19:03] [ 199/275] ✔ done   qid=Complex_Retrieval_test:142  ea=False em=False psjs=1.0  t=?  runEA=0.500  wall=47m49s  ETA=18m16s
+[14:19:03] [ 200/275] ▶ start  qid=Complex_Retrieval_test:143  q="Retrieve the names of all players who scored goals in matches that took place on '2015-06-11' and were part of the '1..."
+[14:19:03] [ 200/275] ▶ start  qid=Complex_Retrieval_test:143  q="Retrieve the names of all players who scored goals in matches that took place on '2015-06-11' and were part of the '1..."
+[14:19:19] [ 200/275] ✔ done   qid=Complex_Retrieval_test:143  ea=True em=False psjs=1.0  t=?  runEA=0.503  wall=48m05s  ETA=18m02s
+[14:19:19] [ 200/275] ✔ done   qid=Complex_Retrieval_test:143  ea=True em=False psjs=1.0  t=?  runEA=0.503  wall=48m05s  ETA=18m02s
+[14:19:19] [ 201/275] ▶ start  qid=Complex_Retrieval_test:144  q="Find the teams that participated in both the 'Swedne 1995' tournament and matches with the stage 'First Stage'. Retur..."
+[14:19:19] [ 201/275] ▶ start  qid=Complex_Retrieval_test:144  q="Find the teams that participated in both the 'Swedne 1995' tournament and matches with the stage 'First Stage'. Retur..."
+[14:19:29] [ 201/275] ✔ done   qid=Complex_Retrieval_test:144  ea=True em=False psjs=1.0  t=?  runEA=0.505  wall=48m16s  ETA=17m46s
+[14:19:29] [ 201/275] ✔ done   qid=Complex_Retrieval_test:144  ea=True em=False psjs=1.0  t=?  runEA=0.505  wall=48m16s  ETA=17m46s
+[14:19:29] [ 202/275] ▶ start  qid=Complex_Retrieval_test:145  q="List the names of all players who are in the squad with ID 'Norway in 2007' and also represent the 'Danmark' team."
+[14:19:29] [ 202/275] ▶ start  qid=Complex_Retrieval_test:145  q="List the names of all players who are in the squad with ID 'Norway in 2007' and also represent the 'Danmark' team."
+[14:19:42] [ 202/275] ✔ done   qid=Complex_Retrieval_test:145  ea=True em=False psjs=1.0  t=?  runEA=0.508  wall=48m29s  ETA=17m31s
+[14:19:42] [ 202/275] ✔ done   qid=Complex_Retrieval_test:145  ea=True em=False psjs=1.0  t=?  runEA=0.508  wall=48m29s  ETA=17m31s
+[14:19:42] [ 203/275] ▶ start  qid=Complex_Retrieval_test:147  q="Find all players who scored goals in matches that took place in the 'canada 2015' tournament. Return the player's nam..."
+[14:19:42] [ 203/275] ▶ start  qid=Complex_Retrieval_test:147  q="Find all players who scored goals in matches that took place in the 'canada 2015' tournament. Return the player's nam..."
+[14:19:54] [ 203/275] ✔ done   qid=Complex_Retrieval_test:147  ea=True em=False psjs=1.0  t=?  runEA=0.510  wall=48m41s  ETA=17m16s
+[14:19:54] [ 203/275] ✔ done   qid=Complex_Retrieval_test:147  ea=True em=False psjs=1.0  t=?  runEA=0.510  wall=48m41s  ETA=17m16s
+[14:19:54] [ 204/275] ▶ start  qid=Complex_Retrieval_test:148  q="For the '2015' tournament, find the teams that participated and the number of matches each team played in that tourna..."
+[14:19:54] [ 204/275] ▶ start  qid=Complex_Retrieval_test:148  q="For the '2015' tournament, find the teams that participated and the number of matches each team played in that tourna..."
+[14:20:00] [ 204/275] ✔ done   qid=Complex_Retrieval_test:148  ea=True em=False psjs=1.0  t=?  runEA=0.513  wall=48m47s  ETA=16m59s
+[14:20:00] [ 204/275] ✔ done   qid=Complex_Retrieval_test:148  ea=True em=False psjs=1.0  t=?  runEA=0.513  wall=48m47s  ETA=16m59s
+[14:20:00] [ 205/275] ▶ start  qid=Complex_Retrieval_test:149  q="Retrieve the names of all players who represent the team 'The Hexagon' and who played in matches before '2004-01-01'...."
+[14:20:00] [ 205/275] ▶ start  qid=Complex_Retrieval_test:149  q="Retrieve the names of all players who represent the team 'The Hexagon' and who played in matches before '2004-01-01'...."
+[14:20:17] [ 205/275] ✔ done   qid=Complex_Retrieval_test:149  ea=False em=False psjs=0.0  t=?  runEA=0.510  wall=49m04s  ETA=16m45s
+[14:20:17] [ 205/275] ✔ done   qid=Complex_Retrieval_test:149  ea=False em=False psjs=0.0  t=?  runEA=0.510  wall=49m04s  ETA=16m45s
+[14:20:17] [ 206/275] ▶ start  qid=Complex_Retrieval_test:150  q="Find the names of all coaches who coached squads that participated in the 'Cnaada 2015' tournament and list the IDs o..."
+[14:20:17] [ 206/275] ▶ start  qid=Complex_Retrieval_test:150  q="Find the names of all coaches who coached squads that participated in the 'Cnaada 2015' tournament and list the IDs o..."
+[14:20:35] [ 206/275] ✔ done   qid=Complex_Retrieval_test:150  ea=True em=False psjs=1.0  t=?  runEA=0.513  wall=49m21s  ETA=16m32s
+[14:20:35] [ 206/275] ✔ done   qid=Complex_Retrieval_test:150  ea=True em=False psjs=1.0  t=?  runEA=0.513  wall=49m21s  ETA=16m32s
+[14:20:35] [ 207/275] ▶ start  qid=Complex_Retrieval_test:151  q="Retrieve the names of all teams that were named for a squad which participated in the '2015' tournament. Also, return..."
+[14:20:35] [ 207/275] ▶ start  qid=Complex_Retrieval_test:151  q="Retrieve the names of all teams that were named for a squad which participated in the '2015' tournament. Also, return..."
+[14:20:41] [ 207/275] ✔ done   qid=Complex_Retrieval_test:151  ea=True em=False psjs=1.0  t=?  runEA=0.515  wall=49m27s  ETA=16m15s
+[14:20:41] [ 207/275] ✔ done   qid=Complex_Retrieval_test:151  ea=True em=False psjs=1.0  t=?  runEA=0.515  wall=49m27s  ETA=16m15s
+[14:20:41] [ 208/275] ▶ start  qid=Complex_Retrieval_test:152  q="Find the names of all players who scored goals in matches played in the 'Chinna 2007' tournament, along with the minu..."
+[14:20:41] [ 208/275] ▶ start  qid=Complex_Retrieval_test:152  q="Find the names of all players who scored goals in matches played in the 'Chinna 2007' tournament, along with the minu..."
+[14:20:59] [ 208/275] ✔ done   qid=Complex_Retrieval_test:152  ea=True em=False psjs=0.8757062146892656  t=?  runEA=0.518  wall=49m45s  ETA=16m02s
+[14:20:59] [ 208/275] ✔ done   qid=Complex_Retrieval_test:152  ea=True em=False psjs=0.8757062146892656  t=?  runEA=0.518  wall=49m45s  ETA=16m02s
+[14:20:59] [ 209/275] ▶ start  qid=Complex_Retrieval_test:153  q="Retrieve the names of all coaches who have coached squads participating in the 'Chia 2007' tournament, and list the s..."
+[14:20:59] [ 209/275] ▶ start  qid=Complex_Retrieval_test:153  q="Retrieve the names of all coaches who have coached squads participating in the 'Chia 2007' tournament, and list the s..."
+[14:21:14] [ 209/275] ✔ done   qid=Complex_Retrieval_test:153  ea=True em=False psjs=1.0  t=?  runEA=0.520  wall=50m01s  ETA=15m48s
+[14:21:14] [ 209/275] ✔ done   qid=Complex_Retrieval_test:153  ea=True em=False psjs=1.0  t=?  runEA=0.520  wall=50m01s  ETA=15m48s
+[14:21:14] [ 210/275] ▶ start  qid=Complex_Retrieval_test:154  q="For each team that participated in the '2007' tournament, find the total number of goals scored by players representi..."
+[14:21:14] [ 210/275] ▶ start  qid=Complex_Retrieval_test:154  q="For each team that participated in the '2007' tournament, find the total number of goals scored by players representi..."
+[14:21:23] [ 210/275] ✔ done   qid=Complex_Retrieval_test:154  ea=True em=False psjs=1.0  t=?  runEA=0.523  wall=50m10s  ETA=15m32s
+[14:21:23] [ 210/275] ✔ done   qid=Complex_Retrieval_test:154  ea=True em=False psjs=1.0  t=?  runEA=0.523  wall=50m10s  ETA=15m32s
+[14:21:23] [ 211/275] ▶ start  qid=Complex_Retrieval_test:155  q="Find all players who both played in a match and coached a squad in the 'Cihna 2007' tournament. Return the player's n..."
+[14:21:23] [ 211/275] ▶ start  qid=Complex_Retrieval_test:155  q="Find all players who both played in a match and coached a squad in the 'Cihna 2007' tournament. Return the player's n..."
+[14:21:31] [ 211/275] ✔ done   qid=Complex_Retrieval_test:155  ea=False em=False psjs=0.0  t=?  runEA=0.520  wall=50m18s  ETA=15m15s
+[14:21:31] [ 211/275] ✔ done   qid=Complex_Retrieval_test:155  ea=False em=False psjs=0.0  t=?  runEA=0.520  wall=50m18s  ETA=15m15s
+[14:21:31] [ 212/275] ▶ start  qid=Complex_Retrieval_test:156  q="Retrieve the names of all teams that participated in the 'china 2007' tournament and had a player named 'Sophie Aguie..."
+[14:21:31] [ 212/275] ▶ start  qid=Complex_Retrieval_test:156  q="Retrieve the names of all teams that participated in the 'china 2007' tournament and had a player named 'Sophie Aguie..."
+[14:21:43] [ 212/275] ✔ done   qid=Complex_Retrieval_test:156  ea=True em=False psjs=1.0  t=?  runEA=0.522  wall=50m29s  ETA=15m00s
+[14:21:43] [ 212/275] ✔ done   qid=Complex_Retrieval_test:156  ea=True em=False psjs=1.0  t=?  runEA=0.522  wall=50m29s  ETA=15m00s
+[14:21:43] [ 213/275] ▶ start  qid=Complex_Retrieval_test:157  q="Find all players who scored goals in matches that took place in the tournament '1999'. Return the player's name, the ..."
+[14:21:43] [ 213/275] ▶ start  qid=Complex_Retrieval_test:157  q="Find all players who scored goals in matches that took place in the tournament '1999'. Return the player's name, the ..."
+[14:21:52] [ 213/275] ✔ done   qid=Complex_Retrieval_test:157  ea=True em=False psjs=1.0  t=?  runEA=0.525  wall=50m38s  ETA=14m44s
+[14:21:52] [ 213/275] ✔ done   qid=Complex_Retrieval_test:157  ea=True em=False psjs=1.0  t=?  runEA=0.525  wall=50m38s  ETA=14m44s
+[14:21:52] [ 214/275] ▶ start  qid=Complex_Retrieval_test:158  q="Retrieve the names of all teams that participated in the tournament 'USW 1999' and list the names of the players who ..."
+[14:21:52] [ 214/275] ▶ start  qid=Complex_Retrieval_test:158  q="Retrieve the names of all teams that participated in the tournament 'USW 1999' and list the names of the players who ..."
+[14:22:06] [ 214/275] ✔ done   qid=Complex_Retrieval_test:158  ea=False em=False psjs=1.0  t=?  runEA=0.522  wall=50m52s  ETA=14m30s
+[14:22:06] [ 214/275] ✔ done   qid=Complex_Retrieval_test:158  ea=False em=False psjs=1.0  t=?  runEA=0.522  wall=50m52s  ETA=14m30s
+[14:22:06] [ 215/275] ▶ start  qid=Complex_Retrieval_test:159  q="For each match in the '1999' tournament, find the teams that played in that match. Also, find the players who scored ..."
+[14:22:06] [ 215/275] ▶ start  qid=Complex_Retrieval_test:159  q="For each match in the '1999' tournament, find the teams that played in that match. Also, find the players who scored ..."
+[14:22:24] [ 215/275] ✔ done   qid=Complex_Retrieval_test:159  ea=False em=False psjs=0.9481481481481482  t=?  runEA=0.520  wall=51m10s  ETA=14m17s
+[14:22:24] [ 215/275] ✔ done   qid=Complex_Retrieval_test:159  ea=False em=False psjs=0.9481481481481482  t=?  runEA=0.520  wall=51m10s  ETA=14m17s
+[14:22:24] [ 216/275] ▶ start  qid=Complex_Retrieval_test:160  q="Find all the coaches who coached squads that participated in the '1999' tournament. Return the coach's name, the squa..."
+[14:22:24] [ 216/275] ▶ start  qid=Complex_Retrieval_test:160  q="Find all the coaches who coached squads that participated in the '1999' tournament. Return the coach's name, the squa..."
+[14:22:31] [ 216/275] ✔ done   qid=Complex_Retrieval_test:160  ea=True em=False psjs=1.0  t=?  runEA=0.522  wall=51m18s  ETA=14m01s
+[14:22:31] [ 216/275] ✔ done   qid=Complex_Retrieval_test:160  ea=True em=False psjs=1.0  t=?  runEA=0.522  wall=51m18s  ETA=14m01s
+[14:22:31] [ 217/275] ▶ start  qid=Complex_Retrieval_test:161  q="Retrieve the names of all players who played in matches on '1991-11-19' and also represent the team 'Tico Land'. Retu..."
+[14:22:31] [ 217/275] ▶ start  qid=Complex_Retrieval_test:161  q="Retrieve the names of all players who played in matches on '1991-11-19' and also represent the team 'Tico Land'. Retu..."
+[14:22:44] [ 217/275] ✔ done   qid=Complex_Retrieval_test:161  ea=True em=False psjs=1.0  t=?  runEA=0.524  wall=51m30s  ETA=13m46s
+[14:22:44] [ 217/275] ✔ done   qid=Complex_Retrieval_test:161  ea=True em=False psjs=1.0  t=?  runEA=0.524  wall=51m30s  ETA=13m46s
+[14:22:44] [ 218/275] ▶ start  qid=Complex_Retrieval_test:162  q="Retrieve the names of all teams that participated in the 'China 2007' tournament and also played in matches where Jes..."
+[14:22:44] [ 218/275] ▶ start  qid=Complex_Retrieval_test:162  q="Retrieve the names of all teams that participated in the 'China 2007' tournament and also played in matches where Jes..."
+[14:22:59] [ 218/275] ✔ done   qid=Complex_Retrieval_test:162  ea=False em=False psjs=0.0  t=?  runEA=0.522  wall=51m45s  ETA=13m32s
+[14:22:59] [ 218/275] ✔ done   qid=Complex_Retrieval_test:162  ea=False em=False psjs=0.0  t=?  runEA=0.522  wall=51m45s  ETA=13m32s
+[14:22:59] [ 219/275] ▶ start  qid=Complex_Retrieval_test:163  q="Find all teams that participated in the 'Cina 2007' tournament and the squads that are named after them. Return the t..."
+[14:22:59] [ 219/275] ▶ start  qid=Complex_Retrieval_test:163  q="Find all teams that participated in the 'Cina 2007' tournament and the squads that are named after them. Return the t..."
+[14:23:16] [ 219/275] ✔ done   qid=Complex_Retrieval_test:163  ea=False em=False psjs=0.2589641434262948  t=?  runEA=0.519  wall=52m02s  ETA=13m18s
+[14:23:16] [ 219/275] ✔ done   qid=Complex_Retrieval_test:163  ea=False em=False psjs=0.2589641434262948  t=?  runEA=0.519  wall=52m02s  ETA=13m18s
+[14:23:16] [ 220/275] ▶ start  qid=Complex_Retrieval_test:164  q='For each tournament, find the number of matches in which DE participated. Return the tournament name and the number o...'
+[14:23:16] [ 220/275] ▶ start  qid=Complex_Retrieval_test:164  q='For each tournament, find the number of matches in which DE participated. Return the tournament name and the number o...'
+[14:23:31] [ 220/275] ✔ done   qid=Complex_Retrieval_test:164  ea=True em=False psjs=1.0  t=?  runEA=0.522  wall=52m17s  ETA=13m04s
+[14:23:31] [ 220/275] ✔ done   qid=Complex_Retrieval_test:164  ea=True em=False psjs=1.0  t=?  runEA=0.522  wall=52m17s  ETA=13m04s
+[14:23:31] [ 221/275] ▶ start  qid=Complex_Retrieval_test:166  q="Find all players who played in matches during the 'Germayn 2011' tournament and also scored goals in those matches. R..."
+[14:23:31] [ 221/275] ▶ start  qid=Complex_Retrieval_test:166  q="Find all players who played in matches during the 'Germayn 2011' tournament and also scored goals in those matches. R..."
+[14:23:43] [ 221/275] ✔ done   qid=Complex_Retrieval_test:166  ea=True em=False psjs=1.0  t=?  runEA=0.524  wall=52m29s  ETA=12m49s
+[14:23:43] [ 221/275] ✔ done   qid=Complex_Retrieval_test:166  ea=True em=False psjs=1.0  t=?  runEA=0.524  wall=52m29s  ETA=12m49s
+[14:23:43] [ 222/275] ▶ start  qid=Complex_Retrieval_test:167  q="For the 'canada 2015' tournament, retrieve all teams that participated and also played in matches. Return the team na..."
+[14:23:43] [ 222/275] ▶ start  qid=Complex_Retrieval_test:167  q="For the 'canada 2015' tournament, retrieve all teams that participated and also played in matches. Return the team na..."
+[14:24:00] [ 222/275] ✔ done   qid=Complex_Retrieval_test:167  ea=True em=False psjs=1.0  t=?  runEA=0.526  wall=52m46s  ETA=12m36s
+[14:24:00] [ 222/275] ✔ done   qid=Complex_Retrieval_test:167  ea=True em=False psjs=1.0  t=?  runEA=0.526  wall=52m46s  ETA=12m36s
+[14:24:00] [ 223/275] ▶ start  qid=Complex_Retrieval_test:168  q="Find the names of all players who represent the team 'The Boot' and played in matches after '2015-01-01'. Return the ..."
+[14:24:00] [ 223/275] ▶ start  qid=Complex_Retrieval_test:168  q="Find the names of all players who represent the team 'The Boot' and played in matches after '2015-01-01'. Return the ..."
+[14:24:18] [ 223/275] ✔ done   qid=Complex_Retrieval_test:168  ea=False em=False psjs=0.0031847133757961785  t=?  runEA=0.524  wall=53m05s  ETA=12m23s
+[14:24:18] [ 223/275] ✔ done   qid=Complex_Retrieval_test:168  ea=False em=False psjs=0.0031847133757961785  t=?  runEA=0.524  wall=53m05s  ETA=12m23s
+[14:24:18] [ 224/275] ▶ start  qid=Complex_Retrieval_test:169  q="Retrieve all coaches who coached squads that participated in the '2011' tournament. For each coach, return their name..."
+[14:24:18] [ 224/275] ▶ start  qid=Complex_Retrieval_test:169  q="Retrieve all coaches who coached squads that participated in the '2011' tournament. For each coach, return their name..."
+[14:24:25] [ 224/275] ✔ done   qid=Complex_Retrieval_test:169  ea=True em=False psjs=1.0  t=?  runEA=0.526  wall=53m11s  ETA=12m07s
+[14:24:25] [ 224/275] ✔ done   qid=Complex_Retrieval_test:169  ea=True em=False psjs=1.0  t=?  runEA=0.526  wall=53m11s  ETA=12m07s
+[14:24:25] [ 225/275] ▶ start  qid=Complex_Retrieval_test:170  q="Find all matches in which a player named 'Lisbet Koldding' participated, and return the match ID and the stage of the..."
+[14:24:25] [ 225/275] ▶ start  qid=Complex_Retrieval_test:170  q="Find all matches in which a player named 'Lisbet Koldding' participated, and return the match ID and the stage of the..."
+[14:24:39] [ 225/275] ✔ done   qid=Complex_Retrieval_test:170  ea=True em=False psjs=1.0  t=?  runEA=0.528  wall=53m25s  ETA=11m52s
+[14:24:39] [ 225/275] ✔ done   qid=Complex_Retrieval_test:170  ea=True em=False psjs=1.0  t=?  runEA=0.528  wall=53m25s  ETA=11m52s
+[14:24:39] [ 226/275] ▶ start  qid=Complex_Retrieval_test:171  q="Retrieve the names of all teams that participated in the '2015' tournament and for each team, list the names of the p..."
+[14:24:39] [ 226/275] ▶ start  qid=Complex_Retrieval_test:171  q="Retrieve the names of all teams that participated in the '2015' tournament and for each team, list the names of the p..."
+[14:24:52] [ 226/275] ✔ done   qid=Complex_Retrieval_test:171  ea=False em=False psjs=0.22072072072072071  t=?  runEA=0.526  wall=53m38s  ETA=11m38s
+[14:24:52] [ 226/275] ✔ done   qid=Complex_Retrieval_test:171  ea=False em=False psjs=0.22072072072072071  t=?  runEA=0.526  wall=53m38s  ETA=11m38s
+[14:24:52] [ 227/275] ▶ start  qid=Complex_Retrieval_test:172  q="For the 'USA 1999' tournament, find the teams that played in the 'Matches' stage and retrieve the names of all player..."
+[14:24:52] [ 227/275] ▶ start  qid=Complex_Retrieval_test:172  q="For the 'USA 1999' tournament, find the teams that played in the 'Matches' stage and retrieve the names of all player..."
+[14:25:07] [ 227/275] ✔ done   qid=Complex_Retrieval_test:172  ea=False em=False psjs=0.0  t=?  runEA=0.523  wall=53m53s  ETA=11m24s
+[14:25:07] [ 227/275] ✔ done   qid=Complex_Retrieval_test:172  ea=False em=False psjs=0.0  t=?  runEA=0.523  wall=53m53s  ETA=11m24s
+[14:25:07] [ 228/275] ▶ start  qid=Complex_Retrieval_test:173  q="Find all the coaches who coached a squad that participated in the 'China PD 1991' tournament. Return the coach's name..."
+[14:25:07] [ 228/275] ▶ start  qid=Complex_Retrieval_test:173  q="Find all the coaches who coached a squad that participated in the 'China PD 1991' tournament. Return the coach's name..."
+[14:25:17] [ 228/275] ✔ done   qid=Complex_Retrieval_test:173  ea=True em=False psjs=1.0  t=?  runEA=0.525  wall=54m04s  ETA=11m09s
+[14:25:17] [ 228/275] ✔ done   qid=Complex_Retrieval_test:173  ea=True em=False psjs=1.0  t=?  runEA=0.525  wall=54m04s  ETA=11m09s
+[14:25:17] [ 229/275] ▶ start  qid=Complex_Retrieval_test:175  q="Find all players who scored goals in matches that took place in the tournament '1999'. Return the player's name and t..."
+[14:25:17] [ 229/275] ▶ start  qid=Complex_Retrieval_test:175  q="Find all players who scored goals in matches that took place in the tournament '1999'. Return the player's name and t..."
+[14:25:26] [ 229/275] ✔ done   qid=Complex_Retrieval_test:175  ea=True em=False psjs=1.0  t=?  runEA=0.528  wall=54m13s  ETA=10m53s
+[14:25:26] [ 229/275] ✔ done   qid=Complex_Retrieval_test:175  ea=True em=False psjs=1.0  t=?  runEA=0.528  wall=54m13s  ETA=10m53s
+[14:25:26] [ 230/275] ▶ start  qid=Complex_Retrieval_test:176  q="Retrieve the names of all teams that participated in the tournament 'UAS 2003', along with the names of the players w..."
+[14:25:26] [ 230/275] ▶ start  qid=Complex_Retrieval_test:176  q="Retrieve the names of all teams that participated in the tournament 'UAS 2003', along with the names of the players w..."
+[14:25:44] [ 230/275] ✔ done   qid=Complex_Retrieval_test:176  ea=True em=False psjs=1.0  t=?  runEA=0.530  wall=54m30s  ETA=10m40s
+[14:25:44] [ 230/275] ✔ done   qid=Complex_Retrieval_test:176  ea=True em=False psjs=1.0  t=?  runEA=0.530  wall=54m30s  ETA=10m40s
+[14:25:44] [ 231/275] ▶ start  qid=Complex_Retrieval_test:179  q="Retrieve the names of all teams that played in matches during the 'Group Matchhes' stage and also participated in the..."
+[14:25:44] [ 231/275] ▶ start  qid=Complex_Retrieval_test:179  q="Retrieve the names of all teams that played in matches during the 'Group Matchhes' stage and also participated in the..."
+[14:25:55] [ 231/275] ✔ done   qid=Complex_Retrieval_test:179  ea=False em=False psjs=1.0  t=?  runEA=0.527  wall=54m41s  ETA=10m25s
+[14:25:55] [ 231/275] ✔ done   qid=Complex_Retrieval_test:179  ea=False em=False psjs=1.0  t=?  runEA=0.527  wall=54m41s  ETA=10m25s
+[14:25:55] [ 232/275] ▶ start  qid=Complex_Retrieval_test:180  q="Find all players who represented 'NZ' and played in matches during the 'China 2007' tournament. Return the names of t..."
+[14:25:55] [ 232/275] ▶ start  qid=Complex_Retrieval_test:180  q="Find all players who represented 'NZ' and played in matches during the 'China 2007' tournament. Return the names of t..."
+[14:26:07] [ 232/275] ✔ done   qid=Complex_Retrieval_test:180  ea=True em=False psjs=1.0  t=?  runEA=0.529  wall=54m53s  ETA=10m10s
+[14:26:07] [ 232/275] ✔ done   qid=Complex_Retrieval_test:180  ea=True em=False psjs=1.0  t=?  runEA=0.529  wall=54m53s  ETA=10m10s
+[14:26:07] [ 233/275] ▶ start  qid=Complex_Retrieval_test:181  q="For the 'china 2007' tournament, retrieve the names of all teams that participated, along with the names of the playe..."
+[14:26:07] [ 233/275] ▶ start  qid=Complex_Retrieval_test:181  q="For the 'china 2007' tournament, retrieve the names of all teams that participated, along with the names of the playe..."
+[14:26:21] [ 233/275] ✔ done   qid=Complex_Retrieval_test:181  ea=False em=False psjs=0.7917737789203085  t=?  runEA=0.527  wall=55m08s  ETA=9m56s
+[14:26:21] [ 233/275] ✔ done   qid=Complex_Retrieval_test:181  ea=False em=False psjs=0.7917737789203085  t=?  runEA=0.527  wall=55m08s  ETA=9m56s
+[14:26:21] [ 234/275] ▶ start  qid=Complex_Retrieval_test:182  q="Find all coaches who coached squads that participated in the '2007' tournament. Return the coach's name and the ID of..."
+[14:26:21] [ 234/275] ▶ start  qid=Complex_Retrieval_test:182  q="Find all coaches who coached squads that participated in the '2007' tournament. Return the coach's name and the ID of..."
+[14:26:28] [ 234/275] ✔ done   qid=Complex_Retrieval_test:182  ea=True em=False psjs=1.0  t=?  runEA=0.529  wall=55m14s  ETA=9m41s
+[14:26:28] [ 234/275] ✔ done   qid=Complex_Retrieval_test:182  ea=True em=False psjs=1.0  t=?  runEA=0.529  wall=55m14s  ETA=9m41s
+[14:26:28] [ 235/275] ▶ start  qid=Complex_Retrieval_test:184  q="Find the names of all players who both scored a goal and played in a match during the 'Chinaa 2007' tournament. Also,..."
+[14:26:28] [ 235/275] ▶ start  qid=Complex_Retrieval_test:184  q="Find the names of all players who both scored a goal and played in a match during the 'Chinaa 2007' tournament. Also,..."
+[14:26:38] [ 235/275] ✔ done   qid=Complex_Retrieval_test:184  ea=False em=False psjs=1.0  t=?  runEA=0.527  wall=55m24s  ETA=9m26s
+[14:26:38] [ 235/275] ✔ done   qid=Complex_Retrieval_test:184  ea=False em=False psjs=1.0  t=?  runEA=0.527  wall=55m24s  ETA=9m26s
+[14:26:38] [ 236/275] ▶ start  qid=Complex_Retrieval_test:185  q="For the '2011' tournament, retrieve all teams that participated. For each team, list the names of the players who rep..."
+[14:26:38] [ 236/275] ▶ start  qid=Complex_Retrieval_test:185  q="For the '2011' tournament, retrieve all teams that participated. For each team, list the names of the players who rep..."
+[14:26:52] [ 236/275] ✔ done   qid=Complex_Retrieval_test:185  ea=False em=False psjs=1.0  t=?  runEA=0.524  wall=55m38s  ETA=9m12s
+[14:26:52] [ 236/275] ✔ done   qid=Complex_Retrieval_test:185  ea=False em=False psjs=1.0  t=?  runEA=0.524  wall=55m38s  ETA=9m12s
+[14:26:52] [ 237/275] ▶ start  qid=Complex_Retrieval_test:186  q="Retrieve the names of all coaches who are coaching squads participating in the 'Farnce 2019' tournament, along with t..."
+[14:26:52] [ 237/275] ▶ start  qid=Complex_Retrieval_test:186  q="Retrieve the names of all coaches who are coaching squads participating in the 'Farnce 2019' tournament, along with t..."
+[14:27:02] [ 237/275] ✔ done   qid=Complex_Retrieval_test:186  ea=True em=False psjs=1.0  t=?  runEA=0.527  wall=55m49s  ETA=8m57s
+[14:27:02] [ 237/275] ✔ done   qid=Complex_Retrieval_test:186  ea=True em=False psjs=1.0  t=?  runEA=0.527  wall=55m49s  ETA=8m57s
+[14:27:02] [ 238/275] ▶ start  qid=Complex_Retrieval_test:187  q="Find the teams which played in matches in the 'France 2019' tournament where 'Sinc' also played. Return the team name..."
+[14:27:02] [ 238/275] ▶ start  qid=Complex_Retrieval_test:187  q="Find the teams which played in matches in the 'France 2019' tournament where 'Sinc' also played. Return the team name..."
+[14:27:14] [ 238/275] ✔ done   qid=Complex_Retrieval_test:187  ea=False em=False psjs=0.0  t=?  runEA=0.524  wall=56m01s  ETA=8m42s
+[14:27:14] [ 238/275] ✔ done   qid=Complex_Retrieval_test:187  ea=False em=False psjs=0.0  t=?  runEA=0.524  wall=56m01s  ETA=8m42s
+[14:27:14] [ 239/275] ▶ start  qid=Complex_Retrieval_test:188  q="Identify the names of all players who scored goals in matches that took place on '2019-07-07' and who represent the '..."
+[14:27:14] [ 239/275] ▶ start  qid=Complex_Retrieval_test:188  q="Identify the names of all players who scored goals in matches that took place on '2019-07-07' and who represent the '..."
+[14:27:26] [ 239/275] ✔ done   qid=Complex_Retrieval_test:188  ea=True em=False psjs=1.0  t=?  runEA=0.526  wall=56m12s  ETA=8m28s
+[14:27:26] [ 239/275] ✔ done   qid=Complex_Retrieval_test:188  ea=True em=False psjs=1.0  t=?  runEA=0.526  wall=56m12s  ETA=8m28s
+[14:27:26] [ 240/275] ▶ start  qid=Complex_Retrieval_test:189  q="Find all teams that participated in the '2015' tournament and list the names of players who represented those teams."
+[14:27:26] [ 240/275] ▶ start  qid=Complex_Retrieval_test:189  q="Find all teams that participated in the '2015' tournament and list the names of players who represented those teams."
+[14:27:36] [ 240/275] ✔ done   qid=Complex_Retrieval_test:189  ea=True em=False psjs=1.0  t=?  runEA=0.528  wall=56m23s  ETA=8m13s
+[14:27:36] [ 240/275] ✔ done   qid=Complex_Retrieval_test:189  ea=True em=False psjs=1.0  t=?  runEA=0.528  wall=56m23s  ETA=8m13s
+[14:27:36] [ 241/275] ▶ start  qid=Complex_Retrieval_test:191  q="Retrieve the names of all coaches who coached a squad that participated in the '2015' tournament."
+[14:27:36] [ 241/275] ▶ start  qid=Complex_Retrieval_test:191  q="Retrieve the names of all coaches who coached a squad that participated in the '2015' tournament."
+[14:27:42] [ 241/275] ✔ done   qid=Complex_Retrieval_test:191  ea=True em=False psjs=1.0  t=?  runEA=0.530  wall=56m29s  ETA=7m58s
+[14:27:42] [ 241/275] ✔ done   qid=Complex_Retrieval_test:191  ea=True em=False psjs=1.0  t=?  runEA=0.530  wall=56m29s  ETA=7m58s
+[14:27:42] [ 242/275] ▶ start  qid=Complex_Retrieval_test:192  q="Find the names of all players who scored a goal in a match during the 'canada 2015' tournament, along with the minute..."
+[14:27:42] [ 242/275] ▶ start  qid=Complex_Retrieval_test:192  q="Find the names of all players who scored a goal in a match during the 'canada 2015' tournament, along with the minute..."
+[14:27:52] [ 242/275] ✔ done   qid=Complex_Retrieval_test:192  ea=True em=False psjs=1.0  t=?  runEA=0.532  wall=56m39s  ETA=7m43s
+[14:27:52] [ 242/275] ✔ done   qid=Complex_Retrieval_test:192  ea=True em=False psjs=1.0  t=?  runEA=0.532  wall=56m39s  ETA=7m43s
+[14:27:52] [ 243/275] ▶ start  qid=Complex_Retrieval_test:193  q="List all teams that have a squad participating in the 'Canadw 2015' tournament, and for each team, show the names of ..."
+[14:27:52] [ 243/275] ▶ start  qid=Complex_Retrieval_test:193  q="List all teams that have a squad participating in the 'Canadw 2015' tournament, and for each team, show the names of ..."
+[14:28:16] [ 243/275] ✔ done   qid=Complex_Retrieval_test:193  ea=False em=False psjs=1.0  t=?  runEA=0.530  wall=57m03s  ETA=7m31s
+[14:28:16] [ 243/275] ✔ done   qid=Complex_Retrieval_test:193  ea=False em=False psjs=1.0  t=?  runEA=0.530  wall=57m03s  ETA=7m31s
+[14:28:16] [ 244/275] ▶ start  qid=Complex_Retrieval_test:194  q="Find all players who represented the 'The Rock' team and played in matches during the 'China 2007' tournament. Return..."
+[14:28:16] [ 244/275] ▶ start  qid=Complex_Retrieval_test:194  q="Find all players who represented the 'The Rock' team and played in matches during the 'China 2007' tournament. Return..."
+[14:28:31] [ 244/275] ✔ done   qid=Complex_Retrieval_test:194  ea=True em=False psjs=1.0  t=?  runEA=0.532  wall=57m17s  ETA=7m17s
+[14:28:31] [ 244/275] ✔ done   qid=Complex_Retrieval_test:194  ea=True em=False psjs=1.0  t=?  runEA=0.532  wall=57m17s  ETA=7m17s
+[14:28:31] [ 245/275] ▶ start  qid=Complex_Retrieval_test:195  q="Retrieve the names of all coaches who coached a squad that participated in the 'Chian 2007' tournament, along with th..."
+[14:28:31] [ 245/275] ▶ start  qid=Complex_Retrieval_test:195  q="Retrieve the names of all coaches who coached a squad that participated in the 'Chian 2007' tournament, along with th..."
+[14:28:44] [ 245/275] ✔ done   qid=Complex_Retrieval_test:195  ea=True em=False psjs=1.0  t=?  runEA=0.534  wall=57m30s  ETA=7m03s
+[14:28:44] [ 245/275] ✔ done   qid=Complex_Retrieval_test:195  ea=True em=False psjs=1.0  t=?  runEA=0.534  wall=57m30s  ETA=7m03s
+[14:28:44] [ 246/275] ▶ start  qid=Complex_Retrieval_test:196  q="Find the names of all teams that participated in the '2007' tournament and played in matches on '2007-09-30'."
+[14:28:44] [ 246/275] ▶ start  qid=Complex_Retrieval_test:196  q="Find the names of all teams that participated in the '2007' tournament and played in matches on '2007-09-30'."
+[14:28:49] [ 246/275] ✔ done   qid=Complex_Retrieval_test:196  ea=True em=False psjs=1.0  t=?  runEA=0.536  wall=57m35s  ETA=6m47s
+[14:28:49] [ 246/275] ✔ done   qid=Complex_Retrieval_test:196  ea=True em=False psjs=1.0  t=?  runEA=0.536  wall=57m35s  ETA=6m47s
+[14:28:49] [ 247/275] ▶ start  qid=Complex_Retrieval_test:197  q="For the 'Chian 2007' tournament, list all players who scored a goal in any match, along with the minute the goal was ..."
+[14:28:49] [ 247/275] ▶ start  qid=Complex_Retrieval_test:197  q="For the 'Chian 2007' tournament, list all players who scored a goal in any match, along with the minute the goal was ..."
+[14:28:59] [ 247/275] ✔ done   qid=Complex_Retrieval_test:197  ea=True em=False psjs=1.0  t=?  runEA=0.538  wall=57m45s  ETA=6m33s
+[14:28:59] [ 247/275] ✔ done   qid=Complex_Retrieval_test:197  ea=True em=False psjs=1.0  t=?  runEA=0.538  wall=57m45s  ETA=6m33s
+[14:28:59] [ 248/275] ▶ start  qid=Complex_Retrieval_test:198  q="Find all players who played in a match during the 'China 2007' tournament and also represent the 'The Rock' team. Ret..."
+[14:28:59] [ 248/275] ▶ start  qid=Complex_Retrieval_test:198  q="Find all players who played in a match during the 'China 2007' tournament and also represent the 'The Rock' team. Ret..."
+[14:29:15] [ 248/275] ✔ done   qid=Complex_Retrieval_test:198  ea=True em=False psjs=1.0  t=?  runEA=0.540  wall=58m02s  ETA=6m19s
+[14:29:15] [ 248/275] ✔ done   qid=Complex_Retrieval_test:198  ea=True em=False psjs=1.0  t=?  runEA=0.540  wall=58m02s  ETA=6m19s
+[14:29:15] [ 249/275] ▶ start  qid=Complex_Retrieval_test:199  q="Find all players who represented the 'Nippon' team and scored goals in matches played in the 'Germany 2011' tournamen..."
+[14:29:15] [ 249/275] ▶ start  qid=Complex_Retrieval_test:199  q="Find all players who represented the 'Nippon' team and scored goals in matches played in the 'Germany 2011' tournamen..."
+[14:29:31] [ 249/275] ✔ done   qid=Complex_Retrieval_test:199  ea=True em=False psjs=0.8780487804878049  t=?  runEA=0.542  wall=58m17s  ETA=6m05s
+[14:29:31] [ 249/275] ✔ done   qid=Complex_Retrieval_test:199  ea=True em=False psjs=0.8780487804878049  t=?  runEA=0.542  wall=58m17s  ETA=6m05s
+[14:29:31] [ 250/275] ▶ start  qid=Complex_Retrieval_test:200  q="For the '2015' tournament, retrieve the names of all teams that participated, along with the names of players who sco..."
+[14:29:31] [ 250/275] ▶ start  qid=Complex_Retrieval_test:200  q="For the '2015' tournament, retrieve the names of all teams that participated, along with the names of players who sco..."
+[14:29:41] [ 250/275] ✔ done   qid=Complex_Retrieval_test:200  ea=False em=False psjs=0.45552884615384615  t=?  runEA=0.540  wall=58m27s  ETA=5m51s
+[14:29:41] [ 250/275] ✔ done   qid=Complex_Retrieval_test:200  ea=False em=False psjs=0.45552884615384615  t=?  runEA=0.540  wall=58m27s  ETA=5m51s
+[14:29:41] [ 251/275] ▶ start  qid=Complex_Retrieval_test:201  q="Find all tournaments where the 'Nippon' team participated. For each tournament, return the tournament name and the da..."
+[14:29:41] [ 251/275] ▶ start  qid=Complex_Retrieval_test:201  q="Find all tournaments where the 'Nippon' team participated. For each tournament, return the tournament name and the da..."
+[14:29:58] [ 251/275] ✔ done   qid=Complex_Retrieval_test:201  ea=True em=False psjs=1.0  t=?  runEA=0.542  wall=58m44s  ETA=5m37s
+[14:29:58] [ 251/275] ✔ done   qid=Complex_Retrieval_test:201  ea=True em=False psjs=1.0  t=?  runEA=0.542  wall=58m44s  ETA=5m37s
+[14:29:58] [ 252/275] ▶ start  qid=Complex_Retrieval_test:202  q="Retrieve the names of all players who played in matches during the 'Germany 2011' tournament and also represent the '..."
+[14:29:58] [ 252/275] ▶ start  qid=Complex_Retrieval_test:202  q="Retrieve the names of all players who played in matches during the 'Germany 2011' tournament and also represent the '..."
+[14:30:16] [ 252/275] ✔ done   qid=Complex_Retrieval_test:202  ea=True em=False psjs=1.0  t=?  runEA=0.544  wall=59m03s  ETA=5m23s
+[14:30:16] [ 252/275] ✔ done   qid=Complex_Retrieval_test:202  ea=True em=False psjs=1.0  t=?  runEA=0.544  wall=59m03s  ETA=5m23s
+[14:30:16] [ 253/275] ▶ start  qid=Complex_Retrieval_test:203  q="Identify all players who were coached by 'Big Dave' and played in matches in the 'Germany 2011' tournament. Return th..."
+[14:30:16] [ 253/275] ▶ start  qid=Complex_Retrieval_test:203  q="Identify all players who were coached by 'Big Dave' and played in matches in the 'Germany 2011' tournament. Return th..."
+[14:30:33] [ 253/275] ✔ done   qid=Complex_Retrieval_test:203  ea=True em=False psjs=1.0  t=?  runEA=0.545  wall=59m19s  ETA=5m10s
+[14:30:33] [ 253/275] ✔ done   qid=Complex_Retrieval_test:203  ea=True em=False psjs=1.0  t=?  runEA=0.545  wall=59m19s  ETA=5m10s
+[14:30:33] [ 254/275] ▶ start  qid=Complex_Retrieval_test:204  q="Find all players who scored goals in matches that took place in the 'sweden 1995' tournament. Return the player's nam..."
+[14:30:33] [ 254/275] ▶ start  qid=Complex_Retrieval_test:204  q="Find all players who scored goals in matches that took place in the 'sweden 1995' tournament. Return the player's nam..."
+[14:30:46] [ 254/275] ✔ done   qid=Complex_Retrieval_test:204  ea=True em=False psjs=1.0  t=?  runEA=0.547  wall=59m32s  ETA=4m55s
+[14:30:46] [ 254/275] ✔ done   qid=Complex_Retrieval_test:204  ea=True em=False psjs=1.0  t=?  runEA=0.547  wall=59m32s  ETA=4m55s
+[14:30:46] [ 255/275] ▶ start  qid=Complex_Retrieval_test:205  q="Retrieve the names of all teams that participated in the 'USA 2003' tournament, along with the names of the players w..."
+[14:30:46] [ 255/275] ▶ start  qid=Complex_Retrieval_test:205  q="Retrieve the names of all teams that participated in the 'USA 2003' tournament, along with the names of the players w..."
+[14:31:06] [ 255/275] ✔ done   qid=Complex_Retrieval_test:205  ea=False em=False psjs=0.0  t=?  runEA=0.545  wall=59m52s  ETA=4m42s
+[14:31:06] [ 255/275] ✔ done   qid=Complex_Retrieval_test:205  ea=False em=False psjs=0.0  t=?  runEA=0.545  wall=59m52s  ETA=4m42s
+[14:31:06] [ 256/275] ▶ start  qid=Complex_Retrieval_test:206  q="Find all matches played on '2019-06-27' where 'DE' participated. Return the match ID and the names of all players who..."
+[14:31:06] [ 256/275] ▶ start  qid=Complex_Retrieval_test:206  q="Find all matches played on '2019-06-27' where 'DE' participated. Return the match ID and the names of all players who..."
+[14:31:23] [ 256/275] ✔ done   qid=Complex_Retrieval_test:206  ea=True em=False psjs=1.0  t=?  runEA=0.547  wall=1h00m09s  ETA=4m28s
+[14:31:23] [ 256/275] ✔ done   qid=Complex_Retrieval_test:206  ea=True em=False psjs=1.0  t=?  runEA=0.547  wall=1h00m09s  ETA=4m28s
+[14:31:23] [ 257/275] ▶ start  qid=Complex_Retrieval_test:207  q="For the 'Swede 1995' tournament, find the teams that participated and the total number of goals scored by each team i..."
+[14:31:23] [ 257/275] ▶ start  qid=Complex_Retrieval_test:207  q="For the 'Swede 1995' tournament, find the teams that participated and the total number of goals scored by each team i..."
+[14:31:34] [ 257/275] ✔ done   qid=Complex_Retrieval_test:207  ea=None em=False psjs=None  t=?  runEA=0.547  wall=1h00m21s  ETA=4m14s  err=gold: CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message:
+[14:31:34] [ 257/275] ✔ done   qid=Complex_Retrieval_test:207  ea=None em=False psjs=None  t=?  runEA=0.547  wall=1h00m21s  ETA=4m14s  err=gold: CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message:
+[14:31:34] [ 258/275] ▶ start  qid=Complex_Retrieval_test:208  q="Find all players who both scored a goal and played in a match during the '1995' tournament. List their names and the ..."
+[14:31:34] [ 258/275] ▶ start  qid=Complex_Retrieval_test:208  q="Find all players who both scored a goal and played in a match during the '1995' tournament. List their names and the ..."
+[14:31:42] [ 258/275] ✔ done   qid=Complex_Retrieval_test:208  ea=False em=False psjs=0.7142857142857143  t=?  runEA=0.545  wall=1h00m28s  ETA=3m59s
+[14:31:42] [ 258/275] ✔ done   qid=Complex_Retrieval_test:208  ea=False em=False psjs=0.7142857142857143  t=?  runEA=0.545  wall=1h00m28s  ETA=3m59s
+[14:31:42] [ 259/275] ▶ start  qid=Complex_Retrieval_test:209  q="Find all the players who scored goals in matches that took place in the '2011' tournament. Return the player's name a..."
+[14:31:42] [ 259/275] ▶ start  qid=Complex_Retrieval_test:209  q="Find all the players who scored goals in matches that took place in the '2011' tournament. Return the player's name a..."
+[14:31:48] [ 259/275] ✔ done   qid=Complex_Retrieval_test:209  ea=True em=False psjs=1.0  t=?  runEA=0.547  wall=1h00m35s  ETA=3m45s
+[14:31:48] [ 259/275] ✔ done   qid=Complex_Retrieval_test:209  ea=True em=False psjs=1.0  t=?  runEA=0.547  wall=1h00m35s  ETA=3m45s
+[14:31:48] [ 260/275] ▶ start  qid=Complex_Retrieval_test:210  q="For each team that participated in the 'Franec 2019' tournament, find the names of the players who represent that tea..."
+[14:31:48] [ 260/275] ▶ start  qid=Complex_Retrieval_test:210  q="For each team that participated in the 'Franec 2019' tournament, find the names of the players who represent that tea..."
+[14:32:02] [ 260/275] ✔ done   qid=Complex_Retrieval_test:210  ea=True em=False psjs=1.0  t=?  runEA=0.548  wall=1h00m49s  ETA=3m31s
+[14:32:02] [ 260/275] ✔ done   qid=Complex_Retrieval_test:210  ea=True em=False psjs=1.0  t=?  runEA=0.548  wall=1h00m49s  ETA=3m31s
+[14:32:02] [ 261/275] ▶ start  qid=Complex_Retrieval_test:212  q="Find the names of all coaches who coached a squad that participated in the 'Germwny 2011' tournament and also find th..."
+[14:32:02] [ 261/275] ▶ start  qid=Complex_Retrieval_test:212  q="Find the names of all coaches who coached a squad that participated in the 'Germwny 2011' tournament and also find th..."
+[14:32:17] [ 261/275] ✔ done   qid=Complex_Retrieval_test:212  ea=True em=False psjs=1.0  t=?  runEA=0.550  wall=1h01m03s  ETA=3m16s
+[14:32:17] [ 261/275] ✔ done   qid=Complex_Retrieval_test:212  ea=True em=False psjs=1.0  t=?  runEA=0.550  wall=1h01m03s  ETA=3m16s
+[14:32:17] [ 262/275] ▶ start  qid=Complex_Retrieval_test:213  q="Find all matches in the 'Germany 2011' tournament where the team 'Blighty' played, and for each match, retrieve the s..."
+[14:32:17] [ 262/275] ▶ start  qid=Complex_Retrieval_test:213  q="Find all matches in the 'Germany 2011' tournament where the team 'Blighty' played, and for each match, retrieve the s..."
+[14:32:31] [ 262/275] ✔ done   qid=Complex_Retrieval_test:213  ea=True em=False psjs=1.0  t=?  runEA=0.552  wall=1h01m17s  ETA=3m02s
+[14:32:31] [ 262/275] ✔ done   qid=Complex_Retrieval_test:213  ea=True em=False psjs=1.0  t=?  runEA=0.552  wall=1h01m17s  ETA=3m02s
+[14:32:31] [ 263/275] ▶ start  qid=Complex_Retrieval_test:214  q="For the 'FRANCE 2019' tournament, find all teams that participated. For each team, list the names of the players who ..."
+[14:32:31] [ 263/275] ▶ start  qid=Complex_Retrieval_test:214  q="For the 'FRANCE 2019' tournament, find all teams that participated. For each team, list the names of the players who ..."
+[14:32:53] [ 263/275] ✔ done   qid=Complex_Retrieval_test:214  ea=False em=False psjs=1.0  t=?  runEA=0.550  wall=1h01m39s  ETA=2m49s
+[14:32:53] [ 263/275] ✔ done   qid=Complex_Retrieval_test:214  ea=False em=False psjs=1.0  t=?  runEA=0.550  wall=1h01m39s  ETA=2m49s
+[14:32:53] [ 264/275] ▶ start  qid=Complex_Retrieval_test:215  q="Find all matches in the 'France 2019' tournament where a player named 'Geyzinha' scored a goal. Return the match ID a..."
+[14:32:53] [ 264/275] ▶ start  qid=Complex_Retrieval_test:215  q="Find all matches in the 'France 2019' tournament where a player named 'Geyzinha' scored a goal. Return the match ID a..."
+[14:33:07] [ 264/275] ✔ done   qid=Complex_Retrieval_test:215  ea=True em=False psjs=1.0  t=?  runEA=0.552  wall=1h01m54s  ETA=2m35s
+[14:33:07] [ 264/275] ✔ done   qid=Complex_Retrieval_test:215  ea=True em=False psjs=1.0  t=?  runEA=0.552  wall=1h01m54s  ETA=2m35s
+[14:33:07] [ 265/275] ▶ start  qid=Complex_Retrieval_test:217  q="Find all people who represent a team named 'North Korea' and played in matches that occurred on '2019-06-20'. Return ..."
+[14:33:07] [ 265/275] ▶ start  qid=Complex_Retrieval_test:217  q="Find all people who represent a team named 'North Korea' and played in matches that occurred on '2019-06-20'. Return ..."
+[14:33:22] [ 265/275] ✔ done   qid=Complex_Retrieval_test:217  ea=True em=False psjs=1.0  t=?  runEA=0.553  wall=1h02m09s  ETA=2m21s
+[14:33:22] [ 265/275] ✔ done   qid=Complex_Retrieval_test:217  ea=True em=False psjs=1.0  t=?  runEA=0.553  wall=1h02m09s  ETA=2m21s
+[14:33:22] [ 266/275] ▶ start  qid=Complex_Retrieval_test:219  q="Find all teams that participated in the '2015' tournament, and for each team, list the names of players who scored go..."
+[14:33:22] [ 266/275] ▶ start  qid=Complex_Retrieval_test:219  q="Find all teams that participated in the '2015' tournament, and for each team, list the names of players who scored go..."
+[14:33:33] [ 266/275] ✔ done   qid=Complex_Retrieval_test:219  ea=False em=False psjs=0.1503656307129799  t=?  runEA=0.551  wall=1h02m19s  ETA=2m07s
+[14:33:33] [ 266/275] ✔ done   qid=Complex_Retrieval_test:219  ea=False em=False psjs=0.1503656307129799  t=?  runEA=0.551  wall=1h02m19s  ETA=2m07s
+[14:33:33] [ 267/275] ▶ start  qid=Complex_Retrieval_test:222  q="Retrieve the names of all players who represent 'Blighty' and have scored goals in matches staged as 'Group Matches'."
+[14:33:33] [ 267/275] ▶ start  qid=Complex_Retrieval_test:222  q="Retrieve the names of all players who represent 'Blighty' and have scored goals in matches staged as 'Group Matches'."
+[14:33:52] [ 267/275] ✔ done   qid=Complex_Retrieval_test:222  ea=False em=False psjs=0.0  t=?  runEA=0.549  wall=1h02m38s  ETA=1m53s
+[14:33:52] [ 267/275] ✔ done   qid=Complex_Retrieval_test:222  ea=False em=False psjs=0.0  t=?  runEA=0.549  wall=1h02m38s  ETA=1m53s
+[14:33:52] [ 268/275] ▶ start  qid=Complex_Retrieval_test:224  q="Retrieve the names of all teams that participated in the '2019' tournament, along with the names of the players who r..."
+[14:33:52] [ 268/275] ▶ start  qid=Complex_Retrieval_test:224  q="Retrieve the names of all teams that participated in the '2019' tournament, along with the names of the players who r..."
+[14:34:04] [ 268/275] ✔ done   qid=Complex_Retrieval_test:224  ea=False em=False psjs=1.0  t=?  runEA=0.547  wall=1h02m50s  ETA=1m38s
+[14:34:04] [ 268/275] ✔ done   qid=Complex_Retrieval_test:224  ea=False em=False psjs=1.0  t=?  runEA=0.547  wall=1h02m50s  ETA=1m38s
+[14:34:04] [ 269/275] ▶ start  qid=Complex_Retrieval_test:225  q="Find the names of all players who both played in a match and coached a squad that participated in the 'UAS 2003' tour..."
+[14:34:04] [ 269/275] ▶ start  qid=Complex_Retrieval_test:225  q="Find the names of all players who both played in a match and coached a squad that participated in the 'UAS 2003' tour..."
+[14:34:20] [ 269/275] ✔ done   qid=Complex_Retrieval_test:225  ea=False em=False psjs=0.0  t=?  runEA=0.545  wall=1h03m06s  ETA=1m24s
+[14:34:20] [ 269/275] ✔ done   qid=Complex_Retrieval_test:225  ea=False em=False psjs=0.0  t=?  runEA=0.545  wall=1h03m06s  ETA=1m24s
+[14:34:20] [ 270/275] ▶ start  qid=Complex_Retrieval_test:226  q="For the '2003' tournament, list each team that participated and the number of players who scored goals for that team ..."
+[14:34:20] [ 270/275] ▶ start  qid=Complex_Retrieval_test:226  q="For the '2003' tournament, list each team that participated and the number of players who scored goals for that team ..."
+[14:34:26] [ 270/275] ✔ done   qid=Complex_Retrieval_test:226  ea=False em=False psjs=0.11582867783985103  t=?  runEA=0.543  wall=1h03m12s  ETA=1m10s
+[14:34:26] [ 270/275] ✔ done   qid=Complex_Retrieval_test:226  ea=False em=False psjs=0.11582867783985103  t=?  runEA=0.543  wall=1h03m12s  ETA=1m10s
+[14:34:26] [ 271/275] ▶ start  qid=Complex_Retrieval_test:227  q="Find the names of all players who played in matches in the 'USA 2003' tournament and were coached by 'Bisanz Geroo'."
+[14:34:26] [ 271/275] ▶ start  qid=Complex_Retrieval_test:227  q="Find the names of all players who played in matches in the 'USA 2003' tournament and were coached by 'Bisanz Geroo'."
+[14:34:40] [ 271/275] ✔ done   qid=Complex_Retrieval_test:227  ea=False em=False psjs=0.0  t=?  runEA=0.541  wall=1h03m27s  ETA=56s
+[14:34:40] [ 271/275] ✔ done   qid=Complex_Retrieval_test:227  ea=False em=False psjs=0.0  t=?  runEA=0.541  wall=1h03m27s  ETA=56s
+[14:34:40] [ 272/275] ▶ start  qid=Complex_Retrieval_test:228  q="Find all the teams that participated in the 'france 2019' tournament, and for each team, list the names of the player..."
+[14:34:40] [ 272/275] ▶ start  qid=Complex_Retrieval_test:228  q="Find all the teams that participated in the 'france 2019' tournament, and for each team, list the names of the player..."
+[14:34:53] [ 272/275] ✔ done   qid=Complex_Retrieval_test:228  ea=False em=False psjs=0.5819112627986348  t=?  runEA=0.538  wall=1h03m39s  ETA=42s
+[14:34:53] [ 272/275] ✔ done   qid=Complex_Retrieval_test:228  ea=False em=False psjs=0.5819112627986348  t=?  runEA=0.538  wall=1h03m39s  ETA=42s
+[14:34:53] [ 273/275] ▶ start  qid=Complex_Retrieval_test:229  q="Retrieve the names of all players who played in a match during the '1991' tournament, along with the stage of the mat..."
+[14:34:53] [ 273/275] ▶ start  qid=Complex_Retrieval_test:229  q="Retrieve the names of all players who played in a match during the '1991' tournament, along with the stage of the mat..."
+[14:35:15] [ 273/275] ✔ done   qid=Complex_Retrieval_test:229  ea=False em=False psjs=0.7896551724137931  t=?  runEA=0.536  wall=1h04m02s  ETA=28s
+[14:35:15] [ 273/275] ✔ done   qid=Complex_Retrieval_test:229  ea=False em=False psjs=0.7896551724137931  t=?  runEA=0.536  wall=1h04m02s  ETA=28s
+[14:35:15] [ 274/275] ▶ start  qid=Complex_Retrieval_test:230  q="For each team that participated in the 'Franve 2019' tournament, find the total number of goals scored by all players..."
+[14:35:15] [ 274/275] ▶ start  qid=Complex_Retrieval_test:230  q="For each team that participated in the 'Franve 2019' tournament, find the total number of goals scored by all players..."
+[14:35:30] [ 274/275] ✔ done   qid=Complex_Retrieval_test:230  ea=False em=False psjs=0.1263111888111888  t=?  runEA=0.534  wall=1h04m16s  ETA=14s
+[14:35:30] [ 274/275] ✔ done   qid=Complex_Retrieval_test:230  ea=False em=False psjs=0.1263111888111888  t=?  runEA=0.534  wall=1h04m16s  ETA=14s
+[14:35:30] [ 275/275] ▶ start  qid=Complex_Retrieval_test:231  q="Retrieve the names of all coaches who coached a squad that participated in the 'Francd 2019' tournament, and also lis..."
+[14:35:30] [ 275/275] ▶ start  qid=Complex_Retrieval_test:231  q="Retrieve the names of all coaches who coached a squad that participated in the 'Francd 2019' tournament, and also lis..."
+[14:35:41] [ 275/275] ✔ done   qid=Complex_Retrieval_test:231  ea=False em=False psjs=0.6828193832599119  t=?  runEA=0.532  wall=1h04m28s  ETA=--
+[14:35:41] [ 275/275] ✔ done   qid=Complex_Retrieval_test:231  ea=False em=False psjs=0.6828193832599119  t=?  runEA=0.532  wall=1h04m28s  ETA=--

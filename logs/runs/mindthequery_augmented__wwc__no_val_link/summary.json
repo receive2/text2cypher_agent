@@ -1,0 +1,82 @@
+{
+  "dataset": "mindthequery_augmented",
+  "n": 275,
+  "n_scored": {
+    "ea": 245,
+    "em": 275,
+    "psjs": 245
+  },
+  "n_errors": 30,
+  "ea": 0.15510204081632653,
+  "em": 0.0,
+  "psjs": 0.38279638280156364,
+  "by_difficulty": {
+    "all": {
+      "ea": 0.15510204081632653,
+      "em": 0.0,
+      "psjs": 0.38279638280156364,
+      "n": 275,
+      "n_scored": {
+        "ea": 245,
+        "em": 275,
+        "psjs": 245
+      },
+      "n_errors": 30
+    },
+    "easy": {
+      "ea": 0.17567567567567569,
+      "em": 0.0,
+      "psjs": 0.374636783124588,
+      "n": 75,
+      "n_scored": {
+        "ea": 74,
+        "em": 75,
+        "psjs": 74
+      },
+      "n_errors": 1
+    },
+    "medium": {
+      "ea": 0.17073170731707318,
+      "em": 0.0,
+      "psjs": 0.42626838005971907,
+      "n": 132,
+      "n_scored": {
+        "ea": 123,
+        "em": 132,
+        "psjs": 123
+      },
+      "n_errors": 9
+    },
+    "hard": {
+      "ea": 0.08333333333333333,
+      "em": 0.0,
+      "psjs": 0.2839787726628779,
+      "n": 68,
+      "n_scored": {
+        "ea": 48,
+        "em": 68,
+        "psjs": 48
+      },
+      "n_errors": 20
+    }
+  },
+  "elapsed_sec": 1376.94,
+  "run_meta": {
+    "generated_at": "2026-06-22T13:54:11+02:00",
+    "ner_mode": "no_ner",
+    "method": "no_val_link",
+    "label": "No Val Link",
+    "tool_type": null,
+    "retrieval": "fuzzy",
+    "ner_llm": "gpt-4.1",
+    "cypher_llm": "gpt-4.1",
+    "qa_llm": "gpt-4.1",
+    "tool_select_top_k": 15,
+    "values_per_tool": 10,
+    "plan_exec_tools_per_entity": 2,
+    "plan_exec_values_per_tool": 10,
+    "plan_exec_escalate": true,
+    "tool_retrieval_mode": "fuzzy",
+    "hybrid_strategy": "cascade"
+  }
+}

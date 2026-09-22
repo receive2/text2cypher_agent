@@ -1,0 +1,16 @@
+{
+  "dataset": "cypherbench_augmented",
+  "n": 364,
+  "n_scored": {
+    "ea": 364,
+    "em": 364,
+    "psjs": 364
+  },
+  "n_errors": 0,
+  "ea": 0.7060439560439561,
+  "em": 0.0,
+  "psjs": 0.7491045116775401,
+  "verified_subset": true,
+  "dropped_by_verification": 1,
+  "pending_policy": "keep"
+}

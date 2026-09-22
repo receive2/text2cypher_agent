@@ -1,0 +1,510 @@
+2026-06-22 17:07:38.471 | INFO     | eval.metrics_MindTheQuery:load_dataset:230 - Loaded 1298 Mind-the-Query examples from /Users/q0w01lh/datasets/mindthequery_augmented_v2/test.json
+2026-06-22 17:07:38.473 | INFO     | eval.metrics_MindTheQuery:evaluate_dataset:429 - Mind-the-Query graph_filter='bloom': kept 40/1298 examples (skipped 1258).
+[17:07:38] [   1/40] ▶ start  qid=Complex_Aggregation_test:0  q="What is the average purchase amount for purchases delivered to addresses in 'Momtana'?"
+[17:07:38] [   1/40] ▶ start  qid=Complex_Aggregation_test:0  q="What is the average purchase amount for purchases delivered to addresses in 'Momtana'?"
+2026-06-22 17:07:41.427 | DEBUG    | ner_agent_auto:build_tool_registry:219 - Imported 'generated.generated_node_tools'
+2026-06-22 17:07:41.451 | DEBUG    | ner_agent_auto:build_tool_registry:219 - Imported 'generated.generated_rel_tools'
+2026-06-22 17:07:41.451 | INFO     | ner_agent_auto:build_tool_registry:234 - Tool registry built (mode='react_node_rel'): 77 tools loaded.
+Loading tool FAISS index from '/Users/q0w01lh/Documents/repo/t2c/generated/faiss/tools_auto' …
+2026-06-22 17:07:41.460 | DEBUG    | tools.tool_search:_verify_fingerprint:271 - [tool_search] FAISS fingerprint OK at /Users/q0w01lh/Documents/repo/t2c/generated/faiss/tools_auto/fingerprint.json (db='neo4j', tools=77, model='text-embedding-3-small')
+/Users/q0w01lh/Documents/repo/t2c/neo4j_lib/neo4j_search.py:39: LangChainDeprecationWarning: The class `Neo4jGraph` was deprecated in LangChain 0.3.8 and will be removed in 1.0. An updated version of the class exists in the :class:`~langchain-neo4j package and should be used instead. To use it run `pip install -U :class:`~langchain-neo4j` and import as `from :class:`~langchain_neo4j import Neo4jGraph``.
+  graph = Neo4jGraph(
+[t2c.retrieval] query='purchases' label=Purchase prop=amount mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query="addresses in 'Momtana'" label=Address prop=city mode=fuzzy fuzzy_top5=[{'value': 'Ina', 'score': 1.7652}, {'value': 'Fontana-on-Geneva', 'score': 0.8324}, {'value': 'Hastings-on-Hudson', 'score': 0.8324}, {'value': 'Annandale-on-Hudson', 'score': 0.8324}] vector_top5=None final=['Ina', 'Fontana-on-Geneva', 'Hastings-on-Hudson', 'Annandale-on-Hudson']
+[t2c.retrieval] query='purchases' label=Purchase prop=time mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query="addresses in 'Momtana'" label=DeliveryAddress prop=city mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query="addresses in 'Momtana'" label=Address prop=city mode=fuzzy fuzzy_top5=[{'value': 'Ina', 'score': 1.7652}, {'value': 'Fontana-on-Geneva', 'score': 0.8324}, {'value': 'Hastings-on-Hudson', 'score': 0.8324}, {'value': 'Annandale-on-Hudson', 'score': 0.8324}] vector_top5=None final=['Ina', 'Fontana-on-Geneva', 'Hastings-on-Hudson', 'Annandale-on-Hudson']
+[t2c.retrieval] query="addresses in 'Momtana'" label=DeliveryAddress prop=city mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query="addresses in 'Momtana'" label=Address prop=city mode=fuzzy fuzzy_top5=[{'value': 'Ina', 'score': 1.7652}, {'value': 'Fontana-on-Geneva', 'score': 0.8324}, {'value': 'Hastings-on-Hudson', 'score': 0.8324}, {'value': 'Annandale-on-Hudson', 'score': 0.8324}] vector_top5=None final=['Ina', 'Fontana-on-Geneva', 'Hastings-on-Hudson', 'Annandale-on-Hudson']
+[t2c.retrieval] query="addresses in 'Momtana'" label=DeliveryAddress prop=city mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query="addresses in 'Momtana'" label=Address prop=city mode=fuzzy fuzzy_top5=[{'value': 'Ina', 'score': 1.7652}, {'value': 'Fontana-on-Geneva', 'score': 0.8324}, {'value': 'Hastings-on-Hudson', 'score': 0.8324}, {'value': 'Annandale-on-Hudson', 'score': 0.8324}] vector_top5=None final=['Ina', 'Fontana-on-Geneva', 'Hastings-on-Hudson', 'Annandale-on-Hudson']
+[t2c.retrieval] query="addresses in 'Momtana'" label=DeliveryAddress prop=city mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[17:08:05] [   1/40] ✔ done   qid=Complex_Aggregation_test:0  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=27s  ETA=17m22s
+[17:08:05] [   1/40] ✔ done   qid=Complex_Aggregation_test:0  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=27s  ETA=17m22s
+[17:08:05] [   2/40] ▶ start  qid=Complex_Aggregation_test:2  q="What is the average balance of all BankAccounts that are associated with FinancialInstitutes whose website contains '..."
+[17:08:05] [   2/40] ▶ start  qid=Complex_Aggregation_test:2  q="What is the average balance of all BankAccounts that are associated with FinancialInstitutes whose website contains '..."
+[t2c.retrieval] query='BankAccounts' label=BankAccount prop=balance mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='FinancialInstitutes' label=FinancialInstitute prop=name mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='FinancialInstitutes' label=FinancialInstitute prop=website mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='BankAccounts' label=BankAccount prop=accountNumber mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[17:08:17] [   2/40] ✔ done   qid=Complex_Aggregation_test:2  ea=True em=False psjs=1.0  t=?  runEA=0.500  wall=39s  ETA=12m16s
+[17:08:17] [   2/40] ✔ done   qid=Complex_Aggregation_test:2  ea=True em=False psjs=1.0  t=?  runEA=0.500  wall=39s  ETA=12m16s
+[17:08:17] [   3/40] ▶ start  qid=Complex_Aggregation_test:3  q='For each provider of PhoneNumber, what is the average amount of MoneyTransfre transactions associated with those phon...'
+[17:08:17] [   3/40] ▶ start  qid=Complex_Aggregation_test:3  q='For each provider of PhoneNumber, what is the average amount of MoneyTransfre transactions associated with those phon...'
+[t2c.retrieval] query='MoneyTransfre' label=MoneyTransfer prop=amount mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='PhoneNumber' label=PhoneNumber prop=phone mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='provider of PhoneNumber' label=PhoneNumber prop=provider mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='MoneyTransfre' label=MoneyTransfer prop=transactionDate mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='PhoneNumber' label=PhoneNumber prop=touched mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='provider of PhoneNumber' label=PhoneNumber prop=phone mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+2026-06-22 17:08:28.466 | WARNING  | eval.psjs:compute_psjs:580 - PSJS execution failed — returning 0.0.  gold_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input \'collect\': expected\n  "*"\n  "WHERE"\n  "]"\n  "{"\n  a parameter (line 1, column 34 (offset: 33))\n"MATCH (mt:MoneyTransfer)-[: WITH collect(distinct id(mt)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId1"\n                                  ^}' pred_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input \'collect\': expected\n  "*"\n  "WHERE"\n  "]"\n  "{"\n  a parameter (line 1, column 32 (offset: 31))\n"MATCH (p:PhoneNumber)<-[: WITH collect(distinct id(p)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId2"\n                                ^}'
+[17:08:28] [   3/40] ✔ done   qid=Complex_Aggregation_test:3  ea=True em=False psjs=0.0  t=?  runEA=0.667  wall=50s  ETA=10m17s
+[17:08:28] [   3/40] ✔ done   qid=Complex_Aggregation_test:3  ea=True em=False psjs=0.0  t=?  runEA=0.667  wall=50s  ETA=10m17s
+[17:08:28] [   4/40] ▶ start  qid=Complex_Aggregation_test:4  q='What is the average balance of CreditCards held by AccountHoldesr born before 1975, based on their birthDate?'
+[17:08:28] [   4/40] ▶ start  qid=Complex_Aggregation_test:4  q='What is the average balance of CreditCards held by AccountHoldesr born before 1975, based on their birthDate?'
+[t2c.retrieval] query='CreditCards' label=CreditCard prop=balance mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='AccountHoldesr' label=AccountHolder prop=firstName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='birthDate' label=AccountHolder prop=birthDate mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='AccountHoldesr' label=AccountHolder prop=fullName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='CreditCards' label=CreditCard prop=securityCode mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='birthDate' label=Login prop=startDate mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[17:08:44] [   4/40] ✔ done   qid=Complex_Aggregation_test:4  ea=True em=False psjs=1.0  t=?  runEA=0.750  wall=1m06s  ETA=9m54s
+[17:08:44] [   4/40] ✔ done   qid=Complex_Aggregation_test:4  ea=True em=False psjs=1.0  t=?  runEA=0.750  wall=1m06s  ETA=9m54s
+[17:08:44] [   5/40] ▶ start  qid=Complex_Aggregation_test:5  q='What is the average amount of Purchsaes made using BankCards with a limit greater than 5000, grouped by the expiratio...'
+[17:08:44] [   5/40] ▶ start  qid=Complex_Aggregation_test:5  q='What is the average amount of Purchsaes made using BankCards with a limit greater than 5000, grouped by the expiratio...'
+[t2c.retrieval] query='BankCards' label=BankCard prop=balance mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='expirationDate' label=BankCard prop=expirationDate mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='limit' label=BankCard prop=limit mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Purchsaes' label=Purchase prop=amount mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='expirationDate' label=CreditCard prop=expirationDate mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='BankCards' label=BankCard prop=latePayments mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='limit' label=CreditCard prop=limit mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Purchsaes' label=Purchase prop=purchaseCode mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[17:09:01] [   5/40] ✔ done   qid=Complex_Aggregation_test:5  ea=True em=False psjs=1.0  t=?  runEA=0.800  wall=1m23s  ETA=9m38s
+[17:09:01] [   5/40] ✔ done   qid=Complex_Aggregation_test:5  ea=True em=False psjs=1.0  t=?  runEA=0.800  wall=1m23s  ETA=9m38s
+[17:09:01] [   6/40] ▶ start  qid=Complex_Aggregation_test:12  q="What is the average balance of CreditCards held by AccountHoleers, grouped by the state of the AccountHolder's address?"
+[17:09:01] [   6/40] ▶ start  qid=Complex_Aggregation_test:12  q="What is the average balance of CreditCards held by AccountHoleers, grouped by the state of the AccountHolder's address?"
+[t2c.retrieval] query='AccountHoleers' label=AccountHolder prop=firstName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='CreditCards' label=CreditCard prop=balance mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query="state of the AccountHolder's address" label=Address prop=state mode=fuzzy fuzzy_top5=[{'value': 'District of Columbia', 'score': 1.0485}] vector_top5=None final=['District of Columbia']
+[t2c.retrieval] query='AccountHoleers' label=AccountHolder prop=fullName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='CreditCards' label=CreditCard prop=securityCode mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query="state of the AccountHolder's address" label=DeliveryAddress prop=state mode=fuzzy fuzzy_top5=[{'value': 'District of Columbia', 'score': 0.9098}] vector_top5=None final=['District of Columbia']
+[17:09:28] [   6/40] ✔ done   qid=Complex_Aggregation_test:12  ea=True em=False psjs=1.0  t=?  runEA=0.833  wall=1m51s  ETA=10m26s
+[17:09:28] [   6/40] ✔ done   qid=Complex_Aggregation_test:12  ea=True em=False psjs=1.0  t=?  runEA=0.833  wall=1m51s  ETA=10m26s
+[17:09:28] [   7/40] ▶ start  qid=Complex_Aggregation_test:14  q='What is the average balance of UnsecuredLoans associated with AccontHolders, grouped by the city of their address?'
+[17:09:28] [   7/40] ▶ start  qid=Complex_Aggregation_test:14  q='What is the average balance of UnsecuredLoans associated with AccontHolders, grouped by the city of their address?'
+[t2c.retrieval] query='AccontHolders' label=AccountHolder prop=birthDate mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='address' label=DeliveryAddress prop=streetAddress mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='city' label=Address prop=city mode=fuzzy fuzzy_top5=[{'value': 'City', 'score': 10.3794}] vector_top5=None final=['City']
+[t2c.retrieval] query='UnsecuredLoans' label=UnsecuredLoan prop=loanAmount mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='address' label=DeliveryAddress prop=city mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='city' label=DeliveryAddress prop=city mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='AccontHolders' label=AccountHolder prop=firstName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='UnsecuredLoans' label=UnsecuredLoan prop=APR mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='AccontHolders' label=AccountHolder prop=fullName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[17:09:48] [   7/40] ✔ done   qid=Complex_Aggregation_test:14  ea=True em=False psjs=1.0  t=?  runEA=0.857  wall=2m10s  ETA=10m12s
+[17:09:48] [   7/40] ✔ done   qid=Complex_Aggregation_test:14  ea=True em=False psjs=1.0  t=?  runEA=0.857  wall=2m10s  ETA=10m12s
+[17:09:48] [   8/40] ▶ start  qid=Complex_Aggregation_test:15  q="What is the average balance of BankAccounts associated with FinancialInstitutes that have names starting with 'Miller..."
+[17:09:48] [   8/40] ▶ start  qid=Complex_Aggregation_test:15  q="What is the average balance of BankAccounts associated with FinancialInstitutes that have names starting with 'Miller..."
+[t2c.retrieval] query='FinancialInstitutes' label=FinancialInstitute prop=name mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='BankAccounts' label=BankAccount prop=balance mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='BankAccounts' label=BankAccount prop=accountNumber mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='FinancialInstitutes' label=FinancialInstitute prop=website mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='FinancialInstitutes' label=FinancialInstitute prop=name mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='FinancialInstitutes' label=FinancialInstitute prop=website mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='FinancialInstitutes' label=FinancialInstitute prop=name mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='FinancialInstitutes' label=FinancialInstitute prop=website mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='FinancialInstitutes' label=FinancialInstitute prop=name mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='FinancialInstitutes' label=FinancialInstitute prop=website mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+2026-06-22 17:10:06.555 | WARNING  | eval.psjs:compute_psjs:580 - PSJS execution failed — returning 0.0.  gold_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input \'AS\': expected\n  "!="\n  "%"\n  "*"\n  "+"\n  "-"\n  "/"\n  "<"\n  "<="\n  "<>"\n  "="\n  ">"\n  ">="\n  "AND"\n  "CALL"\n  "CREATE"\n  "DELETE"\n  "DETACH"\n  "FINISH"\n  "FOREACH"\n  "INSERT"\n  "LOAD"\n  "MATCH"\n  "MERGE"\n  "NODETACH"\n  "OPTIONAL"\n  "OR"\n  "REMOVE"\n  "RETURN"\n  "SET"\n  "UNION"\n  "UNWIND"\n  "USE"\n  "WITH"\n  "XOR"\n  "^"\n  "||"\n  <EOF> (line 1, column 170 (offset: 169))\n"MATCH (ba:BankAccount)-[rtmp0:FROM]->(fi:FinancialInstitute) WHERE fi.name STARTS WITH collect(distinct id(ba)) + collect(distinct id(fi)) + collect(distinct id(rtmp0)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId1"\n                                                                                                                                                                          ^}' pred_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input \'AS\': expected\n  "!="\n  "%"\n  "*"\n  "+"\n  "-"\n  "/"\n  "<"\n  "<="\n  "<>"\n  "="\n  ">"\n  ">="\n  "AND"\n  "CALL"\n  "CREATE"\n  "DELETE"\n  "DETACH"\n  "FINISH"\n  "FOREACH"\n  "INSERT"\n  "LOAD"\n  "MATCH"\n  "MERGE"\n  "NODETACH"\n  "OPTIONAL"\n  "OR"\n  "REMOVE"\n  "RETURN"\n  "SET"\n  "UNION"\n  "UNWIND"\n  "USE"\n  "WITH"\n  "XOR"\n  "^"\n  "||"\n  <EOF> (line 1, column 165 (offset: 164))\n"MATCH (b:BankAccount)-[rtmp0:FROM]->(f:FinancialInstitute) WHERE f.name STARTS WITH collect(distinct id(b)) + collect(distinct id(f)) + collect(distinct id(rtmp0)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId2"\n                                                                                                                                                                     ^}'
+[17:10:06] [   8/40] ✔ done   qid=Complex_Aggregation_test:15  ea=False em=False psjs=0.0  t=?  runEA=0.750  wall=2m28s  ETA=9m52s
+[17:10:06] [   8/40] ✔ done   qid=Complex_Aggregation_test:15  ea=False em=False psjs=0.0  t=?  runEA=0.750  wall=2m28s  ETA=9m52s
+[17:10:06] [   9/40] ▶ start  qid=Complex_Aggregation_test:16  q='For each provider of PhoneNumbers, what is the average amount of MoneyTransfefs associated with those PhoneNumbers, a...'
+[17:10:06] [   9/40] ▶ start  qid=Complex_Aggregation_test:16  q='For each provider of PhoneNumbers, what is the average amount of MoneyTransfefs associated with those PhoneNumbers, a...'
+[t2c.retrieval] query='MoneyTransfefs' label=MoneyTransfer prop=amount mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='provider' label=PhoneNumber prop=provider mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='PhoneNumbers' label=PhoneNumber prop=phone mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='MoneyTransfefs' label=MoneyTransfer prop=transactionDate mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='provider' label=PhoneNumber prop=phone mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='PhoneNumbers' label=PhoneNumber prop=touched mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+2026-06-22 17:10:21.574 | WARNING  | eval.psjs:compute_psjs:580 - PSJS execution failed — returning 0.0.  gold_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input \'collect\': expected\n  "*"\n  "WHERE"\n  "]"\n  "{"\n  a parameter (line 1, column 34 (offset: 33))\n"MATCH (mt:MoneyTransfer)-[: WITH collect(distinct id(mt)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId1"\n                                  ^}' pred_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input \'collect\': expected\n  "*"\n  "WHERE"\n  "]"\n  "{"\n  a parameter (line 1, column 85 (offset: 84))\n"MATCH (a:AccountHolder)-[rtmp0:HAS_PHONENUMBER]->(p:PhoneNumber) MATCH (p)<-[: WITH collect(distinct id(a)) + collect(distinct id(p)) + collect(distinct id(rtmp0)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId2"\n                                                                                     ^}'
+[17:10:21] [   9/40] ✔ done   qid=Complex_Aggregation_test:16  ea=False em=False psjs=0.0  t=?  runEA=0.667  wall=2m43s  ETA=9m22s
+[17:10:21] [   9/40] ✔ done   qid=Complex_Aggregation_test:16  ea=False em=False psjs=0.0  t=?  runEA=0.667  wall=2m43s  ETA=9m22s
+[17:10:21] [  10/40] ▶ start  qid=Complex_Aggregation_test:17  q="What is the average balance of CreditCards held by AccountHolders with the last name 'Brecenridge', and what is the t..."
+[17:10:21] [  10/40] ▶ start  qid=Complex_Aggregation_test:17  q="What is the average balance of CreditCards held by AccountHolders with the last name 'Brecenridge', and what is the t..."
+[t2c.retrieval] query='CreditCards' label=CreditCard prop=balance mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='AccountHolders' label=AccountHolder prop=firstName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='AccountHolders' label=AccountHolder prop=fullName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='CreditCards' label=CreditCard prop=securityCode mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='AccountHolders' label=AccountHolder prop=lastName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='AccountHolders' label=Login prop=lastName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='AccountHolders' label=AccountHolder prop=firstName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='AccountHolders' label=AccountHolder prop=fullName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='AccountHolders' label=AccountHolder prop=lastName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='AccountHolders' label=Login prop=lastName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Brecenridge' label=AccountHolder prop=lastName mode=fuzzy fuzzy_top5=[{'value': 'Breckenridge', 'score': 3.1105}] vector_top5=None final=['Breckenridge']
+[17:10:48] [  10/40] ✔ done   qid=Complex_Aggregation_test:17  ea=True em=False psjs=0.6  t=?  runEA=0.700  wall=3m10s  ETA=9m29s
+[17:10:48] [  10/40] ✔ done   qid=Complex_Aggregation_test:17  ea=True em=False psjs=0.6  t=?  runEA=0.700  wall=3m10s  ETA=9m29s
+[17:10:48] [  11/40] ▶ start  qid=Complex_Aggregation_test:19  q='What is the average balance across all BankAccounts, and what is the average loan amount for all UnsecuredLoans assoc...'
+[17:10:48] [  11/40] ▶ start  qid=Complex_Aggregation_test:19  q='What is the average balance across all BankAccounts, and what is the average loan amount for all UnsecuredLoans assoc...'
+[t2c.retrieval] query='UnsecuredLoans' label=UnsecuredLoan prop=loanAmount mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='BankAccounts' label=BankAccount prop=balance mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='AccountHolderss' label=AccountHolder prop=firstName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='BankAccounts' label=BankAccount prop=accountNumber mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='UnsecuredLoans' label=UnsecuredLoan prop=balance mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='AccountHolderss' label=AccountHolder prop=fullName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[17:11:04] [  11/40] ✔ done   qid=Complex_Aggregation_test:19  ea=True em=False psjs=1.0  t=?  runEA=0.727  wall=3m26s  ETA=9m02s
+[17:11:04] [  11/40] ✔ done   qid=Complex_Aggregation_test:19  ea=True em=False psjs=1.0  t=?  runEA=0.727  wall=3m26s  ETA=9m02s
+[17:11:04] [  12/40] ▶ start  qid=Complex_Aggregation_test:20  q="What is the average amount of money transfers associated with phone numbers provided by 'interstate mob', and what is..."
+[17:11:04] [  12/40] ▶ start  qid=Complex_Aggregation_test:20  q="What is the average amount of money transfers associated with phone numbers provided by 'interstate mob', and what is..."
+[t2c.retrieval] query='interstate mob' label=FinancialInstitute prop=name mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='interstate mob' label=Shop prop=name mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='interstate mob' label=FinancialInstitute prop=name mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='interstate mob' label=Shop prop=name mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='interstate mob' label=FinancialInstitute prop=name mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='interstate mob' label=Shop prop=name mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='interstate mob' label=FinancialInstitute prop=name mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='interstate mob' label=Shop prop=name mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+2026-06-22 17:11:36.423 | WARNING  | eval.psjs:compute_psjs:580 - PSJS execution failed — returning 0.0.  gold_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input \'collect\': expected\n  "*"\n  "WHERE"\n  "]"\n  "{"\n  a parameter (line 1, column 35 (offset: 34))\n"MATCH (mt:MoneyTransfer)-[r: WITH collect(distinct id(mt)) + collect(distinct id(r)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId1"\n                                   ^}' pred_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input \'collect\': expected\n  "*"\n  "WHERE"\n  "]"\n  "{"\n  a parameter (line 1, column 237 (offset: 236))\n"MATCH (fi:FinancialInstitute {name: "Turcotte Inc"}) MATCH (ba:BankAccount)-[rtmp0:FROM]->(fi) MATCH (ah:AccountHolder)-[rtmp1:HAS_BANKACCOUNT]->(ba) MATCH (ah)-[rtmp2:HAS_PHONENUMBER]->(pn:PhoneNumber) MATCH (mt:MoneyTransfer)-[: WITH collect(distinct id(ah)) + collect(distinct id(ba)) + collect(distinct id(fi)) + collect(distinct id(mt)) + collect(distinct id(pn)) + collect(distinct id(rtmp0)) + collect(distinct id(rtmp1)) + collect(distinct id(rtmp2)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId2 UNION MATCH (fi:FinancialInstitute {name: "Padberg and Sons"}) MATCH (ba:BankAccount)-[rtmp0:FROM]->(fi) MATCH (ah:AccountHolder)-[rtmp1:HAS_BANKACCOUNT]->(ba) MATCH (ah)-[rtmp2:HAS_PHONENUMBER]->(pn:PhoneNumber) MATCH (mt:MoneyTransfer)-[: WITH collect(distinct id(ah)) + collect(distinct id(ba)) + collect(distinct id(fi)) + collect(distinct id(mt)) + collect(distinct id(pn)) + collect(distinct id(rtmp0)) + collect(distinct id(rtmp1)) + collect(distinct id(rtmp2)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId2 UNION MATCH (fi:FinancialInstitute {name: "Donnelly and Sons"}) MATCH (ba:BankAccount)-[rtmp0:FROM]->(fi) MATCH (ah:AccountHolder)-[rtmp1:HAS_BANKACCOUNT]->(ba) MATCH (ah)-[rtmp2:HAS_PHONENUMBER]->(pn:PhoneNumber) MATCH (mt:MoneyTransfer)-[: WITH collect(distinct id(ah)) + collect(distinct id(ba)) + collect(distinct id(fi)) + collect(distinct id(mt)) + collect(distinct id(pn)) + collect(distinct id(rtmp0)) + collect(distinct id(rtmp1)) + collect(distinct id(rtmp2)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId2 UNION MATCH (fi:FinancialInstitute {name: "Ratke LLC"}) MATCH (ba:BankAccount)-[rtmp0:FROM]->(fi) MATCH (ah:AccountHolder)-[rtmp1:HAS_BANKACCOUNT]->(ba) MATCH (ah)-[rtmp2:HAS_PHONENUMBER]->(pn:PhoneNumber) MATCH (mt:MoneyTransfer)-[: WITH collect(distinct id(ah)) + collect(distinct id(ba)) + collect(distinct id(fi)) + collect(distinct id(mt)) + collect(distinct id(pn)) + collect(distinct id(rtmp0)) + collect(distinct id(rtmp1)) + collect(distinct id(rtmp2)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId2 UNION MATCH (fi:FinancialInstitute {name: "Nader and Sons"}) MATCH (ba:BankAccount)-[rtmp0:FROM]->(fi) MATCH (ah:AccountHolder)-[rtmp1:HAS_BANKACCOUNT]->(ba) MATCH (ah)-[rtmp2:HAS_PHONENUMBER]->(pn:PhoneNumber) MATCH (mt:MoneyTransfer)-[: WITH collect(distinct id(ah)) + collect(distinct id(ba)) + collect(distinct id(fi)) + collect(distinct id(mt)) + collect(distinct id(pn)) + collect(distinct id(rtmp0)) + collect(distinct id(rtmp1)) + collect(distinct id(rtmp2)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId2 UNION MATCH (fi:FinancialInstitute {name: "Hermann LLC"}) MATCH (ba:BankAccount)-[rtmp0:FROM]->(fi) MATCH (ah:AccountHolder)-[rtmp1:HAS_BANKACCOUNT]->(ba) MATCH (ah)-[rtmp2:HAS_PHONENUMBER]->(pn:PhoneNumber) MATCH (mt:MoneyTransfer)-[: WITH collect(distinct id(ah)) + collect(distinct id(ba)) + collect(distinct id(fi)) + collect(distinct id(mt)) + collect(distinct id(pn)) + collect(distinct id(rtmp0)) + collect(distinct id(rtmp1)) + collect(distinct id(rtmp2)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId2 UNION MATCH (fi:FinancialInstitute {name: "Breitenberg-Breitenberg"}) MATCH (ba:BankAccount)-[rtmp0:FROM]->(fi) MATCH (ah:AccountHolder)-[rtmp1:HAS_BANKACCOUNT]->(ba) MATCH (ah)-[rtmp2:HAS_PHONENUMBER]->(pn:PhoneNumber) MATCH (mt:MoneyTransfer)-[: WITH collect(distinct id(ah)) + collect(distinct id(ba)) + collect(distinct id(fi)) + collect(distinct id(mt)) + collect(distinct id(pn)) + collect(distinct id(rtmp0)) + collect(distinct id(rtmp1)) + collect(distinct id(rtmp2)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId2 UNION MATCH (fi:FinancialInstitute {name: "Weissnat, Weissnat and Weissnat"}) MATCH (ba:BankAccount)-[rtmp0:FROM]->(fi) MATCH (ah:AccountHolder)-[rtmp1:HAS_BANKACCOUNT]->(ba) MATCH (ah)-[rtmp2:HAS_PHONENUMBER]->(pn:PhoneNumber) MATCH (mt:MoneyTransfer)-[: WITH collect(distinct id(ah)) + collect(distinct id(ba)) + collect(distinct id(fi)) + collect(distinct id(mt)) + collect(distinct id(pn)) + collect(distinct id(rtmp0)) + collect(distinct id(rtmp1)) + collect(distinct id(rtmp2)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId2 UNION MATCH (fi:FinancialInstitute {name: "Orn, Orn and Orn"}) MATCH (ba:BankAccount)-[rtmp0:FROM]->(fi) MATCH (ah:AccountHolder)-[rtmp1:HAS_BANKACCOUNT]->(ba) MATCH (ah)-[rtmp2:HAS_PHONENUMBER]->(pn:PhoneNumber) MATCH (mt:MoneyTransfer)-[: WITH collect(distinct id(ah)) + collect(distinct id(ba)) + collect(distinct id(fi)) + collect(distinct id(mt)) + collect(distinct id(pn)) + collect(distinct id(rtmp0)) + collect(distinct id(rtmp1)) + collect(distinct id(rtmp2)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId2 UNION MATCH (fi:FinancialInstitute {name: "Langosh and Sons"}) MATCH (ba:BankAccount)-[rtmp0:FROM]->(fi) MATCH (ah:AccountHolder)-[rtmp1:HAS_BANKACCOUNT]->(ba) MATCH (ah)-[rtmp2:HAS_PHONENUMBER]->(pn:PhoneNumber) MATCH (mt:MoneyTransfer)-[: WITH collect(distinct id(ah)) + collect(distinct id(ba)) + collect(distinct id(fi)) + collect(distinct id(mt)) + collect(distinct id(pn)) + collect(distinct id(rtmp0)) + collect(distinct id(rtmp1)) + collect(distinct id(rtmp2)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId2"\n                                                                                                                                                                                                                                             ^}'
+[17:11:36] [  12/40] ✔ done   qid=Complex_Aggregation_test:20  ea=False em=False psjs=0.0  t=?  runEA=0.667  wall=3m58s  ETA=9m15s
+[17:11:36] [  12/40] ✔ done   qid=Complex_Aggregation_test:20  ea=False em=False psjs=0.0  t=?  runEA=0.667  wall=3m58s  ETA=9m15s
+[17:11:36] [  13/40] ▶ start  qid=Complex_Aggregation_test:21  q='For each AccoungHolder, what is the average balance of their BankAccounts and the total number of BankAccounts they p...'
+[17:11:36] [  13/40] ▶ start  qid=Complex_Aggregation_test:21  q='For each AccoungHolder, what is the average balance of their BankAccounts and the total number of BankAccounts they p...'
+[t2c.retrieval] query='BankAccounts' label=BankAccount prop=balance mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='AccoungHolder' label=AccountHolder prop=firstName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='BankAccounts' label=BankAccount prop=accountNumber mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='AccoungHolder' label=AccountHolder prop=fullName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[17:12:02] [  13/40] ✔ done   qid=Complex_Aggregation_test:21  ea=True em=False psjs=1.0  t=?  runEA=0.692  wall=4m24s  ETA=9m08s
+[17:12:02] [  13/40] ✔ done   qid=Complex_Aggregation_test:21  ea=True em=False psjs=1.0  t=?  runEA=0.692  wall=4m24s  ETA=9m08s
+[17:12:02] [  14/40] ▶ start  qid=Complex_Aggregation_test:22  q="What is the average and maximum purchase amount made by purchases delivered to addresses in 'OH'?"
+[17:12:02] [  14/40] ▶ start  qid=Complex_Aggregation_test:22  q="What is the average and maximum purchase amount made by purchases delivered to addresses in 'OH'?"
+[t2c.retrieval] query='purchases' label=Purchase prop=purchaseCode mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query="addresses in 'OH'" label=DeliveryAddress prop=state mode=fuzzy fuzzy_top5=[{'value': 'District of Columbia', 'score': 0.4549}] vector_top5=None final=['District of Columbia']
+[t2c.retrieval] query="addresses in 'OH'" label=DeliveryAddress prop=city mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='purchases' label=Purchase prop=amount mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query="addresses in 'OH'" label=State prop=name mode=fuzzy fuzzy_top5=[{'value': 'District of Columbia', 'score': 0.3054}] vector_top5=None final=['District of Columbia']
+[t2c.retrieval] query="addresses in 'OH'" label=DeliveryAddress prop=state mode=fuzzy fuzzy_top5=[{'value': 'District of Columbia', 'score': 0.4549}] vector_top5=None final=['District of Columbia']
+[t2c.retrieval] query="addresses in 'OH'" label=DeliveryAddress prop=city mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query="addresses in 'OH'" label=State prop=name mode=fuzzy fuzzy_top5=[{'value': 'District of Columbia', 'score': 0.3054}] vector_top5=None final=['District of Columbia']
+[t2c.retrieval] query="addresses in 'OH'" label=DeliveryAddress prop=state mode=fuzzy fuzzy_top5=[{'value': 'District of Columbia', 'score': 0.4549}] vector_top5=None final=['District of Columbia']
+[t2c.retrieval] query="addresses in 'OH'" label=DeliveryAddress prop=city mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query="addresses in 'OH'" label=State prop=name mode=fuzzy fuzzy_top5=[{'value': 'District of Columbia', 'score': 0.3054}] vector_top5=None final=['District of Columbia']
+[t2c.retrieval] query='OH' label=DeliveryAddress prop=state mode=fuzzy fuzzy_top5=[{'value': 'District of Columbia', 'score': 0.4549}] vector_top5=None final=['District of Columbia']
+[17:12:34] [  14/40] ✔ done   qid=Complex_Aggregation_test:22  ea=False em=False psjs=0.0  t=?  runEA=0.643  wall=4m56s  ETA=9m10s
+[17:12:34] [  14/40] ✔ done   qid=Complex_Aggregation_test:22  ea=False em=False psjs=0.0  t=?  runEA=0.643  wall=4m56s  ETA=9m10s
+[17:12:34] [  15/40] ▶ start  qid=Complex_Aggregation_test:24  q='What is the average balance of CreditCards held by AccountHoldeds, and what is the total number of CreditCards linked...'
+[17:12:34] [  15/40] ▶ start  qid=Complex_Aggregation_test:24  q='What is the average balance of CreditCards held by AccountHoldeds, and what is the total number of CreditCards linked...'
+[t2c.retrieval] query='CreditCards' label=CreditCard prop=balance mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='AccountHoldeds' label=AccountHolder prop=firstName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='AccountHoldeds' label=AccountHolder prop=fullName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='CreditCards' label=CreditCard prop=securityCode mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[17:12:49] [  15/40] ✔ done   qid=Complex_Aggregation_test:24  ea=True em=False psjs=1.0  t=?  runEA=0.667  wall=5m11s  ETA=8m39s
+[17:12:49] [  15/40] ✔ done   qid=Complex_Aggregation_test:24  ea=True em=False psjs=1.0  t=?  runEA=0.667  wall=5m11s  ETA=8m39s
+[17:12:49] [  16/40] ▶ start  qid=Complex_Aggregation_test:25  q="What is the average balance of BankAccounts that are associated with FinancialInstitutes whose website contains 'cm'?"
+[17:12:49] [  16/40] ▶ start  qid=Complex_Aggregation_test:25  q="What is the average balance of BankAccounts that are associated with FinancialInstitutes whose website contains 'cm'?"
+[t2c.retrieval] query='FinancialInstitutes' label=FinancialInstitute prop=name mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='BankAccounts' label=BankAccount prop=balance mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='FinancialInstitutes' label=FinancialInstitute prop=website mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='BankAccounts' label=BankAccount prop=accountNumber mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[17:13:02] [  16/40] ✔ done   qid=Complex_Aggregation_test:25  ea=False em=False psjs=0.0  t=?  runEA=0.625  wall=5m24s  ETA=8m05s
+[17:13:02] [  16/40] ✔ done   qid=Complex_Aggregation_test:25  ea=False em=False psjs=0.0  t=?  runEA=0.625  wall=5m24s  ETA=8m05s
+[17:13:02] [  17/40] ▶ start  qid=Complex_Aggregation_test:26  q="What is the average amount of money transferred through MoneyTransfers that used phone numbers from the provider 'Tee'?"
+[17:13:02] [  17/40] ▶ start  qid=Complex_Aggregation_test:26  q="What is the average amount of money transferred through MoneyTransfers that used phone numbers from the provider 'Tee'?"
+[t2c.retrieval] query="provider 'Tee'" label=PhoneNumber prop=provider mode=fuzzy fuzzy_top5=[{'value': 'B Tee', 'score': 0.8796}, {'value': 'KPA Tel', 'score': 0.4599}] vector_top5=None final=['B Tee', 'KPA Tel']
+[t2c.retrieval] query='MoneyTransfers' label=MoneyTransfer prop=amount mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='phone numbers' label=PhoneNumber prop=phone mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query="provider 'Tee'" label=PhoneNumber prop=phone mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='MoneyTransfers' label=MoneyTransfer prop=transactionDate mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='phone numbers' label=PhoneNumber prop=touched mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+2026-06-22 17:13:15.884 | WARNING  | eval.psjs:compute_psjs:580 - PSJS execution failed — returning 0.0.  gold_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input \'WITH\': expected\n  "!="\n  "%"\n  "*"\n  "+"\n  "-"\n  "/"\n  "::"\n  "<"\n  "<="\n  "<>"\n  "="\n  "=~"\n  ">"\n  ">="\n  "AND"\n  "CONTAINS"\n  "ENDS"\n  "IN"\n  "IS"\n  "OR"\n  "STARTS"\n  "XOR"\n  "]"\n  "^"\n  "||" (line 1, column 64 (offset: 63))\n"MATCH (mt:MoneyTransfer)-[: WITH * WHERE pn.provider = \'B Tee\' WITH collect(distinct id(mt)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId1"\n                                                                ^}' pred_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input \'WITH\': expected\n  "!="\n  "%"\n  "*"\n  "+"\n  "-"\n  "/"\n  "::"\n  "<"\n  "<="\n  "<>"\n  "="\n  "=~"\n  ">"\n  ">="\n  "AND"\n  "CONTAINS"\n  "ENDS"\n  "IN"\n  "IS"\n  "OR"\n  "STARTS"\n  "XOR"\n  "]"\n  "^"\n  "||" (line 1, column 95 (offset: 94))\n"MATCH (ba:BankAccount)-[rtmp0:SEND]->(mt:MoneyTransfer)-[: WITH * WHERE pn.provider = "B Tee" WITH collect(distinct id(ba)) + collect(distinct id(mt)) + collect(distinct id(rtmp0)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId2"\n                                                                                               ^}'
+[17:13:15] [  17/40] ✔ done   qid=Complex_Aggregation_test:26  ea=True em=False psjs=0.0  t=?  runEA=0.647  wall=5m37s  ETA=7m36s
+[17:13:15] [  17/40] ✔ done   qid=Complex_Aggregation_test:26  ea=True em=False psjs=0.0  t=?  runEA=0.647  wall=5m37s  ETA=7m36s
+[17:13:15] [  18/40] ▶ start  qid=Complex_Aggregation_test:27  q='What is the average balance of CreditaCrds held by AccountHolders born after 1975?'
+[17:13:15] [  18/40] ▶ start  qid=Complex_Aggregation_test:27  q='What is the average balance of CreditaCrds held by AccountHolders born after 1975?'
+[t2c.retrieval] query='AccountHolders' label=AccountHolder prop=firstName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='CreditaCrds' label=CreditCard prop=securityCode mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='AccountHolders' label=AccountHolder prop=fullName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='CreditaCrds' label=CreditCard prop=balance mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[17:13:33] [  18/40] ✔ done   qid=Complex_Aggregation_test:27  ea=False em=False psjs=0.0  t=?  runEA=0.611  wall=5m55s  ETA=7m14s
+[17:13:33] [  18/40] ✔ done   qid=Complex_Aggregation_test:27  ea=False em=False psjs=0.0  t=?  runEA=0.611  wall=5m55s  ETA=7m14s
+[17:13:33] [  19/40] ▶ start  qid=Complex_Aggregation_test:28  q="What is the average loan amount of UnsecuredLoans held by Flagged individuals with last name 'Peyo'?"
+[17:13:33] [  19/40] ▶ start  qid=Complex_Aggregation_test:28  q="What is the average loan amount of UnsecuredLoans held by Flagged individuals with last name 'Peyo'?"
+[t2c.retrieval] query='UnsecuredLoans' label=UnsecuredLoan prop=loanAmount mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Flagged individuals' label=_Bloom_Perspective_ prop=roles mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='UnsecuredLoans' label=UnsecuredLoan prop=APR mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Flagged individuals' label=Login prop=userid mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Flagged individuals' label=_Bloom_Perspective_ prop=name mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Peyo' label=Flagged prop=lastName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[17:13:50] [  19/40] ✔ done   qid=Complex_Aggregation_test:28  ea=False em=False psjs=0.0  t=?  runEA=0.579  wall=6m12s  ETA=6m51s
+[17:13:50] [  19/40] ✔ done   qid=Complex_Aggregation_test:28  ea=False em=False psjs=0.0  t=?  runEA=0.579  wall=6m12s  ETA=6m51s
+[17:13:50] [  20/40] ▶ start  qid=Complex_Retrieval_test:2  q="Find the AccountHolders who have made purchases from shops with the business type 'paradigms' and have a credit card ..."
+[17:13:50] [  20/40] ▶ start  qid=Complex_Retrieval_test:2  q="Find the AccountHolders who have made purchases from shops with the business type 'paradigms' and have a credit card ..."
+[t2c.retrieval] query='credit card' label=CreditCard prop=accountNumber mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query="business type 'paradigms'" label=Shop prop=business mode=fuzzy fuzzy_top5=[{'value': 'expedite compelling paradigms', 'score': 0.4789}] vector_top5=None final=['expedite compelling paradigms']
+[t2c.retrieval] query='AccountHolders' label=AccountHolder prop=birthDate mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='shops' label=Shop prop=business mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='full name' label=AccountHolder prop=fullName mode=fuzzy fuzzy_top5=[{'value': 'Nam Colton', 'score': 2.1773}] vector_top5=None final=['Nam Colton']
+[t2c.retrieval] query='credit card' label=CreditCard prop=balance mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='AccountHolders' label=AccountHolder prop=firstName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='shops' label=Shop prop=name mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query="business type 'paradigms'" label=Shop prop=shopID mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='full name' label=AccountHolder prop=firstName mode=fuzzy fuzzy_top5=[{'value': 'Nam', 'score': 3.4215}] vector_top5=None final=['Nam']
+[t2c.retrieval] query='AccountHolders' label=AccountHolder prop=fullName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query="business type 'paradigms'" label=Shop prop=business mode=fuzzy fuzzy_top5=[{'value': 'expedite compelling paradigms', 'score': 0.4789}] vector_top5=None final=['expedite compelling paradigms']
+[t2c.retrieval] query='amount of the purchase' label=Purchase prop=amount mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query="business type 'paradigms'" label=Shop prop=shopID mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='amount of the purchase' label=MoneyTransfer prop=amount mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[17:14:26] [  20/40] ✔ done   qid=Complex_Retrieval_test:2  ea=False em=False psjs=0.0  t=?  runEA=0.550  wall=6m48s  ETA=6m48s
+[17:14:26] [  20/40] ✔ done   qid=Complex_Retrieval_test:2  ea=False em=False psjs=0.0  t=?  runEA=0.550  wall=6m48s  ETA=6m48s
+[17:14:26] [  21/40] ▶ start  qid=Complex_Retrieval_test:4  q="Find AccountHolders whose birth date is '1956-06-21' and have a PhoneNumber provided by 'Tee'. Return the full name o..."
+[17:14:26] [  21/40] ▶ start  qid=Complex_Retrieval_test:4  q="Find AccountHolders whose birth date is '1956-06-21' and have a PhoneNumber provided by 'Tee'. Return the full name o..."
+[t2c.retrieval] query='AccountHolders' label=AccountHolder prop=firstName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='PhoneNumber' label=PhoneNumber prop=phone mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Tee' label=PhoneNumber prop=provider mode=fuzzy fuzzy_top5=[{'value': 'B Tee', 'score': 1.5393}, {'value': 'KPA Tel', 'score': 0.4599}] vector_top5=None final=['B Tee', 'KPA Tel']
+[t2c.retrieval] query='PhoneNumber' label=PhoneNumber prop=touched mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='AccountHolders' label=AccountHolder prop=fullName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Tee' label=PhoneNumber prop=phone mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='PhoneNumber' label=FinancialInstitute prop=name mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='PhoneNumber' label=Shop prop=name mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[17:14:43] [  21/40] ✔ done   qid=Complex_Retrieval_test:4  ea=True em=False psjs=1.0  t=?  runEA=0.571  wall=7m05s  ETA=6m24s
+[17:14:43] [  21/40] ✔ done   qid=Complex_Retrieval_test:4  ea=True em=False psjs=1.0  t=?  runEA=0.571  wall=7m05s  ETA=6m24s
+[17:14:43] [  22/40] ▶ start  qid=Complex_Retrieval_test:5  q="Find all AccountHolders who have both a BankAccount at 'Padberg' and a CreditCard with a balance greater than 3000."
+[17:14:43] [  22/40] ▶ start  qid=Complex_Retrieval_test:5  q="Find all AccountHolders who have both a BankAccount at 'Padberg' and a CreditCard with a balance greater than 3000."
+[t2c.retrieval] query='CreditCard' label=CreditCard prop=balance mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='AccountHolders' label=AccountHolder prop=birthDate mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='BankAccount' label=BankAccount prop=balance mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Padberg' label=BankAccount prop=balance mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='BankAccount' label=BankAccount prop=accountNumber mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='AccountHolders' label=AccountHolder prop=firstName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='CreditCard' label=CreditCard prop=limit mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Padberg' label=BankCard prop=balance mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='AccountHolders' label=AccountHolder prop=fullName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='BankAccount' label=FinancialInstitute prop=name mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Padberg' label=FinancialInstitute prop=name mode=fuzzy fuzzy_top5=[{'value': 'Padberg and Sons', 'score': 3.4387}] vector_top5=None final=['Padberg and Sons']
+[17:14:56] [  22/40] ✔ done   qid=Complex_Retrieval_test:5  ea=False em=False psjs=1.0  t=?  runEA=0.545  wall=7m18s  ETA=5m59s
+[17:14:56] [  22/40] ✔ done   qid=Complex_Retrieval_test:5  ea=False em=False psjs=1.0  t=?  runEA=0.545  wall=7m18s  ETA=5m59s
+[17:14:56] [  23/40] ▶ start  qid=Complex_Retrieval_test:6  q="Retrieve the names of all Shops for which a Login with the first name 'MARCHELLE' has made a Purchase with an amount ..."
+[17:14:56] [  23/40] ▶ start  qid=Complex_Retrieval_test:6  q="Retrieve the names of all Shops for which a Login with the first name 'MARCHELLE' has made a Purchase with an amount ..."
+[t2c.retrieval] query='Login' label=Login prop=firstName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query="first name 'MARCHELLE'" label=Login prop=firstName mode=fuzzy fuzzy_top5=[{'value': 'Marchelle', 'score': 3.7847}] vector_top5=None final=['Marchelle']
+[t2c.retrieval] query='Shops' label=Shop prop=name mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Purchase' label=Purchase prop=amount mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query="first name 'MARCHELLE'" label=AccountHolder prop=firstName mode=fuzzy fuzzy_top5=[{'value': 'Nam', 'score': 3.4215}, {'value': 'Marcelle', 'score': 2.9938}] vector_top5=None final=['Nam', 'Marcelle']
+[t2c.retrieval] query='Login' label=Login prop=lastName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Shops' label=Shop prop=business mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Purchase' label=Purchase prop=purchaseCode mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Login' label=AccountHolder prop=firstName mode=fuzzy fuzzy_top5=[{'value': 'Logan', 'score': 2.7372}] vector_top5=None final=['Logan']
+[t2c.retrieval] query='Login' label=Login prop=firstName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Login' label=Login prop=lastName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Login' label=AccountHolder prop=firstName mode=fuzzy fuzzy_top5=[{'value': 'Logan', 'score': 2.7372}] vector_top5=None final=['Logan']
+[17:15:15] [  23/40] ✔ done   qid=Complex_Retrieval_test:6  ea=True em=False psjs=1.0  t=?  runEA=0.565  wall=7m37s  ETA=5m38s
+[17:15:15] [  23/40] ✔ done   qid=Complex_Retrieval_test:6  ea=True em=False psjs=1.0  t=?  runEA=0.565  wall=7m37s  ETA=5m38s
+[17:15:15] [  24/40] ▶ start  qid=Complex_Retrieval_test:7  q="Find AccountHolders who have a PhoneNumber provided by 'Tel' and an UnsecuredLoan with a loan amount greater than 5000."
+[17:15:15] [  24/40] ▶ start  qid=Complex_Retrieval_test:7  q="Find AccountHolders who have a PhoneNumber provided by 'Tel' and an UnsecuredLoan with a loan amount greater than 5000."
+[t2c.retrieval] query='PhoneNumber' label=PhoneNumber prop=phone mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Tel' label=PhoneNumber prop=provider mode=fuzzy fuzzy_top5=[{'value': 'KPA Tel', 'score': 1.5175}, {'value': 'B Tee', 'score': 0.4665}] vector_top5=None final=['KPA Tel', 'B Tee']
+[t2c.retrieval] query='UnsecuredLoan' label=UnsecuredLoan prop=loanAmount mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='PhoneNumber' label=PhoneNumber prop=touched mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Tel' label=PhoneNumber prop=phone mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='UnsecuredLoan' label=UnsecuredLoan prop=APR mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='AccountHolders' label=AccountHolder prop=birthDate mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='AccountHolders' label=AccountHolder prop=firstName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='AccountHolders' label=AccountHolder prop=fullName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[17:15:37] [  24/40] ✔ done   qid=Complex_Retrieval_test:7  ea=False em=False psjs=1.0  t=?  runEA=0.542  wall=7m59s  ETA=5m19s
+[17:15:37] [  24/40] ✔ done   qid=Complex_Retrieval_test:7  ea=False em=False psjs=1.0  t=?  runEA=0.542  wall=7m59s  ETA=5m19s
+[17:15:37] [  25/40] ▶ start  qid=Complex_Retrieval_test:8  q="What are the account numbers of BannkAccounts that sent MoneyTransfers with an amount greater than 900 on '2018-02-07'?"
+[17:15:37] [  25/40] ▶ start  qid=Complex_Retrieval_test:8  q="What are the account numbers of BannkAccounts that sent MoneyTransfers with an amount greater than 900 on '2018-02-07'?"
+[t2c.retrieval] query='BannkAccounts' label=BankAccount prop=balance mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='MoneyTransfers' label=MoneyTransfer prop=amount mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='BannkAccounts' label=BankAccount prop=accountNumber mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='MoneyTransfers' label=MoneyTransfer prop=transactionDate mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[17:15:59] [  25/40] ✔ done   qid=Complex_Retrieval_test:8  ea=False em=False psjs=1.0  t=?  runEA=0.520  wall=8m21s  ETA=5m00s
+[17:15:59] [  25/40] ✔ done   qid=Complex_Retrieval_test:8  ea=False em=False psjs=1.0  t=?  runEA=0.520  wall=8m21s  ETA=5m00s
+[17:15:59] [  26/40] ▶ start  qid=Complex_Retrieval_test:9  q="Find the names of all AccountHolders who have an Address in 'WI' and an SSN that starts with '044'."
+[17:15:59] [  26/40] ▶ start  qid=Complex_Retrieval_test:9  q="Find the names of all AccountHolders who have an Address in 'WI' and an SSN that starts with '044'."
+[t2c.retrieval] query='WI' label=State prop=name mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='SSN' label=SSN prop=ssn mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Address' label=Address prop=state mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='WI' label=Address prop=state mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Address' label=Address prop=city mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='SSN' label=CreditCard prop=securityCode mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='AccountHolders' label=AccountHolder prop=firstName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='AccountHolders' label=AccountHolder prop=fullName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Address' label=State prop=name mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='SSN' label=SSN prop=ssn mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='SSN' label=CreditCard prop=securityCode mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='SSN' label=SSN prop=ssn mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='SSN' label=CreditCard prop=securityCode mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='SSN' label=SSN prop=ssn mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='SSN' label=CreditCard prop=securityCode mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+2026-06-22 17:16:22.215 | WARNING  | eval.psjs:compute_psjs:580 - PSJS execution failed — returning 0.0.  gold_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input \'AS\': expected\n  "!="\n  "%"\n  "*"\n  "+"\n  "-"\n  "/"\n  "<"\n  "<="\n  "<>"\n  "="\n  ">"\n  ">="\n  "AND"\n  "CALL"\n  "CREATE"\n  "DELETE"\n  "DETACH"\n  "FINISH"\n  "FOREACH"\n  "INSERT"\n  "LOAD"\n  "MATCH"\n  "MERGE"\n  "NODETACH"\n  "OPTIONAL"\n  "OR"\n  "REMOVE"\n  "RETURN"\n  "SET"\n  "UNION"\n  "UNWIND"\n  "USE"\n  "WITH"\n  "XOR"\n  "^"\n  "||"\n  <EOF> (line 1, column 284 (offset: 283))\n"MATCH (ah:AccountHolder)-[rtmp0:HAS_ADDRESS]->(a:Address {state: \'Wisconsin\'}) WITH * MATCH (ah)-[rtmp1:HAS_SSN]->(s:SSN) WHERE s.ssn STARTS WITH collect(distinct id(a)) + collect(distinct id(ah)) + collect(distinct id(s)) + collect(distinct id(rtmp0)) + collect(distinct id(rtmp1)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId1"\n                                                                                                                                                                                                                                                                                            ^}' pred_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input \'AS\': expected\n  "!="\n  "%"\n  "*"\n  "+"\n  "-"\n  "/"\n  "<"\n  "<="\n  "<>"\n  "="\n  ">"\n  ">="\n  "AND"\n  "CALL"\n  "CREATE"\n  "DELETE"\n  "DETACH"\n  "FINISH"\n  "FOREACH"\n  "INSERT"\n  "LOAD"\n  "MATCH"\n  "MERGE"\n  "NODETACH"\n  "OPTIONAL"\n  "OR"\n  "REMOVE"\n  "RETURN"\n  "SET"\n  "UNION"\n  "UNWIND"\n  "USE"\n  "WITH"\n  "XOR"\n  "^"\n  "||"\n  <EOF> (line 1, column 291 (offset: 290))\n"MATCH (a:AccountHolder)-[rtmp0:HAS_ADDRESS]->(ad:Address) WHERE ad.state = "Wisconsin" WITH * MATCH (a)-[rtmp1:HAS_SSN]->(s:SSN) WHERE s.ssn STARTS WITH collect(distinct id(a)) + collect(distinct id(ad)) + collect(distinct id(s)) + collect(distinct id(rtmp0)) + collect(distinct id(rtmp1)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId2"\n                                                                                                                                                                                                                                                                                                   ^}'
+[17:16:22] [  26/40] ✔ done   qid=Complex_Retrieval_test:9  ea=True em=False psjs=0.0  t=?  runEA=0.538  wall=8m44s  ETA=4m42s
+[17:16:22] [  26/40] ✔ done   qid=Complex_Retrieval_test:9  ea=True em=False psjs=0.0  t=?  runEA=0.538  wall=8m44s  ETA=4m42s
+[17:16:22] [  27/40] ▶ start  qid=Complex_Retrieval_test:10  q='Find the names of AccountHloders who have both a BankAccount and a CreditCard with a balance exceeding $1000 and orde...'
+[17:16:22] [  27/40] ▶ start  qid=Complex_Retrieval_test:10  q='Find the names of AccountHloders who have both a BankAccount and a CreditCard with a balance exceeding $1000 and orde...'
+[t2c.retrieval] query='AccountHloders' label=AccountHolder prop=firstName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='BankAccount' label=BankAccount prop=balance mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='CreditCard' label=CreditCard prop=balance mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='BankAccount' label=BankAccount prop=accountNumber mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='AccountHloders' label=AccountHolder prop=fullName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='CreditCard' label=CreditCard prop=securityCode mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='AccountHloders' label=AccountHolder prop=lastName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[17:16:46] [  27/40] ✔ done   qid=Complex_Retrieval_test:10  ea=False em=False psjs=1.0  t=?  runEA=0.519  wall=9m08s  ETA=4m24s
+[17:16:46] [  27/40] ✔ done   qid=Complex_Retrieval_test:10  ea=False em=False psjs=1.0  t=?  runEA=0.519  wall=9m08s  ETA=4m24s
+[17:16:46] [  28/40] ▶ start  qid=Complex_Retrieval_test:11  q="Retrieve the names of shops for which there exists at least one purchase made from an IP address located in 'AR'."
+[17:16:46] [  28/40] ▶ start  qid=Complex_Retrieval_test:11  q="Retrieve the names of shops for which there exists at least one purchase made from an IP address located in 'AR'."
+[t2c.retrieval] query="IP address located in 'AR'" label=IP prop=ip mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='shops' label=Shop prop=business mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='shops' label=Shop prop=name mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query="IP address located in 'AR'" label=Address prop=city mode=fuzzy fuzzy_top5=[{'value': 'Au', 'score': 1.7652}, {'value': 'Bar', 'score': 1.7652}, {'value': 'Ina', 'score': 1.7652}, {'value': 'Hastings-on-Hudson', 'score': 0.8324}, {'value': 'Annandale-on-Hudson', 'score': 0.8324}] vector_top5=None final=['Au', 'Bar', 'Ina', 'Hastings-on-Hudson', 'Annandale-on-Hudson', 'Fontana-on-Geneva']
+[t2c.retrieval] query='AR' label=State prop=name mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[17:16:58] [  28/40] ✔ done   qid=Complex_Retrieval_test:11  ea=False em=False psjs=0.0  t=?  runEA=0.500  wall=9m20s  ETA=4m00s
+[17:16:58] [  28/40] ✔ done   qid=Complex_Retrieval_test:11  ea=False em=False psjs=0.0  t=?  runEA=0.500  wall=9m20s  ETA=4m00s
+[17:16:58] [  29/40] ▶ start  qid=Complex_Retrieval_test:12  q="List the full names of AccountHolders who have a PhoneNumber provided by 'Mobile' and an UnsecuredLoan with an APR gr..."
+[17:16:58] [  29/40] ▶ start  qid=Complex_Retrieval_test:12  q="List the full names of AccountHolders who have a PhoneNumber provided by 'Mobile' and an UnsecuredLoan with an APR gr..."
+[t2c.retrieval] query='AccountHolders' label=AccountHolder prop=birthDate mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='UnsecuredLoan' label=UnsecuredLoan prop=loanAmount mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Mobile' label=PhoneNumber prop=provider mode=fuzzy fuzzy_top5=[{'value': 'Yellow Mobile', 'score': 1.5269}] vector_top5=None final=['Yellow Mobile']
+[t2c.retrieval] query='APR' label=UnsecuredLoan prop=APR mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='UnsecuredLoan' label=UnsecuredLoan prop=balance mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='AccountHolders' label=AccountHolder prop=firstName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Mobile' label=PhoneNumber prop=touched mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='APR' label=Purchase prop=amount mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='PhoneNumber' label=PhoneNumber prop=phone mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='PhoneNumber' label=PhoneNumber prop=touched mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='AccountHolders' label=AccountHolder prop=fullName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[17:17:16] [  29/40] ✔ done   qid=Complex_Retrieval_test:12  ea=True em=False psjs=1.0  t=?  runEA=0.517  wall=9m38s  ETA=3m39s
+[17:17:16] [  29/40] ✔ done   qid=Complex_Retrieval_test:12  ea=True em=False psjs=1.0  t=?  runEA=0.517  wall=9m38s  ETA=3m39s
+[17:17:16] [  30/40] ▶ start  qid=Complex_Retrieval_test:13  q='Find the names of FinancialInstitutes that have received MoneyTransfers where the amount is greater than $500, and th...'
+[17:17:16] [  30/40] ▶ start  qid=Complex_Retrieval_test:13  q='Find the names of FinancialInstitutes that have received MoneyTransfers where the amount is greater than $500, and th...'
+[t2c.retrieval] query="'Tee'" label=AccountHolder prop=firstName mode=fuzzy fuzzy_top5=[{'value': 'Ted', 'score': 2.281}, {'value': 'Yee', 'score': 2.281}, {'value': 'Hee', 'score': 2.281}, {'value': 'Mee', 'score': 2.1336}, {'value': 'Bee', 'score': 2.1336}] vector_top5=None final=['Ted', 'Yee', 'Hee', 'Mee', 'Bee']
+[t2c.retrieval] query='MoneyTransfers' label=MoneyTransfer prop=transactionDate mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='FinancialInstitutes' label=FinancialInstitute prop=name mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='MoneyTransfers' label=MoneyTransfer prop=amount mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query="'Tee'" label=Login prop=firstName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='FinancialInstitutes' label=FinancialInstitute prop=website mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query="'Tee'" label=AccountHolder prop=firstName mode=fuzzy fuzzy_top5=[{'value': 'Ted', 'score': 2.281}, {'value': 'Yee', 'score': 2.281}, {'value': 'Hee', 'score': 2.281}, {'value': 'Mee', 'score': 2.1336}, {'value': 'Bee', 'score': 2.1336}] vector_top5=None final=['Ted', 'Yee', 'Hee', 'Mee', 'Bee']
+[t2c.retrieval] query="'Tee'" label=Login prop=firstName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query="'Tee'" label=AccountHolder prop=firstName mode=fuzzy fuzzy_top5=[{'value': 'Ted', 'score': 2.281}, {'value': 'Yee', 'score': 2.281}, {'value': 'Hee', 'score': 2.281}, {'value': 'Mee', 'score': 2.1336}, {'value': 'Bee', 'score': 2.1336}] vector_top5=None final=['Ted', 'Yee', 'Hee', 'Mee', 'Bee']
+[t2c.retrieval] query="'Tee'" label=Login prop=firstName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query="'Tee'" label=AccountHolder prop=firstName mode=fuzzy fuzzy_top5=[{'value': 'Ted', 'score': 2.281}, {'value': 'Yee', 'score': 2.281}, {'value': 'Hee', 'score': 2.281}, {'value': 'Mee', 'score': 2.1336}, {'value': 'Bee', 'score': 2.1336}] vector_top5=None final=['Ted', 'Yee', 'Hee', 'Mee', 'Bee']
+[t2c.retrieval] query="'Tee'" label=Login prop=firstName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Tee' label=PhoneNumber prop=provider mode=fuzzy fuzzy_top5=[{'value': 'B Tee', 'score': 1.5393}, {'value': 'KPA Tel', 'score': 0.4599}] vector_top5=None final=['B Tee', 'KPA Tel']
+[t2c.retrieval] query='Tee' label=PhoneNumber prop=phone mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+2026-06-22 17:17:41.972 | WARNING  | eval.psjs:compute_psjs:580 - PSJS execution failed — returning 0.0.  gold_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input \'collect\': expected\n  "*"\n  "WHERE"\n  "]"\n  "{"\n  a parameter (line 1, column 131 (offset: 130))\n"MATCH (mt:MoneyTransfer {amount: 906.83})-[rtmp0:SEND]->(ba:BankAccount)-[rtmp1:FROM]->(fi:FinancialInstitute) MATCH (mt)-[: WITH collect(distinct id(ba)) + collect(distinct id(fi)) + collect(distinct id(mt)) + collect(distinct id(rtmp0)) + collect(distinct id(rtmp1)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId1"\n                                                                                                                                   ^}' pred_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input \'WITH\': expected\n  "!="\n  "%"\n  "*"\n  "+"\n  "-"\n  "/"\n  "::"\n  "<"\n  "<="\n  "<>"\n  "="\n  "=~"\n  ">"\n  ">="\n  "AND"\n  "CONTAINS"\n  "ENDS"\n  "IN"\n  "IS"\n  "OR"\n  "STARTS"\n  "XOR"\n  "]"\n  "^"\n  "||" (line 1, column 177 (offset: 176))\n"MATCH (fi:FinancialInstitute)<-[rtmp0:FROM]-(ba:BankAccount)-[rtmp1:SEND]->(mt:MoneyTransfer)-[: WITH * WHERE mt.amount > 500 AND (pn.provider = "B Tee" OR pn.phone = "B Tee") WITH collect(distinct id(ba)) + collect(distinct id(fi)) + collect(distinct id(mt)) + collect(distinct id(rtmp0)) + collect(distinct id(rtmp1)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId2"\n                                                                                                                                                                                 ^}'
+[17:17:41] [  30/40] ✔ done   qid=Complex_Retrieval_test:13  ea=False em=False psjs=0.0  t=?  runEA=0.500  wall=10m03s  ETA=3m21s
+[17:17:41] [  30/40] ✔ done   qid=Complex_Retrieval_test:13  ea=False em=False psjs=0.0  t=?  runEA=0.500  wall=10m03s  ETA=3m21s
+[17:17:41] [  31/40] ▶ start  qid=Complex_Retrieval_test:14  q="Retrieve the full names of Flagged entities who share the same Address as AccountHolder 'Girod'."
+[17:17:41] [  31/40] ▶ start  qid=Complex_Retrieval_test:14  q="Retrieve the full names of Flagged entities who share the same Address as AccountHolder 'Girod'."
+[t2c.retrieval] query="AccountHolder 'Girod'" label=AccountHolder prop=fullName mode=fuzzy fuzzy_top5=[{'value': 'Jorge Girod', 'score': 4.1058}] vector_top5=None final=['Jorge Girod']
+[t2c.retrieval] query='Address' label=DeliveryAddress prop=streetAddress mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Flagged entities' label=Address prop=state mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query="AccountHolder 'Girod'" label=AccountHolder prop=firstName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Address' label=DeliveryAddress prop=city mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Flagged entities' label=State prop=name mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[17:17:52] [  31/40] ✔ done   qid=Complex_Retrieval_test:14  ea=True em=False psjs=1.0  t=?  runEA=0.516  wall=10m14s  ETA=2m58s
+[17:17:52] [  31/40] ✔ done   qid=Complex_Retrieval_test:14  ea=True em=False psjs=1.0  t=?  runEA=0.516  wall=10m14s  ETA=2m58s
+[17:17:52] [  32/40] ▶ start  qid=Complex_Retrieval_test:17  q="Find the names of account holders who have a phone number from 'B TEE' and also have a credit card with an expiration..."
+[17:17:52] [  32/40] ▶ start  qid=Complex_Retrieval_test:17  q="Find the names of account holders who have a phone number from 'B TEE' and also have a credit card with an expiration..."
+[t2c.retrieval] query="'B TEE'" label=PhoneNumber prop=provider mode=fuzzy fuzzy_top5=[{'value': 'B Tee', 'score': 3.2326}, {'value': 'KPA Tel', 'score': 0.4599}] vector_top5=None final=['B Tee', 'KPA Tel']
+[t2c.retrieval] query='account holders' label=AccountHolder prop=birthDate mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query="'B TEE'" label=PhoneNumber prop=phone mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='account holders' label=AccountHolder prop=fullName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[17:18:05] [  32/40] ✔ done   qid=Complex_Retrieval_test:17  ea=True em=False psjs=1.0  t=?  runEA=0.531  wall=10m27s  ETA=2m37s
+[17:18:05] [  32/40] ✔ done   qid=Complex_Retrieval_test:17  ea=True em=False psjs=1.0  t=?  runEA=0.531  wall=10m27s  ETA=2m37s
+[17:18:05] [  33/40] ▶ start  qid=Complex_Retrieval_test:18  q="Identify the shop names for which there are logins created after '19891020' and before '19891025', and the logins hav..."
+[17:18:05] [  33/40] ▶ start  qid=Complex_Retrieval_test:18  q="Identify the shop names for which there are logins created after '19891020' and before '19891025', and the logins hav..."
+[t2c.retrieval] query='shop names' label=Shop prop=business mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='logins' label=Login prop=mail mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Centannni' label=Login prop=lastName mode=fuzzy fuzzy_top5=[{'value': 'Centanni', 'score': 1.8552}] vector_top5=None final=['Centanni']
+[t2c.retrieval] query='shop names' label=Shop prop=name mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='logins' label=Login prop=userid mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Centannni' label=AccountHolder prop=lastName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[17:18:16] [  33/40] ✔ done   qid=Complex_Retrieval_test:18  ea=True em=False psjs=1.0  t=?  runEA=0.545  wall=10m38s  ETA=2m15s
+[17:18:16] [  33/40] ✔ done   qid=Complex_Retrieval_test:18  ea=True em=False psjs=1.0  t=?  runEA=0.545  wall=10m38s  ETA=2m15s
+[17:18:16] [  34/40] ▶ start  qid=Complex_Retrieval_test:19  q="Find the full names of account holders who have an address in 'WV' and also have an unsecured loan with a loan amount..."
+[17:18:16] [  34/40] ▶ start  qid=Complex_Retrieval_test:19  q="Find the full names of account holders who have an address in 'WV' and also have an unsecured loan with a loan amount..."
+[t2c.retrieval] query='account holders' label=AccountHolder prop=birthDate mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='account holders' label=AccountHolder prop=fullName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='unsecured loan' label=UnsecuredLoan prop=loanAmount mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='unsecured loan' label=UnsecuredLoan prop=APR mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='WV' label=Address prop=state mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[17:18:31] [  34/40] ✔ done   qid=Complex_Retrieval_test:19  ea=False em=False psjs=0.0  t=?  runEA=0.529  wall=10m53s  ETA=1m55s
+[17:18:31] [  34/40] ✔ done   qid=Complex_Retrieval_test:19  ea=False em=False psjs=0.0  t=?  runEA=0.529  wall=10m53s  ETA=1m55s
+[17:18:31] [  35/40] ▶ start  qid=Complex_Retrieval_test:20  q='Find all AccoountHolders who have both a BankAccount and a CreditCard with a balance greater than 4000.0.'
+[17:18:31] [  35/40] ▶ start  qid=Complex_Retrieval_test:20  q='Find all AccoountHolders who have both a BankAccount and a CreditCard with a balance greater than 4000.0.'
+[t2c.retrieval] query='AccoountHolders' label=AccountHolder prop=firstName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='BankAccount' label=BankAccount prop=balance mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='CreditCard' label=CreditCard prop=balance mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='BankAccount' label=BankAccount prop=accountNumber mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='CreditCard' label=CreditCard prop=securityCode mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='AccoountHolders' label=AccountHolder prop=fullName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[17:18:44] [  35/40] ✔ done   qid=Complex_Retrieval_test:20  ea=False em=False psjs=1.0  t=?  runEA=0.514  wall=11m06s  ETA=1m35s
+[17:18:44] [  35/40] ✔ done   qid=Complex_Retrieval_test:20  ea=False em=False psjs=1.0  t=?  runEA=0.514  wall=11m06s  ETA=1m35s
+[17:18:44] [  36/40] ▶ start  qid=Complex_Retrieval_test:22  q="Find AccountHolders who have an UnsecuredLoan with an APR greater than 0.35 and also have a PhoneNumber provided by '..."
+[17:18:44] [  36/40] ▶ start  qid=Complex_Retrieval_test:22  q="Find AccountHolders who have an UnsecuredLoan with an APR greater than 0.35 and also have a PhoneNumber provided by '..."
+[t2c.retrieval] query='AccountHolders' label=AccountHolder prop=birthDate mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='UnsecuredLoan' label=UnsecuredLoan prop=loanAmount mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='PhoneNumber' label=PhoneNumber prop=phone mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Clear' label=PhoneNumber prop=provider mode=fuzzy fuzzy_top5=[{'value': 'Loud and Clear', 'score': 1.2727}] vector_top5=None final=['Loud and Clear']
+[t2c.retrieval] query='APR' label=UnsecuredLoan prop=APR mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='UnsecuredLoan' label=UnsecuredLoan prop=APR mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='AccountHolders' label=AccountHolder prop=firstName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='PhoneNumber' label=PhoneNumber prop=touched mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Clear' label=PhoneNumber prop=phone mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='APR' label=Purchase prop=amount mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='AccountHolders' label=AccountHolder prop=fullName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[17:19:00] [  36/40] ✔ done   qid=Complex_Retrieval_test:22  ea=False em=False psjs=1.0  t=?  runEA=0.500  wall=11m22s  ETA=1m16s
+[17:19:00] [  36/40] ✔ done   qid=Complex_Retrieval_test:22  ea=False em=False psjs=1.0  t=?  runEA=0.500  wall=11m22s  ETA=1m16s
+[17:19:00] [  37/40] ▶ start  qid=Complex_Retrieval_test:23  q="List all AccountHolders who have an Address in 'WA' and a CreditCard with latePayments greater than 0.0."
+[17:19:00] [  37/40] ▶ start  qid=Complex_Retrieval_test:23  q="List all AccountHolders who have an Address in 'WA' and a CreditCard with latePayments greater than 0.0."
+[t2c.retrieval] query='CreditCard' label=CreditCard prop=balance mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Address' label=Address prop=state mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='AccountHolders' label=AccountHolder prop=firstName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='WA' label=State prop=name mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='latePayments' label=CreditCard prop=latePayments mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='CreditCard' label=CreditCard prop=securityCode mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Address' label=Address prop=city mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='AccountHolders' label=AccountHolder prop=fullName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='WA' label=Address prop=state mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='latePayments' label=BankCard prop=latePayments mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Address' label=State prop=name mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Address' label=Address prop=state mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Address' label=Address prop=city mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Address' label=State prop=name mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Address' label=Address prop=state mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Address' label=Address prop=city mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Address' label=State prop=name mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[17:19:22] [  37/40] ✔ done   qid=Complex_Retrieval_test:23  ea=False em=False psjs=1.0  t=?  runEA=0.486  wall=11m44s  ETA=57s
+[17:19:22] [  37/40] ✔ done   qid=Complex_Retrieval_test:23  ea=False em=False psjs=1.0  t=?  runEA=0.486  wall=11m44s  ETA=57s
+[17:19:22] [  38/40] ▶ start  qid=Complex_Retrieval_test:24  q="Identify AccountHolders whose BankAccount is associated with 'Dooley, Dooley and Dooley' and who have made purchases ..."
+[17:19:22] [  38/40] ▶ start  qid=Complex_Retrieval_test:24  q="Identify AccountHolders whose BankAccount is associated with 'Dooley, Dooley and Dooley' and who have made purchases ..."
+[t2c.retrieval] query='BankAccount' label=BankAccount prop=balance mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Dooley, Dooley and Dooley' label=Shop prop=business mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='AccountHolders' label=AccountHolder prop=birthDate mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query="business 'niches'" label=Shop prop=business mode=fuzzy fuzzy_top5=[{'value': 'deliver wireless niches', 'score': 0.5071}] vector_top5=None final=['deliver wireless niches']
+[t2c.retrieval] query='shops' label=Shop prop=business mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Dooley, Dooley and Dooley' label=Shop prop=name mode=fuzzy fuzzy_top5=[{'value': 'Macejkovic and Sons', 'score': 0.3629}] vector_top5=None final=['Macejkovic and Sons']
+[t2c.retrieval] query='AccountHolders' label=AccountHolder prop=firstName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='BankAccount' label=BankAccount prop=accountNumber mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query="business 'niches'" label=Shop prop=name mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='shops' label=Shop prop=shopID mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Dooley, Dooley and Dooley' label=FinancialInstitute prop=name mode=fuzzy fuzzy_top5=[{'value': 'Dooley, Dooley and Dooley', 'score': 22.3984}, {'value': 'Nader and Sons', 'score': 0.3507}, {'value': 'Padberg and Sons', 'score': 0.3507}, {'value': 'Donnelly and Sons', 'score': 0.3507}, {'value': 'Davis and Sons', 'score': 0.3507}] vector_top5=None final=['Dooley, Dooley and Dooley', 'Nader and Sons', 'Padberg and Sons', 'Donnelly and Sons', 'Davis and Sons', 'Langosh and Sons', 'Haag and Sons', 'Hudson, Hudson and Hudson', 'Little, Little and Little', 'Dach, Dach and Dach']
+[t2c.retrieval] query='AccountHolders' label=AccountHolder prop=birthDate mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query="business 'niches'" label=Shop prop=business mode=fuzzy fuzzy_top5=[{'value': 'deliver wireless niches', 'score': 0.5071}] vector_top5=None final=['deliver wireless niches']
+[t2c.retrieval] query='shops' label=Shop prop=name mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='AccountHolders' label=AccountHolder prop=firstName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query="business 'niches'" label=Shop prop=name mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='AccountHolders' label=AccountHolder prop=birthDate mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query="business 'niches'" label=Shop prop=business mode=fuzzy fuzzy_top5=[{'value': 'deliver wireless niches', 'score': 0.5071}] vector_top5=None final=['deliver wireless niches']
+[t2c.retrieval] query='AccountHolders' label=AccountHolder prop=firstName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query="business 'niches'" label=Shop prop=name mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query="business 'niches'" label=Shop prop=business mode=fuzzy fuzzy_top5=[{'value': 'deliver wireless niches', 'score': 0.5071}] vector_top5=None final=['deliver wireless niches']
+[t2c.retrieval] query="business 'niches'" label=Shop prop=name mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[17:19:47] [  38/40] ✔ done   qid=Complex_Retrieval_test:24  ea=True em=False psjs=1.0  t=?  runEA=0.500  wall=12m09s  ETA=38s
+[17:19:47] [  38/40] ✔ done   qid=Complex_Retrieval_test:24  ea=True em=False psjs=1.0  t=?  runEA=0.500  wall=12m09s  ETA=38s
+[17:19:47] [  39/40] ▶ start  qid=Complex_Retrieval_test:27  q="Find AccountHolders who have a PhoneNumber provided by 'Tee' and a CreditCard with latePayments greater than 0. Retur..."
+[17:19:47] [  39/40] ▶ start  qid=Complex_Retrieval_test:27  q="Find AccountHolders who have a PhoneNumber provided by 'Tee' and a CreditCard with latePayments greater than 0. Retur..."
+[t2c.retrieval] query='CreditCard' label=CreditCard prop=accountNumber mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='AccountHolders' label=AccountHolder prop=birthDate mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='PhoneNumber' label=PhoneNumber prop=phone mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Tee' label=PhoneNumber prop=provider mode=fuzzy fuzzy_top5=[{'value': 'B Tee', 'score': 1.5393}, {'value': 'KPA Tel', 'score': 0.4599}] vector_top5=None final=['B Tee', 'KPA Tel']
+[t2c.retrieval] query='latePayments' label=CreditCard prop=latePayments mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='CreditCard' label=CreditCard prop=balance mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='AccountHolders' label=AccountHolder prop=firstName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='PhoneNumber' label=PhoneNumber prop=touched mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Tee' label=PhoneNumber prop=phone mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='latePayments' label=BankCard prop=latePayments mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[17:20:07] [  39/40] ✔ done   qid=Complex_Retrieval_test:27  ea=True em=False psjs=1.0  t=?  runEA=0.513  wall=12m29s  ETA=19s
+[17:20:07] [  39/40] ✔ done   qid=Complex_Retrieval_test:27  ea=True em=False psjs=1.0  t=?  runEA=0.513  wall=12m29s  ETA=19s
+[17:20:07] [  40/40] ▶ start  qid=Complex_Retrieval_test:28  q="Identify the Shops for which at least two Logins have a 'acme.clm' email address. Return the names of the shops."
+[17:20:07] [  40/40] ▶ start  qid=Complex_Retrieval_test:28  q="Identify the Shops for which at least two Logins have a 'acme.clm' email address. Return the names of the shops."
+[t2c.retrieval] query='Shops' label=Shop prop=business mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query="'acme.clm' email address" label=DeliveryAddress prop=state mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Logins' label=Login prop=lastName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Logins' label=Login prop=firstName mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query='Shops' label=Shop prop=name mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[t2c.retrieval] query="'acme.clm' email address" label=Login prop=mail mode=fuzzy fuzzy_top5=[] vector_top5=None final=[]
+[17:20:25] [  40/40] ✔ done   qid=Complex_Retrieval_test:28  ea=True em=False psjs=0.05707196029776675  t=?  runEA=0.525  wall=12m47s  ETA=--
+[17:20:25] [  40/40] ✔ done   qid=Complex_Retrieval_test:28  ea=True em=False psjs=0.05707196029776675  t=?  runEA=0.525  wall=12m47s  ETA=--

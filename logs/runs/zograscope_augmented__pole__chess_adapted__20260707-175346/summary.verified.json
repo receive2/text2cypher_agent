@@ -1,0 +1,16 @@
+{
+  "dataset": "zograscope_augmented",
+  "n": 1415,
+  "n_scored": {
+    "ea": 1399,
+    "em": 1415,
+    "psjs": 1399
+  },
+  "n_errors": 16,
+  "ea": 0.1696113074204947,
+  "em": 0.0,
+  "psjs": 0.22957879460077682,
+  "verified_subset": true,
+  "dropped_by_verification": 26,
+  "pending_policy": "keep"
+}

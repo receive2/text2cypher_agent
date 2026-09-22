@@ -1,0 +1,82 @@
+{
+  "dataset": "mindthequery_augmented",
+  "n": 40,
+  "n_scored": {
+    "ea": 40,
+    "em": 40,
+    "psjs": 40
+  },
+  "n_errors": 0,
+  "ea": 0.525,
+  "em": 0.0,
+  "psjs": 0.5,
+  "by_difficulty": {
+    "all": {
+      "ea": 0.525,
+      "em": 0.0,
+      "psjs": 0.5,
+      "n": 40,
+      "n_scored": {
+        "ea": 40,
+        "em": 40,
+        "psjs": 40
+      },
+      "n_errors": 0
+    },
+    "easy": {
+      "ea": 1.0,
+      "em": 0.0,
+      "psjs": 1.0,
+      "n": 1,
+      "n_scored": {
+        "ea": 1,
+        "em": 1,
+        "psjs": 1
+      },
+      "n_errors": 0
+    },
+    "medium": {
+      "ea": 0.5135135135135135,
+      "em": 0.0,
+      "psjs": 0.4864864864864865,
+      "n": 37,
+      "n_scored": {
+        "ea": 37,
+        "em": 37,
+        "psjs": 37
+      },
+      "n_errors": 0
+    },
+    "hard": {
+      "ea": 0.5,
+      "em": 0.0,
+      "psjs": 0.5,
+      "n": 2,
+      "n_scored": {
+        "ea": 2,
+        "em": 2,
+        "psjs": 2
+      },
+      "n_errors": 0
+    }
+  },
+  "elapsed_sec": 531.55,
+  "run_meta": {
+    "generated_at": "2026-06-22T17:16:30+02:00",
+    "ner_mode": "react_node_rel",
+    "method": "react",
+    "label": "ReAct (Node + Rel)",
+    "tool_type": "node_rel",
+    "retrieval": "fuzzy",
+    "ner_llm": "gpt-4.1",
+    "cypher_llm": "gpt-4.1",
+    "qa_llm": "gpt-4.1",
+    "tool_select_top_k": 15,
+    "values_per_tool": 10,
+    "plan_exec_tools_per_entity": 2,
+    "plan_exec_values_per_tool": 10,
+    "plan_exec_escalate": true,
+    "tool_retrieval_mode": "fuzzy",
+    "hybrid_strategy": "cascade"
+  }
+}

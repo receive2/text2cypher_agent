@@ -1,0 +1,810 @@
+2026-06-21 05:37:51.135 | INFO     | eval.metrics_ZOGRASCOPE:load_dataset:247 - Loaded 1441 ZOGRASCOPE examples from /Users/q0w01lh/datasets/zograscope_augmented_v2/test.json
+2026-06-21 05:37:51.135 | INFO     | eval.metrics_ZOGRASCOPE:evaluate_dataset:439 - ZOGRASCOPE graph_filter='pole': kept 1441/1441 examples (skipped 0).
+[05:37:51] [   1/200] ▶ start  qid=1644  q='What is the most recent date a crime happened at 194 Gaeth Road and was looked into by an officer with the surname Br...'
+[05:37:51] [   1/200] ▶ start  qid=1644  q='What is the most recent date a crime happened at 194 Gaeth Road and was looked into by an officer with the surname Br...'
+[05:37:54] [   1/200] ✔ done   qid=1644  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=3s  ETA=10m57s
+[05:37:54] [   1/200] ✔ done   qid=1644  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=3s  ETA=10m57s
+[05:37:54] [   2/200] ▶ start  qid=2987  q='What is the latest crime connected to friends of those with the surname ALEXANDER?'
+[05:37:54] [   2/200] ▶ start  qid=2987  q='What is the latest crime connected to friends of those with the surname ALEXANDER?'
+[05:37:57] [   2/200] ✔ done   qid=2987  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=6s  ETA=9m59s
+[05:37:57] [   2/200] ✔ done   qid=2987  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=6s  ETA=9m59s
+[05:37:57] [   3/200] ▶ start  qid=4244  q='Could you share the email of a Baiiley who knows someone residing with the owner of jblack6a@amazon.de?'
+[05:37:57] [   3/200] ▶ start  qid=4244  q='Could you share the email of a Baiiley who knows someone residing with the owner of jblack6a@amazon.de?'
+2026-06-21 05:38:00.229 | WARNING  | eval.psjs:compute_psjs:580 - PSJS execution failed — returning 0.0.  gold_err=None pred_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Variable `rtmp0` not defined (line 3, column 148 (offset: 407))\n"} MATCH (p)-[rtmp4:HAS_EMAIL]->(email:Email) WITH collect(distinct elementId(email)) + collect(distinct elementId(p)) + collect(distinct elementId(rtmp0)) + collect(distinct elementId(rtmp1)) + collect(distinct elementId(rtmp2)) + collect(distinct elementId(rtmp3)) + collect(distinct elementId(rtmp4)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId2"\n                                                                                                                                                    ^}'
+[05:38:00] [   3/200] ✔ done   qid=4244  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=9s  ETA=9m57s
+[05:38:00] [   3/200] ✔ done   qid=4244  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=9s  ETA=9m57s
+[05:38:00] [   4/200] ▶ start  qid=97  q='What ages do people have who share a home with a Brwon family member?'
+[05:38:00] [   4/200] ▶ start  qid=97  q='What ages do people have who share a home with a Brwon family member?'
+[05:38:03] [   4/200] ✔ done   qid=97  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=12s  ETA=9m57s
+[05:38:03] [   4/200] ✔ done   qid=97  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=12s  ETA=9m57s
+[05:38:03] [   5/200] ▶ start  qid=2196  q="How many individuals are aware of a Flrd's phone number?"
+[05:38:03] [   5/200] ▶ start  qid=2196  q="How many individuals are aware of a Flrd's phone number?"
+[05:38:05] [   5/200] ✔ done   qid=2196  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=15s  ETA=9m29s
+[05:38:05] [   5/200] ✔ done   qid=2196  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=15s  ETA=9m29s
+[05:38:05] [   6/200] ▶ start  qid=4344  q='Can you identify people whose phone numbers are known by friends of those involved in crimes that an Officer named St...'
+[05:38:05] [   6/200] ▶ start  qid=4344  q='Can you identify people whose phone numbers are known by friends of those involved in crimes that an Officer named St...'
+[05:38:09] [   6/200] ✔ done   qid=4344  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=19s  ETA=10m03s
+[05:38:09] [   6/200] ✔ done   qid=4344  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=19s  ETA=10m03s
+[05:38:09] [   7/200] ▶ start  qid=4834  q='What is the most recent crime investigated by Officer Houisn in the WA14 area?'
+[05:38:09] [   7/200] ▶ start  qid=4834  q='What is the most recent crime investigated by Officer Houisn in the WA14 area?'
+[05:38:12] [   7/200] ✔ done   qid=4834  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=21s  ETA=9m48s
+[05:38:12] [   7/200] ✔ done   qid=4834  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=21s  ETA=9m48s
+[05:38:12] [   8/200] ▶ start  qid=1830  q='Who is the youngest person residing with anyone who has the phone number of someone with the surname Edwarrds?'
+[05:38:12] [   8/200] ▶ start  qid=1830  q='Who is the youngest person residing with anyone who has the phone number of someone with the surname Edwarrds?'
+2026-06-21 05:38:15.719 | WARNING  | eval.psjs:compute_psjs:580 - PSJS execution failed — returning 0.0.  gold_err=None pred_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Variable `rtmp2` not defined (line 4, column 210 (offset: 468))\n"} WITH collect(distinct elementId(l)) + collect(distinct elementId(p1)) + collect(distinct elementId(p2)) + collect(distinct elementId(rtmp0)) + collect(distinct elementId(rtmp1)) + collect(distinct elementId(rtmp2)) + collect(distinct elementId(rtmp3)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId2"\n                                                                                                                                                                                                                  ^}'
+[05:38:15] [   8/200] ✔ done   qid=1830  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=25s  ETA=9m50s
+[05:38:15] [   8/200] ✔ done   qid=1830  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=25s  ETA=9m50s
+[05:38:15] [   9/200] ▶ start  qid=3509  q='What are the zip codes where the friends of the person with 554-93-4466 live?'
+[05:38:15] [   9/200] ▶ start  qid=3509  q='What are the zip codes where the friends of the person with 554-93-4466 live?'
+[05:38:18] [   9/200] ✔ done   qid=3509  ea=False em=False psjs=0.52  t=?  runEA=0.000  wall=28s  ETA=9m44s
+[05:38:18] [   9/200] ✔ done   qid=3509  ea=False em=False psjs=0.52  t=?  runEA=0.000  wall=28s  ETA=9m44s
+[05:38:18] [  10/200] ▶ start  qid=43  q='What Toyoat models are connected to vehicle-related crimes?'
+[05:38:18] [  10/200] ▶ start  qid=43  q='What Toyoat models are connected to vehicle-related crimes?'
+[05:38:21] [  10/200] ✔ done   qid=43  ea=False em=False psjs=0.3333333333333333  t=?  runEA=0.000  wall=30s  ETA=9m34s
+[05:38:21] [  10/200] ✔ done   qid=43  ea=False em=False psjs=0.3333333333333333  t=?  runEA=0.000  wall=30s  ETA=9m34s
+[05:38:21] [  11/200] ▶ start  qid=4704  q='Which individuals are friends with the family of the person who knows the phone number of the individual with 386-78-...'
+[05:38:21] [  11/200] ▶ start  qid=4704  q='Which individuals are friends with the family of the person who knows the phone number of the individual with 386-78-...'
+[05:38:24] [  11/200] ✔ done   qid=4704  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=33s  ETA=9m25s
+[05:38:24] [  11/200] ✔ done   qid=4704  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=33s  ETA=9m25s
+[05:38:24] [  12/200] ▶ start  qid=1625  q='Which is the earliest crime involving F-SERIES vehicles?'
+[05:38:24] [  12/200] ▶ start  qid=1625  q='Which is the earliest crime involving F-SERIES vehicles?'
+[05:38:26] [  12/200] ✔ done   qid=1625  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=36s  ETA=9m17s
+[05:38:26] [  12/200] ✔ done   qid=1625  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=36s  ETA=9m17s
+[05:38:26] [  13/200] ▶ start  qid=4009  q='Can you identify the car brand of the oldest vehicle associated to a vehicle crime alongside an occupant of 184 Sparrow?'
+[05:38:26] [  13/200] ▶ start  qid=4009  q='Can you identify the car brand of the oldest vehicle associated to a vehicle crime alongside an occupant of 184 Sparrow?'
+[05:38:30] [  13/200] ✔ done   qid=4009  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=39s  ETA=9m28s
+[05:38:30] [  13/200] ✔ done   qid=4009  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=39s  ETA=9m28s
+[05:38:30] [  14/200] ▶ start  qid=571  q='Where does the person with NSH number 888-09-8856 live, if their postcode is OL10 1AU?'
+[05:38:30] [  14/200] ▶ start  qid=571  q='Where does the person with NSH number 888-09-8856 live, if their postcode is OL10 1AU?'
+[05:38:33] [  14/200] ✔ done   qid=571  ea=False em=False psjs=0.3333333333333333  t=?  runEA=0.000  wall=43s  ETA=9m27s
+[05:38:33] [  14/200] ✔ done   qid=571  ea=False em=False psjs=0.3333333333333333  t=?  runEA=0.000  wall=43s  ETA=9m27s
+[05:38:33] [  15/200] ▶ start  qid=2775  q='What is the latest crime that included someone from 54 Barton?'
+[05:38:33] [  15/200] ▶ start  qid=2775  q='What is the latest crime that included someone from 54 Barton?'
+[05:38:36] [  15/200] ✔ done   qid=2775  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=46s  ETA=9m22s
+[05:38:36] [  15/200] ✔ done   qid=2775  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=46s  ETA=9m22s
+[05:38:36] [  16/200] ▶ start  qid=1945  q='Which emails belong to people related with anyone sharing a home with someone with last name Rce?'
+[05:38:36] [  16/200] ▶ start  qid=1945  q='Which emails belong to people related with anyone sharing a home with someone with last name Rce?'
+[05:38:39] [  16/200] ✔ done   qid=1945  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=48s  ETA=9m17s
+[05:38:39] [  16/200] ✔ done   qid=1945  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=48s  ETA=9m17s
+[05:38:39] [  17/200] ▶ start  qid=575  q='What are the location of residence for NH number 520-74-1446 with the postcode M28 7FY?'
+[05:38:39] [  17/200] ▶ start  qid=575  q='What are the location of residence for NH number 520-74-1446 with the postcode M28 7FY?'
+[05:38:42] [  17/200] ✔ done   qid=575  ea=False em=False psjs=0.2  t=?  runEA=0.000  wall=51s  ETA=9m12s
+[05:38:42] [  17/200] ✔ done   qid=575  ea=False em=False psjs=0.2  t=?  runEA=0.000  wall=51s  ETA=9m12s
+[05:38:42] [  18/200] ▶ start  qid=2759  q='How many emails does Jack, related to a Wardd, have?'
+[05:38:42] [  18/200] ▶ start  qid=2759  q='How many emails does Jack, related to a Wardd, have?'
+[05:38:45] [  18/200] ✔ done   qid=2759  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=55s  ETA=9m13s
+[05:38:45] [  18/200] ✔ done   qid=2759  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=55s  ETA=9m13s
+[05:38:45] [  19/200] ▶ start  qid=3709  q='What was the first offense involving a housemate of a person with surname Williamsno?'
+[05:38:45] [  19/200] ▶ start  qid=3709  q='What was the first offense involving a housemate of a person with surname Williamsno?'
+[05:38:48] [  19/200] ✔ done   qid=3709  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=57s  ETA=9m07s
+[05:38:48] [  19/200] ✔ done   qid=3709  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=57s  ETA=9m07s
+[05:38:48] [  20/200] ▶ start  qid=2400  q='Which crime happened first with a Williamson and a VII involved?'
+[05:38:48] [  20/200] ▶ start  qid=2400  q='Which crime happened first with a Williamson and a VII involved?'
+[05:38:51] [  20/200] ✔ done   qid=2400  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=1m01s  ETA=9m05s
+[05:38:51] [  20/200] ✔ done   qid=2400  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=1m01s  ETA=9m05s
+[05:38:51] [  21/200] ▶ start  qid=2369  q='What are the emails of people surnamed Ford who are related to anyone surnamed Caarr?'
+[05:38:51] [  21/200] ▶ start  qid=2369  q='What are the emails of people surnamed Ford who are related to anyone surnamed Caarr?'
+[05:38:54] [  21/200] ✔ done   qid=2369  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=1m03s  ETA=9m00s
+[05:38:54] [  21/200] ✔ done   qid=2369  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=1m03s  ETA=9m00s
+[05:38:54] [  22/200] ▶ start  qid=442  q='How many emails are associated with a person with surname COOPER?'
+[05:38:54] [  22/200] ▶ start  qid=442  q='How many emails are associated with a person with surname COOPER?'
+[05:38:57] [  22/200] ✔ done   qid=442  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=1m06s  ETA=8m54s
+[05:38:57] [  22/200] ✔ done   qid=442  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=1m06s  ETA=8m54s
+[05:38:57] [  23/200] ▶ start  qid=4246  q='Can you provide the email of a Bailye who is friends with someone living with the person with email jblack6a@amazon.de?'
+[05:38:57] [  23/200] ▶ start  qid=4246  q='Can you provide the email of a Bailye who is friends with someone living with the person with email jblack6a@amazon.de?'
+[05:39:00] [  23/200] ✔ done   qid=4246  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=1m09s  ETA=8m55s
+[05:39:00] [  23/200] ✔ done   qid=4246  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=1m09s  ETA=8m55s
+[05:39:00] [  24/200] ▶ start  qid=4096  q='Can you identify the vehicle brands involved in a crime on 2/08/2017 and also in a crime at Hillside Street with the ...'
+[05:39:00] [  24/200] ▶ start  qid=4096  q='Can you identify the vehicle brands involved in a crime on 2/08/2017 and also in a crime at Hillside Street with the ...'
+[05:39:03] [  24/200] ✔ done   qid=4096  ea=False em=False psjs=0.038461538461538464  t=?  runEA=0.000  wall=1m12s  ETA=8m50s
+[05:39:03] [  24/200] ✔ done   qid=4096  ea=False em=False psjs=0.038461538461538464  t=?  runEA=0.000  wall=1m12s  ETA=8m50s
+[05:39:03] [  25/200] ▶ start  qid=913  q='How many individuals have a friend with surname Duncaj?'
+[05:39:03] [  25/200] ▶ start  qid=913  q='How many individuals have a friend with surname Duncaj?'
+[05:39:05] [  25/200] ✔ done   qid=913  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=1m15s  ETA=8m44s
+[05:39:05] [  25/200] ✔ done   qid=913  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=1m15s  ETA=8m44s
+[05:39:05] [  26/200] ▶ start  qid=455  q='Can you provide the emails of those residing with a Bkaer family member?'
+[05:39:05] [  26/200] ▶ start  qid=455  q='Can you provide the emails of those residing with a Bkaer family member?'
+[05:39:08] [  26/200] ✔ done   qid=455  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=1m18s  ETA=8m40s
+[05:39:08] [  26/200] ✔ done   qid=455  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=1m18s  ETA=8m40s
+[05:39:08] [  27/200] ▶ start  qid=1947  q='Can you provide the emails of those related to individuals residing with a person with surname Pedry?'
+[05:39:08] [  27/200] ▶ start  qid=1947  q='Can you provide the emails of those related to individuals residing with a person with surname Pedry?'
+[05:39:11] [  27/200] ✔ done   qid=1947  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=1m21s  ETA=8m36s
+[05:39:11] [  27/200] ✔ done   qid=1947  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=1m21s  ETA=8m36s
+[05:39:11] [  28/200] ▶ start  qid=4078  q='Can you identify the car brands involved in crimes Officer Li investigated at postcode M40 8DZ?'
+[05:39:11] [  28/200] ▶ start  qid=4078  q='Can you identify the car brands involved in crimes Officer Li investigated at postcode M40 8DZ?'
+[05:39:14] [  28/200] ✔ done   qid=4078  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=1m24s  ETA=8m35s
+[05:39:14] [  28/200] ✔ done   qid=4078  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=1m24s  ETA=8m35s
+[05:39:14] [  29/200] ▶ start  qid=1155  q='How many people with the name Antono have connections to anyone named Carolyn?'
+[05:39:14] [  29/200] ▶ start  qid=1155  q='How many people with the name Antono have connections to anyone named Carolyn?'
+[05:39:17] [  29/200] ✔ done   qid=1155  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=1m26s  ETA=8m30s
+[05:39:17] [  29/200] ✔ done   qid=1155  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=1m26s  ETA=8m30s
+[05:39:17] [  30/200] ▶ start  qid=2562  q='What is the first crime date involving a Rondo vehicle and a person with the surname Mooer?'
+[05:39:17] [  30/200] ▶ start  qid=2562  q='What is the first crime date involving a Rondo vehicle and a person with the surname Mooer?'
+[05:39:20] [  30/200] ✔ done   qid=2562  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=1m29s  ETA=8m25s
+[05:39:20] [  30/200] ✔ done   qid=2562  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=1m29s  ETA=8m25s
+[05:39:20] [  31/200] ▶ start  qid=1270  q='How many called Sxott are friends with someone whose last name is Alexander?'
+[05:39:20] [  31/200] ▶ start  qid=1270  q='How many called Sxott are friends with someone whose last name is Alexander?'
+[05:39:23] [  31/200] ✔ done   qid=1270  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=1m32s  ETA=8m22s
+[05:39:23] [  31/200] ✔ done   qid=1270  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=1m32s  ETA=8m22s
+[05:39:23] [  32/200] ▶ start  qid=1988  q="What are the emails of people who know someone with surname fox's phone number?"
+[05:39:23] [  32/200] ▶ start  qid=1988  q="What are the emails of people who know someone with surname fox's phone number?"
+[05:39:28] [  32/200] ✔ done   qid=1988  ea=False em=False psjs=0.2631578947368421  t=?  runEA=0.000  wall=1m38s  ETA=8m33s
+[05:39:28] [  32/200] ✔ done   qid=1988  ea=False em=False psjs=0.2631578947368421  t=?  runEA=0.000  wall=1m38s  ETA=8m33s
+[05:39:28] [  33/200] ▶ start  qid=514  q="How many crimes were marked as 'identified' at locations with the postcode M2 4JQ?"
+[05:39:28] [  33/200] ▶ start  qid=514  q="How many crimes were marked as 'identified' at locations with the postcode M2 4JQ?"
+[05:39:31] [  33/200] ✔ done   qid=514  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=1m40s  ETA=8m28s
+[05:39:31] [  33/200] ✔ done   qid=514  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=1m40s  ETA=8m28s
+[05:39:31] [  34/200] ▶ start  qid=744  q='What are the Daihatsu models involved in crimes marked as "identified"?'
+[05:39:31] [  34/200] ▶ start  qid=744  q='What are the Daihatsu models involved in crimes marked as "identified"?'
+[05:39:34] [  34/200] ✔ done   qid=744  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=1m43s  ETA=8m23s
+[05:39:34] [  34/200] ✔ done   qid=744  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=1m43s  ETA=8m23s
+[05:39:34] [  35/200] ▶ start  qid=2205  q='How many cases with Awaiting court outcome status are Sgts handling?'
+[05:39:34] [  35/200] ▶ start  qid=2205  q='How many cases with Awaiting court outcome status are Sgts handling?'
+[05:39:36] [  35/200] ✔ done   qid=2205  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=1m46s  ETA=8m19s
+[05:39:36] [  35/200] ✔ done   qid=2205  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=1m46s  ETA=8m19s
+[05:39:36] [  36/200] ▶ start  qid=2261  q='How many emails are from people with last name Ford who are friends with someone with last name Coko?'
+[05:39:36] [  36/200] ▶ start  qid=2261  q='How many emails are from people with last name Ford who are friends with someone with last name Coko?'
+2026-06-21 05:39:39.697 | WARNING  | eval.psjs:compute_psjs:580 - PSJS execution failed — returning 0.0.  gold_err=None pred_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Variable `rtmp1` not defined (line 3, column 139 (offset: 288))\n"} WITH collect(distinct elementId(e)) + collect(distinct elementId(p1)) + collect(distinct elementId(rtmp0)) + collect(distinct elementId(rtmp1)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId2"\n                                                                                                                                           ^}'
+[05:39:39] [  36/200] ✔ done   qid=2261  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=1m49s  ETA=8m15s
+[05:39:39] [  36/200] ✔ done   qid=2261  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=1m49s  ETA=8m15s
+[05:39:39] [  37/200] ▶ start  qid=3013  q='On 24/08/2017, how many Buikcs were involved in crimes at locations with the postcode M23 9GB?'
+[05:39:39] [  37/200] ▶ start  qid=3013  q='On 24/08/2017, how many Buikcs were involved in crimes at locations with the postcode M23 9GB?'
+[05:39:42] [  37/200] ✔ done   qid=3013  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=1m52s  ETA=8m13s
+[05:39:42] [  37/200] ✔ done   qid=3013  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=1m52s  ETA=8m13s
+[05:39:42] [  38/200] ▶ start  qid=300  q='Which burglary incidents took place at Colchester Close?'
+[05:39:42] [  38/200] ▶ start  qid=300  q='Which burglary incidents took place at Colchester Close?'
+[05:39:45] [  38/200] ✔ done   qid=300  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=1m54s  ETA=8m08s
+[05:39:45] [  38/200] ✔ done   qid=300  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=1m54s  ETA=8m08s
+[05:39:45] [  39/200] ▶ start  qid=1747  q='How many addresses are associated with those who have the last name Murpphy?'
+[05:39:45] [  39/200] ▶ start  qid=1747  q='How many addresses are associated with those who have the last name Murpphy?'
+[05:39:47] [  39/200] ✔ done   qid=1747  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=1m57s  ETA=8m02s
+[05:39:47] [  39/200] ✔ done   qid=1747  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=1m57s  ETA=8m02s
+[05:39:47] [  40/200] ▶ start  qid=2451  q='What is the number of people living with a person whose last name is Lopwz?'
+[05:39:47] [  40/200] ▶ start  qid=2451  q='What is the number of people living with a person whose last name is Lopwz?'
+[05:39:50] [  40/200] ✔ done   qid=2451  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=1m59s  ETA=7m57s
+[05:39:50] [  40/200] ✔ done   qid=2451  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=1m59s  ETA=7m57s
+[05:39:50] [  41/200] ▶ start  qid=2783  q='When did a crime first occur involving family members of someone with last name Greeen?'
+[05:39:50] [  41/200] ▶ start  qid=2783  q='When did a crime first occur involving family members of someone with last name Greeen?'
+[05:39:52] [  41/200] ✔ done   qid=2783  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=2m02s  ETA=7m52s
+[05:39:52] [  41/200] ✔ done   qid=2783  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=2m02s  ETA=7m52s
+[05:39:52] [  42/200] ▶ start  qid=4356  q='What is the number of crimes at a location at the same are of 3 Lee Lane with people named ALAN involved?'
+[05:39:52] [  42/200] ▶ start  qid=4356  q='What is the number of crimes at a location at the same are of 3 Lee Lane with people named ALAN involved?'
+[05:39:55] [  42/200] ✔ done   qid=4356  ea=True em=False psjs=1.0  t=?  runEA=0.024  wall=2m05s  ETA=7m49s
+[05:39:55] [  42/200] ✔ done   qid=4356  ea=True em=False psjs=1.0  t=?  runEA=0.024  wall=2m05s  ETA=7m49s
+[05:39:55] [  43/200] ▶ start  qid=2658  q='What emails do people who are friends with a Bfown have?'
+[05:39:55] [  43/200] ▶ start  qid=2658  q='What emails do people who are friends with a Bfown have?'
+[05:39:59] [  43/200] ✔ done   qid=2658  ea=False em=False psjs=0.0  t=?  runEA=0.023  wall=2m09s  ETA=7m50s
+[05:39:59] [  43/200] ✔ done   qid=2658  ea=False em=False psjs=0.0  t=?  runEA=0.023  wall=2m09s  ETA=7m50s
+[05:39:59] [  44/200] ▶ start  qid=678  q='What number of crimes happened at Clegg Place?'
+[05:39:59] [  44/200] ▶ start  qid=678  q='What number of crimes happened at Clegg Place?'
+[05:40:02] [  44/200] ✔ done   qid=678  ea=False em=False psjs=0.0  t=?  runEA=0.023  wall=2m12s  ETA=7m47s
+[05:40:02] [  44/200] ✔ done   qid=678  ea=False em=False psjs=0.0  t=?  runEA=0.023  wall=2m12s  ETA=7m47s
+[05:40:02] [  45/200] ▶ start  qid=4184  q='What vehicle-related crimes happened at homes where a crime also happened on 2017?'
+[05:40:02] [  45/200] ▶ start  qid=4184  q='What vehicle-related crimes happened at homes where a crime also happened on 2017?'
+2026-06-21 05:40:06.592 | WARNING  | eval.psjs:compute_psjs:580 - PSJS execution failed — returning 0.0.  gold_err=None pred_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input \'AS\': expected\n  "!="\n  "%"\n  "*"\n  "+"\n  "-"\n  "/"\n  "<"\n  "<="\n  "<>"\n  "="\n  ">"\n  ">="\n  "AND"\n  "CALL"\n  "CREATE"\n  "DELETE"\n  "DETACH"\n  "FINISH"\n  "FOREACH"\n  "INSERT"\n  "LOAD"\n  "MATCH"\n  "MERGE"\n  "NODETACH"\n  "OPTIONAL"\n  "OR"\n  "REMOVE"\n  "RETURN"\n  "SET"\n  "UNION"\n  "UNWIND"\n  "USE"\n  "WITH"\n  "XOR"\n  "^"\n  "||"\n  <EOF> (line 1, column 429 (offset: 428))\n"MATCH (v:Vehicle)-[rtmp0:INVOLVED_IN]->(c1:Crime)-[rtmp1:OCCURRED_AT]->(l:Location) WHERE c1.type = "vehicle" WITH * MATCH (c2:Crime)-[rtmp2:OCCURRED_AT]->(l) WHERE c2.date STARTS WITH collect(distinct elementId(c1)) + collect(distinct elementId(c2)) + collect(distinct elementId(l)) + collect(distinct elementId(v)) + collect(distinct elementId(rtmp0)) + collect(distinct elementId(rtmp1)) + collect(distinct elementId(rtmp2)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId2"\n                                                                                                                                                                                                                                                                                                                                                                                                                                             ^}'
+[05:40:06] [  45/200] ✔ done   qid=4184  ea=False em=False psjs=0.0  t=?  runEA=0.022  wall=2m15s  ETA=7m47s
+[05:40:06] [  45/200] ✔ done   qid=4184  ea=False em=False psjs=0.0  t=?  runEA=0.022  wall=2m15s  ETA=7m47s
+[05:40:06] [  46/200] ▶ start  qid=1176  q='What person cases are assigned to officers with badge number 70-5119724?'
+[05:40:06] [  46/200] ▶ start  qid=1176  q='What person cases are assigned to officers with badge number 70-5119724?'
+[05:40:09] [  46/200] ✔ done   qid=1176  ea=False em=False psjs=0.0  t=?  runEA=0.022  wall=2m19s  ETA=7m44s
+[05:40:09] [  46/200] ✔ done   qid=1176  ea=False em=False psjs=0.0  t=?  runEA=0.022  wall=2m19s  ETA=7m44s
+[05:40:09] [  47/200] ▶ start  qid=1907  q='How many people called Amannda reside with a person whose NHS number is 260-95-0836?'
+[05:40:09] [  47/200] ▶ start  qid=1907  q='How many people called Amannda reside with a person whose NHS number is 260-95-0836?'
+[05:40:13] [  47/200] ✔ done   qid=1907  ea=False em=False psjs=0.0  t=?  runEA=0.021  wall=2m22s  ETA=7m42s
+[05:40:13] [  47/200] ✔ done   qid=1907  ea=False em=False psjs=0.0  t=?  runEA=0.021  wall=2m22s  ETA=7m42s
+[05:40:13] [  48/200] ▶ start  qid=2772  q='What crime last occur involving someone from 184 Sparrow?'
+[05:40:13] [  48/200] ▶ start  qid=2772  q='What crime last occur involving someone from 184 Sparrow?'
+[05:40:16] [  48/200] ✔ done   qid=2772  ea=False em=False psjs=0.0  t=?  runEA=0.021  wall=2m25s  ETA=7m39s
+[05:40:16] [  48/200] ✔ done   qid=2772  ea=False em=False psjs=0.0  t=?  runEA=0.021  wall=2m25s  ETA=7m39s
+[05:40:16] [  49/200] ▶ start  qid=4550  q='What are the NHS numbers of individuals who know a relative of someone with surname Fuelds?'
+[05:40:16] [  49/200] ▶ start  qid=4550  q='What are the NHS numbers of individuals who know a relative of someone with surname Fuelds?'
+[05:40:18] [  49/200] ✔ done   qid=4550  ea=False em=False psjs=0.0  t=?  runEA=0.020  wall=2m28s  ETA=7m35s
+[05:40:18] [  49/200] ✔ done   qid=4550  ea=False em=False psjs=0.0  t=?  runEA=0.020  wall=2m28s  ETA=7m35s
+[05:40:18] [  50/200] ▶ start  qid=4877  q="Can you provide the addresses of locations where crimes took place and are the residences of Lilllian's friends?"
+[05:40:18] [  50/200] ▶ start  qid=4877  q="Can you provide the addresses of locations where crimes took place and are the residences of Lilllian's friends?"
+[05:40:21] [  50/200] ✔ done   qid=4877  ea=False em=False psjs=0.0  t=?  runEA=0.020  wall=2m31s  ETA=7m32s
+[05:40:21] [  50/200] ✔ done   qid=4877  ea=False em=False psjs=0.0  t=?  runEA=0.020  wall=2m31s  ETA=7m32s
+[05:40:21] [  51/200] ▶ start  qid=2150  q='How many officers looked into crimes classified as arson?'
+[05:40:21] [  51/200] ▶ start  qid=2150  q='How many officers looked into crimes classified as arson?'
+[05:40:27] [  51/200] ✔ done   qid=2150  ea=False em=False psjs=0.0  t=?  runEA=0.020  wall=2m36s  ETA=7m37s
+[05:40:27] [  51/200] ✔ done   qid=2150  ea=False em=False psjs=0.0  t=?  runEA=0.020  wall=2m36s  ETA=7m37s
+[05:40:27] [  52/200] ▶ start  qid=1492  q='Can you provide all emails for individuals with the last name AUSTIN?'
+[05:40:27] [  52/200] ▶ start  qid=1492  q='Can you provide all emails for individuals with the last name AUSTIN?'
+[05:40:30] [  52/200] ✔ done   qid=1492  ea=False em=False psjs=0.0  t=?  runEA=0.019  wall=2m39s  ETA=7m32s
+[05:40:30] [  52/200] ✔ done   qid=1492  ea=False em=False psjs=0.0  t=?  runEA=0.019  wall=2m39s  ETA=7m32s
+[05:40:30] [  53/200] ▶ start  qid=2947  q='Can you provide a list of Escalade ESV-related vehicles at 67 Speyside Close?'
+[05:40:30] [  53/200] ▶ start  qid=2947  q='Can you provide a list of Escalade ESV-related vehicles at 67 Speyside Close?'
+[05:40:32] [  53/200] ✔ done   qid=2947  ea=False em=False psjs=0.2  t=?  runEA=0.019  wall=2m41s  ETA=7m28s
+[05:40:32] [  53/200] ✔ done   qid=2947  ea=False em=False psjs=0.2  t=?  runEA=0.019  wall=2m41s  ETA=7m28s
+[05:40:32] [  54/200] ▶ start  qid=1345  q='Which Mzzda vehicles were linked to crimes on 3/08/2017?'
+[05:40:32] [  54/200] ▶ start  qid=1345  q='Which Mzzda vehicles were linked to crimes on 3/08/2017?'
+[05:40:35] [  54/200] ✔ done   qid=1345  ea=False em=False psjs=0.0  t=?  runEA=0.019  wall=2m44s  ETA=7m23s
+[05:40:35] [  54/200] ✔ done   qid=1345  ea=False em=False psjs=0.0  t=?  runEA=0.019  wall=2m44s  ETA=7m23s
+[05:40:35] [  55/200] ▶ start  qid=4261  q='How many emails are associated with residents living with others, whose phone is identified by an individual that kno...'
+[05:40:35] [  55/200] ▶ start  qid=4261  q='How many emails are associated with residents living with others, whose phone is identified by an individual that kno...'
+[05:40:38] [  55/200] ✔ done   qid=4261  ea=False em=False psjs=0.0  t=?  runEA=0.018  wall=2m47s  ETA=7m21s
+[05:40:38] [  55/200] ✔ done   qid=4261  ea=False em=False psjs=0.0  t=?  runEA=0.018  wall=2m47s  ETA=7m21s
+[05:40:38] [  56/200] ▶ start  qid=1716  q="What's the count of Andreas living with Ryenolds family members?"
+[05:40:38] [  56/200] ▶ start  qid=1716  q="What's the count of Andreas living with Ryenolds family members?"
+[05:40:41] [  56/200] ✔ done   qid=1716  ea=False em=False psjs=0.0  t=?  runEA=0.018  wall=2m50s  ETA=7m18s
+[05:40:41] [  56/200] ✔ done   qid=1716  ea=False em=False psjs=0.0  t=?  runEA=0.018  wall=2m50s  ETA=7m18s
+[05:40:41] [  57/200] ▶ start  qid=2585  q='What are the emails of individuals with last name George who are known by people with last name Berr?'
+[05:40:41] [  57/200] ▶ start  qid=2585  q='What are the emails of individuals with last name George who are known by people with last name Berr?'
+[05:40:44] [  57/200] ✔ done   qid=2585  ea=False em=False psjs=0.0  t=?  runEA=0.018  wall=2m53s  ETA=7m14s
+[05:40:44] [  57/200] ✔ done   qid=2585  ea=False em=False psjs=0.0  t=?  runEA=0.018  wall=2m53s  ETA=7m14s
+[05:40:44] [  58/200] ▶ start  qid=3728  q='How many crimes did officers with last name Piemrick investigate who also investigated crimes that involved a Morales...'
+[05:40:44] [  58/200] ▶ start  qid=3728  q='How many crimes did officers with last name Piemrick investigate who also investigated crimes that involved a Morales...'
+[05:40:47] [  58/200] ✔ done   qid=3728  ea=False em=False psjs=0.0  t=?  runEA=0.017  wall=2m56s  ETA=7m11s
+[05:40:47] [  58/200] ✔ done   qid=3728  ea=False em=False psjs=0.0  t=?  runEA=0.017  wall=2m56s  ETA=7m11s
+[05:40:47] [  59/200] ▶ start  qid=911  q="What's the number of friends someone with surname Boyr has?"
+[05:40:47] [  59/200] ▶ start  qid=911  q="What's the number of friends someone with surname Boyr has?"
+[05:40:49] [  59/200] ✔ done   qid=911  ea=False em=False psjs=0.0  t=?  runEA=0.017  wall=2m59s  ETA=7m07s
+[05:40:49] [  59/200] ✔ done   qid=911  ea=False em=False psjs=0.0  t=?  runEA=0.017  wall=2m59s  ETA=7m07s
+[05:40:49] [  60/200] ▶ start  qid=1285  q='Who is the eldest individual whose phone number is known by any Karren with the number 3-(255)675-6727?'
+[05:40:49] [  60/200] ▶ start  qid=1285  q='Who is the eldest individual whose phone number is known by any Karren with the number 3-(255)675-6727?'
+[05:40:52] [  60/200] ✔ done   qid=1285  ea=False em=False psjs=0.0  t=?  runEA=0.017  wall=3m02s  ETA=7m04s
+[05:40:52] [  60/200] ✔ done   qid=1285  ea=False em=False psjs=0.0  t=?  runEA=0.017  wall=3m02s  ETA=7m04s
+[05:40:52] [  61/200] ▶ start  qid=2200  q='Who has the contact number of anyone with the last name Alllen?'
+[05:40:52] [  61/200] ▶ start  qid=2200  q='Who has the contact number of anyone with the last name Alllen?'
+[05:40:55] [  61/200] ✔ done   qid=2200  ea=False em=False psjs=0.0  t=?  runEA=0.016  wall=3m05s  ETA=7m01s
+[05:40:55] [  61/200] ✔ done   qid=2200  ea=False em=False psjs=0.0  t=?  runEA=0.016  wall=3m05s  ETA=7m01s
+[05:40:55] [  62/200] ▶ start  qid=4554  q='Can you provide the NHS numbers for those acquainted with a family member of a walker?'
+[05:40:55] [  62/200] ▶ start  qid=4554  q='Can you provide the NHS numbers for those acquainted with a family member of a walker?'
+[05:40:59] [  62/200] ✔ done   qid=4554  ea=False em=False psjs=0.03024193548387097  t=?  runEA=0.016  wall=3m09s  ETA=7m00s
+[05:40:59] [  62/200] ✔ done   qid=4554  ea=False em=False psjs=0.03024193548387097  t=?  runEA=0.016  wall=3m09s  ETA=7m00s
+[05:40:59] [  63/200] ▶ start  qid=501  q='Can you identify the officers who looked into order violations?'
+[05:40:59] [  63/200] ▶ start  qid=501  q='Can you identify the officers who looked into order violations?'
+[05:41:07] [  63/200] ✔ done   qid=501  ea=False em=False psjs=0.0  t=?  runEA=0.016  wall=3m17s  ETA=7m08s
+[05:41:07] [  63/200] ✔ done   qid=501  ea=False em=False psjs=0.0  t=?  runEA=0.016  wall=3m17s  ETA=7m08s
+[05:41:07] [  64/200] ▶ start  qid=1615  q='What are the different crime types reported at 190 Edale?'
+[05:41:07] [  64/200] ▶ start  qid=1615  q='What are the different crime types reported at 190 Edale?'
+[05:41:11] [  64/200] ✔ done   qid=1615  ea=False em=False psjs=0.0  t=?  runEA=0.016  wall=3m20s  ETA=7m05s
+[05:41:11] [  64/200] ✔ done   qid=1615  ea=False em=False psjs=0.0  t=?  runEA=0.016  wall=3m20s  ETA=7m05s
+[05:41:11] [  65/200] ▶ start  qid=422  q='Can you provide a list of Butoer family homes in the BL9 6BE postal zone?'
+[05:41:11] [  65/200] ▶ start  qid=422  q='Can you provide a list of Butoer family homes in the BL9 6BE postal zone?'
+[05:41:13] [  65/200] ✔ done   qid=422  ea=False em=False psjs=0.0  t=?  runEA=0.015  wall=3m23s  ETA=7m01s
+[05:41:13] [  65/200] ✔ done   qid=422  ea=False em=False psjs=0.0  t=?  runEA=0.015  wall=3m23s  ETA=7m01s
+[05:41:13] [  66/200] ▶ start  qid=3727  q='How many crimes are investigated by officers with last name Stanman who also investigated crimes with "Unded investig...'
+[05:41:13] [  66/200] ▶ start  qid=3727  q='How many crimes are investigated by officers with last name Stanman who also investigated crimes with "Unded investig...'
+[05:41:16] [  66/200] ✔ done   qid=3727  ea=False em=False psjs=0.0  t=?  runEA=0.015  wall=3m26s  ETA=6m58s
+[05:41:16] [  66/200] ✔ done   qid=3727  ea=False em=False psjs=0.0  t=?  runEA=0.015  wall=3m26s  ETA=6m58s
+[05:41:16] [  67/200] ▶ start  qid=1692  q='How many criminal incidents took place at Dominic Close on 17th August 2017?'
+[05:41:16] [  67/200] ▶ start  qid=1692  q='How many criminal incidents took place at Dominic Close on 17th August 2017?'
+[05:41:19] [  67/200] ✔ done   qid=1692  ea=False em=False psjs=0.0  t=?  runEA=0.015  wall=3m28s  ETA=6m54s
+[05:41:19] [  67/200] ✔ done   qid=1692  ea=False em=False psjs=0.0  t=?  runEA=0.015  wall=3m28s  ETA=6m54s
+[05:41:19] [  68/200] ▶ start  qid=2467  q='Which crime involving a Trribeca model did an officer with surname Younglove first investigate?'
+[05:41:19] [  68/200] ▶ start  qid=2467  q='Which crime involving a Trribeca model did an officer with surname Younglove first investigate?'
+[05:41:23] [  68/200] ✔ done   qid=2467  ea=False em=False psjs=0.0  t=?  runEA=0.015  wall=3m32s  ETA=6m52s
+[05:41:23] [  68/200] ✔ done   qid=2467  ea=False em=False psjs=0.0  t=?  runEA=0.015  wall=3m32s  ETA=6m52s
+[05:41:23] [  69/200] ▶ start  qid=153  q='Which offenses on 3/08/2017 are under investigation by an officer named Pirty?'
+[05:41:23] [  69/200] ▶ start  qid=153  q='Which offenses on 3/08/2017 are under investigation by an officer named Pirty?'
+[05:41:26] [  69/200] ✔ done   qid=153  ea=False em=False psjs=0.0  t=?  runEA=0.014  wall=3m35s  ETA=6m48s
+[05:41:26] [  69/200] ✔ done   qid=153  ea=False em=False psjs=0.0  t=?  runEA=0.014  wall=3m35s  ETA=6m48s
+[05:41:26] [  70/200] ▶ start  qid=1796  q='How many Sgts probed public order offenses?'
+[05:41:26] [  70/200] ▶ start  qid=1796  q='How many Sgts probed public order offenses?'
+[05:41:29] [  70/200] ✔ done   qid=1796  ea=False em=False psjs=0.0  t=?  runEA=0.014  wall=3m38s  ETA=6m45s
+[05:41:29] [  70/200] ✔ done   qid=1796  ea=False em=False psjs=0.0  t=?  runEA=0.014  wall=3m38s  ETA=6m45s
+[05:41:29] [  71/200] ▶ start  qid=537  q='How often were Honnda vehicles part of crimes?'
+[05:41:29] [  71/200] ▶ start  qid=537  q='How often were Honnda vehicles part of crimes?'
+[05:41:31] [  71/200] ✔ done   qid=537  ea=False em=False psjs=0.0  t=?  runEA=0.014  wall=3m40s  ETA=6m40s
+[05:41:31] [  71/200] ✔ done   qid=537  ea=False em=False psjs=0.0  t=?  runEA=0.014  wall=3m40s  ETA=6m40s
+[05:41:31] [  72/200] ▶ start  qid=967  q='How many stephanies have a friend?'
+[05:41:31] [  72/200] ▶ start  qid=967  q='How many stephanies have a friend?'
+[05:41:33] [  72/200] ✔ done   qid=967  ea=False em=False psjs=0.16666666666666666  t=?  runEA=0.014  wall=3m43s  ETA=6m36s
+[05:41:33] [  72/200] ✔ done   qid=967  ea=False em=False psjs=0.16666666666666666  t=?  runEA=0.014  wall=3m43s  ETA=6m36s
+[05:41:33] [  73/200] ▶ start  qid=1252  q='What crimes occurred on 22/08/2017 involving Fti model vehicles?'
+[05:41:33] [  73/200] ▶ start  qid=1252  q='What crimes occurred on 22/08/2017 involving Fti model vehicles?'
+[05:41:36] [  73/200] ✔ done   qid=1252  ea=False em=False psjs=0.0  t=?  runEA=0.014  wall=3m46s  ETA=6m33s
+[05:41:36] [  73/200] ✔ done   qid=1252  ea=False em=False psjs=0.0  t=?  runEA=0.014  wall=3m46s  ETA=6m33s
+[05:41:36] [  74/200] ▶ start  qid=4098  q='Which brands of vehicles were part of a crime on 21/08/2017 and also in a crime at 109 Campbell Road with the status ...'
+[05:41:36] [  74/200] ▶ start  qid=4098  q='Which brands of vehicles were part of a crime on 21/08/2017 and also in a crime at 109 Campbell Road with the status ...'
+[05:41:39] [  74/200] ✔ done   qid=4098  ea=False em=False psjs=0.0  t=?  runEA=0.014  wall=3m49s  ETA=6m30s
+[05:41:39] [  74/200] ✔ done   qid=4098  ea=False em=False psjs=0.0  t=?  runEA=0.014  wall=3m49s  ETA=6m30s
+[05:41:39] [  75/200] ▶ start  qid=2213  q='Which Sabble model vehicles were linked to crimes on August 4, 2017?'
+[05:41:39] [  75/200] ▶ start  qid=2213  q='Which Sabble model vehicles were linked to crimes on August 4, 2017?'
+[05:41:43] [  75/200] ✔ done   qid=2213  ea=False em=False psjs=0.0  t=?  runEA=0.013  wall=3m52s  ETA=6m27s
+[05:41:43] [  75/200] ✔ done   qid=2213  ea=False em=False psjs=0.0  t=?  runEA=0.013  wall=3m52s  ETA=6m27s
+[05:41:43] [  76/200] ▶ start  qid=1785  q='Can you provide a list of crimes marked as "prosecute suspect" in locations with the OL8 4AZ postcode?'
+[05:41:43] [  76/200] ▶ start  qid=1785  q='Can you provide a list of crimes marked as "prosecute suspect" in locations with the OL8 4AZ postcode?'
+[05:41:46] [  76/200] ✔ done   qid=1785  ea=False em=False psjs=0.0  t=?  runEA=0.013  wall=3m55s  ETA=6m24s
+[05:41:46] [  76/200] ✔ done   qid=1785  ea=False em=False psjs=0.0  t=?  runEA=0.013  wall=3m55s  ETA=6m24s
+[05:41:46] [  77/200] ▶ start  qid=2485  q='Could you list the emails of those with the surname Lyncch who are friends with someone surnamed Baker?'
+[05:41:46] [  77/200] ▶ start  qid=2485  q='Could you list the emails of those with the surname Lyncch who are friends with someone surnamed Baker?'
+[05:41:48] [  77/200] ✔ done   qid=2485  ea=False em=False psjs=0.0  t=?  runEA=0.013  wall=3m58s  ETA=6m20s
+[05:41:48] [  77/200] ✔ done   qid=2485  ea=False em=False psjs=0.0  t=?  runEA=0.013  wall=3m58s  ETA=6m20s
+[05:41:48] [  78/200] ▶ start  qid=205  q='Which people have family ties to a person named Chrisopher?'
+[05:41:48] [  78/200] ▶ start  qid=205  q='Which people have family ties to a person named Chrisopher?'
+[05:41:51] [  78/200] ✔ done   qid=205  ea=False em=False psjs=0.0  t=?  runEA=0.013  wall=4m00s  ETA=6m16s
+[05:41:51] [  78/200] ✔ done   qid=205  ea=False em=False psjs=0.0  t=?  runEA=0.013  wall=4m00s  ETA=6m16s
+[05:41:51] [  79/200] ▶ start  qid=1436  q='What is the count of crimes labeled as action is not in the public interest that involve someone?'
+[05:41:51] [  79/200] ▶ start  qid=1436  q='What is the count of crimes labeled as action is not in the public interest that involve someone?'
+2026-06-21 05:41:54.334 | WARNING  | eval.psjs:compute_psjs:580 - PSJS execution failed — returning 0.0.  gold_err=None pred_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Variable `rtmp0` not defined (line 2, column 122 (offset: 199))\n"AND (EXISTS { MATCH (p:Person)-[rtmp0:PARTY_TO]->(c) }) WITH collect(distinct elementId(c)) + collect(distinct elementId(rtmp0)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId2"\n                                                                                                                          ^}'
+[05:41:54] [  79/200] ✔ done   qid=1436  ea=False em=False psjs=0.0  t=?  runEA=0.013  wall=4m03s  ETA=6m12s
+[05:41:54] [  79/200] ✔ done   qid=1436  ea=False em=False psjs=0.0  t=?  runEA=0.013  wall=4m03s  ETA=6m12s
+[05:41:54] [  80/200] ▶ start  qid=1353  q='How many calls were made on 17/08/2017 by phones of those with the last name Boy?'
+[05:41:54] [  80/200] ▶ start  qid=1353  q='How many calls were made on 17/08/2017 by phones of those with the last name Boy?'
+[05:41:57] [  80/200] ✔ done   qid=1353  ea=False em=False psjs=0.0  t=?  runEA=0.013  wall=4m06s  ETA=6m09s
+[05:41:57] [  80/200] ✔ done   qid=1353  ea=False em=False psjs=0.0  t=?  runEA=0.013  wall=4m06s  ETA=6m09s
+[05:41:57] [  81/200] ▶ start  qid=2136  q="What's the earliest dated call received by a Hamiltonn family member?"
+[05:41:57] [  81/200] ▶ start  qid=2136  q="What's the earliest dated call received by a Hamiltonn family member?"
+[05:42:00] [  81/200] ✔ done   qid=2136  ea=False em=False psjs=0.0  t=?  runEA=0.012  wall=4m09s  ETA=6m06s
+[05:42:00] [  81/200] ✔ done   qid=2136  ea=False em=False psjs=0.0  t=?  runEA=0.012  wall=4m09s  ETA=6m06s
+[05:42:00] [  82/200] ▶ start  qid=4533  q='What is the earliest offense linked to a relative of a person named HENRY?'
+[05:42:00] [  82/200] ▶ start  qid=4533  q='What is the earliest offense linked to a relative of a person named HENRY?'
+[05:42:03] [  82/200] ✔ done   qid=4533  ea=False em=False psjs=0.0  t=?  runEA=0.012  wall=4m12s  ETA=6m03s
+[05:42:03] [  82/200] ✔ done   qid=4533  ea=False em=False psjs=0.0  t=?  runEA=0.012  wall=4m12s  ETA=6m03s
+[05:42:03] [  83/200] ▶ start  qid=2309  q='What are the emails of people named An?'
+[05:42:03] [  83/200] ▶ start  qid=2309  q='What are the emails of people named An?'
+[05:42:05] [  83/200] ✔ done   qid=2309  ea=False em=False psjs=0.0  t=?  runEA=0.012  wall=4m15s  ETA=5m59s
+[05:42:05] [  83/200] ✔ done   qid=2309  ea=False em=False psjs=0.0  t=?  runEA=0.012  wall=4m15s  ETA=5m59s
+[05:42:05] [  84/200] ▶ start  qid=979  q='How many crimes included vehicles of the 3000GGT model?'
+[05:42:05] [  84/200] ▶ start  qid=979  q='How many crimes included vehicles of the 3000GGT model?'
+[05:42:08] [  84/200] ✔ done   qid=979  ea=False em=False psjs=0.0  t=?  runEA=0.012  wall=4m17s  ETA=5m55s
+[05:42:08] [  84/200] ✔ done   qid=979  ea=False em=False psjs=0.0  t=?  runEA=0.012  wall=4m17s  ETA=5m55s
+[05:42:08] [  85/200] ▶ start  qid=1437  q='How many offenses with the status action is not in the public interest involve an individual?'
+[05:42:08] [  85/200] ▶ start  qid=1437  q='How many offenses with the status action is not in the public interest involve an individual?'
+[05:42:10] [  85/200] ✔ done   qid=1437  ea=False em=False psjs=0.0  t=?  runEA=0.012  wall=4m20s  ETA=5m51s
+[05:42:10] [  85/200] ✔ done   qid=1437  ea=False em=False psjs=0.0  t=?  runEA=0.012  wall=4m20s  ETA=5m51s
+[05:42:10] [  86/200] ▶ start  qid=2599  q='On what date did an officer with the surname Joskowcz begin investigating a crime?'
+[05:42:10] [  86/200] ▶ start  qid=2599  q='On what date did an officer with the surname Joskowcz begin investigating a crime?'
+[05:42:13] [  86/200] ✔ done   qid=2599  ea=False em=False psjs=0.0  t=?  runEA=0.012  wall=4m22s  ETA=5m47s
+[05:42:13] [  86/200] ✔ done   qid=2599  ea=False em=False psjs=0.0  t=?  runEA=0.012  wall=4m22s  ETA=5m47s
+[05:42:13] [  87/200] ▶ start  qid=3431  q='How long was the longest call received by a person named Dianne?'
+[05:42:13] [  87/200] ▶ start  qid=3431  q='How long was the longest call received by a person named Dianne?'
+[05:42:15] [  87/200] ✔ done   qid=3431  ea=False em=False psjs=0.0  t=?  runEA=0.011  wall=4m25s  ETA=5m44s
+[05:42:15] [  87/200] ✔ done   qid=3431  ea=False em=False psjs=0.0  t=?  runEA=0.011  wall=4m25s  ETA=5m44s
+[05:42:15] [  88/200] ▶ start  qid=1715  q='How many Andreas reside with someone whose last name is Rynolds?'
+[05:42:15] [  88/200] ▶ start  qid=1715  q='How many Andreas reside with someone whose last name is Rynolds?'
+[05:42:18] [  88/200] ✔ done   qid=1715  ea=False em=False psjs=0.0  t=?  runEA=0.011  wall=4m27s  ETA=5m40s
+[05:42:18] [  88/200] ✔ done   qid=1715  ea=False em=False psjs=0.0  t=?  runEA=0.011  wall=4m27s  ETA=5m40s
+[05:42:18] [  89/200] ▶ start  qid=957  q='Can you name the officers who probed crimes on 2017?'
+[05:42:18] [  89/200] ▶ start  qid=957  q='Can you name the officers who probed crimes on 2017?'
+2026-06-21 05:42:22.893 | WARNING  | eval.psjs:compute_psjs:580 - PSJS execution failed — returning 0.0.  gold_err=None pred_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input \'AS\': expected\n  "!="\n  "%"\n  "*"\n  "+"\n  "-"\n  "/"\n  "<"\n  "<="\n  "<>"\n  "="\n  ">"\n  ">="\n  "AND"\n  "CALL"\n  "CREATE"\n  "DELETE"\n  "DETACH"\n  "FINISH"\n  "FOREACH"\n  "INSERT"\n  "LOAD"\n  "MATCH"\n  "MERGE"\n  "NODETACH"\n  "OPTIONAL"\n  "OR"\n  "REMOVE"\n  "RETURN"\n  "SET"\n  "UNION"\n  "UNWIND"\n  "USE"\n  "WITH"\n  "XOR"\n  "^"\n  "||"\n  <EOF> (line 1, column 180 (offset: 179))\n"MATCH (c:Crime)-[rtmp0:INVESTIGATED_BY]->(o:Officer) WHERE c.date STARTS WITH collect(distinct elementId(c)) + collect(distinct elementId(o)) + collect(distinct elementId(rtmp0)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId2"\n                                                                                                                                                                                    ^}'
+[05:42:22] [  89/200] ✔ done   qid=957  ea=False em=False psjs=0.0  t=?  runEA=0.011  wall=4m32s  ETA=5m39s
+[05:42:22] [  89/200] ✔ done   qid=957  ea=False em=False psjs=0.0  t=?  runEA=0.011  wall=4m32s  ETA=5m39s
+[05:42:22] [  90/200] ▶ start  qid=1799  q='How many Sgts probed crimes classified as violence and sexual offences?'
+[05:42:22] [  90/200] ▶ start  qid=1799  q='How many Sgts probed crimes classified as violence and sexual offences?'
+[05:42:25] [  90/200] ✔ done   qid=1799  ea=False em=False psjs=0.0  t=?  runEA=0.011  wall=4m34s  ETA=5m35s
+[05:42:25] [  90/200] ✔ done   qid=1799  ea=False em=False psjs=0.0  t=?  runEA=0.011  wall=4m34s  ETA=5m35s
+[05:42:25] [  91/200] ▶ start  qid=110  q='How many Stevens are acquainted with someone whose last name is Edwarss?'
+[05:42:25] [  91/200] ▶ start  qid=110  q='How many Stevens are acquainted with someone whose last name is Edwarss?'
+[05:42:28] [  91/200] ✔ done   qid=110  ea=False em=False psjs=0.0  t=?  runEA=0.011  wall=4m37s  ETA=5m32s
+[05:42:28] [  91/200] ✔ done   qid=110  ea=False em=False psjs=0.0  t=?  runEA=0.011  wall=4m37s  ETA=5m32s
+[05:42:28] [  92/200] ▶ start  qid=4993  q='How many VEHICLE CRIMEs involve a person who is friends with someone living with a Mary?'
+[05:42:28] [  92/200] ▶ start  qid=4993  q='How many VEHICLE CRIMEs involve a person who is friends with someone living with a Mary?'
+[05:42:31] [  92/200] ✔ done   qid=4993  ea=True em=False psjs=0.15384615384615385  t=?  runEA=0.022  wall=4m40s  ETA=5m29s
+[05:42:31] [  92/200] ✔ done   qid=4993  ea=True em=False psjs=0.15384615384615385  t=?  runEA=0.022  wall=4m40s  ETA=5m29s
+[05:42:31] [  93/200] ▶ start  qid=3678  q='What MB models are associated with cases handled by officer 44-0158566?'
+[05:42:31] [  93/200] ▶ start  qid=3678  q='What MB models are associated with cases handled by officer 44-0158566?'
+[05:42:34] [  93/200] ✔ done   qid=3678  ea=False em=False psjs=0.0  t=?  runEA=0.022  wall=4m43s  ETA=5m25s
+[05:42:34] [  93/200] ✔ done   qid=3678  ea=False em=False psjs=0.0  t=?  runEA=0.022  wall=4m43s  ETA=5m25s
+[05:42:34] [  94/200] ▶ start  qid=3180  q='What are the ranks of officers who investigated crimes with Tojareg vehicles?'
+[05:42:34] [  94/200] ▶ start  qid=3180  q='What are the ranks of officers who investigated crimes with Tojareg vehicles?'
+[05:42:36] [  94/200] ✔ done   qid=3180  ea=False em=False psjs=0.0  t=?  runEA=0.021  wall=4m46s  ETA=5m22s
+[05:42:36] [  94/200] ✔ done   qid=3180  ea=False em=False psjs=0.0  t=?  runEA=0.021  wall=4m46s  ETA=5m22s
+[05:42:36] [  95/200] ▶ start  qid=3402  q='When did crimes occur that involve a person cohabiting with a Murra?'
+[05:42:36] [  95/200] ▶ start  qid=3402  q='When did crimes occur that involve a person cohabiting with a Murra?'
+[05:42:39] [  95/200] ✔ done   qid=3402  ea=False em=False psjs=0.0  t=?  runEA=0.021  wall=4m49s  ETA=5m19s
+[05:42:39] [  95/200] ✔ done   qid=3402  ea=False em=False psjs=0.0  t=?  runEA=0.021  wall=4m49s  ETA=5m19s
+[05:42:39] [  96/200] ▶ start  qid=4707  q='Which are the friends of people family related to someone with the phone number of the individual with NSH number 778...'
+[05:42:39] [  96/200] ▶ start  qid=4707  q='Which are the friends of people family related to someone with the phone number of the individual with NSH number 778...'
+[05:42:43] [  96/200] ✔ done   qid=4707  ea=False em=False psjs=0.0  t=?  runEA=0.021  wall=4m52s  ETA=5m17s
+[05:42:43] [  96/200] ✔ done   qid=4707  ea=False em=False psjs=0.0  t=?  runEA=0.021  wall=4m52s  ETA=5m17s
+[05:42:43] [  97/200] ▶ start  qid=936  q='How many incidents at 64 First ended with "Investigation complete; no suspect identified"?'
+[05:42:43] [  97/200] ▶ start  qid=936  q='How many incidents at 64 First ended with "Investigation complete; no suspect identified"?'
+[05:42:45] [  97/200] ✔ done   qid=936  ea=False em=False psjs=0.0  t=?  runEA=0.021  wall=4m55s  ETA=5m13s
+[05:42:45] [  97/200] ✔ done   qid=936  ea=False em=False psjs=0.0  t=?  runEA=0.021  wall=4m55s  ETA=5m13s
+[05:42:45] [  98/200] ▶ start  qid=1978  q='Can you identify officers named Angelita who handled cases labeled prosecute suspect?'
+[05:42:45] [  98/200] ▶ start  qid=1978  q='Can you identify officers named Angelita who handled cases labeled prosecute suspect?'
+[05:42:49] [  98/200] ✔ done   qid=1978  ea=False em=False psjs=0.0  t=?  runEA=0.020  wall=4m58s  ETA=5m10s
+[05:42:49] [  98/200] ✔ done   qid=1978  ea=False em=False psjs=0.0  t=?  runEA=0.020  wall=4m58s  ETA=5m10s
+[05:42:49] [  99/200] ▶ start  qid=4417  q='Which is the newest vehicle connected to a crime at 80 Longhurst?'
+[05:42:49] [  99/200] ▶ start  qid=4417  q='Which is the newest vehicle connected to a crime at 80 Longhurst?'
+[05:42:51] [  99/200] ✔ done   qid=4417  ea=False em=False psjs=0.0  t=?  runEA=0.020  wall=5m01s  ETA=5m07s
+[05:42:51] [  99/200] ✔ done   qid=4417  ea=False em=False psjs=0.0  t=?  runEA=0.020  wall=5m01s  ETA=5m07s
+[05:42:51] [ 100/200] ▶ start  qid=733  q='How many crimes on August 13, 2017, involve individuals named Caarlos?'
+[05:42:51] [ 100/200] ▶ start  qid=733  q='How many crimes on August 13, 2017, involve individuals named Caarlos?'
+[05:42:54] [ 100/200] ✔ done   qid=733  ea=False em=False psjs=0.0  t=?  runEA=0.020  wall=5m03s  ETA=5m03s
+[05:42:54] [ 100/200] ✔ done   qid=733  ea=False em=False psjs=0.0  t=?  runEA=0.020  wall=5m03s  ETA=5m03s
+[05:42:54] [ 101/200] ▶ start  qid=2120  q='How many PCs looked into crimes on August 31, 2017?'
+[05:42:54] [ 101/200] ▶ start  qid=2120  q='How many PCs looked into crimes on August 31, 2017?'
+[05:42:57] [ 101/200] ✔ done   qid=2120  ea=False em=False psjs=0.0  t=?  runEA=0.020  wall=5m06s  ETA=5m00s
+[05:42:57] [ 101/200] ✔ done   qid=2120  ea=False em=False psjs=0.0  t=?  runEA=0.020  wall=5m06s  ETA=5m00s
+[05:42:57] [ 102/200] ▶ start  qid=639  q="Who are the individuals with access to a myers' phone number?"
+[05:42:57] [ 102/200] ▶ start  qid=639  q="Who are the individuals with access to a myers' phone number?"
+[05:42:59] [ 102/200] ✔ done   qid=639  ea=False em=False psjs=0.0  t=?  runEA=0.020  wall=5m09s  ETA=4m56s
+[05:42:59] [ 102/200] ✔ done   qid=639  ea=False em=False psjs=0.0  t=?  runEA=0.020  wall=5m09s  ETA=4m56s
+[05:42:59] [ 103/200] ▶ start  qid=4537  q='What is the initial crime linked to a family member of someone named Phillipp?'
+[05:42:59] [ 103/200] ▶ start  qid=4537  q='What is the initial crime linked to a family member of someone named Phillipp?'
+[05:43:02] [ 103/200] ✔ done   qid=4537  ea=False em=False psjs=0.0  t=?  runEA=0.019  wall=5m12s  ETA=4m53s
+[05:43:02] [ 103/200] ✔ done   qid=4537  ea=False em=False psjs=0.0  t=?  runEA=0.019  wall=5m12s  ETA=4m53s
+[05:43:02] [ 104/200] ▶ start  qid=1688  q='What is the number of crimes reported at Waddington Close on August 3, 2017?'
+[05:43:02] [ 104/200] ▶ start  qid=1688  q='What is the number of crimes reported at Waddington Close on August 3, 2017?'
+[05:43:05] [ 104/200] ✔ done   qid=1688  ea=False em=False psjs=0.0  t=?  runEA=0.019  wall=5m14s  ETA=4m50s
+[05:43:05] [ 104/200] ✔ done   qid=1688  ea=False em=False psjs=0.0  t=?  runEA=0.019  wall=5m14s  ETA=4m50s
+[05:43:05] [ 105/200] ▶ start  qid=2068  q='How many crimes involving vehicles were committed with Njssans?'
+[05:43:05] [ 105/200] ▶ start  qid=2068  q='How many crimes involving vehicles were committed with Njssans?'
+[05:43:08] [ 105/200] ✔ done   qid=2068  ea=False em=False psjs=0.0  t=?  runEA=0.019  wall=5m17s  ETA=4m47s
+[05:43:08] [ 105/200] ✔ done   qid=2068  ea=False em=False psjs=0.0  t=?  runEA=0.019  wall=5m17s  ETA=4m47s
+[05:43:08] [ 106/200] ▶ start  qid=3275  q='What is the phone number of a friend of the person with the NH number 552-54-9978?'
+[05:43:08] [ 106/200] ▶ start  qid=3275  q='What is the phone number of a friend of the person with the NH number 552-54-9978?'
+[05:43:10] [ 106/200] ✔ done   qid=3275  ea=False em=False psjs=0.058823529411764705  t=?  runEA=0.019  wall=5m20s  ETA=4m43s
+[05:43:10] [ 106/200] ✔ done   qid=3275  ea=False em=False psjs=0.058823529411764705  t=?  runEA=0.019  wall=5m20s  ETA=4m43s
+[05:43:10] [ 107/200] ▶ start  qid=37  q='What Pontiaac models are connected to vehicle-related crimes?'
+[05:43:10] [ 107/200] ▶ start  qid=37  q='What Pontiaac models are connected to vehicle-related crimes?'
+[05:43:13] [ 107/200] ✔ done   qid=37  ea=False em=False psjs=0.0  t=?  runEA=0.019  wall=5m22s  ETA=4m40s
+[05:43:13] [ 107/200] ✔ done   qid=37  ea=False em=False psjs=0.0  t=?  runEA=0.019  wall=5m22s  ETA=4m40s
+[05:43:13] [ 108/200] ▶ start  qid=3371  q='What is the earliest crime date investigated by Officer Fley at Nameplate Close?'
+[05:43:13] [ 108/200] ▶ start  qid=3371  q='What is the earliest crime date investigated by Officer Fley at Nameplate Close?'
+[05:43:15] [ 108/200] ✔ done   qid=3371  ea=False em=False psjs=0.0  t=?  runEA=0.019  wall=5m25s  ETA=4m36s
+[05:43:15] [ 108/200] ✔ done   qid=3371  ea=False em=False psjs=0.0  t=?  runEA=0.019  wall=5m25s  ETA=4m36s
+[05:43:15] [ 109/200] ▶ start  qid=4011  q='Which is th brand of the oldest vehicle involved in a vehicle crime with a resident of 133 Fairholme?'
+[05:43:15] [ 109/200] ▶ start  qid=4011  q='Which is th brand of the oldest vehicle involved in a vehicle crime with a resident of 133 Fairholme?'
+[05:43:19] [ 109/200] ✔ done   qid=4011  ea=False em=False psjs=0.0  t=?  runEA=0.018  wall=5m28s  ETA=4m34s
+[05:43:19] [ 109/200] ✔ done   qid=4011  ea=False em=False psjs=0.0  t=?  runEA=0.018  wall=5m28s  ETA=4m34s
+[05:43:19] [ 110/200] ▶ start  qid=4298  q='What are the emails of people connected to someone named Andra, who lives with a person using the email rreynoldsco@g...'
+[05:43:19] [ 110/200] ▶ start  qid=4298  q='What are the emails of people connected to someone named Andra, who lives with a person using the email rreynoldsco@g...'
+[05:43:21] [ 110/200] ✔ done   qid=4298  ea=False em=False psjs=0.0  t=?  runEA=0.018  wall=5m31s  ETA=4m30s
+[05:43:21] [ 110/200] ✔ done   qid=4298  ea=False em=False psjs=0.0  t=?  runEA=0.018  wall=5m31s  ETA=4m30s
+[05:43:21] [ 111/200] ▶ start  qid=4267  q='How many emails are associated with individuals sharing a residence, and whose phone is recognized by someone that kn...'
+[05:43:21] [ 111/200] ▶ start  qid=4267  q='How many emails are associated with individuals sharing a residence, and whose phone is recognized by someone that kn...'
+[05:43:24] [ 111/200] ✔ done   qid=4267  ea=False em=False psjs=0.0  t=?  runEA=0.018  wall=5m34s  ETA=4m28s
+[05:43:24] [ 111/200] ✔ done   qid=4267  ea=False em=False psjs=0.0  t=?  runEA=0.018  wall=5m34s  ETA=4m28s
+[05:43:24] [ 112/200] ▶ start  qid=1935  q='Can you provide the dates of crimes involving individuals whose phone numbers are known by people with the surname PE...'
+[05:43:24] [ 112/200] ▶ start  qid=1935  q='Can you provide the dates of crimes involving individuals whose phone numbers are known by people with the surname PE...'
+[05:43:28] [ 112/200] ✔ done   qid=1935  ea=False em=False psjs=0.0  t=?  runEA=0.018  wall=5m37s  ETA=4m25s
+[05:43:28] [ 112/200] ✔ done   qid=1935  ea=False em=False psjs=0.0  t=?  runEA=0.018  wall=5m37s  ETA=4m25s
+[05:43:28] [ 113/200] ▶ start  qid=698  q='Can you identify everyone who knows someone with the surname Hamsen?'
+[05:43:28] [ 113/200] ▶ start  qid=698  q='Can you identify everyone who knows someone with the surname Hamsen?'
+[05:43:30] [ 113/200] ✔ done   qid=698  ea=False em=False psjs=0.0  t=?  runEA=0.018  wall=5m39s  ETA=4m21s
+[05:43:30] [ 113/200] ✔ done   qid=698  ea=False em=False psjs=0.0  t=?  runEA=0.018  wall=5m39s  ETA=4m21s
+[05:43:30] [ 114/200] ▶ start  qid=2785  q='When was the initial crime involving Greem family members committed?'
+[05:43:30] [ 114/200] ▶ start  qid=2785  q='When was the initial crime involving Greem family members committed?'
+[05:43:34] [ 114/200] ✔ done   qid=2785  ea=False em=False psjs=0.0  t=?  runEA=0.018  wall=5m43s  ETA=4m19s
+[05:43:34] [ 114/200] ✔ done   qid=2785  ea=False em=False psjs=0.0  t=?  runEA=0.018  wall=5m43s  ETA=4m19s
+[05:43:34] [ 115/200] ▶ start  qid=3414  q="What illegal activities took place at Janicd's residence?"
+[05:43:34] [ 115/200] ▶ start  qid=3414  q="What illegal activities took place at Janicd's residence?"
+[05:43:36] [ 115/200] ✔ done   qid=3414  ea=False em=False psjs=0.0  t=?  runEA=0.017  wall=5m45s  ETA=4m15s
+[05:43:36] [ 115/200] ✔ done   qid=3414  ea=False em=False psjs=0.0  t=?  runEA=0.017  wall=5m45s  ETA=4m15s
+[05:43:36] [ 116/200] ▶ start  qid=3457  q='On 29/08/2017, at what time did someone with surname Myesr get a phone call?'
+[05:43:36] [ 116/200] ▶ start  qid=3457  q='On 29/08/2017, at what time did someone with surname Myesr get a phone call?'
+[05:43:39] [ 116/200] ✔ done   qid=3457  ea=False em=False psjs=0.0  t=?  runEA=0.017  wall=5m48s  ETA=4m12s
+[05:43:39] [ 116/200] ✔ done   qid=3457  ea=False em=False psjs=0.0  t=?  runEA=0.017  wall=5m48s  ETA=4m12s
+[05:43:39] [ 117/200] ▶ start  qid=898  q='What crimes occurred at Barlow Lane on August 1, 2017?'
+[05:43:39] [ 117/200] ▶ start  qid=898  q='What crimes occurred at Barlow Lane on August 1, 2017?'
+[05:43:41] [ 117/200] ✔ done   qid=898  ea=False em=False psjs=0.0  t=?  runEA=0.017  wall=5m50s  ETA=4m09s
+[05:43:41] [ 117/200] ✔ done   qid=898  ea=False em=False psjs=0.0  t=?  runEA=0.017  wall=5m50s  ETA=4m09s
+[05:43:41] [ 118/200] ▶ start  qid=2941  q='How many offenses with a penalty notice status involve individuals surnamed Morales and are handled by officers surna...'
+[05:43:41] [ 118/200] ▶ start  qid=2941  q='How many offenses with a penalty notice status involve individuals surnamed Morales and are handled by officers surna...'
+[05:43:44] [ 118/200] ✔ done   qid=2941  ea=False em=False psjs=0.0  t=?  runEA=0.017  wall=5m53s  ETA=4m05s
+[05:43:44] [ 118/200] ✔ done   qid=2941  ea=False em=False psjs=0.0  t=?  runEA=0.017  wall=5m53s  ETA=4m05s
+[05:43:44] [ 119/200] ▶ start  qid=393  q='Can you name the Insps who looked into crimes on August 2, 2017?'
+[05:43:44] [ 119/200] ▶ start  qid=393  q='Can you name the Insps who looked into crimes on August 2, 2017?'
+[05:43:47] [ 119/200] ✔ done   qid=393  ea=False em=False psjs=0.0  t=?  runEA=0.017  wall=5m56s  ETA=4m03s
+[05:43:47] [ 119/200] ✔ done   qid=393  ea=False em=False psjs=0.0  t=?  runEA=0.017  wall=5m56s  ETA=4m03s
+[05:43:47] [ 120/200] ▶ start  qid=387  q='What is the latest incident with Bnneville vehicles?'
+[05:43:47] [ 120/200] ▶ start  qid=387  q='What is the latest incident with Bnneville vehicles?'
+[05:43:50] [ 120/200] ✔ done   qid=387  ea=False em=False psjs=0.0  t=?  runEA=0.017  wall=5m59s  ETA=3m59s
+[05:43:50] [ 120/200] ✔ done   qid=387  ea=False em=False psjs=0.0  t=?  runEA=0.017  wall=5m59s  ETA=3m59s
+[05:43:50] [ 121/200] ▶ start  qid=267  q='How many incidents on 21/08/2017 involved vehicles of the C-Classs model?'
+[05:43:50] [ 121/200] ▶ start  qid=267  q='How many incidents on 21/08/2017 involved vehicles of the C-Classs model?'
+[05:43:52] [ 121/200] ✔ done   qid=267  ea=False em=False psjs=0.0  t=?  runEA=0.017  wall=6m02s  ETA=3m56s
+[05:43:52] [ 121/200] ✔ done   qid=267  ea=False em=False psjs=0.0  t=?  runEA=0.017  wall=6m02s  ETA=3m56s
+[05:43:52] [ 122/200] ▶ start  qid=2270  q='How many individuals reside with someone named LOIS?'
+[05:43:52] [ 122/200] ▶ start  qid=2270  q='How many individuals reside with someone named LOIS?'
+[05:43:55] [ 122/200] ✔ done   qid=2270  ea=False em=False psjs=0.0  t=?  runEA=0.016  wall=6m04s  ETA=3m53s
+[05:43:55] [ 122/200] ✔ done   qid=2270  ea=False em=False psjs=0.0  t=?  runEA=0.016  wall=6m04s  ETA=3m53s
+[05:43:55] [ 123/200] ▶ start  qid=1059  q='Can you identify crimes at Seatoller Place where the investigation is complete but no suspect was identified?'
+[05:43:55] [ 123/200] ▶ start  qid=1059  q='Can you identify crimes at Seatoller Place where the investigation is complete but no suspect was identified?'
+[05:43:57] [ 123/200] ✔ done   qid=1059  ea=False em=False psjs=0.0  t=?  runEA=0.016  wall=6m07s  ETA=3m50s
+[05:43:57] [ 123/200] ✔ done   qid=1059  ea=False em=False psjs=0.0  t=?  runEA=0.016  wall=6m07s  ETA=3m50s
+[05:43:57] [ 124/200] ▶ start  qid=3368  q='What is the earliest crime date investigated by Officer Hynam at Gilmerton Drive?'
+[05:43:57] [ 124/200] ▶ start  qid=3368  q='What is the earliest crime date investigated by Officer Hynam at Gilmerton Drive?'
+[05:44:00] [ 124/200] ✔ done   qid=3368  ea=False em=False psjs=0.0  t=?  runEA=0.016  wall=6m10s  ETA=3m47s
+[05:44:00] [ 124/200] ✔ done   qid=3368  ea=False em=False psjs=0.0  t=?  runEA=0.016  wall=6m10s  ETA=3m47s
+[05:44:00] [ 125/200] ▶ start  qid=3564  q='Can you provide the addresses of locations where a crime took place with someone named Gaey involved?'
+[05:44:00] [ 125/200] ▶ start  qid=3564  q='Can you provide the addresses of locations where a crime took place with someone named Gaey involved?'
+[05:44:03] [ 125/200] ✔ done   qid=3564  ea=False em=False psjs=0.0  t=?  runEA=0.016  wall=6m12s  ETA=3m43s
+[05:44:03] [ 125/200] ✔ done   qid=3564  ea=False em=False psjs=0.0  t=?  runEA=0.016  wall=6m12s  ETA=3m43s
+[05:44:03] [ 126/200] ▶ start  qid=2910  q='What was the initial crime at Ogden Lane involving an Echo vehicle?'
+[05:44:03] [ 126/200] ▶ start  qid=2910  q='What was the initial crime at Ogden Lane involving an Echo vehicle?'
+[05:44:06] [ 126/200] ✔ done   qid=2910  ea=False em=False psjs=0.0  t=?  runEA=0.016  wall=6m15s  ETA=3m40s
+[05:44:06] [ 126/200] ✔ done   qid=2910  ea=False em=False psjs=0.0  t=?  runEA=0.016  wall=6m15s  ETA=3m40s
+[05:44:06] [ 127/200] ▶ start  qid=2871  q="What are the emails of Arthurr's friends?"
+[05:44:06] [ 127/200] ▶ start  qid=2871  q="What are the emails of Arthurr's friends?"
+[05:44:08] [ 127/200] ✔ done   qid=2871  ea=False em=False psjs=0.0  t=?  runEA=0.016  wall=6m17s  ETA=3m37s
+[05:44:08] [ 127/200] ✔ done   qid=2871  ea=False em=False psjs=0.0  t=?  runEA=0.016  wall=6m17s  ETA=3m37s
+[05:44:08] [ 128/200] ▶ start  qid=4702  q='Who are the friends of the relatives of the person who knows the phone number of the individual with 386-78-8432?'
+[05:44:08] [ 128/200] ▶ start  qid=4702  q='Who are the friends of the relatives of the person who knows the phone number of the individual with 386-78-8432?'
+[05:44:11] [ 128/200] ✔ done   qid=4702  ea=False em=False psjs=0.0  t=?  runEA=0.016  wall=6m21s  ETA=3m34s
+[05:44:11] [ 128/200] ✔ done   qid=4702  ea=False em=False psjs=0.0  t=?  runEA=0.016  wall=6m21s  ETA=3m34s
+[05:44:11] [ 129/200] ▶ start  qid=8  q='How many cases marked as "identified" are handled by officers with last name Vosper?'
+[05:44:11] [ 129/200] ▶ start  qid=8  q='How many cases marked as "identified" are handled by officers with last name Vosper?'
+[05:44:14] [ 129/200] ✔ done   qid=8  ea=False em=False psjs=0.0  t=?  runEA=0.016  wall=6m23s  ETA=3m31s
+[05:44:14] [ 129/200] ✔ done   qid=8  ea=False em=False psjs=0.0  t=?  runEA=0.016  wall=6m23s  ETA=3m31s
+[05:44:14] [ 130/200] ▶ start  qid=1955  q='How many crimes involve Commader model vehicles?'
+[05:44:14] [ 130/200] ▶ start  qid=1955  q='How many crimes involve Commader model vehicles?'
+[05:44:17] [ 130/200] ✔ done   qid=1955  ea=False em=False psjs=0.0  t=?  runEA=0.015  wall=6m26s  ETA=3m28s
+[05:44:17] [ 130/200] ✔ done   qid=1955  ea=False em=False psjs=0.0  t=?  runEA=0.015  wall=6m26s  ETA=3m28s
+[05:44:17] [ 131/200] ▶ start  qid=640  q='Who knows the phone number of someone with last name Olver?'
+[05:44:17] [ 131/200] ▶ start  qid=640  q='Who knows the phone number of someone with last name Olver?'
+[05:44:19] [ 131/200] ✔ done   qid=640  ea=False em=False psjs=0.0  t=?  runEA=0.015  wall=6m29s  ETA=3m25s
+[05:44:19] [ 131/200] ✔ done   qid=640  ea=False em=False psjs=0.0  t=?  runEA=0.015  wall=6m29s  ETA=3m25s
+[05:44:19] [ 132/200] ▶ start  qid=3455  q='When did someone surnamed myers receive a call on 29/08/2017?'
+[05:44:19] [ 132/200] ▶ start  qid=3455  q='When did someone surnamed myers receive a call on 29/08/2017?'
+[05:44:22] [ 132/200] ✔ done   qid=3455  ea=True em=False psjs=0.2  t=?  runEA=0.023  wall=6m32s  ETA=3m22s
+[05:44:22] [ 132/200] ✔ done   qid=3455  ea=True em=False psjs=0.2  t=?  runEA=0.023  wall=6m32s  ETA=3m22s
+[05:44:22] [ 133/200] ▶ start  qid=2207  q='How many cases marked as "Investigation complete; no suspect identified" are handled by Sgts?'
+[05:44:22] [ 133/200] ▶ start  qid=2207  q='How many cases marked as "Investigation complete; no suspect identified" are handled by Sgts?'
+[05:44:28] [ 133/200] ✔ done   qid=2207  ea=False em=False psjs=0.0  t=?  runEA=0.023  wall=6m37s  ETA=3m20s
+[05:44:28] [ 133/200] ✔ done   qid=2207  ea=False em=False psjs=0.0  t=?  runEA=0.023  wall=6m37s  ETA=3m20s
+[05:44:28] [ 134/200] ▶ start  qid=2277  q='How many investigations with the status "complete; no suspect found" involve 37-2206375?'
+[05:44:28] [ 134/200] ▶ start  qid=2277  q='How many investigations with the status "complete; no suspect found" involve 37-2206375?'
+[05:44:32] [ 134/200] ✔ done   qid=2277  ea=False em=False psjs=0.0  t=?  runEA=0.022  wall=6m41s  ETA=3m18s
+[05:44:32] [ 134/200] ✔ done   qid=2277  ea=False em=False psjs=0.0  t=?  runEA=0.022  wall=6m41s  ETA=3m18s
+[05:44:32] [ 135/200] ▶ start  qid=4988  q='What is the number of vehicles linked to a person whose friend has a housemate named Christopher?'
+[05:44:32] [ 135/200] ▶ start  qid=4988  q='What is the number of vehicles linked to a person whose friend has a housemate named Christopher?'
+[05:44:35] [ 135/200] ✔ done   qid=4988  ea=False em=False psjs=0.0  t=?  runEA=0.022  wall=6m45s  ETA=3m15s
+[05:44:35] [ 135/200] ✔ done   qid=4988  ea=False em=False psjs=0.0  t=?  runEA=0.022  wall=6m45s  ETA=3m15s
+[05:44:35] [ 136/200] ▶ start  qid=2341  q='How many vehicles do officers with the surname Micklem investigate?'
+[05:44:35] [ 136/200] ▶ start  qid=2341  q='How many vehicles do officers with the surname Micklem investigate?'
+[05:44:38] [ 136/200] ✔ done   qid=2341  ea=True em=False psjs=0.2222222222222222  t=?  runEA=0.029  wall=6m47s  ETA=3m12s
+[05:44:38] [ 136/200] ✔ done   qid=2341  ea=True em=False psjs=0.2222222222222222  t=?  runEA=0.029  wall=6m47s  ETA=3m12s
+[05:44:38] [ 137/200] ▶ start  qid=471  q='Which criminal activities are associated with those bearing the last name Walkre?'
+[05:44:38] [ 137/200] ▶ start  qid=471  q='Which criminal activities are associated with those bearing the last name Walkre?'
+[05:44:41] [ 137/200] ✔ done   qid=471  ea=False em=False psjs=0.0  t=?  runEA=0.029  wall=6m50s  ETA=3m09s
+[05:44:41] [ 137/200] ✔ done   qid=471  ea=False em=False psjs=0.0  t=?  runEA=0.029  wall=6m50s  ETA=3m09s
+[05:44:41] [ 138/200] ▶ start  qid=3212  q='How many folks are friends with Harpers who have ties to Buutlers?'
+[05:44:41] [ 138/200] ▶ start  qid=3212  q='How many folks are friends with Harpers who have ties to Buutlers?'
+2026-06-21 05:44:47.271 | WARNING  | eval.psjs:compute_psjs:580 - PSJS execution failed — returning 0.0.  gold_err=None pred_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input \'\': expected\n  ","\n  "CALL"\n  "CREATE"\n  "DELETE"\n  "DETACH"\n  "FINISH"\n  "FOREACH"\n  "INSERT"\n  "LIMIT"\n  "LOAD"\n  "MATCH"\n  "MERGE"\n  "NODETACH"\n  "OPTIONAL"\n  "ORDER"\n  "REMOVE"\n  "RETURN"\n  "SET"\n  "SKIP"\n  "UNION"\n  "UNWIND"\n  "USE"\n  "WITH"\n  "}" (line 2, column 318 (offset: 387))\n"    AND EXISTS { MATCH (h)-[rtmp1:KNOWS]->(b:Person) WHERE b.surname = "Buutler" WITH collect(distinct elementId(b)) + collect(distinct elementId(h)) + collect(distinct elementId(p)) + collect(distinct elementId(rtmp0)) + collect(distinct elementId(rtmp1)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId2"\n                                                                                                                                                                                                                                                                                                                              ^}'
+[05:44:47] [ 138/200] ✔ done   qid=3212  ea=False em=False psjs=0.0  t=?  runEA=0.029  wall=6m56s  ETA=3m07s
+[05:44:47] [ 138/200] ✔ done   qid=3212  ea=False em=False psjs=0.0  t=?  runEA=0.029  wall=6m56s  ETA=3m07s
+[05:44:47] [ 139/200] ▶ start  qid=1356  q='How many calls were made on 06/08/2017 by phones of individuals with the last name Masson?'
+[05:44:47] [ 139/200] ▶ start  qid=1356  q='How many calls were made on 06/08/2017 by phones of individuals with the last name Masson?'
+[05:44:49] [ 139/200] ✔ done   qid=1356  ea=False em=False psjs=0.0  t=?  runEA=0.029  wall=6m59s  ETA=3m04s
+[05:44:49] [ 139/200] ✔ done   qid=1356  ea=False em=False psjs=0.0  t=?  runEA=0.029  wall=6m59s  ETA=3m04s
+[05:44:49] [ 140/200] ▶ start  qid=694  q='Who are the individuals acquainted with anyone with last name Warrrn?'
+[05:44:49] [ 140/200] ▶ start  qid=694  q='Who are the individuals acquainted with anyone with last name Warrrn?'
+[05:44:52] [ 140/200] ✔ done   qid=694  ea=False em=False psjs=0.0  t=?  runEA=0.029  wall=7m01s  ETA=3m00s
+[05:44:52] [ 140/200] ✔ done   qid=694  ea=False em=False psjs=0.0  t=?  runEA=0.029  wall=7m01s  ETA=3m00s
+[05:44:52] [ 141/200] ▶ start  qid=2373  q='Can you provide the emails of individuals with the surname Calrk related to someone with the surname Howell?'
+[05:44:52] [ 141/200] ▶ start  qid=2373  q='Can you provide the emails of individuals with the surname Calrk related to someone with the surname Howell?'
+[05:44:55] [ 141/200] ✔ done   qid=2373  ea=False em=False psjs=0.0  t=?  runEA=0.028  wall=7m05s  ETA=2m58s
+[05:44:55] [ 141/200] ✔ done   qid=2373  ea=False em=False psjs=0.0  t=?  runEA=0.028  wall=7m05s  ETA=2m58s
+[05:44:55] [ 142/200] ▶ start  qid=3945  q='Which officers looked into crimes at the home of a person with the last name daniels?'
+[05:44:55] [ 142/200] ▶ start  qid=3945  q='Which officers looked into crimes at the home of a person with the last name daniels?'
+[05:44:59] [ 142/200] ✔ done   qid=3945  ea=False em=False psjs=0.0  t=?  runEA=0.028  wall=7m09s  ETA=2m55s
+[05:44:59] [ 142/200] ✔ done   qid=3945  ea=False em=False psjs=0.0  t=?  runEA=0.028  wall=7m09s  ETA=2m55s
+[05:44:59] [ 143/200] ▶ start  qid=3373  q='Can you provide the oldest crime date at Nameplate Close investigated by someone with surname Fley?'
+[05:44:59] [ 143/200] ▶ start  qid=3373  q='Can you provide the oldest crime date at Nameplate Close investigated by someone with surname Fley?'
+[05:45:02] [ 143/200] ✔ done   qid=3373  ea=False em=False psjs=0.0  t=?  runEA=0.028  wall=7m11s  ETA=2m52s
+[05:45:02] [ 143/200] ✔ done   qid=3373  ea=False em=False psjs=0.0  t=?  runEA=0.028  wall=7m11s  ETA=2m52s
+[05:45:02] [ 144/200] ▶ start  qid=1854  q='Can you provide the zip code for Sheard Avenue?'
+[05:45:02] [ 144/200] ▶ start  qid=1854  q='Can you provide the zip code for Sheard Avenue?'
+[05:45:05] [ 144/200] ✔ done   qid=1854  ea=False em=False psjs=0.0  t=?  runEA=0.028  wall=7m14s  ETA=2m49s
+[05:45:05] [ 144/200] ✔ done   qid=1854  ea=False em=False psjs=0.0  t=?  runEA=0.028  wall=7m14s  ETA=2m49s
+[05:45:05] [ 145/200] ▶ start  qid=2080  q='Can you identify phones that placed 1-second calls to Cloe family members?'
+[05:45:05] [ 145/200] ▶ start  qid=2080  q='Can you identify phones that placed 1-second calls to Cloe family members?'
+[05:45:07] [ 145/200] ✔ done   qid=2080  ea=False em=False psjs=0.0  t=?  runEA=0.028  wall=7m17s  ETA=2m46s
+[05:45:07] [ 145/200] ✔ done   qid=2080  ea=False em=False psjs=0.0  t=?  runEA=0.028  wall=7m17s  ETA=2m46s
+[05:45:07] [ 146/200] ▶ start  qid=1616  q='What are the different type of crime offenses that happened at 131 Fern?'
+[05:45:07] [ 146/200] ▶ start  qid=1616  q='What are the different type of crime offenses that happened at 131 Fern?'
+[05:45:10] [ 146/200] ✔ done   qid=1616  ea=False em=False psjs=0.0  t=?  runEA=0.027  wall=7m19s  ETA=2m42s
+[05:45:10] [ 146/200] ✔ done   qid=1616  ea=False em=False psjs=0.0  t=?  runEA=0.027  wall=7m19s  ETA=2m42s
+[05:45:10] [ 147/200] ▶ start  qid=1250  q='How many incidents on 29/08/2017 did officers with the surname Toowhey investigate?'
+[05:45:10] [ 147/200] ▶ start  qid=1250  q='How many incidents on 29/08/2017 did officers with the surname Toowhey investigate?'
+[05:45:13] [ 147/200] ✔ done   qid=1250  ea=False em=False psjs=0.0  t=?  runEA=0.027  wall=7m23s  ETA=2m40s
+[05:45:13] [ 147/200] ✔ done   qid=1250  ea=False em=False psjs=0.0  t=?  runEA=0.027  wall=7m23s  ETA=2m40s
+[05:45:13] [ 148/200] ▶ start  qid=2937  q='How many cases marked as "identified" involve individuals surnamed Peters and are handled by officers surnamed Rudwell?'
+[05:45:13] [ 148/200] ▶ start  qid=2937  q='How many cases marked as "identified" involve individuals surnamed Peters and are handled by officers surnamed Rudwell?'
+[05:45:16] [ 148/200] ✔ done   qid=2937  ea=False em=False psjs=0.0  t=?  runEA=0.027  wall=7m25s  ETA=2m36s
+[05:45:16] [ 148/200] ✔ done   qid=2937  ea=False em=False psjs=0.0  t=?  runEA=0.027  wall=7m25s  ETA=2m36s
+[05:45:16] [ 149/200] ▶ start  qid=4197  q='Which vehicles are linked to vehicles involving individuals who have the phone number of friends of the person with N...'
+[05:45:16] [ 149/200] ▶ start  qid=4197  q='Which vehicles are linked to vehicles involving individuals who have the phone number of friends of the person with N...'
+[05:45:19] [ 149/200] ✔ done   qid=4197  ea=False em=False psjs=0.0  t=?  runEA=0.027  wall=7m28s  ETA=2m33s
+[05:45:19] [ 149/200] ✔ done   qid=4197  ea=False em=False psjs=0.0  t=?  runEA=0.027  wall=7m28s  ETA=2m33s
+[05:45:19] [ 150/200] ▶ start  qid=3646  q='Who is living with Jessica and part of a crime case marked as "identified"?'
+[05:45:19] [ 150/200] ▶ start  qid=3646  q='Who is living with Jessica and part of a crime case marked as "identified"?'
+[05:45:22] [ 150/200] ✔ done   qid=3646  ea=False em=False psjs=0.0  t=?  runEA=0.027  wall=7m31s  ETA=2m30s
+[05:45:22] [ 150/200] ✔ done   qid=3646  ea=False em=False psjs=0.0  t=?  runEA=0.027  wall=7m31s  ETA=2m30s
+[05:45:22] [ 151/200] ▶ start  qid=3016  q='What is the date of the most recent crime at residences of those with the surname Peeters?'
+[05:45:22] [ 151/200] ▶ start  qid=3016  q='What is the date of the most recent crime at residences of those with the surname Peeters?'
+[05:45:24] [ 151/200] ✔ done   qid=3016  ea=False em=False psjs=0.0  t=?  runEA=0.026  wall=7m34s  ETA=2m27s
+[05:45:24] [ 151/200] ✔ done   qid=3016  ea=False em=False psjs=0.0  t=?  runEA=0.026  wall=7m34s  ETA=2m27s
+[05:45:24] [ 152/200] ▶ start  qid=2119  q='How many PCs probed crimes occurring on 17th August 2017?'
+[05:45:24] [ 152/200] ▶ start  qid=2119  q='How many PCs probed crimes occurring on 17th August 2017?'
+[05:45:28] [ 152/200] ✔ done   qid=2119  ea=False em=False psjs=0.0  t=?  runEA=0.026  wall=7m37s  ETA=2m24s
+[05:45:28] [ 152/200] ✔ done   qid=2119  ea=False em=False psjs=0.0  t=?  runEA=0.026  wall=7m37s  ETA=2m24s
+[05:45:28] [ 153/200] ▶ start  qid=2692  q='What are the areas where those with the last name franklin are found?'
+[05:45:28] [ 153/200] ▶ start  qid=2692  q='What are the areas where those with the last name franklin are found?'
+[05:45:31] [ 153/200] ✔ done   qid=2692  ea=False em=False psjs=1.0  t=?  runEA=0.026  wall=7m40s  ETA=2m21s
+[05:45:31] [ 153/200] ✔ done   qid=2692  ea=False em=False psjs=1.0  t=?  runEA=0.026  wall=7m40s  ETA=2m21s
+[05:45:31] [ 154/200] ▶ start  qid=199  q='Who has a family connection to anyone named Jennifr?'
+[05:45:31] [ 154/200] ▶ start  qid=199  q='Who has a family connection to anyone named Jennifr?'
+[05:45:34] [ 154/200] ✔ done   qid=199  ea=False em=False psjs=0.0  t=?  runEA=0.026  wall=7m43s  ETA=2m18s
+[05:45:34] [ 154/200] ✔ done   qid=199  ea=False em=False psjs=0.0  t=?  runEA=0.026  wall=7m43s  ETA=2m18s
+[05:45:34] [ 155/200] ▶ start  qid=2077  q='Can you identify phones that called Wheelrs for 63 seconds?'
+[05:45:34] [ 155/200] ▶ start  qid=2077  q='Can you identify phones that called Wheelrs for 63 seconds?'
+[05:45:36] [ 155/200] ✔ done   qid=2077  ea=False em=False psjs=0.0  t=?  runEA=0.026  wall=7m46s  ETA=2m15s
+[05:45:36] [ 155/200] ✔ done   qid=2077  ea=False em=False psjs=0.0  t=?  runEA=0.026  wall=7m46s  ETA=2m15s
+[05:45:36] [ 156/200] ▶ start  qid=545  q='How many individuals called Anne are at 146 Gloucester?'
+[05:45:36] [ 156/200] ▶ start  qid=545  q='How many individuals called Anne are at 146 Gloucester?'
+[05:45:39] [ 156/200] ✔ done   qid=545  ea=False em=False psjs=0.0  t=?  runEA=0.026  wall=7m48s  ETA=2m12s
+[05:45:39] [ 156/200] ✔ done   qid=545  ea=False em=False psjs=0.0  t=?  runEA=0.026  wall=7m48s  ETA=2m12s
+[05:45:39] [ 157/200] ▶ start  qid=3318  q='Can you provide the last names of residents in places affected by arson?'
+[05:45:39] [ 157/200] ▶ start  qid=3318  q='Can you provide the last names of residents in places affected by arson?'
+[05:45:42] [ 157/200] ✔ done   qid=3318  ea=False em=False psjs=0.0  t=?  runEA=0.025  wall=7m51s  ETA=2m09s
+[05:45:42] [ 157/200] ✔ done   qid=3318  ea=False em=False psjs=0.0  t=?  runEA=0.025  wall=7m51s  ETA=2m09s
+[05:45:42] [ 158/200] ▶ start  qid=1287  q='Who is the most aged person whose number is recognized by a Kare at 3-(255)675-6727?'
+[05:45:42] [ 158/200] ▶ start  qid=1287  q='Who is the most aged person whose number is recognized by a Kare at 3-(255)675-6727?'
+[05:45:45] [ 158/200] ✔ done   qid=1287  ea=False em=False psjs=0.2  t=?  runEA=0.025  wall=7m54s  ETA=2m06s
+[05:45:45] [ 158/200] ✔ done   qid=1287  ea=False em=False psjs=0.2  t=?  runEA=0.025  wall=7m54s  ETA=2m06s
+[05:45:45] [ 159/200] ▶ start  qid=578  q='What are the residences with postcode BL6 6HF for the person with 303-86-0371?'
+[05:45:45] [ 159/200] ▶ start  qid=578  q='What are the residences with postcode BL6 6HF for the person with 303-86-0371?'
+[05:45:47] [ 159/200] ✔ done   qid=578  ea=False em=False psjs=0.3333333333333333  t=?  runEA=0.025  wall=7m57s  ETA=2m03s
+[05:45:47] [ 159/200] ✔ done   qid=578  ea=False em=False psjs=0.3333333333333333  t=?  runEA=0.025  wall=7m57s  ETA=2m03s
+[05:45:47] [ 160/200] ▶ start  qid=165  q='Can you name individuals whose phone numbers are known to the person with 444-91-2379?'
+[05:45:47] [ 160/200] ▶ start  qid=165  q='Can you name individuals whose phone numbers are known to the person with 444-91-2379?'
+[05:45:50] [ 160/200] ✔ done   qid=165  ea=False em=False psjs=0.0  t=?  runEA=0.025  wall=7m59s  ETA=2m00s
+[05:45:50] [ 160/200] ✔ done   qid=165  ea=False em=False psjs=0.0  t=?  runEA=0.025  wall=7m59s  ETA=2m00s
+[05:45:50] [ 161/200] ▶ start  qid=177  q='How many emails are associated with individuals whose last name is Broos and who have the phone number of a person wi...'
+[05:45:50] [ 161/200] ▶ start  qid=177  q='How many emails are associated with individuals whose last name is Broos and who have the phone number of a person wi...'
+[05:45:53] [ 161/200] ✔ done   qid=177  ea=False em=False psjs=0.0  t=?  runEA=0.025  wall=8m02s  ETA=1m57s
+[05:45:53] [ 161/200] ✔ done   qid=177  ea=False em=False psjs=0.0  t=?  runEA=0.025  wall=8m02s  ETA=1m57s
+[05:45:53] [ 162/200] ▶ start  qid=1489  q='What are the emails of people whose last name is montgomery?'
+[05:45:53] [ 162/200] ▶ start  qid=1489  q='What are the emails of people whose last name is montgomery?'
+[05:45:57] [ 162/200] ✔ done   qid=1489  ea=False em=False psjs=1.0  t=?  runEA=0.025  wall=8m06s  ETA=1m54s
+[05:45:57] [ 162/200] ✔ done   qid=1489  ea=False em=False psjs=1.0  t=?  runEA=0.025  wall=8m06s  ETA=1m54s
+[05:45:57] [ 163/200] ▶ start  qid=3010  q='On 25/08/2017, how many Pontiaccs were involved in crimes at the M20 2QZ postcode?'
+[05:45:57] [ 163/200] ▶ start  qid=3010  q='On 25/08/2017, how many Pontiaccs were involved in crimes at the M20 2QZ postcode?'
+[05:45:59] [ 163/200] ✔ done   qid=3010  ea=True em=False psjs=0.14285714285714285  t=?  runEA=0.031  wall=8m09s  ETA=1m51s
+[05:45:59] [ 163/200] ✔ done   qid=3010  ea=True em=False psjs=0.14285714285714285  t=?  runEA=0.031  wall=8m09s  ETA=1m51s
+[05:45:59] [ 164/200] ▶ start  qid=1204  q='What crimes involving individuals with last name Montgomrey have been marked as Investigation complete with no suspec...'
+[05:45:59] [ 164/200] ▶ start  qid=1204  q='What crimes involving individuals with last name Montgomrey have been marked as Investigation complete with no suspec...'
+[05:46:02] [ 164/200] ✔ done   qid=1204  ea=False em=False psjs=0.0  t=?  runEA=0.030  wall=8m11s  ETA=1m48s
+[05:46:02] [ 164/200] ✔ done   qid=1204  ea=False em=False psjs=0.0  t=?  runEA=0.030  wall=8m11s  ETA=1m48s
+[05:46:02] [ 165/200] ▶ start  qid=2735  q='Who is the eldest family member of a friend of someone with last name Ducnan?'
+[05:46:02] [ 165/200] ▶ start  qid=2735  q='Who is the eldest family member of a friend of someone with last name Ducnan?'
+[05:46:04] [ 165/200] ✔ done   qid=2735  ea=False em=False psjs=0.0  t=?  runEA=0.030  wall=8m14s  ETA=1m45s
+[05:46:04] [ 165/200] ✔ done   qid=2735  ea=False em=False psjs=0.0  t=?  runEA=0.030  wall=8m14s  ETA=1m45s
+[05:46:04] [ 166/200] ▶ start  qid=83  q='Who are the Christophsrs reachable at coliver28@biblegateway.com?'
+[05:46:04] [ 166/200] ▶ start  qid=83  q='Who are the Christophsrs reachable at coliver28@biblegateway.com?'
+[05:46:07] [ 166/200] ✔ done   qid=83  ea=False em=False psjs=0.0  t=?  runEA=0.030  wall=8m16s  ETA=1m42s
+[05:46:07] [ 166/200] ✔ done   qid=83  ea=False em=False psjs=0.0  t=?  runEA=0.030  wall=8m16s  ETA=1m42s
+[05:46:07] [ 167/200] ▶ start  qid=1546  q='Who are the individuals living with someone whose last name is Wwaver?'
+[05:46:07] [ 167/200] ▶ start  qid=1546  q='Who are the individuals living with someone whose last name is Wwaver?'
+[05:46:10] [ 167/200] ✔ done   qid=1546  ea=False em=False psjs=0.0  t=?  runEA=0.030  wall=8m20s  ETA=1m39s
+[05:46:10] [ 167/200] ✔ done   qid=1546  ea=False em=False psjs=0.0  t=?  runEA=0.030  wall=8m20s  ETA=1m39s
+[05:46:10] [ 168/200] ▶ start  qid=3566  q='What are the addresses of places where a crime occurred involving a person named Briian?'
+[05:46:10] [ 168/200] ▶ start  qid=3566  q='What are the addresses of places where a crime occurred involving a person named Briian?'
+[05:46:13] [ 168/200] ✔ done   qid=3566  ea=False em=False psjs=0.0  t=?  runEA=0.030  wall=8m22s  ETA=1m36s
+[05:46:13] [ 168/200] ✔ done   qid=3566  ea=False em=False psjs=0.0  t=?  runEA=0.030  wall=8m22s  ETA=1m36s
+[05:46:13] [ 169/200] ▶ start  qid=1932  q='Can you provide the dates of crimes linked to individuals whose phone numbers are known by those with the surname Fx?'
+[05:46:13] [ 169/200] ▶ start  qid=1932  q='Can you provide the dates of crimes linked to individuals whose phone numbers are known by those with the surname Fx?'
+[05:46:16] [ 169/200] ✔ done   qid=1932  ea=False em=False psjs=0.0  t=?  runEA=0.030  wall=8m25s  ETA=1m33s
+[05:46:16] [ 169/200] ✔ done   qid=1932  ea=False em=False psjs=0.0  t=?  runEA=0.030  wall=8m25s  ETA=1m33s
+[05:46:16] [ 170/200] ▶ start  qid=3507  q='Can you provide the zip codes for the residences of the friends of the individual with 692-42-9948?'
+[05:46:16] [ 170/200] ▶ start  qid=3507  q='Can you provide the zip codes for the residences of the friends of the individual with 692-42-9948?'
+[05:46:18] [ 170/200] ✔ done   qid=3507  ea=False em=False psjs=0.3728813559322034  t=?  runEA=0.029  wall=8m28s  ETA=1m30s
+[05:46:18] [ 170/200] ✔ done   qid=3507  ea=False em=False psjs=0.3728813559322034  t=?  runEA=0.029  wall=8m28s  ETA=1m30s
+[05:46:18] [ 171/200] ▶ start  qid=836  q="What's the age of the youngest person living with a Hutner?"
+[05:46:18] [ 171/200] ▶ start  qid=836  q="What's the age of the youngest person living with a Hutner?"
+[05:46:21] [ 171/200] ✔ done   qid=836  ea=True em=False psjs=0.0  t=?  runEA=0.035  wall=8m30s  ETA=1m27s
+[05:46:21] [ 171/200] ✔ done   qid=836  ea=True em=False psjs=0.0  t=?  runEA=0.035  wall=8m30s  ETA=1m27s
+[05:46:21] [ 172/200] ▶ start  qid=161  q='Who are the individuals whose phone numbers are known by the person with NHS NUMBER 821-24-9412?'
+[05:46:21] [ 172/200] ▶ start  qid=161  q='Who are the individuals whose phone numbers are known by the person with NHS NUMBER 821-24-9412?'
+[05:46:24] [ 172/200] ✔ done   qid=161  ea=False em=False psjs=0.0  t=?  runEA=0.035  wall=8m33s  ETA=1m24s
+[05:46:24] [ 172/200] ✔ done   qid=161  ea=False em=False psjs=0.0  t=?  runEA=0.035  wall=8m33s  ETA=1m24s
+[05:46:24] [ 173/200] ▶ start  qid=3469  q='Which call did Ffances receive first?'
+[05:46:24] [ 173/200] ▶ start  qid=3469  q='Which call did Ffances receive first?'
+[05:46:27] [ 173/200] ✔ done   qid=3469  ea=False em=False psjs=0.0  t=?  runEA=0.035  wall=8m36s  ETA=1m21s
+[05:46:27] [ 173/200] ✔ done   qid=3469  ea=False em=False psjs=0.0  t=?  runEA=0.035  wall=8m36s  ETA=1m21s
+[05:46:27] [ 174/200] ▶ start  qid=1417  q='How many emails are associated with people named VA?'
+[05:46:27] [ 174/200] ▶ start  qid=1417  q='How many emails are associated with people named VA?'
+[05:46:30] [ 174/200] ✔ done   qid=1417  ea=False em=False psjs=0.0  t=?  runEA=0.034  wall=8m39s  ETA=1m18s
+[05:46:30] [ 174/200] ✔ done   qid=1417  ea=False em=False psjs=0.0  t=?  runEA=0.034  wall=8m39s  ETA=1m18s
+[05:46:30] [ 175/200] ▶ start  qid=2575  q='Can you provide the badge numbers of officers who deal with vehicles involving individuals surnamed Kelly and LHS mod...'
+[05:46:30] [ 175/200] ▶ start  qid=2575  q='Can you provide the badge numbers of officers who deal with vehicles involving individuals surnamed Kelly and LHS mod...'
+[05:46:33] [ 175/200] ✔ done   qid=2575  ea=True em=False psjs=0.42857142857142855  t=?  runEA=0.040  wall=8m42s  ETA=1m15s
+[05:46:33] [ 175/200] ✔ done   qid=2575  ea=True em=False psjs=0.42857142857142855  t=?  runEA=0.040  wall=8m42s  ETA=1m15s
+[05:46:33] [ 176/200] ▶ start  qid=4485  q='Can you provide NHS numbers for all Caarls related to NHS number 446-63-4367?'
+[05:46:33] [ 176/200] ▶ start  qid=4485  q='Can you provide NHS numbers for all Caarls related to NHS number 446-63-4367?'
+[05:46:36] [ 176/200] ✔ done   qid=4485  ea=False em=False psjs=0.0  t=?  runEA=0.040  wall=8m45s  ETA=1m12s
+[05:46:36] [ 176/200] ✔ done   qid=4485  ea=False em=False psjs=0.0  t=?  runEA=0.040  wall=8m45s  ETA=1m12s
+[05:46:36] [ 177/200] ▶ start  qid=2760  q='What is the email count for Javk, who is related to a Ward?'
+[05:46:36] [ 177/200] ▶ start  qid=2760  q='What is the email count for Javk, who is related to a Ward?'
+[05:46:39] [ 177/200] ✔ done   qid=2760  ea=False em=False psjs=0.0  t=?  runEA=0.040  wall=8m48s  ETA=1m09s
+[05:46:39] [ 177/200] ✔ done   qid=2760  ea=False em=False psjs=0.0  t=?  runEA=0.040  wall=8m48s  ETA=1m09s
+[05:46:39] [ 178/200] ▶ start  qid=4082  q='Which are the brands of cars linked to crimes investigated by Officer Shimminggs at postcode M26 2XQ?'
+[05:46:39] [ 178/200] ▶ start  qid=4082  q='Which are the brands of cars linked to crimes investigated by Officer Shimminggs at postcode M26 2XQ?'
+[05:46:42] [ 178/200] ✔ done   qid=4082  ea=False em=False psjs=0.0  t=?  runEA=0.039  wall=8m51s  ETA=1m06s
+[05:46:42] [ 178/200] ✔ done   qid=4082  ea=False em=False psjs=0.0  t=?  runEA=0.039  wall=8m51s  ETA=1m06s
+[05:46:42] [ 179/200] ▶ start  qid=2926  q='At what time did the inhabitants of 11 Warwick break the law?'
+[05:46:42] [ 179/200] ▶ start  qid=2926  q='At what time did the inhabitants of 11 Warwick break the law?'
+[05:46:45] [ 179/200] ✔ done   qid=2926  ea=False em=False psjs=0.0  t=?  runEA=0.039  wall=8m54s  ETA=1m03s
+[05:46:45] [ 179/200] ✔ done   qid=2926  ea=False em=False psjs=0.0  t=?  runEA=0.039  wall=8m54s  ETA=1m03s
+[05:46:45] [ 180/200] ▶ start  qid=101  q='How many MB cars were linked to crimes on August 13, 2017?'
+[05:46:45] [ 180/200] ▶ start  qid=101  q='How many MB cars were linked to crimes on August 13, 2017?'
+[05:46:48] [ 180/200] ✔ done   qid=101  ea=False em=False psjs=0.0  t=?  runEA=0.039  wall=8m57s  ETA=1m00s
+[05:46:48] [ 180/200] ✔ done   qid=101  ea=False em=False psjs=0.0  t=?  runEA=0.039  wall=8m57s  ETA=1m00s
+[05:46:48] [ 181/200] ▶ start  qid=4746  q='How many offenses involve the individual connected to a vehicle examined by officer with badge 21-9917627?'
+[05:46:48] [ 181/200] ▶ start  qid=4746  q='How many offenses involve the individual connected to a vehicle examined by officer with badge 21-9917627?'
+[05:46:51] [ 181/200] ✔ done   qid=4746  ea=False em=False psjs=0.0  t=?  runEA=0.039  wall=9m00s  ETA=57s
+[05:46:51] [ 181/200] ✔ done   qid=4746  ea=False em=False psjs=0.0  t=?  runEA=0.039  wall=9m00s  ETA=57s
+[05:46:51] [ 182/200] ▶ start  qid=2191  q='How many officers called laurena dealt with investigations labeled as complete with no suspect identified?'
+[05:46:51] [ 182/200] ▶ start  qid=2191  q='How many officers called laurena dealt with investigations labeled as complete with no suspect identified?'
+[05:46:54] [ 182/200] ✔ done   qid=2191  ea=False em=False psjs=0.0  t=?  runEA=0.038  wall=9m03s  ETA=54s
+[05:46:54] [ 182/200] ✔ done   qid=2191  ea=False em=False psjs=0.0  t=?  runEA=0.038  wall=9m03s  ETA=54s
+[05:46:54] [ 183/200] ▶ start  qid=1120  q='When did the first crime happen at Gingham Park?'
+[05:46:54] [ 183/200] ▶ start  qid=1120  q='When did the first crime happen at Gingham Park?'
+[05:46:57] [ 183/200] ✔ done   qid=1120  ea=False em=False psjs=0.0  t=?  runEA=0.038  wall=9m06s  ETA=51s
+[05:46:57] [ 183/200] ✔ done   qid=1120  ea=False em=False psjs=0.0  t=?  runEA=0.038  wall=9m06s  ETA=51s
+[05:46:57] [ 184/200] ▶ start  qid=3404  q='What are the NH numbers of people related to the person with the email wsmith9c@NH.uk?'
+[05:46:57] [ 184/200] ▶ start  qid=3404  q='What are the NH numbers of people related to the person with the email wsmith9c@NH.uk?'
+[05:47:00] [ 184/200] ✔ done   qid=3404  ea=False em=False psjs=0.0  t=?  runEA=0.038  wall=9m10s  ETA=48s
+[05:47:00] [ 184/200] ✔ done   qid=3404  ea=False em=False psjs=0.0  t=?  runEA=0.038  wall=9m10s  ETA=48s
+[05:47:00] [ 185/200] ▶ start  qid=1619  q="What's the earliest crime involving Quext model vehicles?"
+[05:47:00] [ 185/200] ▶ start  qid=1619  q="What's the earliest crime involving Quext model vehicles?"
+[05:47:03] [ 185/200] ✔ done   qid=1619  ea=False em=False psjs=0.0  t=?  runEA=0.038  wall=9m12s  ETA=45s
+[05:47:03] [ 185/200] ✔ done   qid=1619  ea=False em=False psjs=0.0  t=?  runEA=0.038  wall=9m12s  ETA=45s
+[05:47:03] [ 186/200] ▶ start  qid=2056  q='How many incidents of theft from a person took place at 36 Sackville?'
+[05:47:03] [ 186/200] ▶ start  qid=2056  q='How many incidents of theft from a person took place at 36 Sackville?'
+[05:47:06] [ 186/200] ✔ done   qid=2056  ea=False em=False psjs=0.0  t=?  runEA=0.038  wall=9m15s  ETA=42s
+[05:47:06] [ 186/200] ✔ done   qid=2056  ea=False em=False psjs=0.0  t=?  runEA=0.038  wall=9m15s  ETA=42s
+[05:47:06] [ 187/200] ▶ start  qid=1722  q='What is the number of people called Pwtricia who share a home with Mccoys?'
+[05:47:06] [ 187/200] ▶ start  qid=1722  q='What is the number of people called Pwtricia who share a home with Mccoys?'
+[05:47:09] [ 187/200] ✔ done   qid=1722  ea=False em=False psjs=0.0  t=?  runEA=0.037  wall=9m18s  ETA=39s
+[05:47:09] [ 187/200] ✔ done   qid=1722  ea=False em=False psjs=0.0  t=?  runEA=0.037  wall=9m18s  ETA=39s
+[05:47:09] [ 188/200] ▶ start  qid=2802  q='What are the emails of those living at 63 Princess?'
+[05:47:09] [ 188/200] ▶ start  qid=2802  q='What are the emails of those living at 63 Princess?'
+[05:47:12] [ 188/200] ✔ done   qid=2802  ea=False em=False psjs=0.0  t=?  runEA=0.037  wall=9m21s  ETA=36s
+[05:47:12] [ 188/200] ✔ done   qid=2802  ea=False em=False psjs=0.0  t=?  runEA=0.037  wall=9m21s  ETA=36s
+[05:47:12] [ 189/200] ▶ start  qid=1536  q='What is the count of Crown Victodia vehicles tied to offenses on August 25, 2017?'
+[05:47:12] [ 189/200] ▶ start  qid=1536  q='What is the count of Crown Victodia vehicles tied to offenses on August 25, 2017?'
+[05:47:14] [ 189/200] ✔ done   qid=1536  ea=False em=False psjs=0.0  t=?  runEA=0.037  wall=9m24s  ETA=33s
+[05:47:14] [ 189/200] ✔ done   qid=1536  ea=False em=False psjs=0.0  t=?  runEA=0.037  wall=9m24s  ETA=33s
+[05:47:14] [ 190/200] ▶ start  qid=759  q='What was the earliest crime reported at Hugh Oldham Drive?'
+[05:47:14] [ 190/200] ▶ start  qid=759  q='What was the earliest crime reported at Hugh Oldham Drive?'
+[05:47:17] [ 190/200] ✔ done   qid=759  ea=False em=False psjs=0.0  t=?  runEA=0.037  wall=9m26s  ETA=30s
+[05:47:17] [ 190/200] ✔ done   qid=759  ea=False em=False psjs=0.0  t=?  runEA=0.037  wall=9m26s  ETA=30s
+[05:47:17] [ 191/200] ▶ start  qid=11  q='How many cases marked as prosecute suspect are handled by officers with surname Tennick?'
+[05:47:17] [ 191/200] ▶ start  qid=11  q='How many cases marked as prosecute suspect are handled by officers with surname Tennick?'
+[05:47:19] [ 191/200] ✔ done   qid=11  ea=False em=False psjs=0.0  t=?  runEA=0.037  wall=9m28s  ETA=27s
+[05:47:19] [ 191/200] ✔ done   qid=11  ea=False em=False psjs=0.0  t=?  runEA=0.037  wall=9m28s  ETA=27s
+[05:47:19] [ 192/200] ▶ start  qid=1473  q='Which phones are owned by those with the surname PATTERSON?'
+[05:47:19] [ 192/200] ▶ start  qid=1473  q='Which phones are owned by those with the surname PATTERSON?'
+[05:47:22] [ 192/200] ✔ done   qid=1473  ea=False em=False psjs=1.0  t=?  runEA=0.036  wall=9m31s  ETA=24s
+[05:47:22] [ 192/200] ✔ done   qid=1473  ea=False em=False psjs=1.0  t=?  runEA=0.036  wall=9m31s  ETA=24s
+[05:47:22] [ 193/200] ▶ start  qid=2055  q='What is the count of personal thefts at 36 Sackville?'
+[05:47:22] [ 193/200] ▶ start  qid=2055  q='What is the count of personal thefts at 36 Sackville?'
+[05:47:24] [ 193/200] ✔ done   qid=2055  ea=False em=False psjs=0.0  t=?  runEA=0.036  wall=9m34s  ETA=21s
+[05:47:24] [ 193/200] ✔ done   qid=2055  ea=False em=False psjs=0.0  t=?  runEA=0.036  wall=9m34s  ETA=21s
+[05:47:24] [ 194/200] ▶ start  qid=4337  q='What are the locations of residence of someone with surname Cinninghams family related to anyone whose phone number i...'
+[05:47:24] [ 194/200] ▶ start  qid=4337  q='What are the locations of residence of someone with surname Cinninghams family related to anyone whose phone number i...'
+2026-06-21 05:47:28.121 | WARNING  | eval.psjs:compute_psjs:580 - PSJS execution failed — returning 0.0.  gold_err=None pred_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Variable `rtmp1` not defined (line 3, column 209 (offset: 520))\n"} WITH collect(distinct elementId(loc)) + collect(distinct elementId(p1)) + collect(distinct elementId(p2)) + collect(distinct elementId(fr)) + collect(distinct elementId(rtmp0)) + collect(distinct elementId(rtmp1)) + collect(distinct elementId(rtmp2)) + collect(distinct elementId(rtmp3)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId2"\n                                                                                                                                                                                                                 ^}'
+[05:47:28] [ 194/200] ✔ done   qid=4337  ea=False em=False psjs=0.0  t=?  runEA=0.036  wall=9m37s  ETA=18s
+[05:47:28] [ 194/200] ✔ done   qid=4337  ea=False em=False psjs=0.0  t=?  runEA=0.036  wall=9m37s  ETA=18s
+[05:47:28] [ 195/200] ▶ start  qid=1953  q='What is the number of Adcent vehicles connected to criminal activities?'
+[05:47:28] [ 195/200] ▶ start  qid=1953  q='What is the number of Adcent vehicles connected to criminal activities?'
+[05:47:30] [ 195/200] ✔ done   qid=1953  ea=False em=False psjs=0.0  t=?  runEA=0.036  wall=9m40s  ETA=15s
+[05:47:30] [ 195/200] ✔ done   qid=1953  ea=False em=False psjs=0.0  t=?  runEA=0.036  wall=9m40s  ETA=15s
+[05:47:30] [ 196/200] ▶ start  qid=3325  q='What are the addresses of homes belonging to people familiar with anyone named Heahter?'
+[05:47:30] [ 196/200] ▶ start  qid=3325  q='What are the addresses of homes belonging to people familiar with anyone named Heahter?'
+[05:47:33] [ 196/200] ✔ done   qid=3325  ea=False em=False psjs=0.0  t=?  runEA=0.036  wall=9m42s  ETA=12s
+[05:47:33] [ 196/200] ✔ done   qid=3325  ea=False em=False psjs=0.0  t=?  runEA=0.036  wall=9m42s  ETA=12s
+[05:47:33] [ 197/200] ▶ start  qid=645  q="Who is the senior-most person related to someone familiar with a Forrd's phone number?"
+[05:47:33] [ 197/200] ▶ start  qid=645  q="Who is the senior-most person related to someone familiar with a Forrd's phone number?"
+[05:47:36] [ 197/200] ✔ done   qid=645  ea=False em=False psjs=0.0  t=?  runEA=0.036  wall=9m45s  ETA=9s
+[05:47:36] [ 197/200] ✔ done   qid=645  ea=False em=False psjs=0.0  t=?  runEA=0.036  wall=9m45s  ETA=9s
+[05:47:36] [ 198/200] ▶ start  qid=1435  q='How many crimes are marked as action is not in the public interest and involve a person?'
+[05:47:36] [ 198/200] ▶ start  qid=1435  q='How many crimes are marked as action is not in the public interest and involve a person?'
+[05:47:39] [ 198/200] ✔ done   qid=1435  ea=False em=False psjs=0.0  t=?  runEA=0.035  wall=9m48s  ETA=6s
+[05:47:39] [ 198/200] ✔ done   qid=1435  ea=False em=False psjs=0.0  t=?  runEA=0.035  wall=9m48s  ETA=6s
+[05:47:39] [ 199/200] ▶ start  qid=986  q='How many offenses involved Safar model vehicles?'
+[05:47:39] [ 199/200] ▶ start  qid=986  q='How many offenses involved Safar model vehicles?'
+[05:47:42] [ 199/200] ✔ done   qid=986  ea=False em=False psjs=0.0  t=?  runEA=0.035  wall=9m51s  ETA=3s
+[05:47:42] [ 199/200] ✔ done   qid=986  ea=False em=False psjs=0.0  t=?  runEA=0.035  wall=9m51s  ETA=3s
+[05:47:42] [ 200/200] ▶ start  qid=3012  q='How many Buiick cars were linked to crimes on 24/08/2017 in locations with postcode M23 9GB?'
+[05:47:42] [ 200/200] ▶ start  qid=3012  q='How many Buiick cars were linked to crimes on 24/08/2017 in locations with postcode M23 9GB?'
+[05:47:44] [ 200/200] ✔ done   qid=3012  ea=False em=False psjs=0.0  t=?  runEA=0.035  wall=9m54s  ETA=--
+[05:47:44] [ 200/200] ✔ done   qid=3012  ea=False em=False psjs=0.0  t=?  runEA=0.035  wall=9m54s  ETA=--

@@ -1,0 +1,82 @@
+{
+  "dataset": "cypherbench_augmented",
+  "n": 365,
+  "n_scored": {
+    "ea": 352,
+    "em": 352,
+    "psjs": 352
+  },
+  "n_errors": 13,
+  "ea": 0.10511363636363637,
+  "em": 0.0,
+  "psjs": 0.12721076791082236,
+  "by_difficulty": {
+    "all": {
+      "ea": 0.10511363636363637,
+      "em": 0.0,
+      "psjs": 0.12721076791082236,
+      "n": 365,
+      "n_scored": {
+        "ea": 352,
+        "em": 352,
+        "psjs": 352
+      },
+      "n_errors": 13
+    },
+    "easy": {
+      "ea": 0.08620689655172414,
+      "em": 0.0,
+      "psjs": 0.0740365111561866,
+      "n": 59,
+      "n_scored": {
+        "ea": 58,
+        "em": 58,
+        "psjs": 58
+      },
+      "n_errors": 1
+    },
+    "medium": {
+      "ea": 0.04945054945054945,
+      "em": 0.0,
+      "psjs": 0.06512862095175702,
+      "n": 192,
+      "n_scored": {
+        "ea": 182,
+        "em": 182,
+        "psjs": 182
+      },
+      "n_errors": 10
+    },
+    "hard": {
+      "ea": 0.20535714285714285,
+      "em": 0.0,
+      "psjs": 0.2556309253958114,
+      "n": 114,
+      "n_scored": {
+        "ea": 112,
+        "em": 112,
+        "psjs": 112
+      },
+      "n_errors": 2
+    }
+  },
+  "elapsed_sec": 2009.12,
+  "run_meta": {
+    "generated_at": "2026-06-22T08:55:43+01:00",
+    "ner_mode": "no_ner",
+    "method": "no_val_link",
+    "label": "No Val Link",
+    "tool_type": null,
+    "retrieval": "fuzzy",
+    "ner_llm": "gpt-4.1",
+    "cypher_llm": "gpt-4.1",
+    "qa_llm": "gpt-4.1",
+    "tool_select_top_k": 15,
+    "values_per_tool": 10,
+    "plan_exec_tools_per_entity": 2,
+    "plan_exec_values_per_tool": 10,
+    "plan_exec_escalate": true,
+    "tool_retrieval_mode": "fuzzy",
+    "hybrid_strategy": "cascade"
+  }
+}

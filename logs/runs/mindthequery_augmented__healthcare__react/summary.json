@@ -1,0 +1,82 @@
+{
+  "dataset": "mindthequery_augmented",
+  "n": 439,
+  "n_scored": {
+    "ea": 434,
+    "em": 439,
+    "psjs": 434
+  },
+  "n_errors": 5,
+  "ea": 0.6751152073732719,
+  "em": 0.0,
+  "psjs": 0.7060347710106635,
+  "by_difficulty": {
+    "all": {
+      "ea": 0.6751152073732719,
+      "em": 0.0,
+      "psjs": 0.7060347710106635,
+      "n": 439,
+      "n_scored": {
+        "ea": 434,
+        "em": 439,
+        "psjs": 434
+      },
+      "n_errors": 5
+    },
+    "easy": {
+      "ea": 0.5,
+      "em": 0.0,
+      "psjs": 0.2507163323782235,
+      "n": 2,
+      "n_scored": {
+        "ea": 2,
+        "em": 2,
+        "psjs": 2
+      },
+      "n_errors": 0
+    },
+    "medium": {
+      "ea": 0.688622754491018,
+      "em": 0.0,
+      "psjs": 0.7213408830238337,
+      "n": 335,
+      "n_scored": {
+        "ea": 334,
+        "em": 335,
+        "psjs": 334
+      },
+      "n_errors": 1
+    },
+    "hard": {
+      "ea": 0.6326530612244898,
+      "em": 0.0,
+      "psjs": 0.6631612553460311,
+      "n": 102,
+      "n_scored": {
+        "ea": 98,
+        "em": 102,
+        "psjs": 98
+      },
+      "n_errors": 4
+    }
+  },
+  "elapsed_sec": 5537.05,
+  "run_meta": {
+    "generated_at": "2026-06-22T16:26:06+02:00",
+    "ner_mode": "react_node_rel",
+    "method": "react",
+    "label": "ReAct (Node + Rel)",
+    "tool_type": "node_rel",
+    "retrieval": "fuzzy",
+    "ner_llm": "gpt-4.1",
+    "cypher_llm": "gpt-4.1",
+    "qa_llm": "gpt-4.1",
+    "tool_select_top_k": 15,
+    "values_per_tool": 10,
+    "plan_exec_tools_per_entity": 2,
+    "plan_exec_values_per_tool": 10,
+    "plan_exec_escalate": true,
+    "tool_retrieval_mode": "fuzzy",
+    "hybrid_strategy": "cascade"
+  }
+}

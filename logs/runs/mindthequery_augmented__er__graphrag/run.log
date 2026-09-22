@@ -1,0 +1,831 @@
+2026-06-22 12:39:23.305 | INFO     | eval.metrics_MindTheQuery:load_dataset:230 - Loaded 1298 Mind-the-Query examples from /Users/q0w01lh/datasets/mindthequery_augmented_v2/test.json
+2026-06-22 12:39:23.306 | INFO     | eval.metrics_MindTheQuery:evaluate_dataset:429 - Mind-the-Query graph_filter='er': kept 202/1298 examples (skipped 1096).
+[12:39:23] [   1/202] ▶ start  qid=Complex_Aggregation_test:1  q='What is the total number of movies watched by femape users in each state, and what is the average year of those movies?'
+[12:39:23] [   1/202] ▶ start  qid=Complex_Aggregation_test:1  q='What is the total number of movies watched by femape users in each state, and what is the average year of those movies?'
+[12:39:36] [   1/202] ✔ done   qid=Complex_Aggregation_test:1  ea=False em=False psjs=1.0  t=?  runEA=0.000  wall=14s  ETA=45m51s
+[12:39:36] [   1/202] ✔ done   qid=Complex_Aggregation_test:1  ea=False em=False psjs=1.0  t=?  runEA=0.000  wall=14s  ETA=45m51s
+[12:39:36] [   2/202] ▶ start  qid=Complex_Aggregation_test:9  q='For each state, what is the average number of movies watched by feMALE users compared to the average number of movies...'
+[12:39:36] [   2/202] ▶ start  qid=Complex_Aggregation_test:9  q='For each state, what is the average number of movies watched by feMALE users compared to the average number of movies...'
+[12:39:58] [   2/202] ✔ done   qid=Complex_Aggregation_test:9  ea=False em=False psjs=0.5296108291032149  t=?  runEA=0.000  wall=35s  ETA=59m04s
+[12:39:58] [   2/202] ✔ done   qid=Complex_Aggregation_test:9  ea=False em=False psjs=0.5296108291032149  t=?  runEA=0.000  wall=35s  ETA=59m04s
+[12:39:58] [   3/202] ▶ start  qid=Complex_Aggregation_test:36  q="What is the average number of genres associated with movies watched by United Statesers from 'United States', and wha..."
+[12:39:58] [   3/202] ▶ start  qid=Complex_Aggregation_test:36  q="What is the average number of genres associated with movies watched by United Statesers from 'United States', and wha..."
+[12:40:05] [   3/202] ✔ done   qid=Complex_Aggregation_test:36  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=42s  ETA=46m39s
+[12:40:05] [   3/202] ✔ done   qid=Complex_Aggregation_test:36  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=42s  ETA=46m39s
+[12:40:05] [   4/202] ▶ start  qid=Complex_Aggregation_test:43  q="What is the total number of distinct IP addresses used by users who have watched movies with the genre 'Fantays', and..."
+[12:40:05] [   4/202] ▶ start  qid=Complex_Aggregation_test:43  q="What is the total number of distinct IP addresses used by users who have watched movies with the genre 'Fantays', and..."
+[12:40:10] [   4/202] ✔ done   qid=Complex_Aggregation_test:43  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=48s  ETA=39m14s
+[12:40:10] [   4/202] ✔ done   qid=Complex_Aggregation_test:43  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=48s  ETA=39m14s
+[12:40:10] [   5/202] ▶ start  qid=Complex_Aggregation_test:44  q="For each gender, what is the average number of movies watched per user, considering only users whose email contains '..."
+[12:40:10] [   5/202] ▶ start  qid=Complex_Aggregation_test:44  q="For each gender, what is the average number of movies watched per user, considering only users whose email contains '..."
+[12:40:22] [   5/202] ✔ done   qid=Complex_Aggregation_test:44  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=59s  ETA=38m44s
+[12:40:22] [   5/202] ✔ done   qid=Complex_Aggregation_test:44  ea=False em=False psjs=0.0  t=?  runEA=0.000  wall=59s  ETA=38m44s
+[12:40:22] [   6/202] ▶ start  qid=Complex_Aggregation_test:46  q='What is the average number of times users from OH watched movies, and what is the total number of unique movies watch...'
+[12:40:22] [   6/202] ▶ start  qid=Complex_Aggregation_test:46  q='What is the average number of times users from OH watched movies, and what is the total number of unique movies watch...'
+[12:40:32] [   6/202] ✔ done   qid=Complex_Aggregation_test:46  ea=False em=False psjs=1.0  t=?  runEA=0.000  wall=1m10s  ETA=37m51s
+[12:40:32] [   6/202] ✔ done   qid=Complex_Aggregation_test:46  ea=False em=False psjs=1.0  t=?  runEA=0.000  wall=1m10s  ETA=37m51s
+[12:40:32] [   7/202] ▶ start  qid=Complex_Aggregation_test:51  q="What is the average watchCount for movies watched by users who use the '143.112.72.245'?"
+[12:40:32] [   7/202] ▶ start  qid=Complex_Aggregation_test:51  q="What is the average watchCount for movies watched by users who use the '143.112.72.245'?"
+[12:40:36] [   7/202] ✔ done   qid=Complex_Aggregation_test:51  ea=True em=False psjs=1.0  t=?  runEA=0.143  wall=1m14s  ETA=34m08s
+[12:40:36] [   7/202] ✔ done   qid=Complex_Aggregation_test:51  ea=True em=False psjs=1.0  t=?  runEA=0.143  wall=1m14s  ETA=34m08s
+[12:40:36] [   8/202] ▶ start  qid=Complex_Aggregation_test:52  q='For each country, what is the average number of movies watched per user, considering only users who have watched movi...'
+[12:40:36] [   8/202] ▶ start  qid=Complex_Aggregation_test:52  q='For each country, what is the average number of movies watched per user, considering only users who have watched movi...'
+[12:40:46] [   8/202] ✔ done   qid=Complex_Aggregation_test:52  ea=True em=False psjs=1.0  t=?  runEA=0.250  wall=1m23s  ETA=33m35s
+[12:40:46] [   8/202] ✔ done   qid=Complex_Aggregation_test:52  ea=True em=False psjs=1.0  t=?  runEA=0.250  wall=1m23s  ETA=33m35s
+[12:40:46] [   9/202] ▶ start  qid=Complex_Aggregation_test:58  q="What is the average watchCount for each genre, considering only users from the state 'WA', and how many such users wa..."
+[12:40:46] [   9/202] ▶ start  qid=Complex_Aggregation_test:58  q="What is the average watchCount for each genre, considering only users from the state 'WA', and how many such users wa..."
+[12:41:13] [   9/202] ✔ done   qid=Complex_Aggregation_test:58  ea=False em=False psjs=1.0  t=?  runEA=0.222  wall=1m50s  ETA=39m23s
+[12:41:13] [   9/202] ✔ done   qid=Complex_Aggregation_test:58  ea=False em=False psjs=1.0  t=?  runEA=0.222  wall=1m50s  ETA=39m23s
+[12:41:13] [  10/202] ▶ start  qid=Complex_Aggregation_test:63  q='For each state in the United States, what is the average number of movies watched by United Statesers and the total n...'
+[12:41:13] [  10/202] ▶ start  qid=Complex_Aggregation_test:63  q='For each state in the United States, what is the average number of movies watched by United Statesers and the total n...'
+[12:41:31] [  10/202] ✔ done   qid=Complex_Aggregation_test:63  ea=False em=False psjs=0.6412523020257827  t=?  runEA=0.200  wall=2m08s  ETA=41m01s
+[12:41:31] [  10/202] ✔ done   qid=Complex_Aggregation_test:63  ea=False em=False psjs=0.6412523020257827  t=?  runEA=0.200  wall=2m08s  ETA=41m01s
+[12:41:31] [  11/202] ▶ start  qid=Complex_Aggregation_test:73  q='What is the average number of times a movie of each genre is watched by United Statesers from the United States, and ...'
+[12:41:31] [  11/202] ▶ start  qid=Complex_Aggregation_test:73  q='What is the average number of times a movie of each genre is watched by United Statesers from the United States, and ...'
+[12:41:40] [  11/202] ✔ done   qid=Complex_Aggregation_test:73  ea=None em=False psjs=None  t=?  runEA=0.200  wall=2m17s  ETA=39m38s  err=gold: CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message:
+[12:41:40] [  11/202] ✔ done   qid=Complex_Aggregation_test:73  ea=None em=False psjs=None  t=?  runEA=0.200  wall=2m17s  ETA=39m38s  err=gold: CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message:
+[12:41:40] [  12/202] ▶ start  qid=Complex_Aggregation_test:84  q='What is the average watch count for movies watched by FEMALE users in each country, and what is the total number of F...'
+[12:41:40] [  12/202] ▶ start  qid=Complex_Aggregation_test:84  q='What is the average watch count for movies watched by FEMALE users in each country, and what is the total number of F...'
+[12:41:48] [  12/202] ✔ done   qid=Complex_Aggregation_test:84  ea=False em=False psjs=0.21730175077239958  t=?  runEA=0.182  wall=2m25s  ETA=38m17s
+[12:41:48] [  12/202] ✔ done   qid=Complex_Aggregation_test:84  ea=False em=False psjs=0.21730175077239958  t=?  runEA=0.182  wall=2m25s  ETA=38m17s
+[12:41:48] [  13/202] ▶ start  qid=Complex_Aggregation_test:86  q="What is the average number of genres associated with movies watched by users whose first name is 'Jacqueln'?"
+[12:41:48] [  13/202] ▶ start  qid=Complex_Aggregation_test:86  q="What is the average number of genres associated with movies watched by users whose first name is 'Jacqueln'?"
+[12:41:53] [  13/202] ✔ done   qid=Complex_Aggregation_test:86  ea=None em=False psjs=0.0  t=?  runEA=0.182  wall=2m30s  ETA=36m17s  err=ea: ValueError: cannot convert float NaN to integer
+[12:41:53] [  13/202] ✔ done   qid=Complex_Aggregation_test:86  ea=None em=False psjs=0.0  t=?  runEA=0.182  wall=2m30s  ETA=36m17s  err=ea: ValueError: cannot convert float NaN to integer
+[12:41:53] [  14/202] ▶ start  qid=Complex_Aggregation_test:96  q="What is the average number of movies watched by users who use the '230.198.93.117'?"
+[12:41:53] [  14/202] ▶ start  qid=Complex_Aggregation_test:96  q="What is the average number of movies watched by users who use the '230.198.93.117'?"
+[12:41:57] [  14/202] ✔ done   qid=Complex_Aggregation_test:96  ea=False em=False psjs=0.0  t=?  runEA=0.167  wall=2m34s  ETA=34m29s
+[12:41:57] [  14/202] ✔ done   qid=Complex_Aggregation_test:96  ea=False em=False psjs=0.0  t=?  runEA=0.167  wall=2m34s  ETA=34m29s
+[12:41:57] [  15/202] ▶ start  qid=Complex_Aggregation_test:97  q="For each genre, what is the average watch count of movies in that genre, considering only users from 'York'?"
+[12:41:57] [  15/202] ▶ start  qid=Complex_Aggregation_test:97  q="For each genre, what is the average watch count of movies in that genre, considering only users from 'York'?"
+[12:42:13] [  15/202] ✔ done   qid=Complex_Aggregation_test:97  ea=False em=False psjs=0.1825242718446602  t=?  runEA=0.154  wall=2m51s  ETA=35m27s
+[12:42:13] [  15/202] ✔ done   qid=Complex_Aggregation_test:97  ea=False em=False psjs=0.1825242718446602  t=?  runEA=0.154  wall=2m51s  ETA=35m27s
+[12:42:13] [  16/202] ▶ start  qid=Complex_Aggregation_test:98  q="What is the average number of times movies with the genre 'Fanatsy' are watched by users, grouped by the user's gender?"
+[12:42:13] [  16/202] ▶ start  qid=Complex_Aggregation_test:98  q="What is the average number of times movies with the genre 'Fanatsy' are watched by users, grouped by the user's gender?"
+[12:42:28] [  16/202] ✔ done   qid=Complex_Aggregation_test:98  ea=True em=False psjs=1.0  t=?  runEA=0.214  wall=3m05s  ETA=35m51s
+[12:42:28] [  16/202] ✔ done   qid=Complex_Aggregation_test:98  ea=True em=False psjs=1.0  t=?  runEA=0.214  wall=3m05s  ETA=35m51s
+[12:42:28] [  17/202] ▶ start  qid=Complex_Aggregation_test:108  q='What is the average year of movies watched by femal users from each state, and how many distinct genres have they wat...'
+[12:42:28] [  17/202] ▶ start  qid=Complex_Aggregation_test:108  q='What is the average year of movies watched by femal users from each state, and how many distinct genres have they wat...'
+[12:42:40] [  17/202] ✔ done   qid=Complex_Aggregation_test:108  ea=True em=False psjs=0.17140536149471974  t=?  runEA=0.267  wall=3m17s  ETA=35m45s
+[12:42:40] [  17/202] ✔ done   qid=Complex_Aggregation_test:108  ea=True em=False psjs=0.17140536149471974  t=?  runEA=0.267  wall=3m17s  ETA=35m45s
+[12:42:40] [  18/202] ▶ start  qid=Complex_Aggregation_test:126  q="What is the total number of movies watched by users who use the '210.125.140.59', grouped by the genre of the movies ..."
+[12:42:40] [  18/202] ▶ start  qid=Complex_Aggregation_test:126  q="What is the total number of movies watched by users who use the '210.125.140.59', grouped by the genre of the movies ..."
+[12:42:50] [  18/202] ✔ done   qid=Complex_Aggregation_test:126  ea=False em=False psjs=0.0  t=?  runEA=0.250  wall=3m27s  ETA=35m17s
+[12:42:50] [  18/202] ✔ done   qid=Complex_Aggregation_test:126  ea=False em=False psjs=0.0  t=?  runEA=0.250  wall=3m27s  ETA=35m17s
+[12:42:50] [  19/202] ▶ start  qid=Complex_Aggregation_test:137  q="For each genre, what is the average number of movies watched by users who use the '2.238.236.187'? Return the genre n..."
+[12:42:50] [  19/202] ▶ start  qid=Complex_Aggregation_test:137  q="For each genre, what is the average number of movies watched by users who use the '2.238.236.187'? Return the genre n..."
+[12:42:55] [  19/202] ✔ done   qid=Complex_Aggregation_test:137  ea=False em=False psjs=0.0  t=?  runEA=0.235  wall=3m32s  ETA=34m02s
+[12:42:55] [  19/202] ✔ done   qid=Complex_Aggregation_test:137  ea=False em=False psjs=0.0  t=?  runEA=0.235  wall=3m32s  ETA=34m02s
+[12:42:55] [  20/202] ▶ start  qid=Complex_Aggregation_test:151  q="What is the average watch count for each movie genre, considering only users who use the '237.78.240.98', and how man..."
+[12:42:55] [  20/202] ▶ start  qid=Complex_Aggregation_test:151  q="What is the average watch count for each movie genre, considering only users who use the '237.78.240.98', and how man..."
+[12:43:00] [  20/202] ✔ done   qid=Complex_Aggregation_test:151  ea=True em=False psjs=1.0  t=?  runEA=0.278  wall=3m37s  ETA=32m57s
+[12:43:00] [  20/202] ✔ done   qid=Complex_Aggregation_test:151  ea=True em=False psjs=1.0  t=?  runEA=0.278  wall=3m37s  ETA=32m57s
+[12:43:00] [  21/202] ▶ start  qid=Complex_Aggregation_test:161  q="What is the average watchCount for movies watched by United Statesers who live in the 'United States'?"
+[12:43:00] [  21/202] ▶ start  qid=Complex_Aggregation_test:161  q="What is the average watchCount for movies watched by United Statesers who live in the 'United States'?"
+[12:43:06] [  21/202] ✔ done   qid=Complex_Aggregation_test:161  ea=False em=False psjs=0.0  t=?  runEA=0.263  wall=3m43s  ETA=32m05s
+[12:43:06] [  21/202] ✔ done   qid=Complex_Aggregation_test:161  ea=False em=False psjs=0.0  t=?  runEA=0.263  wall=3m43s  ETA=32m05s
+[12:43:06] [  22/202] ▶ start  qid=Complex_Aggregation_test:175  q='For each genre, what is the average watchCount of movies in that genre by users, considering only users who use the I...'
+[12:43:06] [  22/202] ▶ start  qid=Complex_Aggregation_test:175  q='For each genre, what is the average watchCount of movies in that genre by users, considering only users who use the I...'
+[12:43:11] [  22/202] ✔ done   qid=Complex_Aggregation_test:175  ea=False em=False psjs=0.0  t=?  runEA=0.250  wall=3m48s  ETA=31m04s
+[12:43:11] [  22/202] ✔ done   qid=Complex_Aggregation_test:175  ea=False em=False psjs=0.0  t=?  runEA=0.250  wall=3m48s  ETA=31m04s
+[12:43:11] [  23/202] ▶ start  qid=Complex_Aggregation_test:180  q='For each state, what is the average number of movies watched by femae users, and what is the total number of femae us...'
+[12:43:11] [  23/202] ▶ start  qid=Complex_Aggregation_test:180  q='For each state, what is the average number of movies watched by femae users, and what is the total number of femae us...'
+[12:43:31] [  23/202] ✔ done   qid=Complex_Aggregation_test:180  ea=None em=False psjs=None  t=?  runEA=0.250  wall=4m08s  ETA=32m12s  err=gold: CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message:
+[12:43:31] [  23/202] ✔ done   qid=Complex_Aggregation_test:180  ea=None em=False psjs=None  t=?  runEA=0.250  wall=4m08s  ETA=32m12s  err=gold: CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message:
+[12:43:31] [  24/202] ▶ start  qid=Complex_Aggregation_test:181  q="What is the average number of movies watched by users with emails ending in 'juegm.jp', and what is the total number ..."
+[12:43:31] [  24/202] ▶ start  qid=Complex_Aggregation_test:181  q="What is the average number of movies watched by users with emails ending in 'juegm.jp', and what is the total number ..."
+2026-06-22 12:43:38.567 | WARNING  | eval.psjs:compute_psjs:580 - PSJS execution failed — returning 0.0.  gold_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input \'*\': expected "+" or "-" (line 1, column 40 (offset: 39))\n"MATCH (u:User) WHERE u.email ENDS WITH * MATCH (u)-[w:WATCHED]->(m:Movie)-[rtmp0:HAS]->(g:Genre) WITH collect(distinct id(g)) + collect(distinct id(m)) + collect(distinct id(u)) + collect(distinct id(rtmp0)) + collect(distinct id(w)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId1"\n                                        ^}' pred_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input \'AS\': expected\n  "!="\n  "%"\n  "*"\n  "+"\n  "-"\n  "/"\n  "<"\n  "<="\n  "<>"\n  "="\n  ">"\n  ">="\n  "AND"\n  "CALL"\n  "CREATE"\n  "DELETE"\n  "DETACH"\n  "FINISH"\n  "FOREACH"\n  "INSERT"\n  "LOAD"\n  "MATCH"\n  "MERGE"\n  "NODETACH"\n  "OPTIONAL"\n  "OR"\n  "REMOVE"\n  "RETURN"\n  "SET"\n  "UNION"\n  "UNWIND"\n  "USE"\n  "WITH"\n  "XOR"\n  "^"\n  "||"\n  <EOF> (line 1, column 148 (offset: 147))\n"MATCH (u:User)-[w:WATCHED]->(m:Movie) WHERE toLower(u.email) ENDS WITH collect(distinct id(m)) + collect(distinct id(u)) + collect(distinct id(w)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId2"\n                                                                                                                                                    ^}'
+[12:43:38] [  24/202] ✔ done   qid=Complex_Aggregation_test:181  ea=False em=False psjs=0.0  t=?  runEA=0.238  wall=4m15s  ETA=31m33s
+[12:43:38] [  24/202] ✔ done   qid=Complex_Aggregation_test:181  ea=False em=False psjs=0.0  t=?  runEA=0.238  wall=4m15s  ETA=31m33s
+[12:43:38] [  25/202] ▶ start  qid=Complex_Retrieval_test:0  q="Find all movies that have the 'Thriler' genre and were watched by users with the phone number '251-214-3109'. Return ..."
+[12:43:38] [  25/202] ▶ start  qid=Complex_Retrieval_test:0  q="Find all movies that have the 'Thriler' genre and were watched by users with the phone number '251-214-3109'. Return ..."
+[12:43:54] [  25/202] ✔ done   qid=Complex_Retrieval_test:0  ea=True em=False psjs=1.0  t=?  runEA=0.273  wall=4m31s  ETA=32m01s
+[12:43:54] [  25/202] ✔ done   qid=Complex_Retrieval_test:0  ea=True em=False psjs=1.0  t=?  runEA=0.273  wall=4m31s  ETA=32m01s
+[12:43:54] [  26/202] ▶ start  qid=Complex_Retrieval_test:1  q="For each user from 'IL', find the total number of movies they have watched and return their first name, last name, an..."
+[12:43:54] [  26/202] ▶ start  qid=Complex_Retrieval_test:1  q="For each user from 'IL', find the total number of movies they have watched and return their first name, last name, an..."
+[12:44:12] [  26/202] ✔ done   qid=Complex_Retrieval_test:1  ea=False em=False psjs=0.9637681159420289  t=?  runEA=0.261  wall=4m49s  ETA=32m39s
+[12:44:12] [  26/202] ✔ done   qid=Complex_Retrieval_test:1  ea=False em=False psjs=0.9637681159420289  t=?  runEA=0.261  wall=4m49s  ETA=32m39s
+[12:44:12] [  27/202] ▶ start  qid=Complex_Retrieval_test:2  q="Find the users who used the IP address '215.150.219.99' and watched the movie titled 'Hitler'. Return their first nam..."
+[12:44:12] [  27/202] ▶ start  qid=Complex_Retrieval_test:2  q="Find the users who used the IP address '215.150.219.99' and watched the movie titled 'Hitler'. Return their first nam..."
+[12:44:26] [  27/202] ✔ done   qid=Complex_Retrieval_test:2  ea=True em=False psjs=1.0  t=?  runEA=0.292  wall=5m03s  ETA=32m46s
+[12:44:26] [  27/202] ✔ done   qid=Complex_Retrieval_test:2  ea=True em=False psjs=1.0  t=?  runEA=0.292  wall=5m03s  ETA=32m46s
+[12:44:26] [  28/202] ▶ start  qid=Complex_Retrieval_test:3  q="Find the first name, last name, and email of users who watched the movie 'Fztale' and use the IP address '5.46.227.168'."
+[12:44:26] [  28/202] ▶ start  qid=Complex_Retrieval_test:3  q="Find the first name, last name, and email of users who watched the movie 'Fztale' and use the IP address '5.46.227.168'."
+[12:44:39] [  28/202] ✔ done   qid=Complex_Retrieval_test:3  ea=True em=False psjs=1.0  t=?  runEA=0.320  wall=5m16s  ETA=32m46s
+[12:44:39] [  28/202] ✔ done   qid=Complex_Retrieval_test:3  ea=True em=False psjs=1.0  t=?  runEA=0.320  wall=5m16s  ETA=32m46s
+[12:44:39] [  29/202] ▶ start  qid=Complex_Retrieval_test:4  q="What are the titles of movies that users from 'KY' have watched, and which belong to the 'Drama' genre?"
+[12:44:39] [  29/202] ▶ start  qid=Complex_Retrieval_test:4  q="What are the titles of movies that users from 'KY' have watched, and which belong to the 'Drama' genre?"
+[12:44:54] [  29/202] ✔ done   qid=Complex_Retrieval_test:4  ea=False em=False psjs=1.0  t=?  runEA=0.308  wall=5m31s  ETA=32m55s
+[12:44:54] [  29/202] ✔ done   qid=Complex_Retrieval_test:4  ea=False em=False psjs=1.0  t=?  runEA=0.308  wall=5m31s  ETA=32m55s
+[12:44:54] [  30/202] ▶ start  qid=Complex_Retrieval_test:6  q="What is the average watch count of movies watched by United Statesers whose country is 'United States'?"
+[12:44:54] [  30/202] ▶ start  qid=Complex_Retrieval_test:6  q="What is the average watch count of movies watched by United Statesers whose country is 'United States'?"
+[12:44:59] [  30/202] ✔ done   qid=Complex_Retrieval_test:6  ea=False em=False psjs=0.0  t=?  runEA=0.296  wall=5m36s  ETA=32m06s
+[12:44:59] [  30/202] ✔ done   qid=Complex_Retrieval_test:6  ea=False em=False psjs=0.0  t=?  runEA=0.296  wall=5m36s  ETA=32m06s
+[12:44:59] [  31/202] ▶ start  qid=Complex_Retrieval_test:7  q='Find the names of all genres and the titles of movies belonging to those genres that were watched by users with the l...'
+[12:44:59] [  31/202] ▶ start  qid=Complex_Retrieval_test:7  q='Find the names of all genres and the titles of movies belonging to those genres that were watched by users with the l...'
+[12:45:13] [  31/202] ✔ done   qid=Complex_Retrieval_test:7  ea=True em=False psjs=1.0  t=?  runEA=0.321  wall=5m50s  ETA=32m12s
+[12:45:13] [  31/202] ✔ done   qid=Complex_Retrieval_test:7  ea=True em=False psjs=1.0  t=?  runEA=0.321  wall=5m50s  ETA=32m12s
+[12:45:13] [  32/202] ▶ start  qid=Complex_Retrieval_test:8  q="Retrieve the email addresses of users who use the IP address '118.233.94.72' and have watched a movie with the genre ..."
+[12:45:13] [  32/202] ▶ start  qid=Complex_Retrieval_test:8  q="Retrieve the email addresses of users who use the IP address '118.233.94.72' and have watched a movie with the genre ..."
+[12:45:27] [  32/202] ✔ done   qid=Complex_Retrieval_test:8  ea=True em=False psjs=1.0  t=?  runEA=0.345  wall=6m04s  ETA=32m14s
+[12:45:27] [  32/202] ✔ done   qid=Complex_Retrieval_test:8  ea=True em=False psjs=1.0  t=?  runEA=0.345  wall=6m04s  ETA=32m14s
+[12:45:27] [  33/202] ▶ start  qid=Complex_Retrieval_test:10  q="Find United Statesers whose first name is 'Leigh' and country is 'United States', and return the titles of the movies..."
+[12:45:27] [  33/202] ▶ start  qid=Complex_Retrieval_test:10  q="Find United Statesers whose first name is 'Leigh' and country is 'United States', and return the titles of the movies..."
+[12:45:51] [  33/202] ✔ done   qid=Complex_Retrieval_test:10  ea=True em=False psjs=1.0  t=?  runEA=0.367  wall=6m28s  ETA=33m08s
+[12:45:51] [  33/202] ✔ done   qid=Complex_Retrieval_test:10  ea=True em=False psjs=1.0  t=?  runEA=0.367  wall=6m28s  ETA=33m08s
+[12:45:51] [  34/202] ▶ start  qid=Complex_Retrieval_test:11  q="Retrieve the address of the IP address used by users with the gender 'Female' and the title of the movies which have ..."
+[12:45:51] [  34/202] ▶ start  qid=Complex_Retrieval_test:11  q="Retrieve the address of the IP address used by users with the gender 'Female' and the title of the movies which have ..."
+[12:46:07] [  34/202] ✔ done   qid=Complex_Retrieval_test:11  ea=False em=False psjs=1.0  t=?  runEA=0.355  wall=6m45s  ETA=33m19s
+[12:46:07] [  34/202] ✔ done   qid=Complex_Retrieval_test:11  ea=False em=False psjs=1.0  t=?  runEA=0.355  wall=6m45s  ETA=33m19s
+[12:46:07] [  35/202] ▶ start  qid=Complex_Retrieval_test:13  q="What are the names of all the genres of movies watched by users with the first name 'Quuinn' and last name 'Francesco..."
+[12:46:07] [  35/202] ▶ start  qid=Complex_Retrieval_test:13  q="What are the names of all the genres of movies watched by users with the first name 'Quuinn' and last name 'Francesco..."
+[12:46:21] [  35/202] ✔ done   qid=Complex_Retrieval_test:13  ea=True em=False psjs=1.0  t=?  runEA=0.375  wall=6m58s  ETA=33m16s
+[12:46:21] [  35/202] ✔ done   qid=Complex_Retrieval_test:13  ea=True em=False psjs=1.0  t=?  runEA=0.375  wall=6m58s  ETA=33m16s
+[12:46:21] [  36/202] ▶ start  qid=Complex_Retrieval_test:14  q="Find the average watch count of movies watched by United Statesers who are from the 'United States' and group the res..."
+[12:46:21] [  36/202] ▶ start  qid=Complex_Retrieval_test:14  q="Find the average watch count of movies watched by United Statesers who are from the 'United States' and group the res..."
+[12:46:36] [  36/202] ✔ done   qid=Complex_Retrieval_test:14  ea=True em=False psjs=1.0  t=?  runEA=0.394  wall=7m13s  ETA=33m16s
+[12:46:36] [  36/202] ✔ done   qid=Complex_Retrieval_test:14  ea=True em=False psjs=1.0  t=?  runEA=0.394  wall=7m13s  ETA=33m16s
+[12:46:36] [  37/202] ▶ start  qid=Complex_Retrieval_test:15  q="Retrieve the titles of all movies that belong to the 'Drqma' genre and were watched by users whose email contains 'tr..."
+[12:46:36] [  37/202] ▶ start  qid=Complex_Retrieval_test:15  q="Retrieve the titles of all movies that belong to the 'Drqma' genre and were watched by users whose email contains 'tr..."
+[12:46:50] [  37/202] ✔ done   qid=Complex_Retrieval_test:15  ea=True em=False psjs=1.0  t=?  runEA=0.412  wall=7m27s  ETA=33m12s
+[12:46:50] [  37/202] ✔ done   qid=Complex_Retrieval_test:15  ea=True em=False psjs=1.0  t=?  runEA=0.412  wall=7m27s  ETA=33m12s
+[12:46:50] [  38/202] ▶ start  qid=Complex_Retrieval_test:16  q="Find the IP addresses used by female users from 'CT' who have watched movies released before the year 2000. Return th..."
+[12:46:50] [  38/202] ▶ start  qid=Complex_Retrieval_test:16  q="Find the IP addresses used by female users from 'CT' who have watched movies released before the year 2000. Return th..."
+[12:47:04] [  38/202] ✔ done   qid=Complex_Retrieval_test:16  ea=True em=False psjs=1.0  t=?  runEA=0.429  wall=7m41s  ETA=33m11s
+[12:47:04] [  38/202] ✔ done   qid=Complex_Retrieval_test:16  ea=True em=False psjs=1.0  t=?  runEA=0.429  wall=7m41s  ETA=33m11s
+[12:47:04] [  39/202] ▶ start  qid=Complex_Retrieval_test:18  q="What are the titles of movies that belong to the 'Drama' genre and have been watched by United Statesers from the 'Un..."
+[12:47:04] [  39/202] ▶ start  qid=Complex_Retrieval_test:18  q="What are the titles of movies that belong to the 'Drama' genre and have been watched by United Statesers from the 'Un..."
+[12:47:12] [  39/202] ✔ done   qid=Complex_Retrieval_test:18  ea=False em=False psjs=1.0  t=?  runEA=0.417  wall=7m50s  ETA=32m42s
+[12:47:12] [  39/202] ✔ done   qid=Complex_Retrieval_test:18  ea=False em=False psjs=1.0  t=?  runEA=0.417  wall=7m50s  ETA=32m42s
+[12:47:12] [  40/202] ▶ start  qid=Complex_Retrieval_test:20  q="Retrieve the first name and last name of users who have watched 'Feast' and whose phone number starts with '517'."
+[12:47:12] [  40/202] ▶ start  qid=Complex_Retrieval_test:20  q="Retrieve the first name and last name of users who have watched 'Feast' and whose phone number starts with '517'."
+2026-06-22 12:47:28.524 | WARNING  | eval.psjs:compute_psjs:580 - PSJS execution failed — returning 0.0.  gold_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input \'AS\': expected\n  "!="\n  "%"\n  "*"\n  "+"\n  "-"\n  "/"\n  "<"\n  "<="\n  "<>"\n  "="\n  ">"\n  ">="\n  "AND"\n  "CALL"\n  "CREATE"\n  "DELETE"\n  "DETACH"\n  "FINISH"\n  "FOREACH"\n  "INSERT"\n  "LOAD"\n  "MATCH"\n  "MERGE"\n  "NODETACH"\n  "OPTIONAL"\n  "OR"\n  "REMOVE"\n  "RETURN"\n  "SET"\n  "UNION"\n  "UNWIND"\n  "USE"\n  "WITH"\n  "XOR"\n  "^"\n  "||"\n  <EOF> (line 1, column 170 (offset: 169))\n"MATCH (u:User)-[rtmp0:WATCHED]->(m:Movie {title: \'The Feast\'}) WHERE u.phone STARTS WITH collect(distinct id(m)) + collect(distinct id(u)) + collect(distinct id(rtmp0)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId1"\n                                                                                                                                                                          ^}' pred_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input \'AS\': expected\n  "!="\n  "%"\n  "*"\n  "+"\n  "-"\n  "/"\n  "<"\n  "<="\n  "<>"\n  "="\n  ">"\n  ">="\n  "AND"\n  "CALL"\n  "CREATE"\n  "DELETE"\n  "DETACH"\n  "FINISH"\n  "FOREACH"\n  "INSERT"\n  "LOAD"\n  "MATCH"\n  "MERGE"\n  "NODETACH"\n  "OPTIONAL"\n  "OR"\n  "REMOVE"\n  "RETURN"\n  "SET"\n  "UNION"\n  "UNWIND"\n  "USE"\n  "WITH"\n  "XOR"\n  "^"\n  "||"\n  <EOF> (line 1, column 170 (offset: 169))\n"MATCH (u:User)-[rtmp0:WATCHED]->(m:Movie {title: "The Feast"}) WHERE u.phone STARTS WITH collect(distinct id(m)) + collect(distinct id(u)) + collect(distinct id(rtmp0)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId2"\n                                                                                                                                                                          ^}'
+[12:47:28] [  40/202] ✔ done   qid=Complex_Retrieval_test:20  ea=True em=False psjs=0.0  t=?  runEA=0.432  wall=8m05s  ETA=32m45s
+[12:47:28] [  40/202] ✔ done   qid=Complex_Retrieval_test:20  ea=True em=False psjs=0.0  t=?  runEA=0.432  wall=8m05s  ETA=32m45s
+[12:47:28] [  41/202] ▶ start  qid=Complex_Retrieval_test:21  q="Find the average watchCount for the 'WATCHED' relationship between users who live in 'CT' and movies that belong to t..."
+[12:47:28] [  41/202] ▶ start  qid=Complex_Retrieval_test:21  q="Find the average watchCount for the 'WATCHED' relationship between users who live in 'CT' and movies that belong to t..."
+[12:47:33] [  41/202] ✔ done   qid=Complex_Retrieval_test:21  ea=False em=False psjs=0.0  t=?  runEA=0.421  wall=8m10s  ETA=32m04s
+[12:47:33] [  41/202] ✔ done   qid=Complex_Retrieval_test:21  ea=False em=False psjs=0.0  t=?  runEA=0.421  wall=8m10s  ETA=32m04s
+[12:47:33] [  42/202] ▶ start  qid=Complex_Retrieval_test:23  q="What are the titles of the movies that USers with the country 'US' and gender 'Male' have watched, and which belong t..."
+[12:47:33] [  42/202] ▶ start  qid=Complex_Retrieval_test:23  q="What are the titles of the movies that USers with the country 'US' and gender 'Male' have watched, and which belong t..."
+[12:47:38] [  42/202] ✔ done   qid=Complex_Retrieval_test:23  ea=False em=False psjs=1.0  t=?  runEA=0.410  wall=8m15s  ETA=31m25s
+[12:47:38] [  42/202] ✔ done   qid=Complex_Retrieval_test:23  ea=False em=False psjs=1.0  t=?  runEA=0.410  wall=8m15s  ETA=31m25s
+[12:47:38] [  43/202] ▶ start  qid=Complex_Retrieval_test:25  q="List the titles of movies that are of the 'Adgenture' genre and have been watched by users whose first name is 'Cam' ..."
+[12:47:38] [  43/202] ▶ start  qid=Complex_Retrieval_test:25  q="List the titles of movies that are of the 'Adgenture' genre and have been watched by users whose first name is 'Cam' ..."
+[12:47:52] [  43/202] ✔ done   qid=Complex_Retrieval_test:25  ea=True em=False psjs=1.0  t=?  runEA=0.425  wall=8m30s  ETA=31m24s
+[12:47:52] [  43/202] ✔ done   qid=Complex_Retrieval_test:25  ea=True em=False psjs=1.0  t=?  runEA=0.425  wall=8m30s  ETA=31m24s
+[12:47:52] [  44/202] ▶ start  qid=Complex_Retrieval_test:26  q="Find the phone numbers of users who use the IP address '75.52.208.182' and have watched a movie with the title 'Breat..."
+[12:47:52] [  44/202] ▶ start  qid=Complex_Retrieval_test:26  q="Find the phone numbers of users who use the IP address '75.52.208.182' and have watched a movie with the title 'Breat..."
+[12:48:04] [  44/202] ✔ done   qid=Complex_Retrieval_test:26  ea=True em=False psjs=1.0  t=?  runEA=0.439  wall=8m42s  ETA=31m13s
+[12:48:04] [  44/202] ✔ done   qid=Complex_Retrieval_test:26  ea=True em=False psjs=1.0  t=?  runEA=0.439  wall=8m42s  ETA=31m13s
+[12:48:04] [  45/202] ▶ start  qid=Complex_Retrieval_test:27  q="Find the first name, last name, and email of users who watched movies with 'Mindight' in the title and use the IP add..."
+[12:48:04] [  45/202] ▶ start  qid=Complex_Retrieval_test:27  q="Find the first name, last name, and email of users who watched movies with 'Mindight' in the title and use the IP add..."
+[12:48:16] [  45/202] ✔ done   qid=Complex_Retrieval_test:27  ea=True em=False psjs=1.0  t=?  runEA=0.452  wall=8m53s  ETA=31m00s
+[12:48:16] [  45/202] ✔ done   qid=Complex_Retrieval_test:27  ea=True em=False psjs=1.0  t=?  runEA=0.452  wall=8m53s  ETA=31m00s
+[12:48:16] [  46/202] ▶ start  qid=Complex_Retrieval_test:28  q="What are the titles of movies released in 2021 that United Statesers from the 'United States' have watched more than ..."
+[12:48:16] [  46/202] ▶ start  qid=Complex_Retrieval_test:28  q="What are the titles of movies released in 2021 that United Statesers from the 'United States' have watched more than ..."
+[12:48:41] [  46/202] ✔ done   qid=Complex_Retrieval_test:28  ea=False em=False psjs=0.21594202898550724  t=?  runEA=0.442  wall=9m18s  ETA=31m34s
+[12:48:41] [  46/202] ✔ done   qid=Complex_Retrieval_test:28  ea=False em=False psjs=0.21594202898550724  t=?  runEA=0.442  wall=9m18s  ETA=31m34s
+[12:48:41] [  47/202] ▶ start  qid=Complex_Retrieval_test:29  q="Retrieve the names of all genres associated with movies watched by users whose first name is 'Nickolws'."
+[12:48:41] [  47/202] ▶ start  qid=Complex_Retrieval_test:29  q="Retrieve the names of all genres associated with movies watched by users whose first name is 'Nickolws'."
+[12:48:54] [  47/202] ✔ done   qid=Complex_Retrieval_test:29  ea=False em=False psjs=1.0  t=?  runEA=0.432  wall=9m31s  ETA=31m24s
+[12:48:54] [  47/202] ✔ done   qid=Complex_Retrieval_test:29  ea=False em=False psjs=1.0  t=?  runEA=0.432  wall=9m31s  ETA=31m24s
+[12:48:54] [  48/202] ▶ start  qid=Complex_Retrieval_test:30  q="Find the email addresses of all female users from 'KY' who have watched movies that belong to the 'Animation' genre."
+[12:48:54] [  48/202] ▶ start  qid=Complex_Retrieval_test:30  q="Find the email addresses of all female users from 'KY' who have watched movies that belong to the 'Animation' genre."
+[12:49:10] [  48/202] ✔ done   qid=Complex_Retrieval_test:30  ea=True em=False psjs=1.0  t=?  runEA=0.444  wall=9m48s  ETA=31m26s
+[12:49:10] [  48/202] ✔ done   qid=Complex_Retrieval_test:30  ea=True em=False psjs=1.0  t=?  runEA=0.444  wall=9m48s  ETA=31m26s
+[12:49:10] [  49/202] ▶ start  qid=Complex_Retrieval_test:32  q="Find all United Statesers who watched movies released in 2021 and reside in the 'United States'. Return their first n..."
+[12:49:10] [  49/202] ▶ start  qid=Complex_Retrieval_test:32  q="Find all United Statesers who watched movies released in 2021 and reside in the 'United States'. Return their first n..."
+[12:49:32] [  49/202] ✔ done   qid=Complex_Retrieval_test:32  ea=True em=False psjs=1.0  t=?  runEA=0.457  wall=10m10s  ETA=31m44s
+[12:49:32] [  49/202] ✔ done   qid=Complex_Retrieval_test:32  ea=True em=False psjs=1.0  t=?  runEA=0.457  wall=10m10s  ETA=31m44s
+[12:49:32] [  50/202] ▶ start  qid=Complex_Retrieval_test:33  q="Retrieve the email addresses of users who use the IP address '181.20.168.229' and have 'Femlae' as their gender."
+[12:49:32] [  50/202] ▶ start  qid=Complex_Retrieval_test:33  q="Retrieve the email addresses of users who use the IP address '181.20.168.229' and have 'Femlae' as their gender."
+[12:49:48] [  50/202] ✔ done   qid=Complex_Retrieval_test:33  ea=True em=False psjs=1.0  t=?  runEA=0.468  wall=10m25s  ETA=31m39s
+[12:49:48] [  50/202] ✔ done   qid=Complex_Retrieval_test:33  ea=True em=False psjs=1.0  t=?  runEA=0.468  wall=10m25s  ETA=31m39s
+[12:49:48] [  51/202] ▶ start  qid=Complex_Retrieval_test:34  q="Find the movie titles that belong to the 'Thrilker' genre and were released in the year 2021."
+[12:49:48] [  51/202] ▶ start  qid=Complex_Retrieval_test:34  q="Find the movie titles that belong to the 'Thrilker' genre and were released in the year 2021."
+[12:50:05] [  51/202] ✔ done   qid=Complex_Retrieval_test:34  ea=True em=False psjs=1.0  t=?  runEA=0.479  wall=10m43s  ETA=31m42s
+[12:50:05] [  51/202] ✔ done   qid=Complex_Retrieval_test:34  ea=True em=False psjs=1.0  t=?  runEA=0.479  wall=10m43s  ETA=31m42s
+[12:50:05] [  52/202] ▶ start  qid=Complex_Retrieval_test:35  q="List the first name and last name of users from 'New York' who have watched the movie 'Hunters'."
+[12:50:05] [  52/202] ▶ start  qid=Complex_Retrieval_test:35  q="List the first name and last name of users from 'New York' who have watched the movie 'Hunters'."
+[12:50:18] [  52/202] ✔ done   qid=Complex_Retrieval_test:35  ea=True em=False psjs=1.0  t=?  runEA=0.490  wall=10m56s  ETA=31m31s
+[12:50:18] [  52/202] ✔ done   qid=Complex_Retrieval_test:35  ea=True em=False psjs=1.0  t=?  runEA=0.490  wall=10m56s  ETA=31m31s
+[12:50:18] [  53/202] ▶ start  qid=Complex_Retrieval_test:36  q="Find the average watch count for movies watched by users with the email domain 'REVERBNATION.COM'."
+[12:50:18] [  53/202] ▶ start  qid=Complex_Retrieval_test:36  q="Find the average watch count for movies watched by users with the email domain 'REVERBNATION.COM'."
+2026-06-22 12:50:23.649 | WARNING  | eval.psjs:compute_psjs:580 - PSJS execution failed — returning 0.0.  gold_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input \'AS\': expected\n  "!="\n  "%"\n  "*"\n  "+"\n  "-"\n  "/"\n  "<"\n  "<="\n  "<>"\n  "="\n  ">"\n  ">="\n  "AND"\n  "CALL"\n  "CREATE"\n  "DELETE"\n  "DETACH"\n  "FINISH"\n  "FOREACH"\n  "INSERT"\n  "LOAD"\n  "MATCH"\n  "MERGE"\n  "NODETACH"\n  "OPTIONAL"\n  "OR"\n  "REMOVE"\n  "RETURN"\n  "SET"\n  "UNION"\n  "UNWIND"\n  "USE"\n  "WITH"\n  "XOR"\n  "^"\n  "||"\n  <EOF> (line 1, column 139 (offset: 138))\n"MATCH (u:User)-[w:WATCHED]->(m:Movie) WHERE u.email ENDS WITH collect(distinct id(m)) + collect(distinct id(u)) + collect(distinct id(w)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId1"\n                                                                                                                                           ^}' pred_err=None
+[12:50:23] [  53/202] ✔ done   qid=Complex_Retrieval_test:36  ea=True em=False psjs=0.0  t=?  runEA=0.500  wall=11m00s  ETA=30m56s
+[12:50:23] [  53/202] ✔ done   qid=Complex_Retrieval_test:36  ea=True em=False psjs=0.0  t=?  runEA=0.500  wall=11m00s  ETA=30m56s
+[12:50:23] [  54/202] ▶ start  qid=Complex_Retrieval_test:37  q="Find the first names and United Stateser IDs of all United Statesers from the 'United States' who have watched movies..."
+[12:50:23] [  54/202] ▶ start  qid=Complex_Retrieval_test:37  q="Find the first names and United Stateser IDs of all United Statesers from the 'United States' who have watched movies..."
+[12:50:36] [  54/202] ✔ done   qid=Complex_Retrieval_test:37  ea=True em=False psjs=1.0  t=?  runEA=0.510  wall=11m13s  ETA=30m44s
+[12:50:36] [  54/202] ✔ done   qid=Complex_Retrieval_test:37  ea=True em=False psjs=1.0  t=?  runEA=0.510  wall=11m13s  ETA=30m44s
+[12:50:36] [  55/202] ▶ start  qid=Complex_Retrieval_test:38  q="What are the addresses of the IpAddress nodes that are used by female users from 'TX' and what are the first names of..."
+[12:50:36] [  55/202] ▶ start  qid=Complex_Retrieval_test:38  q="What are the addresses of the IpAddress nodes that are used by female users from 'TX' and what are the first names of..."
+[12:50:52] [  55/202] ✔ done   qid=Complex_Retrieval_test:38  ea=True em=False psjs=1.0  t=?  runEA=0.519  wall=11m29s  ETA=30m41s
+[12:50:52] [  55/202] ✔ done   qid=Complex_Retrieval_test:38  ea=True em=False psjs=1.0  t=?  runEA=0.519  wall=11m29s  ETA=30m41s
+[12:50:52] [  56/202] ▶ start  qid=Complex_Retrieval_test:39  q="Find the movies that have the 'Avtion' genre and were released after the year 2000, and return their titles and relea..."
+[12:50:52] [  56/202] ▶ start  qid=Complex_Retrieval_test:39  q="Find the movies that have the 'Avtion' genre and were released after the year 2000, and return their titles and relea..."
+[12:51:07] [  56/202] ✔ done   qid=Complex_Retrieval_test:39  ea=True em=False psjs=1.0  t=?  runEA=0.528  wall=11m44s  ETA=30m35s
+[12:51:07] [  56/202] ✔ done   qid=Complex_Retrieval_test:39  ea=True em=False psjs=1.0  t=?  runEA=0.528  wall=11m44s  ETA=30m35s
+[12:51:07] [  57/202] ▶ start  qid=Complex_Retrieval_test:40  q="Retrieve the first name of users who watched the movie 'Od' and use the IpAddress '219.8.210.108'."
+[12:51:07] [  57/202] ▶ start  qid=Complex_Retrieval_test:40  q="Retrieve the first name of users who watched the movie 'Od' and use the IpAddress '219.8.210.108'."
+[12:51:21] [  57/202] ✔ done   qid=Complex_Retrieval_test:40  ea=True em=False psjs=1.0  t=?  runEA=0.537  wall=11m58s  ETA=30m26s
+[12:51:21] [  57/202] ✔ done   qid=Complex_Retrieval_test:40  ea=True em=False psjs=1.0  t=?  runEA=0.537  wall=11m58s  ETA=30m26s
+[12:51:21] [  58/202] ▶ start  qid=Complex_Retrieval_test:41  q="Find the genres of movies watched by users with the last name 'Bacsh' and email 'cBacsh9b@issuu.com', and return the ..."
+[12:51:21] [  58/202] ▶ start  qid=Complex_Retrieval_test:41  q="Find the genres of movies watched by users with the last name 'Bacsh' and email 'cBacsh9b@issuu.com', and return the ..."
+[12:51:37] [  58/202] ✔ done   qid=Complex_Retrieval_test:41  ea=True em=False psjs=1.0  t=?  runEA=0.545  wall=12m14s  ETA=30m23s
+[12:51:37] [  58/202] ✔ done   qid=Complex_Retrieval_test:41  ea=True em=False psjs=1.0  t=?  runEA=0.545  wall=12m14s  ETA=30m23s
+[12:51:37] [  59/202] ▶ start  qid=Complex_Retrieval_test:42  q="Find all users who have watched movies in the 'Documentayr' genre and return their first name, last name, and the tit..."
+[12:51:37] [  59/202] ▶ start  qid=Complex_Retrieval_test:42  q="Find all users who have watched movies in the 'Documentayr' genre and return their first name, last name, and the tit..."
+[12:51:48] [  59/202] ✔ done   qid=Complex_Retrieval_test:42  ea=True em=False psjs=1.0  t=?  runEA=0.554  wall=12m25s  ETA=30m06s
+[12:51:48] [  59/202] ✔ done   qid=Complex_Retrieval_test:42  ea=True em=False psjs=1.0  t=?  runEA=0.554  wall=12m25s  ETA=30m06s
+[12:51:48] [  60/202] ▶ start  qid=Complex_Retrieval_test:43  q="Retrieve the addresses of all IP addresses United Statesed by female United Statesers from the 'United States' who ha..."
+[12:51:48] [  60/202] ▶ start  qid=Complex_Retrieval_test:43  q="Retrieve the addresses of all IP addresses United Statesed by female United Statesers from the 'United States' who ha..."
+2026-06-22 12:52:05.866 | WARNING  | eval.psjs:compute_psjs:580 - PSJS execution failed — returning 0.0.  gold_err=None pred_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Variable `rtmp1` not defined (line 2, column 195 (offset: 285))\n"  AND EXISTS { MATCH (u)-[rtmp1:WATCHED]->(ntmp0:Movie) } WITH collect(distinct elementId(ip)) + collect(distinct elementId(u)) + collect(distinct elementId(rtmp0)) + collect(distinct elementId(rtmp1)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId2"\n                                                                                                                                                                                                   ^}'
+[12:52:05] [  60/202] ✔ done   qid=Complex_Retrieval_test:43  ea=False em=False psjs=0.0  t=?  runEA=0.544  wall=12m43s  ETA=30m05s
+[12:52:05] [  60/202] ✔ done   qid=Complex_Retrieval_test:43  ea=False em=False psjs=0.0  t=?  runEA=0.544  wall=12m43s  ETA=30m05s
+[12:52:05] [  61/202] ▶ start  qid=Complex_Retrieval_test:44  q="Find the first name and last name of users who watched the movie 'kommer' and use an IP address that starts with '192'."
+[12:52:05] [  61/202] ▶ start  qid=Complex_Retrieval_test:44  q="Find the first name and last name of users who watched the movie 'kommer' and use an IP address that starts with '192'."
+2026-06-22 12:52:20.241 | WARNING  | eval.psjs:compute_psjs:580 - PSJS execution failed — returning 0.0.  gold_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input \'AS\': expected\n  "!="\n  "%"\n  "*"\n  "+"\n  "-"\n  "/"\n  "<"\n  "<="\n  "<>"\n  "="\n  ">"\n  ">="\n  "AND"\n  "CALL"\n  "CREATE"\n  "DELETE"\n  "DETACH"\n  "FINISH"\n  "FOREACH"\n  "INSERT"\n  "LOAD"\n  "MATCH"\n  "MERGE"\n  "NODETACH"\n  "OPTIONAL"\n  "OR"\n  "REMOVE"\n  "RETURN"\n  "SET"\n  "UNION"\n  "UNWIND"\n  "USE"\n  "WITH"\n  "XOR"\n  "^"\n  "||"\n  <EOF> (line 1, column 285 (offset: 284))\n"MATCH (u:User)-[rtmp0:WATCHED]->(m:Movie), (u)-[rtmp1:USES]->(ip:IpAddress) WHERE m.title = \'Den blomstertid nu kommer\' AND ip.address STARTS WITH collect(distinct id(ip)) + collect(distinct id(m)) + collect(distinct id(u)) + collect(distinct id(rtmp0)) + collect(distinct id(rtmp1)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId1"\n                                                                                                                                                                                                                                                                                             ^}' pred_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input \'AS\': expected\n  "!="\n  "%"\n  "*"\n  "+"\n  "-"\n  "/"\n  "<"\n  "<="\n  "<>"\n  "="\n  ">"\n  ">="\n  "AND"\n  "CALL"\n  "CREATE"\n  "DELETE"\n  "DETACH"\n  "FINISH"\n  "FOREACH"\n  "INSERT"\n  "LOAD"\n  "MATCH"\n  "MERGE"\n  "NODETACH"\n  "OPTIONAL"\n  "OR"\n  "REMOVE"\n  "RETURN"\n  "SET"\n  "UNION"\n  "UNWIND"\n  "USE"\n  "WITH"\n  "XOR"\n  "^"\n  "||"\n  <EOF> (line 1, column 269 (offset: 268))\n"MATCH (u:User)-[rtmp0:WATCHED]->(m:Movie {title: "Come True"}) MATCH (u)-[rtmp1:USES]->(ip:IpAddress) WHERE ip.address STARTS WITH collect(distinct id(ip)) + collect(distinct id(m)) + collect(distinct id(u)) + collect(distinct id(rtmp0)) + collect(distinct id(rtmp1)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId2"\n                                                                                                                                                                                                                                                                             ^}'
+[12:52:20] [  61/202] ✔ done   qid=Complex_Retrieval_test:44  ea=True em=False psjs=0.0  t=?  runEA=0.552  wall=12m57s  ETA=29m56s
+[12:52:20] [  61/202] ✔ done   qid=Complex_Retrieval_test:44  ea=True em=False psjs=0.0  t=?  runEA=0.552  wall=12m57s  ETA=29m56s
+[12:52:20] [  62/202] ▶ start  qid=Complex_Retrieval_test:45  q="What are the titles of the movies watched by users whose email domain is 'SPHINN.COM' and whose gender is 'Female'?"
+[12:52:20] [  62/202] ▶ start  qid=Complex_Retrieval_test:45  q="What are the titles of the movies watched by users whose email domain is 'SPHINN.COM' and whose gender is 'Female'?"
+2026-06-22 12:52:34.165 | WARNING  | eval.psjs:compute_psjs:580 - PSJS execution failed — returning 0.0.  gold_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input \'AS\': expected\n  "!="\n  "%"\n  "*"\n  "+"\n  "-"\n  "/"\n  "<"\n  "<="\n  "<>"\n  "="\n  ">"\n  ">="\n  "AND"\n  "CALL"\n  "CREATE"\n  "DELETE"\n  "DETACH"\n  "FINISH"\n  "FOREACH"\n  "INSERT"\n  "LOAD"\n  "MATCH"\n  "MERGE"\n  "NODETACH"\n  "OPTIONAL"\n  "OR"\n  "REMOVE"\n  "RETURN"\n  "SET"\n  "UNION"\n  "UNWIND"\n  "USE"\n  "WITH"\n  "XOR"\n  "^"\n  "||"\n  <EOF> (line 1, column 147 (offset: 146))\n"MATCH (u:User)-[rtmp0:WATCHED]->(m:Movie) WHERE u.email ENDS WITH collect(distinct id(m)) + collect(distinct id(u)) + collect(distinct id(rtmp0)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId1"\n                                                                                                                                                   ^}' pred_err=None
+[12:52:34] [  62/202] ✔ done   qid=Complex_Retrieval_test:45  ea=True em=False psjs=0.0  t=?  runEA=0.559  wall=13m11s  ETA=29m46s
+[12:52:34] [  62/202] ✔ done   qid=Complex_Retrieval_test:45  ea=True em=False psjs=0.0  t=?  runEA=0.559  wall=13m11s  ETA=29m46s
+[12:52:34] [  63/202] ▶ start  qid=Complex_Retrieval_test:46  q="Find users who have watched both 'Christmases' and at least one movie of the 'Comedy' genre. Return their first name,..."
+[12:52:34] [  63/202] ▶ start  qid=Complex_Retrieval_test:46  q="Find users who have watched both 'Christmases' and at least one movie of the 'Comedy' genre. Return their first name,..."
+[12:52:49] [  63/202] ✔ done   qid=Complex_Retrieval_test:46  ea=True em=False psjs=1.0  t=?  runEA=0.567  wall=13m27s  ETA=29m40s
+[12:52:49] [  63/202] ✔ done   qid=Complex_Retrieval_test:46  ea=True em=False psjs=1.0  t=?  runEA=0.567  wall=13m27s  ETA=29m40s
+[12:52:49] [  64/202] ▶ start  qid=Complex_Retrieval_test:47  q="Find all United Statesers from 'United States' who have watched movies released in the year 2021, and return their fi..."
+[12:52:49] [  64/202] ▶ start  qid=Complex_Retrieval_test:47  q="Find all United Statesers from 'United States' who have watched movies released in the year 2021, and return their fi..."
+[12:53:08] [  64/202] ✔ done   qid=Complex_Retrieval_test:47  ea=True em=False psjs=0.45217391304347826  t=?  runEA=0.574  wall=13m45s  ETA=29m39s
+[12:53:08] [  64/202] ✔ done   qid=Complex_Retrieval_test:47  ea=True em=False psjs=0.45217391304347826  t=?  runEA=0.574  wall=13m45s  ETA=29m39s
+[12:53:08] [  65/202] ▶ start  qid=Complex_Retrieval_test:48  q='Retrieve the email addresses of all users who use an IP address that is also used by another user who has watched a m...'
+[12:53:08] [  65/202] ▶ start  qid=Complex_Retrieval_test:48  q='Retrieve the email addresses of all users who use an IP address that is also used by another user who has watched a m...'
+2026-06-22 12:53:25.772 | WARNING  | eval.psjs:compute_psjs:580 - PSJS execution failed — returning 0.0.  gold_err=None pred_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Variable `rtmp2` not defined (line 3, column 211 (offset: 404))\n"} WITH collect(distinct elementId(ip)) + collect(distinct elementId(u1)) + collect(distinct elementId(u2)) + collect(distinct elementId(rtmp0)) + collect(distinct elementId(rtmp1)) + collect(distinct elementId(rtmp2)) + collect(distinct elementId(rtmp3)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId2"\n                                                                                                                                                                                                                   ^}'
+[12:53:25] [  65/202] ✔ done   qid=Complex_Retrieval_test:48  ea=True em=False psjs=0.0  t=?  runEA=0.581  wall=14m02s  ETA=29m36s
+[12:53:25] [  65/202] ✔ done   qid=Complex_Retrieval_test:48  ea=True em=False psjs=0.0  t=?  runEA=0.581  wall=14m02s  ETA=29m36s
+[12:53:25] [  66/202] ▶ start  qid=Complex_Retrieval_test:50  q="Find the IP address used by the user named 'Florjs Wagon' and list all the movies watched by other users who also use..."
+[12:53:25] [  66/202] ▶ start  qid=Complex_Retrieval_test:50  q="Find the IP address used by the user named 'Florjs Wagon' and list all the movies watched by other users who also use..."
+[12:53:38] [  66/202] ✔ done   qid=Complex_Retrieval_test:50  ea=True em=False psjs=1.0  t=?  runEA=0.587  wall=14m15s  ETA=29m22s
+[12:53:38] [  66/202] ✔ done   qid=Complex_Retrieval_test:50  ea=True em=False psjs=1.0  t=?  runEA=0.587  wall=14m15s  ETA=29m22s
+[12:53:38] [  67/202] ▶ start  qid=Complex_Retrieval_test:52  q="Find United Statesers from the 'United States' who have watched movies with the genre 'Fantasy' and return their firs..."
+[12:53:38] [  67/202] ▶ start  qid=Complex_Retrieval_test:52  q="Find United Statesers from the 'United States' who have watched movies with the genre 'Fantasy' and return their firs..."
+[12:53:54] [  67/202] ✔ done   qid=Complex_Retrieval_test:52  ea=True em=False psjs=1.0  t=?  runEA=0.594  wall=14m31s  ETA=29m15s
+[12:53:54] [  67/202] ✔ done   qid=Complex_Retrieval_test:52  ea=True em=False psjs=1.0  t=?  runEA=0.594  wall=14m31s  ETA=29m15s
+[12:53:54] [  68/202] ▶ start  qid=Complex_Retrieval_test:54  q="What are the names of the genres of movies watched by users whose first name is 'Andriana' and last name is 'Gae'?"
+[12:53:54] [  68/202] ▶ start  qid=Complex_Retrieval_test:54  q="What are the names of the genres of movies watched by users whose first name is 'Andriana' and last name is 'Gae'?"
+[12:54:07] [  68/202] ✔ done   qid=Complex_Retrieval_test:54  ea=False em=False psjs=1.0  t=?  runEA=0.585  wall=14m44s  ETA=29m02s
+[12:54:07] [  68/202] ✔ done   qid=Complex_Retrieval_test:54  ea=False em=False psjs=1.0  t=?  runEA=0.585  wall=14m44s  ETA=29m02s
+[12:54:07] [  69/202] ▶ start  qid=Complex_Retrieval_test:55  q="Find the IP addresses used by female users from 'CT' who have watched the movie 'Killers'."
+[12:54:07] [  69/202] ▶ start  qid=Complex_Retrieval_test:55  q="Find the IP addresses used by female users from 'CT' who have watched the movie 'Killers'."
+[12:54:19] [  69/202] ✔ done   qid=Complex_Retrieval_test:55  ea=True em=False psjs=1.0  t=?  runEA=0.591  wall=14m56s  ETA=28m47s
+[12:54:19] [  69/202] ✔ done   qid=Complex_Retrieval_test:55  ea=True em=False psjs=1.0  t=?  runEA=0.591  wall=14m56s  ETA=28m47s
+[12:54:19] [  70/202] ▶ start  qid=Complex_Retrieval_test:56  q="Find the first name and last name of all users who watched movies that have the genre 'Doccumentary'."
+[12:54:19] [  70/202] ▶ start  qid=Complex_Retrieval_test:56  q="Find the first name and last name of all users who watched movies that have the genre 'Doccumentary'."
+[12:54:35] [  70/202] ✔ done   qid=Complex_Retrieval_test:56  ea=True em=False psjs=1.0  t=?  runEA=0.597  wall=15m13s  ETA=28m41s
+[12:54:35] [  70/202] ✔ done   qid=Complex_Retrieval_test:56  ea=True em=False psjs=1.0  t=?  runEA=0.597  wall=15m13s  ETA=28m41s
+[12:54:35] [  71/202] ▶ start  qid=Complex_Retrieval_test:58  q="Find the titles of movies released in the year 2021 that were watched by United Statesers from the country 'United St..."
+[12:54:35] [  71/202] ▶ start  qid=Complex_Retrieval_test:58  q="Find the titles of movies released in the year 2021 that were watched by United Statesers from the country 'United St..."
+[12:54:53] [  71/202] ✔ done   qid=Complex_Retrieval_test:58  ea=False em=False psjs=1.0  t=?  runEA=0.588  wall=15m30s  ETA=28m36s
+[12:54:53] [  71/202] ✔ done   qid=Complex_Retrieval_test:58  ea=False em=False psjs=1.0  t=?  runEA=0.588  wall=15m30s  ETA=28m36s
+[12:54:53] [  72/202] ▶ start  qid=Complex_Retrieval_test:60  q="Find the email addresses of female users from 'US' who watched a movie with the title 'Matrix'."
+[12:54:53] [  72/202] ▶ start  qid=Complex_Retrieval_test:60  q="Find the email addresses of female users from 'US' who watched a movie with the title 'Matrix'."
+[12:55:09] [  72/202] ✔ done   qid=Complex_Retrieval_test:60  ea=False em=False psjs=0.0  t=?  runEA=0.580  wall=15m46s  ETA=28m28s
+[12:55:09] [  72/202] ✔ done   qid=Complex_Retrieval_test:60  ea=False em=False psjs=0.0  t=?  runEA=0.580  wall=15m46s  ETA=28m28s
+[12:55:09] [  73/202] ▶ start  qid=Complex_Retrieval_test:62  q="What are the addresses of IP addresses used by female users from 'York' who have watched a movie with the title 'Mont..."
+[12:55:09] [  73/202] ▶ start  qid=Complex_Retrieval_test:62  q="What are the addresses of IP addresses used by female users from 'York' who have watched a movie with the title 'Mont..."
+Received notification from DBMS server: {severity: WARNING} {code: Neo.ClientNotification.Statement.UnknownPropertyKeyWarning} {category: UNRECOGNIZED} {title: The provided property key is not in the database} {description: One of the property names in your query is not available in the database, make sure you didn't misspell it or that the label is available when you run this statement in your application (the missing property name is: city)} {position: line: 2, column: 41, offset: 79} for query: 'MATCH (u:User)-[:USES]->(ip:IpAddress)\nWHERE u.gender = "Female" AND toLower(u.city) = toLower("York")\n  AND EXISTS {\n    MATCH (u)-[:WATCHED]->(m:Movie {title: "Monte Carlo"})\n    RETURN m\n  }\nRETURN DISTINCT ip.address'
+Received notification from DBMS server: {severity: WARNING} {code: Neo.ClientNotification.Statement.UnknownPropertyKeyWarning} {category: UNRECOGNIZED} {title: The provided property key is not in the database} {description: One of the property names in your query is not available in the database, make sure you didn't misspell it or that the label is available when you run this statement in your application (the missing property name is: city)} {position: line: 1, column: 26, offset: 25} for query: 'MATCH (n:`User`) WHERE n.`city` = $v RETURN count(n) > 0 AS ok LIMIT 1'
+Received notification from DBMS server: {severity: WARNING} {code: Neo.ClientNotification.Statement.UnknownPropertyKeyWarning} {category: UNRECOGNIZED} {title: The provided property key is not in the database} {description: One of the property names in your query is not available in the database, make sure you didn't misspell it or that the label is available when you run this statement in your application (the missing property name is: city)} {position: line: 1, column: 26, offset: 25} for query: 'MATCH (n:`User`) WHERE n.`city` IS NOT NULL WITH DISTINCT toString(n.`city`) AS value WITH value, apoc.text.levenshteinSimilarity(toLower(value), toLower($m)) AS sim WHERE sim >= $thr RETURN value ORDER BY sim DESC LIMIT $k'
+Received notification from DBMS server: {severity: WARNING} {code: Neo.ClientNotification.Statement.UnknownPropertyKeyWarning} {category: UNRECOGNIZED} {title: The provided property key is not in the database} {description: One of the property names in your query is not available in the database, make sure you didn't misspell it or that the label is available when you run this statement in your application (the missing property name is: city)} {position: line: 1, column: 70, offset: 69} for query: 'MATCH (n:`User`) WHERE n.`city` IS NOT NULL WITH DISTINCT toString(n.`city`) AS value WITH value, apoc.text.levenshteinSimilarity(toLower(value), toLower($m)) AS sim WHERE sim >= $thr RETURN value ORDER BY sim DESC LIMIT $k'
+Received notification from DBMS server: {severity: WARNING} {code: Neo.ClientNotification.Statement.UnknownPropertyKeyWarning} {category: UNRECOGNIZED} {title: The provided property key is not in the database} {description: One of the property names in your query is not available in the database, make sure you didn't misspell it or that the label is available when you run this statement in your application (the missing property name is: city)} {position: line: 1, column: 26, offset: 25} for query: 'MATCH (n:`User`) WHERE n.`city` IS NOT NULL RETURN DISTINCT toString(n.`city`) AS value LIMIT $cap'
+Received notification from DBMS server: {severity: WARNING} {code: Neo.ClientNotification.Statement.UnknownPropertyKeyWarning} {category: UNRECOGNIZED} {title: The provided property key is not in the database} {description: One of the property names in your query is not available in the database, make sure you didn't misspell it or that the label is available when you run this statement in your application (the missing property name is: city)} {position: line: 1, column: 72, offset: 71} for query: 'MATCH (n:`User`) WHERE n.`city` IS NOT NULL RETURN DISTINCT toString(n.`city`) AS value LIMIT $cap'
+2026-06-22 12:55:24.921 | WARNING  | eval.psjs:compute_psjs:580 - PSJS execution failed — returning 0.0.  gold_err=None pred_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input \'\': expected\n  ","\n  "CALL"\n  "CREATE"\n  "DELETE"\n  "DETACH"\n  "FINISH"\n  "FOREACH"\n  "INSERT"\n  "LIMIT"\n  "LOAD"\n  "MATCH"\n  "MERGE"\n  "NODETACH"\n  "OPTIONAL"\n  "ORDER"\n  "REMOVE"\n  "RETURN"\n  "SET"\n  "SKIP"\n  "UNION"\n  "UNWIND"\n  "USE"\n  "WITH"\n  "}" (line 2, column 280 (offset: 349))\n"  AND EXISTS { MATCH (u)-[rtmp1:WATCHED]->(m:Movie {title: "Monte Carlo"}) WITH collect(distinct elementId(ip)) + collect(distinct elementId(u)) + collect(distinct elementId(rtmp0)) + collect(distinct elementId(rtmp1)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId2"\n                                                                                                                                                                                                                                                                                        ^}'
+[12:55:24] [  73/202] ✔ done   qid=Complex_Retrieval_test:62  ea=False em=False psjs=0.0  t=?  runEA=0.571  wall=16m02s  ETA=28m19s
+[12:55:24] [  73/202] ✔ done   qid=Complex_Retrieval_test:62  ea=False em=False psjs=0.0  t=?  runEA=0.571  wall=16m02s  ETA=28m19s
+[12:55:24] [  74/202] ▶ start  qid=Complex_Retrieval_test:63  q="Find the first names of all users who watched the movie 'pinocchio' and use the IP address '192.54.162.135'."
+[12:55:24] [  74/202] ▶ start  qid=Complex_Retrieval_test:63  q="Find the first names of all users who watched the movie 'pinocchio' and use the IP address '192.54.162.135'."
+[12:55:35] [  74/202] ✔ done   qid=Complex_Retrieval_test:63  ea=True em=False psjs=1.0  t=?  runEA=0.577  wall=16m13s  ETA=28m02s
+[12:55:35] [  74/202] ✔ done   qid=Complex_Retrieval_test:63  ea=True em=False psjs=1.0  t=?  runEA=0.577  wall=16m13s  ETA=28m02s
+[12:55:35] [  75/202] ▶ start  qid=Complex_Retrieval_test:64  q="What are the titles of movies that have the genre 'Horfor' and were watched by users with the last name 'Kleiser'?"
+[12:55:35] [  75/202] ▶ start  qid=Complex_Retrieval_test:64  q="What are the titles of movies that have the genre 'Horfor' and were watched by users with the last name 'Kleiser'?"
+[12:55:48] [  75/202] ✔ done   qid=Complex_Retrieval_test:64  ea=True em=False psjs=1.0  t=?  runEA=0.583  wall=16m26s  ETA=27m49s
+[12:55:48] [  75/202] ✔ done   qid=Complex_Retrieval_test:64  ea=True em=False psjs=1.0  t=?  runEA=0.583  wall=16m26s  ETA=27m49s
+[12:55:48] [  76/202] ▶ start  qid=Complex_Retrieval_test:65  q="Find the emails of users who have watched the movie 'Huntter Hunter' and use an IP address that contains '192.54' in ..."
+[12:55:48] [  76/202] ▶ start  qid=Complex_Retrieval_test:65  q="Find the emails of users who have watched the movie 'Huntter Hunter' and use an IP address that contains '192.54' in ..."
+[12:55:59] [  76/202] ✔ done   qid=Complex_Retrieval_test:65  ea=True em=False psjs=1.0  t=?  runEA=0.589  wall=16m37s  ETA=27m32s
+[12:55:59] [  76/202] ✔ done   qid=Complex_Retrieval_test:65  ea=True em=False psjs=1.0  t=?  runEA=0.589  wall=16m37s  ETA=27m32s
+[12:55:59] [  77/202] ▶ start  qid=Complex_Retrieval_test:66  q="Find the first name, last name, and email of users who have watched movies in the 'Comedyy' genre and use the IP addr..."
+[12:55:59] [  77/202] ▶ start  qid=Complex_Retrieval_test:66  q="Find the first name, last name, and email of users who have watched movies in the 'Comedyy' genre and use the IP addr..."
+[12:56:12] [  77/202] ✔ done   qid=Complex_Retrieval_test:66  ea=True em=False psjs=1.0  t=?  runEA=0.595  wall=16m49s  ETA=27m18s
+[12:56:12] [  77/202] ✔ done   qid=Complex_Retrieval_test:66  ea=True em=False psjs=1.0  t=?  runEA=0.595  wall=16m49s  ETA=27m18s
+[12:56:12] [  78/202] ▶ start  qid=Complex_Retrieval_test:67  q="Retrieve the movie titles and release years for movies watched by users whose first name is 'Malcolm' and who reside ..."
+[12:56:12] [  78/202] ▶ start  qid=Complex_Retrieval_test:67  q="Retrieve the movie titles and release years for movies watched by users whose first name is 'Malcolm' and who reside ..."
+[12:56:25] [  78/202] ✔ done   qid=Complex_Retrieval_test:67  ea=True em=False psjs=1.0  t=?  runEA=0.600  wall=17m03s  ETA=27m06s
+[12:56:25] [  78/202] ✔ done   qid=Complex_Retrieval_test:67  ea=True em=False psjs=1.0  t=?  runEA=0.600  wall=17m03s  ETA=27m06s
+[12:56:25] [  79/202] ▶ start  qid=Complex_Retrieval_test:69  q="What are the titles of movies in the 'Animaion' genre that have been watched by users with the last name 'Woollhead'?"
+[12:56:25] [  79/202] ▶ start  qid=Complex_Retrieval_test:69  q="What are the titles of movies in the 'Animaion' genre that have been watched by users with the last name 'Woollhead'?"
+[12:56:36] [  79/202] ✔ done   qid=Complex_Retrieval_test:69  ea=True em=False psjs=1.0  t=?  runEA=0.605  wall=17m13s  ETA=26m48s
+[12:56:36] [  79/202] ✔ done   qid=Complex_Retrieval_test:69  ea=True em=False psjs=1.0  t=?  runEA=0.605  wall=17m13s  ETA=26m48s
+[12:56:36] [  80/202] ▶ start  qid=Complex_Retrieval_test:73  q="Find the email addresses of users who have watched movies with the title 'Chasing Ghosts' more than once."
+[12:56:36] [  80/202] ▶ start  qid=Complex_Retrieval_test:73  q="Find the email addresses of users who have watched movies with the title 'Chasing Ghosts' more than once."
+[12:56:48] [  80/202] ✔ done   qid=Complex_Retrieval_test:73  ea=True em=False psjs=1.0  t=?  runEA=0.610  wall=17m26s  ETA=26m35s
+[12:56:48] [  80/202] ✔ done   qid=Complex_Retrieval_test:73  ea=True em=False psjs=1.0  t=?  runEA=0.610  wall=17m26s  ETA=26m35s
+[12:56:48] [  81/202] ▶ start  qid=Complex_Retrieval_test:74  q="List the phone numbers of female United Statesers from the 'United States' who have watched movies that belong to the..."
+[12:56:48] [  81/202] ▶ start  qid=Complex_Retrieval_test:74  q="List the phone numbers of female United Statesers from the 'United States' who have watched movies that belong to the..."
+[12:57:08] [  81/202] ✔ done   qid=Complex_Retrieval_test:74  ea=False em=False psjs=1.0  t=?  runEA=0.603  wall=17m45s  ETA=26m30s
+[12:57:08] [  81/202] ✔ done   qid=Complex_Retrieval_test:74  ea=False em=False psjs=1.0  t=?  runEA=0.603  wall=17m45s  ETA=26m30s
+[12:57:08] [  82/202] ▶ start  qid=Complex_Retrieval_test:75  q="Find the average watch count for movies watched by users with the first name 'cam' and last name 'Rahl' who use IP ad..."
+[12:57:08] [  82/202] ▶ start  qid=Complex_Retrieval_test:75  q="Find the average watch count for movies watched by users with the first name 'cam' and last name 'Rahl' who use IP ad..."
+2026-06-22 12:57:13.655 | WARNING  | eval.psjs:compute_psjs:580 - PSJS execution failed — returning 0.0.  gold_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input \'AS\': expected\n  "!="\n  "%"\n  "*"\n  "+"\n  "-"\n  "/"\n  "<"\n  "<="\n  "<>"\n  "="\n  ">"\n  ">="\n  "AND"\n  "CALL"\n  "CREATE"\n  "DELETE"\n  "DETACH"\n  "FINISH"\n  "FOREACH"\n  "INSERT"\n  "LOAD"\n  "MATCH"\n  "MERGE"\n  "NODETACH"\n  "OPTIONAL"\n  "OR"\n  "REMOVE"\n  "RETURN"\n  "SET"\n  "UNION"\n  "UNWIND"\n  "USE"\n  "WITH"\n  "XOR"\n  "^"\n  "||"\n  <EOF> (line 1, column 283 (offset: 282))\n"MATCH (u:User)-[w:WATCHED]->(m:Movie), (u)-[rtmp0:USES]->(ip:IpAddress) WHERE u.firstName = \'Cam\' AND u.lastName = \'Rahl\' AND ip.address STARTS WITH collect(distinct id(ip)) + collect(distinct id(m)) + collect(distinct id(u)) + collect(distinct id(rtmp0)) + collect(distinct id(w)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId1"\n                                                                                                                                                                                                                                                                                           ^}' pred_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input \'*\': expected "+" or "-" (line 1, column 158 (offset: 157))\n"MATCH (u:User)-[rtmp0:USES]->(ip:IpAddress) WHERE toLower(u.firstName) = toLower("cam") AND toLower(u.lastName) = toLower("Rahl") AND ip.address STARTS WITH * MATCH (u)-[w:WATCHED]->(m:Movie) WITH collect(distinct id(ip)) + collect(distinct id(m)) + collect(distinct id(u)) + collect(distinct id(rtmp0)) + collect(distinct id(w)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId2"\n                                                                                                                                                              ^}'
+[12:57:13] [  82/202] ✔ done   qid=Complex_Retrieval_test:75  ea=True em=False psjs=0.0  t=?  runEA=0.608  wall=17m50s  ETA=26m06s
+[12:57:13] [  82/202] ✔ done   qid=Complex_Retrieval_test:75  ea=True em=False psjs=0.0  t=?  runEA=0.608  wall=17m50s  ETA=26m06s
+[12:57:13] [  83/202] ▶ start  qid=Complex_Retrieval_test:76  q="Find all United Statesers who have watched movies released in 2021 and are from the country 'United States'. Return t..."
+[12:57:13] [  83/202] ▶ start  qid=Complex_Retrieval_test:76  q="Find all United Statesers who have watched movies released in 2021 and are from the country 'United States'. Return t..."
+[12:57:30] [  83/202] ✔ done   qid=Complex_Retrieval_test:76  ea=True em=False psjs=1.0  t=?  runEA=0.613  wall=18m07s  ETA=25m59s
+[12:57:30] [  83/202] ✔ done   qid=Complex_Retrieval_test:76  ea=True em=False psjs=1.0  t=?  runEA=0.613  wall=18m07s  ETA=25m59s
+[12:57:30] [  84/202] ▶ start  qid=Complex_Retrieval_test:77  q="What are the addresses of all IpAddress nodes used by users whose first name is 'Eda' and last name is 'Snee'? Also, ..."
+[12:57:30] [  84/202] ▶ start  qid=Complex_Retrieval_test:77  q="What are the addresses of all IpAddress nodes used by users whose first name is 'Eda' and last name is 'Snee'? Also, ..."
+[12:57:46] [  84/202] ✔ done   qid=Complex_Retrieval_test:77  ea=True em=False psjs=1.0  t=?  runEA=0.617  wall=18m23s  ETA=25m49s
+[12:57:46] [  84/202] ✔ done   qid=Complex_Retrieval_test:77  ea=True em=False psjs=1.0  t=?  runEA=0.617  wall=18m23s  ETA=25m49s
+[12:57:46] [  85/202] ▶ start  qid=Complex_Retrieval_test:78  q="Find the first name and last name of users who have watched a movie that has the genre 'Animatioon'."
+[12:57:46] [  85/202] ▶ start  qid=Complex_Retrieval_test:78  q="Find the first name and last name of users who have watched a movie that has the genre 'Animatioon'."
+[12:58:00] [  85/202] ✔ done   qid=Complex_Retrieval_test:78  ea=True em=False psjs=1.0  t=?  runEA=0.622  wall=18m37s  ETA=25m38s
+[12:58:00] [  85/202] ✔ done   qid=Complex_Retrieval_test:78  ea=True em=False psjs=1.0  t=?  runEA=0.622  wall=18m37s  ETA=25m38s
+[12:58:00] [  86/202] ▶ start  qid=Complex_Retrieval_test:79  q="Retrieve the movie titles released in 2021 that are associated with the 'Advetnure' genre, and also return the first ..."
+[12:58:00] [  86/202] ▶ start  qid=Complex_Retrieval_test:79  q="Retrieve the movie titles released in 2021 that are associated with the 'Advetnure' genre, and also return the first ..."
+[12:58:13] [  86/202] ✔ done   qid=Complex_Retrieval_test:79  ea=True em=False psjs=1.0  t=?  runEA=0.627  wall=18m50s  ETA=25m25s
+[12:58:13] [  86/202] ✔ done   qid=Complex_Retrieval_test:79  ea=True em=False psjs=1.0  t=?  runEA=0.627  wall=18m50s  ETA=25m25s
+[12:58:13] [  87/202] ▶ start  qid=Complex_Retrieval_test:80  q="Find all United Statesers from the 'United States' whose email contains 'rambler.ru' and have watched movies released..."
+[12:58:13] [  87/202] ▶ start  qid=Complex_Retrieval_test:80  q="Find all United Statesers from the 'United States' whose email contains 'rambler.ru' and have watched movies released..."
+[12:58:28] [  87/202] ✔ done   qid=Complex_Retrieval_test:80  ea=True em=False psjs=1.0  t=?  runEA=0.631  wall=19m05s  ETA=25m14s
+[12:58:28] [  87/202] ✔ done   qid=Complex_Retrieval_test:80  ea=True em=False psjs=1.0  t=?  runEA=0.631  wall=19m05s  ETA=25m14s
+[12:58:28] [  88/202] ▶ start  qid=Complex_Retrieval_test:82  q="Retrieve the titles of movies that belong to the 'Adventure' genre and have been watched by United Statesers from the..."
+[12:58:28] [  88/202] ▶ start  qid=Complex_Retrieval_test:82  q="Retrieve the titles of movies that belong to the 'Adventure' genre and have been watched by United Statesers from the..."
+[12:58:42] [  88/202] ✔ done   qid=Complex_Retrieval_test:82  ea=False em=False psjs=1.0  t=?  runEA=0.624  wall=19m19s  ETA=25m02s
+[12:58:42] [  88/202] ✔ done   qid=Complex_Retrieval_test:82  ea=False em=False psjs=1.0  t=?  runEA=0.624  wall=19m19s  ETA=25m02s
+[12:58:42] [  89/202] ▶ start  qid=Complex_Retrieval_test:83  q="Find the average 'watchCount' for movies watched by users whose first name is 'Rebecca' and who live in 'CA'."
+[12:58:42] [  89/202] ▶ start  qid=Complex_Retrieval_test:83  q="Find the average 'watchCount' for movies watched by users whose first name is 'Rebecca' and who live in 'CA'."
+[12:58:47] [  89/202] ✔ done   qid=Complex_Retrieval_test:83  ea=True em=False psjs=1.0  t=?  runEA=0.628  wall=19m24s  ETA=24m38s
+[12:58:47] [  89/202] ✔ done   qid=Complex_Retrieval_test:83  ea=True em=False psjs=1.0  t=?  runEA=0.628  wall=19m24s  ETA=24m38s
+[12:58:47] [  90/202] ▶ start  qid=Complex_Retrieval_test:84  q="For users who use the IP address '150.84.38.35', find the titles of movies they've watched that are not of the 'Cmedy..."
+[12:58:47] [  90/202] ▶ start  qid=Complex_Retrieval_test:84  q="For users who use the IP address '150.84.38.35', find the titles of movies they've watched that are not of the 'Cmedy..."
+[12:58:51] [  90/202] ✔ done   qid=Complex_Retrieval_test:84  ea=False em=False psjs=0.0  t=?  runEA=0.621  wall=19m28s  ETA=24m13s
+[12:58:51] [  90/202] ✔ done   qid=Complex_Retrieval_test:84  ea=False em=False psjs=0.0  t=?  runEA=0.621  wall=19m28s  ETA=24m13s
+[12:58:51] [  91/202] ▶ start  qid=Complex_Retrieval_test:85  q="Find the number of users with the gender 'Mlae' who have watched movies released after the year 2000 and belong to th..."
+[12:58:51] [  91/202] ▶ start  qid=Complex_Retrieval_test:85  q="Find the number of users with the gender 'Mlae' who have watched movies released after the year 2000 and belong to th..."
+[12:58:55] [  91/202] ✔ done   qid=Complex_Retrieval_test:85  ea=False em=False psjs=0.0  t=?  runEA=0.614  wall=19m32s  ETA=23m50s
+[12:58:55] [  91/202] ✔ done   qid=Complex_Retrieval_test:85  ea=False em=False psjs=0.0  t=?  runEA=0.614  wall=19m32s  ETA=23m50s
+[12:58:55] [  92/202] ▶ start  qid=Complex_Retrieval_test:86  q="Find all users who watched movies in the 'DOCUMENTARY' genre and list their first names and last names."
+[12:58:55] [  92/202] ▶ start  qid=Complex_Retrieval_test:86  q="Find all users who watched movies in the 'DOCUMENTARY' genre and list their first names and last names."
+[12:59:08] [  92/202] ✔ done   qid=Complex_Retrieval_test:86  ea=False em=False psjs=1.0  t=?  runEA=0.607  wall=19m45s  ETA=23m37s
+[12:59:08] [  92/202] ✔ done   qid=Complex_Retrieval_test:86  ea=False em=False psjs=1.0  t=?  runEA=0.607  wall=19m45s  ETA=23m37s
+[12:59:08] [  93/202] ▶ start  qid=Complex_Retrieval_test:87  q="What are the addresses of the IpAddresses used by users who have watched the movie 'Complicated'?"
+[12:59:08] [  93/202] ▶ start  qid=Complex_Retrieval_test:87  q="What are the addresses of the IpAddresses used by users who have watched the movie 'Complicated'?"
+[12:59:21] [  93/202] ✔ done   qid=Complex_Retrieval_test:87  ea=True em=False psjs=0.8666666666666667  t=?  runEA=0.611  wall=19m58s  ETA=23m24s
+[12:59:21] [  93/202] ✔ done   qid=Complex_Retrieval_test:87  ea=True em=False psjs=0.8666666666666667  t=?  runEA=0.611  wall=19m58s  ETA=23m24s
+[12:59:21] [  94/202] ▶ start  qid=Complex_Retrieval_test:88  q="Find the first name and last name of United Statesers from 'United States' who have watched movies released in the ye..."
+[12:59:21] [  94/202] ▶ start  qid=Complex_Retrieval_test:88  q="Find the first name and last name of United Statesers from 'United States' who have watched movies released in the ye..."
+[12:59:34] [  94/202] ✔ done   qid=Complex_Retrieval_test:88  ea=True em=False psjs=1.0  t=?  runEA=0.615  wall=20m11s  ETA=23m11s
+[12:59:34] [  94/202] ✔ done   qid=Complex_Retrieval_test:88  ea=True em=False psjs=1.0  t=?  runEA=0.615  wall=20m11s  ETA=23m11s
+[12:59:34] [  95/202] ▶ start  qid=Complex_Retrieval_test:89  q="For each user who uses the '247.19.46.94', how many times have they watched a movie?"
+[12:59:34] [  95/202] ▶ start  qid=Complex_Retrieval_test:89  q="For each user who uses the '247.19.46.94', how many times have they watched a movie?"
+[12:59:38] [  95/202] ✔ done   qid=Complex_Retrieval_test:89  ea=False em=False psjs=0.0  t=?  runEA=0.609  wall=20m15s  ETA=22m49s
+[12:59:38] [  95/202] ✔ done   qid=Complex_Retrieval_test:89  ea=False em=False psjs=0.0  t=?  runEA=0.609  wall=20m15s  ETA=22m49s
+[12:59:38] [  96/202] ▶ start  qid=Complex_Retrieval_test:90  q="List the first name and last name of all users who both use the IP address '247.19.46.94' and have watched a movie wi..."
+[12:59:38] [  96/202] ▶ start  qid=Complex_Retrieval_test:90  q="List the first name and last name of all users who both use the IP address '247.19.46.94' and have watched a movie wi..."
+[12:59:49] [  96/202] ✔ done   qid=Complex_Retrieval_test:90  ea=True em=False psjs=1.0  t=?  runEA=0.613  wall=20m26s  ETA=22m33s
+[12:59:49] [  96/202] ✔ done   qid=Complex_Retrieval_test:90  ea=True em=False psjs=1.0  t=?  runEA=0.613  wall=20m26s  ETA=22m33s
+[12:59:49] [  97/202] ▶ start  qid=Complex_Retrieval_test:92  q="What are the titles of movies released in 2021 that United Statesers from the country 'United States' have watched, a..."
+[12:59:49] [  97/202] ▶ start  qid=Complex_Retrieval_test:92  q="What are the titles of movies released in 2021 that United Statesers from the country 'United States' have watched, a..."
+[13:00:06] [  97/202] ✔ done   qid=Complex_Retrieval_test:92  ea=False em=False psjs=1.0  t=?  runEA=0.606  wall=20m43s  ETA=22m26s
+[13:00:06] [  97/202] ✔ done   qid=Complex_Retrieval_test:92  ea=False em=False psjs=1.0  t=?  runEA=0.606  wall=20m43s  ETA=22m26s
+[13:00:06] [  98/202] ▶ start  qid=Complex_Retrieval_test:93  q="Find the email addresses of users who have watched movies with the genre 'Comed' and use the IP address '22.231.125.34'."
+[13:00:06] [  98/202] ▶ start  qid=Complex_Retrieval_test:93  q="Find the email addresses of users who have watched movies with the genre 'Comed' and use the IP address '22.231.125.34'."
+[13:00:21] [  98/202] ✔ done   qid=Complex_Retrieval_test:93  ea=True em=False psjs=1.0  t=?  runEA=0.611  wall=20m58s  ETA=22m15s
+[13:00:21] [  98/202] ✔ done   qid=Complex_Retrieval_test:93  ea=True em=False psjs=1.0  t=?  runEA=0.611  wall=20m58s  ETA=22m15s
+[13:00:21] [  99/202] ▶ start  qid=Complex_Retrieval_test:94  q="Retrieve the first name and last name of users from 'Ohio' who have watched the movie titled 'bedzie' and list the wa..."
+[13:00:21] [  99/202] ▶ start  qid=Complex_Retrieval_test:94  q="Retrieve the first name and last name of users from 'Ohio' who have watched the movie titled 'bedzie' and list the wa..."
+[13:00:34] [  99/202] ✔ done   qid=Complex_Retrieval_test:94  ea=False em=False psjs=0.0  t=?  runEA=0.604  wall=21m11s  ETA=22m03s
+[13:00:34] [  99/202] ✔ done   qid=Complex_Retrieval_test:94  ea=False em=False psjs=0.0  t=?  runEA=0.604  wall=21m11s  ETA=22m03s
+[13:00:34] [ 100/202] ▶ start  qid=Complex_Retrieval_test:95  q="Find the phone numbers of female United Statesers from the 'United States' who have watched movies of the 'Comedy' ge..."
+[13:00:34] [ 100/202] ▶ start  qid=Complex_Retrieval_test:95  q="Find the phone numbers of female United Statesers from the 'United States' who have watched movies of the 'Comedy' ge..."
+[13:01:05] [ 100/202] ✔ done   qid=Complex_Retrieval_test:95  ea=False em=False psjs=1.0  t=?  runEA=0.598  wall=21m42s  ETA=22m08s
+[13:01:05] [ 100/202] ✔ done   qid=Complex_Retrieval_test:95  ea=False em=False psjs=1.0  t=?  runEA=0.598  wall=21m42s  ETA=22m08s
+[13:01:05] [ 101/202] ▶ start  qid=Complex_Retrieval_test:96  q="Find the first name and last name of users who use the IP address '51.49.92.51' and have watched a movie titled 'Drugs'."
+[13:01:05] [ 101/202] ▶ start  qid=Complex_Retrieval_test:96  q="Find the first name and last name of users who use the IP address '51.49.92.51' and have watched a movie titled 'Drugs'."
+[13:01:19] [ 101/202] ✔ done   qid=Complex_Retrieval_test:96  ea=True em=False psjs=1.0  t=?  runEA=0.602  wall=21m56s  ETA=21m56s
+[13:01:19] [ 101/202] ✔ done   qid=Complex_Retrieval_test:96  ea=True em=False psjs=1.0  t=?  runEA=0.602  wall=21m56s  ETA=21m56s
+[13:01:19] [ 102/202] ▶ start  qid=Complex_Retrieval_test:97  q="What are the titles of movies that are classified as 'DOCUMENTARY' and have been watched by a user whose last name is..."
+[13:01:19] [ 102/202] ▶ start  qid=Complex_Retrieval_test:97  q="What are the titles of movies that are classified as 'DOCUMENTARY' and have been watched by a user whose last name is..."
+[13:01:38] [ 102/202] ✔ done   qid=Complex_Retrieval_test:97  ea=True em=False psjs=1.0  t=?  runEA=0.606  wall=22m16s  ETA=21m49s
+[13:01:38] [ 102/202] ✔ done   qid=Complex_Retrieval_test:97  ea=True em=False psjs=1.0  t=?  runEA=0.606  wall=22m16s  ETA=21m49s
+[13:01:38] [ 103/202] ▶ start  qid=Complex_Retrieval_test:99  q="Retrieve the first names and last names of users from 'York' who have watched movies of the 'Comedy' genre."
+[13:01:38] [ 103/202] ▶ start  qid=Complex_Retrieval_test:99  q="Retrieve the first names and last names of users from 'York' who have watched movies of the 'Comedy' genre."
+[13:02:04] [ 103/202] ✔ done   qid=Complex_Retrieval_test:99  ea=False em=False psjs=0.2030812324929972  t=?  runEA=0.600  wall=22m42s  ETA=21m49s
+[13:02:04] [ 103/202] ✔ done   qid=Complex_Retrieval_test:99  ea=False em=False psjs=0.2030812324929972  t=?  runEA=0.600  wall=22m42s  ETA=21m49s
+[13:02:04] [ 104/202] ▶ start  qid=Complex_Retrieval_test:100  q="Find the titles of movies that belong to the 'Comedy' genre and have been watched by users whose phone number starts ..."
+[13:02:04] [ 104/202] ▶ start  qid=Complex_Retrieval_test:100  q="Find the titles of movies that belong to the 'Comedy' genre and have been watched by users whose phone number starts ..."
+2026-06-22 13:02:19.493 | WARNING  | eval.psjs:compute_psjs:580 - PSJS execution failed — returning 0.0.  gold_err=None pred_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input \'AS\': expected\n  "!="\n  "%"\n  "*"\n  "+"\n  "-"\n  "/"\n  "<"\n  "<="\n  "<>"\n  "="\n  ">"\n  ">="\n  "AND"\n  "CALL"\n  "CREATE"\n  "DELETE"\n  "DETACH"\n  "FINISH"\n  "FOREACH"\n  "INSERT"\n  "LOAD"\n  "MATCH"\n  "MERGE"\n  "NODETACH"\n  "OPTIONAL"\n  "OR"\n  "REMOVE"\n  "RETURN"\n  "SET"\n  "UNION"\n  "UNWIND"\n  "USE"\n  "WITH"\n  "XOR"\n  "^"\n  "||"\n  <EOF> (line 1, column 288 (offset: 287))\n"MATCH (u:User)-[rtmp0:WATCHED]->(m:Movie)-[rtmp1:HAS]->(ntmp0:Genre {name: "Comedy"}) WHERE u.phone STARTS WITH collect(distinct elementId(m)) + collect(distinct elementId(ntmp0)) + collect(distinct elementId(u)) + collect(distinct elementId(rtmp0)) + collect(distinct elementId(rtmp1)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId2"\n                                                                                                                                                                                                                                                                                                ^}'
+[13:02:19] [ 104/202] ✔ done   qid=Complex_Retrieval_test:100  ea=True em=False psjs=0.0  t=?  runEA=0.604  wall=22m56s  ETA=21m37s
+[13:02:19] [ 104/202] ✔ done   qid=Complex_Retrieval_test:100  ea=True em=False psjs=0.0  t=?  runEA=0.604  wall=22m56s  ETA=21m37s
+[13:02:19] [ 105/202] ▶ start  qid=Complex_Retrieval_test:101  q="Find all users who have watched both movies titled 'Some Kind of Heaven' and 'Classroom'. Return the first name and l..."
+[13:02:19] [ 105/202] ▶ start  qid=Complex_Retrieval_test:101  q="Find all users who have watched both movies titled 'Some Kind of Heaven' and 'Classroom'. Return the first name and l..."
+[13:02:30] [ 105/202] ✔ done   qid=Complex_Retrieval_test:101  ea=True em=False psjs=1.0  t=?  runEA=0.608  wall=23m07s  ETA=21m22s
+[13:02:30] [ 105/202] ✔ done   qid=Complex_Retrieval_test:101  ea=True em=False psjs=1.0  t=?  runEA=0.608  wall=23m07s  ETA=21m22s
+[13:02:30] [ 106/202] ▶ start  qid=Complex_Retrieval_test:103  q='Find the names of all genres for which there are at least two movies that Tilly Basnet has watched.'
+[13:02:30] [ 106/202] ▶ start  qid=Complex_Retrieval_test:103  q='Find the names of all genres for which there are at least two movies that Tilly Basnet has watched.'
+[13:02:52] [ 106/202] ✔ done   qid=Complex_Retrieval_test:103  ea=True em=False psjs=1.0  t=?  runEA=0.612  wall=23m29s  ETA=21m16s
+[13:02:52] [ 106/202] ✔ done   qid=Complex_Retrieval_test:103  ea=True em=False psjs=1.0  t=?  runEA=0.612  wall=23m29s  ETA=21m16s
+[13:02:52] [ 107/202] ▶ start  qid=Complex_Retrieval_test:104  q="Identify users from 'TX' who have used the IP address '159.20.53.178' and watched a movie that belongs to the 'Horror..."
+[13:02:52] [ 107/202] ▶ start  qid=Complex_Retrieval_test:104  q="Identify users from 'TX' who have used the IP address '159.20.53.178' and watched a movie that belongs to the 'Horror..."
+[13:03:13] [ 107/202] ✔ done   qid=Complex_Retrieval_test:104  ea=True em=False psjs=1.0  t=?  runEA=0.615  wall=23m50s  ETA=21m10s
+[13:03:13] [ 107/202] ✔ done   qid=Complex_Retrieval_test:104  ea=True em=False psjs=1.0  t=?  runEA=0.615  wall=23m50s  ETA=21m10s
+[13:03:13] [ 108/202] ▶ start  qid=Complex_Retrieval_test:107  q="Retrieve the names of all movies that have the 'Comedy' genre and were watched by United Statesers from the 'United S..."
+[13:03:13] [ 108/202] ▶ start  qid=Complex_Retrieval_test:107  q="Retrieve the names of all movies that have the 'Comedy' genre and were watched by United Statesers from the 'United S..."
+[13:03:29] [ 108/202] ✔ done   qid=Complex_Retrieval_test:107  ea=False em=False psjs=1.0  t=?  runEA=0.610  wall=24m06s  ETA=20m59s
+[13:03:29] [ 108/202] ✔ done   qid=Complex_Retrieval_test:107  ea=False em=False psjs=1.0  t=?  runEA=0.610  wall=24m06s  ETA=20m59s
+[13:03:29] [ 109/202] ▶ start  qid=Complex_Retrieval_test:108  q="Find all users who watched more than one movie (watchCount > 1) and whose email address contains 'tiwtter.com'. Retur..."
+[13:03:29] [ 109/202] ▶ start  qid=Complex_Retrieval_test:108  q="Find all users who watched more than one movie (watchCount > 1) and whose email address contains 'tiwtter.com'. Retur..."
+[13:03:45] [ 109/202] ✔ done   qid=Complex_Retrieval_test:108  ea=False em=False psjs=0.0  t=?  runEA=0.604  wall=24m22s  ETA=20m48s
+[13:03:45] [ 109/202] ✔ done   qid=Complex_Retrieval_test:108  ea=False em=False psjs=0.0  t=?  runEA=0.604  wall=24m22s  ETA=20m48s
+[13:03:45] [ 110/202] ▶ start  qid=Complex_Retrieval_test:109  q="What are the distinct genres of movies watched by users with the first name 'Lyodie'?"
+[13:03:45] [ 110/202] ▶ start  qid=Complex_Retrieval_test:109  q="What are the distinct genres of movies watched by users with the first name 'Lyodie'?"
+[13:04:00] [ 110/202] ✔ done   qid=Complex_Retrieval_test:109  ea=True em=False psjs=1.0  t=?  runEA=0.607  wall=24m37s  ETA=20m36s
+[13:04:00] [ 110/202] ✔ done   qid=Complex_Retrieval_test:109  ea=True em=False psjs=1.0  t=?  runEA=0.607  wall=24m37s  ETA=20m36s
+[13:04:00] [ 111/202] ▶ start  qid=Complex_Retrieval_test:110  q="Find the movies that have the 'Action' genre and were watched by users whose state is 'CA'. Return the movie title an..."
+[13:04:00] [ 111/202] ▶ start  qid=Complex_Retrieval_test:110  q="Find the movies that have the 'Action' genre and were watched by users whose state is 'CA'. Return the movie title an..."
+[13:04:15] [ 111/202] ✔ done   qid=Complex_Retrieval_test:110  ea=True em=False psjs=1.0  t=?  runEA=0.611  wall=24m52s  ETA=20m23s
+[13:04:15] [ 111/202] ✔ done   qid=Complex_Retrieval_test:110  ea=True em=False psjs=1.0  t=?  runEA=0.611  wall=24m52s  ETA=20m23s
+[13:04:15] [ 112/202] ▶ start  qid=Complex_Retrieval_test:112  q="Find the first name and last name of users who have watched movies that belong to the 'romance' genre."
+[13:04:15] [ 112/202] ▶ start  qid=Complex_Retrieval_test:112  q="Find the first name and last name of users who have watched movies that belong to the 'romance' genre."
+[13:04:25] [ 112/202] ✔ done   qid=Complex_Retrieval_test:112  ea=False em=False psjs=1.0  t=?  runEA=0.606  wall=25m02s  ETA=20m07s
+[13:04:25] [ 112/202] ✔ done   qid=Complex_Retrieval_test:112  ea=False em=False psjs=1.0  t=?  runEA=0.606  wall=25m02s  ETA=20m07s
+[13:04:25] [ 113/202] ▶ start  qid=Complex_Retrieval_test:114  q="Find the first name, last name, and email of users who watched the movie 'Encnto' and use the IP address '165.160.176..."
+[13:04:25] [ 113/202] ▶ start  qid=Complex_Retrieval_test:114  q="Find the first name, last name, and email of users who watched the movie 'Encnto' and use the IP address '165.160.176..."
+[13:04:38] [ 113/202] ✔ done   qid=Complex_Retrieval_test:114  ea=True em=False psjs=1.0  t=?  runEA=0.609  wall=25m15s  ETA=19m53s
+[13:04:38] [ 113/202] ✔ done   qid=Complex_Retrieval_test:114  ea=True em=False psjs=1.0  t=?  runEA=0.609  wall=25m15s  ETA=19m53s
+[13:04:38] [ 114/202] ▶ start  qid=Complex_Retrieval_test:115  q="Find all users who watched movies in the 'Dramma' genre and also use the IP address '176.23.137.157'. Return the firs..."
+[13:04:38] [ 114/202] ▶ start  qid=Complex_Retrieval_test:115  q="Find all users who watched movies in the 'Dramma' genre and also use the IP address '176.23.137.157'. Return the firs..."
+[13:04:50] [ 114/202] ✔ done   qid=Complex_Retrieval_test:115  ea=True em=False psjs=1.0  t=?  runEA=0.613  wall=25m28s  ETA=19m39s
+[13:04:50] [ 114/202] ✔ done   qid=Complex_Retrieval_test:115  ea=True em=False psjs=1.0  t=?  runEA=0.613  wall=25m28s  ETA=19m39s
+[13:04:50] [ 115/202] ▶ start  qid=Complex_Retrieval_test:116  q="Retrieve the titles of movies released in 2021 that were watched by female United Statesers from the 'United States' ..."
+[13:04:50] [ 115/202] ▶ start  qid=Complex_Retrieval_test:116  q="Retrieve the titles of movies released in 2021 that were watched by female United Statesers from the 'United States' ..."
+[13:05:08] [ 115/202] ✔ done   qid=Complex_Retrieval_test:116  ea=True em=False psjs=1.0  t=?  runEA=0.616  wall=25m45s  ETA=19m29s
+[13:05:08] [ 115/202] ✔ done   qid=Complex_Retrieval_test:116  ea=True em=False psjs=1.0  t=?  runEA=0.616  wall=25m45s  ETA=19m29s
+[13:05:08] [ 116/202] ▶ start  qid=Complex_Retrieval_test:118  q="Retrieve the movies that belong to the 'Drama' genre and were watched by users whose first name is 'Anna-diaja'. Retu..."
+[13:05:08] [ 116/202] ▶ start  qid=Complex_Retrieval_test:118  q="Retrieve the movies that belong to the 'Drama' genre and were watched by users whose first name is 'Anna-diaja'. Retu..."
+[13:05:21] [ 116/202] ✔ done   qid=Complex_Retrieval_test:118  ea=True em=False psjs=1.0  t=?  runEA=0.619  wall=25m59s  ETA=19m16s
+[13:05:21] [ 116/202] ✔ done   qid=Complex_Retrieval_test:118  ea=True em=False psjs=1.0  t=?  runEA=0.619  wall=25m59s  ETA=19m16s
+[13:05:21] [ 117/202] ▶ start  qid=Complex_Retrieval_test:119  q="Find the average watch count of movies watched by users from 'OH' who use the IP address '176.23.137.157'."
+[13:05:21] [ 117/202] ▶ start  qid=Complex_Retrieval_test:119  q="Find the average watch count of movies watched by users from 'OH' who use the IP address '176.23.137.157'."
+[13:05:26] [ 117/202] ✔ done   qid=Complex_Retrieval_test:119  ea=True em=False psjs=1.0  t=?  runEA=0.623  wall=26m03s  ETA=18m56s
+[13:05:26] [ 117/202] ✔ done   qid=Complex_Retrieval_test:119  ea=True em=False psjs=1.0  t=?  runEA=0.623  wall=26m03s  ETA=18m56s
+[13:05:26] [ 118/202] ▶ start  qid=Complex_Retrieval_test:120  q="Find all users who have watched movies in the 'Adveenture' genre and return their first name, last name, and the titl..."
+[13:05:26] [ 118/202] ▶ start  qid=Complex_Retrieval_test:120  q="Find all users who have watched movies in the 'Adveenture' genre and return their first name, last name, and the titl..."
+[13:05:43] [ 118/202] ✔ done   qid=Complex_Retrieval_test:120  ea=True em=False psjs=1.0  t=?  runEA=0.626  wall=26m20s  ETA=18m45s
+[13:05:43] [ 118/202] ✔ done   qid=Complex_Retrieval_test:120  ea=True em=False psjs=1.0  t=?  runEA=0.626  wall=26m20s  ETA=18m45s
+[13:05:43] [ 119/202] ▶ start  qid=Complex_Retrieval_test:121  q="What are the IP addresses used by users who have watched the movie 'Dresses', and what are the first names of those u..."
+[13:05:43] [ 119/202] ▶ start  qid=Complex_Retrieval_test:121  q="What are the IP addresses used by users who have watched the movie 'Dresses', and what are the first names of those u..."
+[13:05:56] [ 119/202] ✔ done   qid=Complex_Retrieval_test:121  ea=True em=False psjs=0.9259259259259259  t=?  runEA=0.629  wall=26m33s  ETA=18m31s
+[13:05:56] [ 119/202] ✔ done   qid=Complex_Retrieval_test:121  ea=True em=False psjs=0.9259259259259259  t=?  runEA=0.629  wall=26m33s  ETA=18m31s
+[13:05:56] [ 120/202] ▶ start  qid=Complex_Retrieval_test:122  q="Find the first name and last name of all United Statesers from the 'United States' who have watched more than 5 movies."
+[13:05:56] [ 120/202] ▶ start  qid=Complex_Retrieval_test:122  q="Find the first name and last name of all United Statesers from the 'United States' who have watched more than 5 movies."
+[13:06:12] [ 120/202] ✔ done   qid=Complex_Retrieval_test:122  ea=True em=False psjs=1.0  t=?  runEA=0.632  wall=26m49s  ETA=18m20s
+[13:06:12] [ 120/202] ✔ done   qid=Complex_Retrieval_test:122  ea=True em=False psjs=1.0  t=?  runEA=0.632  wall=26m49s  ETA=18m20s
+[13:06:12] [ 121/202] ▶ start  qid=Complex_Retrieval_test:125  q="Find all users who have watched both 'Duune' and any movie belonging to the 'Comedy' genre, and return their first na..."
+[13:06:12] [ 121/202] ▶ start  qid=Complex_Retrieval_test:125  q="Find all users who have watched both 'Duune' and any movie belonging to the 'Comedy' genre, and return their first na..."
+[13:06:31] [ 121/202] ✔ done   qid=Complex_Retrieval_test:125  ea=False em=False psjs=1.0  t=?  runEA=0.627  wall=27m08s  ETA=18m10s
+[13:06:31] [ 121/202] ✔ done   qid=Complex_Retrieval_test:125  ea=False em=False psjs=1.0  t=?  runEA=0.627  wall=27m08s  ETA=18m10s
+[13:06:31] [ 122/202] ▶ start  qid=Complex_Retrieval_test:127  q="For users with the last name 'MAYCEY', find the titles of all movies they have watched and the count of times they wa..."
+[13:06:31] [ 122/202] ▶ start  qid=Complex_Retrieval_test:127  q="For users with the last name 'MAYCEY', find the titles of all movies they have watched and the count of times they wa..."
+[13:06:40] [ 122/202] ✔ done   qid=Complex_Retrieval_test:127  ea=None em=False psjs=None  t=?  runEA=0.627  wall=27m17s  ETA=17m54s  err=gold: CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message:
+[13:06:40] [ 122/202] ✔ done   qid=Complex_Retrieval_test:127  ea=None em=False psjs=None  t=?  runEA=0.627  wall=27m17s  ETA=17m54s  err=gold: CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message:
+[13:06:40] [ 123/202] ▶ start  qid=Complex_Retrieval_test:128  q="Find the IP addresses used by male users from 'VA' who have watched movies of the 'Fantasy' genre. Return the distinc..."
+[13:06:40] [ 123/202] ▶ start  qid=Complex_Retrieval_test:128  q="Find the IP addresses used by male users from 'VA' who have watched movies of the 'Fantasy' genre. Return the distinc..."
+[13:06:56] [ 123/202] ✔ done   qid=Complex_Retrieval_test:128  ea=True em=False psjs=1.0  t=?  runEA=0.630  wall=27m33s  ETA=17m42s
+[13:06:56] [ 123/202] ✔ done   qid=Complex_Retrieval_test:128  ea=True em=False psjs=1.0  t=?  runEA=0.630  wall=27m33s  ETA=17m42s
+[13:06:56] [ 124/202] ▶ start  qid=Complex_Retrieval_test:129  q="Retrieve the first name and last name of users who have watched a movie with the title 'Duune' and who also use an IP..."
+[13:06:56] [ 124/202] ▶ start  qid=Complex_Retrieval_test:129  q="Retrieve the first name and last name of users who have watched a movie with the title 'Duune' and who also use an IP..."
+[13:07:09] [ 124/202] ✔ done   qid=Complex_Retrieval_test:129  ea=True em=False psjs=1.0  t=?  runEA=0.633  wall=27m47s  ETA=17m28s
+[13:07:09] [ 124/202] ✔ done   qid=Complex_Retrieval_test:129  ea=True em=False psjs=1.0  t=?  runEA=0.633  wall=27m47s  ETA=17m28s
+[13:07:09] [ 125/202] ▶ start  qid=Complex_Retrieval_test:130  q="Retrieve the email addresses of all users who use the IP address '170.116.107.124' and watched a movie with the title..."
+[13:07:09] [ 125/202] ▶ start  qid=Complex_Retrieval_test:130  q="Retrieve the email addresses of all users who use the IP address '170.116.107.124' and watched a movie with the title..."
+[13:07:27] [ 125/202] ✔ done   qid=Complex_Retrieval_test:130  ea=True em=False psjs=1.0  t=?  runEA=0.636  wall=28m04s  ETA=17m18s
+[13:07:27] [ 125/202] ✔ done   qid=Complex_Retrieval_test:130  ea=True em=False psjs=1.0  t=?  runEA=0.636  wall=28m04s  ETA=17m18s
+[13:07:27] [ 126/202] ▶ start  qid=Complex_Retrieval_test:131  q="Find the first name and last name of users who watched at least two movies that belong to the 'Aniimation' genre."
+[13:07:27] [ 126/202] ▶ start  qid=Complex_Retrieval_test:131  q="Find the first name and last name of users who watched at least two movies that belong to the 'Aniimation' genre."
+[13:07:40] [ 126/202] ✔ done   qid=Complex_Retrieval_test:131  ea=True em=False psjs=1.0  t=?  runEA=0.639  wall=28m17s  ETA=17m03s
+[13:07:40] [ 126/202] ✔ done   qid=Complex_Retrieval_test:131  ea=True em=False psjs=1.0  t=?  runEA=0.639  wall=28m17s  ETA=17m03s
+[13:07:40] [ 127/202] ▶ start  qid=Complex_Retrieval_test:132  q="What are the addresses of the IP addresses used by female users from 'IL' who have watched movies released before the..."
+[13:07:40] [ 127/202] ▶ start  qid=Complex_Retrieval_test:132  q="What are the addresses of the IP addresses used by female users from 'IL' who have watched movies released before the..."
+2026-06-22 13:07:55.178 | WARNING  | eval.psjs:compute_psjs:580 - PSJS execution failed — returning 0.0.  gold_err=None pred_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Variable `rtmp1` not defined (line 2, column 139 (offset: 303))\n"} WITH collect(distinct elementId(ip)) + collect(distinct elementId(u)) + collect(distinct elementId(rtmp0)) + collect(distinct elementId(rtmp1)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId2"\n                                                                                                                                           ^}'
+[13:07:55] [ 127/202] ✔ done   qid=Complex_Retrieval_test:132  ea=True em=False psjs=0.0  t=?  runEA=0.642  wall=28m32s  ETA=16m51s
+[13:07:55] [ 127/202] ✔ done   qid=Complex_Retrieval_test:132  ea=True em=False psjs=0.0  t=?  runEA=0.642  wall=28m32s  ETA=16m51s
+[13:07:55] [ 128/202] ▶ start  qid=Complex_Retrieval_test:135  q="Retrieve the email addresses of all users who use the IP address '12.106.164.42' and have watched a movie with the ti..."
+[13:07:55] [ 128/202] ▶ start  qid=Complex_Retrieval_test:135  q="Retrieve the email addresses of all users who use the IP address '12.106.164.42' and have watched a movie with the ti..."
+[13:08:07] [ 128/202] ✔ done   qid=Complex_Retrieval_test:135  ea=True em=False psjs=1.0  t=?  runEA=0.645  wall=28m44s  ETA=16m37s
+[13:08:07] [ 128/202] ✔ done   qid=Complex_Retrieval_test:135  ea=True em=False psjs=1.0  t=?  runEA=0.645  wall=28m44s  ETA=16m37s
+[13:08:07] [ 129/202] ▶ start  qid=Complex_Retrieval_test:136  q="Find the first name of United Statesers who are female and live in the 'United States', and have watched more than on..."
+[13:08:07] [ 129/202] ▶ start  qid=Complex_Retrieval_test:136  q="Find the first name of United Statesers who are female and live in the 'United States', and have watched more than on..."
+[13:08:22] [ 129/202] ✔ done   qid=Complex_Retrieval_test:136  ea=True em=False psjs=1.0  t=?  runEA=0.648  wall=28m59s  ETA=16m24s
+[13:08:22] [ 129/202] ✔ done   qid=Complex_Retrieval_test:136  ea=True em=False psjs=1.0  t=?  runEA=0.648  wall=28m59s  ETA=16m24s
+[13:08:22] [ 130/202] ▶ start  qid=Complex_Retrieval_test:137  q="What are the titles of the movies that users from 'OH' have watched, and what is the average watch count for those mo..."
+[13:08:22] [ 130/202] ▶ start  qid=Complex_Retrieval_test:137  q="What are the titles of the movies that users from 'OH' have watched, and what is the average watch count for those mo..."
+[13:08:42] [ 130/202] ✔ done   qid=Complex_Retrieval_test:137  ea=True em=False psjs=1.0  t=?  runEA=0.651  wall=29m19s  ETA=16m14s
+[13:08:42] [ 130/202] ✔ done   qid=Complex_Retrieval_test:137  ea=True em=False psjs=1.0  t=?  runEA=0.651  wall=29m19s  ETA=16m14s
+[13:08:42] [ 131/202] ▶ start  qid=Complex_Retrieval_test:138  q="Find the last names of users who use an IP address and have watched a movie of the 'Actoin' genre, and also retrieve ..."
+[13:08:42] [ 131/202] ▶ start  qid=Complex_Retrieval_test:138  q="Find the last names of users who use an IP address and have watched a movie of the 'Actoin' genre, and also retrieve ..."
+[13:09:00] [ 131/202] ✔ done   qid=Complex_Retrieval_test:138  ea=False em=False psjs=1.0  t=?  runEA=0.646  wall=29m37s  ETA=16m03s
+[13:09:00] [ 131/202] ✔ done   qid=Complex_Retrieval_test:138  ea=False em=False psjs=1.0  t=?  runEA=0.646  wall=29m37s  ETA=16m03s
+[13:09:00] [ 132/202] ▶ start  qid=Complex_Retrieval_test:140  q="What are the last names of users who have watched both 'Duchess' and any movie belonging to the 'Action' genre?"
+[13:09:00] [ 132/202] ▶ start  qid=Complex_Retrieval_test:140  q="What are the last names of users who have watched both 'Duchess' and any movie belonging to the 'Action' genre?"
+[13:09:13] [ 132/202] ✔ done   qid=Complex_Retrieval_test:140  ea=True em=False psjs=1.0  t=?  runEA=0.648  wall=29m51s  ETA=15m50s
+[13:09:13] [ 132/202] ✔ done   qid=Complex_Retrieval_test:140  ea=True em=False psjs=1.0  t=?  runEA=0.648  wall=29m51s  ETA=15m50s
+[13:09:13] [ 133/202] ▶ start  qid=Complex_Retrieval_test:142  q="Retrieve the first names of users who watched a movie with genre 'DOCUMENTARY' and whose country is 'US'."
+[13:09:13] [ 133/202] ▶ start  qid=Complex_Retrieval_test:142  q="Retrieve the first names of users who watched a movie with genre 'DOCUMENTARY' and whose country is 'US'."
+[13:09:29] [ 133/202] ✔ done   qid=Complex_Retrieval_test:142  ea=False em=False psjs=1.0  t=?  runEA=0.643  wall=30m06s  ETA=15m37s
+[13:09:29] [ 133/202] ✔ done   qid=Complex_Retrieval_test:142  ea=False em=False psjs=1.0  t=?  runEA=0.643  wall=30m06s  ETA=15m37s
+[13:09:29] [ 134/202] ▶ start  qid=Complex_Retrieval_test:143  q="Find the average watchCount of movies watched by users whose state is 'WA' and group the result by the movie title."
+[13:09:29] [ 134/202] ▶ start  qid=Complex_Retrieval_test:143  q="Find the average watchCount of movies watched by users whose state is 'WA' and group the result by the movie title."
+[13:09:46] [ 134/202] ✔ done   qid=Complex_Retrieval_test:143  ea=True em=False psjs=1.0  t=?  runEA=0.646  wall=30m23s  ETA=15m25s
+[13:09:46] [ 134/202] ✔ done   qid=Complex_Retrieval_test:143  ea=True em=False psjs=1.0  t=?  runEA=0.646  wall=30m23s  ETA=15m25s
+[13:09:46] [ 135/202] ▶ start  qid=Complex_Retrieval_test:145  q="Retrieve the last names of all users who have watched a movie with the title 'Factor' and whose gender is 'Female'."
+[13:09:46] [ 135/202] ▶ start  qid=Complex_Retrieval_test:145  q="Retrieve the last names of all users who have watched a movie with the title 'Factor' and whose gender is 'Female'."
+[13:09:56] [ 135/202] ✔ done   qid=Complex_Retrieval_test:145  ea=True em=False psjs=1.0  t=?  runEA=0.649  wall=30m33s  ETA=15m10s
+[13:09:56] [ 135/202] ✔ done   qid=Complex_Retrieval_test:145  ea=True em=False psjs=1.0  t=?  runEA=0.649  wall=30m33s  ETA=15m10s
+[13:09:56] [ 136/202] ▶ start  qid=Complex_Retrieval_test:146  q="Find the titles of all movies that belong to the 'Horror' genre and were watched by an United Stateser from the 'Unit..."
+[13:09:56] [ 136/202] ▶ start  qid=Complex_Retrieval_test:146  q="Find the titles of all movies that belong to the 'Horror' genre and were watched by an United Stateser from the 'Unit..."
+[13:10:03] [ 136/202] ✔ done   qid=Complex_Retrieval_test:146  ea=True em=False psjs=1.0  t=?  runEA=0.652  wall=30m41s  ETA=14m53s
+[13:10:03] [ 136/202] ✔ done   qid=Complex_Retrieval_test:146  ea=True em=False psjs=1.0  t=?  runEA=0.652  wall=30m41s  ETA=14m53s
+[13:10:03] [ 137/202] ▶ start  qid=Complex_Retrieval_test:148  q="Find the first names of users from 'OH' who have watched a movie that has the 'Thriller' genre, and the number of tim..."
+[13:10:03] [ 137/202] ▶ start  qid=Complex_Retrieval_test:148  q="Find the first names of users from 'OH' who have watched a movie that has the 'Thriller' genre, and the number of tim..."
+[13:10:17] [ 137/202] ✔ done   qid=Complex_Retrieval_test:148  ea=False em=False psjs=1.0  t=?  runEA=0.647  wall=30m54s  ETA=14m40s
+[13:10:17] [ 137/202] ✔ done   qid=Complex_Retrieval_test:148  ea=False em=False psjs=1.0  t=?  runEA=0.647  wall=30m54s  ETA=14m40s
+[13:10:17] [ 138/202] ▶ start  qid=Complex_Retrieval_test:150  q="Retrieve the titles of movies that belong to the 'Fantasy' genre and were watched by United Statesers from the 'Unite..."
+[13:10:17] [ 138/202] ▶ start  qid=Complex_Retrieval_test:150  q="Retrieve the titles of movies that belong to the 'Fantasy' genre and were watched by United Statesers from the 'Unite..."
+[13:10:32] [ 138/202] ✔ done   qid=Complex_Retrieval_test:150  ea=False em=False psjs=1.0  t=?  runEA=0.642  wall=31m09s  ETA=14m27s
+[13:10:32] [ 138/202] ✔ done   qid=Complex_Retrieval_test:150  ea=False em=False psjs=1.0  t=?  runEA=0.642  wall=31m09s  ETA=14m27s
+[13:10:32] [ 139/202] ▶ start  qid=Complex_Retrieval_test:151  q="Find the email addresses of female users from 'IL' who have watched movies with a 'movieId' greater than 200."
+[13:10:32] [ 139/202] ▶ start  qid=Complex_Retrieval_test:151  q="Find the email addresses of female users from 'IL' who have watched movies with a 'movieId' greater than 200."
+[13:10:52] [ 139/202] ✔ done   qid=Complex_Retrieval_test:151  ea=False em=False psjs=1.0  t=?  runEA=0.637  wall=31m29s  ETA=14m16s
+[13:10:52] [ 139/202] ✔ done   qid=Complex_Retrieval_test:151  ea=False em=False psjs=1.0  t=?  runEA=0.637  wall=31m29s  ETA=14m16s
+[13:10:52] [ 140/202] ▶ start  qid=Complex_Retrieval_test:152  q="What are the distinct genres of movies watched by users whose first name is 'Roseana'?"
+[13:10:52] [ 140/202] ▶ start  qid=Complex_Retrieval_test:152  q="What are the distinct genres of movies watched by users whose first name is 'Roseana'?"
+[13:11:05] [ 140/202] ✔ done   qid=Complex_Retrieval_test:152  ea=True em=False psjs=1.0  t=?  runEA=0.640  wall=31m43s  ETA=14m03s
+[13:11:05] [ 140/202] ✔ done   qid=Complex_Retrieval_test:152  ea=True em=False psjs=1.0  t=?  runEA=0.640  wall=31m43s  ETA=14m03s
+[13:11:05] [ 141/202] ▶ start  qid=Complex_Retrieval_test:156  q="Find the first name and last name of all United Statesers from the 'United States' who have watched a movie belonging..."
+[13:11:05] [ 141/202] ▶ start  qid=Complex_Retrieval_test:156  q="Find the first name and last name of all United Statesers from the 'United States' who have watched a movie belonging..."
+[13:11:22] [ 141/202] ✔ done   qid=Complex_Retrieval_test:156  ea=False em=False psjs=1.0  t=?  runEA=0.635  wall=31m59s  ETA=13m50s
+[13:11:22] [ 141/202] ✔ done   qid=Complex_Retrieval_test:156  ea=False em=False psjs=1.0  t=?  runEA=0.635  wall=31m59s  ETA=13m50s
+[13:11:22] [ 142/202] ▶ start  qid=Complex_Retrieval_test:158  q="List the distinct genres of movies watched by FEMALE users from 'Ohio', along with the count of users who watched eac..."
+[13:11:22] [ 142/202] ▶ start  qid=Complex_Retrieval_test:158  q="List the distinct genres of movies watched by FEMALE users from 'Ohio', along with the count of users who watched eac..."
+[13:11:32] [ 142/202] ✔ done   qid=Complex_Retrieval_test:158  ea=True em=False psjs=1.0  t=?  runEA=0.638  wall=32m09s  ETA=13m35s
+[13:11:32] [ 142/202] ✔ done   qid=Complex_Retrieval_test:158  ea=True em=False psjs=1.0  t=?  runEA=0.638  wall=32m09s  ETA=13m35s
+[13:11:32] [ 143/202] ▶ start  qid=Complex_Retrieval_test:159  q="Find the first name and last name of users who watched movies in the 'Comdy' genre and use the IP address '65.24.225...."
+[13:11:32] [ 143/202] ▶ start  qid=Complex_Retrieval_test:159  q="Find the first name and last name of users who watched movies in the 'Comdy' genre and use the IP address '65.24.225...."
+[13:11:45] [ 143/202] ✔ done   qid=Complex_Retrieval_test:159  ea=True em=False psjs=1.0  t=?  runEA=0.640  wall=32m22s  ETA=13m21s
+[13:11:45] [ 143/202] ✔ done   qid=Complex_Retrieval_test:159  ea=True em=False psjs=1.0  t=?  runEA=0.640  wall=32m22s  ETA=13m21s
+[13:11:45] [ 144/202] ▶ start  qid=Complex_Retrieval_test:160  q="Retrieve the movie titles and release years for movies watched by users from the state of 'KY' who use the IP address..."
+[13:11:45] [ 144/202] ▶ start  qid=Complex_Retrieval_test:160  q="Retrieve the movie titles and release years for movies watched by users from the state of 'KY' who use the IP address..."
+[13:11:59] [ 144/202] ✔ done   qid=Complex_Retrieval_test:160  ea=True em=False psjs=1.0  t=?  runEA=0.643  wall=32m36s  ETA=13m08s
+[13:11:59] [ 144/202] ✔ done   qid=Complex_Retrieval_test:160  ea=True em=False psjs=1.0  t=?  runEA=0.643  wall=32m36s  ETA=13m08s
+[13:11:59] [ 145/202] ▶ start  qid=Complex_Retrieval_test:161  q="What are the first names and last names of users who watched the movie 'Dear Jhon' and have a 'Female' gender?"
+[13:11:59] [ 145/202] ▶ start  qid=Complex_Retrieval_test:161  q="What are the first names and last names of users who watched the movie 'Dear Jhon' and have a 'Female' gender?"
+[13:12:11] [ 145/202] ✔ done   qid=Complex_Retrieval_test:161  ea=True em=False psjs=1.0  t=?  runEA=0.645  wall=32m48s  ETA=12m54s
+[13:12:11] [ 145/202] ✔ done   qid=Complex_Retrieval_test:161  ea=True em=False psjs=1.0  t=?  runEA=0.645  wall=32m48s  ETA=12m54s
+[13:12:11] [ 146/202] ▶ start  qid=Complex_Retrieval_test:162  q="Find the titles of movies that belong to the 'Coomedy' genre and were watched by users with the last name 'Stede'."
+[13:12:11] [ 146/202] ▶ start  qid=Complex_Retrieval_test:162  q="Find the titles of movies that belong to the 'Coomedy' genre and were watched by users with the last name 'Stede'."
+[13:12:23] [ 146/202] ✔ done   qid=Complex_Retrieval_test:162  ea=True em=False psjs=1.0  t=?  runEA=0.648  wall=33m00s  ETA=12m40s
+[13:12:23] [ 146/202] ✔ done   qid=Complex_Retrieval_test:162  ea=True em=False psjs=1.0  t=?  runEA=0.648  wall=33m00s  ETA=12m40s
+[13:12:23] [ 147/202] ▶ start  qid=Complex_Retrieval_test:164  q="Find all users who have watched movies in the 'Rommance' genre and list their first names along with the titles of th..."
+[13:12:23] [ 147/202] ▶ start  qid=Complex_Retrieval_test:164  q="Find all users who have watched movies in the 'Rommance' genre and list their first names along with the titles of th..."
+[13:12:41] [ 147/202] ✔ done   qid=Complex_Retrieval_test:164  ea=True em=False psjs=1.0  t=?  runEA=0.650  wall=33m18s  ETA=12m27s
+[13:12:41] [ 147/202] ✔ done   qid=Complex_Retrieval_test:164  ea=True em=False psjs=1.0  t=?  runEA=0.650  wall=33m18s  ETA=12m27s
+[13:12:41] [ 148/202] ▶ start  qid=Complex_Retrieval_test:166  q="Find the first name and last name of users who have watched more than one movie (watchCount > 1) titled 'Fold'."
+[13:12:41] [ 148/202] ▶ start  qid=Complex_Retrieval_test:166  q="Find the first name and last name of users who have watched more than one movie (watchCount > 1) titled 'Fold'."
+[13:12:52] [ 148/202] ✔ done   qid=Complex_Retrieval_test:166  ea=False em=False psjs=0.0  t=?  runEA=0.646  wall=33m30s  ETA=12m13s
+[13:12:52] [ 148/202] ✔ done   qid=Complex_Retrieval_test:166  ea=False em=False psjs=0.0  t=?  runEA=0.646  wall=33m30s  ETA=12m13s
+[13:12:52] [ 149/202] ▶ start  qid=Complex_Retrieval_test:168  q="Find the email addresses of United Statesers from the 'United States' who United Statese the IP address '73.42.187.18..."
+[13:12:52] [ 149/202] ▶ start  qid=Complex_Retrieval_test:168  q="Find the email addresses of United Statesers from the 'United States' who United Statese the IP address '73.42.187.18..."
+[13:13:04] [ 149/202] ✔ done   qid=Complex_Retrieval_test:168  ea=True em=False psjs=1.0  t=?  runEA=0.648  wall=33m41s  ETA=11m59s
+[13:13:04] [ 149/202] ✔ done   qid=Complex_Retrieval_test:168  ea=True em=False psjs=1.0  t=?  runEA=0.648  wall=33m41s  ETA=11m59s
+[13:13:04] [ 150/202] ▶ start  qid=Complex_Retrieval_test:171  q='For each United Stateser from the United States, find the total number of movies they have watched, and return their ...'
+[13:13:04] [ 150/202] ▶ start  qid=Complex_Retrieval_test:171  q='For each United Stateser from the United States, find the total number of movies they have watched, and return their ...'
+[13:13:18] [ 150/202] ✔ done   qid=Complex_Retrieval_test:171  ea=False em=False psjs=0.9629424778761062  t=?  runEA=0.644  wall=33m55s  ETA=11m46s
+[13:13:18] [ 150/202] ✔ done   qid=Complex_Retrieval_test:171  ea=False em=False psjs=0.9629424778761062  t=?  runEA=0.644  wall=33m55s  ETA=11m46s
+[13:13:18] [ 151/202] ▶ start  qid=Complex_Retrieval_test:172  q="Find all users who watched a movie of the 'Documetary' genre and also use the IP address '247.145.254.234'. Return th..."
+[13:13:18] [ 151/202] ▶ start  qid=Complex_Retrieval_test:172  q="Find all users who watched a movie of the 'Documetary' genre and also use the IP address '247.145.254.234'. Return th..."
+[13:13:29] [ 151/202] ✔ done   qid=Complex_Retrieval_test:172  ea=True em=False psjs=1.0  t=?  runEA=0.646  wall=34m06s  ETA=11m31s
+[13:13:29] [ 151/202] ✔ done   qid=Complex_Retrieval_test:172  ea=True em=False psjs=1.0  t=?  runEA=0.646  wall=34m06s  ETA=11m31s
+[13:13:29] [ 152/202] ▶ start  qid=Complex_Retrieval_test:174  q="Retrieve the names of all genres that are associated with movies watched by USers from the country 'US'."
+[13:13:29] [ 152/202] ▶ start  qid=Complex_Retrieval_test:174  q="Retrieve the names of all genres that are associated with movies watched by USers from the country 'US'."
+[13:13:40] [ 152/202] ✔ done   qid=Complex_Retrieval_test:174  ea=True em=False psjs=1.0  t=?  runEA=0.649  wall=34m18s  ETA=11m17s
+[13:13:40] [ 152/202] ✔ done   qid=Complex_Retrieval_test:174  ea=True em=False psjs=1.0  t=?  runEA=0.649  wall=34m18s  ETA=11m17s
+[13:13:40] [ 153/202] ▶ start  qid=Complex_Retrieval_test:175  q="Find all users whose first name starts with 'U' and have watched a movie that belongs to the 'Doxumentary' genre. Ret..."
+[13:13:40] [ 153/202] ▶ start  qid=Complex_Retrieval_test:175  q="Find all users whose first name starts with 'U' and have watched a movie that belongs to the 'Doxumentary' genre. Ret..."
+2026-06-22 13:13:52.156 | WARNING  | eval.psjs:compute_psjs:580 - PSJS execution failed — returning 0.0.  gold_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input \'AS\': expected\n  "!="\n  "%"\n  "*"\n  "+"\n  "-"\n  "/"\n  "<"\n  "<="\n  "<>"\n  "="\n  ">"\n  ">="\n  "AND"\n  "CALL"\n  "CREATE"\n  "DELETE"\n  "DETACH"\n  "FINISH"\n  "FOREACH"\n  "INSERT"\n  "LOAD"\n  "MATCH"\n  "MERGE"\n  "NODETACH"\n  "OPTIONAL"\n  "OR"\n  "REMOVE"\n  "RETURN"\n  "SET"\n  "UNION"\n  "UNWIND"\n  "USE"\n  "WITH"\n  "XOR"\n  "^"\n  "||"\n  <EOF> (line 1, column 232 (offset: 231))\n"MATCH (u:User)-[rtmp0:WATCHED]->(m:Movie)-[rtmp1:HAS]->(g:Genre) WHERE u.firstName STARTS WITH collect(distinct id(g)) + collect(distinct id(m)) + collect(distinct id(u)) + collect(distinct id(rtmp0)) + collect(distinct id(rtmp1)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId1"\n                                                                                                                                                                                                                                        ^}' pred_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input \'AS\': expected\n  "!="\n  "%"\n  "*"\n  "+"\n  "-"\n  "/"\n  "<"\n  "<="\n  "<>"\n  "="\n  ">"\n  ">="\n  "AND"\n  "CALL"\n  "CREATE"\n  "DELETE"\n  "DETACH"\n  "FINISH"\n  "FOREACH"\n  "INSERT"\n  "LOAD"\n  "MATCH"\n  "MERGE"\n  "NODETACH"\n  "OPTIONAL"\n  "OR"\n  "REMOVE"\n  "RETURN"\n  "SET"\n  "UNION"\n  "UNWIND"\n  "USE"\n  "WITH"\n  "XOR"\n  "^"\n  "||"\n  <EOF> (line 1, column 232 (offset: 231))\n"MATCH (u:User)-[rtmp0:WATCHED]->(m:Movie)-[rtmp1:HAS]->(g:Genre) WHERE u.firstName STARTS WITH collect(distinct id(g)) + collect(distinct id(m)) + collect(distinct id(u)) + collect(distinct id(rtmp0)) + collect(distinct id(rtmp1)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId2"\n                                                                                                                                                                                                                                        ^}'
+[13:13:52] [ 153/202] ✔ done   qid=Complex_Retrieval_test:175  ea=True em=False psjs=0.0  t=?  runEA=0.651  wall=34m29s  ETA=11m03s
+[13:13:52] [ 153/202] ✔ done   qid=Complex_Retrieval_test:175  ea=True em=False psjs=0.0  t=?  runEA=0.651  wall=34m29s  ETA=11m03s
+[13:13:52] [ 154/202] ▶ start  qid=Complex_Retrieval_test:176  q="What are the titles of the movies that users from 'WA' state watched more than 5 times?"
+[13:13:52] [ 154/202] ▶ start  qid=Complex_Retrieval_test:176  q="What are the titles of the movies that users from 'WA' state watched more than 5 times?"
+[13:14:06] [ 154/202] ✔ done   qid=Complex_Retrieval_test:176  ea=True em=False psjs=1.0  t=?  runEA=0.653  wall=34m44s  ETA=10m49s
+[13:14:06] [ 154/202] ✔ done   qid=Complex_Retrieval_test:176  ea=True em=False psjs=1.0  t=?  runEA=0.653  wall=34m44s  ETA=10m49s
+[13:14:06] [ 155/202] ▶ start  qid=Complex_Retrieval_test:177  q="Find the IP addresses used by female users from 'OH' who have watched movies released after the year 2000, and list t..."
+[13:14:06] [ 155/202] ▶ start  qid=Complex_Retrieval_test:177  q="Find the IP addresses used by female users from 'OH' who have watched movies released after the year 2000, and list t..."
+[13:14:17] [ 155/202] ✔ done   qid=Complex_Retrieval_test:177  ea=True em=False psjs=1.0  t=?  runEA=0.656  wall=34m54s  ETA=10m35s
+[13:14:17] [ 155/202] ✔ done   qid=Complex_Retrieval_test:177  ea=True em=False psjs=1.0  t=?  runEA=0.656  wall=34m54s  ETA=10m35s
+[13:14:17] [ 156/202] ▶ start  qid=Complex_Retrieval_test:179  q="What are the titles of movies that have the 'Horror' genre and were watched by United Statesers from the 'United Stat..."
+[13:14:17] [ 156/202] ▶ start  qid=Complex_Retrieval_test:179  q="What are the titles of movies that have the 'Horror' genre and were watched by United Statesers from the 'United Stat..."
+[13:14:32] [ 156/202] ✔ done   qid=Complex_Retrieval_test:179  ea=False em=False psjs=1.0  t=?  runEA=0.651  wall=35m09s  ETA=10m22s
+[13:14:32] [ 156/202] ✔ done   qid=Complex_Retrieval_test:179  ea=False em=False psjs=1.0  t=?  runEA=0.651  wall=35m09s  ETA=10m22s
+[13:14:32] [ 157/202] ▶ start  qid=Complex_Retrieval_test:180  q="Find the email addresses of users who watched 'Funhouse' and whose gender is 'Maoe'."
+[13:14:32] [ 157/202] ▶ start  qid=Complex_Retrieval_test:180  q="Find the email addresses of users who watched 'Funhouse' and whose gender is 'Maoe'."
+[13:14:43] [ 157/202] ✔ done   qid=Complex_Retrieval_test:180  ea=True em=False psjs=1.0  t=?  runEA=0.654  wall=35m21s  ETA=10m08s
+[13:14:43] [ 157/202] ✔ done   qid=Complex_Retrieval_test:180  ea=True em=False psjs=1.0  t=?  runEA=0.654  wall=35m21s  ETA=10m08s
+[13:14:43] [ 158/202] ▶ start  qid=Complex_Retrieval_test:181  q="What are the addresses of IpAddress that are used by users with the first name 'Amalifa' and last name 'Kalb'?"
+[13:14:43] [ 158/202] ▶ start  qid=Complex_Retrieval_test:181  q="What are the addresses of IpAddress that are used by users with the first name 'Amalifa' and last name 'Kalb'?"
+[13:14:57] [ 158/202] ✔ done   qid=Complex_Retrieval_test:181  ea=True em=False psjs=1.0  t=?  runEA=0.656  wall=35m34s  ETA=9m54s
+[13:14:57] [ 158/202] ✔ done   qid=Complex_Retrieval_test:181  ea=True em=False psjs=1.0  t=?  runEA=0.656  wall=35m34s  ETA=9m54s
+[13:14:57] [ 159/202] ▶ start  qid=Complex_Retrieval_test:182  q="Find the movie titles and release years of movies that belong to the 'Action' genre and have been watched by users fr..."
+[13:14:57] [ 159/202] ▶ start  qid=Complex_Retrieval_test:182  q="Find the movie titles and release years of movies that belong to the 'Action' genre and have been watched by users fr..."
+[13:15:09] [ 159/202] ✔ done   qid=Complex_Retrieval_test:182  ea=False em=False psjs=1.0  t=?  runEA=0.652  wall=35m46s  ETA=9m40s
+[13:15:09] [ 159/202] ✔ done   qid=Complex_Retrieval_test:182  ea=False em=False psjs=1.0  t=?  runEA=0.652  wall=35m46s  ETA=9m40s
+[13:15:09] [ 160/202] ▶ start  qid=Complex_Retrieval_test:183  q="Find all users who have watched movies in the 'Horrror' genre and return their first names and the titles of the movi..."
+[13:15:09] [ 160/202] ▶ start  qid=Complex_Retrieval_test:183  q="Find all users who have watched movies in the 'Horrror' genre and return their first names and the titles of the movi..."
+[13:15:25] [ 160/202] ✔ done   qid=Complex_Retrieval_test:183  ea=True em=False psjs=1.0  t=?  runEA=0.654  wall=36m03s  ETA=9m28s
+[13:15:25] [ 160/202] ✔ done   qid=Complex_Retrieval_test:183  ea=True em=False psjs=1.0  t=?  runEA=0.654  wall=36m03s  ETA=9m28s
+[13:15:25] [ 161/202] ▶ start  qid=Complex_Retrieval_test:186  q="Identify United Statesers from the 'United States' who have watched movies with 'Dark' in the title, and list their e..."
+[13:15:25] [ 161/202] ▶ start  qid=Complex_Retrieval_test:186  q="Identify United Statesers from the 'United States' who have watched movies with 'Dark' in the title, and list their e..."
+[13:15:47] [ 161/202] ✔ done   qid=Complex_Retrieval_test:186  ea=True em=False psjs=1.0  t=?  runEA=0.656  wall=36m24s  ETA=9m16s
+[13:15:47] [ 161/202] ✔ done   qid=Complex_Retrieval_test:186  ea=True em=False psjs=1.0  t=?  runEA=0.656  wall=36m24s  ETA=9m16s
+[13:15:47] [ 162/202] ▶ start  qid=Complex_Retrieval_test:188  q="Find the users who have watched both 'Black Widow' and 'Marley', and return their first names and last names."
+[13:15:47] [ 162/202] ▶ start  qid=Complex_Retrieval_test:188  q="Find the users who have watched both 'Black Widow' and 'Marley', and return their first names and last names."
+[13:15:59] [ 162/202] ✔ done   qid=Complex_Retrieval_test:188  ea=True em=False psjs=1.0  t=?  runEA=0.658  wall=36m36s  ETA=9m02s
+[13:15:59] [ 162/202] ✔ done   qid=Complex_Retrieval_test:188  ea=True em=False psjs=1.0  t=?  runEA=0.658  wall=36m36s  ETA=9m02s
+[13:15:59] [ 163/202] ▶ start  qid=Complex_Retrieval_test:189  q="Retrieve the names of all genres that are associated with movies watched by USers from the 'US'."
+[13:15:59] [ 163/202] ▶ start  qid=Complex_Retrieval_test:189  q="Retrieve the names of all genres that are associated with movies watched by USers from the 'US'."
+[13:16:05] [ 163/202] ✔ done   qid=Complex_Retrieval_test:189  ea=True em=False psjs=1.0  t=?  runEA=0.660  wall=36m42s  ETA=8m47s
+[13:16:05] [ 163/202] ✔ done   qid=Complex_Retrieval_test:189  ea=True em=False psjs=1.0  t=?  runEA=0.660  wall=36m42s  ETA=8m47s
+[13:16:05] [ 164/202] ▶ start  qid=Complex_Retrieval_test:190  q="Find the IP addresses used by users who have watched more than 10 movies and whose gender is 'Malle'. Return the addr..."
+[13:16:05] [ 164/202] ▶ start  qid=Complex_Retrieval_test:190  q="Find the IP addresses used by users who have watched more than 10 movies and whose gender is 'Malle'. Return the addr..."
+[13:16:21] [ 164/202] ✔ done   qid=Complex_Retrieval_test:190  ea=True em=False psjs=1.0  t=?  runEA=0.662  wall=36m58s  ETA=8m34s
+[13:16:21] [ 164/202] ✔ done   qid=Complex_Retrieval_test:190  ea=True em=False psjs=1.0  t=?  runEA=0.662  wall=36m58s  ETA=8m34s
+[13:16:21] [ 165/202] ▶ start  qid=Complex_Retrieval_test:191  q="Find all users whose first name starts with 'E' and last name contains 'na' and who have watched movies released in t..."
+[13:16:21] [ 165/202] ▶ start  qid=Complex_Retrieval_test:191  q="Find all users whose first name starts with 'E' and last name contains 'na' and who have watched movies released in t..."
+2026-06-22 13:16:31.409 | WARNING  | eval.psjs:compute_psjs:580 - PSJS execution failed — returning 0.0.  gold_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input \'AS\': expected\n  "!="\n  "%"\n  "*"\n  "+"\n  "-"\n  "/"\n  "<"\n  "<="\n  "<>"\n  "="\n  ">"\n  ">="\n  "AND"\n  "CALL"\n  "CREATE"\n  "DELETE"\n  "DETACH"\n  "FINISH"\n  "FOREACH"\n  "INSERT"\n  "LOAD"\n  "MATCH"\n  "MERGE"\n  "NODETACH"\n  "OPTIONAL"\n  "OR"\n  "REMOVE"\n  "RETURN"\n  "SET"\n  "UNION"\n  "UNWIND"\n  "USE"\n  "WITH"\n  "XOR"\n  "^"\n  "||"\n  <EOF> (line 1, column 166 (offset: 165))\n"MATCH (u:User)-[rtmp0:WATCHED]->(m:Movie {year: 2008}) WHERE u.firstName STARTS WITH collect(distinct id(m)) + collect(distinct id(u)) + collect(distinct id(rtmp0)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId1"\n                                                                                                                                                                      ^}' pred_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input \'AS\': expected\n  "!="\n  "%"\n  "*"\n  "+"\n  "-"\n  "/"\n  "<"\n  "<="\n  "<>"\n  "="\n  ">"\n  ">="\n  "AND"\n  "CALL"\n  "CREATE"\n  "DELETE"\n  "DETACH"\n  "FINISH"\n  "FOREACH"\n  "INSERT"\n  "LOAD"\n  "MATCH"\n  "MERGE"\n  "NODETACH"\n  "OPTIONAL"\n  "OR"\n  "REMOVE"\n  "RETURN"\n  "SET"\n  "UNION"\n  "UNWIND"\n  "USE"\n  "WITH"\n  "XOR"\n  "^"\n  "||"\n  <EOF> (line 1, column 153 (offset: 152))\n"MATCH (u:User)-[rtmp0:WATCHED]->(m:Movie) WHERE u.firstName STARTS WITH collect(distinct id(m)) + collect(distinct id(u)) + collect(distinct id(rtmp0)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId2"\n                                                                                                                                                         ^}'
+[13:16:31] [ 165/202] ✔ done   qid=Complex_Retrieval_test:191  ea=True em=False psjs=0.0  t=?  runEA=0.665  wall=37m08s  ETA=8m20s
+[13:16:31] [ 165/202] ✔ done   qid=Complex_Retrieval_test:191  ea=True em=False psjs=0.0  t=?  runEA=0.665  wall=37m08s  ETA=8m20s
+[13:16:31] [ 166/202] ▶ start  qid=Complex_Retrieval_test:192  q="Find all users who use the IP address '29.221.147.18' and have watched a movie that belongs to the 'Dramz' genre. Ret..."
+[13:16:31] [ 166/202] ▶ start  qid=Complex_Retrieval_test:192  q="Find all users who use the IP address '29.221.147.18' and have watched a movie that belongs to the 'Dramz' genre. Ret..."
+[13:16:43] [ 166/202] ✔ done   qid=Complex_Retrieval_test:192  ea=True em=False psjs=1.0  t=?  runEA=0.667  wall=37m20s  ETA=8m06s
+[13:16:43] [ 166/202] ✔ done   qid=Complex_Retrieval_test:192  ea=True em=False psjs=1.0  t=?  runEA=0.667  wall=37m20s  ETA=8m06s
+[13:16:43] [ 167/202] ▶ start  qid=Complex_Retrieval_test:193  q="Find users who have watched both 'Shadow in the Cloud' and 'Moment', and return their first names and last names."
+[13:16:43] [ 167/202] ▶ start  qid=Complex_Retrieval_test:193  q="Find users who have watched both 'Shadow in the Cloud' and 'Moment', and return their first names and last names."
+[13:16:54] [ 167/202] ✔ done   qid=Complex_Retrieval_test:193  ea=True em=False psjs=1.0  t=?  runEA=0.669  wall=37m31s  ETA=7m52s
+[13:16:54] [ 167/202] ✔ done   qid=Complex_Retrieval_test:193  ea=True em=False psjs=1.0  t=?  runEA=0.669  wall=37m31s  ETA=7m52s
+[13:16:54] [ 168/202] ▶ start  qid=Complex_Retrieval_test:194  q="Retrieve the email addresses of users who use the IP address '133.198.156.5' and have also watched a movie in the 'Co..."
+[13:16:54] [ 168/202] ▶ start  qid=Complex_Retrieval_test:194  q="Retrieve the email addresses of users who use the IP address '133.198.156.5' and have also watched a movie in the 'Co..."
+[13:17:09] [ 168/202] ✔ done   qid=Complex_Retrieval_test:194  ea=True em=False psjs=1.0  t=?  runEA=0.671  wall=37m46s  ETA=7m39s
+[13:17:09] [ 168/202] ✔ done   qid=Complex_Retrieval_test:194  ea=True em=False psjs=1.0  t=?  runEA=0.671  wall=37m46s  ETA=7m39s
+[13:17:09] [ 169/202] ▶ start  qid=Complex_Retrieval_test:195  q="Find the users who watched the movie 'Half Brothres' and use an IP address that starts with '193.', returning their f..."
+[13:17:09] [ 169/202] ▶ start  qid=Complex_Retrieval_test:195  q="Find the users who watched the movie 'Half Brothres' and use an IP address that starts with '193.', returning their f..."
+2026-06-22 13:17:19.648 | WARNING  | eval.psjs:compute_psjs:580 - PSJS execution failed — returning 0.0.  gold_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input \'AS\': expected\n  "!="\n  "%"\n  "*"\n  "+"\n  "-"\n  "/"\n  "<"\n  "<="\n  "<>"\n  "="\n  ">"\n  ">="\n  "AND"\n  "CALL"\n  "CREATE"\n  "DELETE"\n  "DETACH"\n  "FINISH"\n  "FOREACH"\n  "INSERT"\n  "LOAD"\n  "MATCH"\n  "MERGE"\n  "NODETACH"\n  "OPTIONAL"\n  "OR"\n  "REMOVE"\n  "RETURN"\n  "SET"\n  "UNION"\n  "UNWIND"\n  "USE"\n  "WITH"\n  "XOR"\n  "^"\n  "||"\n  <EOF> (line 1, column 268 (offset: 267))\n"MATCH (u:User)-[rtmp0:WATCHED]->(m:Movie {title: \'Half Brothers\'}), (u)-[rtmp1:USES]->(ip:IpAddress) WHERE ip.address STARTS WITH collect(distinct id(ip)) + collect(distinct id(m)) + collect(distinct id(u)) + collect(distinct id(rtmp0)) + collect(distinct id(rtmp1)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId1"\n                                                                                                                                                                                                                                                                            ^}' pred_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input \'AS\': expected\n  "!="\n  "%"\n  "*"\n  "+"\n  "-"\n  "/"\n  "<"\n  "<="\n  "<>"\n  "="\n  ">"\n  ">="\n  "AND"\n  "CALL"\n  "CREATE"\n  "DELETE"\n  "DETACH"\n  "FINISH"\n  "FOREACH"\n  "INSERT"\n  "LOAD"\n  "MATCH"\n  "MERGE"\n  "NODETACH"\n  "OPTIONAL"\n  "OR"\n  "REMOVE"\n  "RETURN"\n  "SET"\n  "UNION"\n  "UNWIND"\n  "USE"\n  "WITH"\n  "XOR"\n  "^"\n  "||"\n  <EOF> (line 1, column 283 (offset: 282))\n"MATCH (m:Movie {title: "Half Brothres"}) MATCH (u:User)-[rtmp0:WATCHED]->(m) MATCH (u)-[rtmp1:USES]->(ip:IpAddress) WHERE ip.address STARTS WITH collect(distinct id(ip)) + collect(distinct id(m)) + collect(distinct id(u)) + collect(distinct id(rtmp0)) + collect(distinct id(rtmp1)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId2"\n                                                                                                                                                                                                                                                                                           ^}'
+[13:17:19] [ 169/202] ✔ done   qid=Complex_Retrieval_test:195  ea=True em=False psjs=0.0  t=?  runEA=0.673  wall=37m56s  ETA=7m24s
+[13:17:19] [ 169/202] ✔ done   qid=Complex_Retrieval_test:195  ea=True em=False psjs=0.0  t=?  runEA=0.673  wall=37m56s  ETA=7m24s
+[13:17:19] [ 170/202] ▶ start  qid=Complex_Retrieval_test:196  q="For United Statesers from the 'United States' who have watched more than one movie, what are the distinct genres of m..."
+[13:17:19] [ 170/202] ▶ start  qid=Complex_Retrieval_test:196  q="For United Statesers from the 'United States' who have watched more than one movie, what are the distinct genres of m..."
+[13:17:30] [ 170/202] ✔ done   qid=Complex_Retrieval_test:196  ea=False em=False psjs=1.0  t=?  runEA=0.669  wall=38m08s  ETA=7m11s
+[13:17:30] [ 170/202] ✔ done   qid=Complex_Retrieval_test:196  ea=False em=False psjs=1.0  t=?  runEA=0.669  wall=38m08s  ETA=7m11s
+[13:17:30] [ 171/202] ▶ start  qid=Complex_Retrieval_test:197  q="Find the average watchCount of movies watched by female users from 'KY'. Also, list the titles of the movies watched ..."
+[13:17:30] [ 171/202] ▶ start  qid=Complex_Retrieval_test:197  q="Find the average watchCount of movies watched by female users from 'KY'. Also, list the titles of the movies watched ..."
+[13:17:35] [ 171/202] ✔ done   qid=Complex_Retrieval_test:197  ea=False em=False psjs=0.0  t=?  runEA=0.665  wall=38m12s  ETA=6m56s
+[13:17:35] [ 171/202] ✔ done   qid=Complex_Retrieval_test:197  ea=False em=False psjs=0.0  t=?  runEA=0.665  wall=38m12s  ETA=6m56s
+[13:17:35] [ 172/202] ▶ start  qid=Complex_Retrieval_test:198  q="Find all users who have watched the movie 'half brothers' and also use the IP address '250.96.187.83'. Return their f..."
+[13:17:35] [ 172/202] ▶ start  qid=Complex_Retrieval_test:198  q="Find all users who have watched the movie 'half brothers' and also use the IP address '250.96.187.83'. Return their f..."
+[13:17:48] [ 172/202] ✔ done   qid=Complex_Retrieval_test:198  ea=True em=False psjs=1.0  t=?  runEA=0.667  wall=38m25s  ETA=6m42s
+[13:17:48] [ 172/202] ✔ done   qid=Complex_Retrieval_test:198  ea=True em=False psjs=1.0  t=?  runEA=0.667  wall=38m25s  ETA=6m42s
+[13:17:48] [ 173/202] ▶ start  qid=Complex_Retrieval_test:199  q="Retrieve the titles of all movies that belong to the 'Comedy' genre and have been watched by an United Stateser from ..."
+[13:17:48] [ 173/202] ▶ start  qid=Complex_Retrieval_test:199  q="Retrieve the titles of all movies that belong to the 'Comedy' genre and have been watched by an United Stateser from ..."
+[13:17:56] [ 173/202] ✔ done   qid=Complex_Retrieval_test:199  ea=True em=False psjs=1.0  t=?  runEA=0.669  wall=38m33s  ETA=6m28s
+[13:17:56] [ 173/202] ✔ done   qid=Complex_Retrieval_test:199  ea=True em=False psjs=1.0  t=?  runEA=0.669  wall=38m33s  ETA=6m28s
+[13:17:56] [ 174/202] ▶ start  qid=Complex_Retrieval_test:200  q="Find all users whose first name is 'Igrim' and have watched movies released in the year 2021. Return the titles of th..."
+[13:17:56] [ 174/202] ▶ start  qid=Complex_Retrieval_test:200  q="Find all users whose first name is 'Igrim' and have watched movies released in the year 2021. Return the titles of th..."
+[13:18:09] [ 174/202] ✔ done   qid=Complex_Retrieval_test:200  ea=True em=False psjs=1.0  t=?  runEA=0.671  wall=38m46s  ETA=6m14s
+[13:18:09] [ 174/202] ✔ done   qid=Complex_Retrieval_test:200  ea=True em=False psjs=1.0  t=?  runEA=0.671  wall=38m46s  ETA=6m14s
+[13:18:09] [ 175/202] ▶ start  qid=Complex_Retrieval_test:201  q="Identify users from 'OH' who have watched movies of the 'Comedy' genre. Return the user's email and the titles of the..."
+[13:18:09] [ 175/202] ▶ start  qid=Complex_Retrieval_test:201  q="Identify users from 'OH' who have watched movies of the 'Comedy' genre. Return the user's email and the titles of the..."
+[13:18:30] [ 175/202] ✔ done   qid=Complex_Retrieval_test:201  ea=True em=False psjs=1.0  t=?  runEA=0.673  wall=39m08s  ETA=6m02s
+[13:18:30] [ 175/202] ✔ done   qid=Complex_Retrieval_test:201  ea=True em=False psjs=1.0  t=?  runEA=0.673  wall=39m08s  ETA=6m02s
+[13:18:30] [ 176/202] ▶ start  qid=Complex_Retrieval_test:202  q="Find the average watch count of movies watched by users who use the '192.244.162.212'."
+[13:18:30] [ 176/202] ▶ start  qid=Complex_Retrieval_test:202  q="Find the average watch count of movies watched by users who use the '192.244.162.212'."
+[13:18:35] [ 176/202] ✔ done   qid=Complex_Retrieval_test:202  ea=True em=False psjs=1.0  t=?  runEA=0.674  wall=39m12s  ETA=5m47s
+[13:18:35] [ 176/202] ✔ done   qid=Complex_Retrieval_test:202  ea=True em=False psjs=1.0  t=?  runEA=0.674  wall=39m12s  ETA=5m47s
+[13:18:35] [ 177/202] ▶ start  qid=Complex_Retrieval_test:203  q="Find the first name and last name of users who watched movies with the title 'Resort' and also use the IP address '23..."
+[13:18:35] [ 177/202] ▶ start  qid=Complex_Retrieval_test:203  q="Find the first name and last name of users who watched movies with the title 'Resort' and also use the IP address '23..."
+[13:18:48] [ 177/202] ✔ done   qid=Complex_Retrieval_test:203  ea=True em=False psjs=1.0  t=?  runEA=0.676  wall=39m25s  ETA=5m34s
+[13:18:48] [ 177/202] ✔ done   qid=Complex_Retrieval_test:203  ea=True em=False psjs=1.0  t=?  runEA=0.676  wall=39m25s  ETA=5m34s
+[13:18:48] [ 178/202] ▶ start  qid=Complex_Retrieval_test:204  q="What are the titles of the movies that United Statesers with the country 'United States' and gender 'Female' have wat..."
+[13:18:48] [ 178/202] ▶ start  qid=Complex_Retrieval_test:204  q="What are the titles of the movies that United Statesers with the country 'United States' and gender 'Female' have wat..."
+[13:19:00] [ 178/202] ✔ done   qid=Complex_Retrieval_test:204  ea=True em=False psjs=1.0  t=?  runEA=0.678  wall=39m37s  ETA=5m20s
+[13:19:00] [ 178/202] ✔ done   qid=Complex_Retrieval_test:204  ea=True em=False psjs=1.0  t=?  runEA=0.678  wall=39m37s  ETA=5m20s
+[13:19:00] [ 179/202] ▶ start  qid=Complex_Retrieval_test:206  q="Retrieve the names of all genres that are associated with movies watched by users whose last name is 'Wrooath'."
+[13:19:00] [ 179/202] ▶ start  qid=Complex_Retrieval_test:206  q="Retrieve the names of all genres that are associated with movies watched by users whose last name is 'Wrooath'."
+[13:19:13] [ 179/202] ✔ done   qid=Complex_Retrieval_test:206  ea=True em=False psjs=1.0  t=?  runEA=0.680  wall=39m50s  ETA=5m07s
+[13:19:13] [ 179/202] ✔ done   qid=Complex_Retrieval_test:206  ea=True em=False psjs=1.0  t=?  runEA=0.680  wall=39m50s  ETA=5m07s
+[13:19:13] [ 180/202] ▶ start  qid=Complex_Retrieval_test:207  q="Find the address of IP addresses United Statesed by female United Statesers from the 'United States' who have watched..."
+[13:19:13] [ 180/202] ▶ start  qid=Complex_Retrieval_test:207  q="Find the address of IP addresses United Statesed by female United Statesers from the 'United States' who have watched..."
+[13:19:29] [ 180/202] ✔ done   qid=Complex_Retrieval_test:207  ea=True em=False psjs=0.11516155758077878  t=?  runEA=0.682  wall=40m06s  ETA=4m54s
+[13:19:29] [ 180/202] ✔ done   qid=Complex_Retrieval_test:207  ea=True em=False psjs=0.11516155758077878  t=?  runEA=0.682  wall=40m06s  ETA=4m54s
+[13:19:29] [ 181/202] ▶ start  qid=Complex_Retrieval_test:208  q="Find the first name and last name of users who watched movies that belong to the 'Adtion' genre and also use the IP a..."
+[13:19:29] [ 181/202] ▶ start  qid=Complex_Retrieval_test:208  q="Find the first name and last name of users who watched movies that belong to the 'Adtion' genre and also use the IP a..."
+[13:19:44] [ 181/202] ✔ done   qid=Complex_Retrieval_test:208  ea=True em=False psjs=1.0  t=?  runEA=0.684  wall=40m21s  ETA=4m41s
+[13:19:44] [ 181/202] ✔ done   qid=Complex_Retrieval_test:208  ea=True em=False psjs=1.0  t=?  runEA=0.684  wall=40m21s  ETA=4m41s
+[13:19:44] [ 182/202] ▶ start  qid=Complex_Retrieval_test:209  q="What are the titles of movies released after the year 2000 that USers with the country 'US' have watched more than once?"
+[13:19:44] [ 182/202] ▶ start  qid=Complex_Retrieval_test:209  q="What are the titles of movies released after the year 2000 that USers with the country 'US' have watched more than once?"
+[13:19:51] [ 182/202] ✔ done   qid=Complex_Retrieval_test:209  ea=False em=False psjs=1.0  t=?  runEA=0.680  wall=40m28s  ETA=4m27s
+[13:19:51] [ 182/202] ✔ done   qid=Complex_Retrieval_test:209  ea=False em=False psjs=1.0  t=?  runEA=0.680  wall=40m28s  ETA=4m27s
+[13:19:51] [ 183/202] ▶ start  qid=Complex_Retrieval_test:210  q="Find the email addresses of users who have watched the movie 'Marley' and whose gender is 'Male'."
+[13:19:51] [ 183/202] ▶ start  qid=Complex_Retrieval_test:210  q="Find the email addresses of users who have watched the movie 'Marley' and whose gender is 'Male'."
+[13:20:06] [ 183/202] ✔ done   qid=Complex_Retrieval_test:210  ea=True em=False psjs=1.0  t=?  runEA=0.682  wall=40m43s  ETA=4m14s
+[13:20:06] [ 183/202] ✔ done   qid=Complex_Retrieval_test:210  ea=True em=False psjs=1.0  t=?  runEA=0.682  wall=40m43s  ETA=4m14s
+[13:20:06] [ 184/202] ▶ start  qid=Complex_Retrieval_test:211  q="Retrieve the addresses of IP addresses used by users whose first name is 'Claudianus' and last name is 'Borre'."
+[13:20:06] [ 184/202] ▶ start  qid=Complex_Retrieval_test:211  q="Retrieve the addresses of IP addresses used by users whose first name is 'Claudianus' and last name is 'Borre'."
+[13:20:21] [ 184/202] ✔ done   qid=Complex_Retrieval_test:211  ea=True em=False psjs=1.0  t=?  runEA=0.683  wall=40m59s  ETA=4m01s
+[13:20:21] [ 184/202] ✔ done   qid=Complex_Retrieval_test:211  ea=True em=False psjs=1.0  t=?  runEA=0.683  wall=40m59s  ETA=4m01s
+[13:20:21] [ 185/202] ▶ start  qid=Complex_Retrieval_test:212  q="Find the titles of movies that belong to the 'Horror' genre and were watched by users from the state 'WA'."
+[13:20:21] [ 185/202] ▶ start  qid=Complex_Retrieval_test:212  q="Find the titles of movies that belong to the 'Horror' genre and were watched by users from the state 'WA'."
+[13:20:37] [ 185/202] ✔ done   qid=Complex_Retrieval_test:212  ea=True em=False psjs=1.0  t=?  runEA=0.685  wall=41m15s  ETA=3m47s
+[13:20:37] [ 185/202] ✔ done   qid=Complex_Retrieval_test:212  ea=True em=False psjs=1.0  t=?  runEA=0.685  wall=41m15s  ETA=3m47s
+[13:20:37] [ 186/202] ▶ start  qid=Complex_Retrieval_test:213  q="Find the first name, last name, and email of users who watched movies of the 'Comdy' genre and used the IP address '2..."
+[13:20:37] [ 186/202] ▶ start  qid=Complex_Retrieval_test:213  q="Find the first name, last name, and email of users who watched movies of the 'Comdy' genre and used the IP address '2..."
+[13:20:49] [ 186/202] ✔ done   qid=Complex_Retrieval_test:213  ea=True em=False psjs=1.0  t=?  runEA=0.687  wall=41m26s  ETA=3m34s
+[13:20:49] [ 186/202] ✔ done   qid=Complex_Retrieval_test:213  ea=True em=False psjs=1.0  t=?  runEA=0.687  wall=41m26s  ETA=3m34s
+[13:20:49] [ 187/202] ▶ start  qid=Complex_Retrieval_test:214  q="What are the titles of movies that United Statesers from 'United States' have watched more than 5 times, and what are..."
+[13:20:49] [ 187/202] ▶ start  qid=Complex_Retrieval_test:214  q="What are the titles of movies that United Statesers from 'United States' have watched more than 5 times, and what are..."
+[13:21:05] [ 187/202] ✔ done   qid=Complex_Retrieval_test:214  ea=True em=False psjs=1.0  t=?  runEA=0.689  wall=41m42s  ETA=3m21s
+[13:21:05] [ 187/202] ✔ done   qid=Complex_Retrieval_test:214  ea=True em=False psjs=1.0  t=?  runEA=0.689  wall=41m42s  ETA=3m21s
+[13:21:05] [ 188/202] ▶ start  qid=Complex_Retrieval_test:216  q="Find the email addresses of female users from 'Virginia' who have watched the movie 'Qing'."
+[13:21:05] [ 188/202] ▶ start  qid=Complex_Retrieval_test:216  q="Find the email addresses of female users from 'Virginia' who have watched the movie 'Qing'."
+[13:21:19] [ 188/202] ✔ done   qid=Complex_Retrieval_test:216  ea=True em=False psjs=1.0  t=?  runEA=0.690  wall=41m56s  ETA=3m07s
+[13:21:19] [ 188/202] ✔ done   qid=Complex_Retrieval_test:216  ea=True em=False psjs=1.0  t=?  runEA=0.690  wall=41m56s  ETA=3m07s
+[13:21:19] [ 189/202] ▶ start  qid=Complex_Retrieval_test:217  q="List the first names of users who use the IP address '238.110.91.23' and have watched a movie that belongs to the 'Co..."
+[13:21:19] [ 189/202] ▶ start  qid=Complex_Retrieval_test:217  q="List the first names of users who use the IP address '238.110.91.23' and have watched a movie that belongs to the 'Co..."
+[13:21:32] [ 189/202] ✔ done   qid=Complex_Retrieval_test:217  ea=True em=False psjs=1.0  t=?  runEA=0.692  wall=42m09s  ETA=2m54s
+[13:21:32] [ 189/202] ✔ done   qid=Complex_Retrieval_test:217  ea=True em=False psjs=1.0  t=?  runEA=0.692  wall=42m09s  ETA=2m54s
+[13:21:32] [ 190/202] ▶ start  qid=Complex_Retrieval_test:218  q="Find all users who have watched movies in the 'Hororr' genre and list their first names along with the titles of thos..."
+[13:21:32] [ 190/202] ▶ start  qid=Complex_Retrieval_test:218  q="Find all users who have watched movies in the 'Hororr' genre and list their first names along with the titles of thos..."
+[13:21:49] [ 190/202] ✔ done   qid=Complex_Retrieval_test:218  ea=True em=False psjs=1.0  t=?  runEA=0.694  wall=42m27s  ETA=2m41s
+[13:21:49] [ 190/202] ✔ done   qid=Complex_Retrieval_test:218  ea=True em=False psjs=1.0  t=?  runEA=0.694  wall=42m27s  ETA=2m41s
+[13:21:49] [ 191/202] ▶ start  qid=Complex_Retrieval_test:220  q="Find the first name and last name of all United Statesers from the 'United States' who have watched movies released i..."
+[13:21:49] [ 191/202] ▶ start  qid=Complex_Retrieval_test:220  q="Find the first name and last name of all United Statesers from the 'United States' who have watched movies released i..."
+[13:22:06] [ 191/202] ✔ done   qid=Complex_Retrieval_test:220  ea=True em=False psjs=1.0  t=?  runEA=0.695  wall=42m43s  ETA=2m28s
+[13:22:06] [ 191/202] ✔ done   qid=Complex_Retrieval_test:220  ea=True em=False psjs=1.0  t=?  runEA=0.695  wall=42m43s  ETA=2m28s
+[13:22:06] [ 192/202] ▶ start  qid=Complex_Retrieval_test:221  q="List the titles of movies that have the 'comedy' genre and were watched by users with the first name 'Cam'."
+[13:22:06] [ 192/202] ▶ start  qid=Complex_Retrieval_test:221  q="List the titles of movies that have the 'comedy' genre and were watched by users with the first name 'Cam'."
+[13:22:19] [ 192/202] ✔ done   qid=Complex_Retrieval_test:221  ea=True em=False psjs=1.0  t=?  runEA=0.697  wall=42m56s  ETA=2m14s
+[13:22:19] [ 192/202] ✔ done   qid=Complex_Retrieval_test:221  ea=True em=False psjs=1.0  t=?  runEA=0.697  wall=42m56s  ETA=2m14s
+[13:22:19] [ 193/202] ▶ start  qid=Complex_Retrieval_test:222  q="Find the email addresses of users who are from 'California' and have watched movies with the title 'Heartbreak Kid'."
+[13:22:19] [ 193/202] ▶ start  qid=Complex_Retrieval_test:222  q="Find the email addresses of users who are from 'California' and have watched movies with the title 'Heartbreak Kid'."
+[13:22:31] [ 193/202] ✔ done   qid=Complex_Retrieval_test:222  ea=True em=False psjs=1.0  t=?  runEA=0.698  wall=43m08s  ETA=2m01s
+[13:22:31] [ 193/202] ✔ done   qid=Complex_Retrieval_test:222  ea=True em=False psjs=1.0  t=?  runEA=0.698  wall=43m08s  ETA=2m01s
+[13:22:31] [ 194/202] ▶ start  qid=Complex_Retrieval_test:224  q="Retrieve the addresses of all IpAddress nodes that are United Statesed by United Statesers whose gender is 'Female' a..."
+[13:22:31] [ 194/202] ▶ start  qid=Complex_Retrieval_test:224  q="Retrieve the addresses of all IpAddress nodes that are United Statesed by United Statesers whose gender is 'Female' a..."
+[13:22:45] [ 194/202] ✔ done   qid=Complex_Retrieval_test:224  ea=True em=False psjs=1.0  t=?  runEA=0.700  wall=43m22s  ETA=1m47s
+[13:22:45] [ 194/202] ✔ done   qid=Complex_Retrieval_test:224  ea=True em=False psjs=1.0  t=?  runEA=0.700  wall=43m22s  ETA=1m47s
+[13:22:45] [ 195/202] ▶ start  qid=Complex_Retrieval_test:225  q="Find all movies that belong to the 'Hotror' genre and were released after the year 2000. Return the titles of these m..."
+[13:22:45] [ 195/202] ▶ start  qid=Complex_Retrieval_test:225  q="Find all movies that belong to the 'Hotror' genre and were released after the year 2000. Return the titles of these m..."
+[13:22:59] [ 195/202] ✔ done   qid=Complex_Retrieval_test:225  ea=True em=False psjs=1.0  t=?  runEA=0.702  wall=43m36s  ETA=1m34s
+[13:22:59] [ 195/202] ✔ done   qid=Complex_Retrieval_test:225  ea=True em=False psjs=1.0  t=?  runEA=0.702  wall=43m36s  ETA=1m34s
+[13:22:59] [ 196/202] ▶ start  qid=Complex_Retrieval_test:227  q="Find all users from 'IL' who have used the IP address '59.146.136.204'. Return their first and last names."
+[13:22:59] [ 196/202] ▶ start  qid=Complex_Retrieval_test:227  q="Find all users from 'IL' who have used the IP address '59.146.136.204'. Return their first and last names."
+[13:23:11] [ 196/202] ✔ done   qid=Complex_Retrieval_test:227  ea=True em=False psjs=1.0  t=?  runEA=0.703  wall=43m48s  ETA=1m20s
+[13:23:11] [ 196/202] ✔ done   qid=Complex_Retrieval_test:227  ea=True em=False psjs=1.0  t=?  runEA=0.703  wall=43m48s  ETA=1m20s
+[13:23:11] [ 197/202] ▶ start  qid=Complex_Retrieval_test:229  q="Find all users whose email ends with 'gmmail.com' and who use IP addresses starting with '192.'. Return their first n..."
+[13:23:11] [ 197/202] ▶ start  qid=Complex_Retrieval_test:229  q="Find all users whose email ends with 'gmmail.com' and who use IP addresses starting with '192.'. Return their first n..."
+2026-06-22 13:23:20.955 | WARNING  | eval.psjs:compute_psjs:580 - PSJS execution failed — returning 0.0.  gold_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input \'AS\': expected\n  "!="\n  "%"\n  "*"\n  "+"\n  "-"\n  "/"\n  "<"\n  "<="\n  "<>"\n  "="\n  ">"\n  ">="\n  "AND"\n  "CALL"\n  "CREATE"\n  "DELETE"\n  "DETACH"\n  "FINISH"\n  "FOREACH"\n  "INSERT"\n  "LOAD"\n  "MATCH"\n  "MERGE"\n  "NODETACH"\n  "OPTIONAL"\n  "OR"\n  "REMOVE"\n  "RETURN"\n  "SET"\n  "UNION"\n  "UNWIND"\n  "USE"\n  "WITH"\n  "XOR"\n  "^"\n  "||"\n  <EOF> (line 1, column 150 (offset: 149))\n"MATCH (u:User)-[rtmp0:USES]->(ip:IpAddress) WHERE u.email ENDS WITH collect(distinct id(ip)) + collect(distinct id(u)) + collect(distinct id(rtmp0)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId1"\n                                                                                                                                                      ^}' pred_err='CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input \'AS\': expected\n  "!="\n  "%"\n  "*"\n  "+"\n  "-"\n  "/"\n  "<"\n  "<="\n  "<>"\n  "="\n  ">"\n  ">="\n  "AND"\n  "CALL"\n  "CREATE"\n  "DELETE"\n  "DETACH"\n  "FINISH"\n  "FOREACH"\n  "INSERT"\n  "LOAD"\n  "MATCH"\n  "MERGE"\n  "NODETACH"\n  "OPTIONAL"\n  "OR"\n  "REMOVE"\n  "RETURN"\n  "SET"\n  "UNION"\n  "UNWIND"\n  "USE"\n  "WITH"\n  "XOR"\n  "^"\n  "||"\n  <EOF> (line 1, column 159 (offset: 158))\n"MATCH (u:User)-[rtmp0:USES]->(ip:IpAddress) WHERE toLower(u.email) ENDS WITH collect(distinct id(ip)) + collect(distinct id(u)) + collect(distinct id(rtmp0)) AS elemIds UNWIND elemIds AS elemId RETURN elemId AS elemId2"\n                                                                                                                                                               ^}'
+[13:23:20] [ 197/202] ✔ done   qid=Complex_Retrieval_test:229  ea=True em=False psjs=0.0  t=?  runEA=0.705  wall=43m58s  ETA=1m07s
+[13:23:20] [ 197/202] ✔ done   qid=Complex_Retrieval_test:229  ea=True em=False psjs=0.0  t=?  runEA=0.705  wall=43m58s  ETA=1m07s
+[13:23:20] [ 198/202] ▶ start  qid=Complex_Retrieval_test:230  q="List the first name and last name of users who have watched movies with 'Animatin' genre, along with the count of suc..."
+[13:23:20] [ 198/202] ▶ start  qid=Complex_Retrieval_test:230  q="List the first name and last name of users who have watched movies with 'Animatin' genre, along with the count of suc..."
+[13:23:36] [ 198/202] ✔ done   qid=Complex_Retrieval_test:230  ea=True em=False psjs=1.0  t=?  runEA=0.706  wall=44m14s  ETA=54s
+[13:23:36] [ 198/202] ✔ done   qid=Complex_Retrieval_test:230  ea=True em=False psjs=1.0  t=?  runEA=0.706  wall=44m14s  ETA=54s
+[13:23:36] [ 199/202] ▶ start  qid=Complex_Retrieval_test:231  q="Find the average watch count of movies watched by users from 'OH' who use IP addresses containing '210.'."
+[13:23:36] [ 199/202] ▶ start  qid=Complex_Retrieval_test:231  q="Find the average watch count of movies watched by users from 'OH' who use IP addresses containing '210.'."
+[13:23:41] [ 199/202] ✔ done   qid=Complex_Retrieval_test:231  ea=False em=False psjs=0.0  t=?  runEA=0.703  wall=44m18s  ETA=40s
+[13:23:41] [ 199/202] ✔ done   qid=Complex_Retrieval_test:231  ea=False em=False psjs=0.0  t=?  runEA=0.703  wall=44m18s  ETA=40s
+[13:23:41] [ 200/202] ▶ start  qid=Complex_Retrieval_test:232  q="Retrieve the addresses of all IP addresses United Statesed by United Statesers from the 'United States' who have watc..."
+[13:23:41] [ 200/202] ▶ start  qid=Complex_Retrieval_test:232  q="Retrieve the addresses of all IP addresses United Statesed by United Statesers from the 'United States' who have watc..."
+[13:23:56] [ 200/202] ✔ done   qid=Complex_Retrieval_test:232  ea=False em=False psjs=1.0  t=?  runEA=0.699  wall=44m33s  ETA=27s
+[13:23:56] [ 200/202] ✔ done   qid=Complex_Retrieval_test:232  ea=False em=False psjs=1.0  t=?  runEA=0.699  wall=44m33s  ETA=27s
+[13:23:56] [ 201/202] ▶ start  qid=Complex_Retrieval_test:233  q="Find all movies that have the genre 'Comeyd' and list the users' first names and last names who watched those movies ..."
+[13:23:56] [ 201/202] ▶ start  qid=Complex_Retrieval_test:233  q="Find all movies that have the genre 'Comeyd' and list the users' first names and last names who watched those movies ..."
+[13:24:07] [ 201/202] ✔ done   qid=Complex_Retrieval_test:233  ea=True em=False psjs=1.0  t=?  runEA=0.701  wall=44m44s  ETA=13s
+[13:24:07] [ 201/202] ✔ done   qid=Complex_Retrieval_test:233  ea=True em=False psjs=1.0  t=?  runEA=0.701  wall=44m44s  ETA=13s
+[13:24:07] [ 202/202] ▶ start  qid=Complex_Retrieval_test:235  q="Find all users from 'nevada' who have used the IP address '144.144.252.18'. Return their first names and last names."
+[13:24:07] [ 202/202] ▶ start  qid=Complex_Retrieval_test:235  q="Find all users from 'nevada' who have used the IP address '144.144.252.18'. Return their first names and last names."
+[13:24:19] [ 202/202] ✔ done   qid=Complex_Retrieval_test:235  ea=True em=False psjs=1.0  t=?  runEA=0.702  wall=44m56s  ETA=--
+[13:24:19] [ 202/202] ✔ done   qid=Complex_Retrieval_test:235  ea=True em=False psjs=1.0  t=?  runEA=0.702  wall=44m56s  ETA=--
