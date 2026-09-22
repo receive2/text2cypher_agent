@@ -307,7 +307,7 @@ def _fake_faiss_env(tmp_path, monkeypatch):
         get_entity = lambda *a, **kw: "",
         build_llm  = lambda *a, **kw: None,
     )
-    _install_stub("agent.prompts", NER_SP="")
+    _install_stub("agent.prompts", NER_SP="", TEXT2CYPHER_SP="", QA_SP="", PROMPT_ALIGNER_SP="")   # ner_agent_auto imports NER_SP and TEXT2CYPHER_SP
 
     # Minimal `neo4j_lib` package + `neo4j_lib.neo4j_search` stub.
     _install_stub("neo4j_lib")
@@ -319,8 +319,9 @@ def _fake_faiss_env(tmp_path, monkeypatch):
     # repo-level "generated/faiss/tools_auto" is never touched.
     full_dir      = tmp_path / "tools_auto"
     node_only_dir = tmp_path / "tools_auto_node_only"
-    monkeypatch.setitem(ner_agent_auto._FAISS_DIR_BY_MODE, "full",      str(full_dir))
-    monkeypatch.setitem(ner_agent_auto._FAISS_DIR_BY_MODE, "node_only", str(node_only_dir))
+    # (_FAISS_DIR_BY_MODE became two module constants read by _faiss_dir(mode) on 2026-06-18)
+    monkeypatch.setattr(ner_agent_auto, "_FULL_FAISS_DIR",      str(full_dir))
+    monkeypatch.setattr(ner_agent_auto, "_NODE_ONLY_FAISS_DIR", str(node_only_dir))
 
     # Tiny offline embedder — no OpenAI calls, no network.
     fake = FakeEmbeddings(size=8)
@@ -383,7 +384,7 @@ def test_rebuild_purges_stale_garbage_file(_fake_faiss_env) -> None:
         ("get_person_name",  "Get the canonical Person.name values."),
     ])
 
-    n = _fake_faiss_env["module"].rebuild_tools_faiss(mode="full")
+    n = _fake_faiss_env["module"].rebuild_tools_faiss(mode="react_node_rel")   # a canonical full-scope mode; "full" is the scope label, not a mode
     assert n == 3
 
     # Orphan must be gone (purged), and the new index files must exist
@@ -415,7 +416,7 @@ def test_rebuild_after_schema_shrink_has_no_orphan_entries(_fake_faiss_env) -> N
         ("get_person_name",   "Person.name"),
         ("get_person_born",   "Person.born"),
     ])
-    n1 = mod.rebuild_tools_faiss(mode="full")
+    n1 = mod.rebuild_tools_faiss(mode="react_node_rel")   # a canonical full-scope mode; "full" is the scope label, not a mode
     assert n1 == 5
 
     # ── Schema B — 2 tools (mimics switching to a smaller graph DB).
@@ -423,7 +424,7 @@ def test_rebuild_after_schema_shrink_has_no_orphan_entries(_fake_faiss_env) -> N
         ("get_team_name",   "Team.name"),
         ("get_player_name", "Player.name"),
     ])
-    n2 = mod.rebuild_tools_faiss(mode="full")
+    n2 = mod.rebuild_tools_faiss(mode="react_node_rel")   # a canonical full-scope mode; "full" is the scope label, not a mode
     assert n2 == 2
 
     # The reloaded index must contain exactly Schema B's tools.

@@ -27,14 +27,20 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 # ── Stub side-effecting deps BEFORE importing graphrag ────────────────────────
+class _StubGraph:
+    """What graphrag needs from a graph object: a schema string and query()."""
+    schema = "(:Movie)-[:directedBy]->(:Person)"
+
+    def query(self, *a, **kw):
+        return []
+
+
+def _graph_ok(g) -> bool:
+    return g is not None and isinstance(getattr(g, "schema", None), str) and callable(getattr(g, "query", None))
+
+
 if "agent.agent_helper" not in sys.modules:
     _ah = types.ModuleType("agent.agent_helper")
-
-    class _StubGraph:
-        schema = "(:Movie)-[:directedBy]->(:Person)"
-        def query(self, *a, **kw):
-            return []
-
     _ah.neo4j_graph = _StubGraph()
     _ah.cypher_llm = object()
     _ah.qa_llm = object()
@@ -50,25 +56,31 @@ if "agent.prompts" not in sys.modules:
     sys.modules["agent.prompts"] = _pr
 
 # Other test modules (test_agent_helpers, test_data_augmentation) install their
-# own, thinner stubs for these two modules at import time. When they are
-# collected first, complete them with what graphrag imports — only on a stub
-# (no __file__), never on the real module — so collection order cannot break
-# this module's import.
+# own, thinner stubs for these two modules at import time, or import the real
+# agent.agent_helper with no database behind it (neo4j_graph is then None).
+# When they are collected first, fill in what graphrag needs — only names that
+# are missing or a None placeholder, never a real object — so collection order
+# cannot break this module's tests.
 for _name, _attrs in (
     ("agent.prompts", {"TEXT2CYPHER_SP": "Schema:\n{schema}\n\nEntities:\n{relevant_entities}\n\n"
                                          "Question: {question}\nAnswer:"}),
-    ("agent.agent_helper", {"neo4j_graph": type("_StubGraph", (), {"schema": "(:Movie)-[:directedBy]->(:Person)",
-                                                                   "query": lambda self, *a, **kw: []})(),
+    ("agent.agent_helper", {"neo4j_graph": _StubGraph(),
                             "cypher_llm": object(), "qa_llm": object(), "ner_llm": object()}),
 ):
     _mod = sys.modules.get(_name)
-    if _mod is not None and getattr(_mod, "__file__", None) is None:
+    if _mod is not None:
         for _k, _v in _attrs.items():
-            if getattr(_mod, _k, None) is None:      # missing, or a placeholder None
+            _cur = getattr(_mod, _k, None)
+            if _cur is None or (_k == "neo4j_graph" and not _graph_ok(_cur)):   # missing, None, or a graph stand-in without schema/query
                 setattr(_mod, _k, _v)
 
 import config  # noqa: E402
 import graphrag  # noqa: E402
+
+# graphrag binds the graph at import; if it was bound to another module's
+# stand-in (no schema string), give it this module's.
+if not _graph_ok(getattr(graphrag, "neo4j_graph", None)):
+    graphrag.neo4j_graph = _StubGraph()
 
 
 class TestNormalizedLevenshtein(unittest.TestCase):
