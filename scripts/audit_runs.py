@@ -100,13 +100,19 @@ def run_dir_model(d: Path, method_seg: str) -> str:
     return tagged or eval_paths.model_seg(eval_paths.run_meta_model(d) or "")
 
 
-def model_run_dirs(runs_root: Path, model: str) -> List[Path]:
-    """Every run directory of *model* under *runs_root*, suite or not."""
+def model_run_dirs(runs_root: Path, model: str, include_unattributed: bool = False) -> List[Path]:
+    """Every run directory of *model* under *runs_root*, suite or not. With
+    *include_unattributed*, also the directories that belong to no model at all
+    (no ``@<model>`` tag and no model in ``summary.json`` — a run killed under
+    the old procedure): in a one-person checkout they can only be the runner's."""
     want = eval_paths.model_seg(model)
     out: List[Path] = []
     for d in sorted(p for p in runs_root.iterdir() if p.is_dir()):
         parsed = eval_paths.parse_run_dir_stamped(d)
-        if parsed is not None and run_dir_model(d, parsed[2]) == want:
+        if parsed is None:
+            continue
+        owner = run_dir_model(d, parsed[2])
+        if owner == want or (include_unattributed and not owner):
             out.append(d)
     return out
 
@@ -116,7 +122,7 @@ def discard_all(model: str, runs_root: Path, logs_root: Path,
     """The clean slate: delete every run directory of *model*, the driver's
     state files for it and old ``eval_aggregate`` report files — but only after
     *confirm(paths)* returns True. Returns what was deleted."""
-    targets: List[Path] = model_run_dirs(runs_root, model) if runs_root.is_dir() else []
+    targets: List[Path] = model_run_dirs(runs_root, model, include_unattributed=True) if runs_root.is_dir() else []
     targets += sorted(runs_root.glob("report_*.md")) if runs_root.is_dir() else []
     targets += [p for p in (logs_root / f"sweep_{model}.json", logs_root / f"sweep_{model}_smoke.json") if p.is_file()]
     if not targets or not confirm(targets):
@@ -205,15 +211,17 @@ def main(argv: Optional[List[str]] = None) -> int:
                          "after you type the model name — the clean slate for runs made under the old procedure")
     ap.add_argument("--yes", action="store_true", help="with --discard-all: do not ask (scripts only)")
     args = ap.parse_args(argv)
-    if args.discard_all and args.all_models:
-        ap.error("--discard-all works on one model; pass --model or set eval_config.GENERATOR_LLM")
+    if args.discard_all and (args.all_models or not args.model):
+        # never infer the model to wipe from eval_config.py: the handout's step 1 has just reset that file
+        ap.error("--discard-all needs --model <the model you were assigned> (and works on one model)")
     model = None if args.all_models else (args.model or str(getattr(cfg, "GENERATOR_LLM", "") or "")).strip()
     if not args.all_models and not model:
         ap.error("no model: set eval_config.GENERATOR_LLM or pass --model")
     runs_root = REPO / eval_paths.RUNS_ROOT
     if args.discard_all:
         def confirm(paths: List[Path]) -> bool:
-            print(f"--discard-all will delete these {len(paths)} item(s) of model {model}:")
+            print(f"--discard-all will delete these {len(paths)} item(s) of model {model} "
+                  "(run dirs tagged with it, run dirs tagged with no model at all, its state files, old report_*.md):")
             for p in paths:
                 print(f"  {p.relative_to(REPO) if p.is_relative_to(REPO) else p}")
             if args.yes:
@@ -221,7 +229,11 @@ def main(argv: Optional[List[str]] = None) -> int:
             if not sys.stdin.isatty():
                 print("not a terminal — re-run with --yes to confirm", file=sys.stderr)
                 return False
-            typed = input(f"Type the model name ({model}) to delete them, anything else to abort: ").strip()
+            try:
+                typed = input(f"Type the model name ({model}) to delete them, anything else to abort: ").strip()
+            except (EOFError, KeyboardInterrupt):
+                print("\naborted")
+                return False
             return typed == model
         gone = discard_all(model, runs_root, REPO / "logs", confirm)
         if gone:

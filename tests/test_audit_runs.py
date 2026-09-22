@@ -83,13 +83,15 @@ def test_discard_all_deletes_only_this_models_runs_after_confirmation(world):
     runs = world / "logs" / "runs"; logs = world / "logs"
     (runs / "report_20260918_195430.md").write_text("old eval_aggregate table")
     (logs / "sweep_m1.json").write_text("{}"); (logs / "sweep_m1_smoke.json").write_text("{}"); (logs / "sweep_m2.json").write_text("{}")
+    legacy = runs / "cypherbench_augmented__movie__react__20260908-120000"; legacy.mkdir()        # old layout, no summary.json: nobody's → also gone
+    (legacy / "records.jsonl").write_text("")
     seen = []
     assert ar.discard_all("m1", runs, logs, lambda paths: (seen.extend(paths), False)[1]) == []   # declined: nothing happens
-    assert d1.exists() and d2.exists() and (runs / "report_20260918_195430.md").exists()
-    assert {p.name for p in seen} == {d1.name, d2.name, "report_20260918_195430.md", "sweep_m1.json", "sweep_m1_smoke.json"}
+    assert d1.exists() and d2.exists() and legacy.exists() and (runs / "report_20260918_195430.md").exists()
+    assert {p.name for p in seen} == {d1.name, d2.name, legacy.name, "report_20260918_195430.md", "sweep_m1.json", "sweep_m1_smoke.json"}
     gone = ar.discard_all("m1", runs, logs, lambda paths: True)
     assert {p.name for p in gone} == {p.name for p in seen}
-    assert not d1.exists() and not d2.exists() and d3.exists()
+    assert not d1.exists() and not d2.exists() and d3.exists() and not legacy.exists()
     assert not (logs / "sweep_m1.json").exists() and (logs / "sweep_m2.json").exists()
     assert ar.discard_all("m1", runs, logs, lambda paths: True) == []                         # nothing left to delete
 
@@ -102,3 +104,11 @@ def test_discard_all_cli_refuses_without_a_terminal_and_without_yes(world, monke
     assert (world / "logs" / "runs").iterdir().__next__().exists()
     assert ar.main(["--model", "m1", "--discard-all", "--yes"]) == 0
     assert "deleted 1 item(s)" in capsys.readouterr().out
+
+
+def test_discard_all_never_infers_the_model_from_eval_config(world, capsys):
+    _run(world, "cypherbench_augmented", "movie", "react", "m1", "20260916-120000", OK)
+    with pytest.raises(SystemExit) as exc:
+        ar.main(["--discard-all", "--yes"])          # no --model: refused before anything is touched
+    assert exc.value.code == 2
+    assert next((world / "logs" / "runs").iterdir()).exists()
