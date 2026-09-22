@@ -217,6 +217,13 @@ def main(argv: Optional[List[str]] = None) -> int:
     model = None if args.all_models else (args.model or str(getattr(cfg, "GENERATOR_LLM", "") or "")).strip()
     if not args.all_models and not model:
         ap.error("no model: set eval_config.GENERATOR_LLM or pass --model")
+    if model:
+        import config
+        try:
+            config.resolve_preset(model)
+        except KeyError:
+            ap.error(f"'{model}' is not a model preset. Copy the exact name from the handout; the presets are: "
+                     + ", ".join(sorted(config.MODEL_PRESETS)))
     runs_root = REPO / eval_paths.RUNS_ROOT
     if args.discard_all:
         def confirm(paths: List[Path]) -> bool:

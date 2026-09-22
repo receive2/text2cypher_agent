@@ -30,15 +30,27 @@ How the harness works, every config knob and the pre-flight words: [`RUNNING_EXP
 >    git checkout setup_artifacts/` — the `generated/fcav/` folders in
 >    `setup_artifacts.old/<pair>/` can be copied back to skip the index rebuild.
 > 2. **Unless the coordinator has told you by name to keep your existing
->    runs:** `python scripts/audit_runs.py --discard-all --model <your model>`
->    (the preset name from §2 — step 1 has just reset `eval_config.py`, so the
->    script will not guess it). It lists every run
->    directory of that model plus the driver's state files, deletes them after
->    you type the model name, and you start again from §1. Runs made under the
->    old procedure cannot be pooled with anyone else's, and this is the one
->    command that leaves nothing behind.
-> 3. **Only if you were told to keep them:** `python scripts/audit_runs.py
->    --model <your model>` — one line per run directory with a verdict. A run can be used
+>    runs**, the clean slate — copy the line for the model you were assigned
+>    (step 1 has just reset `eval_config.py`, so the script will not guess it,
+>    and it refuses a name that is not a preset):
+>
+>    ```bash
+>    python scripts/audit_runs.py --discard-all --model gpt-5.6-terra
+>    python scripts/audit_runs.py --discard-all --model gpt-5.6-luna
+>    python scripts/audit_runs.py --discard-all --model claude-sonnet-5
+>    python scripts/audit_runs.py --discard-all --model claude-haiku-4.5
+>    python scripts/audit_runs.py --discard-all --model deepseek-v3.1
+>    python scripts/audit_runs.py --discard-all --model llama-3.3-70b
+>    python scripts/audit_runs.py --discard-all --model qwen3-32b
+>    ```
+>
+>    It lists every run directory of that model plus the driver's state files,
+>    deletes them after you type the model name, and you start again from §1.
+>    Runs made under the old procedure cannot be pooled with anyone else's, and
+>    this is the one command that leaves nothing behind.
+> 3. **Only if you were told to keep them:** the same line **without**
+>    `--discard-all` (e.g. `python scripts/audit_runs.py --model gpt-5.6-luna`)
+>    — one line per run directory with a verdict. A run can be used
 >    only if it was scored on the released benchmark rows (checked from the
 >    records themselves) **and** made after this checkout first had the shared
 >    artifact set (read from `git reflog`; 2026-09-10 or later — which

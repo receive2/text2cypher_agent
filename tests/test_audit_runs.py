@@ -112,3 +112,20 @@ def test_discard_all_never_infers_the_model_from_eval_config(world, capsys):
         ar.main(["--discard-all", "--yes"])          # no --model: refused before anything is touched
     assert exc.value.code == 2
     assert next((world / "logs" / "runs").iterdir()).exists()
+
+
+def test_a_mistyped_model_name_is_refused_with_the_list(world, capsys):
+    _run(world, "cypherbench_augmented", "movie", "react", "gpt-5.6-luna", "20260916-120000", OK)
+    with pytest.raises(SystemExit) as exc:
+        ar.main(["--discard-all", "--yes", "--model", "gpt-5.6-lunna"])
+    assert exc.value.code == 2
+    err = capsys.readouterr().err
+    assert "not a model preset" in err and "gpt-5.6-luna" in err
+    assert next((world / "logs" / "runs").iterdir()).exists()
+
+
+def test_every_model_in_the_handout_is_a_preset():
+    import re, config
+    text = (Path(__file__).resolve().parent.parent / "docs" / "EXPERIMENT_HANDOUT.md").read_text(encoding="utf-8")
+    listed = re.findall(r"audit_runs\.py --discard-all --model (\S+)", text)
+    assert len(listed) == 7 and all(m in config.MODEL_PRESETS for m in listed), listed
