@@ -10,6 +10,15 @@ must be deleted. Read-only: it prints one verdict per directory and the exact
     python scripts/audit_runs.py                    # model = eval_config.GENERATOR_LLM
     python scripts/audit_runs.py --model gpt-5.6-luna
     python scripts/audit_runs.py --all-models
+    python scripts/audit_runs.py --discard-all      # delete EVERY run of this model (asks you to type its name)
+
+Two modes. The audit (default) judges each directory and prints the ``rm -rf``
+lines for the ones that cannot be used, deleting nothing. ``--discard-all`` is
+the clean slate: it lists every run directory of the model — suite, clean and
+development graphs alike — plus the driver's state files and old
+``logs/runs/report_*.md`` files, and deletes them after you type the model
+name. The coordinator tells each runner which mode applies; the default for
+runs made under the old procedure is ``--discard-all``.
 
 A run can be used only if
 
@@ -34,11 +43,12 @@ from __future__ import annotations
 
 import argparse
 import re
+import shutil
 import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Callable, Dict, List, Optional, Tuple
 
 REPO = Path(__file__).resolve().parent.parent
 if str(REPO) not in sys.path:
@@ -83,6 +93,42 @@ def parse_stamp(stamp: str) -> Optional[datetime]:
         return None
 
 
+def run_dir_model(d: Path, method_seg: str) -> str:
+    """The model segment a run dir belongs to: from its ``@<model>`` tag, else
+    from the model recorded in its ``summary.json`` (dirs from before tagging)."""
+    base, tagged = eval_paths.split_method_seg(method_seg)
+    return tagged or eval_paths.model_seg(eval_paths.run_meta_model(d) or "")
+
+
+def model_run_dirs(runs_root: Path, model: str) -> List[Path]:
+    """Every run directory of *model* under *runs_root*, suite or not."""
+    want = eval_paths.model_seg(model)
+    out: List[Path] = []
+    for d in sorted(p for p in runs_root.iterdir() if p.is_dir()):
+        parsed = eval_paths.parse_run_dir_stamped(d)
+        if parsed is not None and run_dir_model(d, parsed[2]) == want:
+            out.append(d)
+    return out
+
+
+def discard_all(model: str, runs_root: Path, logs_root: Path,
+                confirm: Callable[[List[Path]], bool]) -> List[Path]:
+    """The clean slate: delete every run directory of *model*, the driver's
+    state files for it and old ``eval_aggregate`` report files — but only after
+    *confirm(paths)* returns True. Returns what was deleted."""
+    targets: List[Path] = model_run_dirs(runs_root, model) if runs_root.is_dir() else []
+    targets += sorted(runs_root.glob("report_*.md")) if runs_root.is_dir() else []
+    targets += [p for p in (logs_root / f"sweep_{model}.json", logs_root / f"sweep_{model}_smoke.json") if p.is_file()]
+    if not targets or not confirm(targets):
+        return []
+    for p in targets:
+        if p.is_dir():
+            shutil.rmtree(p)
+        else:
+            p.unlink()
+    return targets
+
+
 def audit(runs_root: Path, model: Optional[str], all_models: bool,
           guard_time: Optional[datetime]) -> List[dict]:
     """One row per run directory: verdict, reason, and what the driver would use."""
@@ -95,8 +141,8 @@ def audit(runs_root: Path, model: Optional[str], all_models: bool,
         if parsed is None:
             continue
         dataset, graph, seg, stamp = parsed
-        base, tagged = eval_paths.split_method_seg(seg)
-        run_model = tagged or eval_paths.model_seg(eval_paths.run_meta_model(d) or "")
+        base, _tagged = eval_paths.split_method_seg(seg)
+        run_model = run_dir_model(d, seg)
         if not all_models and run_model != want_model:
             continue
         recs = osw.read_records(d)
@@ -154,11 +200,36 @@ def main(argv: Optional[List[str]] = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--model", help="generator preset (default: eval_config.GENERATOR_LLM)")
     ap.add_argument("--all-models", action="store_true", help="every model's run dirs")
+    ap.add_argument("--discard-all", action="store_true",
+                    help="delete EVERY run directory of this model (plus its state files and old report_*.md) "
+                         "after you type the model name — the clean slate for runs made under the old procedure")
+    ap.add_argument("--yes", action="store_true", help="with --discard-all: do not ask (scripts only)")
     args = ap.parse_args(argv)
+    if args.discard_all and args.all_models:
+        ap.error("--discard-all works on one model; pass --model or set eval_config.GENERATOR_LLM")
     model = None if args.all_models else (args.model or str(getattr(cfg, "GENERATOR_LLM", "") or "")).strip()
     if not args.all_models and not model:
         ap.error("no model: set eval_config.GENERATOR_LLM or pass --model")
     runs_root = REPO / eval_paths.RUNS_ROOT
+    if args.discard_all:
+        def confirm(paths: List[Path]) -> bool:
+            print(f"--discard-all will delete these {len(paths)} item(s) of model {model}:")
+            for p in paths:
+                print(f"  {p.relative_to(REPO) if p.is_relative_to(REPO) else p}")
+            if args.yes:
+                return True
+            if not sys.stdin.isatty():
+                print("not a terminal — re-run with --yes to confirm", file=sys.stderr)
+                return False
+            typed = input(f"Type the model name ({model}) to delete them, anything else to abort: ").strip()
+            return typed == model
+        gone = discard_all(model, runs_root, REPO / "logs", confirm)
+        if gone:
+            print(f"deleted {len(gone)} item(s). Continue with the handout from §1 "
+                  "(python benchmarks/verify.py, then --smoke, then the full run).")
+        else:
+            print("nothing deleted.")
+        return 0
     guard_time, guard_note = guard_since()
     print(f"audit of {eval_paths.RUNS_ROOT}/ for {'every model' if args.all_models else f'model {model}'} — "
           f"benchmarks {osw._benchmarks_version()}; {guard_note}\n")

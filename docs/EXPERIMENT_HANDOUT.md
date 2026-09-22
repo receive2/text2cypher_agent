@@ -29,14 +29,21 @@ How the harness works, every config knob and the pre-flight words: [`RUNNING_EXP
 >    be overwritten: `mv setup_artifacts setup_artifacts.old && git pull &&
 >    git checkout setup_artifacts/` — the `generated/fcav/` folders in
 >    `setup_artifacts.old/<pair>/` can be copied back to skip the index rebuild.
-> 2. `python scripts/audit_runs.py` — one line per run directory you already
->    have, with a verdict. A run can be used only if it was scored on the
->    released benchmark rows (checked from the records themselves) **and** made
->    after this checkout first had the shared artifact set (read from
->    `git reflog`; 2026-09-10 or later — which artifacts a run saw is recorded
->    nowhere else). For everything else it prints the exact `rm -rf` lines: run
->    those, and only those, then paste the whole audit output to the
->    coordinator. Usable runs are picked up by the driver automatically (§5).
+> 2. **Unless the coordinator has told you by name to keep your existing
+>    runs:** `python scripts/audit_runs.py --discard-all`. It lists every run
+>    directory of your model plus the driver's state files, deletes them after
+>    you type the model name, and you start again from §1. Runs made under the
+>    old procedure cannot be pooled with anyone else's, and this is the one
+>    command that leaves nothing behind.
+> 3. **Only if you were told to keep them:** `python scripts/audit_runs.py`
+>    (no flag) — one line per run directory with a verdict. A run can be used
+>    only if it was scored on the released benchmark rows (checked from the
+>    records themselves) **and** made after this checkout first had the shared
+>    artifact set (read from `git reflog`; 2026-09-10 or later — which
+>    artifacts a run saw is recorded nowhere else). For everything else it
+>    prints the exact `rm -rf` lines: run those, and only those, then paste the
+>    whole audit output to the coordinator. Usable runs are picked up by the
+>    driver automatically (§5).
 
 ---
 
@@ -304,7 +311,7 @@ files instead.
 
 Publishing again later (a refreshed branch, or after filling ⚠ cells) is the
 same command; it adds a commit on top of the existing branch. Do **not** delete
-`logs/runs/` (only what `scripts/audit_runs.py` names) and do **not** force-push.
+`logs/runs/` (only what `scripts/audit_runs.py` names, or everything with its `--discard-all` when the coordinator says so) and do **not** force-push.
 
 ---
 

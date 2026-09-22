@@ -74,3 +74,31 @@ def test_no_git_evidence_means_check_not_keep(world):
 def test_guard_since_on_this_repo():
     when, note = ar.guard_since()
     assert when is not None and "published artifact set since" in note
+
+
+def test_discard_all_deletes_only_this_models_runs_after_confirmation(world):
+    d1 = _run(world, "cypherbench_augmented", "movie", "react", "m1", "20260916-120000", OK)
+    d2 = _run(world, "cypherbench", "movie", "react", "m1", "20260916-120000", OK)            # clean graph: also gone
+    d3 = _run(world, "cypherbench_augmented", "movie", "react", "m2", "20260916-120000", OK)  # another model: stays
+    runs = world / "logs" / "runs"; logs = world / "logs"
+    (runs / "report_20260918_195430.md").write_text("old eval_aggregate table")
+    (logs / "sweep_m1.json").write_text("{}"); (logs / "sweep_m1_smoke.json").write_text("{}"); (logs / "sweep_m2.json").write_text("{}")
+    seen = []
+    assert ar.discard_all("m1", runs, logs, lambda paths: (seen.extend(paths), False)[1]) == []   # declined: nothing happens
+    assert d1.exists() and d2.exists() and (runs / "report_20260918_195430.md").exists()
+    assert {p.name for p in seen} == {d1.name, d2.name, "report_20260918_195430.md", "sweep_m1.json", "sweep_m1_smoke.json"}
+    gone = ar.discard_all("m1", runs, logs, lambda paths: True)
+    assert {p.name for p in gone} == {p.name for p in seen}
+    assert not d1.exists() and not d2.exists() and d3.exists()
+    assert not (logs / "sweep_m1.json").exists() and (logs / "sweep_m2.json").exists()
+    assert ar.discard_all("m1", runs, logs, lambda paths: True) == []                         # nothing left to delete
+
+
+def test_discard_all_cli_refuses_without_a_terminal_and_without_yes(world, monkeypatch, capsys):
+    _run(world, "cypherbench_augmented", "movie", "react", "m1", "20260916-120000", OK)
+    monkeypatch.setattr(sys.stdin, "isatty", lambda: False, raising=False)
+    assert ar.main(["--model", "m1", "--discard-all"]) == 0
+    assert "nothing deleted" in capsys.readouterr().out
+    assert (world / "logs" / "runs").iterdir().__next__().exists()
+    assert ar.main(["--model", "m1", "--discard-all", "--yes"]) == 0
+    assert "deleted 1 item(s)" in capsys.readouterr().out

@@ -157,7 +157,12 @@ to every directory under `logs/runs/` for one model (`--all-models` for all) —
 the second by reading `git reflog` for the first moment this checkout contained
 `be36c26` — and prints a verdict per directory plus the `rm -rf` lines for the
 ones to delete; it never deletes anything itself, and with no reflog evidence
-it says `CHECK` rather than guessing. Everything else can stay: a run
+it says `CHECK` rather than guessing. Its other mode, `--discard-all`, is the
+clean slate the coordinator prescribes for runs made under the old procedure:
+it lists every run directory of the model (suite, clean and development
+graphs alike), the driver's state files and old `logs/runs/report_*.md`, and
+deletes them after the runner types the model name (`--yes` for scripts).
+Everything else can stay: a run
 superseded by a newer one is never published (only the newest per cell is
 mirrored); a truncated newest run is simply re-run (delete it only to fall back
 to an older complete run, which the audit names); `logs/runs/report_*.md` from
