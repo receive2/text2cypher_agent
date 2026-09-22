@@ -10,7 +10,7 @@
  "calibration_excluded_ids": 48,
  "calibration_ids_in_queue": 27,
  "calibration_judgments_dropped": 54,
- "double_annotated": 1524,
+ "double_annotated": 1529,
  "disagreements": 53,
  "pending": 0,
  "source_error": 5,

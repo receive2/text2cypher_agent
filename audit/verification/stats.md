@@ -2,7 +2,7 @@
 
 - Items annotated: **1739** (5 annotators: A, B, C, D, E)
 - Calibration items excluded from all measurements (pre-registered): 48 ids on the exclusion list (27 present in the queue; 54 judgments dropped)
-- Double-annotated: 1524; disagreements: 53 (3.5% of double-annotated) → adjudication
+- Double-annotated: 1529; disagreements: 53 (3.5% of double-annotated) → adjudication
 - Still **pending** adjudication: 0
 - Source-error rows (dropped): 5
 - **Final retained N (valid): 1686**

@@ -176,7 +176,7 @@ agreement statistics and how they should be read, the verdict rules and the
 released artifacts are in `docs/VERIFICATION_PROTOCOL.md`.
 
 <!-- AUTOGEN:VERIFICATION -->
-**Release v2.3-verified-2026-09-22** — 4,641 rows in → **4,590** released (51 removed, 20 reverted to a certified prior algorithmic form, 0 pending). Naturalness policy: `drop-unnatural`. Verdicts from 5 annotators over 1,739 measured items: 1,529 labelled by two annotators (1,524 of them enter the agreement statistics; the rest were flagged as source errors) and 210 by one; 27 calibration items excluded.
+**Release v2.3-verified-2026-09-22** — 4,641 rows in → **4,590** released (51 removed, 20 reverted to a certified prior algorithmic form, 0 pending). Naturalness policy: `drop-unnatural`. Verdicts from 5 annotators over 1,739 measured items: 1,529 labelled by two annotators and 210 by one; 27 calibration items excluded.
 
 Inter-annotator agreement (validity): Krippendorff's α = **0.354**, Gwet's AC1 = **0.964**, disagreement rate 3.5%.
 

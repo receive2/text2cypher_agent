@@ -65,15 +65,13 @@ appear in the released artifacts only as letters A–E.
 
 ## 4. Agreement
 
-Agreement is computed on the validity label over the 1,524 double-annotated
-items that received a validity verdict. 1,739 items were measured in total:
-1,529 carry two labels (5 of them, flagged as source errors, are set aside
-here) and 210 rule-based items carry one label, which enters no agreement
-figure.
+Agreement is computed on the validity label over the 1,529 items that carry
+two labels. 1,739 items were measured in total; the other 210, all
+rule-based, carry one label and enter no agreement figure.
 
 | | overall | LLM-proposed | attested | algorithmic |
 |---|--:|--:|--:|--:|
-| double-annotated items | 1,524 | 898 | 393 | 238 |
+| double-annotated items | 1,529 | 898 | 393 | 238 |
 | raw agreement | 96.5% | 96.2% | 97.7% | 95.8% |
 | Gwet's AC1 | 0.964 | 0.961 | 0.977 | 0.956 |
 | Krippendorff's α | 0.354 | 0.291 | 0.390 | 0.482 |

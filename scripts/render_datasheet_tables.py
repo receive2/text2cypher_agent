@@ -244,8 +244,7 @@ def block_verification():
          f"algorithmic form, {sm['actions'].get('pending', 0)} pending). "
          f"Naturalness policy: `{sm['naturalness_policy']}`. "
          f"Verdicts from {len(st['annotators'])} annotators over {st['items']:,} "
-         f"measured items: {n_two:,} labelled by two annotators ({st['double_annotated']:,} of them "
-         f"enter the agreement statistics; the rest were flagged as source errors) and {n_one:,} by one; "
+         f"measured items: {n_two:,} labelled by two annotators and {n_one:,} by one; "
          f"{st['calibration_ids_in_queue']} calibration items excluded.", "",
          f"Inter-annotator agreement (validity): Krippendorff's α = **{f(st['alpha'])}**, "
          f"Gwet's AC1 = **{f(st['ac1'])}**, disagreement rate "

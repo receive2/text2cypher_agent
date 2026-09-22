@@ -263,14 +263,14 @@ def collect_labels(key_path: str, annotation_patterns: List[str],
     final: Dict[str, str] = {}
     n_double = n_disagree = 0
     for rid, raters in val.items():
-        if src_err.get(rid):
-            final[rid] = "source_error"
-            continue
         labels = list(raters.values())
-        if len(raters) >= 2:
+        if len(raters) >= 2:                     # every item with two validity labels, source-error flags included
             n_double += 1
             if len(set(labels)) > 1:
                 n_disagree += 1
+        if src_err.get(rid):
+            final[rid] = "source_error"
+            continue
         if rid in adjudicated and adjudicated[rid] in _VALID_CATS:
             f = adjudicated[rid]
         elif labels and len(set(labels)) == 1 and labels[0] in ("valid", "invalid"):
