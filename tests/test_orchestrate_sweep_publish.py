@@ -293,3 +293,69 @@ def test_smoke_state_file_is_separate(tmp_path, monkeypatch):
     assert osw.state_path("m", True).is_file() and not osw.state_path("m").is_file()
     osw.save_state(full)
     assert osw.state_path("m").is_file()
+
+
+# ── third review pass: peers, gold-free reference, truncated cells, smoke guard, pasted commands ──
+
+def test_rule2_reference_ignores_the_shared_gold_failures():
+    """MindTheQuery graphs carry ~17% gold failures on EVERY method. A cell whose
+    unclassified errors are lopsided against its peers must still be flagged —
+    the peers' gold failures are the data, not a reference error rate."""
+    weird = "SomethingNew: boom"
+    cells = {("mindthequery_augmented", "covid", "cyanchor"): _cell(342, [GOLD] * 59 + [weird] * 120),   # 35% unclassified
+             ("mindthequery_augmented", "covid", "react"):    _cell(342, [GOLD] * 59),
+             ("mindthequery_augmented", "covid", "graphrag"): _cell(342, [GOLD] * 59 + [AGENT] * 4)}
+    osw.flag_suspects(cells)
+    assert cells[("mindthequery_augmented", "covid", "cyanchor")]["suspect"]
+    assert "beyond the shared gold failures" in cells[("mindthequery_augmented", "covid", "cyanchor")]["why"]
+    for m in ("react", "graphrag"):
+        assert not cells[("mindthequery_augmented", "covid", m)]["suspect"], m
+
+
+def test_truncated_cells_are_missing_not_flagged():
+    """⚠ implies complete: a truncated dir full of timeouts is ✗ and re-run
+    unconditionally; it must not also be counted and listed as ⚠."""
+    cells = {("zograscope_augmented", "pole", "cyanchor"): _cell(900, [TIMEOUT] * 400, complete=False),
+             ("zograscope_augmented", "pole", "react"):    _cell(1290, [])}
+    osw.flag_suspects(cells)
+    assert not cells[("zograscope_augmented", "pole", "cyanchor")]["suspect"]
+
+
+def test_smoke_cannot_be_published():
+    for argv in (["--smoke", "--publish"], ["--smoke", "--publish", "--allow-incomplete"]):
+        with pytest.raises(SystemExit):
+            osw.main(argv)
+
+
+def test_pasted_commands_carry_skip_methods(monkeypatch):
+    monkeypatch.setattr(osw, "SKIPPED_METHODS", ["react"])
+    assert osw._cmd() == "python orchestrate_sweep.py --skip-methods react"
+    assert osw._cmd("--graphs pole --methods cyanchor") == \
+        "python orchestrate_sweep.py --graphs pole --methods cyanchor --skip-methods react"
+    parked = {"complete": True, "suspect": True, "n": 1, "err": 1, "why": "w"}
+    assert "--skip-methods react" in osw.decide_cell(parked, {"suspect_reruns": osw.SUSPECT_RERUN_MAX}, False)[1]
+    monkeypatch.setattr(osw, "SKIPPED_METHODS", [])
+    assert osw._cmd("--status") == "python orchestrate_sweep.py --status"
+
+
+def test_rerun_that_produces_no_run_dir_is_not_reported_done(tmp_path, monkeypatch):
+    """eval_run can stop before creating a run dir (archive refused, config
+    error). The newest dir is then the PREVIOUS complete run; run_cell must not
+    report that as this attempt's result."""
+    import eval_config as cfg
+    import eval_run
+    monkeypatch.setattr(osw, "REPO", tmp_path)
+    monkeypatch.setattr(osw, "save_state", lambda st: None)
+    for k in ("METHOD", "EVAL_PAIRS", "LIMIT", "OUT_DIR", "VERBOSE", "SHARDS"):
+        monkeypatch.setattr(cfg, k, getattr(cfg, k, None), raising=False)
+    old = tmp_path / "logs" / "x" / f"cypherbench_augmented__movie__{osw.method_seg('react')}@m1__20260101-000000"
+    old.mkdir(parents=True)
+    (old / "records.jsonl").write_text('{"ea": null, "error": "example timeout: exceeded 900s"}\n' * 3)
+    monkeypatch.setattr(eval_run, "main", lambda: 3)            # refuses; creates nothing
+    state = {"model": "m1", "cells": {}, "expected": {"cypherbench_augmented__movie": 3}}
+    c = osw.run_cell("cypherbench_augmented", "movie", "react", limit=None, out_dir="logs/x",
+                     user_shards=1, model="m1", state=state)
+    entry = state["cells"]["cypherbench_augmented__movie__react"]
+    assert entry["status"] == "failed" and "no run directory" in entry["last_error"]
+    assert entry["tries"] == osw.MAX_TRIES
+    assert c["complete"] and "finished_at" not in entry           # the old dir is still on disk, but it is not 'done'

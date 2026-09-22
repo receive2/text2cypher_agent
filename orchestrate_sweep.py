@@ -356,8 +356,9 @@ def flag_suspects(cells: Dict[Tuple[str, str, str], dict]) -> None:
     Rule 1 (by error type): more than a small allowance of ``infra`` errors.
     Rule 2 (fallback, unclassified ``other`` errors only): lopsided against the
     other methods on the same graph — this cell errors on ≥ SUSPECT_OTHER_RATE
-    while the best other method errors on ≤ SUSPECT_OTHER_REF_RATE — or more
-    than half the cell errored. ``gold`` and ``agent`` errors never flag: the
+    while the best other method errors on ≤ SUSPECT_OTHER_REF_RATE once the
+    gold failures (the benchmark's own, identical for every method) are taken
+    out — or more than half the cell errored. ``gold`` and ``agent`` errors never flag: the
     first is the data, the second is the model's score."""
     by_graph: Dict[Tuple[str, str], List[Tuple[str, dict]]] = collections.defaultdict(list)
     for (ds, g, m), c in cells.items():
@@ -365,8 +366,8 @@ def flag_suspects(cells: Dict[Tuple[str, str, str], dict]) -> None:
     for (ds, g), lst in by_graph.items():
         for m, c in lst:
             n, bd = c["n"], c["breakdown"]
-            if not n:
-                continue
+            if not n or not c["complete"]:
+                continue        # missing / truncated is ✗ and re-run unconditionally; ⚠ implies complete
             if infra_suspect(bd, n):
                 c["suspect"] = True
                 c["why"] = (f"{bd['infra']} of {n} questions failed on infrastructure "
@@ -378,12 +379,13 @@ def flag_suspects(cells: Dict[Tuple[str, str, str], dict]) -> None:
                 c["why"] = f"{bd['other']} of {n} questions ({100*other_rate:.0f}%) failed with an unclassified error"
                 continue
             if other_rate >= SUSPECT_OTHER_RATE:
-                refs = [c2["err"] / c2["n"] for m2, c2 in lst if m2 != m and c2["n"] and c2["complete"]]
+                refs = [(c2["err"] - c2["breakdown"]["gold"]) / c2["n"]
+                        for m2, c2 in lst if m2 != m and c2["n"] and c2["complete"]]
                 if refs and min(refs) <= SUSPECT_OTHER_REF_RATE:
                     c["suspect"] = True
                     c["why"] = (f"{bd['other']} of {n} questions ({100*other_rate:.0f}%) failed with an "
                                 f"unclassified error while another method on this graph failed on "
-                                f"{100*min(refs):.1f}% — lopsided")
+                                f"{100*min(refs):.1f}% beyond the shared gold failures — lopsided")
 
 
 def decide_cell(c: dict, entry: dict, manual: bool) -> Tuple[str, str]:
@@ -407,11 +409,22 @@ def decide_cell(c: dict, entry: dict, manual: bool) -> Tuple[str, str]:
     if done >= SUSPECT_RERUN_MAX:
         return "persistent", (f"already re-run {done}x automatically, not retrying. Persistent: report the "
                               "'Flagged cells' section to the coordinator, or re-run by hand with "
-                              "`python orchestrate_sweep.py --graphs <graph> --methods <method>`")
+                              f"`{_cmd('--graphs <graph> --methods <method>')}`")
     return "rerun", f"re-running automatically (attempt {done + 1}/{SUSPECT_RERUN_MAX})"
 
 
 SKIPPED_METHODS: List[str] = []
+
+
+def _cmd(args: str = "") -> str:
+    """A driver command for the runner to paste, carrying their ``--skip-methods``
+    so a copied command never silently changes what the verdict covers."""
+    parts = ["python orchestrate_sweep.py"]
+    if args:
+        parts.append(args)
+    if SKIPPED_METHODS:
+        parts.append("--skip-methods " + " ".join(SKIPPED_METHODS))
+    return " ".join(parts)
 
 
 def render_status(status: dict) -> str:
@@ -432,7 +445,7 @@ def render_status(status: dict) -> str:
         if n_flag:
             parts.append(f"{n_flag} cell(s) marked ⚠ failed on infrastructure (timeouts / API) and were "
                          "never really evaluated — see *Flagged cells* below")
-        lines.append("**NOT CLEAN** — " + "; ".join(parts) + ". Re-run `python orchestrate_sweep.py` "
+        lines.append("**NOT CLEAN** — " + "; ".join(parts) + f". Re-run `{_cmd()}` "
                      "(it re-runs only these cells). Do not report these numbers.")
     lines += ["", f"- generated: {time.strftime('%Y-%m-%d %H:%M')} · commit `{_git('rev-parse', '--short', 'HEAD')}` "
               f"· benchmarks `{_benchmarks_version()}` · artifacts set `{_artifact_set_id()}`",
@@ -459,14 +472,14 @@ def render_status(status: dict) -> str:
         lines += ["", "## Flagged cells — infrastructure failures, not results", "",
                   "These cells hold one record per question but a large share of those records are "
                   "timeouts or API failures: the model never answered them and they score 0 for the wrong "
-                  "reason. `python orchestrate_sweep.py` re-runs them automatically (up to "
+                  f"reason. `{_cmd()}` re-runs them automatically (up to "
                   f"{SUSPECT_RERUN_MAX} times); to re-run one by hand use the command shown.", ""]
         for (ds, g, m), c in flagged:
             bd = c["breakdown"]
             lines += [f"- **{DATASET_INFO[ds][1]} · {g} · {labels[m]}** — {c['why']}.",
                       f"  errors: infra {bd['infra']} · gold {bd['gold']} · agent {bd['agent']} · other {bd['other']}",
                       f"  most common: `{bd['top_error'] or '—'}`",
-                      f"  re-run: `python orchestrate_sweep.py --graphs {g} --methods {m}`"]
+                      f"  re-run: `{_cmd(f'--graphs {g} --methods {m}')}`"]
     # ── error breakdown per dataset × method (so 116 errors reads as 71 model + 45 timeouts) ──
     lines += ["", "## Errors by kind (pooled per dataset) — infra / gold / agent / other", "",
               "`infra` = timeout, API or rate-limit failure (recoverable by re-running; flags ⚠ when large). "
@@ -609,6 +622,7 @@ def run_cell(dataset: str, graph: str, method: str, *, limit: Optional[int], out
     for attempt in range(1, MAX_TRIES + 1):
         entry["tries"] = entry.get("tries", 0) + 1
         t0 = time.time()
+        before = newest_run_dir(dataset, graph, method, out_dir, model)
         log(f"  ▶ {key}  (try {attempt}/{MAX_TRIES}, SHARDS={cfg.SHARDS}, limit={limit})")
         try:
             rc = eval_run.main()
@@ -618,6 +632,13 @@ def run_cell(dataset: str, graph: str, method: str, *, limit: Optional[int], out
             log(f"    eval_run raised: {type(exc).__name__}: {exc}")
             rc = 99
         c = cell_status(dataset, graph, method, expected, out_dir, model)
+        if before is not None and c["dir"] is not None and REPO / c["dir"] == before:
+            # eval_run stopped before creating a run dir (archive refused, config error, ...):
+            # the newest dir is still the PREVIOUS run, not this attempt's result
+            entry["last_error"] = f"rc={rc}, eval_run produced no run directory"
+            save_state(state)
+            log(f"    rc={rc} — no new run directory: eval_run stopped before running (see its message above)")
+            continue
         log(f"    rc={rc} records={c['n']}/{expected} err={c['err']} ({time.time() - t0:.0f}s)")
         if c["complete"]:
             entry.update({"status": "done", "n": c["n"], "err": c["err"], "dir": c["dir"],
@@ -811,11 +832,11 @@ def publish(status: dict, allow_incomplete: bool) -> int:
         for k in flagged:
             log(f"    ⚠ {_cell_label(k)}: {cells[k]['why']}")
         log("  Next:")
-        log("    1. python orchestrate_sweep.py            # re-runs only the ✗ and ⚠ cells; everything else is kept")
-        log("    2. python orchestrate_sweep.py --status   # confirm every cell shows ✓")
+        log(f"    1. {_cmd():<40} # re-runs only the ✗ and ⚠ cells; everything else is kept")
+        log(f"    2. {_cmd('--status'):<40} # confirm every cell shows ✓")
         log("    3. if a cell still shows ✗ or ⚠ after step 1 (it was retried and keeps failing), publish anyway so")
         log("       the finished records reach the repository, and paste the matrix + 'Flagged cells' to the coordinator:")
-        log("       python orchestrate_sweep.py --publish --allow-incomplete")
+        log(f"       {_cmd('--publish --allow-incomplete')}")
         log("  Do not send report files by email or chat — the per-question records only exist on the branch.")
         return 1
 
@@ -901,6 +922,9 @@ def main(argv: Optional[List[str]] = None) -> int:
                     help="methods this model does NOT run (e.g. react for a model without tool calling): removed from the suite, so COMPLETE and --publish ignore them; recorded in the SWEEP file")
     ap.add_argument("--skip-preflight", action="store_true")
     args = ap.parse_args(argv)
+    if args.smoke and (args.publish or args.allow_incomplete):
+        ap.error("--smoke is a local check that writes to logs/smoke/ and is never published; "
+                 "run the full suite, then --publish")
 
     model = model_name()
     _LOG_PATH = REPO / "logs" / f"sweep_{model}.log"
@@ -951,7 +975,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     for ds, graphs in by_dataset.items():
         for g in graphs:
             for m in methods:
-                probe = build_status([(ds, g)], methods, expected, out_dir, model)  # flags need the graph's peers
+                probe = build_status([(ds, g)], all_methods, expected, out_dir, model)  # ⚠ rule 2 needs ALL peers, not just --methods
                 c = probe["cells"][(ds, g, m)]
                 key = f"{ds}__{g}__{m}"
                 entry = state["cells"].setdefault(key, {"tries": 0})
@@ -999,21 +1023,21 @@ def main(argv: Optional[List[str]] = None) -> int:
             log("✗ SMOKE FAILED:\n  " + "\n  ".join(systematic) + "\n  Send these lines to the coordinator.")
             return 1
         log(f"✓ SMOKE OK — all {len(methods)} methods produced {SMOKE_LIMIT} records on {SMOKE_PAIR[1]} "
-            "(a few errors are fine; a whole method erroring is not). Now run: python orchestrate_sweep.py")
+            f"(a few errors are fine; a whole method erroring is not). Now run: {_cmd()}")
         return 0
     out = write_status(status)
     log(f"=== sweep {'COMPLETE' if status['complete'] else 'NOT CLEAN'}: {out.relative_to(REPO)} ===")
     if status["complete"]:
-        log("next: python orchestrate_sweep.py --publish")
+        log(f"next: {_cmd('--publish')}")
     else:
         if status.get("missing"):
             log(f"{len(status['missing'])} cell(s) missing/truncated (✗); "
                 f"{len(status.get('flagged', []))} cell(s) failed on infrastructure (⚠).")
         elif status.get("flagged"):
             log(f"{len(status['flagged'])} cell(s) failed on infrastructure (⚠) — see 'Flagged cells' in the report.")
-        log("next: python orchestrate_sweep.py            # re-runs only the ✗ / ⚠ cells")
-        log("      python orchestrate_sweep.py --publish  # when every cell shows ✓")
-        log("      (a cell that still shows ✗ or ⚠ after that: --publish --allow-incomplete, "
+        log(f"next: {_cmd():<40} # re-runs only the ✗ / ⚠ cells")
+        log(f"      {_cmd('--publish'):<40} # when every cell shows ✓")
+        log(f"      (a cell that still shows ✗ or ⚠ after that: {_cmd('--publish --allow-incomplete')}, "
             "and send the matrix + 'Flagged cells' section to the coordinator)")
     return 0 if status["complete"] else 1
 
