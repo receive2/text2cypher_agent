@@ -97,12 +97,12 @@ def test_discard_all_deletes_only_this_models_runs_after_confirmation(world):
 
 
 def test_discard_all_cli_refuses_without_a_terminal_and_without_yes(world, monkeypatch, capsys):
-    _run(world, "cypherbench_augmented", "movie", "react", "m1", "20260916-120000", OK)
+    _run(world, "cypherbench_augmented", "movie", "react", "gpt-5.6-luna", "20260916-120000", OK)   # a real preset: the CLI checks the name
     monkeypatch.setattr(sys.stdin, "isatty", lambda: False, raising=False)
-    assert ar.main(["--model", "m1", "--discard-all"]) == 0
+    assert ar.main(["--model", "gpt-5.6-luna", "--discard-all"]) == 0
     assert "nothing deleted" in capsys.readouterr().out
     assert (world / "logs" / "runs").iterdir().__next__().exists()
-    assert ar.main(["--model", "m1", "--discard-all", "--yes"]) == 0
+    assert ar.main(["--model", "gpt-5.6-luna", "--discard-all", "--yes"]) == 0
     assert "deleted 1 item(s)" in capsys.readouterr().out
 
 
