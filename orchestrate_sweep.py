@@ -51,9 +51,13 @@ Resume
 Completion is read from disk, so re-running the same command skips every
 clean cell and re-runs the rest (up to MAX_TRIES attempts each). A cell that
 keeps failing is reported, not retried forever; the run continues with the next
-cell. A ⚠ cell is re-run at most SUSPECT_RERUN_MAX times across invocations,
-then reported as persistent. ``logs/sweep_<model>.json`` keeps the per-cell
-history. Re-runs write a new time-stamped directory; the newest one wins, so
+cell. A missing or truncated cell is always re-run. A complete-but-⚠ cell is
+re-run at most SUSPECT_RERUN_MAX times across invocations, then reported as
+persistent — unless you select it explicitly with ``--graphs`` / ``--methods``,
+which re-runs it regardless and does not count against the budget.
+``logs/sweep_<model>.json`` keeps the per-cell history. Resume granularity is
+the cell: eval_run has no per-question resume, so an interrupted cell is re-run
+in full (a fresh time-stamped directory). Re-runs write a new time-stamped directory; the newest one wins, so
 nothing has to be deleted by hand.
 
 Publish
@@ -379,6 +383,31 @@ def flag_suspects(cells: Dict[Tuple[str, str, str], dict]) -> None:
                     c["why"] = (f"{bd['other']} of {n} questions ({100*other_rate:.0f}%) failed with an "
                                 f"unclassified error while another method on this graph failed on "
                                 f"{100*min(refs):.1f}% — lopsided")
+
+
+def decide_cell(c: dict, entry: dict, manual: bool) -> Tuple[str, str]:
+    """What the run loop does with one cell. Returns ``(action, note)``:
+
+    * ``skip``       — complete and clean;
+    * ``run``        — missing or truncated: always re-run; the ⚠ budget never
+                       applies (a killed re-run leaves a truncated dir and must
+                       not be parked);
+    * ``rerun``      — complete but ⚠: re-run while the automatic budget lasts,
+                       or always when the user selected this cell explicitly
+                       (``--graphs`` / ``--methods``), which does not consume it;
+    * ``persistent`` — complete but ⚠ and the automatic budget is spent."""
+    if not c["complete"]:
+        return "run", "missing or truncated"
+    if not c["suspect"]:
+        return "skip", ""
+    done = int(entry.get("suspect_reruns", 0))
+    if manual:
+        return "rerun", f"re-running on request (--graphs/--methods); automatic re-runs so far: {done}"
+    if done >= SUSPECT_RERUN_MAX:
+        return "persistent", (f"already re-run {done}x automatically, not retrying. Persistent: report the "
+                              "'Flagged cells' section to the coordinator, or re-run by hand with "
+                              "`python orchestrate_sweep.py --graphs <graph> --methods <method>`")
+    return "rerun", f"re-running automatically (attempt {done + 1}/{SUSPECT_RERUN_MAX})"
 
 
 SKIPPED_METHODS: List[str] = []
@@ -716,6 +745,13 @@ def _publish_tree(repo: Path, branch: str, run_dirs: List[str], extra_paths: Lis
         return subprocess.run(["git", *args], cwd=cwd, check=True, text=True,
                               capture_output=True, **kw)
     git("worktree", "prune")
+    # a hard kill during an earlier publish can leave a registered t2c_publish_* worktree behind
+    for line in subprocess.run(["git", "worktree", "list", "--porcelain"], cwd=repo, text=True,
+                               capture_output=True).stdout.splitlines():
+        if line.startswith("worktree ") and "t2c_publish_" in line:
+            subprocess.run(["git", "worktree", "remove", "--force", line[len("worktree "):]],
+                           cwd=repo, capture_output=True)
+    git("worktree", "prune")
     subprocess.run(["git", "fetch", "origin", branch], cwd=repo, text=True, capture_output=True)  # may not exist yet
     remote_ok = subprocess.run(["git", "rev-parse", "--verify", "--quiet", f"refs/remotes/origin/{branch}"],
                                cwd=repo, capture_output=True).returncode == 0
@@ -868,6 +904,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     if not all_methods:
         ap.error("--skip-methods removed every method")
     methods = [m for m in (args.methods or all_methods) if m in all_methods]
+    manual = bool(args.graphs or args.methods)   # an explicit selection is a request, not an automatic re-run
     global SKIPPED_METHODS
     SKIPPED_METHODS = list(args.skip_methods)
     expected = expected_counts()
@@ -913,19 +950,19 @@ def main(argv: Optional[List[str]] = None) -> int:
                 probe = build_status([(ds, g)], methods, expected, out_dir, model)  # flags need the graph's peers
                 c = probe["cells"][(ds, g, m)]
                 key = f"{ds}__{g}__{m}"
-                if c["complete"] and not c["suspect"]:
+                entry = state["cells"].setdefault(key, {"tries": 0})
+                action, note = decide_cell(c, entry, manual)
+                if action == "skip":
                     log(f"  = {key}: clean ({c['n']} records, err={c['err']}) — skipped")
                     continue
-                if c["suspect"]:
-                    entry = state["cells"].setdefault(key, {"tries": 0})
-                    done = int(entry.get("suspect_reruns", 0))
-                    if done >= SUSPECT_RERUN_MAX:
-                        log(f"  ⚠ {key}: {c['why']} — already re-run {done}x, not retrying. "
-                            "Persistent: report the 'Flagged cells' section to the coordinator.")
-                        continue
-                    entry["suspect_reruns"] = done + 1
-                    save_state(state)
-                    log(f"  ⚠ {key}: {c['why']} — re-running (attempt {done + 1}/{SUSPECT_RERUN_MAX})")
+                if action == "persistent":
+                    log(f"  ⚠ {key}: {c['why']} — {note}")
+                    continue
+                if action == "rerun":
+                    if not manual:
+                        entry["suspect_reruns"] = int(entry.get("suspect_reruns", 0)) + 1
+                        save_state(state)
+                    log(f"  ⚠ {key}: {c['why']} — {note}")
                 run_cell(ds, g, m, limit=limit, out_dir=out_dir, user_shards=user_shards, model=model, state=state)
             if not args.smoke:
                 try:

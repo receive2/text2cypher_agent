@@ -237,3 +237,38 @@ def test_classify_push_failure(stderr, kind):
 def test_remote_https_url(monkeypatch, url, expect):
     monkeypatch.setattr(osw, "_git", lambda *a: url)
     assert osw._remote_https_url() == expect
+
+
+# ── the run loop's per-cell decision (resume semantics) ──────────────────────
+
+def _decided(complete, suspect, reruns, manual):
+    c = {"complete": complete, "suspect": suspect, "n": 10, "err": 0, "why": "w"}
+    return osw.decide_cell(c, {"suspect_reruns": reruns}, manual)[0]
+
+
+def test_clean_cell_is_skipped():
+    assert _decided(True, False, 0, False) == "skip"
+
+
+def test_truncated_cell_always_runs_even_when_flagged_and_budget_spent():
+    """A killed re-run leaves a truncated dir whose partial records may still be
+    infra-dominated; it must go back to run_cell, never be parked as persistent."""
+    assert _decided(False, False, 0, False) == "run"
+    assert _decided(False, True, osw.SUSPECT_RERUN_MAX, False) == "run"
+
+
+def test_flagged_complete_cell_uses_the_budget_then_parks():
+    assert _decided(True, True, 0, False) == "rerun"
+    assert _decided(True, True, osw.SUSPECT_RERUN_MAX - 1, False) == "rerun"
+    assert _decided(True, True, osw.SUSPECT_RERUN_MAX, False) == "persistent"
+
+
+def test_explicit_selection_reruns_a_parked_cell():
+    """The Flagged-cells section tells the runner to use --graphs/--methods; that
+    must work even after the automatic budget is spent."""
+    assert _decided(True, True, osw.SUSPECT_RERUN_MAX, True) == "rerun"
+
+
+def test_missing_budget_key_is_treated_as_zero():
+    c = {"complete": True, "suspect": True, "n": 10, "err": 5, "why": "w"}
+    assert osw.decide_cell(c, {"tries": 0}, False)[0] == "rerun"
