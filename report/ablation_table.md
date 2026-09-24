@@ -1,10 +1,10 @@
 # CyANCHOR component ablation — gpt-4.1
 
-Paired per question against the full-method reference on the same questions (v2.1 runs restricted to questions verbatim in the v2.3 release; healthcare and pole use a fixed 400-question prefix). terrorist_attack is the CypherBench-train dev graph, not part of the release. Cells: Δ EA in points when the component is removed / the arm configuration is changed; **bold** = two-sided sign test p < 0.05; — = not run.
+Paired per question against the full-method reference on the same questions (runs restricted to questions verbatim in the current release; healthcare and pole use a fixed 400-question prefix). terrorist_attack is the CypherBench-train dev graph, not part of the release. Cells: Δ EA in points; **bold** = two-sided sign test p < 0.05; — = not run.
 
 ## Δ EA
 
-| variant | switch | flight_accident (CB) | healthcare (MTQ) | pole (ZOG) | terrorist_attack (dev) |
+| variant | switch | flight_accident | healthcare | pole | terrorist_attack |
 |---|---|---|---|---|---|
 | CyANCHOR full (EA) | — | 0.838 | 0.701 | 0.332 | 0.762 |
 | − escalation loop | `PLAN_EXEC_ESCALATE=0` | -3.0 | — | — | — |
@@ -15,10 +15,11 @@ Paired per question against the full-method reference on the same questions (v2.
 | fuzzy arm only | `RETRIEVAL_LEVENSHTEIN=0` | — | — | — | — |
 | lev arm only | `RETRIEVAL_FUZZY=0` | — | — | — | — |
 | + vector arm | `RETRIEVAL_VECTOR=1` | — | — | — | — |
+| − all correction (escalation, judge, repair, value-snap) | `—` | — | — | — | — |
 
-n: flight_accident 167 · healthcare 398 · pole 391 · terrorist_attack 400.
+n: flight_accident 167 · healthcare 398 · pole 391 · terrorist_attack 400
 
-## Paired flips (gained / lost) and sign-test p
+## Paired flips (gained / lost), sign-test p
 
 | variant | flight_accident | healthcare | pole | terrorist_attack |
 |---|---|---|---|---|
@@ -27,6 +28,10 @@ n: flight_accident 167 · healthcare 398 · pole 391 · terrorist_attack 400.
 | − semantic repair | 4/7, p=0.55 | — | — | — |
 | − value-snap | 5/4, p=1 | 10/19, p=0.14 | 7/57, p=7.6e-11 | 22/23, p=1 |
 | − relation tools | 5/2, p=0.45 | 14/20, p=0.39 | 11/8, p=0.65 | 27/19, p=0.3 |
+| fuzzy arm only | — | — | — | — |
+| lev arm only | — | — | — | — |
+| + vector arm | — | — | — | — |
+| − all correction (escalation, judge, repair, value-snap) | — | — | — | — |
 
 ## Per-category Δ EA (points)
 
@@ -67,18 +72,17 @@ n: flight_accident 167 · healthcare 398 · pole 391 · terrorist_attack 400.
 
 ## Missing cells for the paper table (3 test graphs × 8 rows)
 
-| cell | graphs | runs | est. time |
-|---|---|---|---|
-| − escalation loop | healthcare, pole | 2 | ~2.2 h |
-| − select-or-abstain judge | healthcare, pole | 2 | ~2.2 h |
-| − semantic repair | healthcare, pole | 2 | ~2.2 h |
-| fuzzy arm only | flight_accident, healthcare, pole | 3 | ~2.6 h |
-| lev arm only | flight_accident, healthcare, pole | 3 | ~2.6 h |
-| + vector arm | flight_accident, healthcare, pole | 3 | ~2.6 h + embeddings must exist on each graph |
-| **total** | | **15** | **~14.5 h** |
+- − escalation loop: healthcare, pole
+- − select-or-abstain judge: healthcare, pole
+- − semantic repair: healthcare, pole
+- fuzzy arm only: flight_accident, healthcare, pole
+- lev arm only: flight_accident, healthcare, pole
+- + vector arm: flight_accident, healthcare, pole
+
+15 missing. `+ vector arm` needs per-graph embeddings first (archives have EMBEDDABLE_PROPERTIES=[]). Driver for the rest: `scripts/tuning/run_ablation_fill.py` (add `--with-joint` for the all-correction row).
 
 Detection floor (paired sign test, 80% power, observed 4–8% discordance): ~5–6 points at n=167, ~3.5 at n≈400, ~2.4 pooled over the three test graphs.
 
 ## Sources
 
-`logs/ablation/fa__*` (flight_accident), `logs/verify_cols/{healthcare,pole}__*`, `logs/dev_sweep/ta__*` (terrorist_attack). Backbone gpt-4.1, SHARDS=1, errors score 0.
+References: `logs/ablation/fa__full__full_20260823`, `logs/verify_cols/healthcare__full__v400`, `logs/verify_cols/pole__full__v400`, `logs/dev_sweep/ta__full__dev400`. Variants: `logs/ablation`, `logs/verify_cols`, `logs/dev_sweep`, `logs/ablation_fill`. Backbone gpt-4.1, SHARDS=1, errors score 0.
