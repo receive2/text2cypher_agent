@@ -6,9 +6,10 @@ questions whose text is verbatim in the current release (benchmarks/). Existing 
 (logs/ablation, logs/verify_cols, logs/dev_sweep) and filled cells (logs/ablation_fill)
 are picked up automatically; a missing cell prints as —.
 """
-import json, math, collections, glob, os
+import json, math, collections, glob, os, sys
 from pathlib import Path
 REPO = Path("/Users/q0w01lh/Documents/repo/t2c"); os.chdir(REPO)
+MODEL = sys.argv[sys.argv.index("--model") + 1] if "--model" in sys.argv else "gpt-4.1"
 
 REL = {}
 for ds in ("cypherbench", "mindthequery", "zograscope"):
@@ -34,6 +35,12 @@ ROWS = [("escalation","− escalation loop","PLAN_EXEC_ESCALATE=0"), ("select_ju
         ("lev_only","lev arm only","RETRIEVAL_FUZZY=0"), ("plus_vector","+ vector arm","RETRIEVAL_VECTOR=1"),
         ("no_correction","− all correction (escalation, judge, repair, value-snap)","—")]
 GRAPHS = ["flight_accident", "healthcare", "pole", "terrorist_attack"]; CATS = ["casing","typo","partial","abbrev","alias"]
+if MODEL != "gpt-4.1":   # per-backbone tables: everything under logs/ablation_<model>/
+    GRAPHS = ["flight_accident", "healthcare", "pole"]
+    REF = {g: f"logs/ablation_{MODEL}/{g}__reference" for g in GRAPHS}
+    _V = {"escalation":"no_escalate","select_judge":"no_select_judge","semantic_repair":"no_semantic_repair","value_snap":"no_value_snap",
+          "relation_tools":"node_tools_only","fuzzy_only":"fuzzy_only","lev_only":"lev_only","no_correction":"no_correction"}
+    CELLS = {v: {g: f"logs/ablation_{MODEL}/{g}__{d}" for g in GRAPHS} for v, d in _V.items()}
 
 def load(d):
     p = Path(d) / "records.jsonl"
@@ -43,7 +50,8 @@ def p2(g, l):
 
 RES = {}
 for g in GRAPHS:
-    F = load(REF[g]); assert F, g
+    F = load(REF[g])
+    if not F: print(f"reference missing for {g}: {REF[g]}"); continue
     Q = list(F) if g == "terrorist_attack" else [q for q, r in F.items() if REL.get((g, q)) == r["question"]]
     ea = lambda X: sum(bool(X[q]["ea"]) for q in Q) / len(Q)
     cat_ea = lambda X: {c: sum(bool(X[q]["ea"]) for q in Q if F[q]["strategy"] == c) / n for c, n in collections.Counter(F[q]["strategy"] for q in Q).items()}
@@ -58,7 +66,7 @@ for g in GRAPHS:
 def cell(g, v):
     x = RES[g]["var"].get(v); s = f"{100*x['d']:+.1f}" if x else "—"
     return f"**{s}**" if x and x["p"] < 0.05 else s
-L = ["# CyANCHOR component ablation — gpt-4.1\n",
+L = [f"# CyANCHOR component ablation — {MODEL}\n",
      "Paired per question against the full-method reference on the same questions (runs restricted to questions verbatim in the current release; healthcare and pole use a fixed 400-question prefix). "
      "terrorist_attack is the CypherBench-train dev graph, not part of the release. Cells: Δ EA in points; **bold** = two-sided sign test p < 0.05; — = not run.\n",
      "## Δ EA\n", "| variant | switch | " + " | ".join(GRAPHS) + " |", "|---|---|" + "---|" * len(GRAPHS),
@@ -77,6 +85,7 @@ for g in GRAPHS:
         x = RES[g]["var"].get(v)
         if x: L.append(f"| {name} | " + " | ".join(f"{100*x['cat_d'][c]:+.1f}" if c in x["cat_d"] else "—" for c in CATS) + " |")
     L.append("")
+GRAPHS = [g for g in GRAPHS if g in RES]
 missing = [(name, g) for v, name, _ in ROWS if v != "no_correction" for g in GRAPHS[:3] if v not in RES[g]["var"]]
 L += ["## Missing cells for the paper table (3 test graphs × 8 rows)\n"]
 L += [f"- {name}: " + ", ".join(g for n2, g in missing if n2 == name) for name in dict.fromkeys(n for n, _ in missing)]
@@ -84,5 +93,5 @@ L += ["", f"{len(missing)} missing. `+ vector arm` needs per-graph embeddings fi
       "Driver for the rest: `scripts/tuning/run_ablation_fill.py` (add `--with-joint` for the all-correction row).\n",
       "Detection floor (paired sign test, 80% power, observed 4–8% discordance): ~5–6 points at n=167, ~3.5 at n≈400, ~2.4 pooled over the three test graphs.\n",
       "## Sources\n", "References: " + ", ".join(f"`{d}`" for d in REF.values()) + ". Variants: `logs/ablation`, `logs/verify_cols`, `logs/dev_sweep`, `logs/ablation_fill`. Backbone gpt-4.1, SHARDS=1, errors score 0."]
-Path("report/ablation_table.md").write_text("\n".join(L) + "\n", encoding="utf-8")
+Path("report/ablation_table.md" if MODEL == "gpt-4.1" else f"report/ablation_table_{MODEL}.md").write_text("\n".join(L) + "\n", encoding="utf-8")
 print("\n".join(L[3:16])); print(f"\n{len(missing)} cells missing")
