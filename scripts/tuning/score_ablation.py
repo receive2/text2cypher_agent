@@ -63,6 +63,9 @@ for g in GRAPHS:
         RES[g]["var"][v] = {"ea": ea(X), "d": ea(X) - RES[g]["full"], "g": gn, "l": ls, "p": p2(gn, ls),
                             "cat_d": {c: cat_ea(X)[c] - RES[g]["full_cats"][c] for c in RES[g]["full_cats"]}}
 
+GRAPHS = [g for g in GRAPHS if g in RES]
+if not GRAPHS: print("no reference cells yet"); sys.exit(0)
+
 def cell(g, v):
     x = RES[g]["var"].get(v); s = f"{100*x['d']:+.1f}" if x else "—"
     return f"**{s}**" if x and x["p"] < 0.05 else s
@@ -85,7 +88,6 @@ for g in GRAPHS:
         x = RES[g]["var"].get(v)
         if x: L.append(f"| {name} | " + " | ".join(f"{100*x['cat_d'][c]:+.1f}" if c in x["cat_d"] else "—" for c in CATS) + " |")
     L.append("")
-GRAPHS = [g for g in GRAPHS if g in RES]
 missing = [(name, g) for v, name, _ in ROWS if v != "no_correction" for g in GRAPHS[:3] if v not in RES[g]["var"]]
 L += ["## Missing cells for the paper table (3 test graphs × 8 rows)\n"]
 L += [f"- {name}: " + ", ".join(g for n2, g in missing if n2 == name) for name in dict.fromkeys(n for n, _ in missing)]
