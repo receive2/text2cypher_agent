@@ -59,7 +59,7 @@ from dataclasses import dataclass
 # ╚══════════════════════════════════════════════════════════════════════════╝
 
 # ── Method ────────────────────────────────────────────────────────────────────
-GENERATOR_LLM: str = "gpt-4.1"  # preset name from config.MODEL_PRESETS — selects the LLM for
+GENERATOR_LLM: str = "llama-3.3-70b"  # preset name from config.MODEL_PRESETS — selects the LLM for
                                 #   ALL stages (NER / Cypher / QA) and tags the run dir
                                 #   (cyanchor_fl@<name>). Presets: gpt-4.1 | gpt-5.6-terra |
                                 #   gpt-5.6-luna | claude-sonnet-5 | claude-haiku-4.5 |

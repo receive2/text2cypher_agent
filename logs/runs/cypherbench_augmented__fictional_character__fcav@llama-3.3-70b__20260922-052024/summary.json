@@ -1,0 +1,141 @@
+{
+  "dataset": "cypherbench_augmented",
+  "n": 324,
+  "n_scored": {
+    "ea": 324,
+    "em": 324,
+    "psjs": 324
+  },
+  "n_errors": 59,
+  "ea": 0.1111111111111111,
+  "em": 0.0,
+  "psjs": 0.158548673214229,
+  "by_difficulty": {
+    "all": {
+      "ea": 0.1111111111111111,
+      "em": 0.0,
+      "psjs": 0.158548673214229,
+      "n": 324,
+      "n_scored": {
+        "ea": 324,
+        "em": 324,
+        "psjs": 324
+      },
+      "n_errors": 59
+    },
+    "easy": {
+      "ea": 0.24528301886792453,
+      "em": 0.0,
+      "psjs": 0.2358490566037736,
+      "n": 53,
+      "n_scored": {
+        "ea": 53,
+        "em": 53,
+        "psjs": 53
+      },
+      "n_errors": 2
+    },
+    "medium": {
+      "ea": 0.06593406593406594,
+      "em": 0.0,
+      "psjs": 0.10090660395341035,
+      "n": 182,
+      "n_scored": {
+        "ea": 182,
+        "em": 182,
+        "psjs": 182
+      },
+      "n_errors": 33
+    },
+    "hard": {
+      "ea": 0.12359550561797752,
+      "em": 0.0,
+      "psjs": 0.23039065395381458,
+      "n": 89,
+      "n_scored": {
+        "ea": 89,
+        "em": 89,
+        "psjs": 89
+      },
+      "n_errors": 24
+    }
+  },
+  "elapsed_sec": 4086.38,
+  "run_meta": {
+    "generated_at": "2026-09-22T06:28:43-05:00",
+    "ner_mode": "fcav",
+    "method": "fcav",
+    "label": "FCAV",
+    "tool_type": null,
+    "retrieval": "vector",
+    "generator_llm": "llama-3.3-70b",
+    "ner_llm": "llama-3.3-70b-deepinfra",
+    "cypher_llm": "llama-3.3-70b-deepinfra",
+    "qa_llm": "llama-3.3-70b-deepinfra",
+    "tool_select_top_k": 15,
+    "values_per_tool": 10,
+    "plan_exec_tools_per_entity": 2,
+    "plan_exec_values_per_tool": 10,
+    "plan_exec_escalate": true,
+    "plan_exec_max_iter": 3,
+    "retrieval_levenshtein_k": 10,
+    "cypher_semantic_repair": true,
+    "cypher_repair_max_rounds": 4,
+    "cypher_empty_is_wrong": false,
+    "cypher_retry_max_rounds": 2,
+    "plan_exec_value_snap": true,
+    "plan_exec_skip_grounded": true,
+    "plan_exec_parallel_mentions": true,
+    "graphrag_empty_is_wrong": true,
+    "graphrag_llm_evaluator": true,
+    "tool_retrieval_mode": "fuzzy",
+    "hybrid_strategy": "cascade"
+  },
+  "run_config": {
+    "stamp": "20260922-052024",
+    "dataset": "cypherbench_augmented",
+    "graph": "fictional_character",
+    "method": "fcav@llama-3.3-70b",
+    "llm": {
+      "generator_llm": "llama-3.3-70b",
+      "ner": {
+        "provider": "hf_compatible",
+        "model": "llama-3.3-70b-deepinfra"
+      },
+      "cypher": {
+        "provider": "hf_compatible",
+        "model": "llama-3.3-70b-deepinfra"
+      },
+      "qa": {
+        "provider": "hf_compatible",
+        "model": "llama-3.3-70b-deepinfra"
+      }
+    },
+    "embedding": {
+      "backend": "openai",
+      "model": "text-embedding-3-small"
+    },
+    "knobs": {
+      "METHOD": "fcav",
+      "TOOL_TYPE": "node_rel",
+      "GENERATOR_LLM": "llama-3.3-70b",
+      "RETRIEVAL_FUZZY": "1",
+      "RETRIEVAL_VECTOR": "0",
+      "RETRIEVAL_LEVENSHTEIN": "1",
+      "CYPHER_SEMANTIC_REPAIR": "1",
+      "CYPHER_EMPTY_IS_WRONG": "0",
+      "PLAN_EXEC_ESCALATE": "1",
+      "PLAN_EXEC_VALUE_SNAP": "1",
+      "PLAN_EXEC_SKIP_GROUNDED": "1",
+      "PLAN_EXEC_SELECT_JUDGE": "1",
+      "PLAN_EXEC_PARALLEL_MENTIONS": "1",
+      "GRAPHRAG_EMPTY_IS_WRONG": "1",
+      "GRAPHRAG_LLM_EVALUATOR": "1",
+      "CYPHER_REPAIR_MAX_ROUNDS": "4",
+      "CYPHER_RETRY_MAX_ROUNDS": "2",
+      "RETRIEVAL_LEVENSHTEIN_K": "10"
+    },
+    "shards": 1,
+    "limit": null
+  }
+}

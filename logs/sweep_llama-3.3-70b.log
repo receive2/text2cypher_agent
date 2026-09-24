@@ -1,0 +1,191 @@
+[2026-09-20 15:04:50] === sweep start: model=llama-3.3-70b graphs=1 methods=['no_val_link', 'fcav', 'react', 'graphrag', 'cyanchor'] SMOKE ===
+[2026-09-20 15:04:50] pre-flight (archives vs live graphs, archives vs published set):
+[2026-09-20 15:04:54]   ✗ cypherbench_augmented__flight_accident: OK — ok (5 tool labels, all non-empty; min count=58) | artifacts MISMATCH
+[2026-09-20 15:04:54] ✗ pre-flight failed — fix the red lines (see docs/EXPERIMENT_HANDOUT.md §4) before running
+[2026-09-20 15:05:44] === sweep start: model=llama-3.3-70b graphs=1 methods=['no_val_link', 'fcav', 'react', 'graphrag', 'cyanchor'] SMOKE ===
+[2026-09-20 15:05:44] pre-flight (archives vs live graphs, archives vs published set):
+[2026-09-20 15:05:45]   ✗ cypherbench_augmented__flight_accident: OK — ok (5 tool labels, all non-empty; min count=58) | artifacts MISMATCH
+[2026-09-20 15:05:45] ✗ pre-flight failed — fix the red lines (see docs/EXPERIMENT_HANDOUT.md §4) before running
+[2026-09-20 16:48:56] === sweep start: model=llama-3.3-70b graphs=1 methods=['no_val_link', 'fcav', 'react', 'graphrag', 'cyanchor'] SMOKE ===
+[2026-09-20 16:48:56] pre-flight (archives vs live graphs, archives vs published set):
+[2026-09-20 16:48:59]   ✗ cypherbench_augmented__flight_accident: OK — ok (5 tool labels, all non-empty; min count=58) | artifacts MISMATCH
+[2026-09-20 16:48:59] ✗ pre-flight failed — fix the red lines (see docs/EXPERIMENT_HANDOUT.md §4) before running
+[2026-09-20 17:31:51] === sweep start: model=llama-3.3-70b graphs=1 methods=['no_val_link', 'fcav', 'react', 'graphrag', 'cyanchor'] SMOKE ===
+[2026-09-20 17:31:51] pre-flight (archives vs live graphs, archives vs published set):
+[2026-09-20 17:31:53]   ✗ cypherbench_augmented__flight_accident: OK — ok (5 tool labels, all non-empty; min count=58) | artifacts MISMATCH
+[2026-09-20 17:31:53] ✗ pre-flight failed — fix the red lines (see docs/EXPERIMENT_HANDOUT.md §4) before running
+[2026-09-20 18:18:19] === sweep start: model=llama-3.3-70b graphs=1 methods=['no_val_link', 'fcav', 'react', 'graphrag', 'cyanchor'] SMOKE ===
+[2026-09-20 18:18:19] pre-flight (archives vs live graphs, archives vs published set):
+[2026-09-20 18:18:20]   ✗ cypherbench_augmented__flight_accident: OK — ok (5 tool labels, all non-empty; min count=58) | artifacts MISMATCH
+[2026-09-20 18:18:20] ✗ pre-flight failed — fix the red lines (see docs/EXPERIMENT_HANDOUT.md §4) before running
+[2026-09-20 19:48:06] === sweep start: model=llama-3.3-70b graphs=1 methods=['no_val_link', 'fcav', 'react', 'graphrag', 'cyanchor'] SMOKE ===
+[2026-09-20 19:48:06] pre-flight (archives vs live graphs, archives vs published set):
+[2026-09-20 19:48:07]   ✓ cypherbench_augmented__flight_accident: OK — ok (5 tool labels, all non-empty; min count=58) | artifacts OK
+[2026-09-20 19:48:07]   ▶ cypherbench_augmented__flight_accident__no_val_link  (try 1/3, SHARDS=1, limit=3)
+[2026-09-20 19:48:45]     rc=0 records=3/3 err=0 (39s)
+[2026-09-20 19:48:45]   fcav index missing for cypherbench_augmented__flight_accident: building it (OpenAI embeddings of the graph's values)
+[2026-09-20 19:48:49]   ✗ cypherbench_augmented__flight_accident__fcav: could not build the fcav index: AuthenticationError: Error code: 401 - {'error': {'message': 'Incorrect API key provided: your-ope************here. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
+[2026-09-20 19:48:49]   ▶ cypherbench_augmented__flight_accident__react  (try 1/3, SHARDS=1, limit=3)
+[2026-09-20 19:49:07]     rc=0 records=3/3 err=3 (17s)
+[2026-09-20 19:49:07]   ▶ cypherbench_augmented__flight_accident__graphrag  (try 1/3, SHARDS=1, limit=3)
+[2026-09-20 19:50:53]     rc=0 records=3/3 err=0 (106s)
+[2026-09-20 19:50:53]   ▶ cypherbench_augmented__flight_accident__cyanchor  (try 1/3, SHARDS=1, limit=3)
+[2026-09-20 19:51:24]     rc=0 records=3/3 err=3 (31s)
+[2026-09-20 19:51:24] ✗ SMOKE FAILED:
+  fcav: 0/3 records — the run did not finish — fcav index: AuthenticationError: Error code: 401 - {'error': {'message': 'Incorrect API key provided: your-ope************here. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
+  react: every example errored — agent: AuthenticationError: Error code: 401 - {'error': {'message': 'Incorrect API key provided: your-ope************here. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
+  cyanchor: every example errored — agent: AuthenticationError: Error code: 401 - {'error': {'message': 'Incorrect API key provided: your-ope************here. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
+  Send these lines to the coordinator.
+[2026-09-20 20:04:01] === sweep start: model=llama-3.3-70b graphs=1 methods=['no_val_link', 'fcav', 'react', 'graphrag', 'cyanchor'] SMOKE ===
+[2026-09-20 20:04:01] pre-flight (archives vs live graphs, archives vs published set):
+[2026-09-20 20:04:02]   ✓ cypherbench_augmented__flight_accident: OK — ok (5 tool labels, all non-empty; min count=58) | artifacts OK
+[2026-09-20 20:04:02]   = cypherbench_augmented__flight_accident__no_val_link: complete (3 records, err=0) — skipped
+[2026-09-20 20:04:02]   fcav index missing for cypherbench_augmented__flight_accident: building it (OpenAI embeddings of the graph's values)
+[2026-09-20 20:04:06]   ✗ cypherbench_augmented__flight_accident__fcav: could not build the fcav index: AuthenticationError: Error code: 401 - {'error': {'message': 'OpenAI-Organization header should match organization for API key', 'type': 'invalid_request_error', 'code': 'mismatched_organization', 'param': None}, 'status': 401}
+[2026-09-20 20:04:06]   = cypherbench_augmented__flight_accident__react: complete (3 records, err=3) — skipped
+[2026-09-20 20:04:06]   = cypherbench_augmented__flight_accident__graphrag: complete (3 records, err=0) — skipped
+[2026-09-20 20:04:06]   = cypherbench_augmented__flight_accident__cyanchor: complete (3 records, err=3) — skipped
+[2026-09-20 20:04:06] ✗ SMOKE FAILED:
+  fcav: 0/3 records — the run did not finish — fcav index: AuthenticationError: Error code: 401 - {'error': {'message': 'OpenAI-Organization header should match organization for API key', 'type': 'invalid_request_error', 'code': 'mismatched_organization', 'param': None}, 'status': 401}
+  react: every example errored — agent: AuthenticationError: Error code: 401 - {'error': {'message': 'Incorrect API key provided: your-ope************here. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
+  cyanchor: every example errored — agent: AuthenticationError: Error code: 401 - {'error': {'message': 'Incorrect API key provided: your-ope************here. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
+  Send these lines to the coordinator.
+[2026-09-20 20:04:23] === sweep start: model=llama-3.3-70b graphs=1 methods=['no_val_link', 'fcav', 'react', 'graphrag', 'cyanchor'] SMOKE ===
+[2026-09-20 20:04:23] pre-flight (archives vs live graphs, archives vs published set):
+[2026-09-20 20:04:24]   ✓ cypherbench_augmented__flight_accident: OK — ok (5 tool labels, all non-empty; min count=58) | artifacts OK
+[2026-09-20 20:04:24]   = cypherbench_augmented__flight_accident__no_val_link: complete (3 records, err=0) — skipped
+[2026-09-20 20:04:24]   fcav index missing for cypherbench_augmented__flight_accident: building it (OpenAI embeddings of the graph's values)
+[2026-09-20 20:04:27]   ✗ cypherbench_augmented__flight_accident__fcav: could not build the fcav index: AuthenticationError: Error code: 401 - {'error': {'message': 'OpenAI-Organization header should match organization for API key', 'type': 'invalid_request_error', 'code': 'mismatched_organization', 'param': None}, 'status': 401}
+[2026-09-20 20:04:27]   = cypherbench_augmented__flight_accident__react: complete (3 records, err=3) — skipped
+[2026-09-20 20:04:27]   = cypherbench_augmented__flight_accident__graphrag: complete (3 records, err=0) — skipped
+[2026-09-20 20:04:27]   = cypherbench_augmented__flight_accident__cyanchor: complete (3 records, err=3) — skipped
+[2026-09-20 20:04:27] ✗ SMOKE FAILED:
+  fcav: 0/3 records — the run did not finish — fcav index: AuthenticationError: Error code: 401 - {'error': {'message': 'OpenAI-Organization header should match organization for API key', 'type': 'invalid_request_error', 'code': 'mismatched_organization', 'param': None}, 'status': 401}
+  react: every example errored — agent: AuthenticationError: Error code: 401 - {'error': {'message': 'Incorrect API key provided: your-ope************here. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
+  cyanchor: every example errored — agent: AuthenticationError: Error code: 401 - {'error': {'message': 'Incorrect API key provided: your-ope************here. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
+  Send these lines to the coordinator.
+[2026-09-20 20:09:53] === sweep start: model=llama-3.3-70b graphs=1 methods=['no_val_link', 'fcav', 'react', 'graphrag', 'cyanchor'] SMOKE ===
+[2026-09-20 20:09:53] pre-flight (archives vs live graphs, archives vs published set):
+[2026-09-20 20:09:55]   ✓ cypherbench_augmented__flight_accident: OK — ok (5 tool labels, all non-empty; min count=58) | artifacts OK
+[2026-09-20 20:09:55]   ▶ cypherbench_augmented__flight_accident__no_val_link  (try 1/3, SHARDS=1, limit=3)
+[2026-09-20 20:10:38]     rc=0 records=3/3 err=0 (43s)
+[2026-09-20 20:10:38]   fcav index missing for cypherbench_augmented__flight_accident: building it (OpenAI embeddings of the graph's values)
+[2026-09-20 20:11:07]   ✗ cypherbench_augmented__flight_accident__fcav: could not build the fcav index: RateLimitError: Error code: 429 - {'error': {'message': 'You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.', 'type': 'insufficient_quota', 'param': None, 'code': 'credit_balance_exhausted'}}
+[2026-09-20 20:11:07]   ▶ cypherbench_augmented__flight_accident__react  (try 1/3, SHARDS=1, limit=3)
+[2026-09-20 20:11:28]     rc=0 records=3/3 err=3 (20s)
+[2026-09-20 20:11:28]   ▶ cypherbench_augmented__flight_accident__graphrag  (try 1/3, SHARDS=1, limit=3)
+[2026-09-20 20:12:32]     rc=0 records=3/3 err=0 (64s)
+[2026-09-20 20:12:32]   ▶ cypherbench_augmented__flight_accident__cyanchor  (try 1/3, SHARDS=1, limit=3)
+[2026-09-20 20:13:00]     rc=0 records=3/3 err=3 (28s)
+[2026-09-20 20:13:00] ✗ SMOKE FAILED:
+  fcav: 0/3 records — the run did not finish — fcav index: RateLimitError: Error code: 429 - {'error': {'message': 'You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.', 'type': 'insufficient_quota', 'param': None, 'code': 'credit_balance_exhausted'}}
+  react: every example errored — agent: RateLimitError: Error code: 429 - {'error': {'message': 'You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.', 'type': 'insufficient_quota', 'param': None, 'code': 'credit_balance_exhausted'}}
+  cyanchor: every example errored — agent: RateLimitError: Error code: 429 - {'error': {'message': 'You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.', 'type': 'insufficient_quota', 'param': None, 'code': 'credit_balance_exhausted'}}
+  Send these lines to the coordinator.
+[2026-09-21 11:17:14] === sweep start: model=llama-3.3-70b graphs=1 methods=['no_val_link', 'fcav', 'react', 'graphrag', 'cyanchor'] SMOKE ===
+[2026-09-21 11:17:14] pre-flight (archives vs live graphs, archives vs published set):
+[2026-09-21 11:17:18]   ✓ cypherbench_augmented__flight_accident: OK — ok (5 tool labels, all non-empty; min count=58) | artifacts OK
+[2026-09-21 11:17:18]   ▶ cypherbench_augmented__flight_accident__no_val_link  (try 1/3, SHARDS=1, limit=3)
+[2026-09-21 11:18:00]     rc=0 records=3/3 err=0 (42s)
+[2026-09-21 11:18:00]   fcav index missing for cypherbench_augmented__flight_accident: building it (OpenAI embeddings of the graph's values)
+[2026-09-21 11:18:04]   ✗ cypherbench_augmented__flight_accident__fcav: could not build the fcav index: AuthenticationError: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-*******************************************************************************************************************************************************whB0. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[2026-09-21 11:18:04]   ▶ cypherbench_augmented__flight_accident__react  (try 1/3, SHARDS=1, limit=3)
+[2026-09-21 11:18:58] === sweep start: model=llama-3.3-70b graphs=1 methods=['no_val_link', 'fcav', 'react', 'graphrag', 'cyanchor'] SMOKE ===
+[2026-09-21 11:18:58] pre-flight (archives vs live graphs, archives vs published set):
+[2026-09-21 11:18:59]   ✓ cypherbench_augmented__flight_accident: OK — ok (5 tool labels, all non-empty; min count=58) | artifacts OK
+[2026-09-21 11:18:59]   ▶ cypherbench_augmented__flight_accident__no_val_link  (try 1/3, SHARDS=1, limit=3)
+[2026-09-21 11:19:25]     rc=0 records=3/3 err=0 (26s)
+[2026-09-21 11:19:25]   fcav index missing for cypherbench_augmented__flight_accident: building it (OpenAI embeddings of the graph's values)
+[2026-09-21 11:20:52]   fcav index built: 5693 values
+[2026-09-21 11:20:52]   ▶ cypherbench_augmented__flight_accident__fcav  (try 1/3, SHARDS=1, limit=3)
+[2026-09-21 11:21:24]     rc=0 records=3/3 err=1 (32s)
+[2026-09-21 11:21:24]   ▶ cypherbench_augmented__flight_accident__react  (try 1/3, SHARDS=1, limit=3)
+[2026-09-21 11:22:15]     rc=0 records=3/3 err=0 (51s)
+[2026-09-21 11:22:15]   ▶ cypherbench_augmented__flight_accident__graphrag  (try 1/3, SHARDS=1, limit=3)
+[2026-09-21 11:23:29]     rc=0 records=3/3 err=0 (74s)
+[2026-09-21 11:23:29]   ▶ cypherbench_augmented__flight_accident__cyanchor  (try 1/3, SHARDS=1, limit=3)
+[2026-09-21 11:25:06]     rc=0 records=3/3 err=0 (97s)
+[2026-09-21 11:25:06] ✓ SMOKE OK — all 5 methods produced 3 records on flight_accident (a few errors are fine; a whole method erroring is not). Now run: python orchestrate_sweep.py
+[2026-09-21 12:40:38] === sweep start: model=llama-3.3-70b graphs=13 methods=['no_val_link', 'fcav', 'react', 'graphrag', 'cyanchor'] FULL ===
+[2026-09-21 12:40:38] pre-flight (archives vs live graphs, archives vs published set):
+[2026-09-21 12:40:39]   ✓ cypherbench_augmented__company: OK — ok (4 tool labels, all non-empty; min count=217) | artifacts OK
+[2026-09-21 12:40:39]   ✓ cypherbench_augmented__fictional_character: OK — ok (4 tool labels, all non-empty; min count=594) | artifacts OK
+[2026-09-21 12:40:40]   ✓ cypherbench_augmented__flight_accident: OK — ok (5 tool labels, all non-empty; min count=58) | artifacts OK
+[2026-09-21 12:40:40]   ✓ cypherbench_augmented__geography: OK — ok (8 tool labels, all non-empty; min count=5) | artifacts OK
+[2026-09-21 12:40:41]   ✓ cypherbench_augmented__movie: OK — ok (7 tool labels, all non-empty; min count=205) | artifacts OK
+[2026-09-21 12:40:41]   ✓ cypherbench_augmented__nba: OK — ok (7 tool labels, all non-empty; min count=2) | artifacts OK
+[2026-09-21 12:40:42]   ✓ cypherbench_augmented__politics: OK — ok (6 tool labels, all non-empty; min count=217) | artifacts OK
+[2026-09-21 12:40:43]   ✓ mindthequery_augmented__bloom: OK — ok (17 tool labels, all non-empty; min count=2) | artifacts OK
+[2026-09-21 12:40:43]   ✓ mindthequery_augmented__covid: OK — ok (7 tool labels, all non-empty; min count=1) | artifacts OK
+[2026-09-21 12:40:44]   ✓ mindthequery_augmented__er: OK — ok (4 tool labels, all non-empty; min count=10) | artifacts OK
+[2026-09-21 12:40:44]   ✓ mindthequery_augmented__healthcare: OK — ok (8 tool labels, all non-empty; min count=5) | artifacts OK
+[2026-09-21 12:40:45]   ✓ mindthequery_augmented__wwc: OK — ok (5 tool labels, all non-empty; min count=8) | artifacts OK
+[2026-09-21 12:40:45]   ✓ zograscope_augmented__pole: OK — ok (11 tool labels, all non-empty; min count=7) | artifacts OK
+[2026-09-21 12:40:45]   ▶ cypherbench_augmented__company__no_val_link  (try 1/3, SHARDS=1, limit=None)
+[2026-09-21 13:27:37]     rc=0 records=305/305 err=35 (2812s)
+[2026-09-21 13:27:37]   fcav index missing for cypherbench_augmented__company: building it (OpenAI embeddings of the graph's values)
+[2026-09-21 15:31:58]   ✗ cypherbench_augmented__company__fcav: could not build the fcav index: MemoryError: Unable to allocate 4.53 GiB for an array with shape (792468, 1536) and data type float32
+[2026-09-21 15:31:59]   ▶ cypherbench_augmented__company__react  (try 1/3, SHARDS=1, limit=None)
+[2026-09-21 17:51:40]     rc=0 records=305/305 err=1 (8381s)
+[2026-09-21 17:51:40]   ▶ cypherbench_augmented__company__graphrag  (try 1/3, SHARDS=1, limit=None)
+[2026-09-21 20:29:07]     rc=0 records=305/305 err=5 (9447s)
+[2026-09-21 20:29:07]   ▶ cypherbench_augmented__company__cyanchor  (try 1/3, SHARDS=1, limit=None)
+[2026-09-22 00:29:08]     rc=2 records=295/305 err=3 (14401s)
+[2026-09-22 00:29:08]   ▶ cypherbench_augmented__company__cyanchor  (try 2/3, SHARDS=1, limit=None)
+[2026-09-22 04:29:09]     rc=2 records=298/305 err=76 (14401s)
+[2026-09-22 04:29:09]   ▶ cypherbench_augmented__company__cyanchor  (try 3/3, SHARDS=1, limit=None)
+[2026-09-22 04:29:11]     rc=2 records=298/305 err=76 (2s)
+[2026-09-22 04:29:11]   ✗ cypherbench_augmented__company__cyanchor: not complete after 3 attempts — continuing with the next cell
+[2026-09-22 04:29:11]   report: report/llama-3.3-70b/CypherBench/company.md
+[2026-09-22 04:29:11]   ▶ cypherbench_augmented__fictional_character__no_val_link  (try 1/3, SHARDS=1, limit=None)
+[2026-09-22 05:10:29]     rc=0 records=324/324 err=43 (2478s)
+[2026-09-22 05:10:29]   fcav index missing for cypherbench_augmented__fictional_character: building it (OpenAI embeddings of the graph's values)
+[2026-09-22 05:20:24]   fcav index built: 45516 values
+[2026-09-22 05:20:24]   ▶ cypherbench_augmented__fictional_character__fcav  (try 1/3, SHARDS=1, limit=None)
+[2026-09-22 06:28:44]     rc=0 records=324/324 err=59 (4100s)
+[2026-09-22 06:28:44]   ▶ cypherbench_augmented__fictional_character__react  (try 1/3, SHARDS=1, limit=None)
+[2026-09-22 08:47:30]     rc=0 records=324/324 err=1 (8326s)
+[2026-09-22 08:47:30]   ▶ cypherbench_augmented__fictional_character__graphrag  (try 1/3, SHARDS=1, limit=None)
+[2026-09-22 10:43:57]     rc=0 records=324/324 err=1 (6987s)
+[2026-09-22 10:43:57]   ▶ cypherbench_augmented__fictional_character__cyanchor  (try 1/3, SHARDS=1, limit=None)
+[2026-09-24 08:47:54] === status NOT CLEAN — 58 ✗, 0 ⚠ (see the matrix) · driver e9c32e65 ===
+[2026-09-24 08:47:54] report: report\llama-3.3-70b\SWEEP.md
+[2026-09-24 08:48:15] === publish NOT CLEAN — 58 ✗, 0 ⚠ (see the matrix) · driver e9c32e65 ===
+[2026-09-24 08:48:15] report: report\llama-3.3-70b\SWEEP.md
+[2026-09-24 08:48:16] ✗ GitHub is not reachable from here (network / VPN / proxy). Nothing was changed.
+[2026-09-24 08:48:16]   fatal: unable to access 'https://github.com/receive2/text2cypher_agent/': SSL certificate problem: unable to get local issuer certificate
+[2026-09-24 08:48:29] === sweep start: model=llama-3.3-70b graphs=13 methods=['no_val_link', 'fcav', 'react', 'graphrag', 'cyanchor'] FULL ===
+[2026-09-24 08:48:29] pre-flight (archives vs live graphs, archives vs published set):
+[2026-09-24 08:48:34]   ✗ cypherbench_augmented__company: UNREACH — ServiceUnavailable: Couldn't connect to 34.9.85.21:15062 (resolved to ('34.9.85.21:15062',)):
+Failed to establish connection to ResolvedIPv4Address(('34.9.85.21', 15062)) (reason [WinError 10061] No connection could be made because the target machine actively refused it) | artifacts OK
+[2026-09-24 08:48:35]   ✓ cypherbench_augmented__fictional_character: OK — ok (4 tool labels, all non-empty; min count=594) | artifacts OK
+[2026-09-24 08:48:35]   ✓ cypherbench_augmented__flight_accident: OK — ok (5 tool labels, all non-empty; min count=58) | artifacts OK
+[2026-09-24 08:48:35]   ✓ cypherbench_augmented__geography: OK — ok (8 tool labels, all non-empty; min count=5) | artifacts OK
+[2026-09-24 08:48:36]   ✓ cypherbench_augmented__movie: OK — ok (7 tool labels, all non-empty; min count=205) | artifacts OK
+[2026-09-24 08:48:36]   ✓ cypherbench_augmented__nba: OK — ok (7 tool labels, all non-empty; min count=2) | artifacts OK
+[2026-09-24 08:48:37]   ✓ cypherbench_augmented__politics: OK — ok (6 tool labels, all non-empty; min count=217) | artifacts OK
+[2026-09-24 08:48:37]   ✓ mindthequery_augmented__bloom: OK — ok (17 tool labels, all non-empty; min count=2) | artifacts OK
+[2026-09-24 08:48:38]   ✓ mindthequery_augmented__covid: OK — ok (7 tool labels, all non-empty; min count=1) | artifacts OK
+[2026-09-24 08:48:38]   ✓ mindthequery_augmented__er: OK — ok (4 tool labels, all non-empty; min count=10) | artifacts OK
+[2026-09-24 08:48:39]   ✓ mindthequery_augmented__healthcare: OK — ok (8 tool labels, all non-empty; min count=5) | artifacts OK
+[2026-09-24 08:48:39]   ✓ mindthequery_augmented__wwc: OK — ok (5 tool labels, all non-empty; min count=8) | artifacts OK
+[2026-09-24 08:48:40]   ✓ zograscope_augmented__pole: OK — ok (11 tool labels, all non-empty; min count=7) | artifacts OK
+[2026-09-24 08:48:40] ✗ pre-flight failed — fix the red lines (see docs/EXPERIMENT_HANDOUT.md §4) before running
+[2026-09-24 08:53:55] === publish NOT CLEAN — 58 ✗, 0 ⚠ (see the matrix) · driver e9c32e65 ===
+[2026-09-24 08:53:55] report: report\llama-3.3-70b\SWEEP.md
+[2026-09-24 08:54:34] ✗ git failed during publish. Nothing was changed on your branch or working tree.
+[2026-09-24 08:54:34]   Author identity unknown
+
+*** Please tell me who you are.
+
+Run
+
+  git config --global user.email "you@example.com"
+  git config --global user.name "Your Name"
+
+to set your account's default identity.
+Omit --global to set the identity only in this repository.
+
+fatal: unable to auto-detect email address (got 'devel@DESKTOP-UKA35N9.(none)')
+[2026-09-24 08:55:16] === publish NOT CLEAN — 58 ✗, 0 ⚠ (see the matrix) · driver e9c32e65 ===
+[2026-09-24 08:55:16] report: report\llama-3.3-70b\SWEEP.md

@@ -1,0 +1,128 @@
+{
+  "model": "llama-3.3-70b",
+  "started": "2026-09-20 19:48:07",
+  "cells": {
+    "cypherbench_augmented__flight_accident__no_val_link": {
+      "tries": 4,
+      "status": "done",
+      "n": 3,
+      "err": 0,
+      "dir": "logs\\smoke\\cypherbench_augmented__flight_accident__no_val_link@llama-3.3-70b__20260921-111900",
+      "finished_at": "2026-09-21 11:19:25"
+    },
+    "cypherbench_augmented__flight_accident__fcav": {
+      "tries": 1,
+      "status": "done",
+      "last_error": "fcav index: RateLimitError: Error code: 429 - {'error': {'message': 'You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.', 'type': 'insufficient_quota', 'param': None, 'code': 'credit_balance_exhausted'}}",
+      "n": 3,
+      "err": 1,
+      "dir": "logs\\smoke\\cypherbench_augmented__flight_accident__fcav@llama-3.3-70b__20260921-112052",
+      "finished_at": "2026-09-21 11:21:24"
+    },
+    "cypherbench_augmented__flight_accident__react": {
+      "tries": 3,
+      "status": "done",
+      "n": 3,
+      "err": 0,
+      "dir": "logs\\smoke\\cypherbench_augmented__flight_accident__react@llama-3.3-70b__20260921-112125",
+      "finished_at": "2026-09-21 11:22:15"
+    },
+    "cypherbench_augmented__flight_accident__graphrag": {
+      "tries": 3,
+      "status": "done",
+      "n": 3,
+      "err": 0,
+      "dir": "logs\\smoke\\cypherbench_augmented__flight_accident__graphrag@llama-3.3-70b__20260921-112215",
+      "finished_at": "2026-09-21 11:23:29"
+    },
+    "cypherbench_augmented__flight_accident__cyanchor": {
+      "tries": 3,
+      "status": "done",
+      "n": 3,
+      "err": 0,
+      "dir": "logs\\smoke\\cypherbench_augmented__flight_accident__cyanchor_fl@llama-3.3-70b__20260921-112329",
+      "finished_at": "2026-09-21 11:25:06"
+    },
+    "cypherbench_augmented__company__no_val_link": {
+      "tries": 1,
+      "status": "done",
+      "n": 305,
+      "err": 35,
+      "dir": "logs\\runs\\cypherbench_augmented__company__no_val_link@llama-3.3-70b__20260921-124046",
+      "finished_at": "2026-09-21 13:27:37"
+    },
+    "cypherbench_augmented__company__fcav": {
+      "tries": 0,
+      "status": "failed",
+      "last_error": "fcav index: MemoryError: Unable to allocate 4.53 GiB for an array with shape (792468, 1536) and data type float32"
+    },
+    "cypherbench_augmented__company__react": {
+      "tries": 1,
+      "status": "done",
+      "n": 305,
+      "err": 1,
+      "dir": "logs\\runs\\cypherbench_augmented__company__react@llama-3.3-70b__20260921-153159",
+      "finished_at": "2026-09-21 17:51:40"
+    },
+    "cypherbench_augmented__company__graphrag": {
+      "tries": 1,
+      "status": "done",
+      "n": 305,
+      "err": 5,
+      "dir": "logs\\runs\\cypherbench_augmented__company__graphrag@llama-3.3-70b__20260921-175140",
+      "finished_at": "2026-09-21 20:29:07"
+    },
+    "cypherbench_augmented__company__cyanchor": {
+      "tries": 3,
+      "last_error": "rc=2, records=298/305",
+      "status": "failed"
+    },
+    "cypherbench_augmented__fictional_character__no_val_link": {
+      "tries": 1,
+      "status": "done",
+      "n": 324,
+      "err": 43,
+      "dir": "logs\\runs\\cypherbench_augmented__fictional_character__no_val_link@llama-3.3-70b__20260922-042912",
+      "finished_at": "2026-09-22 05:10:29"
+    },
+    "cypherbench_augmented__fictional_character__fcav": {
+      "tries": 1,
+      "status": "done",
+      "n": 324,
+      "err": 59,
+      "dir": "logs\\runs\\cypherbench_augmented__fictional_character__fcav@llama-3.3-70b__20260922-052024",
+      "finished_at": "2026-09-22 06:28:44"
+    },
+    "cypherbench_augmented__fictional_character__react": {
+      "tries": 1,
+      "status": "done",
+      "n": 324,
+      "err": 1,
+      "dir": "logs\\runs\\cypherbench_augmented__fictional_character__react@llama-3.3-70b__20260922-062844",
+      "finished_at": "2026-09-22 08:47:30"
+    },
+    "cypherbench_augmented__fictional_character__graphrag": {
+      "tries": 1,
+      "status": "done",
+      "n": 324,
+      "err": 1,
+      "dir": "logs\\runs\\cypherbench_augmented__fictional_character__graphrag@llama-3.3-70b__20260922-084730",
+      "finished_at": "2026-09-22 10:43:57"
+    }
+  },
+  "expected": {
+    "cypherbench_augmented__nba": 251,
+    "cypherbench_augmented__flight_accident": 168,
+    "cypherbench_augmented__fictional_character": 324,
+    "cypherbench_augmented__company": 305,
+    "cypherbench_augmented__geography": 331,
+    "cypherbench_augmented__movie": 360,
+    "cypherbench_augmented__politics": 360,
+    "mindthequery_augmented__bloom": 24,
+    "mindthequery_augmented__covid": 327,
+    "mindthequery_augmented__er": 185,
+    "mindthequery_augmented__healthcare": 419,
+    "mindthequery_augmented__wwc": 267,
+    "zograscope_augmented__pole": 1290
+  }
+}

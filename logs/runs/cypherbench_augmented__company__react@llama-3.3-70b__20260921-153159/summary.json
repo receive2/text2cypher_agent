@@ -1,0 +1,141 @@
+{
+  "dataset": "cypherbench_augmented",
+  "n": 305,
+  "n_scored": {
+    "ea": 305,
+    "em": 305,
+    "psjs": 305
+  },
+  "n_errors": 1,
+  "ea": 0.1540983606557377,
+  "em": 0.0,
+  "psjs": 0.1850954845400825,
+  "by_difficulty": {
+    "all": {
+      "ea": 0.1540983606557377,
+      "em": 0.0,
+      "psjs": 0.1850954845400825,
+      "n": 305,
+      "n_scored": {
+        "ea": 305,
+        "em": 305,
+        "psjs": 305
+      },
+      "n_errors": 1
+    },
+    "easy": {
+      "ea": 0.10256410256410256,
+      "em": 0.0,
+      "psjs": 0.10256978163954908,
+      "n": 39,
+      "n_scored": {
+        "ea": 39,
+        "em": 39,
+        "psjs": 39
+      },
+      "n_errors": 0
+    },
+    "medium": {
+      "ea": 0.12280701754385964,
+      "em": 0.0,
+      "psjs": 0.13962922844490522,
+      "n": 171,
+      "n_scored": {
+        "ea": 171,
+        "em": 171,
+        "psjs": 171
+      },
+      "n_errors": 0
+    },
+    "hard": {
+      "ea": 0.23157894736842105,
+      "em": 0.0,
+      "psjs": 0.30081371828109443,
+      "n": 95,
+      "n_scored": {
+        "ea": 95,
+        "em": 95,
+        "psjs": 95
+      },
+      "n_errors": 1
+    }
+  },
+  "elapsed_sec": 8359.18,
+  "run_meta": {
+    "generated_at": "2026-09-21T17:51:39-05:00",
+    "ner_mode": "react_node_rel",
+    "method": "react",
+    "label": "ReAct (Node + Rel)",
+    "tool_type": "node_rel",
+    "retrieval": "fuzzy",
+    "generator_llm": "llama-3.3-70b",
+    "ner_llm": "llama-3.3-70b-deepinfra",
+    "cypher_llm": "llama-3.3-70b-deepinfra",
+    "qa_llm": "llama-3.3-70b-deepinfra",
+    "tool_select_top_k": 15,
+    "values_per_tool": 10,
+    "plan_exec_tools_per_entity": 2,
+    "plan_exec_values_per_tool": 10,
+    "plan_exec_escalate": true,
+    "plan_exec_max_iter": 3,
+    "retrieval_levenshtein_k": 10,
+    "cypher_semantic_repair": true,
+    "cypher_repair_max_rounds": 4,
+    "cypher_empty_is_wrong": false,
+    "cypher_retry_max_rounds": 2,
+    "plan_exec_value_snap": true,
+    "plan_exec_skip_grounded": true,
+    "plan_exec_parallel_mentions": true,
+    "graphrag_empty_is_wrong": true,
+    "graphrag_llm_evaluator": true,
+    "tool_retrieval_mode": "fuzzy",
+    "hybrid_strategy": "cascade"
+  },
+  "run_config": {
+    "stamp": "20260921-153159",
+    "dataset": "cypherbench_augmented",
+    "graph": "company",
+    "method": "react@llama-3.3-70b",
+    "llm": {
+      "generator_llm": "llama-3.3-70b",
+      "ner": {
+        "provider": "hf_compatible",
+        "model": "llama-3.3-70b-deepinfra"
+      },
+      "cypher": {
+        "provider": "hf_compatible",
+        "model": "llama-3.3-70b-deepinfra"
+      },
+      "qa": {
+        "provider": "hf_compatible",
+        "model": "llama-3.3-70b-deepinfra"
+      }
+    },
+    "embedding": {
+      "backend": "openai",
+      "model": "text-embedding-3-small"
+    },
+    "knobs": {
+      "METHOD": "react",
+      "TOOL_TYPE": "node_rel",
+      "GENERATOR_LLM": "llama-3.3-70b",
+      "RETRIEVAL_FUZZY": "1",
+      "RETRIEVAL_VECTOR": "0",
+      "RETRIEVAL_LEVENSHTEIN": "1",
+      "CYPHER_SEMANTIC_REPAIR": "1",
+      "CYPHER_EMPTY_IS_WRONG": "0",
+      "PLAN_EXEC_ESCALATE": "1",
+      "PLAN_EXEC_VALUE_SNAP": "1",
+      "PLAN_EXEC_SKIP_GROUNDED": "1",
+      "PLAN_EXEC_SELECT_JUDGE": "1",
+      "PLAN_EXEC_PARALLEL_MENTIONS": "1",
+      "GRAPHRAG_EMPTY_IS_WRONG": "1",
+      "GRAPHRAG_LLM_EVALUATOR": "1",
+      "CYPHER_REPAIR_MAX_ROUNDS": "4",
+      "CYPHER_RETRY_MAX_ROUNDS": "2",
+      "RETRIEVAL_LEVENSHTEIN_K": "10"
+    },
+    "shards": 1,
+    "limit": null
+  }
+}
