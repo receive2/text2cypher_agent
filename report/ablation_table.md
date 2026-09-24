@@ -2,7 +2,21 @@
 
 Every cell is paired per question against the full-method reference run on the same questions. Question sets are the v2.1 ablation runs restricted to questions that appear verbatim in the v2.3 release (flight_accident 167/169, healthcare 398/400, pole 391/400); healthcare and pole use a fixed 400-question prefix. terrorist_attack is the CypherBench-train dev graph (not in the release). Cells show Δ EA in points when the component is removed; **bold** = two-sided sign test p < 0.05.
 
-## Components
+## Grounding front-end and correction layer as a whole
+
+Paired on the questions whose text is identical to older gpt-4.1 runs. Cells: Δ EA in points (gained/lost, two-sided sign test).
+
+| removal | flight_accident | healthcare | pole |
+|---|---|---|---|
+| − grounding front-end (= No Val Link) | **−70.9** (n=86; 0/61; p=9e-19) | **−23.6** (n=182; 12/55; p=1e-7) | **−29.8** (n=336; 1/101; p=4e-29) |
+| − all correction components at once | **−15.1** (n=86; 2/15; p=0.002) | — | — |
+| sum of the six one-at-a-time Δ, same 86 questions | +4.7 | — | — |
+
+The No Val Link runs are the June main-result runs. The joint-removal run (2026-07-07) disables escalation, select-or-abstain, semantic repair, the empty-result trigger, value-snap and relation tools, and limits Cypher generation to a single attempt. Both predate the ablation reference by one to two months of code changes, so the magnitudes are the finding, not the exact values. No Val Link on healthcare is inflated by empty golds (44.6% of healthcare gold answers are empty, and a wrong-value predicate that returns 0 rows scores as correct).
+
+Removing all correction components together costs 15 points while removing any single one costs roughly nothing: the components overlap, and each one's cases are largely caught by the others when it alone is removed.
+
+## Components (one at a time)
 
 | variant | switch | flight_accident (CB) | healthcare (MTQ) | pole (ZOG) | mean Δ (test) | terrorist_attack (dev) |
 |---|---|---|---|---|---|---|
@@ -20,6 +34,10 @@ Every cell is paired per question against the full-method reference run on the s
 n: flight_accident 167 · healthcare 398 · pole 391 · terrorist_attack 400. — = not run.
 
 ‡ The reference enables every component. The shipped configuration disables the empty-result trigger (`CYPHER_EMPTY_IS_WRONG` default off), i.e. it is this row.
+
+## Detection floor
+
+Smallest effect detectable with 80% power by a paired sign test at the observed discordance (4–8% of questions flip): about 5–6 points at n=167 (flight_accident), 3.3–3.9 points at n≈400 (healthcare, pole, terrorist_attack), 2.1–2.5 points at n≈1,000. One-at-a-time effects smaller than these floors are not resolved by these runs.
 
 ## Paired flips and significance
 
