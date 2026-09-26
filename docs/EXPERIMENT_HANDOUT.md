@@ -28,12 +28,19 @@ How the harness works, every config knob and the pre-flight words: [`RUNNING_EXP
 > running setup yourself is now forbidden (§3). Do this once, then continue
 > from §1:
 >
-> 1. `git checkout setup_artifacts/ eval_config.py && git pull` (this discards
->    your local edits to those files — you set the model again in §2). If
+> 1. `git checkout -- . && git pull` — the first command discards every local
+>    change to tracked files: the per-graph copies the harness wrote into
+>    `generated/` and `agent/prompts.py`, and your edits to `eval_config.py`
+>    (you set the model again in §2). Untracked files (`.env`, `logs/`, your
+>    venv) are not touched. Do not name paths in that command: a checkout from
+>    before 2026-09-10 does not yet have `setup_artifacts/` in git, and
+>    `git checkout setup_artifacts/` fails there before `git pull` runs. If
 >    `git pull` refuses because untracked files under `setup_artifacts/` would
->    be overwritten: `mv setup_artifacts setup_artifacts.old && git pull &&
->    git checkout setup_artifacts/` — the `generated/fcav/` folders in
->    `setup_artifacts.old/<pair>/` can be copied back to skip the index rebuild.
+>    be overwritten, then — and only then — `mv setup_artifacts
+>    setup_artifacts.old && git pull`; the `generated/fcav/` folders in
+>    `setup_artifacts.old/<pair>/` can be copied back to skip the index
+>    rebuild. Finish with `pip install -r requirements.txt` (off the VPN): the
+>    pins changed on 2026-09-12.
 > 2. **Unless the coordinator has told you by name to keep your existing
 >    runs**, the clean slate — copy the line for the model you were assigned
 >    (step 1 has just reset `eval_config.py`, so the script will not guess it,
