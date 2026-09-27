@@ -91,9 +91,9 @@ for g in GRAPHS:
 missing = [(name, g) for v, name, _ in ROWS if v != "no_correction" for g in GRAPHS[:3] if v not in RES[g]["var"]]
 L += ["## Missing cells for the paper table (3 test graphs × 8 rows)\n"]
 L += [f"- {name}: " + ", ".join(g for n2, g in missing if n2 == name) for name in dict.fromkeys(n for n, _ in missing)]
-L += ["", f"{len(missing)} missing. `+ vector arm` needs per-graph embeddings first (archives have EMBEDDABLE_PROPERTIES=[]). "
-      "Driver for the rest: `scripts/tuning/run_ablation_fill.py` (add `--with-joint` for the all-correction row).\n",
+DRV = "`scripts/tuning/run_ablation_fill.py` (add `--with-joint` for the all-correction row)" if MODEL == "gpt-4.1" else f"`scripts/tuning/run_ablation_model.py --model {MODEL}` (add `--with-joint` for the all-correction row)"
+L += ["", f"{len(missing)} missing. `+ vector arm` needs per-graph embeddings first (archives have EMBEDDABLE_PROPERTIES=[]). Driver for the rest: {DRV}.\n",
       "Detection floor (paired sign test, 80% power, observed 4–8% discordance): ~5–6 points at n=167, ~3.5 at n≈400, ~2.4 pooled over the three test graphs.\n",
-      "## Sources\n", "References: " + ", ".join(f"`{d}`" for d in REF.values()) + ". Variants: `logs/ablation`, `logs/verify_cols`, `logs/dev_sweep`, `logs/ablation_fill`. Backbone gpt-4.1, SHARDS=1, errors score 0."]
+      "## Sources\n", "References: " + ", ".join(f"`{REF[g]}`" for g in GRAPHS) + ". Variants: " + ("`logs/ablation`, `logs/verify_cols`, `logs/dev_sweep`, `logs/ablation_fill`" if MODEL == "gpt-4.1" else f"`logs/ablation_{MODEL}`") + f". Backbone {MODEL}, SHARDS=1, errors score 0."]
 Path("report/ablation_table.md" if MODEL == "gpt-4.1" else f"report/ablation_table_{MODEL}.md").write_text("\n".join(L) + "\n", encoding="utf-8")
 print("\n".join(L[3:16])); print(f"\n{len(missing)} cells missing")
