@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 """Score the component ablation and write report/ablation_table.md.
 
+With --paper, also write the paper-format table (report/ablation_paper_table.md +
+report/ablation_paper_table.tex): full-system EA, one "− component" row per switch,
+Δ in points, pooled column, sign-test markers, and a component glossary.
+
 Each variant cell is paired per question with its graph's reference run, restricted to
 questions whose text is verbatim in the current release (benchmarks/). Existing cells
 (logs/ablation, logs/verify_cols, logs/dev_sweep) and filled cells (logs/ablation_fill)
@@ -104,3 +108,100 @@ L += ["", f"{len(missing)} missing. `+ vector arm` needs per-graph embeddings fi
       "## Sources\n", "References: " + ", ".join(f"`{REF[g]}`" for g in GRAPHS) + ". Variants: " + ("`logs/ablation`, `logs/verify_cols`, `logs/dev_sweep`, `logs/ablation_fill`" if MODEL == "gpt-4.1" else f"`logs/ablation_{MODEL}`") + f". Backbone {MODEL}, SHARDS=1, errors score 0."]
 Path("report/ablation_table.md" if MODEL == "gpt-4.1" else f"report/ablation_table_{MODEL}.md").write_text("\n".join(L) + "\n", encoding="utf-8")
 print("\n".join(L[3:16])); print(f"\n{len(missing)} cells missing")
+
+# ── --paper: ACL-style table (Markdown + LaTeX) from the same cells ─────────────
+if "--paper" in sys.argv:
+    PROWS = [  # variant key, row label, group (rows in pipeline order; "−" = component removed)
+        ("escalation",      "escalation loop",          "Grounding loop"),
+        ("select_judge",    "select-or-abstain judge",  "Grounding loop"),
+        ("relation_tools",  "relation tools",           "Grounding loop"),
+        ("fuzzy_only",      "Levenshtein arm",          "Retrieval arms"),
+        ("lev_only",        "fuzzy arm",                "Retrieval arms"),
+        ("semantic_repair", "semantic repair",          "Post-generation correction"),
+        ("value_snap",      "value-snap guard",         "Post-generation correction"),
+    ]
+    N = sum(RES[g]["n"] for g in GRAPHS)
+    def pooled(v):
+        if any(v not in RES[g]["var"] for g in GRAPHS): return None
+        xs = [RES[g]["var"][v] for g in GRAPHS]; gn = sum(x["g"] for x in xs); ls = sum(x["l"] for x in xs)
+        return {"d": sum(RES[g]["var"][v]["d"] * RES[g]["n"] for g in GRAPHS) / N, "g": gn, "l": ls, "p": p2(gn, ls),
+                "macro": sum(x["d"] for x in xs) / len(xs)}
+    full_pooled = sum(RES[g]["full"] * RES[g]["n"] for g in GRAPHS) / N
+    mark  = lambda p: "‡" if p < 0.01 else ("†" if p < 0.05 else "")
+    dcell = lambda x, m: "—" if x is None else f"{100*x['d']:+.1f}".replace("-", "−") + m(x["p"])     # Markdown: real minus sign
+    lcell = lambda x: "—" if x is None else f"${100*x['d']:+.1f}" + (r"^{\ddagger}" if x["p"] < 0.01 else (r"^{\dagger}" if x["p"] < 0.05 else "")) + "$"  # LaTeX: math-mode minus
+    fcell = lambda x: "—" if x is None else f"{x['g']}/{x['l']}, p={x['p']:.2g}"
+    hdr = [f"{g} (n={RES[g]['n']})" for g in GRAPHS] + [f"pooled (n={N:,})"]
+    P = RES["_pooled"] = {v: pooled(v) for v, _, _ in PROWS}
+
+    # ---- Markdown -------------------------------------------------------------
+    M = [f"# Component ablation of CyANCHOR — paper table ({MODEL})\n",
+         "Execution accuracy (EA, %) of the full system, and the change in EA points when one component is "
+         "removed. Each cell is a single run at temperature 0, paired per question with the full-system run on the "
+         "same questions; † / ‡ = two-sided paired sign test p < 0.05 / p < 0.01. Pooled = all questions of the "
+         "four graphs, paired the same way. `− Levenshtein arm` and `− fuzzy arm` leave the other arm as the only "
+         "retrieval arm.\n",
+         "## Table\n", "| | " + " | ".join(hdr) + " |", "|---|" + "---:|" * len(hdr),
+         "| **CyANCHOR (full)** | " + " | ".join(f"{100*RES[g]['full']:.1f}" for g in GRAPHS) + f" | {100*full_pooled:.1f} |"]
+    grp = None
+    for v, name, group in PROWS:
+        if group != grp: M.append(f"| *{group}* | " + " | " * len(hdr)); grp = group
+        M.append(f"| − {name} | " + " | ".join(dcell(RES[g]["var"].get(v), mark) for g in GRAPHS) + f" | {dcell(P[v], mark)} |")
+    M += ["", "## Paired flips behind each cell (questions gained / lost by removing the component, sign-test p)\n",
+          "| | " + " | ".join(hdr) + " |", "|---|" + "---|" * len(hdr)]
+    for v, name, _ in PROWS:
+        M.append(f"| − {name} | " + " | ".join(fcell(RES[g]["var"].get(v)) for g in GRAPHS) + f" | {fcell(P[v])} |")
+    M += ["", "Macro-mean Δ over the four graphs (unweighted): " + "; ".join(f"− {name} {100*P[v]['macro']:+.1f}" for v, name, _ in PROWS if P[v]) + ".",
+          "Detection floor of the paired sign test (80% power at the observed 4–8% discordance): ≈5–6 points at n≈170, ≈3.5 at n≈400, ≈2.4 pooled.\n",
+          "## What each component is\n",
+          "Pipeline order: PLAN (one LLM call extracts every entity mention verbatim) → EXECUTE per mention (route the mention to schema fields, "
+          "retrieve candidate values, verify) → GENERATE (evidence block injected into the shared Cypher prompt) → execution-guided correction. "
+          "The rows below are the toggleable components; mention extraction, tool routing, evidence injection and the error-message retry are not "
+          "ablated (removing the evidence block recovers the No Val Link baseline exactly).\n",
+          "| component | what it does | removing it (`switch`) | mechanism the ablation isolates |", "|---|---|---|---|",
+          "| escalation loop | For a mention that no candidate cleanly matches, an LLM judge inspects the evidence for up to 3 rounds and returns one action: *done*, *deepen* (fetch more values from the searched fields, budget 5/3/1) or *switch to* a not-yet-searched name-like field. Mentions that already pass the clean-grounding check skip the loop. | initial retrieval only, no corrective rounds (`PLAN_EXEC_ESCALATE=0`) | recovery of routing misses and shallow retrieval; pays off where the alias/abbreviation still shares tokens with the canonical value (flight_accident, nba), not where it does not (healthcare medical synonyms). |",
+          "| select-or-abstain judge | One closed-list LLM call on mentions that fail the clean-grounding check: *select* the one candidate the mention denotes (evidence narrowed to it), *abstain* (evidence for that mention suppressed, generator writes the predicate unaided) or *keep* on a transient failure. It can only narrow or remove evidence, never add a value. | judge skipped, evidence passes through unchanged (`PLAN_EXEC_SELECT_JUDGE=0`) | filtering of long candidate lists in the abbreviation/alias region; measured effect is null on EA and on the confident-wrong rate (see judge_failure_modes.md). |",
+          "| relation tools | Relationship-type tools in the routing index. In CyANCHOR a relation mention retrieves no values; it only contributes its traversal pattern `(:A)-[:rel]->(:B)` as a hint to the generator. | routing over node-property tools only, no pattern hint (`CYANCHOR_TOOL_SCOPE=node`; the paper draft still names the older `TOOL_TYPE=node`) | value of the relation-pattern hint; null, and the perturbed entities never live on relationship properties, so the released default routes on node tools only. |",
+          "| Levenshtein arm | Server-side normalized edit-distance scan over the field's full value set (top 10), array-valued alias lists unwound and matched element-wise. | fuzzy arm is the only retrieval arm (`RETRIEVAL_LEVENSHTEIN=0`) | character-level recall for dense typos and abbreviation-like codes that BM25 tokenization misses. |",
+          "| fuzzy arm | Lucene/BM25 full-text search on the routed (label, property) field (top 10). | Levenshtein arm is the only retrieval arm (`RETRIEVAL_FUZZY=0`) | token-level recall for casing, mild typos and partial names; largely subsumed by the Levenshtein arm at these top-k. |",
+          "| semantic repair | After a query executes, an LLM evaluator classifies its result against the question; any non-accept verdict triggers regeneration that keeps the full evidence block and adds the evaluator's feedback (≤4 rounds, anti-oscillation: first accepted attempt, else first executable one). | error-message retry only (`CYPHER_SEMANTIC_REPAIR=0`) | correction of executable-but-wrong queries with the grounding evidence still in the prompt. |",
+          "| value-snap guard | Final guard on the generated query: (label, property, value) literals in `=` and property-map predicates that do not exist in the database are mapped, by one closed-list LLM call over a fresh retrieval on that field, to an existing value; the substitution is adopted only if the query still runs. Existing values are never touched. | generated literals left as written (`PLAN_EXEC_VALUE_SNAP=0`) | the residual failure where the generator retrieved the right value but copied the question's corrupted surface form into the predicate. |",
+          "", "## Provenance\n",
+          f"Backbone {MODEL} for every LLM stage; benchmark release v2.3 (questions restricted to those verbatim in `benchmarks/`); "
+          "pole = the first 400 questions of its 1,290 in release order; SHARDS=1; errored questions score 0. The full-system run has every component on "
+          "(judge on, node+relation tools); the released default differs only in routing on node-property tools (`− relation tools` row). "
+          "Runs: " + ", ".join(f"`{REF[g]}`" for g in GRAPHS) + f" and the variant cells under `logs/ablation_{MODEL}/`. "
+          f"Regenerate with `python scripts/tuning/score_ablation.py --model {MODEL} --paper`; per-category breakdowns are in `report/ablation_table_{MODEL}.md`.\n",
+          "## Format conventions applied (ACL-style ablation table)\n",
+          "- One backbone, one metric (EA), the full system as the first row and one `− component` row per switch, grouped by pipeline stage in the order the method section introduces them.",
+          "- Δ in points relative to the full row; the full row carries the absolute score so readers can recover every variant's absolute EA.",
+          "- n per column in the header; a pooled column paired over all questions (micro); the macro-mean is stated in the text.",
+          "- Paired significance per cell (two-sided sign test on per-question flips), marked † / ‡, with the test and the detection floor stated in the caption or text.",
+          "- booktabs rules only (no vertical rules), `table*` width, `\\small`; component definitions live in the method section, the table's first column only names them.",
+          "- The caption states data version, question counts, decoding (temperature 0, single run), the pairing, and which row is the released default."]
+    Path("report/ablation_paper_table.md").write_text("\n".join(M) + "\n", encoding="utf-8")
+
+    # ---- LaTeX ----------------------------------------------------------------
+    esc = lambda s: s.replace("_", r"\_")
+    T = [r"% Generated by scripts/tuning/score_ablation.py --model " + MODEL + " --paper — do not edit by hand.",
+         r"\begin{table*}[t]", r"\centering", r"\small",
+         r"\begin{tabular}{l" + " r" * len(GRAPHS) + " r}", r"\toprule",
+         " & " + " & ".join(esc(g) for g in GRAPHS) + r" & pooled \\",
+         " & " + " & ".join(f"($n={RES[g]['n']}$)" for g in GRAPHS) + f" & ($n={N:,}$) \\\\".replace(",", "{,}"),
+         r"\midrule",
+         r"\method\ (full) & " + " & ".join(f"{100*RES[g]['full']:.1f}" for g in GRAPHS) + f" & {100*full_pooled:.1f} \\\\"]
+    grp = None
+    for v, name, group in PROWS:
+        if group != grp:
+            T.append(r"\addlinespace[2pt]" + f"\\multicolumn{{{len(GRAPHS)+2}}}{{l}}{{\\emph{{{group}}}}} \\\\"); grp = group
+        T.append(f"\\quad $-$ {name} & " + " & ".join(lcell(RES[g]["var"].get(v)) for g in GRAPHS) + f" & {lcell(P[v])} \\\\")
+    T += [r"\bottomrule", r"\end{tabular}",
+          r"\caption{Component ablation of \method\ (" + esc(MODEL) + r"): \ea\ (\%) of the full system and the change in points "
+          r"when one component is removed, on one graph per benchmark plus nba (the alias-richest \cypherbench\ graph); pole uses its "
+          r"first 400 questions. Pooled $=$ all " + f"{N:,}".replace(",", "{,}") + r" questions. Every cell is one run at temperature~0, "
+          r"paired per question with the full run; $^{\dagger}$/$^{\ddagger}$: two-sided sign test $p<0.05$/$p<0.01$. "
+          r"``$-$ Levenshtein arm'' and ``$-$ fuzzy arm'' leave the other arm as the sole retrieval arm. The released default "
+          r"routes on node-property tools only (the $-$ relation tools row).}",
+          r"\label{tab:ablation-components}", r"\end{table*}"]
+    Path("report/ablation_paper_table.tex").write_text("\n".join(T) + "\n", encoding="utf-8")
+    print("\n".join(M[3:16])); print("\nwrote report/ablation_paper_table.md + report/ablation_paper_table.tex")
