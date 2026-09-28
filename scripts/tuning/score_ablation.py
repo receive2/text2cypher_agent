@@ -36,7 +36,7 @@ ROWS = [("escalation","− escalation loop","PLAN_EXEC_ESCALATE=0"), ("select_ju
         ("no_correction","− all correction (escalation, judge, repair, value-snap)","—")]
 GRAPHS = ["flight_accident", "healthcare", "pole", "terrorist_attack"]; CATS = ["casing","typo","partial","abbrev","alias"]
 if MODEL != "gpt-4.1":   # per-backbone tables: everything under logs/ablation_<model>/
-    GRAPHS = ["flight_accident", "healthcare", "pole"]
+    GRAPHS = ["flight_accident", "healthcare", "pole", "nba"]
     REF = {g: f"logs/ablation_{MODEL}/{g}__reference" for g in GRAPHS}
     _V = {"escalation":"no_escalate","select_judge":"no_select_judge","semantic_repair":"no_semantic_repair","value_snap":"no_value_snap",
           "relation_tools":"node_tools_only","fuzzy_only":"fuzzy_only","lev_only":"lev_only","no_correction":"no_correction"}
@@ -88,7 +88,7 @@ for g in GRAPHS:
         x = RES[g]["var"].get(v)
         if x: L.append(f"| {name} | " + " | ".join(f"{100*x['cat_d'][c]:+.1f}" if c in x["cat_d"] else "—" for c in CATS) + " |")
     L.append("")
-missing = [(name, g) for v, name, _ in ROWS if v != "no_correction" for g in GRAPHS[:3] if v not in RES[g]["var"]]
+missing = [(name, g) for v, name, _ in ROWS if v != "no_correction" for g in (GRAPHS[:3] if MODEL == "gpt-4.1" else GRAPHS) if v not in RES[g]["var"]]
 L += ["## Missing cells for the paper table (3 test graphs × 8 rows)\n"]
 L += [f"- {name}: " + ", ".join(g for n2, g in missing if n2 == name) for name in dict.fromkeys(n for n, _ in missing)]
 DRV = "`scripts/tuning/run_ablation_fill.py` (add `--with-joint` for the all-correction row)" if MODEL == "gpt-4.1" else f"`scripts/tuning/run_ablation_model.py --model {MODEL}` (add `--with-joint` for the all-correction row)"

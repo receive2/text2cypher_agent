@@ -32,7 +32,8 @@ VARIANTS = {"reference": {},
             "no_correction": {"PLAN_EXEC_ESCALATE": False, "PLAN_EXEC_SELECT_JUDGE": False, "CYPHER_SEMANTIC_REPAIR": False, "PLAN_EXEC_VALUE_SNAP": False}}
 GRAPHS = {"flight_accident": ("cypherbench_augmented", "flight_accident", None, 15064),
           "healthcare":      ("mindthequery_augmented", "healthcare",     None, 15074),
-          "pole":            ("zograscope_augmented",   "pole",           400,  15076)}
+          "pole":            ("zograscope_augmented",   "pole",           400,  15076),
+          "nba":             ("cypherbench_augmented",  "nba",            None, 15067)}
 order = [v for v in VARIANTS if v != "no_correction" and not (A.skip_ref and v == "reference")] + (["no_correction"] if A.with_joint else [])
 PLAN = [(g, v) for g in A.graphs.split(",") for v in order]
 
