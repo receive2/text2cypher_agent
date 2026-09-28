@@ -8,8 +8,9 @@ Offline unit tests for the Multi-Agent GraphRAG baseline (``graphrag.py`` +
 
 No Neo4j, no LLM, no FAISS. ``graphrag`` imports ``agent.agent_helper`` (which
 opens a live Neo4j connection at import) and ``agent.prompts`` (auto-generated),
-so both are stubbed in ``sys.modules`` BEFORE the first import. DB-/LLM-touching
-functions are monkeypatched per-test.
+so both are stubbed in ``sys.modules`` BEFORE the first import and removed again
+in ``tearDownModule`` (a leaked stub broke test modules collected after this
+one). DB-/LLM-touching functions are monkeypatched per-test.
 
 Run directly:  ``python tests/test_graphrag.py``
 Or with pytest: ``pytest tests/test_graphrag.py``
@@ -39,6 +40,8 @@ def _graph_ok(g) -> bool:
     return g is not None and isinstance(getattr(g, "schema", None), str) and callable(getattr(g, "query", None))
 
 
+_INSTALLED_STUBS: dict = {}   # name -> stub module THIS file put into sys.modules
+
 if "agent.agent_helper" not in sys.modules:
     _ah = types.ModuleType("agent.agent_helper")
     _ah.neo4j_graph = _StubGraph()
@@ -46,6 +49,7 @@ if "agent.agent_helper" not in sys.modules:
     _ah.qa_llm = object()
     _ah.ner_llm = object()
     sys.modules["agent.agent_helper"] = _ah
+    _INSTALLED_STUBS["agent.agent_helper"] = _ah
 
 if "agent.prompts" not in sys.modules:
     _pr = types.ModuleType("agent.prompts")
@@ -54,6 +58,7 @@ if "agent.prompts" not in sys.modules:
         "Question: {question}\nAnswer:"
     )
     sys.modules["agent.prompts"] = _pr
+    _INSTALLED_STUBS["agent.prompts"] = _pr
 
 # Other test modules (test_agent_helpers, test_data_augmentation) install their
 # own, thinner stubs for these two modules at import time, or import the real
@@ -81,6 +86,18 @@ import graphrag  # noqa: E402
 # stand-in (no schema string), give it this module's.
 if not _graph_ok(getattr(graphrag, "neo4j_graph", None)):
     graphrag.neo4j_graph = _StubGraph()
+
+
+def tearDownModule() -> None:
+    """Undo this file's ``sys.modules`` stubs once its tests are done (unittest
+    and pytest both call this hook). Only a stub that is still the object we
+    installed is removed; ``graphrag`` was bound to those stubs at import, so it
+    goes too and a later importer rebinds it against the real modules."""
+    for _name, _stub in _INSTALLED_STUBS.items():
+        if sys.modules.get(_name) is _stub:
+            del sys.modules[_name]
+    if _INSTALLED_STUBS:
+        sys.modules.pop("graphrag", None)
 
 
 class TestNormalizedLevenshtein(unittest.TestCase):
