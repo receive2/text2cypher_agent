@@ -416,6 +416,12 @@ TOOL_TOP_K            = 10   # fulltext search top-k per tool call
 # └──────────────────────────────────────────────────────────────────────────┘
 METHOD:    str = os.getenv("METHOD", os.getenv("VAL_LINK_MODE", "cyanchor")).strip().lower()
 TOOL_TYPE: str = os.getenv("TOOL_TYPE", "node_rel").strip().lower()
+# CyANCHOR-only tool scope (node | node_rel), separate from the ReAct baseline's
+# TOOL_TYPE. Default "node" (2026-09): the perturbed entities in all three benchmarks
+# are node-property values, and the relation-pattern hint injected under node_rel
+# duplicates the schema already in the prompt — no measurable contribution in a
+# 2-backbone, 5-graph ablation (see report/ablation_table_gpt-5.6-terra.md).
+CYANCHOR_TOOL_SCOPE: str = os.getenv("CYANCHOR_TOOL_SCOPE", "node").strip().lower()
 RETRIEVAL_FUZZY       = os.getenv("RETRIEVAL_FUZZY",       "1").lower() in ("1", "true", "yes")
 RETRIEVAL_VECTOR      = os.getenv("RETRIEVAL_VECTOR",      "0").lower() in ("1", "true", "yes")
 RETRIEVAL_LEVENSHTEIN = os.getenv("RETRIEVAL_LEVENSHTEIN", "1").lower() in ("1", "true", "yes")
@@ -500,6 +506,8 @@ def _spec_from_env() -> GroundingSpec:
     tool = TOOL_TYPE if TOOL_TYPE in _TOOL_TYPES else "node_rel"
     if m == "react":
         return GroundingSpec("react", tool=tool)
+    # cyanchor: its own scope knob (the baseline's TOOL_TYPE must not move with it)
+    tool = CYANCHOR_TOOL_SCOPE if CYANCHOR_TOOL_SCOPE in _TOOL_TYPES else "node"
     # cyanchor: read the three retrieval arms (legacy RETRIEVAL_TYPE=hybrid → +vector)
     fuzzy, vector, lev = RETRIEVAL_FUZZY, RETRIEVAL_VECTOR, RETRIEVAL_LEVENSHTEIN
     if os.getenv("RETRIEVAL_TYPE", "").strip().lower() == "hybrid":
@@ -711,7 +719,10 @@ PLAN_EXEC_SKIP_GROUNDED = os.getenv("PLAN_EXEC_SKIP_GROUNDED", "1").lower() in (
 # (plan_exec._judge_select). Default ON = the shipped method; exposed as a knob
 # so the ablation can toggle it like every other CyANCHOR component.
 # ⚙ eval receiver — edit in the eval_config panel, not here (literal = demo/CLI fallback).
-PLAN_EXEC_SELECT_JUDGE = os.getenv("PLAN_EXEC_SELECT_JUDGE", "1").lower() in ("1", "true", "yes")
+# Default OFF (2026-09): zero contribution on EA (4 graphs, 2 backbones) and no
+# measurable reduction of confidently-wrong answers (+0.7 pts, report/judge_failure_modes.md);
+# costs one LLM call per non-cheaply-grounded mention. Candidates are DB values either way.
+PLAN_EXEC_SELECT_JUDGE = os.getenv("PLAN_EXEC_SELECT_JUDGE", "0").lower() in ("1", "true", "yes")
 # Latency: run the per-mention EXECUTE/escalation concurrently (mentions are
 # independent — same calls, same results, just not serialized). Capped by
 # MAX_THREAD. Set 0 to force serial.

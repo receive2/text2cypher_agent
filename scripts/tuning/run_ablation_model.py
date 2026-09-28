@@ -21,15 +21,15 @@ ap.add_argument("--skip-ref", action="store_true", help="reference cells come fr
 A = ap.parse_args()
 OUT = REPO / "logs" / f"ablation_{A.model}"; OUT.mkdir(parents=True, exist_ok=True)
 
-SHIPPED = dict(METHOD="cyanchor", TOOL_TYPE="node_rel", RETRIEVAL_FUZZY=True, RETRIEVAL_VECTOR=False, RETRIEVAL_LEVENSHTEIN=True,
-               CYPHER_SEMANTIC_REPAIR=True, PLAN_EXEC_ESCALATE=True, PLAN_EXEC_SELECT_JUDGE=True, PLAN_EXEC_VALUE_SNAP=True,
+SHIPPED = dict(METHOD="cyanchor", CYANCHOR_TOOL_SCOPE="node", RETRIEVAL_FUZZY=True, RETRIEVAL_VECTOR=False, RETRIEVAL_LEVENSHTEIN=True,
+               CYPHER_SEMANTIC_REPAIR=True, PLAN_EXEC_ESCALATE=True, PLAN_EXEC_SELECT_JUDGE=False, PLAN_EXEC_VALUE_SNAP=True,
                GENERATOR_LLM=A.model)   # CYPHER_EMPTY_IS_WRONG stays at the panel's shipped default
 VARIANTS = {"reference": {},
-            "no_escalate": {"PLAN_EXEC_ESCALATE": False}, "no_select_judge": {"PLAN_EXEC_SELECT_JUDGE": False},
+            "no_escalate": {"PLAN_EXEC_ESCALATE": False}, "select_judge": {"PLAN_EXEC_SELECT_JUDGE": True},      # shipped default is off
             "no_semantic_repair": {"CYPHER_SEMANTIC_REPAIR": False}, "no_value_snap": {"PLAN_EXEC_VALUE_SNAP": False},
-            "node_tools_only": {"TOOL_TYPE": "node"},
+            "rel_tools": {"CYANCHOR_TOOL_SCOPE": "node_rel"},   # shipped default is node
             "fuzzy_only": {"RETRIEVAL_LEVENSHTEIN": False}, "lev_only": {"RETRIEVAL_FUZZY": False},
-            "no_correction": {"PLAN_EXEC_ESCALATE": False, "PLAN_EXEC_SELECT_JUDGE": False, "CYPHER_SEMANTIC_REPAIR": False, "PLAN_EXEC_VALUE_SNAP": False}}
+            "no_correction": {"PLAN_EXEC_ESCALATE": False, "CYPHER_SEMANTIC_REPAIR": False, "PLAN_EXEC_VALUE_SNAP": False}}
 GRAPHS = {"flight_accident": ("cypherbench_augmented", "flight_accident", None, 15064),
           "healthcare":      ("mindthequery_augmented", "healthcare",     None, 15074),
           "pole":            ("zograscope_augmented",   "pole",           400,  15076),

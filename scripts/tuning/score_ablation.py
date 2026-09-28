@@ -38,9 +38,16 @@ GRAPHS = ["flight_accident", "healthcare", "pole", "terrorist_attack"]; CATS = [
 if MODEL != "gpt-4.1":   # per-backbone tables: everything under logs/ablation_<model>/
     GRAPHS = ["flight_accident", "healthcare", "pole", "nba"]
     REF = {g: f"logs/ablation_{MODEL}/{g}__reference" for g in GRAPHS}
-    _V = {"escalation":"no_escalate","select_judge":"no_select_judge","semantic_repair":"no_semantic_repair","value_snap":"no_value_snap",
-          "relation_tools":"node_tools_only","fuzzy_only":"fuzzy_only","lev_only":"lev_only","no_correction":"no_correction"}
-    CELLS = {v: {g: f"logs/ablation_{MODEL}/{g}__{d}" for g in GRAPHS} for v, d in _V.items()}
+    # dir names: runs made before 2026-09-28 removed judge / relation tools from an all-on reference
+    # (no_select_judge, node_tools_only); later runs ADD them to the shipped defaults (select_judge, rel_tools).
+    _V = {"escalation":["no_escalate"],"select_judge":["no_select_judge","select_judge"],"semantic_repair":["no_semantic_repair"],
+          "value_snap":["no_value_snap"],"relation_tools":["node_tools_only","rel_tools"],"fuzzy_only":["fuzzy_only"],
+          "lev_only":["lev_only"],"no_correction":["no_correction"]}
+    def _first(g, names):
+        for d in names:
+            if Path(f"logs/ablation_{MODEL}/{g}__{d}").is_dir(): return f"logs/ablation_{MODEL}/{g}__{d}"
+        return f"logs/ablation_{MODEL}/{g}__{names[0]}"
+    CELLS = {v: {g: _first(g, ds) for g in GRAPHS} for v, ds in _V.items()}
 
 def load(d):
     p = Path(d) / "records.jsonl"

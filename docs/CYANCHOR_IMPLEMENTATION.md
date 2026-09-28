@@ -43,7 +43,7 @@ CyANCHOR's behavior is fully described by a `GroundingSpec`
 | `RETRIEVAL_VECTOR` | off | in-graph embedding kNN (needs embeddings; the `hybrid` flag) |
 | `RETRIEVAL_LEVENSHTEIN` | on | APOC normalized edit-distance scan |
 
-**Tool scope**: `TOOL_TYPE = node | node_rel` (default `node_rel`).
+**Tool scope**: `CYANCHOR_TOOL_SCOPE = node | node_rel` (default `node`; `TOOL_TYPE` governs the ReAct baseline only). Relation tools add a relation-pattern hint that duplicates the schema in the prompt and never perform value retrieval in CyANCHOR (`_retrieve_values` searches node properties only); ablated to zero contribution on 5 graphs / 2 backbones.
 
 **Corrective escalation** ([config.py:426-447](../config.py#L426)):
 
@@ -373,11 +373,11 @@ candidate list. It is deliberately conservative:
 |---|---|
 | `RETRIEVAL_FUZZY` / `_VECTOR` / `_LEVENSHTEIN` | which recall arms feed candidates |
 | `PLAN_EXEC_ESCALATE` | static initial retrieval vs. LLM-judge corrective loop |
-| ABSTAIN judge (implicit, on) | suppress bad groundings vs. always inject |
+| `PLAN_EXEC_SELECT_JUDGE` (default **off** since 2026-09) | suppress bad groundings vs. inject all candidates — zero on EA and on the confident-wrong rate (`report/judge_failure_modes.md`) |
 | `CYPHER_SEMANTIC_REPAIR` | error-only retry vs. result-evaluate→regenerate |
 | `CYPHER_EMPTY_IS_WRONG` | whether 0 rows triggers repair |
 | `PLAN_EXEC_VALUE_SNAP` | post-generation snap guard on/off |
-| `TOOL_TYPE` | `node` vs. `node_rel` tool scope |
+| `CYANCHOR_TOOL_SCOPE` | `node` (shipped) vs. `node_rel` routing scope |
 
 Example invocations:
 

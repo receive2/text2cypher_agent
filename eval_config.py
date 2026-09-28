@@ -66,7 +66,9 @@ GENERATOR_LLM: str = "gpt-4.1"  # preset name from config.MODEL_PRESETS — sele
                                 #   deepseek-v3.1 | llama-3.3-70b | qwen3-32b |
                                 #   claude-opus-5, deepseek-v4.1-flash (extras)
 METHOD:    str = "cyanchor"     # no_val_link | fcav | react | graphrag | cyanchor
-TOOL_TYPE: str = "node_rel"     # node | node_rel   (applies to react / cyanchor)
+TOOL_TYPE: str = "node_rel"     # node | node_rel   (ReAct baseline tool scope)
+CYANCHOR_TOOL_SCOPE: str = "node"  # node | node_rel   (CyANCHOR routing scope; node = shipped since 2026-09,
+                                   #   relation tools ablated to zero on 5 graphs / 2 backbones)
 
 # ── CyANCHOR retrieval arms  (≥1 must be on; unioned per field) ───────────────
 RETRIEVAL_FUZZY:         bool = True    # BM25 / Lucene full-text
@@ -83,7 +85,8 @@ CYPHER_EMPTY_IS_WRONG:    bool = False  # treat a 0-row result as a defect — O
 
 # ── CyANCHOR ablation toggles  (default ON = the shipped method) ─────────────
 PLAN_EXEC_ESCALATE:          bool = True   # corrective LLM-judge retrieval loop
-PLAN_EXEC_SELECT_JUDGE:      bool = True   # pre-generation select-or-abstain judge
+PLAN_EXEC_SELECT_JUDGE:      bool = False  # pre-generation select-or-abstain judge — OFF since 2026-09: zero on EA and
+                                           #   on confident-wrong rate (report/judge_failure_modes.md); saves 1 LLM call/mention
 PLAN_EXEC_VALUE_SNAP:        bool = True   # post-generation existence-gated value-snap guard
 PLAN_EXEC_SKIP_GROUNDED:     bool = True   # skip escalation for already-grounded mentions (latency)
 PLAN_EXEC_PARALLEL_MENTIONS: bool = True   # run mentions in parallel threads (latency;

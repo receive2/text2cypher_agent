@@ -89,7 +89,7 @@ def _resolve_test_path(dataset: str) -> str:
 # Run-config fields eval_config injects into the worker env — and, verbatim,
 # the knob set recorded into each run's summary.json ``run_config`` block
 # (module-level so _build_env and _stamp_summary stay in lockstep).
-_STR  = ("METHOD", "TOOL_TYPE", "GENERATOR_LLM")
+_STR  = ("METHOD", "TOOL_TYPE", "CYANCHOR_TOOL_SCOPE", "GENERATOR_LLM")
 _BOOL = ("RETRIEVAL_FUZZY", "RETRIEVAL_VECTOR", "RETRIEVAL_LEVENSHTEIN",
          "CYPHER_SEMANTIC_REPAIR", "CYPHER_EMPTY_IS_WRONG",
          # ablation toggles (eval_config control panel) — config.py reads each
