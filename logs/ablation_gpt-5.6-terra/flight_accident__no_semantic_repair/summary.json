@@ -1,0 +1,141 @@
+{
+  "dataset": "cypherbench_augmented",
+  "n": 168,
+  "n_scored": {
+    "ea": 168,
+    "em": 168,
+    "psjs": 168
+  },
+  "n_errors": 0,
+  "ea": 0.8273809523809523,
+  "em": 0.0,
+  "psjs": 0.850869674792994,
+  "by_difficulty": {
+    "all": {
+      "ea": 0.8273809523809523,
+      "em": 0.0,
+      "psjs": 0.850869674792994,
+      "n": 168,
+      "n_scored": {
+        "ea": 168,
+        "em": 168,
+        "psjs": 168
+      },
+      "n_errors": 0
+    },
+    "easy": {
+      "ea": 0.8823529411764706,
+      "em": 0.0,
+      "psjs": 0.8183006535947712,
+      "n": 51,
+      "n_scored": {
+        "ea": 51,
+        "em": 51,
+        "psjs": 51
+      },
+      "n_errors": 0
+    },
+    "medium": {
+      "ea": 0.7777777777777778,
+      "em": 0.0,
+      "psjs": 0.8745866402116402,
+      "n": 72,
+      "n_scored": {
+        "ea": 72,
+        "em": 72,
+        "psjs": 72
+      },
+      "n_errors": 0
+    },
+    "hard": {
+      "ea": 0.8444444444444444,
+      "em": 0.0,
+      "psjs": 0.8498340874811463,
+      "n": 45,
+      "n_scored": {
+        "ea": 45,
+        "em": 45,
+        "psjs": 45
+      },
+      "n_errors": 0
+    }
+  },
+  "elapsed_sec": 1194.36,
+  "run_meta": {
+    "generated_at": "2026-09-27T04:40:29-05:00",
+    "ner_mode": "cyanchor_fl_node_rel",
+    "method": "cyanchor",
+    "label": "CyANCHOR [fuzzy+lev] (Node + Rel)",
+    "tool_type": "node_rel",
+    "retrieval": "fuzzy+lev",
+    "generator_llm": "gpt-5.6-terra",
+    "ner_llm": "gpt-5.6-terra",
+    "cypher_llm": "gpt-5.6-terra",
+    "qa_llm": "gpt-5.6-terra",
+    "tool_select_top_k": 15,
+    "values_per_tool": 10,
+    "plan_exec_tools_per_entity": 2,
+    "plan_exec_values_per_tool": 10,
+    "plan_exec_escalate": true,
+    "plan_exec_max_iter": 3,
+    "retrieval_levenshtein_k": 10,
+    "cypher_semantic_repair": false,
+    "cypher_repair_max_rounds": 4,
+    "cypher_empty_is_wrong": false,
+    "cypher_retry_max_rounds": 2,
+    "plan_exec_value_snap": true,
+    "plan_exec_skip_grounded": true,
+    "plan_exec_parallel_mentions": true,
+    "graphrag_empty_is_wrong": true,
+    "graphrag_llm_evaluator": true,
+    "tool_retrieval_mode": "fuzzy",
+    "hybrid_strategy": "cascade"
+  },
+  "run_config": {
+    "stamp": "20260927-042017",
+    "dataset": "cypherbench_augmented",
+    "graph": "flight_accident",
+    "method": "cyanchor_fl@gpt-5.6-terra",
+    "llm": {
+      "generator_llm": "gpt-5.6-terra",
+      "ner": {
+        "provider": "openai",
+        "model": "gpt-5.6-terra"
+      },
+      "cypher": {
+        "provider": "openai",
+        "model": "gpt-5.6-terra"
+      },
+      "qa": {
+        "provider": "openai",
+        "model": "gpt-5.6-terra"
+      }
+    },
+    "embedding": {
+      "backend": "openai",
+      "model": "text-embedding-3-small"
+    },
+    "knobs": {
+      "METHOD": "cyanchor",
+      "TOOL_TYPE": "node_rel",
+      "GENERATOR_LLM": "gpt-5.6-terra",
+      "RETRIEVAL_FUZZY": "1",
+      "RETRIEVAL_VECTOR": "0",
+      "RETRIEVAL_LEVENSHTEIN": "1",
+      "CYPHER_SEMANTIC_REPAIR": "0",
+      "CYPHER_EMPTY_IS_WRONG": "0",
+      "PLAN_EXEC_ESCALATE": "1",
+      "PLAN_EXEC_VALUE_SNAP": "1",
+      "PLAN_EXEC_SKIP_GROUNDED": "1",
+      "PLAN_EXEC_SELECT_JUDGE": "1",
+      "PLAN_EXEC_PARALLEL_MENTIONS": "1",
+      "GRAPHRAG_EMPTY_IS_WRONG": "1",
+      "GRAPHRAG_LLM_EVALUATOR": "1",
+      "CYPHER_REPAIR_MAX_ROUNDS": "4",
+      "CYPHER_RETRY_MAX_ROUNDS": "2",
+      "RETRIEVAL_LEVENSHTEIN_K": "10"
+    },
+    "shards": 1,
+    "limit": null
+  }
+}
