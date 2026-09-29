@@ -1,6 +1,6 @@
 # CyANCHOR component ablation — gpt-5.6-terra
 
-Paired per question against the full-method reference on the same questions (runs restricted to questions verbatim in the current release; healthcare and pole use a fixed 400-question prefix). terrorist_attack is the CypherBench-train dev graph, not part of the release. Cells: Δ EA in points; **bold** = two-sided sign test p < 0.05; — = not run.
+Paired per question against the full-method reference on the same questions (runs restricted to questions verbatim in the current release; pole uses its first 400 questions). Cells: Δ EA in points; **bold** = two-sided sign test p < 0.05; — = not run.
 
 ## Δ EA
 

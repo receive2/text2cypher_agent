@@ -1,9 +1,15 @@
 #!/usr/bin/env python3
-"""Score the component ablation and write report/ablation_table.md.
+"""Score the component ablation and write report/ablation_table*.md.
 
-With --paper, also write the paper-format table (report/ablation_paper_table.md +
-report/ablation_paper_table.tex): full-system EA, one "− component" row per switch,
-Δ in points, pooled column, sign-test markers, and a component glossary.
+    python scripts/tuning/score_ablation.py                                   # gpt-4.1 cells
+    python scripts/tuning/score_ablation.py --model gpt-5.6-terra [--paper]   # all-on reference (node+rel tools), 2026-09
+    python scripts/tuning/score_ablation.py --model gpt-5.6-terra --ref judge-on [--pole-full] [--paper]
+                                                                              # released reference (node tools), cells written by
+                                                                              # run_ablation_model.py --judge on [--pole-full]
+
+With --paper, also write the paper-format tables: the main-text table (components whose
+pooled effect is significant), the full table for the appendix, Δ in points, pooled column,
+sign-test markers, and a component glossary (Markdown + LaTeX).
 
 Each variant cell is paired per question with its graph's reference run, restricted to
 questions whose text is verbatim in the current release (benchmarks/). Existing cells
@@ -12,8 +18,15 @@ are picked up automatically; a missing cell prints as —.
 """
 import json, math, collections, glob, os, sys
 from pathlib import Path
-REPO = Path("/Users/q0w01lh/Documents/repo/t2c"); os.chdir(REPO)
+REPO = Path(__file__).resolve().parent.parent.parent; os.chdir(REPO)
 MODEL = sys.argv[sys.argv.index("--model") + 1] if "--model" in sys.argv else "gpt-4.1"
+REFNAME = sys.argv[sys.argv.index("--ref") + 1] if "--ref" in sys.argv else ""        # judge-on | judge-off: released-reference cells
+POLE_FULL = "--pole-full" in sys.argv
+ROOT = f"logs/ablation_{MODEL}" + (f"__{REFNAME}-node" if REFNAME else "")
+if "--root" in sys.argv: ROOT = sys.argv[sys.argv.index("--root") + 1].rstrip("/")  # any other cell root (e.g. a smoke run)
+SUFFIX = ("" if ROOT == f"logs/ablation_{MODEL}" else "__" + Path(ROOT).name.split("__", 1)[-1]) + ("-polefull" if POLE_FULL else "")
+DIRKEY = lambda g: "pole_full" if (g == "pole" and POLE_FULL) else g
+ADDED = set()   # rows whose cell ADDS the component to the reference (shown with "+")
 
 REL = {}
 for ds in ("cypherbench", "mindthequery", "zograscope"):
@@ -41,7 +54,7 @@ ROWS = [("escalation","− escalation loop","PLAN_EXEC_ESCALATE=0"), ("select_ju
 GRAPHS = ["flight_accident", "healthcare", "pole", "terrorist_attack"]; CATS = ["casing","typo","partial","abbrev","alias"]
 if MODEL != "gpt-4.1":   # per-backbone tables: everything under logs/ablation_<model>/
     GRAPHS = ["flight_accident", "healthcare", "pole", "nba"]
-    REF = {g: f"logs/ablation_{MODEL}/{g}__reference" for g in GRAPHS}
+    REF = {g: f"{ROOT}/{DIRKEY(g)}__reference" for g in GRAPHS}
     # dir names: runs made before 2026-09-28 removed judge / relation tools from an all-on reference
     # (no_select_judge, node_tools_only); later runs ADD them to the shipped defaults (select_judge, rel_tools).
     _V = {"escalation":["no_escalate"],"select_judge":["no_select_judge","select_judge"],"semantic_repair":["no_semantic_repair"],
@@ -49,9 +62,14 @@ if MODEL != "gpt-4.1":   # per-backbone tables: everything under logs/ablation_<
           "lev_only":["lev_only"],"no_correction":["no_correction"]}
     def _first(g, names):
         for d in names:
-            if Path(f"logs/ablation_{MODEL}/{g}__{d}").is_dir(): return f"logs/ablation_{MODEL}/{g}__{d}"
-        return f"logs/ablation_{MODEL}/{g}__{names[0]}"
+            if Path(f"{ROOT}/{DIRKEY(g)}__{d}").is_dir(): return f"{ROOT}/{DIRKEY(g)}__{d}"
+        return f"{ROOT}/{DIRKEY(g)}__{names[0]}"
     CELLS = {v: {g: _first(g, ds) for g in GRAPHS} for v, ds in _V.items()}
+    ADDED = {v for v, dirs in CELLS.items() if any(d.endswith(("__select_judge", "__rel_tools")) and Path(d).is_dir() for d in dirs.values())}
+    ROWS = [(v, "+" + n[1:] if v in ADDED else n, sw.replace("=0", "=1") if v == "select_judge" and v in ADDED else sw) for v, n, sw in ROWS]
+    if ROOT != f"logs/ablation_{MODEL}":   # released-reference runs: the design has six single-switch rows; other rows only if they were run
+        DESIGN = ("escalation", "select_judge", "semantic_repair", "value_snap", "fuzzy_only", "lev_only")
+        ROWS = [r for r in ROWS if r[0] in DESIGN or any(Path(d).is_dir() for d in CELLS.get(r[0], {}).values())]
 
 def load(d):
     p = Path(d) / "records.jsonl"
@@ -81,8 +99,10 @@ def cell(g, v):
     x = RES[g]["var"].get(v); s = f"{100*x['d']:+.1f}" if x else "—"
     return f"**{s}**" if x and x["p"] < 0.05 else s
 L = [f"# CyANCHOR component ablation — {MODEL}\n",
-     "Paired per question against the full-method reference on the same questions (runs restricted to questions verbatim in the current release; healthcare and pole use a fixed 400-question prefix). "
-     "terrorist_attack is the CypherBench-train dev graph, not part of the release. Cells: Δ EA in points; **bold** = two-sided sign test p < 0.05; — = not run.\n",
+     "Paired per question against the full-method reference on the same questions (runs restricted to questions verbatim in the current release; "
+     + ("healthcare and pole use a fixed 400-question prefix). terrorist_attack is the CypherBench-train dev graph, not part of the release. " if MODEL == "gpt-4.1"
+        else ("every graph runs in full). " if POLE_FULL else "pole uses its first 400 questions). "))
+     + "Cells: Δ EA in points; **bold** = two-sided sign test p < 0.05; — = not run.\n",
      "## Δ EA\n", "| variant | switch | " + " | ".join(GRAPHS) + " |", "|---|---|" + "---|" * len(GRAPHS),
      "| CyANCHOR full (EA) | — | " + " | ".join(f"{RES[g]['full']:.3f}" for g in GRAPHS) + " |"]
 for v, name, sw in ROWS: L.append(f"| {name} | `{sw}` | " + " | ".join(cell(g, v) for g in GRAPHS) + " |")
@@ -99,19 +119,27 @@ for g in GRAPHS:
         x = RES[g]["var"].get(v)
         if x: L.append(f"| {name} | " + " | ".join(f"{100*x['cat_d'][c]:+.1f}" if c in x["cat_d"] else "—" for c in CATS) + " |")
     L.append("")
+LEGACY = ROOT == f"logs/ablation_{MODEL}"
 missing = [(name, g) for v, name, _ in ROWS if v != "no_correction" for g in (GRAPHS[:3] if MODEL == "gpt-4.1" else GRAPHS) if v not in RES[g]["var"]]
-L += ["## Missing cells for the paper table (3 test graphs × 8 rows)\n"]
+JUDGE_REF = "off" if "judge-off" in ROOT else "on"
+if LEGACY:
+    L += ["## Missing cells for the paper table (3 test graphs × 8 rows)\n"]
+    DRV = "`scripts/tuning/run_ablation_fill.py` (add `--with-joint` for the all-correction row)" if MODEL == "gpt-4.1" else f"`scripts/tuning/run_ablation_model.py --model {MODEL}` (add `--with-joint` for the all-correction row)"
+    NOTE = f"{len(missing)} missing. `+ vector arm` needs per-graph embeddings first (archives have EMBEDDABLE_PROPERTIES=[]). Driver for the rest: {DRV}.\n"
+else:
+    L += [f"## Missing cells ({len(GRAPHS)} graphs × {len(ROWS)} rows)\n"]
+    NOTE = f"{len(missing)} missing. Rerun `python scripts/tuning/run_ablation_model.py --model {MODEL} --judge {JUDGE_REF}{' --pole-full' if POLE_FULL else ''}` to fill them.\n"
 L += [f"- {name}: " + ", ".join(g for n2, g in missing if n2 == name) for name in dict.fromkeys(n for n, _ in missing)]
-DRV = "`scripts/tuning/run_ablation_fill.py` (add `--with-joint` for the all-correction row)" if MODEL == "gpt-4.1" else f"`scripts/tuning/run_ablation_model.py --model {MODEL}` (add `--with-joint` for the all-correction row)"
-L += ["", f"{len(missing)} missing. `+ vector arm` needs per-graph embeddings first (archives have EMBEDDABLE_PROPERTIES=[]). Driver for the rest: {DRV}.\n",
+L += ["", NOTE,
       "Detection floor (paired sign test, 80% power, observed 4–8% discordance): ~5–6 points at n=167, ~3.5 at n≈400, ~2.4 pooled over the three test graphs.\n",
-      "## Sources\n", "References: " + ", ".join(f"`{REF[g]}`" for g in GRAPHS) + ". Variants: " + ("`logs/ablation`, `logs/verify_cols`, `logs/dev_sweep`, `logs/ablation_fill`" if MODEL == "gpt-4.1" else f"`logs/ablation_{MODEL}`") + f". Backbone {MODEL}, SHARDS=1, errors score 0."]
-Path("report/ablation_table.md" if MODEL == "gpt-4.1" else f"report/ablation_table_{MODEL}.md").write_text("\n".join(L) + "\n", encoding="utf-8")
+      "## Sources\n", "References: " + ", ".join(f"`{REF[g]}`" for g in GRAPHS) + ". Variants: " + ("`logs/ablation`, `logs/verify_cols`, `logs/dev_sweep`, `logs/ablation_fill`" if MODEL == "gpt-4.1" else f"`{ROOT}`") + f". Backbone {MODEL}, SHARDS=1, errors score 0."]
+Path("report/ablation_table.md" if MODEL == "gpt-4.1" else f"report/ablation_table_{MODEL}{SUFFIX}.md").write_text("\n".join(L) + "\n", encoding="utf-8")
 print("\n".join(L[3:16])); print(f"\n{len(missing)} cells missing")
 
-# ── --paper: ACL-style table (Markdown + LaTeX) from the same cells ─────────────
+# ── --paper: ACL-style tables (Markdown + LaTeX) from the same cells ────────────
 if "--paper" in sys.argv:
-    PROWS = [  # variant key, row label, group (rows in pipeline order; "−" = component removed)
+    PBASE = "report/ablation_paper_table" if LEGACY else f"report/ablation_paper_table_{MODEL}{SUFFIX}"
+    PROWS = [  # variant key, component, group — rows in pipeline order
         ("escalation",      "escalation loop",          "Grounding loop"),
         ("select_judge",    "select-or-abstain judge",  "Grounding loop"),
         ("relation_tools",  "relation tools",           "Grounding loop"),
@@ -120,6 +148,7 @@ if "--paper" in sys.argv:
         ("semantic_repair", "semantic repair",          "Post-generation correction"),
         ("value_snap",      "value-snap guard",         "Post-generation correction"),
     ]
+    PROWS = [r for r in PROWS if any(r[0] in RES[g]["var"] for g in GRAPHS)]        # only rows that were run
     N = sum(RES[g]["n"] for g in GRAPHS)
     def pooled(v):
         if any(v not in RES[g]["var"] for g in GRAPHS): return None
@@ -127,81 +156,93 @@ if "--paper" in sys.argv:
         return {"d": sum(RES[g]["var"][v]["d"] * RES[g]["n"] for g in GRAPHS) / N, "g": gn, "l": ls, "p": p2(gn, ls),
                 "macro": sum(x["d"] for x in xs) / len(xs)}
     full_pooled = sum(RES[g]["full"] * RES[g]["n"] for g in GRAPHS) / N
+    sgn   = lambda v: "+" if v in ADDED else "−"
     mark  = lambda p: "‡" if p < 0.01 else ("†" if p < 0.05 else "")
-    dcell = lambda x, m: "—" if x is None else f"{100*x['d']:+.1f}".replace("-", "−") + m(x["p"])     # Markdown: real minus sign
+    dcell = lambda x: "—" if x is None else f"{100*x['d']:+.1f}".replace("-", "−") + mark(x["p"])     # Markdown: real minus sign
     lcell = lambda x: "—" if x is None else f"${100*x['d']:+.1f}" + (r"^{\ddagger}" if x["p"] < 0.01 else (r"^{\dagger}" if x["p"] < 0.05 else "")) + "$"  # LaTeX: math-mode minus
     fcell = lambda x: "—" if x is None else f"{x['g']}/{x['l']}, p={x['p']:.2g}"
     hdr = [f"{g} (n={RES[g]['n']})" for g in GRAPHS] + [f"pooled (n={N:,})"]
     P = RES["_pooled"] = {v: pooled(v) for v, _, _ in PROWS}
+    MAIN = [r for r in PROWS if P[r[0]] and P[r[0]]["p"] < 0.05]
+    POLE = "every graph runs in full" if POLE_FULL else "pole uses its first 400 questions in release order (the prefix has the category mix of the whole graph), the other graphs run in full"
+    REFDESC = ("The full-system run has every component on (select-or-abstain judge on, node + relation tools); the released default routes on "
+               "node-property tools only, which is the `− relation tools` row." if LEGACY else
+               f"The full row is the released configuration: routing on node-property tools, fuzzy + Levenshtein arms, escalation loop, "
+               f"select-or-abstain judge {JUDGE_REF}, semantic repair and value-snap on.")
 
-    # ---- Markdown -------------------------------------------------------------
-    M = [f"# Component ablation of CyANCHOR — paper table ({MODEL})\n",
-         "Execution accuracy (EA, %) of the full system, and the change in EA points when one component is "
-         "removed. Each cell is a single run at temperature 0, paired per question with the full-system run on the "
-         "same questions; † / ‡ = two-sided paired sign test p < 0.05 / p < 0.01. Pooled = all questions of the "
-         "four graphs, paired the same way. `− Levenshtein arm` and `− fuzzy arm` leave the other arm as the only "
-         "retrieval arm.\n",
-         "## Table\n", "| | " + " | ".join(hdr) + " |", "|---|" + "---:|" * len(hdr),
-         "| **CyANCHOR (full)** | " + " | ".join(f"{100*RES[g]['full']:.1f}" for g in GRAPHS) + f" | {100*full_pooled:.1f} |"]
-    grp = None
-    for v, name, group in PROWS:
-        if group != grp: M.append(f"| *{group}* | " + " | " * len(hdr)); grp = group
-        M.append(f"| − {name} | " + " | ".join(dcell(RES[g]["var"].get(v), mark) for g in GRAPHS) + f" | {dcell(P[v], mark)} |")
-    M += ["", "## Paired flips behind each cell (questions gained / lost by removing the component, sign-test p)\n",
+    def md_table(rows):
+        T = ["| | " + " | ".join(hdr) + " |", "|---|" + "---:|" * len(hdr),
+             "| **CyANCHOR (full)** | " + " | ".join(f"{100*RES[g]['full']:.1f}" for g in GRAPHS) + f" | {100*full_pooled:.1f} |"]
+        grp = None
+        for v, name, group in rows:
+            if group != grp: T.append(f"| *{group}* |" + " |" * len(hdr)); grp = group
+            T.append(f"| {sgn(v)} {name} | " + " | ".join(dcell(RES[g]["var"].get(v)) for g in GRAPHS) + f" | {dcell(P[v])} |")
+        return T
+    GLOSS = {
+      "escalation": "| escalation loop | For a mention that no candidate cleanly matches, an LLM judge inspects the evidence for up to 3 rounds and returns one action: *done*, *deepen* (fetch more values from the searched fields, budget 5/3/1) or *switch to* a not-yet-searched name-like field. Mentions that already pass the clean-grounding check skip the loop. | initial retrieval only, no corrective rounds (`PLAN_EXEC_ESCALATE=0`) | recovery of routing misses and shallow retrieval; pays off where the alias/abbreviation still shares tokens with the canonical value (flight_accident, nba), not where it does not (healthcare medical synonyms). |",
+      "select_judge": "| select-or-abstain judge | One closed-list LLM call on mentions that fail the clean-grounding check: *select* the one candidate the mention denotes (evidence narrowed to it), *abstain* (evidence for that mention suppressed, generator writes the predicate unaided) or *keep* on a transient failure. It can only narrow or remove evidence, never add a value. | judge skipped, evidence passes through unchanged (`PLAN_EXEC_SELECT_JUDGE=0`) | filtering of long candidate lists in the abbreviation/alias region. |",
+      "relation_tools": "| relation tools | Relationship-type tools in the routing index. In CyANCHOR a relation mention retrieves no values; it only contributes its traversal pattern `(:A)-[:rel]->(:B)` as a hint to the generator. | routing over node-property tools only, no pattern hint (`CYANCHOR_TOOL_SCOPE=node`) | value of the relation-pattern hint; the perturbed entities never live on relationship properties, and the hint repeats what the schema block already states. |",
+      "fuzzy_only": "| Levenshtein arm | Server-side normalized edit-distance scan over the field's full value set (top 10), array-valued alias lists unwound and matched element-wise. | fuzzy arm is the only retrieval arm (`RETRIEVAL_LEVENSHTEIN=0`) | character-level recall for dense typos and abbreviation-like codes that BM25 tokenization misses. |",
+      "lev_only": "| fuzzy arm | Lucene/BM25 full-text search on the routed (label, property) field (top 10); index-backed, so its cost does not grow with the field. | Levenshtein arm is the only retrieval arm (`RETRIEVAL_FUZZY=0`) | token-level recall for casing, mild typos and partial names; largely subsumed by the Levenshtein arm at these top-k. |",
+      "semantic_repair": "| semantic repair | After a query executes, an LLM evaluator classifies its result against the question; any non-accept verdict triggers regeneration that keeps the full evidence block and adds the evaluator's feedback (≤4 rounds, anti-oscillation: first accepted attempt, else first executable one). | error-message retry only (`CYPHER_SEMANTIC_REPAIR=0`) | correction of executable-but-wrong queries with the grounding evidence still in the prompt. |",
+      "value_snap": "| value-snap guard | Final guard on the generated query: (label, property, value) literals in `=` and property-map predicates that do not exist in the database are mapped, by one closed-list LLM call over a fresh retrieval on that field, to an existing value; the substitution is adopted only if the query still runs. Existing values are never touched. | generated literals left as written (`PLAN_EXEC_VALUE_SNAP=0`) | the residual failure where the generator retrieved the right value but copied the question's corrupted surface form into the predicate. |",
+    }
+    M = [f"# Component ablation of CyANCHOR — paper tables ({MODEL})\n",
+         "Execution accuracy (EA, %) of the full system, and the change in EA points when one component is removed"
+         + (" (a row marked + adds the component to the reference instead)" if ADDED else "") + ". Each cell is a single run at temperature 0, "
+         "paired per question with the full-system run on the same questions; † / ‡ = two-sided paired sign test p < 0.05 / p < 0.01. "
+         f"Pooled = all questions of the {len(GRAPHS)} graphs, paired the same way. `− Levenshtein arm` and `− fuzzy arm` leave the other arm as the only retrieval arm. "
+         + REFDESC + "\n",
+         "## Main-text table\n", "Rows of the full table whose pooled effect is significant (p < 0.05).\n"]
+    M += md_table(MAIN) if MAIN else ["No row reaches p < 0.05 on the pooled questions."]
+    M += ["", "## Full table (appendix)\n"] + md_table(PROWS)
+    M += ["", "## Paired flips behind each cell (questions gained / lost relative to the full run, sign-test p)\n",
           "| | " + " | ".join(hdr) + " |", "|---|" + "---|" * len(hdr)]
     for v, name, _ in PROWS:
-        M.append(f"| − {name} | " + " | ".join(fcell(RES[g]["var"].get(v)) for g in GRAPHS) + f" | {fcell(P[v])} |")
-    M += ["", "Macro-mean Δ over the four graphs (unweighted): " + "; ".join(f"− {name} {100*P[v]['macro']:+.1f}" for v, name, _ in PROWS if P[v]) + ".",
-          "Detection floor of the paired sign test (80% power at the observed 4–8% discordance): ≈5–6 points at n≈170, ≈3.5 at n≈400, ≈2.4 pooled.\n",
+        M.append(f"| {sgn(v)} {name} | " + " | ".join(fcell(RES[g]["var"].get(v)) for g in GRAPHS) + f" | {fcell(P[v])} |")
+    M += ["", f"Macro-mean Δ over the {len(GRAPHS)} graphs (unweighted): " + "; ".join(f"{sgn(v)} {name} {100*P[v]['macro']:+.1f}" for v, name, _ in PROWS if P[v]) + ".",
+          "Detection floor of the paired sign test (80% power at the observed 4–8% discordance): ≈5–6 points at n≈170, ≈3.5 at n≈400, ≈2 at n≈1,300, ≈2.4 pooled over 1,237.\n",
           "## What each component is\n",
           "Pipeline order: PLAN (one LLM call extracts every entity mention verbatim) → EXECUTE per mention (route the mention to schema fields, "
           "retrieve candidate values, verify) → GENERATE (evidence block injected into the shared Cypher prompt) → execution-guided correction. "
           "The rows below are the toggleable components; mention extraction, tool routing, evidence injection and the error-message retry are not "
           "ablated (removing the evidence block recovers the No Val Link baseline exactly).\n",
-          "| component | what it does | removing it (`switch`) | mechanism the ablation isolates |", "|---|---|---|---|",
-          "| escalation loop | For a mention that no candidate cleanly matches, an LLM judge inspects the evidence for up to 3 rounds and returns one action: *done*, *deepen* (fetch more values from the searched fields, budget 5/3/1) or *switch to* a not-yet-searched name-like field. Mentions that already pass the clean-grounding check skip the loop. | initial retrieval only, no corrective rounds (`PLAN_EXEC_ESCALATE=0`) | recovery of routing misses and shallow retrieval; pays off where the alias/abbreviation still shares tokens with the canonical value (flight_accident, nba), not where it does not (healthcare medical synonyms). |",
-          "| select-or-abstain judge | One closed-list LLM call on mentions that fail the clean-grounding check: *select* the one candidate the mention denotes (evidence narrowed to it), *abstain* (evidence for that mention suppressed, generator writes the predicate unaided) or *keep* on a transient failure. It can only narrow or remove evidence, never add a value. | judge skipped, evidence passes through unchanged (`PLAN_EXEC_SELECT_JUDGE=0`) | filtering of long candidate lists in the abbreviation/alias region; measured effect is null on EA and on the confident-wrong rate (see judge_failure_modes.md). |",
-          "| relation tools | Relationship-type tools in the routing index. In CyANCHOR a relation mention retrieves no values; it only contributes its traversal pattern `(:A)-[:rel]->(:B)` as a hint to the generator. | routing over node-property tools only, no pattern hint (`CYANCHOR_TOOL_SCOPE=node`; the paper draft still names the older `TOOL_TYPE=node`) | value of the relation-pattern hint; null, and the perturbed entities never live on relationship properties, so the released default routes on node tools only. |",
-          "| Levenshtein arm | Server-side normalized edit-distance scan over the field's full value set (top 10), array-valued alias lists unwound and matched element-wise. | fuzzy arm is the only retrieval arm (`RETRIEVAL_LEVENSHTEIN=0`) | character-level recall for dense typos and abbreviation-like codes that BM25 tokenization misses. |",
-          "| fuzzy arm | Lucene/BM25 full-text search on the routed (label, property) field (top 10). | Levenshtein arm is the only retrieval arm (`RETRIEVAL_FUZZY=0`) | token-level recall for casing, mild typos and partial names; largely subsumed by the Levenshtein arm at these top-k. |",
-          "| semantic repair | After a query executes, an LLM evaluator classifies its result against the question; any non-accept verdict triggers regeneration that keeps the full evidence block and adds the evaluator's feedback (≤4 rounds, anti-oscillation: first accepted attempt, else first executable one). | error-message retry only (`CYPHER_SEMANTIC_REPAIR=0`) | correction of executable-but-wrong queries with the grounding evidence still in the prompt. |",
-          "| value-snap guard | Final guard on the generated query: (label, property, value) literals in `=` and property-map predicates that do not exist in the database are mapped, by one closed-list LLM call over a fresh retrieval on that field, to an existing value; the substitution is adopted only if the query still runs. Existing values are never touched. | generated literals left as written (`PLAN_EXEC_VALUE_SNAP=0`) | the residual failure where the generator retrieved the right value but copied the question's corrupted surface form into the predicate. |",
-          "", "## Provenance\n",
-          f"Backbone {MODEL} for every LLM stage; benchmark release v2.3 (questions restricted to those verbatim in `benchmarks/`); "
-          "pole = the first 400 questions of its 1,290 in release order; SHARDS=1; errored questions score 0. The full-system run has every component on "
-          "(judge on, node+relation tools); the released default differs only in routing on node-property tools (`− relation tools` row). "
-          "Runs: " + ", ".join(f"`{REF[g]}`" for g in GRAPHS) + f" and the variant cells under `logs/ablation_{MODEL}/`. "
-          f"Regenerate with `python scripts/tuning/score_ablation.py --model {MODEL} --paper`; per-category breakdowns are in `report/ablation_table_{MODEL}.md`.\n",
+          "| component | what it does | removing it (`switch`) | mechanism the ablation isolates |", "|---|---|---|---|"]
+    M += [GLOSS[v] for v, _, _ in PROWS]
+    M += ["", "## Provenance\n",
+          f"Backbone {MODEL} for every LLM stage; benchmark release v2.3 (questions restricted to those verbatim in `benchmarks/`); {POLE}; "
+          "SHARDS=1; errored questions score 0. " + REFDESC + " Runs: " + ", ".join(f"`{REF[g]}`" for g in GRAPHS) + f" and the variant cells under `{ROOT}/`. "
+          "Regenerate with `python scripts/tuning/score_ablation.py " + " ".join(a for a in sys.argv[1:]) + f"`; per-category breakdowns are in `report/ablation_table_{MODEL}{SUFFIX}.md`.\n",
           "## Format conventions applied (ACL-style ablation table)\n",
           "- One backbone, one metric (EA), the full system as the first row and one `− component` row per switch, grouped by pipeline stage in the order the method section introduces them.",
           "- Δ in points relative to the full row; the full row carries the absolute score so readers can recover every variant's absolute EA.",
           "- n per column in the header; a pooled column paired over all questions (micro); the macro-mean is stated in the text.",
           "- Paired significance per cell (two-sided sign test on per-question flips), marked † / ‡, with the test and the detection floor stated in the caption or text.",
+          "- The main text carries the components with a significant pooled effect; the full table, including components without a measurable effect, goes to the appendix and is referenced from the main text.",
           "- booktabs rules only (no vertical rules), `table*` width, `\\small`; component definitions live in the method section, the table's first column only names them.",
-          "- The caption states data version, question counts, decoding (temperature 0, single run), the pairing, and which row is the released default."]
-    Path("report/ablation_paper_table.md").write_text("\n".join(M) + "\n", encoding="utf-8")
+          "- The caption states data version, question counts, decoding (temperature 0, single run), the pairing, and which configuration the full row is."]
+    Path(PBASE + ".md").write_text("\n".join(M) + "\n", encoding="utf-8")
 
-    # ---- LaTeX ----------------------------------------------------------------
-    esc = lambda s: s.replace("_", r"\_")
-    T = [r"% Generated by scripts/tuning/score_ablation.py --model " + MODEL + " --paper — do not edit by hand.",
-         r"\begin{table*}[t]", r"\centering", r"\small",
-         r"\begin{tabular}{l" + " r" * len(GRAPHS) + " r}", r"\toprule",
-         " & " + " & ".join(esc(g) for g in GRAPHS) + r" & pooled \\",
-         " & " + " & ".join(f"($n={RES[g]['n']}$)" for g in GRAPHS) + f" & ($n={N:,}$) \\\\".replace(",", "{,}"),
-         r"\midrule",
-         r"\method\ (full) & " + " & ".join(f"{100*RES[g]['full']:.1f}" for g in GRAPHS) + f" & {100*full_pooled:.1f} \\\\"]
-    grp = None
-    for v, name, group in PROWS:
-        if group != grp:
-            T.append(r"\addlinespace[2pt]" + f"\\multicolumn{{{len(GRAPHS)+2}}}{{l}}{{\\emph{{{group}}}}} \\\\"); grp = group
-        T.append(f"\\quad $-$ {name} & " + " & ".join(lcell(RES[g]["var"].get(v)) for g in GRAPHS) + f" & {lcell(P[v])} \\\\")
-    T += [r"\bottomrule", r"\end{tabular}",
-          r"\caption{Component ablation of \method\ (" + esc(MODEL) + r"): \ea\ (\%) of the full system and the change in points "
-          r"when one component is removed, on one graph per benchmark plus nba (the alias-richest \cypherbench\ graph); pole uses its "
-          r"first 400 questions. Pooled $=$ all " + f"{N:,}".replace(",", "{,}") + r" questions. Every cell is one run at temperature~0, "
-          r"paired per question with the full run; $^{\dagger}$/$^{\ddagger}$: two-sided sign test $p<0.05$/$p<0.01$. "
-          r"``$-$ Levenshtein arm'' and ``$-$ fuzzy arm'' leave the other arm as the sole retrieval arm. The released default "
-          r"routes on node-property tools only (the $-$ relation tools row).}",
-          r"\label{tab:ablation-components}", r"\end{table*}"]
-    Path("report/ablation_paper_table.tex").write_text("\n".join(T) + "\n", encoding="utf-8")
-    print("\n".join(M[3:16])); print("\nwrote report/ablation_paper_table.md + report/ablation_paper_table.tex")
+    esc = lambda t: t.replace("_", r"\_")
+    def tex_table(rows, caption, label):
+        T = [r"% Generated by scripts/tuning/score_ablation.py " + " ".join(sys.argv[1:]) + " — do not edit by hand.",
+             r"\begin{table*}[t]", r"\centering", r"\small",
+             r"\begin{tabular}{l" + " r" * len(GRAPHS) + " r}", r"\toprule",
+             " & " + " & ".join(esc(g) for g in GRAPHS) + r" & pooled \\",
+             " & " + " & ".join(f"($n={RES[g]['n']:,}$)".replace(",", "{,}") for g in GRAPHS) + f" & ($n={N:,}$) \\\\".replace(",", "{,}"),
+             r"\midrule",
+             r"\method\ (full) & " + " & ".join(f"{100*RES[g]['full']:.1f}" for g in GRAPHS) + f" & {100*full_pooled:.1f} \\\\"]
+        grp = None
+        for v, name, group in rows:
+            if group != grp:
+                T.append(r"\addlinespace[2pt]" + f"\\multicolumn{{{len(GRAPHS)+2}}}{{l}}{{\\emph{{{group}}}}} \\\\"); grp = group
+            T.append(f"\\quad ${'+' if v in ADDED else '-'}$ {name} & " + " & ".join(lcell(RES[g]["var"].get(v)) for g in GRAPHS) + f" & {lcell(P[v])} \\\\")
+        return T + [r"\bottomrule", r"\end{tabular}", r"\caption{" + caption + "}", r"\label{" + label + "}", r"\end{table*}"]
+    CAP = (r"of \method\ (" + esc(MODEL) + r"): \ea\ (\%) of the full system and the change in points when one component is removed, on one graph "
+           r"per benchmark plus nba (the alias-richest \cypherbench\ graph); " + ("every graph runs in full" if POLE_FULL else "pole uses its first 400 questions")
+           + r". Pooled $=$ all " + f"{N:,}".replace(",", "{,}") + r" questions. Every cell is one run at temperature~0, paired per question with the full run; "
+           r"$^{\dagger}$/$^{\ddagger}$: two-sided sign test $p<0.05$/$p<0.01$. ``$-$ Levenshtein arm'' and ``$-$ fuzzy arm'' leave the other arm as the sole retrieval arm. "
+           + (r"The released default routes on node-property tools only (the $-$ relation tools row)." if LEGACY else r"The full row is the released configuration."))
+    Path(PBASE + "_main.tex").write_text("\n".join(tex_table(MAIN, "Component ablation " + CAP + r" Components without a measurable effect are in Table~\ref{tab:ablation-full}.", "tab:ablation-components")) + "\n", encoding="utf-8")
+    Path(PBASE + ".tex").write_text("\n".join(tex_table(PROWS, "Full component ablation " + CAP, "tab:ablation-full")) + "\n", encoding="utf-8")
+    print("\n".join(M[3:4] + md_table(MAIN))); print(f"\nwrote {PBASE}.md, {PBASE}_main.tex, {PBASE}.tex")
