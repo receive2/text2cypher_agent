@@ -1,0 +1,24 @@
+{
+  "terrorist_attack": {
+    "rows": 1442,
+    "kept": 1420,
+    "realized_pct": {
+      "casing": 10.0,
+      "typo": 22.5,
+      "partial": 22.5,
+      "abbrev": 22.5,
+      "alias": 22.5
+    },
+    "reasons": {
+      "typo:committed": 320,
+      "partial:committed": 319,
+      "abbrev:committed": 319,
+      "alias:committed": 320,
+      "casing:committed": 142,
+      "drop:no_entity": 22,
+      "alias:collision": 19,
+      "abbrev:splice_failed": 1
+    },
+    "needs_verification": 177
+  }
+}
