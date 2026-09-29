@@ -3,9 +3,9 @@
 
     python scripts/tuning/score_ablation.py                                   # gpt-4.1 cells
     python scripts/tuning/score_ablation.py --model gpt-5.6-terra [--paper]   # all-on reference (node+rel tools), 2026-09
-    python scripts/tuning/score_ablation.py --model gpt-5.6-terra --ref judge-on [--pole-full] [--paper]
+    python scripts/tuning/score_ablation.py --model gpt-5.6-terra --ref judge-off [--pole-full] [--paper]
                                                                               # released reference (node tools), cells written by
-                                                                              # run_ablation_model.py --judge on [--pole-full]
+                                                                              # run_ablation_model.py [--pole-full] (judge off = released)
 
 With --paper, also write the paper-format tables: the main-text table (components whose
 pooled effect is significant), the full table for the appendix, Δ in points, pooled column,
@@ -67,8 +67,8 @@ if MODEL != "gpt-4.1":   # per-backbone tables: everything under logs/ablation_<
     CELLS = {v: {g: _first(g, ds) for g in GRAPHS} for v, ds in _V.items()}
     ADDED = {v for v, dirs in CELLS.items() if any(d.endswith(("__select_judge", "__rel_tools")) and Path(d).is_dir() for d in dirs.values())}
     ROWS = [(v, "+" + n[1:] if v in ADDED else n, sw.replace("=0", "=1") if v == "select_judge" and v in ADDED else sw) for v, n, sw in ROWS]
-    if ROOT != f"logs/ablation_{MODEL}":   # released-reference runs: the design has six single-switch rows; other rows only if they were run
-        DESIGN = ("escalation", "select_judge", "semantic_repair", "value_snap", "fuzzy_only", "lev_only")
+    if ROOT != f"logs/ablation_{MODEL}":   # released-reference runs: five single-switch rows (the judge was dropped from the paper); other rows only if they were run
+        DESIGN = ("escalation", "semantic_repair", "value_snap", "fuzzy_only", "lev_only")
         ROWS = [r for r in ROWS if r[0] in DESIGN or any(Path(d).is_dir() for d in CELLS.get(r[0], {}).values())]
 
 def load(d):
@@ -168,7 +168,7 @@ if "--paper" in sys.argv:
     REFDESC = ("The full-system run has every component on (select-or-abstain judge on, node + relation tools); the released default routes on "
                "node-property tools only, which is the `− relation tools` row." if LEGACY else
                f"The full row is the released configuration: routing on node-property tools, fuzzy + Levenshtein arms, escalation loop, "
-               f"select-or-abstain judge {JUDGE_REF}, semantic repair and value-snap on.")
+               f"semantic repair and value-snap on" + (" (select-or-abstain judge on: the pre-freeze reference)." if JUDGE_REF == "on" else "."))
 
     def md_table(rows):
         T = ["| | " + " | ".join(hdr) + " |", "|---|" + "---:|" * len(hdr),

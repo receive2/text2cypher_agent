@@ -716,10 +716,11 @@ PLAN_EXEC_VALUE_SNAP = os.getenv("PLAN_EXEC_VALUE_SNAP", "1").lower() in ("1", "
 # ⚙ eval receiver — edit in the eval_config panel, not here (literal = demo/CLI fallback).
 PLAN_EXEC_SKIP_GROUNDED = os.getenv("PLAN_EXEC_SKIP_GROUNDED", "1").lower() in ("1", "true", "yes")
 # Pre-generation select-or-abstain judge on non-cheaply-grounded node mentions
-# (plan_exec._judge_select). Default ON = the shipped method; exposed as a knob
-# so the ablation can toggle it like every other CyANCHOR component.
+# (plan_exec._judge_select). Not part of the released method; kept as a knob so
+# the code path can still be exercised.
 # ⚙ eval receiver — edit in the eval_config panel, not here (literal = demo/CLI fallback).
-# Default OFF (2026-09): zero contribution on EA (4 graphs, 2 backbones) and no
+# Default OFF (2026-09): zero contribution on EA (4 graphs, 2 backbones; full pole graph
+# 2026-09-29: +0.6 pts, p=0.46 over 1,283 paired questions) and no
 # measurable reduction of confidently-wrong answers (+0.7 pts, report/judge_failure_modes.md);
 # costs one LLM call per non-cheaply-grounded mention. Candidates are DB values either way.
 PLAN_EXEC_SELECT_JUDGE = os.getenv("PLAN_EXEC_SELECT_JUDGE", "0").lower() in ("1", "true", "yes")

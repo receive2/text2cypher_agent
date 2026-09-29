@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
 """Component ablation for one generator backbone on the v2.3 release (tab:ablation-components).
 
-    python scripts/tuning/run_ablation_model.py --model gpt-5.6-terra --judge on --pole-full \
+    python scripts/tuning/run_ablation_model.py --model gpt-5.6-terra --pole-full \
         [--graphs flight_accident,nba,healthcare,pole] [--variants a,b] [--with-joint] [--limit 3]
 
 The reference cell is the released configuration: CyANCHOR routing on node-property tools,
-fuzzy + Levenshtein arms, escalation, semantic repair and value-snap on, and the
-select-or-abstain judge as given by --judge. Every other cell flips exactly one switch.
+fuzzy + Levenshtein arms, escalation, semantic repair and value-snap on, select-or-abstain
+judge off (--judge on reproduces the pre-freeze reference). Every other cell flips exactly one
+switch; the five default cells are no_value_snap, fuzzy_only, no_escalate, no_semantic_repair
+and lev_only. The judge cell (select_judge / no_select_judge) is not run by default — the judge
+was dropped from the paper (full pole graph 2026-09-29: +0.6 pts, p=0.46) — but stays
+available through --variants.
 Data = benchmarks/ (the release eval_config already points at). flight_accident, healthcare
 and nba run in full; pole runs its first 400 questions, or all of them with --pole-full
 (cells are then named pole_full__*).
@@ -25,7 +29,7 @@ import eval_config as cfg, eval_run  # noqa: E402
 
 ap = argparse.ArgumentParser()
 ap.add_argument("--model", required=True)
-ap.add_argument("--judge", required=True, choices=("on", "off"), help="select-or-abstain judge in the reference (released) configuration")
+ap.add_argument("--judge", default="off", choices=("on", "off"), help="select-or-abstain judge in the reference configuration (released: off)")
 ap.add_argument("--graphs", default="flight_accident,nba,healthcare,pole")
 ap.add_argument("--variants", default="", help="comma list; default = reference + the six single-switch cells")
 ap.add_argument("--pole-full", action="store_true", help="run pole on all its questions instead of the first 400")
@@ -53,7 +57,7 @@ GRAPHS = {"flight_accident": ("cypherbench_augmented", "flight_accident", None, 
           "pole":            ("zograscope_augmented",   "pole",           None if A.pole_full else 400, 15076),
           "nba":             ("cypherbench_augmented",  "nba",            None, 15067)}
 CELL = lambda g: "pole_full" if (g == "pole" and A.pole_full) else g
-order = [v.strip() for v in A.variants.split(",") if v.strip()] or [v for v in VARIANTS if v not in ("rel_tools", "no_correction")]
+order = [v.strip() for v in A.variants.split(",") if v.strip()] or [v for v in VARIANTS if v not in ("rel_tools", "no_correction", JUDGE_CELL[0])]
 order = [v for v in order if not (A.skip_ref and v == "reference")] + (["no_correction"] if A.with_joint and "no_correction" not in order else [])
 unknown = [v for v in order if v not in VARIANTS] + [g for g in A.graphs.split(",") if g not in GRAPHS]
 if unknown: print(f"ABORT: unknown variant/graph {unknown}; variants: {list(VARIANTS)}; graphs: {list(GRAPHS)}", flush=True); sys.exit(2)

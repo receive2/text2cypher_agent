@@ -30,7 +30,12 @@ A run can be used only if
    artifacts it saw, so the checkout's history is the only evidence: the first
    ``git reflog`` entry whose commit contains ``be36c26`` says when this
    checkout got the published set, and every run stamped before that moment
-   cannot be verified.
+   cannot be verified; and
+3. a ``cyanchor`` run recorded the committed CyANCHOR configuration in its
+   ``summary.json`` (``run_config.knobs``). The configuration was frozen on
+   2026-09-28 (``f04a37c``: node-property tools only, select-or-abstain judge
+   off); a run from before that has the same ``cyanchor_fl`` directory name,
+   so only the recorded knobs can tell. The four baselines are unaffected.
 
 Verdicts: ``DELETE`` (fails 1 or 2), ``CHECK`` (no reflog evidence — decide by
 hand), ``keep`` (the newest usable run of its cell), ``older`` (superseded by a
@@ -42,6 +47,7 @@ the driver).
 from __future__ import annotations
 
 import argparse
+import json
 import re
 import shutil
 import subprocess
@@ -100,6 +106,43 @@ def run_dir_model(d: Path, method_seg: str) -> str:
     return tagged or eval_paths.model_seg(eval_paths.run_meta_model(d) or "")
 
 
+# CyANCHOR knobs a run records (eval_run._stamp_summary). A CyANCHOR run is usable only if
+# every one it recorded equals the committed value, and these two must be recorded: the
+# 2026-09-28 freeze (f04a37c) turned the select-or-abstain judge off and restricted routing
+# to node-property tools, and a pre-freeze run is not distinguishable by its directory name.
+CYANCHOR_KNOB_PREFIXES = ("CYANCHOR_", "RETRIEVAL_", "PLAN_EXEC_", "CYPHER_")
+CYANCHOR_REQUIRED_KNOBS = ("CYANCHOR_TOOL_SCOPE", "PLAN_EXEC_SELECT_JUDGE")
+
+
+def committed_knobs() -> Dict[str, str]:
+    """The run-config knobs eval_run would stamp into ``summary.json`` for a run made
+    now — from eval_config, normalised the same way (bools as ``"1"``/``"0"``)."""
+    import eval_run
+    env = eval_run._build_env("", "", "", "")
+    return {k: env[k] for k in (*eval_run._STR, *eval_run._BOOL, *eval_run._INT, *eval_run._TUPLE) if k in env}
+
+
+def recorded_knobs(d: Path) -> Optional[Dict[str, str]]:
+    """The knobs a run dir recorded (``summary.json`` → ``run_config.knobs``), or
+    ``None`` when there is no readable summary."""
+    try:
+        rc = json.loads((d / "summary.json").read_text(encoding="utf-8")).get("run_config") or {}
+    except Exception:  # noqa: BLE001
+        return None
+    return {str(k): str(v) for k, v in (rc.get("knobs") or {}).items()}
+
+
+def cyanchor_config_mismatch(recorded: Optional[Dict[str, str]], committed: Dict[str, str]) -> str:
+    """Why a CyANCHOR run's recorded knobs are not the committed configuration; ``""`` when they are."""
+    if recorded is None:
+        return "no summary.json — the configuration it ran under is unknown"
+    bad = [f"{k}={recorded[k]} (committed {committed[k]})" for k in sorted(committed)
+           if k.startswith(CYANCHOR_KNOB_PREFIXES) and k in recorded and recorded[k] != committed[k]]
+    bad += [f"{k} not recorded (predates the 2026-09-28 configuration freeze)"
+            for k in CYANCHOR_REQUIRED_KNOBS if k in committed and k not in recorded]
+    return "; ".join(bad)
+
+
 def model_run_dirs(runs_root: Path, model: str, include_unattributed: bool = False) -> List[Path]:
     """Every run directory of *model* under *runs_root*, suite or not. With
     *include_unattributed*, also the directories that belong to no model at all
@@ -140,6 +183,7 @@ def audit(runs_root: Path, model: Optional[str], all_models: bool,
     """One row per run directory: verdict, reason, and what the driver would use."""
     suite = set(osw.suite_pairs())
     expected = osw.expected_counts()
+    committed = committed_knobs()
     want_model = eval_paths.model_seg(model) if model else ""
     dirs: List[dict] = []
     for d in sorted(p for p in runs_root.iterdir() if p.is_dir()):
@@ -161,13 +205,16 @@ def audit(runs_root: Path, model: Optional[str], all_models: bool,
     for r in dirs:
         r["rows_ok"], r["rows_why"] = (osw.rows_match_release(r["dataset"], r["graph"], r["records"])
                                        if r["in_suite"] else (True, ""))
+        r["config_why"] = (cyanchor_config_mismatch(recorded_knobs(r["dir"]), committed)
+                           if r["in_suite"] and r["method"].startswith("cyanchor") else "")
         if guard_time is None:
             r["before_guard"] = r["made"] is None          # untagged/unstamped dirs predate the guard by construction
             r["guard_unknown"] = r["made"] is not None
         else:
             r["before_guard"] = r["made"] is None or r["made"] < guard_time
             r["guard_unknown"] = False
-        r["usable"] = r["in_suite"] and r["rows_ok"] and not r["before_guard"] and not r["guard_unknown"]
+        r["usable"] = (r["in_suite"] and r["rows_ok"] and not r["config_why"]
+                       and not r["before_guard"] and not r["guard_unknown"])
     # newest usable / newest overall per cell, as the driver sees it (newest stamp wins)
     by_cell: Dict[Tuple[str, str, str, str], List[dict]] = {}
     for r in dirs:
@@ -185,6 +232,9 @@ def audit(runs_root: Path, model: Optional[str], all_models: bool,
             r["verdict"], r["reason"] = "outside", "not a suite pair (clean / development graph) — ignored by the driver"
         elif not r["rows_ok"]:
             r["verdict"], r["reason"] = "DELETE", r["rows_why"]
+        elif r["config_why"]:
+            r["verdict"], r["reason"] = "DELETE", (f"CyANCHOR configuration is not the committed one: {r['config_why']} — "
+                                            f"the directory name ({r['method']}) cannot show this; re-run the cell")
         elif r["before_guard"]:
             made = f"made {r['made']:%Y-%m-%d %H:%M}" if r["made"] else "unstamped (predates model tagging)"
             since = f" ({guard_time:%Y-%m-%d %H:%M})" if guard_time else ""
@@ -250,8 +300,11 @@ def main(argv: Optional[List[str]] = None) -> int:
             print("nothing deleted.")
         return 0
     guard_time, guard_note = guard_since()
+    ck = committed_knobs()
     print(f"audit of {eval_paths.RUNS_ROOT}/ for {'every model' if args.all_models else f'model {model}'} — "
-          f"benchmarks {osw._benchmarks_version()}; {guard_note}\n")
+          f"benchmarks {osw._benchmarks_version()}; {guard_note}; CyANCHOR runs are checked against the committed "
+          f"configuration (select judge {'on' if ck.get('PLAN_EXEC_SELECT_JUDGE') == '1' else 'off'}, "
+          f"tool scope {ck.get('CYANCHOR_TOOL_SCOPE')})\n")
     if not runs_root.is_dir():
         print("  (no run directories)"); return 0
     rows = audit(runs_root, model, args.all_models, guard_time)

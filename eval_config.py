@@ -85,8 +85,9 @@ CYPHER_EMPTY_IS_WRONG:    bool = False  # treat a 0-row result as a defect — O
 
 # ── CyANCHOR ablation toggles  (default ON = the shipped method) ─────────────
 PLAN_EXEC_ESCALATE:          bool = True   # corrective LLM-judge retrieval loop
-PLAN_EXEC_SELECT_JUDGE:      bool = False  # pre-generation select-or-abstain judge — OFF since 2026-09: zero on EA and
-                                           #   on confident-wrong rate (report/judge_failure_modes.md); saves 1 LLM call/mention
+PLAN_EXEC_SELECT_JUDGE:      bool = False  # pre-generation select-or-abstain judge — OFF, not part of the released method:
+                                           #   zero on EA (full pole graph, 1,283 paired questions, 2026-09-29: +0.6 pts, p=0.46)
+                                           #   and on the confident-wrong rate (report/judge_failure_modes.md); saves 1 LLM call/mention
 PLAN_EXEC_VALUE_SNAP:        bool = True   # post-generation existence-gated value-snap guard
 PLAN_EXEC_SKIP_GROUNDED:     bool = True   # skip escalation for already-grounded mentions (latency)
 PLAN_EXEC_PARALLEL_MENTIONS: bool = True   # run mentions in parallel threads (latency;

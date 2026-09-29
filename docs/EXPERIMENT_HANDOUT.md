@@ -71,6 +71,19 @@ How the harness works, every config knob and the pre-flight words: [`RUNNING_EXP
 >    whole audit output to the coordinator. Usable runs are picked up by the
 >    driver automatically (§5).
 
+> **Made any run before 2026-09-28?** The CyANCHOR configuration was frozen on
+> 2026-09-28 (commit `f04a37c`): routing on node-property tools only
+> (`CYANCHOR_TOOL_SCOPE = "node"`, relation tools off) and the select-or-abstain
+> judge off (`PLAN_EXEC_SELECT_JUDGE = False`; confirmed on the full pole graph,
+> 1,283 paired questions, 2026-09-29: +0.6 points, p = 0.46 — no effect). Those
+> are the committed defaults every model runs under. A `cyanchor` run made before
+> your checkout had that commit used the old configuration (judge on, relation
+> tools on) and cannot be pooled — its directory name is the same `cyanchor_fl`,
+> so the driver would pick it up silently. `python scripts/audit_runs.py --model
+> <preset>` reads the knobs each run recorded in its `summary.json` and marks such
+> runs `DELETE`; the four baselines are unaffected. `--discard-all` (step 2 above)
+> removes them too.
+
 ---
 
 ## 0. Prerequisites
@@ -160,8 +173,9 @@ GENERATOR_LLM = "gpt-5.6-terra"   # ← exact preset name from the table below
 
 **Nothing else.** `METHOD`, `EVAL_PAIRS`, `LIMIT` and `SHARDS` are set by the
 sweep driver (step 5); leave every other knob at its committed value — the
-defaults are the shipped configuration and every model must run under the
-same ones. The value already in the file is the coordinator's reference model,
+defaults are the shipped configuration (frozen 2026-09-28: node-property tools
+only, select-or-abstain judge off, fuzzy + Levenshtein arms) and every model
+must run under the same ones. The value already in the file is the coordinator's reference model,
 not a default: the driver refuses to start while `GENERATOR_LLM` still holds
 the committed value, so a skipped step 2 — or a `git checkout eval_config.py`
 after a pull — is caught before anything runs.

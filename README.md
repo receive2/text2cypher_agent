@@ -195,7 +195,8 @@ directly (env-overridable). You never set environment variables in the normal fl
 |---|---|
 | `METHOD` | `no_val_link` · `fcav` · `react` · `graphrag` · `cyanchor` |
 | `RETRIEVAL_FUZZY` / `RETRIEVAL_VECTOR` / `RETRIEVAL_LEVENSHTEIN` | `0`/`1` each — CyANCHOR's retrieval arms (≥1 on; defaults `1`/`0`/`1`) |
-| `TOOL_TYPE` | `node` · `node_rel`  (react / cyanchor) |
+| `TOOL_TYPE` | `node` · `node_rel`  (ReAct baseline only) |
+| `CYANCHOR_TOOL_SCOPE` | `node` · `node_rel`  (CyANCHOR routing scope; shipped `node` — relation tools off) |
 | `CYPHER_SEMANTIC_REPAIR` / `CYPHER_REPAIR_MAX_ROUNDS` / `CYPHER_EMPTY_IS_WRONG` | CyANCHOR-only result-level self-correction (defaults `1` / `4` / `1`) |
 
 - **`no_val_link`** — grounding bypassed; only schema + question reach the Cypher LLM.
@@ -222,11 +223,12 @@ directly (env-overridable). You never set environment variables in the normal fl
   result). Knobs: `CYPHER_SEMANTIC_REPAIR` / `CYPHER_REPAIR_MAX_ROUNDS` /
   `CYPHER_EMPTY_IS_WRONG`. Retrieval is the **union of three independently-toggleable arms**:
   `RETRIEVAL_FUZZY` (BM25), `RETRIEVAL_LEVENSHTEIN` (APOC normalized edit-distance — no
-  embeddings, high-ROI), `RETRIEVAL_VECTOR` (in-graph embeddings). `TOOL_TYPE` = `node` | `node_rel`.
+  embeddings, high-ROI), `RETRIEVAL_VECTOR` (in-graph embeddings). Tool scope: `CYANCHOR_TOOL_SCOPE` = `node`
+  (shipped — relation tools off; `TOOL_TYPE` governs the ReAct baseline only) | `node_rel`.
 
 To run a given configuration, set it in `eval_config.py` and run `python eval_run.py`
-— e.g. `METHOD = "cyanchor"` with `RETRIEVAL_VECTOR = False`, `TOOL_TYPE = "node_rel"`
-for CyANCHOR `fuzzy+lev`, or `METHOD = "graphrag"` for the Multi-Agent GraphRAG
+— e.g. `METHOD = "cyanchor"` with `RETRIEVAL_VECTOR = False`, `CYANCHOR_TOOL_SCOPE = "node"`
+for CyANCHOR `fuzzy+lev` (the shipped configuration), or `METHOD = "graphrag"` for the Multi-Agent GraphRAG
 baseline. The sweep driver (`orchestrate_sweep.py`) sweeps methods by setting
 `cfg.METHOD` in-process — same surface, no env channel.
 
@@ -439,7 +441,7 @@ switches — see [Methods](#value-linking-modes)).
 
 ```bash
 # Full pipeline: value linking → Cypher → Neo4j → answer
-python ner_agent_auto.py "Who acted in The Matrix?" --mode cyanchor_fl_node_rel
+python ner_agent_auto.py "Who acted in The Matrix?" --mode cyanchor_fl_node_only
 
 # --verbose shows the intermediate steps:
 #   PLAN     entity mentions decomposed from the question
@@ -447,12 +449,14 @@ python ner_agent_auto.py "Who acted in The Matrix?" --mode cyanchor_fl_node_rel
 #            LLM corrective-loop decisions (done / deepen / pick a field)
 #   GENERATE the candidate block + the generated Cypher
 python ner_agent_auto.py "How many movies were released before 2000?" \
-    --mode cyanchor_fl_node_rel --verbose
+    --mode cyanchor_fl_node_only --verbose
 ```
 
-> Canonical names encode the arms: `cyanchor_fl_node_rel` = fuzzy+lev (no embeddings),
-> `cyanchor_fvl_node_rel` = fuzzy+lev+vector (needs an in-graph vector index;
-> falls back gracefully if absent). Or just set `METHOD=cyanchor` + the
+> Canonical names encode the arms and the tool scope: `cyanchor_fl_node_only` =
+> fuzzy+lev over node-property tools only (the shipped configuration, no embeddings);
+> `cyanchor_fvl_node_only` = fuzzy+lev+vector (needs an in-graph vector index;
+> falls back gracefully if absent). A `_node_rel` suffix adds the relation tools —
+> not shipped, ablated to zero. Or just set `METHOD=cyanchor` + the
 > `RETRIEVAL_*` switches and omit `--mode`.
 
 **ReAct** agent — baseline (also shows its agent trace under `--verbose`):
@@ -471,7 +475,7 @@ Or call from Python:
 from ner_agent_auto import ask_auto
 
 result = ask_auto("What movies did Keanu Reeves star in?",
-                  mode="cyanchor_fl_node_rel")   # or omit to use the config axes
+                  mode="cyanchor_fl_node_only")   # or omit to use the config axes
 print(result["cypher"])   # the generated Cypher query
 print(result["result"])   # natural-language answer
 print(result["context"])  # raw rows returned by Neo4j

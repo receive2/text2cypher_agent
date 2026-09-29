@@ -71,6 +71,30 @@ def test_no_git_evidence_means_check_not_keep(world):
     assert rows[0]["verdict"] == "CHECK"
 
 
+def test_cyanchor_run_under_the_old_configuration_is_deleted(world):
+    """A cyanchor run from before the 2026-09-28 freeze (judge on, scope not recorded) has the
+    same directory name as a current one; only its recorded knobs tell, and they make it DELETE."""
+    guard = datetime(2026, 9, 10, 18, 29)
+    committed = ar.committed_knobs()
+    assert committed["PLAN_EXEC_SELECT_JUDGE"] == "0" and committed["CYANCHOR_TOOL_SCOPE"] == "node"
+    old = dict(committed); old["PLAN_EXEC_SELECT_JUDGE"] = "1"; old.pop("CYANCHOR_TOOL_SCOPE")
+    a = _run(world, "cypherbench_augmented", "movie", "cyanchor", "m1", "20260920-120000", OK)     # pre-freeze knobs
+    (a / "summary.json").write_text(json.dumps({"run_config": {"knobs": old}}), encoding="utf-8")
+    b = _run(world, "cypherbench_augmented", "movie", "cyanchor", "m1", "20260929-120000", OK)     # committed knobs
+    (b / "summary.json").write_text(json.dumps({"run_config": {"knobs": committed}}), encoding="utf-8")
+    c = _run(world, "cypherbench_augmented", "nba", "cyanchor", "m1", "20260929-120000",
+             [{"qid": "n1", "question": "q1", "ea": True}])                                        # no summary at all
+    d = _run(world, "cypherbench_augmented", "nba", "react", "m1", "20260920-120000",
+             [{"qid": "n1", "question": "q1", "ea": True}])                                        # baseline: knobs not checked
+    v = {r["dir"].name: r for r in ar.audit(world / "logs" / "runs", "m1", False, guard)}
+    assert v[a.name]["verdict"] == "DELETE"
+    assert "PLAN_EXEC_SELECT_JUDGE=1 (committed 0)" in v[a.name]["reason"]
+    assert "CYANCHOR_TOOL_SCOPE not recorded" in v[a.name]["reason"]
+    assert v[b.name]["verdict"] == "keep"
+    assert v[c.name]["verdict"] == "DELETE" and "no summary.json" in v[c.name]["reason"]
+    assert v[d.name]["verdict"] == "keep"
+
+
 def test_guard_since_on_this_repo():
     when, note = ar.guard_since()
     assert when is not None and "published artifact set since" in note

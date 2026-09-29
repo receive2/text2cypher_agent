@@ -87,7 +87,7 @@ ask_auto(question, mode="cyanchor_…")          ner_agent_auto.py
 │       a. route descriptor → top-2 fields  (FAISS)         │
 │       b. initial retrieval = fuzzy ∪ vector ∪ Levenshtein │
 │       c. corrective escalation loop (≤3 rounds, LLM judge)│
-│       d. pre-generation ABSTAIN judge (keep/select/drop)  │
+│       d. select-or-abstain judge — OFF, not shipped       │
 │                                                           │
 │  ③ build_injection() → {relevant_entities} block          │
 └─────────────────────────────────────────────────────────┘
@@ -234,7 +234,13 @@ and falls back to `done` on any parse/LLM error (stop rather than loop).
 skips the whole loop when a candidate already exact/substring-matches the
 mention (latency win, ~EA-neutral).
 
-### 5d. Pre-generation ABSTAIN judge
+### 5d. Pre-generation select-or-abstain judge (off — not part of the released method)
+
+> Off since the 2026-09-28 configuration freeze (`PLAN_EXEC_SELECT_JUDGE = False`) and
+> dropped from the paper: no effect on EA on four graphs (pooled p = 0.70) nor on the
+> confident-wrong rate (`report/judge_failure_modes.md`), confirmed on the full pole
+> graph (1,283 paired questions, 2026-09-29: +0.6 points, p = 0.46). The code path is
+> kept for reference; with the knob on it works as follows.
 
 After escalation, for a node mention that is **not** cheaply grounded (the
 abbrev / alias / misroute region), one LLM call (`_judge_select`,
@@ -357,7 +363,7 @@ candidate list. It is deliberately conservative:
   is never zero by misconfiguration.
 - **Fail-safe everywhere**: PLAN/judge/retrieval failures degrade to "no
   grounding" or "stop", never to a fabricated value or an infinite loop.
-- **Abstain over force**: both the pre-gen ABSTAIN judge and value-snap can only
+- **Abstain over force**: value-snap (and the off-by-default select judge) can only
   pick a real candidate or decline — they cannot hallucinate a value.
 - **Monotone repair**: anti-oscillation + "adopt-only-if-still-runs" mean the
   corrective stages can only match-or-improve the executable baseline result.
@@ -373,7 +379,7 @@ candidate list. It is deliberately conservative:
 |---|---|
 | `RETRIEVAL_FUZZY` / `_VECTOR` / `_LEVENSHTEIN` | which recall arms feed candidates |
 | `PLAN_EXEC_ESCALATE` | static initial retrieval vs. LLM-judge corrective loop |
-| `PLAN_EXEC_SELECT_JUDGE` (default **off** since 2026-09) | suppress bad groundings vs. inject all candidates — zero on EA and on the confident-wrong rate (`report/judge_failure_modes.md`) |
+| `PLAN_EXEC_SELECT_JUDGE` (**off** — not a component of the released method) | suppress bad groundings vs. inject all candidates — zero on EA (full pole graph, 1,283 paired questions: +0.6 pts, p = 0.46) and on the confident-wrong rate (`report/judge_failure_modes.md`); dropped from the paper |
 | `CYPHER_SEMANTIC_REPAIR` | error-only retry vs. result-evaluate→regenerate |
 | `CYPHER_EMPTY_IS_WRONG` | whether 0 rows triggers repair |
 | `PLAN_EXEC_VALUE_SNAP` | post-generation snap guard on/off |
@@ -382,17 +388,17 @@ candidate list. It is deliberately conservative:
 Example invocations:
 
 ```bash
-# CyANCHOR, all three arms, node+rel tools — in eval_config.py:
-#   METHOD = "cyanchor"; RETRIEVAL_VECTOR = True; TOOL_TYPE = "node_rel"
+# CyANCHOR, all three arms, node+rel tools (NOT the shipped configuration) — in eval_config.py:
+#   METHOD = "cyanchor"; RETRIEVAL_VECTOR = True; CYANCHOR_TOOL_SCOPE = "node_rel"
 python eval_run.py
 
-# CyANCHOR, fuzzy+Levenshtein only (no embeddings needed) — the shipped default:
-#   METHOD = "cyanchor"; RETRIEVAL_VECTOR = False
+# CyANCHOR, fuzzy+Levenshtein only, node-property tools (no embeddings needed) — the shipped default:
+#   METHOD = "cyanchor"; RETRIEVAL_VECTOR = False; CYANCHOR_TOOL_SCOPE = "node"
 python eval_run.py
 # (eval_run reads eval_config.py only; METHOD=… on the shell is ignored)
 
 # Single question, verbose trace
-python ner_agent_auto.py "Who directed The Matrix?" --mode cyanchor_fl_node_rel --verbose
+python ner_agent_auto.py "Who directed The Matrix?" --mode cyanchor_fl_node_only --verbose
 ```
 
 ---
@@ -402,7 +408,9 @@ python ner_agent_auto.py "Who directed The Matrix?" --mode cyanchor_fl_node_rel 
 ### 11a. Typo — cheap-grounded fast path (judges skipped)
 
 Question: *"How many movies did **Tmo Hooper** direct?"* (typo for *Tom Hooper*,
-CypherBench `movie` graph, shipped config `cyanchor_fl_node_rel`)
+CypherBench `movie` graph, config of that date `cyanchor_fl_node_rel`; the shipped config is now
+`cyanchor_fl_node_only`, which drops the relation-pattern hint of step 2 — the node-mention steps
+are unchanged)
 
 1. **PLAN** → `[{"Tmo Hooper", node, "film director name"}, {"direct", relation, …}, {"movies", node, …}]`.
 2. **EXECUTE** "Tmo Hooper":
