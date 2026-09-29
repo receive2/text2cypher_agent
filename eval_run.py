@@ -285,6 +285,47 @@ def _merge_shard_outputs(dataset: str, shard_recs: list[Path], shard_sums: list[
     return True, "ok"
 
 
+_FLAT_OUTER_SEC = 4 * 60 * 60   # floor of a full-graph run; the ceiling when the graph's size is unknown
+
+
+def _count_examples(test_path, graph: str) -> int | None:
+    """How many questions a full run of *graph* holds: the rows of the JSON test set whose
+    ``graph`` field is *graph*. ``None`` when that cannot be read off the file (the clean CSV
+    sets, an unexpected layout, a graph without rows) — the caller then keeps the flat ceiling."""
+    try:
+        p = Path(test_path)
+        if p.suffix.lower() != ".json":
+            return None
+        obj = json.loads(p.read_text(encoding="utf-8"))
+        rows = obj.get("data") if isinstance(obj, dict) else obj
+        n = sum(1 for r in rows if isinstance(r, dict) and r.get("graph") == graph)
+        return n or None
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def _outer_timeout_sec(n_per_proc: int | None, *, limited: bool, per_example_sec: int,
+                       explicit: str | None) -> float:
+    """Outer safety net for one worker process, in seconds.
+
+    * ``EVAL_WORKER_TIMEOUT_SEC`` (*explicit*) wins.
+    * A run with ``LIMIT`` set (*limited*): ``n × per_example_sec + 120``, as before.
+    * A full-graph run: the same formula on the graph's question count, never below the
+      former flat 4 h. A large graph is therefore no longer killed mid-run (pole, 1,283
+      questions, needs 4.3–4.6 h with CyANCHOR and was cut at 4 h), and no graph gets
+      less time than it had.
+    * Size unknown: the flat 4 h.
+
+    The limit stays because only the CypherBench evaluator has a per-question watchdog;
+    for the MindTheQuery and ZOGRASCOPE graphs this is the one guard against a hung worker."""
+    if explicit:
+        return float(explicit)
+    if n_per_proc is None:
+        return float(_FLAT_OUTER_SEC)
+    scaled = n_per_proc * per_example_sec + 120
+    return float(scaled if limited else max(_FLAT_OUTER_SEC, scaled))
+
+
 def _run_pair(
     dataset:     str,
     graph:       str,
@@ -396,16 +437,15 @@ def _run_pair(
     # at the per-example cap plus startup overhead (FAISS load + Neo4j connect
     # + dataset parse ≈ 30–60 s). Under sharding each worker runs ~limit/shards
     # examples, so the cap is sized per shard. ``EVAL_WORKER_TIMEOUT_SEC``
-    # overrides; ``limit is None`` falls back to a 4 h ceiling.
+    # overrides. A full-graph run (``limit is None``) is sized by the graph's
+    # question count and never gets less than 4 h (see _outer_timeout_sec).
     per_example_sec = int(os.environ.get("EVAL_PER_EXAMPLE_TIMEOUT", "60")) + 5
     explicit_outer  = os.environ.get("EVAL_WORKER_TIMEOUT_SEC")
+    n_total = limit if limit is not None else _count_examples(test_path, graph)
 
     def _outer_timeout(n_per_proc: int | None) -> float:
-        if explicit_outer:
-            return float(explicit_outer)
-        if n_per_proc is not None:
-            return n_per_proc * per_example_sec + 120
-        return 4 * 60 * 60
+        return _outer_timeout_sec(n_per_proc, limited=limit is not None,
+                                  per_example_sec=per_example_sec, explicit=explicit_outer)
 
     if shards <= 1:
         # ── single-process path (original behaviour, byte-identical) ─────────
@@ -417,7 +457,7 @@ def _run_pair(
             cmd += ["--limit", str(limit)]
         if verbose:
             cmd += ["--verbose"]
-        outer_timeout = _outer_timeout(limit)
+        outer_timeout = _outer_timeout(n_total)
         print(
             f"\n[eval_run] ▶ {dataset}__{graph}  uri={conn.uri}  db={conn.database}  "
             f"outer_timeout={int(outer_timeout)}s"
@@ -456,7 +496,7 @@ def _run_pair(
     # ── sharded path (SHARDS > 1): K parallel workers over example strides ───
     # All shards target the same already-swapped live tree + container; they
     # only differ in which stride of examples they run. Merged afterwards.
-    per_proc = None if limit is None else max(1, -(-limit // shards))  # ceil
+    per_proc = None if n_total is None else max(1, -(-n_total // shards))  # ceil
     outer_timeout = _outer_timeout(per_proc)
     shard_dir = pair_dir / ".shards"
     if shard_dir.exists():

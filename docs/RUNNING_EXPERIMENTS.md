@@ -49,12 +49,17 @@ For each `(dataset, graph)` in `EVAL_PAIRS`, `eval_run.py`:
 6. Writes a fresh run directory (§5) and stamps `summary.json` with the full
    `run_config`.
 
-**Timeouts.** The worker enforces a per-question cap
+**Timeouts.** On the CypherBench graphs the worker enforces a per-question cap
 (`EVAL_PER_EXAMPLE_TIMEOUT`, default 60 s; the driver sets 900 s for CyANCHOR,
 whose slowest legitimate questions take 70–120 s); a question over the cap is
-recorded as an error (`example timeout …`) and scores 0. `eval_run` also kills a
-worker that exceeds *n × (cap + 5 s) + 120 s* (4 h when `LIMIT` is unset), or
-`EVAL_WORKER_TIMEOUT_SEC` if set.
+recorded as an error (`example timeout …`) and scores 0. The MindTheQuery and
+ZOGRASCOPE evaluators have no per-question cap, so for those graphs the worker
+limit is the one guard against a hang. `eval_run` kills a worker that exceeds
+*n × (cap + 5 s) + 120 s*, where *n* is `LIMIT` or, for a full-graph run, the
+graph's question count — and a full-graph run never gets less than 4 h (4 h
+also when the count cannot be read). `EVAL_WORKER_TIMEOUT_SEC` overrides. Until
+2026-09-29 a full-graph run had a flat 4 h, which cut pole (1,283 questions,
+4.3–4.6 h with CyANCHOR) before it finished.
 
 ## 3. Developer run on one pair (not the sweep)
 
