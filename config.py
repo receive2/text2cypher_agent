@@ -395,8 +395,8 @@ TOOL_TOP_K            = 10   # fulltext search top-k per tool call
 #   RETRIEVAL_VECTOR       in-graph embedding kNN          (default off — needs embeddings)
 #   RETRIEVAL_LEVENSHTEIN  APOC normalized edit-distance   (default on)
 #
-# TOOL_TYPE — ReAct baseline tool scope: node | node_rel (released: node, the same
-# node-property tools CyANCHOR routes on; CyANCHOR has its own CYANCHOR_TOOL_SCOPE).
+# TOOL_TYPE — ReAct baseline tool scope: node | node_rel (released: node_rel, the same
+# node + relation tool set CyANCHOR routes on; CyANCHOR has its own CYANCHOR_TOOL_SCOPE).
 #
 # Examples:
 #   METHOD=cyanchor RETRIEVAL_VECTOR=1 python eval_run.py     # CyANCHOR, all 3 arms
@@ -416,13 +416,13 @@ TOOL_TOP_K            = 10   # fulltext search top-k per tool call
 # │   it there, which is a CLI convenience). Do not treat it as a 2nd knob.      │
 # └──────────────────────────────────────────────────────────────────────────┘
 METHOD:    str = os.getenv("METHOD", os.getenv("VAL_LINK_MODE", "cyanchor")).strip().lower()
-TOOL_TYPE: str = os.getenv("TOOL_TYPE", "node").strip().lower()
+TOOL_TYPE: str = os.getenv("TOOL_TYPE", "node_rel").strip().lower()
 # CyANCHOR-only tool scope (node | node_rel), separate from the ReAct baseline's
-# TOOL_TYPE. Default "node" (2026-09): the perturbed entities in all three benchmarks
-# are node-property values, and the relation-pattern hint injected under node_rel
-# duplicates the schema already in the prompt — no measurable contribution in a
-# 2-backbone, 5-graph ablation (see report/ablation_table_gpt-5.6-terra.md).
-CYANCHOR_TOOL_SCOPE: str = os.getenv("CYANCHOR_TOOL_SCOPE", "node").strip().lower()
+# TOOL_TYPE. Released: "node_rel", the complete design. Ablating the relation tools
+# alone measures no effect (the perturbed entities in all three benchmarks are
+# node-property values; the relation-pattern hint repeats the schema), see
+# report/ablation_table_gpt-5.6-terra.md.
+CYANCHOR_TOOL_SCOPE: str = os.getenv("CYANCHOR_TOOL_SCOPE", "node_rel").strip().lower()
 RETRIEVAL_FUZZY       = os.getenv("RETRIEVAL_FUZZY",       "1").lower() in ("1", "true", "yes")
 RETRIEVAL_VECTOR      = os.getenv("RETRIEVAL_VECTOR",      "0").lower() in ("1", "true", "yes")
 RETRIEVAL_LEVENSHTEIN = os.getenv("RETRIEVAL_LEVENSHTEIN", "1").lower() in ("1", "true", "yes")
@@ -717,14 +717,14 @@ PLAN_EXEC_VALUE_SNAP = os.getenv("PLAN_EXEC_VALUE_SNAP", "1").lower() in ("1", "
 # ⚙ eval receiver — edit in the eval_config panel, not here (literal = demo/CLI fallback).
 PLAN_EXEC_SKIP_GROUNDED = os.getenv("PLAN_EXEC_SKIP_GROUNDED", "1").lower() in ("1", "true", "yes")
 # Pre-generation select-or-abstain judge on non-cheaply-grounded node mentions
-# (plan_exec._judge_select). Not part of the released method; kept as a knob so
-# the code path can still be exercised.
+# (plan_exec._judge_select). Part of the released (complete) design.
 # ⚙ eval receiver — edit in the eval_config panel, not here (literal = demo/CLI fallback).
-# Default OFF (2026-09): zero contribution on EA (4 graphs, 2 backbones; full pole graph
-# 2026-09-29: +0.6 pts, p=0.46 over 1,283 paired questions) and no
-# measurable reduction of confidently-wrong answers (+0.7 pts, report/judge_failure_modes.md);
-# costs one LLM call per non-cheaply-grounded mention. Candidates are DB values either way.
-PLAN_EXEC_SELECT_JUDGE = os.getenv("PLAN_EXEC_SELECT_JUDGE", "0").lower() in ("1", "true", "yes")
+# Ablated alone it has no measurable main effect on EA or PSJS (4 graphs, 2 backbones;
+# full pole graph 2026-09-29: +0.6 pts, p=0.46 over 1,283 paired questions) and no
+# measurable reduction of confidently-wrong answers (report/judge_failure_modes.md); it
+# interacts with the escalation loop, which supplies the candidates it selects from.
+# Costs one LLM call per non-cheaply-grounded mention. Candidates are DB values either way.
+PLAN_EXEC_SELECT_JUDGE = os.getenv("PLAN_EXEC_SELECT_JUDGE", "1").lower() in ("1", "true", "yes")
 # Latency: run the per-mention EXECUTE/escalation concurrently (mentions are
 # independent — same calls, same results, just not serialized). Capped by
 # MAX_THREAD. Set 0 to force serial.

@@ -4,18 +4,19 @@
     python scripts/tuning/run_ablation_model.py --model gpt-5.6-terra --pole-full \
         [--graphs flight_accident,nba,healthcare,pole] [--variants a,b] [--with-joint] [--limit 3]
 
-The reference cell is the released configuration: CyANCHOR routing on node-property tools,
-fuzzy + Levenshtein arms, escalation, semantic repair and value-snap on, select-or-abstain
-judge off (--judge on reproduces the pre-freeze reference). Every other cell flips exactly one
-switch; the five default cells are no_value_snap, fuzzy_only, no_escalate, no_semantic_repair
-and lev_only. The judge cell (select_judge / no_select_judge) is not run by default — the judge
-was dropped from the paper (full pole graph 2026-09-29: +0.6 pts, p=0.46) — but stays
-available through --variants.
+The reference cell is the released configuration, the complete design: CyANCHOR routing on
+node + relation tools, fuzzy + Levenshtein arms, escalation, select-or-abstain judge, semantic
+repair and value-snap on. --judge off / --scope node give the reduced references that main
+carried from 2026-09-28 to 2026-09-30. Every other cell flips exactly one switch; the five
+default cells are no_value_snap, fuzzy_only, no_escalate, no_semantic_repair and lev_only. The
+judge cell (no_select_judge / select_judge) and the tool-scope cell (node_tools_only /
+rel_tools) are not run by default — neither has a measurable main effect and neither is a row
+of the paper table — but stay available through --variants.
 Data = benchmarks/ (the release eval_config already points at). flight_accident, healthcare
 and nba run in full; pole runs its first 400 questions, or all of them with --pole-full
 (cells are then named pole_full__*).
 
-Output: logs/ablation_<model>__judge-<on|off>-node/<graph>__<variant> — one root per
+Output: logs/ablation_<model>__judge-<on|off>-<node|node_rel>/<graph>__<variant> — one root per
 reference configuration, so cells of different references are never paired by mistake.
 Idempotent: rerun the same command to resume (finished cells are skipped, an interrupted
 cell starts over). --graphs lets one checkout per graph run in parallel (the live tree is
@@ -29,7 +30,8 @@ import eval_config as cfg, eval_run  # noqa: E402
 
 ap = argparse.ArgumentParser()
 ap.add_argument("--model", required=True)
-ap.add_argument("--judge", default="off", choices=("on", "off"), help="select-or-abstain judge in the reference configuration (released: off)")
+ap.add_argument("--judge", default="on", choices=("on", "off"), help="select-or-abstain judge in the reference configuration (released: on)")
+ap.add_argument("--scope", default="node_rel", choices=("node", "node_rel"), help="CyANCHOR tool scope in the reference configuration (released: node_rel)")
 ap.add_argument("--graphs", default="flight_accident,nba,healthcare,pole")
 ap.add_argument("--variants", default="", help="comma list; default = reference + the six single-switch cells")
 ap.add_argument("--pole-full", action="store_true", help="run pole on all its questions instead of the first 400")
@@ -37,19 +39,20 @@ ap.add_argument("--limit", type=int, default=0, help="smoke test: first N questi
 ap.add_argument("--with-joint", action="store_true", help="add the cell with every corrective stage off")
 ap.add_argument("--skip-ref", action="store_true", help="reference cells come from the model sweep instead")
 A = ap.parse_args()
-OUT = REPO / "logs" / (f"ablation_{A.model}__judge-{A.judge}-node" + (f"__smoke{A.limit}" if A.limit else ""))
+OUT = REPO / "logs" / (f"ablation_{A.model}__judge-{A.judge}-{A.scope}" + (f"__smoke{A.limit}" if A.limit else ""))
 OUT.mkdir(parents=True, exist_ok=True)
 
 JUDGE_ON = A.judge == "on"
-SHIPPED = dict(METHOD="cyanchor", CYANCHOR_TOOL_SCOPE="node", RETRIEVAL_FUZZY=True, RETRIEVAL_VECTOR=False, RETRIEVAL_LEVENSHTEIN=True,
+SHIPPED = dict(METHOD="cyanchor", CYANCHOR_TOOL_SCOPE=A.scope, RETRIEVAL_FUZZY=True, RETRIEVAL_VECTOR=False, RETRIEVAL_LEVENSHTEIN=True,
                CYPHER_SEMANTIC_REPAIR=True, PLAN_EXEC_ESCALATE=True, PLAN_EXEC_SELECT_JUDGE=JUDGE_ON, PLAN_EXEC_VALUE_SNAP=True,
                GENERATOR_LLM=A.model)   # CYPHER_EMPTY_IS_WRONG stays at the panel's shipped default
 JUDGE_CELL = ("no_select_judge", {"PLAN_EXEC_SELECT_JUDGE": False}) if JUDGE_ON else ("select_judge", {"PLAN_EXEC_SELECT_JUDGE": True})
+SCOPE_CELL = ("node_tools_only", {"CYANCHOR_TOOL_SCOPE": "node"}) if A.scope == "node_rel" else ("rel_tools", {"CYANCHOR_TOOL_SCOPE": "node_rel"})
 VARIANTS = {"reference": {},
             "no_value_snap": {"PLAN_EXEC_VALUE_SNAP": False}, "fuzzy_only": {"RETRIEVAL_LEVENSHTEIN": False},
             "no_escalate": {"PLAN_EXEC_ESCALATE": False}, "no_semantic_repair": {"CYPHER_SEMANTIC_REPAIR": False},
             JUDGE_CELL[0]: JUDGE_CELL[1], "lev_only": {"RETRIEVAL_FUZZY": False},
-            "rel_tools": {"CYANCHOR_TOOL_SCOPE": "node_rel"},            # not in the default plan (released scope is node)
+            SCOPE_CELL[0]: SCOPE_CELL[1],                                # not in the default plan, like the judge cell
             "no_correction": {"PLAN_EXEC_ESCALATE": False, "PLAN_EXEC_SELECT_JUDGE": False,
                               "CYPHER_SEMANTIC_REPAIR": False, "PLAN_EXEC_VALUE_SNAP": False}}
 GRAPHS = {"flight_accident": ("cypherbench_augmented", "flight_accident", None, 15064),
@@ -57,7 +60,7 @@ GRAPHS = {"flight_accident": ("cypherbench_augmented", "flight_accident", None, 
           "pole":            ("zograscope_augmented",   "pole",           None if A.pole_full else 400, 15076),
           "nba":             ("cypherbench_augmented",  "nba",            None, 15067)}
 CELL = lambda g: "pole_full" if (g == "pole" and A.pole_full) else g
-order = [v.strip() for v in A.variants.split(",") if v.strip()] or [v for v in VARIANTS if v not in ("rel_tools", "no_correction", JUDGE_CELL[0])]
+order = [v.strip() for v in A.variants.split(",") if v.strip()] or [v for v in VARIANTS if v not in (SCOPE_CELL[0], "no_correction", JUDGE_CELL[0])]
 order = [v for v in order if not (A.skip_ref and v == "reference")] + (["no_correction"] if A.with_joint and "no_correction" not in order else [])
 unknown = [v for v in order if v not in VARIANTS] + [g for g in A.graphs.split(",") if g not in GRAPHS]
 if unknown: print(f"ABORT: unknown variant/graph {unknown}; variants: {list(VARIANTS)}; graphs: {list(GRAPHS)}", flush=True); sys.exit(2)
@@ -98,7 +101,7 @@ def expected_n(ds, graph, limit):
     return min(limit, full) if limit else full
 norm = lambda x: x if isinstance(x, str) else ("1" if x else "0")
 
-print(f"PLAN model={A.model} reference: judge {A.judge}, node tools | out={OUT.relative_to(REPO)} | {len(PLAN)} cells: "
+print(f"PLAN model={A.model} reference: judge {A.judge}, {'node + relation' if A.scope == 'node_rel' else 'node'} tools | out={OUT.relative_to(REPO)} | {len(PLAN)} cells: "
       + ", ".join(f"{CELL(g)}/{v}" for g, v in PLAN), flush=True)
 n_fail = 0
 for g, v in PLAN:

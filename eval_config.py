@@ -66,11 +66,11 @@ GENERATOR_LLM: str = "gpt-4.1"  # preset name from config.MODEL_PRESETS — sele
                                 #   deepseek-v3.1 | llama-3.3-70b | qwen3-32b |
                                 #   claude-opus-5, deepseek-v4.1-flash (extras)
 METHOD:    str = "cyanchor"     # no_val_link | fcav | react | graphrag | cyanchor
-TOOL_TYPE: str = "node"         # node | node_rel   (ReAct baseline tool scope; node since 2026-09-29: the same
-                                #   node-property tools CyANCHOR routes on, so the two tool-using methods differ only
-                                #   in how they ground. The benchmarks perturb node-property values only.)
-CYANCHOR_TOOL_SCOPE: str = "node"  # node | node_rel   (CyANCHOR routing scope; node = shipped since 2026-09,
-                                   #   relation tools ablated to zero on 5 graphs / 2 backbones)
+TOOL_TYPE: str = "node_rel"     # node | node_rel   (ReAct baseline tool scope — the same node + relation
+                                #   tool set CyANCHOR routes on)
+CYANCHOR_TOOL_SCOPE: str = "node_rel"  # node | node_rel   (CyANCHOR routing scope; released = the complete design,
+                                       #   node + relation tools. Ablating the relation tools alone measures no
+                                       #   effect (2026-09, 4 graphs): the benchmarks perturb node-property values only.)
 
 # ── CyANCHOR retrieval arms  (≥1 must be on; unioned per field) ───────────────
 RETRIEVAL_FUZZY:         bool = True    # BM25 / Lucene full-text
@@ -87,9 +87,10 @@ CYPHER_EMPTY_IS_WRONG:    bool = False  # treat a 0-row result as a defect — O
 
 # ── CyANCHOR ablation toggles  (default ON = the shipped method) ─────────────
 PLAN_EXEC_ESCALATE:          bool = True   # corrective LLM-judge retrieval loop
-PLAN_EXEC_SELECT_JUDGE:      bool = False  # pre-generation select-or-abstain judge — OFF, not part of the released method:
-                                           #   zero on EA (full pole graph, 1,283 paired questions, 2026-09-29: +0.6 pts, p=0.46)
-                                           #   and on the confident-wrong rate (report/judge_failure_modes.md); saves 1 LLM call/mention
+PLAN_EXEC_SELECT_JUDGE:      bool = True   # pre-generation select-or-abstain judge — ON: part of the released (complete)
+                                           #   design. Ablated alone it has no measurable main effect on EA or PSJS (4 graphs,
+                                           #   full pole graph 2026-09-29: +0.6 pts, p=0.46); it interacts with the escalation
+                                           #   loop (it selects from / abstains on the candidates the loop retrieves).
 PLAN_EXEC_VALUE_SNAP:        bool = True   # post-generation existence-gated value-snap guard
 PLAN_EXEC_SKIP_GROUNDED:     bool = True   # skip escalation for already-grounded mentions (latency)
 PLAN_EXEC_PARALLEL_MENTIONS: bool = True   # run mentions in parallel threads (latency;

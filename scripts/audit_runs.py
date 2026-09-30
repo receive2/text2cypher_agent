@@ -32,14 +32,13 @@ A run can be used only if
    checkout got the published set, and every run stamped before that moment
    cannot be verified; and
 3. a ``cyanchor`` run recorded the committed CyANCHOR configuration in its
-   ``summary.json`` (``run_config.knobs``). The configuration was frozen on
-   2026-09-28 (``f04a37c``: node-property tools only, select-or-abstain judge
-   off); a run from before that has the same ``cyanchor_fl`` directory name,
-   so only the recorded knobs can tell. Likewise a ``react`` run must record
-   the committed tool scope (``TOOL_TYPE``): since 2026-09-29 the ReAct
-   baseline grounds over the same node-property tools as CyANCHOR (``node``);
-   every earlier run used node + relation tools under the same ``react``
-   directory name. The three baselines without tools are unaffected.
+   ``summary.json`` (``run_config.knobs``), and a ``react`` run the committed
+   tool scope (``TOOL_TYPE``). The released configuration is the complete
+   design: select-or-abstain judge on, node + relation tools for both methods.
+   From 2026-09-28 to 2026-09-30 ``main`` carried a reduced configuration
+   (judge off, node-property tools only); a run made under it has the same
+   ``cyanchor_fl`` / ``react`` directory name, so only the recorded knobs can
+   tell. The three baselines without tools are unaffected.
 
 Verdicts: ``DELETE`` (fails 1 or 2), ``CHECK`` (no reflog evidence — decide by
 hand), ``keep`` (the newest usable run of its cell), ``older`` (superseded by a
@@ -111,14 +110,15 @@ def run_dir_model(d: Path, method_seg: str) -> str:
 
 
 # CyANCHOR knobs a run records (eval_run._stamp_summary). A CyANCHOR run is usable only if
-# every one it recorded equals the committed value, and these two must be recorded: the
-# 2026-09-28 freeze (f04a37c) turned the select-or-abstain judge off and restricted routing
-# to node-property tools, and a pre-freeze run is not distinguishable by its directory name.
+# every one it recorded equals the committed value. Two of them decide which system ran and
+# do not show in the directory name: the select-or-abstain judge and the tool scope. The judge
+# must be recorded. The scope knob CYANCHOR_TOOL_SCOPE exists since f04a37c (2026-09-28);
+# before it TOOL_TYPE set the scope of CyANCHOR as well, so a run without it is read by its
+# TOOL_TYPE.
 CYANCHOR_KNOB_PREFIXES = ("CYANCHOR_", "RETRIEVAL_", "PLAN_EXEC_", "CYPHER_")
-CYANCHOR_REQUIRED_KNOBS = ("CYANCHOR_TOOL_SCOPE", "PLAN_EXEC_SELECT_JUDGE")
-# The ReAct baseline records its tool scope the same way. Its directory name (``react``) does
-# not show the scope either: until 2026-09-29 it ran over node + relation tools (``node_rel``);
-# the released configuration gives it the node-property tools CyANCHOR routes on (``node``).
+CYANCHOR_REQUIRED_KNOBS = ("PLAN_EXEC_SELECT_JUDGE",)
+# The ReAct baseline records its tool scope as TOOL_TYPE; its directory name (``react``) does
+# not show it either.
 REACT_REQUIRED_KNOBS = ("TOOL_TYPE",)
 
 
@@ -146,8 +146,14 @@ def cyanchor_config_mismatch(recorded: Optional[Dict[str, str]], committed: Dict
         return "no summary.json — the configuration it ran under is unknown"
     bad = [f"{k}={recorded[k]} (committed {committed[k]})" for k in sorted(committed)
            if k.startswith(CYANCHOR_KNOB_PREFIXES) and k in recorded and recorded[k] != committed[k]]
-    bad += [f"{k} not recorded (predates the 2026-09-28 configuration freeze)"
+    bad += [f"{k} not recorded — the configuration it ran under is unknown"
             for k in CYANCHOR_REQUIRED_KNOBS if k in committed and k not in recorded]
+    if "CYANCHOR_TOOL_SCOPE" in committed and "CYANCHOR_TOOL_SCOPE" not in recorded:
+        scope = recorded.get("TOOL_TYPE")          # before f04a37c TOOL_TYPE set CyANCHOR's scope too
+        if scope is None:
+            bad.append("tool scope not recorded — the configuration it ran under is unknown")
+        elif scope != committed["CYANCHOR_TOOL_SCOPE"]:
+            bad.append(f"tool scope {scope} (recorded as TOOL_TYPE; committed {committed['CYANCHOR_TOOL_SCOPE']})")
     return "; ".join(bad)
 
 
@@ -157,7 +163,7 @@ def react_config_mismatch(recorded: Optional[Dict[str, str]], committed: Dict[st
         return "no summary.json — the tool scope it ran under is unknown"
     bad = [f"{k}={recorded[k]} (committed {committed[k]})" for k in REACT_REQUIRED_KNOBS
            if k in committed and k in recorded and recorded[k] != committed[k]]
-    bad += [f"{k} not recorded (predates the 2026-09-29 change of the ReAct tool scope)"
+    bad += [f"{k} not recorded — the tool scope it ran under is unknown"
             for k in REACT_REQUIRED_KNOBS if k in committed and k not in recorded]
     return "; ".join(bad)
 
