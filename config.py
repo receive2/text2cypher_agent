@@ -395,8 +395,8 @@ TOOL_TOP_K            = 10   # fulltext search top-k per tool call
 #   RETRIEVAL_VECTOR       in-graph embedding kNN          (default off — needs embeddings)
 #   RETRIEVAL_LEVENSHTEIN  APOC normalized edit-distance   (default on)
 #
-# TOOL_TYPE — ReAct baseline tool scope: node | node_rel (released: node_rel, the same
-# node + relation tool set CyANCHOR routes on; CyANCHOR has its own CYANCHOR_TOOL_SCOPE).
+# TOOL_TYPE — ReAct baseline tool scope: node | node_rel (released: node, the same
+# node-property tools CyANCHOR routes on; CyANCHOR has its own CYANCHOR_TOOL_SCOPE).
 #
 # Examples:
 #   METHOD=cyanchor RETRIEVAL_VECTOR=1 python eval_run.py     # CyANCHOR, all 3 arms
@@ -416,13 +416,13 @@ TOOL_TOP_K            = 10   # fulltext search top-k per tool call
 # │   it there, which is a CLI convenience). Do not treat it as a 2nd knob.      │
 # └──────────────────────────────────────────────────────────────────────────┘
 METHOD:    str = os.getenv("METHOD", os.getenv("VAL_LINK_MODE", "cyanchor")).strip().lower()
-TOOL_TYPE: str = os.getenv("TOOL_TYPE", "node_rel").strip().lower()
+TOOL_TYPE: str = os.getenv("TOOL_TYPE", "node").strip().lower()
 # CyANCHOR-only tool scope (node | node_rel), separate from the ReAct baseline's
-# TOOL_TYPE. Released: "node_rel", the complete design. Ablating the relation tools
-# alone measures no effect (the perturbed entities in all three benchmarks are
-# node-property values; the relation-pattern hint repeats the schema), see
-# report/ablation_table_gpt-5.6-terra.md.
-CYANCHOR_TOOL_SCOPE: str = os.getenv("CYANCHOR_TOOL_SCOPE", "node_rel").strip().lower()
+# TOOL_TYPE. Released: "node" — relation tools off. The perturbed entities in all
+# three benchmarks are node-property values, and the relation-pattern hint injected
+# under node_rel repeats the schema already in the prompt: no measurable effect when
+# ablated alone (report/ablation_table_gpt-5.6-terra.md).
+CYANCHOR_TOOL_SCOPE: str = os.getenv("CYANCHOR_TOOL_SCOPE", "node").strip().lower()
 RETRIEVAL_FUZZY       = os.getenv("RETRIEVAL_FUZZY",       "1").lower() in ("1", "true", "yes")
 RETRIEVAL_VECTOR      = os.getenv("RETRIEVAL_VECTOR",      "0").lower() in ("1", "true", "yes")
 RETRIEVAL_LEVENSHTEIN = os.getenv("RETRIEVAL_LEVENSHTEIN", "1").lower() in ("1", "true", "yes")
@@ -504,7 +504,7 @@ def _spec_from_env() -> GroundingSpec:
         raise ValueError(f"METHOD must be one of {_METHODS}, got {METHOD!r}.")
     if m in ("no_val_link", "fcav", "graphrag"):
         return GroundingSpec(m)
-    tool = TOOL_TYPE if TOOL_TYPE in _TOOL_TYPES else "node_rel"
+    tool = TOOL_TYPE if TOOL_TYPE in _TOOL_TYPES else "node"
     if m == "react":
         return GroundingSpec("react", tool=tool)
     # cyanchor: its own scope knob (the baseline's TOOL_TYPE must not move with it)
@@ -717,7 +717,7 @@ PLAN_EXEC_VALUE_SNAP = os.getenv("PLAN_EXEC_VALUE_SNAP", "1").lower() in ("1", "
 # ⚙ eval receiver — edit in the eval_config panel, not here (literal = demo/CLI fallback).
 PLAN_EXEC_SKIP_GROUNDED = os.getenv("PLAN_EXEC_SKIP_GROUNDED", "1").lower() in ("1", "true", "yes")
 # Pre-generation select-or-abstain judge on non-cheaply-grounded node mentions
-# (plan_exec._judge_select). Part of the released (complete) design.
+# (plan_exec._judge_select). On in the released configuration.
 # ⚙ eval receiver — edit in the eval_config panel, not here (literal = demo/CLI fallback).
 # Ablated alone it has no measurable main effect on EA or PSJS (4 graphs, 2 backbones;
 # full pole graph 2026-09-29: +0.6 pts, p=0.46 over 1,283 paired questions) and no

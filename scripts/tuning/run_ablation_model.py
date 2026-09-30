@@ -4,14 +4,14 @@
     python scripts/tuning/run_ablation_model.py --model gpt-5.6-terra --pole-full \
         [--graphs flight_accident,nba,healthcare,pole] [--variants a,b] [--with-joint] [--limit 3]
 
-The reference cell is the released configuration, the complete design: CyANCHOR routing on
-node + relation tools, fuzzy + Levenshtein arms, escalation, select-or-abstain judge, semantic
-repair and value-snap on. --judge off / --scope node give the reduced references that main
-carried from 2026-09-28 to 2026-09-30. Every other cell flips exactly one switch; the five
-default cells are no_value_snap, fuzzy_only, no_escalate, no_semantic_repair and lev_only. The
-judge cell (no_select_judge / select_judge) and the tool-scope cell (node_tools_only /
-rel_tools) are not run by default — neither has a measurable main effect and neither is a row
-of the paper table — but stay available through --variants.
+The reference cell is the released configuration: CyANCHOR routing on node-property tools
+(relation tools off), fuzzy + Levenshtein arms, escalation, select-or-abstain judge, semantic
+repair and value-snap on. --judge off / --scope node_rel give other references. Every other
+cell flips exactly one switch; the five default cells are no_value_snap, fuzzy_only,
+no_escalate, no_semantic_repair and lev_only. The judge cell (no_select_judge / select_judge)
+and the tool-scope cell (rel_tools / node_tools_only) are not run by default — neither has a
+measurable main effect and neither is a row of the paper table — but stay available through
+--variants.
 Data = benchmarks/ (the release eval_config already points at). flight_accident, healthcare
 and nba run in full; pole runs its first 400 questions, or all of them with --pole-full
 (cells are then named pole_full__*).
@@ -31,7 +31,7 @@ import eval_config as cfg, eval_run  # noqa: E402
 ap = argparse.ArgumentParser()
 ap.add_argument("--model", required=True)
 ap.add_argument("--judge", default="on", choices=("on", "off"), help="select-or-abstain judge in the reference configuration (released: on)")
-ap.add_argument("--scope", default="node_rel", choices=("node", "node_rel"), help="CyANCHOR tool scope in the reference configuration (released: node_rel)")
+ap.add_argument("--scope", default="node", choices=("node", "node_rel"), help="CyANCHOR tool scope in the reference configuration (released: node)")
 ap.add_argument("--graphs", default="flight_accident,nba,healthcare,pole")
 ap.add_argument("--variants", default="", help="comma list; default = reference + the six single-switch cells")
 ap.add_argument("--pole-full", action="store_true", help="run pole on all its questions instead of the first 400")

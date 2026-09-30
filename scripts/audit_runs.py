@@ -33,12 +33,13 @@ A run can be used only if
    cannot be verified; and
 3. a ``cyanchor`` run recorded the committed CyANCHOR configuration in its
    ``summary.json`` (``run_config.knobs``), and a ``react`` run the committed
-   tool scope (``TOOL_TYPE``). The released configuration is the complete
-   design: select-or-abstain judge on, node + relation tools for both methods.
-   From 2026-09-28 to 2026-09-30 ``main`` carried a reduced configuration
-   (judge off, node-property tools only); a run made under it has the same
-   ``cyanchor_fl`` / ``react`` directory name, so only the recorded knobs can
-   tell. The three baselines without tools are unaffected.
+   tool scope (``TOOL_TYPE``). The released configuration is: select-or-abstain
+   judge on, node-property tools only (relation tools off) for both methods.
+   ``main`` carried other configurations before it — node + relation tools with
+   the judge on (until 2026-09-28, and again on 2026-09-30), node-property
+   tools with the judge off in between — and a run made under one of them has
+   the same ``cyanchor_fl`` / ``react`` directory name, so only the recorded
+   knobs can tell. The three baselines without tools are unaffected.
 
 Verdicts: ``DELETE`` (fails 1 or 2), ``CHECK`` (no reflog evidence — decide by
 hand), ``keep`` (the newest usable run of its cell), ``older`` (superseded by a

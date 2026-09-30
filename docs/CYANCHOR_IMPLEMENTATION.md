@@ -43,7 +43,7 @@ CyANCHOR's behavior is fully described by a `GroundingSpec`
 | `RETRIEVAL_VECTOR` | off | in-graph embedding kNN (needs embeddings; the `hybrid` flag) |
 | `RETRIEVAL_LEVENSHTEIN` | on | APOC normalized edit-distance scan |
 
-**Tool scope**: `CYANCHOR_TOOL_SCOPE = node | node_rel` (released `node_rel`, the complete design; the ReAct baseline's `TOOL_TYPE` is `node_rel` as well, so both tool-using methods ground over the same tool set). Relation tools add a relation-pattern hint that duplicates the schema in the prompt and never perform value retrieval in CyANCHOR (`_retrieve_values` searches node properties only); ablated to zero contribution on 5 graphs / 2 backbones.
+**Tool scope**: `CYANCHOR_TOOL_SCOPE = node | node_rel` (released `node`, relation tools off; the ReAct baseline's `TOOL_TYPE` is `node` as well, so both tool-using methods ground over the same node-property tools). Relation tools add a relation-pattern hint that duplicates the schema in the prompt and never perform value retrieval in CyANCHOR (`_retrieve_values` searches node properties only); ablated to zero contribution on 5 graphs / 2 backbones.
 
 **Corrective escalation** ([config.py:426-447](../config.py#L426)):
 
@@ -168,7 +168,7 @@ mention and returns structured evidence:
 
 `_route_tools(descriptor, kind, …)` ([plan_exec.py:226](../plan_exec.py#L226)):
 
-1. Pick the FAISS tool index — node-only or node+rel — per `TOOL_TYPE` (released: node+rel)
+1. Pick the FAISS tool index — node-only or node+rel — per `CYANCHOR_TOOL_SCOPE` (released: node-only)
    (`_get_vectorstore(mode="react_node_only" | "react_node_rel")`).
 2. `search_tools(vs, user_query=descriptor, top_l=…)` returns ranked tool
    `func_name`s.
@@ -384,22 +384,22 @@ candidate list. It is deliberately conservative:
 | `CYPHER_SEMANTIC_REPAIR` | error-only retry vs. result-evaluate→regenerate |
 | `CYPHER_EMPTY_IS_WRONG` | whether 0 rows triggers repair |
 | `PLAN_EXEC_VALUE_SNAP` | post-generation snap guard on/off |
-| `CYANCHOR_TOOL_SCOPE` | `node_rel` (shipped) vs. `node` routing scope |
+| `CYANCHOR_TOOL_SCOPE` | `node` (shipped) vs. `node_rel` routing scope |
 
 Example invocations:
 
 ```bash
-# CyANCHOR, all three arms (NOT the shipped configuration: the vector arm is off by default) — in eval_config.py:
+# CyANCHOR, all three arms, node+rel tools (NOT the shipped configuration) — in eval_config.py:
 #   METHOD = "cyanchor"; RETRIEVAL_VECTOR = True; CYANCHOR_TOOL_SCOPE = "node_rel"
 python eval_run.py
 
-# CyANCHOR, fuzzy+Levenshtein only, node + relation tools (no embeddings needed) — the shipped default:
-#   METHOD = "cyanchor"; RETRIEVAL_VECTOR = False; CYANCHOR_TOOL_SCOPE = "node_rel"
+# CyANCHOR, fuzzy+Levenshtein only, node-property tools (no embeddings needed) — the shipped default:
+#   METHOD = "cyanchor"; RETRIEVAL_VECTOR = False; CYANCHOR_TOOL_SCOPE = "node"
 python eval_run.py
 # (eval_run reads eval_config.py only; METHOD=… on the shell is ignored)
 
 # Single question, verbose trace
-python ner_agent_auto.py "Who directed The Matrix?" --mode cyanchor_fl_node_rel --verbose
+python ner_agent_auto.py "Who directed The Matrix?" --mode cyanchor_fl_node_only --verbose
 ```
 
 ---
@@ -409,7 +409,9 @@ python ner_agent_auto.py "Who directed The Matrix?" --mode cyanchor_fl_node_rel 
 ### 11a. Typo — cheap-grounded fast path (judges skipped)
 
 Question: *"How many movies did **Tmo Hooper** direct?"* (typo for *Tom Hooper*,
-CypherBench `movie` graph, shipped config `cyanchor_fl_node_rel`)
+CypherBench `movie` graph, config of that date `cyanchor_fl_node_rel`; the shipped config is
+`cyanchor_fl_node_only`, which drops the relation-pattern hint of step 2 — the node-mention steps
+are unchanged)
 
 1. **PLAN** → `[{"Tmo Hooper", node, "film director name"}, {"direct", relation, …}, {"movies", node, …}]`.
 2. **EXECUTE** "Tmo Hooper":

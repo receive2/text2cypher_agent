@@ -77,43 +77,44 @@ def test_no_git_evidence_means_check_not_keep(world):
 
 
 def test_cyanchor_run_under_another_configuration_is_deleted(world):
-    """The released configuration is the complete design (judge on, node + relation tools). A cyanchor
-    run made under the reduced configuration that main carried from 2026-09-28 to 2026-09-30 (judge off,
-    node tools) has the same directory name; only its recorded knobs tell, and they make it DELETE."""
+    """The released configuration is: select-or-abstain judge on, node-property tools only. A cyanchor run
+    made under another configuration that main carried earlier (judge off, or node + relation tools) has
+    the same directory name; only its recorded knobs tell, and they make it DELETE."""
     guard = datetime(2026, 9, 10, 18, 29)
     committed = ar.committed_knobs()
-    assert committed["PLAN_EXEC_SELECT_JUDGE"] == "1" and committed["CYANCHOR_TOOL_SCOPE"] == "node_rel"
+    assert committed["PLAN_EXEC_SELECT_JUDGE"] == "1" and committed["CYANCHOR_TOOL_SCOPE"] == "node"
     N1 = [{"qid": "n1", "question": "q1", "ea": True}]
-    reduced = dict(committed); reduced["PLAN_EXEC_SELECT_JUDGE"] = "0"; reduced["CYANCHOR_TOOL_SCOPE"] = "node"
-    a = _run(world, "cypherbench_augmented", "movie", "cyanchor", "m1", "20260929-100000", OK, reduced)    # reduced configuration
+    judge_off = dict(committed); judge_off["PLAN_EXEC_SELECT_JUDGE"] = "0"
+    a = _run(world, "cypherbench_augmented", "movie", "cyanchor", "m1", "20260929-100000", OK, judge_off)  # judge off, node tools
+    with_rel = dict(committed); with_rel["CYANCHOR_TOOL_SCOPE"] = "node_rel"
+    a2 = _run(world, "cypherbench_augmented", "movie", "cyanchor", "m1", "20260930-100000", OK, with_rel)  # judge on, node + relation tools
     b = _run(world, "cypherbench_augmented", "movie", "cyanchor", "m1", "20260930-120000", OK)             # committed knobs
     c = _run(world, "cypherbench_augmented", "nba", "cyanchor", "m1", "20260929-120000", N1, None)         # no summary at all
     d = _run(world, "cypherbench_augmented", "nba", "graphrag", "m1", "20260920-120000", N1, None)         # baseline without tools: knobs not checked
     # before f04a37c there was no CYANCHOR_TOOL_SCOPE: TOOL_TYPE set the scope of CyANCHOR too
     early = dict(committed); early.pop("CYANCHOR_TOOL_SCOPE"); early["TOOL_TYPE"] = "node_rel"
-    e = _run(world, "cypherbench_augmented", "nba", "cyanchor", "m1", "20260924-120000", N1, early)        # same system as the committed one
+    e = _run(world, "cypherbench_augmented", "nba", "cyanchor", "m1", "20260924-120000", N1, early)        # node + relation tools
     early_node = dict(early); early_node["TOOL_TYPE"] = "node"
-    f = _run(world, "cypherbench_augmented", "nba", "cyanchor", "m1", "20260925-120000", N1, early_node)   # its node-only variant
+    f = _run(world, "cypherbench_augmented", "nba", "cyanchor", "m1", "20260925-120000", N1, early_node)   # node tools: the same system as the committed one
     v = {r["dir"].name: r for r in ar.audit(world / "logs" / "runs", "m1", False, guard)}
-    assert v[a.name]["verdict"] == "DELETE"
-    assert "PLAN_EXEC_SELECT_JUDGE=0 (committed 1)" in v[a.name]["reason"]
-    assert "CYANCHOR_TOOL_SCOPE=node (committed node_rel)" in v[a.name]["reason"]
+    assert v[a.name]["verdict"] == "DELETE" and "PLAN_EXEC_SELECT_JUDGE=0 (committed 1)" in v[a.name]["reason"]
+    assert v[a2.name]["verdict"] == "DELETE" and "CYANCHOR_TOOL_SCOPE=node_rel (committed node)" in v[a2.name]["reason"]
     assert v[b.name]["verdict"] == "keep"
     assert v[c.name]["verdict"] == "DELETE" and "no summary.json" in v[c.name]["reason"]
     assert v[d.name]["verdict"] == "keep"
-    assert ar.cyanchor_config_mismatch(early, committed) == ""                # usable: not DELETE, only superseded by newer dirs
-    assert v[e.name]["verdict"] == "older"
-    assert v[f.name]["verdict"] == "DELETE" and "tool scope node (recorded as TOOL_TYPE; committed node_rel)" in v[f.name]["reason"]
+    assert v[e.name]["verdict"] == "DELETE" and "tool scope node_rel (recorded as TOOL_TYPE; committed node)" in v[e.name]["reason"]
+    assert ar.cyanchor_config_mismatch(early_node, committed) == ""           # usable: not DELETE, only superseded by a newer dir
+    assert v[f.name]["verdict"] == "older"
 
 
 def test_react_run_under_another_tool_scope_is_deleted(world):
-    """The ReAct baseline grounds over the same tool set as CyANCHOR (TOOL_TYPE = node_rel). A run over
-    the node tools only has the same ``react`` directory name; its recorded TOOL_TYPE tells."""
+    """The ReAct baseline grounds over the node-property tools only, like CyANCHOR (TOOL_TYPE = node). A run
+    over node + relation tools has the same ``react`` directory name; its recorded TOOL_TYPE tells."""
     guard = datetime(2026, 9, 10, 18, 29)
     committed = ar.committed_knobs()
-    assert committed["TOOL_TYPE"] == "node_rel"
-    old = dict(committed); old["TOOL_TYPE"] = "node"
-    a = _run(world, "cypherbench_augmented", "movie", "react", "m1", "20260929-100000", OK, old)          # node tools only
+    assert committed["TOOL_TYPE"] == "node"
+    old = dict(committed); old["TOOL_TYPE"] = "node_rel"
+    a = _run(world, "cypherbench_augmented", "movie", "react", "m1", "20260929-100000", OK, old)          # node + relation tools
     b = _run(world, "cypherbench_augmented", "movie", "react", "m1", "20260929-120000", OK)               # committed scope
     c = _run(world, "cypherbench_augmented", "nba", "react", "m1", "20260929-120000",
              [{"qid": "n1", "question": "q1", "ea": True}], None)                                  # no summary at all
@@ -123,7 +124,7 @@ def test_react_run_under_another_tool_scope_is_deleted(world):
     e = _run(world, "cypherbench_augmented", "nba", "cyanchor", "m1", "20260929-120000",
              [{"qid": "n1", "question": "q1", "ea": True}], old)                                   # cyanchor with its own scope knob recorded: TOOL_TYPE irrelevant
     v = {r["dir"].name: r for r in ar.audit(world / "logs" / "runs", "m1", False, guard)}
-    assert v[a.name]["verdict"] == "DELETE" and "TOOL_TYPE=node (committed node_rel)" in v[a.name]["reason"]
+    assert v[a.name]["verdict"] == "DELETE" and "TOOL_TYPE=node_rel (committed node)" in v[a.name]["reason"]
     assert "ReAct tool scope" in v[a.name]["reason"]
     assert v[b.name]["verdict"] == "keep"
     assert v[c.name]["verdict"] == "DELETE" and "no summary.json" in v[c.name]["reason"]

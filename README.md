@@ -195,8 +195,8 @@ directly (env-overridable). You never set environment variables in the normal fl
 |---|---|
 | `METHOD` | `no_val_link` · `fcav` · `react` · `graphrag` · `cyanchor` |
 | `RETRIEVAL_FUZZY` / `RETRIEVAL_VECTOR` / `RETRIEVAL_LEVENSHTEIN` | `0`/`1` each — CyANCHOR's retrieval arms (≥1 on; defaults `1`/`0`/`1`) |
-| `TOOL_TYPE` | `node` · `node_rel`  (ReAct baseline only; shipped `node_rel` — the same node + relation tool set as CyANCHOR) |
-| `CYANCHOR_TOOL_SCOPE` | `node` · `node_rel`  (CyANCHOR routing scope; shipped `node_rel` — node + relation tools) |
+| `TOOL_TYPE` | `node` · `node_rel`  (ReAct baseline only; shipped `node` — the same node-property tools as CyANCHOR) |
+| `CYANCHOR_TOOL_SCOPE` | `node` · `node_rel`  (CyANCHOR routing scope; shipped `node` — relation tools off) |
 | `CYPHER_SEMANTIC_REPAIR` / `CYPHER_REPAIR_MAX_ROUNDS` / `CYPHER_EMPTY_IS_WRONG` | CyANCHOR-only result-level self-correction (defaults `1` / `4` / `1`) |
 
 - **`no_val_link`** — grounding bypassed; only schema + question reach the Cypher LLM.
@@ -204,7 +204,7 @@ directly (env-overridable). You never set environment variables in the normal fl
   from a self-built value index → LLM generates the entity JSON). Build the index
   with `setup_fcav.py` first.
 - **`react`** — ReAct NER-agent grounder (baseline); fixed fuzzy/BM25 retrieval over
-  the `TOOL_TYPE` tools (shipped `node_rel`: the node + relation tool set CyANCHOR routes on).
+  the `TOOL_TYPE` tools (shipped `node`: the node-property tools CyANCHOR routes on).
 - **`graphrag`** — Multi-Agent GraphRAG baseline: **no pre-grounding** — generate
   Cypher → execute → an LLM evaluator classifies (accept / semantic-defect /
   error-or-empty); on error/empty it extracts the query's labels, property–value
@@ -223,11 +223,11 @@ directly (env-overridable). You never set environment variables in the normal fl
   result). Knobs: `CYPHER_SEMANTIC_REPAIR` / `CYPHER_REPAIR_MAX_ROUNDS` /
   `CYPHER_EMPTY_IS_WRONG`. Retrieval is the **union of three independently-toggleable arms**:
   `RETRIEVAL_FUZZY` (BM25), `RETRIEVAL_LEVENSHTEIN` (APOC normalized edit-distance — no
-  embeddings, high-ROI), `RETRIEVAL_VECTOR` (in-graph embeddings). Tool scope: `CYANCHOR_TOOL_SCOPE` = `node_rel`
-  (shipped — node + relation tools; the ReAct baseline's `TOOL_TYPE` is `node_rel` as well) | `node`.
+  embeddings, high-ROI), `RETRIEVAL_VECTOR` (in-graph embeddings). Tool scope: `CYANCHOR_TOOL_SCOPE` = `node`
+  (shipped — relation tools off; the ReAct baseline's `TOOL_TYPE` is `node` as well) | `node_rel`.
 
 To run a given configuration, set it in `eval_config.py` and run `python eval_run.py`
-— e.g. `METHOD = "cyanchor"` with `RETRIEVAL_VECTOR = False`, `CYANCHOR_TOOL_SCOPE = "node_rel"`
+— e.g. `METHOD = "cyanchor"` with `RETRIEVAL_VECTOR = False`, `CYANCHOR_TOOL_SCOPE = "node"`
 for CyANCHOR `fuzzy+lev` (the shipped configuration), or `METHOD = "graphrag"` for the Multi-Agent GraphRAG
 baseline. The sweep driver (`orchestrate_sweep.py`) sweeps methods by setting
 `cfg.METHOD` in-process — same surface, no env channel.
@@ -441,7 +441,7 @@ switches — see [Methods](#value-linking-modes)).
 
 ```bash
 # Full pipeline: value linking → Cypher → Neo4j → answer
-python ner_agent_auto.py "Who acted in The Matrix?" --mode cyanchor_fl_node_rel
+python ner_agent_auto.py "Who acted in The Matrix?" --mode cyanchor_fl_node_only
 
 # --verbose shows the intermediate steps:
 #   PLAN     entity mentions decomposed from the question
@@ -449,24 +449,24 @@ python ner_agent_auto.py "Who acted in The Matrix?" --mode cyanchor_fl_node_rel
 #            LLM corrective-loop decisions (done / deepen / pick a field)
 #   GENERATE the candidate block + the generated Cypher
 python ner_agent_auto.py "How many movies were released before 2000?" \
-    --mode cyanchor_fl_node_rel --verbose
+    --mode cyanchor_fl_node_only --verbose
 ```
 
-> Canonical names encode the arms and the tool scope: `cyanchor_fl_node_rel` =
-> fuzzy+lev over node + relation tools (the shipped configuration, no embeddings);
-> `cyanchor_fvl_node_rel` = fuzzy+lev+vector (needs an in-graph vector index;
-> falls back gracefully if absent). A `_node_only` suffix drops the relation
-> tools. Or just set `METHOD=cyanchor` + the
+> Canonical names encode the arms and the tool scope: `cyanchor_fl_node_only` =
+> fuzzy+lev over node-property tools only (the shipped configuration, no embeddings);
+> `cyanchor_fvl_node_only` = fuzzy+lev+vector (needs an in-graph vector index;
+> falls back gracefully if absent). A `_node_rel` suffix adds the relation tools —
+> not shipped, ablated to zero. Or just set `METHOD=cyanchor` + the
 > `RETRIEVAL_*` switches and omit `--mode`.
 
 **ReAct** agent — baseline (also shows its agent trace under `--verbose`):
 
 ```bash
 python ner_agent_auto.py "How many movies were released before 2000?" \
-    --mode react_node_rel --verbose
+    --mode react_node_only --verbose
 
 # Grounding step only (skip Cypher generation)
-python ner_agent_auto.py "movies by Tom Hanks" --mode react_node_rel --ner-only
+python ner_agent_auto.py "movies by Tom Hanks" --mode react_node_only --ner-only
 ```
 
 Or call from Python:
@@ -475,7 +475,7 @@ Or call from Python:
 from ner_agent_auto import ask_auto
 
 result = ask_auto("What movies did Keanu Reeves star in?",
-                  mode="cyanchor_fl_node_rel")   # or omit to use the config axes
+                  mode="cyanchor_fl_node_only")   # or omit to use the config axes
 print(result["cypher"])   # the generated Cypher query
 print(result["result"])   # natural-language answer
 print(result["context"])  # raw rows returned by Neo4j

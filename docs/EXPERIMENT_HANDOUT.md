@@ -71,22 +71,21 @@ How the harness works, every config knob and the pre-flight words: [`RUNNING_EXP
 >    whole audit output to the coordinator. Usable runs are picked up by the
 >    driver automatically (§5).
 
-> **Made any `cyanchor` or `react` run between 2026-09-28 and 2026-09-30?** The
-> released configuration is the complete design: CyANCHOR with the
-> select-or-abstain judge on (`PLAN_EXEC_SELECT_JUDGE = True`) and routing on
-> node + relation tools (`CYANCHOR_TOOL_SCOPE = "node_rel"`), and the ReAct
-> baseline over the same tool set (`TOOL_TYPE = "node_rel"`). Those are the
-> committed defaults every model runs under. For two days (`f04a37c`,
-> 2026-09-28, until 2026-09-30) `main` carried a reduced configuration — judge
-> off, node-property tools only, for ReAct from 2026-09-29 — and a `cyanchor`
-> or `react` run made from a checkout in that state cannot be pooled. It does
-> not show in the directory name (`cyanchor_fl`, `react`), so the driver would
-> pick it up silently. `python scripts/audit_runs.py --model <preset>` reads the
-> knobs each run recorded in its `summary.json` and marks such runs `DELETE`;
-> runs from before 2026-09-28 already used the released configuration and are
-> not affected by this rule, nor are the three baselines without tools
-> (`no_val_link`, `fcav`, `graphrag`). `--discard-all` (step 2 above) removes
-> them too.
+> **Made any `cyanchor` or `react` run before your checkout had the
+> configuration below (committed 2026-09-30)?** The released configuration is:
+> CyANCHOR with the select-or-abstain judge on (`PLAN_EXEC_SELECT_JUDGE = True`)
+> and routing on node-property tools only (`CYANCHOR_TOOL_SCOPE = "node"`,
+> relation tools off), and the ReAct baseline over the same node-property tools
+> (`TOOL_TYPE = "node"`). Those are the committed defaults every model runs
+> under. Earlier states of `main` carried other configurations — node +
+> relation tools with the judge on (until 2026-09-28, and again for part of
+> 2026-09-30), node-property tools with the judge off in between — and a
+> `cyanchor` or `react` run made from a checkout in one of those states cannot
+> be pooled. It does not show in the directory name (`cyanchor_fl`, `react`),
+> so the driver would pick it up silently. `python scripts/audit_runs.py --model
+> <preset>` reads the knobs each run recorded in its `summary.json` and marks
+> such runs `DELETE`; the three baselines without tools (`no_val_link`, `fcav`,
+> `graphrag`) are unaffected. `--discard-all` (step 2 above) removes them too.
 
 ---
 
@@ -177,9 +176,9 @@ GENERATOR_LLM = "gpt-5.6-terra"   # ← exact preset name from the table below
 
 **Nothing else.** `METHOD`, `EVAL_PAIRS`, `LIMIT` and `SHARDS` are set by the
 sweep driver (step 5); leave every other knob at its committed value — the
-defaults are the shipped configuration (the complete design: node + relation
-tools for CyANCHOR and for the ReAct baseline, select-or-abstain judge on,
-fuzzy + Levenshtein arms) and every model must run under the same ones. The value already in the file is the coordinator's reference model,
+defaults are the shipped configuration (node-property tools only for CyANCHOR
+and for the ReAct baseline, select-or-abstain judge on, fuzzy + Levenshtein
+arms) and every model must run under the same ones. The value already in the file is the coordinator's reference model,
 not a default: the driver refuses to start while `GENERATOR_LLM` still holds
 the committed value, so a skipped step 2 — or a `git checkout eval_config.py`
 after a pull — is caught before anything runs.

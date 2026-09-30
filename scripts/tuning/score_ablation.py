@@ -2,10 +2,12 @@
 """Score the component ablation and write report/ablation_table*.md.
 
     python scripts/tuning/score_ablation.py                                   # gpt-4.1 cells
-    python scripts/tuning/score_ablation.py --model gpt-5.6-terra [--paper]   # released reference (judge on, node+rel tools), 2026-09 cells
-    python scripts/tuning/score_ablation.py --model gpt-5.6-terra --ref judge-on [--scope node_rel] [--pole-full] [--paper]
-                                                                              # cells written by run_ablation_model.py [--pole-full];
-                                                                              # --ref judge-off / --scope node = the reduced references
+    python scripts/tuning/score_ablation.py --model gpt-5.6-terra [--paper]   # 2026-09 cells: all-on reference (judge on, node+rel tools);
+                                                                              # the released configuration is its "− relation tools" row
+    python scripts/tuning/score_ablation.py --model gpt-5.6-terra --ref judge-on [--scope node] [--pole-full] [--paper]
+                                                                              # released reference (judge on, node tools), cells written by
+                                                                              # run_ablation_model.py [--pole-full]; --ref judge-off /
+                                                                              # --scope node_rel = other references
 
 With --paper, also write the paper-format tables: the main-text table (components whose
 pooled effect is significant), the full table for the appendix, Δ in points, pooled column,
@@ -22,7 +24,7 @@ REPO = Path(__file__).resolve().parent.parent.parent; os.chdir(REPO)
 MODEL = sys.argv[sys.argv.index("--model") + 1] if "--model" in sys.argv else "gpt-4.1"
 REFNAME = sys.argv[sys.argv.index("--ref") + 1] if "--ref" in sys.argv else ""        # judge-on | judge-off: released-reference cells
 POLE_FULL = "--pole-full" in sys.argv
-SCOPE = sys.argv[sys.argv.index("--scope") + 1] if "--scope" in sys.argv else "node_rel"   # node | node_rel: tool scope of the reference cells
+SCOPE = sys.argv[sys.argv.index("--scope") + 1] if "--scope" in sys.argv else "node"       # node | node_rel: tool scope of the reference cells
 ROOT = f"logs/ablation_{MODEL}" + (f"__{REFNAME}-{SCOPE}" if REFNAME else "")
 if "--root" in sys.argv: ROOT = sys.argv[sys.argv.index("--root") + 1].rstrip("/")  # any other cell root (e.g. a smoke run)
 SUFFIX = ("" if ROOT == f"logs/ablation_{MODEL}" else "__" + Path(ROOT).name.split("__", 1)[-1]) + ("-polefull" if POLE_FULL else "")
@@ -124,7 +126,7 @@ LEGACY = ROOT == f"logs/ablation_{MODEL}"
 missing = [(name, g) for v, name, _ in ROWS if v != "no_correction" for g in (GRAPHS[:3] if MODEL == "gpt-4.1" else GRAPHS) if v not in RES[g]["var"]]
 JUDGE_REF = "off" if "judge-off" in ROOT else "on"
 SCOPE_REF = "node_rel" if (LEGACY or ROOT.endswith("node_rel") or "node_rel__" in ROOT) else "node"
-RELEASED = JUDGE_REF == "on" and SCOPE_REF == "node_rel"      # the complete design is the released configuration
+RELEASED = JUDGE_REF == "on" and SCOPE_REF == "node"          # released: select-or-abstain judge on, node-property tools only
 if LEGACY:
     L += ["## Missing cells for the paper table (3 test graphs × 8 rows)\n"]
     DRV = "`scripts/tuning/run_ablation_fill.py` (add `--with-joint` for the all-correction row)" if MODEL == "gpt-4.1" else f"`scripts/tuning/run_ablation_model.py --model {MODEL}` (add `--with-joint` for the all-correction row)"
@@ -169,9 +171,11 @@ if "--paper" in sys.argv:
     MAIN = [r for r in PROWS if P[r[0]] and P[r[0]]["p"] < 0.05]
     POLE = "every graph runs in full" if POLE_FULL else "pole uses its first 400 questions in release order (the prefix has the category mix of the whole graph), the other graphs run in full"
     TOOLS = "node + relation tools" if SCOPE_REF == "node_rel" else "node-property tools"
-    REFDESC = ((f"The full row is the released configuration, the complete design: routing on {TOOLS}, fuzzy + Levenshtein arms, "
+    REFDESC = (("The full-system run has every component on (select-or-abstain judge on, node + relation tools); the released default routes on "
+                "node-property tools only, which is the `− relation tools` row.") if LEGACY else
+               (f"The full row is the released configuration: routing on {TOOLS}, fuzzy + Levenshtein arms, "
                 f"escalation loop, select-or-abstain judge, semantic repair and value-snap on.") if RELEASED else
-               (f"The full row is a reduced reference, not the released configuration: routing on {TOOLS}, select-or-abstain judge "
+               (f"The full row is not the released configuration: routing on {TOOLS}, select-or-abstain judge "
                 f"{JUDGE_REF}, fuzzy + Levenshtein arms, escalation loop, semantic repair and value-snap on."))
 
     def md_table(rows):
@@ -246,7 +250,9 @@ if "--paper" in sys.argv:
            r"per benchmark plus nba (the alias-richest \cypherbench\ graph); " + ("every graph runs in full" if POLE_FULL else "pole uses its first 400 questions")
            + r". Pooled $=$ all " + f"{N:,}".replace(",", "{,}") + r" questions. Every cell is one run at temperature~0, paired per question with the full run; "
            r"$^{\dagger}$/$^{\ddagger}$: two-sided sign test $p<0.05$/$p<0.01$. ``$-$ Levenshtein arm'' and ``$-$ fuzzy arm'' leave the other arm as the sole retrieval arm. "
-           + (r"The full row is the released configuration." if RELEASED else r"The full row is a reduced reference (select-or-abstain judge " + JUDGE_REF + ", " + ("node + relation" if SCOPE_REF == "node_rel" else "node-property") + r" tools), not the released configuration."))
+           + (r"The released default routes on node-property tools only (the $-$ relation tools row)." if LEGACY else
+              r"The full row is the released configuration." if RELEASED else
+              r"The full row is not the released configuration (select-or-abstain judge " + JUDGE_REF + ", " + ("node + relation" if SCOPE_REF == "node_rel" else "node-property") + r" tools)."))
     Path(PBASE + "_main.tex").write_text("\n".join(tex_table(MAIN, "Component ablation " + CAP + r" Components without a measurable effect are in Table~\ref{tab:ablation-full}.", "tab:ablation-components")) + "\n", encoding="utf-8")
     Path(PBASE + ".tex").write_text("\n".join(tex_table(PROWS, "Full component ablation " + CAP, "tab:ablation-full")) + "\n", encoding="utf-8")
     print("\n".join(M[3:4] + md_table(MAIN))); print(f"\nwrote {PBASE}.md, {PBASE}_main.tex, {PBASE}.tex")
