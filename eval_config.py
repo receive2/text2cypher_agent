@@ -66,7 +66,9 @@ GENERATOR_LLM: str = "gpt-4.1"  # preset name from config.MODEL_PRESETS — sele
                                 #   deepseek-v3.1 | llama-3.3-70b | qwen3-32b |
                                 #   claude-opus-5, deepseek-v4.1-flash (extras)
 METHOD:    str = "cyanchor"     # no_val_link | fcav | react | graphrag | cyanchor
-TOOL_TYPE: str = "node_rel"     # node | node_rel   (ReAct baseline tool scope)
+TOOL_TYPE: str = "node"         # node | node_rel   (ReAct baseline tool scope; node since 2026-09-29: the same
+                                #   node-property tools CyANCHOR routes on, so the two tool-using methods differ only
+                                #   in how they ground. The benchmarks perturb node-property values only.)
 CYANCHOR_TOOL_SCOPE: str = "node"  # node | node_rel   (CyANCHOR routing scope; node = shipped since 2026-09,
                                    #   relation tools ablated to zero on 5 graphs / 2 backbones)
 

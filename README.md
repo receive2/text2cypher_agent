@@ -195,7 +195,7 @@ directly (env-overridable). You never set environment variables in the normal fl
 |---|---|
 | `METHOD` | `no_val_link` · `fcav` · `react` · `graphrag` · `cyanchor` |
 | `RETRIEVAL_FUZZY` / `RETRIEVAL_VECTOR` / `RETRIEVAL_LEVENSHTEIN` | `0`/`1` each — CyANCHOR's retrieval arms (≥1 on; defaults `1`/`0`/`1`) |
-| `TOOL_TYPE` | `node` · `node_rel`  (ReAct baseline only) |
+| `TOOL_TYPE` | `node` · `node_rel`  (ReAct baseline only; shipped `node` — the same node-property tools as CyANCHOR) |
 | `CYANCHOR_TOOL_SCOPE` | `node` · `node_rel`  (CyANCHOR routing scope; shipped `node` — relation tools off) |
 | `CYPHER_SEMANTIC_REPAIR` / `CYPHER_REPAIR_MAX_ROUNDS` / `CYPHER_EMPTY_IS_WRONG` | CyANCHOR-only result-level self-correction (defaults `1` / `4` / `1`) |
 
@@ -204,7 +204,7 @@ directly (env-overridable). You never set environment variables in the normal fl
   from a self-built value index → LLM generates the entity JSON). Build the index
   with `setup_fcav.py` first.
 - **`react`** — ReAct NER-agent grounder (baseline); fixed fuzzy/BM25 retrieval over
-  `TOOL_TYPE` tools.
+  the `TOOL_TYPE` tools (shipped `node`: the node-property tools CyANCHOR routes on).
 - **`graphrag`** — Multi-Agent GraphRAG baseline: **no pre-grounding** — generate
   Cypher → execute → an LLM evaluator classifies (accept / semantic-defect /
   error-or-empty); on error/empty it extracts the query's labels, property–value
@@ -224,7 +224,7 @@ directly (env-overridable). You never set environment variables in the normal fl
   `CYPHER_EMPTY_IS_WRONG`. Retrieval is the **union of three independently-toggleable arms**:
   `RETRIEVAL_FUZZY` (BM25), `RETRIEVAL_LEVENSHTEIN` (APOC normalized edit-distance — no
   embeddings, high-ROI), `RETRIEVAL_VECTOR` (in-graph embeddings). Tool scope: `CYANCHOR_TOOL_SCOPE` = `node`
-  (shipped — relation tools off; `TOOL_TYPE` governs the ReAct baseline only) | `node_rel`.
+  (shipped — relation tools off; the ReAct baseline's `TOOL_TYPE` is `node` as well) | `node_rel`.
 
 To run a given configuration, set it in `eval_config.py` and run `python eval_run.py`
 — e.g. `METHOD = "cyanchor"` with `RETRIEVAL_VECTOR = False`, `CYANCHOR_TOOL_SCOPE = "node"`
@@ -463,10 +463,10 @@ python ner_agent_auto.py "How many movies were released before 2000?" \
 
 ```bash
 python ner_agent_auto.py "How many movies were released before 2000?" \
-    --mode react_node_rel --verbose
+    --mode react_node_only --verbose
 
 # Grounding step only (skip Cypher generation)
-python ner_agent_auto.py "movies by Tom Hanks" --mode react_node_rel --ner-only
+python ner_agent_auto.py "movies by Tom Hanks" --mode react_node_only --ner-only
 ```
 
 Or call from Python:

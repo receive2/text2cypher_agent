@@ -20,10 +20,15 @@ REL = {("cypherbench_augmented", "movie"): {"a": "qa", "b": "qb"},
 OK = [{"qid": "a", "question": "qa", "ea": True}, {"qid": "b", "question": "qb", "ea": True}]
 
 
-def _run(root: Path, dataset, graph, method, model, stamp, rows):
+def _run(root: Path, dataset, graph, method, model, stamp, rows, knobs="committed"):
+    """A run directory as eval_run leaves it: records plus a summary.json that records the knobs
+    (the committed ones unless *knobs* is a dict, or None for a run with no summary at all)."""
     d = root / "logs" / "runs" / f"{dataset}__{graph}__{osw.method_seg(method)}@{model}__{stamp}"
     d.mkdir(parents=True)
     (d / "records.jsonl").write_text("\n".join(json.dumps(r) for r in rows) + "\n", encoding="utf-8")
+    if knobs is not None:
+        k = ar.committed_knobs() if knobs == "committed" else knobs
+        (d / "summary.json").write_text(json.dumps({"run_config": {"knobs": k}}), encoding="utf-8")
     return d
 
 
@@ -78,14 +83,12 @@ def test_cyanchor_run_under_the_old_configuration_is_deleted(world):
     committed = ar.committed_knobs()
     assert committed["PLAN_EXEC_SELECT_JUDGE"] == "0" and committed["CYANCHOR_TOOL_SCOPE"] == "node"
     old = dict(committed); old["PLAN_EXEC_SELECT_JUDGE"] = "1"; old.pop("CYANCHOR_TOOL_SCOPE")
-    a = _run(world, "cypherbench_augmented", "movie", "cyanchor", "m1", "20260920-120000", OK)     # pre-freeze knobs
-    (a / "summary.json").write_text(json.dumps({"run_config": {"knobs": old}}), encoding="utf-8")
-    b = _run(world, "cypherbench_augmented", "movie", "cyanchor", "m1", "20260929-120000", OK)     # committed knobs
-    (b / "summary.json").write_text(json.dumps({"run_config": {"knobs": committed}}), encoding="utf-8")
+    a = _run(world, "cypherbench_augmented", "movie", "cyanchor", "m1", "20260920-120000", OK, old)        # pre-freeze knobs
+    b = _run(world, "cypherbench_augmented", "movie", "cyanchor", "m1", "20260929-120000", OK)             # committed knobs
     c = _run(world, "cypherbench_augmented", "nba", "cyanchor", "m1", "20260929-120000",
-             [{"qid": "n1", "question": "q1", "ea": True}])                                        # no summary at all
-    d = _run(world, "cypherbench_augmented", "nba", "react", "m1", "20260920-120000",
-             [{"qid": "n1", "question": "q1", "ea": True}])                                        # baseline: knobs not checked
+             [{"qid": "n1", "question": "q1", "ea": True}], None)                                  # no summary at all
+    d = _run(world, "cypherbench_augmented", "nba", "graphrag", "m1", "20260920-120000",
+             [{"qid": "n1", "question": "q1", "ea": True}], None)                                  # baseline without tools: knobs not checked
     v = {r["dir"].name: r for r in ar.audit(world / "logs" / "runs", "m1", False, guard)}
     assert v[a.name]["verdict"] == "DELETE"
     assert "PLAN_EXEC_SELECT_JUDGE=1 (committed 0)" in v[a.name]["reason"]
@@ -93,6 +96,31 @@ def test_cyanchor_run_under_the_old_configuration_is_deleted(world):
     assert v[b.name]["verdict"] == "keep"
     assert v[c.name]["verdict"] == "DELETE" and "no summary.json" in v[c.name]["reason"]
     assert v[d.name]["verdict"] == "keep"
+
+
+def test_react_run_over_node_and_relation_tools_is_deleted(world):
+    """Since 2026-09-29 the ReAct baseline grounds over the node-property tools only (TOOL_TYPE = node).
+    A run over node + relation tools has the same ``react`` directory name; its recorded TOOL_TYPE tells."""
+    guard = datetime(2026, 9, 10, 18, 29)
+    committed = ar.committed_knobs()
+    assert committed["TOOL_TYPE"] == "node"
+    old = dict(committed); old["TOOL_TYPE"] = "node_rel"
+    a = _run(world, "cypherbench_augmented", "movie", "react", "m1", "20260929-100000", OK, old)          # node + relation tools
+    b = _run(world, "cypherbench_augmented", "movie", "react", "m1", "20260929-120000", OK)               # committed scope
+    c = _run(world, "cypherbench_augmented", "nba", "react", "m1", "20260929-120000",
+             [{"qid": "n1", "question": "q1", "ea": True}], None)                                  # no summary at all
+    unstamped = dict(committed); unstamped.pop("TOOL_TYPE")
+    d = _run(world, "cypherbench_augmented", "nba", "react", "m1", "20260929-130000",
+             [{"qid": "n1", "question": "q1", "ea": True}], unstamped)                             # scope not recorded
+    e = _run(world, "cypherbench_augmented", "nba", "cyanchor", "m1", "20260929-120000",
+             [{"qid": "n1", "question": "q1", "ea": True}], old)                                   # cyanchor: TOOL_TYPE irrelevant
+    v = {r["dir"].name: r for r in ar.audit(world / "logs" / "runs", "m1", False, guard)}
+    assert v[a.name]["verdict"] == "DELETE" and "TOOL_TYPE=node_rel (committed node)" in v[a.name]["reason"]
+    assert "ReAct tool scope" in v[a.name]["reason"]
+    assert v[b.name]["verdict"] == "keep"
+    assert v[c.name]["verdict"] == "DELETE" and "no summary.json" in v[c.name]["reason"]
+    assert v[d.name]["verdict"] == "DELETE" and "TOOL_TYPE not recorded" in v[d.name]["reason"]
+    assert v[e.name]["verdict"] == "keep"
 
 
 def test_guard_since_on_this_repo():

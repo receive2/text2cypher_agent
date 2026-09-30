@@ -35,7 +35,11 @@ A run can be used only if
    ``summary.json`` (``run_config.knobs``). The configuration was frozen on
    2026-09-28 (``f04a37c``: node-property tools only, select-or-abstain judge
    off); a run from before that has the same ``cyanchor_fl`` directory name,
-   so only the recorded knobs can tell. The four baselines are unaffected.
+   so only the recorded knobs can tell. Likewise a ``react`` run must record
+   the committed tool scope (``TOOL_TYPE``): since 2026-09-29 the ReAct
+   baseline grounds over the same node-property tools as CyANCHOR (``node``);
+   every earlier run used node + relation tools under the same ``react``
+   directory name. The three baselines without tools are unaffected.
 
 Verdicts: ``DELETE`` (fails 1 or 2), ``CHECK`` (no reflog evidence — decide by
 hand), ``keep`` (the newest usable run of its cell), ``older`` (superseded by a
@@ -112,6 +116,10 @@ def run_dir_model(d: Path, method_seg: str) -> str:
 # to node-property tools, and a pre-freeze run is not distinguishable by its directory name.
 CYANCHOR_KNOB_PREFIXES = ("CYANCHOR_", "RETRIEVAL_", "PLAN_EXEC_", "CYPHER_")
 CYANCHOR_REQUIRED_KNOBS = ("CYANCHOR_TOOL_SCOPE", "PLAN_EXEC_SELECT_JUDGE")
+# The ReAct baseline records its tool scope the same way. Its directory name (``react``) does
+# not show the scope either: until 2026-09-29 it ran over node + relation tools (``node_rel``);
+# the released configuration gives it the node-property tools CyANCHOR routes on (``node``).
+REACT_REQUIRED_KNOBS = ("TOOL_TYPE",)
 
 
 def committed_knobs() -> Dict[str, str]:
@@ -141,6 +149,27 @@ def cyanchor_config_mismatch(recorded: Optional[Dict[str, str]], committed: Dict
     bad += [f"{k} not recorded (predates the 2026-09-28 configuration freeze)"
             for k in CYANCHOR_REQUIRED_KNOBS if k in committed and k not in recorded]
     return "; ".join(bad)
+
+
+def react_config_mismatch(recorded: Optional[Dict[str, str]], committed: Dict[str, str]) -> str:
+    """Why a ReAct run's recorded tool scope is not the committed one; ``""`` when it is."""
+    if recorded is None:
+        return "no summary.json — the tool scope it ran under is unknown"
+    bad = [f"{k}={recorded[k]} (committed {committed[k]})" for k in REACT_REQUIRED_KNOBS
+           if k in committed and k in recorded and recorded[k] != committed[k]]
+    bad += [f"{k} not recorded (predates the 2026-09-29 change of the ReAct tool scope)"
+            for k in REACT_REQUIRED_KNOBS if k in committed and k not in recorded]
+    return "; ".join(bad)
+
+
+def config_mismatch(method: str, recorded: Optional[Dict[str, str]], committed: Dict[str, str]) -> str:
+    """Rule 3 for one run: the methods that ground over tools must have recorded the committed
+    configuration; the baselines without tools (no_val_link, fcav, graphrag) are not checked."""
+    if method.startswith("cyanchor"):
+        return cyanchor_config_mismatch(recorded, committed)
+    if method == "react":
+        return react_config_mismatch(recorded, committed)
+    return ""
 
 
 def model_run_dirs(runs_root: Path, model: str, include_unattributed: bool = False) -> List[Path]:
@@ -205,8 +234,7 @@ def audit(runs_root: Path, model: Optional[str], all_models: bool,
     for r in dirs:
         r["rows_ok"], r["rows_why"] = (osw.rows_match_release(r["dataset"], r["graph"], r["records"])
                                        if r["in_suite"] else (True, ""))
-        r["config_why"] = (cyanchor_config_mismatch(recorded_knobs(r["dir"]), committed)
-                           if r["in_suite"] and r["method"].startswith("cyanchor") else "")
+        r["config_why"] = config_mismatch(r["method"], recorded_knobs(r["dir"]), committed) if r["in_suite"] else ""
         if guard_time is None:
             r["before_guard"] = r["made"] is None          # untagged/unstamped dirs predate the guard by construction
             r["guard_unknown"] = r["made"] is not None
@@ -233,7 +261,8 @@ def audit(runs_root: Path, model: Optional[str], all_models: bool,
         elif not r["rows_ok"]:
             r["verdict"], r["reason"] = "DELETE", r["rows_why"]
         elif r["config_why"]:
-            r["verdict"], r["reason"] = "DELETE", (f"CyANCHOR configuration is not the committed one: {r['config_why']} — "
+            what = "CyANCHOR configuration" if r["method"].startswith("cyanchor") else "ReAct tool scope"
+            r["verdict"], r["reason"] = "DELETE", (f"{what} is not the committed one: {r['config_why']} — "
                                             f"the directory name ({r['method']}) cannot show this; re-run the cell")
         elif r["before_guard"]:
             made = f"made {r['made']:%Y-%m-%d %H:%M}" if r["made"] else "unstamped (predates model tagging)"
@@ -302,9 +331,9 @@ def main(argv: Optional[List[str]] = None) -> int:
     guard_time, guard_note = guard_since()
     ck = committed_knobs()
     print(f"audit of {eval_paths.RUNS_ROOT}/ for {'every model' if args.all_models else f'model {model}'} — "
-          f"benchmarks {osw._benchmarks_version()}; {guard_note}; CyANCHOR runs are checked against the committed "
+          f"benchmarks {osw._benchmarks_version()}; {guard_note}; CyANCHOR and ReAct runs are checked against the committed "
           f"configuration (select judge {'on' if ck.get('PLAN_EXEC_SELECT_JUDGE') == '1' else 'off'}, "
-          f"tool scope {ck.get('CYANCHOR_TOOL_SCOPE')})\n")
+          f"CyANCHOR tool scope {ck.get('CYANCHOR_TOOL_SCOPE')}, ReAct tool scope {ck.get('TOOL_TYPE')})\n")
     if not runs_root.is_dir():
         print("  (no run directories)"); return 0
     rows = audit(runs_root, model, args.all_models, guard_time)

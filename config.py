@@ -395,7 +395,8 @@ TOOL_TOP_K            = 10   # fulltext search top-k per tool call
 #   RETRIEVAL_VECTOR       in-graph embedding kNN          (default off — needs embeddings)
 #   RETRIEVAL_LEVENSHTEIN  APOC normalized edit-distance   (default on)
 #
-# TOOL_TYPE — react/cyanchor tool scope: node | node_rel.
+# TOOL_TYPE — ReAct baseline tool scope: node | node_rel (released: node, the same
+# node-property tools CyANCHOR routes on; CyANCHOR has its own CYANCHOR_TOOL_SCOPE).
 #
 # Examples:
 #   METHOD=cyanchor RETRIEVAL_VECTOR=1 python eval_run.py     # CyANCHOR, all 3 arms
@@ -415,7 +416,7 @@ TOOL_TOP_K            = 10   # fulltext search top-k per tool call
 # │   it there, which is a CLI convenience). Do not treat it as a 2nd knob.      │
 # └──────────────────────────────────────────────────────────────────────────┘
 METHOD:    str = os.getenv("METHOD", os.getenv("VAL_LINK_MODE", "cyanchor")).strip().lower()
-TOOL_TYPE: str = os.getenv("TOOL_TYPE", "node_rel").strip().lower()
+TOOL_TYPE: str = os.getenv("TOOL_TYPE", "node").strip().lower()
 # CyANCHOR-only tool scope (node | node_rel), separate from the ReAct baseline's
 # TOOL_TYPE. Default "node" (2026-09): the perturbed entities in all three benchmarks
 # are node-property values, and the relation-pattern hint injected under node_rel

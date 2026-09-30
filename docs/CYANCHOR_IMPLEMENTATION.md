@@ -43,7 +43,7 @@ CyANCHOR's behavior is fully described by a `GroundingSpec`
 | `RETRIEVAL_VECTOR` | off | in-graph embedding kNN (needs embeddings; the `hybrid` flag) |
 | `RETRIEVAL_LEVENSHTEIN` | on | APOC normalized edit-distance scan |
 
-**Tool scope**: `CYANCHOR_TOOL_SCOPE = node | node_rel` (default `node`; `TOOL_TYPE` governs the ReAct baseline only). Relation tools add a relation-pattern hint that duplicates the schema in the prompt and never perform value retrieval in CyANCHOR (`_retrieve_values` searches node properties only); ablated to zero contribution on 5 graphs / 2 backbones.
+**Tool scope**: `CYANCHOR_TOOL_SCOPE = node | node_rel` (default `node`; the ReAct baseline's `TOOL_TYPE` is `node` as well since 2026-09-29, so both tool-using methods ground over the same node-property tools). Relation tools add a relation-pattern hint that duplicates the schema in the prompt and never perform value retrieval in CyANCHOR (`_retrieve_values` searches node properties only); ablated to zero contribution on 5 graphs / 2 backbones.
 
 **Corrective escalation** ([config.py:426-447](../config.py#L426)):
 
@@ -168,7 +168,7 @@ mention and returns structured evidence:
 
 `_route_tools(descriptor, kind, …)` ([plan_exec.py:226](../plan_exec.py#L226)):
 
-1. Pick the FAISS tool index — node-only or node+rel — per `TOOL_TYPE`
+1. Pick the FAISS tool index — node-only or node+rel — per `TOOL_TYPE` (released: node-only)
    (`_get_vectorstore(mode="react_node_only" | "react_node_rel")`).
 2. `search_tools(vs, user_query=descriptor, top_l=…)` returns ranked tool
    `func_name`s.
