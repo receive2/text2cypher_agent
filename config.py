@@ -485,9 +485,9 @@ class GroundingSpec:
             return "FCAV"
         if self.method == "graphrag":
             return "GraphRAG"
-        tl = "Node" if self.tool == "node" else "Node + Rel"
         if self.method == "react":
-            return f"ReAct ({tl})"
+            return "ReAct"          # tool scope is TOOL_TYPE (released: node), recorded in run_config.knobs, not in the name
+        tl = "Node" if self.tool == "node" else "Node + Rel"
         arms = "+".join(a for a, on in (("fuzzy", self.fuzzy), ("vector", self.vector), ("lev", self.lev)) if on)
         return f"CyANCHOR [{arms}] ({tl})"
 
