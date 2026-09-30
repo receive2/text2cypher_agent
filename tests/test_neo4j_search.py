@@ -3,20 +3,39 @@ Test script for neo4j_search.py — verifies that full-text search returns
 deduplicated property values with the highest score per unique value.
 
 Prerequisites:
-  - A running Neo4j instance with the movies sample dataset loaded.
+  - A running Neo4j instance with the movies sample dataset loaded (Neo4j's own
+    demo graph: Movie / Person, ACTED_IN / REVIEWED) — not one of the evaluation
+    graphs, whose connections live in eval_config.py and are never read here.
   - Environment variables set (NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD).
-    These can live in a .env file in the project root.
+    These can live in a .env file in the project root. Under pytest the whole
+    file is skipped while they are unset or still the .env.example placeholders.
 
 Usage:
   python test_neo4j_search.py
 """
 
+import os
 import sys
+
+import pytest
 from dotenv import load_dotenv
 
 load_dotenv()
 
-from neo4j_lib.neo4j_search import (
+
+def _database_configured() -> bool:
+    """A real instance is named: every variable set and none of them the .env.example placeholder."""
+    uri, user, pw = (os.environ.get(k, "") for k in ("NEO4J_URI", "NEO4J_USERNAME", "NEO4J_PASSWORD"))
+    return bool(uri and user and pw) and "your-instance" not in uri and pw != "your-neo4j-password-here"
+
+
+pytestmark = pytest.mark.skipif(
+    not _database_configured(),
+    reason="needs a Neo4j instance with the movies sample dataset: set NEO4J_URI / NEO4J_USERNAME / "
+           "NEO4J_PASSWORD in .env (the .env.example placeholders do not count)",
+)
+
+from neo4j_lib.neo4j_search import (  # noqa: E402 — after the env check on purpose
     top_similar_values,
     top_similar_rel_values,
     search_tool,
