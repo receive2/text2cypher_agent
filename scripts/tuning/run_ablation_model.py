@@ -81,8 +81,12 @@ def bolt_ok(ds, graph):
         return False
 closed = [g for g in A.graphs.split(",") if not port_open(GRAPHS[g][3]) or not bolt_ok(*GRAPHS[g][:2])]
 if closed: print(f"ABORT: graph database not answering for {closed} — VPN on or VM down. Nothing started.", flush=True); sys.exit(2)
+def in_checkout(lsof_out, repo=REPO):
+    """Is the working directory that `lsof -Fn` reports this checkout, or a folder inside it? Compared as paths:
+    a substring test also matched a sibling checkout whose name starts the same (t2c and t2c_b)."""
+    return any(Path(l[1:]) == repo or repo in Path(l[1:]).parents for l in lsof_out.splitlines() if l.startswith("n"))
 for pid in subprocess.run(["pgrep", "-f", "eval._worker"], capture_output=True, text=True).stdout.split():
-    if str(REPO) in subprocess.run(["lsof", "-a", "-p", pid, "-d", "cwd", "-Fn"], capture_output=True, text=True).stdout:
+    if in_checkout(subprocess.run(["lsof", "-a", "-p", pid, "-d", "cwd", "-Fn"], capture_output=True, text=True).stdout):
         print(f"ABORT: eval worker pid {pid} already runs from this checkout (shared live tree).", flush=True); sys.exit(2)
 
 def newest(ds, g):
