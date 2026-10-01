@@ -87,6 +87,14 @@ How the harness works, every config knob and the pre-flight words: [`RUNNING_EXP
 > such runs `DELETE`; the three baselines without tools (`no_val_link`, `fcav`,
 > `graphrag`) are unaffected. `--discard-all` (step 2 above) removes them too.
 
+> **`eval_config.py` looks different since 2026-10-01?** Five CyANCHOR switches
+> are now written under the names the paper uses (`ADAPTIVE_SEARCH_CONTROL`,
+> `TOKEN_LEVEL_FUZZY_MATCH`, `LEVENSHTEIN_RETRIEVAL`, `RESULT_AWARE_QUERY_REPAIR`,
+> `VALUE_EXISTENCE_GUARD`). They are aliases of the same switches, with the same
+> values: the configuration did not change, a run records the same knobs as
+> before, and runs made before and after can be pooled. There is nothing to do,
+> and — as with every line of that panel except the model in §2 — nothing to edit.
+
 ---
 
 ## 0. Prerequisites

@@ -44,6 +44,8 @@ from __future__ import annotations
 import os
 from dataclasses import dataclass
 
+import component_names
+
 
 # ╔══════════════════════════════════════════════════════════════════════════╗
 # ║  ★  EXPERIMENT PARAMETERS — EDIT THESE  ★                                  ║
@@ -73,26 +75,32 @@ CYANCHOR_TOOL_SCOPE: str = "node"  # node | node_rel   (CyANCHOR routing scope; 
                                    #   the perturbed entities are node-property values, and the relation-pattern hint
                                    #   that node_rel adds repeats the schema — no measurable effect, 2026-09, 4 graphs.)
 
+# The five components the paper ablates are written here under the paper's names. Each is an alias of
+# the switch named in its comment: the switch name is what the worker reads, what a run records in
+# summary.json (run_config.knobs) and what the run audit compares, so it has not changed. Either name
+# can be read or assigned (cfg.ADAPTIVE_SEARCH_CONTROL and cfg.PLAN_EXEC_ESCALATE are one attribute);
+# component_names.py holds the table.
+
 # ── CyANCHOR retrieval arms  (≥1 must be on; unioned per field) ───────────────
-RETRIEVAL_FUZZY:         bool = True    # BM25 / Lucene full-text
+TOKEN_LEVEL_FUZZY_MATCH: bool = True    # switch RETRIEVAL_FUZZY — per-token fuzzy match on the Lucene full-text index, BM25-ranked
 RETRIEVAL_VECTOR:        bool = False   # in-graph embedding kNN (needs setup embeddings)
-RETRIEVAL_LEVENSHTEIN:   bool = True    # APOC normalized edit-distance scan
-RETRIEVAL_LEVENSHTEIN_K: int  = 10      # # candidates the Levenshtein arm returns
+LEVENSHTEIN_RETRIEVAL:   bool = True    # switch RETRIEVAL_LEVENSHTEIN — APOC normalized edit-distance scan
+RETRIEVAL_LEVENSHTEIN_K: int  = 10      # # candidates Levenshtein Retrieval returns
 
 # ── CyANCHOR result self-correction  (cyanchor only) ─────────────────────────
-CYPHER_SEMANTIC_REPAIR:   bool = True   # result-level evaluate → regenerate loop
-CYPHER_REPAIR_MAX_ROUNDS: int  = 4      # max semantic-repair rounds
+RESULT_AWARE_QUERY_REPAIR: bool = True  # switch CYPHER_SEMANTIC_REPAIR — result-level evaluate → regenerate loop
+CYPHER_REPAIR_MAX_ROUNDS: int  = 4      # max repair rounds
 CYPHER_EMPTY_IS_WRONG:    bool = False  # treat a 0-row result as a defect — OFF by default since 2026-09:
                                         #   zero contribution on 4 graphs / 3 benchmark families (paired ablation,
                                         #   Δ within ±1pt, flips even); see report/tuning_summary.md
 
 # ── CyANCHOR ablation toggles  (default ON = the shipped method) ─────────────
-PLAN_EXEC_ESCALATE:          bool = True   # corrective LLM-judge retrieval loop
+ADAPTIVE_SEARCH_CONTROL:     bool = True   # switch PLAN_EXEC_ESCALATE — corrective LLM-judge retrieval loop
 PLAN_EXEC_SELECT_JUDGE:      bool = True   # pre-generation select-or-abstain judge — ON in the released configuration.
                                            #   Ablated alone it has no measurable main effect on EA or PSJS (4 graphs,
                                            #   full pole graph 2026-09-29: +0.6 pts, p=0.46); it interacts with the escalation
                                            #   loop (it selects from / abstains on the candidates the loop retrieves).
-PLAN_EXEC_VALUE_SNAP:        bool = True   # post-generation existence-gated value-snap guard
+VALUE_EXISTENCE_GUARD:       bool = True   # switch PLAN_EXEC_VALUE_SNAP — post-generation existence-gated guard on query literals
 PLAN_EXEC_SKIP_GROUNDED:     bool = True   # skip escalation for already-grounded mentions (latency)
 PLAN_EXEC_PARALLEL_MENTIONS: bool = True   # run mentions in parallel threads (latency;
                                            #   ↑ raises peak LLM concurrency — see SHARDS note)
@@ -348,3 +356,8 @@ def conn_for(dataset: str, graph: str) -> GraphConn:
             f"No GraphConn registered for ({dataset!r}, {graph!r}). "
             f"Available pairs in eval_config.GRAPH_CONNS: {available}"
         ) from exc
+
+
+# A component's paper name and its switch name are one attribute of this module from here on
+# (see the note above the retrieval arms). Keep this the last statement of the file.
+component_names.unify_panel(__name__)

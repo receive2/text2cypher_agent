@@ -152,6 +152,13 @@ logs/runs/<dataset>__<graph>__<method_seg>@<model>__<YYYYMMDD-HHMMSS>/
 - `method_seg` is the method plus CyANCHOR's active retrieval arms:
   `cyanchor_fl` = fuzzy + Levenshtein (the shipped default), `cyanchor_fvl` =
   vector arm on. `<model>` is `GENERATOR_LLM` with unsafe characters replaced.
+- A knob is recorded under its **switch name**. The five component switches the
+  ★ block writes under the paper's names (`ADAPTIVE_SEARCH_CONTROL`,
+  `TOKEN_LEVEL_FUZZY_MATCH`, `LEVENSHTEIN_RETRIEVAL`, `RESULT_AWARE_QUERY_REPAIR`,
+  `VALUE_EXISTENCE_GUARD`) are aliases (`component_names.py`): the summary holds
+  `PLAN_EXEC_ESCALATE`, `RETRIEVAL_FUZZY`, `RETRIEVAL_LEVENSHTEIN`,
+  `CYPHER_SEMANTIC_REPAIR`, `PLAN_EXEC_VALUE_SNAP`, as it did before the aliases
+  existed, and `scripts/audit_runs.py` compares those.
 - **Newest wins.** Readers (`eval_paths.latest_run_dir`) take the lexically
   newest stamp *for the model the process is configured for*; a directory from
   before model tagging (no `@` segment) counts only if its `run_meta` names that

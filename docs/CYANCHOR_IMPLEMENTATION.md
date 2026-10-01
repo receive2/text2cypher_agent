@@ -16,21 +16,34 @@ orchestrator that calls it).
 
 ### Component names — paper ↔ code
 
-The paper names the five ablated components differently from the code. Switches,
-ablation cell names and run-directory tags keep their code names, and this document
-uses the code names; the ablation reports (`scripts/tuning/score_ablation.py`) print
-the paper names.
+The paper names the five ablated components differently from the code. Each component
+has one **switch**. The switch name is the identifier: the worker reads it, a run records
+it in `summary.json` (`run_config.knobs`), `scripts/audit_runs.py` compares it, and the
+ablation cells are named after it — so runs made before the paper names existed stay
+comparable. The paper's name is an **alias** of the switch
+([component_names.py](../component_names.py)):
 
-| Paper name | Code name (this document) | Switch | Ablation cell that removes it | Section |
-|---|---|---|---|---|
-| Adaptive Search Control | corrective escalation loop | `PLAN_EXEC_ESCALATE` | `no_escalate` | §5c |
-| Token Level Fuzzy Match | fuzzy arm | `RETRIEVAL_FUZZY` | `lev_only` | §5b |
-| Levenshtein Retrieval | Levenshtein arm | `RETRIEVAL_LEVENSHTEIN` | `fuzzy_only` | §5b |
-| Result Aware Query Repair | semantic repair | `CYPHER_SEMANTIC_REPAIR` | `no_semantic_repair` | §7 |
-| Value Existence Guard | value-snap guard | `PLAN_EXEC_VALUE_SNAP` | `no_value_snap` | §8 |
+- the `eval_config.py` panel is written with the aliases, and a driver or script may read
+  or assign either name — `cfg.ADAPTIVE_SEARCH_CONTROL` and `cfg.PLAN_EXEC_ESCALATE` are one
+  attribute;
+- the bare CLI reads either environment variable ([config.py](../config.py));
+- `run_ablation_model.py --variants` accepts a cell's alias, and the ablation reports
+  (`scripts/tuning/score_ablation.py`) print the paper names.
+
+Setting a switch and its alias to different values is an error. This document uses the
+code names.
+
+| Paper name | Alias (panel, environment) | Switch (recorded in `summary.json`) | Code name in this document | Ablation cell that removes it (`--variants` alias) | Section |
+|---|---|---|---|---|---|
+| Adaptive Search Control | `ADAPTIVE_SEARCH_CONTROL` | `PLAN_EXEC_ESCALATE` | corrective escalation loop | `no_escalate` (`no_adaptive_search_control`) | §5c |
+| Token Level Fuzzy Match | `TOKEN_LEVEL_FUZZY_MATCH` | `RETRIEVAL_FUZZY` | fuzzy arm | `lev_only` (`no_token_level_fuzzy_match`) | §5b |
+| Levenshtein Retrieval | `LEVENSHTEIN_RETRIEVAL` | `RETRIEVAL_LEVENSHTEIN` | Levenshtein arm | `fuzzy_only` (`no_levenshtein_retrieval`) | §5b |
+| Result Aware Query Repair | `RESULT_AWARE_QUERY_REPAIR` | `CYPHER_SEMANTIC_REPAIR` | semantic repair | `no_semantic_repair` (`no_result_aware_query_repair`) | §7 |
+| Value Existence Guard | `VALUE_EXISTENCE_GUARD` | `PLAN_EXEC_VALUE_SNAP` | value-snap guard | `no_value_snap` (`no_value_existence_guard`) | §8 |
 
 The two retrieval cells are named after the arm that stays on, not the one removed:
 `fuzzy_only` removes Levenshtein Retrieval, `lev_only` removes Token Level Fuzzy Match.
+A cell's directory keeps the cell name whichever name was typed.
 
 Not rows of the ablation table: the select-or-abstain judge (`PLAN_EXEC_SELECT_JUDGE`,
 §5d; the paper's candidate selection and abstention step), on in the released
@@ -56,15 +69,16 @@ configuration; relation tools (`CYANCHOR_TOOL_SCOPE = node_rel`) and the vector 
 ## 2. Configuration surface
 
 CyANCHOR's behavior is fully described by a `GroundingSpec`
-([config.py:303](../config.py#L303)) resolved from `METHOD=cyanchor` plus these knobs:
+([config.py:303](../config.py#L303)) resolved from `METHOD=cyanchor` plus these knobs
+(a name in parentheses is the switch's alias, the name the `eval_config.py` panel uses):
 
 **Retrieval arms** (≥1 must be on; unioned per field):
 
 | Knob | Default | Arm |
 |---|---|---|
-| `RETRIEVAL_FUZZY` | on | BM25 / Lucene full-text |
+| `RETRIEVAL_FUZZY` (`TOKEN_LEVEL_FUZZY_MATCH`) | on | per-token fuzzy match on the Lucene full-text index, BM25-ranked |
 | `RETRIEVAL_VECTOR` | off | in-graph embedding kNN (needs embeddings; the `hybrid` flag) |
-| `RETRIEVAL_LEVENSHTEIN` | on | APOC normalized edit-distance scan |
+| `RETRIEVAL_LEVENSHTEIN` (`LEVENSHTEIN_RETRIEVAL`) | on | APOC normalized edit-distance scan |
 
 **Tool scope**: `CYANCHOR_TOOL_SCOPE = node | node_rel` (released `node`, relation tools off; the ReAct baseline's `TOOL_TYPE` is `node` as well, so both tool-using methods ground over the same node-property tools). Relation tools add a relation-pattern hint that duplicates the schema in the prompt and never perform value retrieval in CyANCHOR (`_retrieve_values` searches node properties only); ablated to zero contribution on 5 graphs / 2 backbones.
 
@@ -76,7 +90,7 @@ CyANCHOR's behavior is fully described by a `GroundingSpec`
 | `PLAN_EXEC_VALUES_PER_TOOL` | 10 | top-K values per field (fuzzy) |
 | `PLAN_EXEC_HYBRID_FUZZY_K` / `_VECTOR_K` | 10 / 5 | per-arm K when vector arm is on |
 | `RETRIEVAL_LEVENSHTEIN_K` | 10 | candidates from the Levenshtein arm |
-| `PLAN_EXEC_ESCALATE` | on | enable the corrective LLM-judge loop |
+| `PLAN_EXEC_ESCALATE` (`ADAPTIVE_SEARCH_CONTROL`) | on | enable the corrective LLM-judge loop |
 | `PLAN_EXEC_MAX_ITER` | 3 | max escalation rounds per mention |
 | `PLAN_EXEC_ESCALATE_BUDGET` | (5,3,1) | extra values per successive `value` round |
 | `PLAN_EXEC_SKIP_GROUNDED` | on | skip escalation when already cleanly grounded |
@@ -86,11 +100,11 @@ CyANCHOR's behavior is fully described by a `GroundingSpec`
 
 | Knob | Default | Meaning |
 |---|---|---|
-| `CYPHER_SEMANTIC_REPAIR` | on | enable result-evaluate → regenerate loop |
+| `CYPHER_SEMANTIC_REPAIR` (`RESULT_AWARE_QUERY_REPAIR`) | on | enable result-evaluate → regenerate loop |
 | `CYPHER_REPAIR_MAX_ROUNDS` | 4 | round budget when semantic repair is on |
 | `CYPHER_EMPTY_IS_WRONG` | **off** (since 2026-09) | treat a 0-row result as a defect — ablated to zero contribution on 4 graphs, see `report/tuning_summary.md` |
 | `CYPHER_RETRY_MAX_ROUNDS` | 2 | error-only retry budget (react baseline + repair-off) |
-| `PLAN_EXEC_VALUE_SNAP` | on | post-generation existence-gated snap guard |
+| `PLAN_EXEC_VALUE_SNAP` (`VALUE_EXISTENCE_GUARD`) | on | post-generation existence-gated snap guard |
 
 ---
 

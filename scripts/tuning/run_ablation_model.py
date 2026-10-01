@@ -7,14 +7,17 @@
 The reference cell is the released configuration: CyANCHOR routing on node-property tools
 (relation tools off), fuzzy + Levenshtein arms, escalation, select-or-abstain judge, semantic
 repair and value-snap on. --judge off / --scope node_rel give other references. Every other
-cell flips exactly one switch. The five default cells, the switch each one turns off and the
-paper's name for the component it removes (the names score_ablation.py prints):
+cell flips exactly one switch. The five default cells, the switch each one turns off, the
+paper's name for the component it removes (the names score_ablation.py prints) and the alias
+--variants accepts for the cell (component_names.py; the directory keeps the cell name):
 
-    no_escalate          PLAN_EXEC_ESCALATE       Adaptive Search Control
-    fuzzy_only           RETRIEVAL_LEVENSHTEIN    Levenshtein Retrieval      (cell named after the arm that stays on)
-    lev_only             RETRIEVAL_FUZZY          Token Level Fuzzy Match    (cell named after the arm that stays on)
-    no_semantic_repair   CYPHER_SEMANTIC_REPAIR   Result Aware Query Repair
-    no_value_snap        PLAN_EXEC_VALUE_SNAP     Value Existence Guard
+    no_escalate          PLAN_EXEC_ESCALATE       Adaptive Search Control      no_adaptive_search_control
+    fuzzy_only           RETRIEVAL_LEVENSHTEIN    Levenshtein Retrieval        no_levenshtein_retrieval
+    lev_only             RETRIEVAL_FUZZY          Token Level Fuzzy Match      no_token_level_fuzzy_match
+    no_semantic_repair   CYPHER_SEMANTIC_REPAIR   Result Aware Query Repair    no_result_aware_query_repair
+    no_value_snap        PLAN_EXEC_VALUE_SNAP     Value Existence Guard        no_value_existence_guard
+
+fuzzy_only and lev_only are named after the retrieval arm that stays on.
 
 The judge cell (no_select_judge / select_judge) and the tool-scope cell (rel_tools /
 node_tools_only) are not run by default — neither has a measurable main effect and neither
@@ -33,7 +36,7 @@ per checkout). --limit N is a smoke test and writes to a separate ...__smokeN ro
 import argparse, json, os, shutil, socket, subprocess, sys, time
 from pathlib import Path
 REPO = Path(__file__).resolve().parent.parent.parent; sys.path.insert(0, str(REPO)); os.chdir(REPO)
-import eval_config as cfg, eval_run  # noqa: E402
+import component_names, eval_config as cfg, eval_run  # noqa: E402
 # The same per-question cap the sweep driver gives CyANCHOR (orchestrate_sweep.CYANCHOR_PER_EXAMPLE_TIMEOUT):
 # the slowest legitimate questions take 70-120 s. Cells before 2026-09-30 ran under the 60 s default,
 # which cost at most one question per graph (0 on nba, flight_accident, politics; 1 on movie).
@@ -44,7 +47,7 @@ ap.add_argument("--model", required=True)
 ap.add_argument("--judge", default="on", choices=("on", "off"), help="select-or-abstain judge in the reference configuration (released: on)")
 ap.add_argument("--scope", default="node", choices=("node", "node_rel"), help="CyANCHOR tool scope in the reference configuration (released: node)")
 ap.add_argument("--graphs", default="flight_accident,nba,healthcare,pole", help="also: geography (its first 240 questions, the judge-check prefix) — not in the default plan")
-ap.add_argument("--variants", default="", help="comma list; default = reference + the five single-switch cells")
+ap.add_argument("--variants", default="", help="comma list of cells or their aliases (no_levenshtein_retrieval = fuzzy_only, ...); default = reference + the five single-switch cells")
 ap.add_argument("--pole-full", action="store_true", help="run pole on all its questions instead of the first 400")
 ap.add_argument("--limit", type=int, default=0, help="smoke test: first N questions of every graph, separate output root")
 ap.add_argument("--with-joint", action="store_true", help="add the cell with every corrective stage off")
@@ -74,7 +77,7 @@ GRAPHS = {"flight_accident": ("cypherbench_augmented", "flight_accident", None, 
           # first 240 questions in release order; the cells run on the same prefix. Not in the default plan.
           "geography":       ("cypherbench_augmented",  "geography",      240,  15065)}
 CELL = lambda g: "pole_full" if (g == "pole" and A.pole_full) else g
-order = [v.strip() for v in A.variants.split(",") if v.strip()] or [v for v in VARIANTS if v not in (SCOPE_CELL[0], "no_correction", JUDGE_CELL[0])]
+order = [component_names.cell_name(v.strip()) for v in A.variants.split(",") if v.strip()] or [v for v in VARIANTS if v not in (SCOPE_CELL[0], "no_correction", JUDGE_CELL[0])]
 order = [v for v in order if not (A.skip_ref and v == "reference")] + (["no_correction"] if A.with_joint and "no_correction" not in order else [])
 unknown = [v for v in order if v not in VARIANTS] + [g for g in A.graphs.split(",") if g not in GRAPHS]
 if unknown: print(f"ABORT: unknown variant/graph {unknown}; variants: {list(VARIANTS)}; graphs: {list(GRAPHS)}", flush=True); sys.exit(2)

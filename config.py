@@ -21,6 +21,8 @@ import os
 from dataclasses import dataclass
 from typing import Optional
 
+from component_names import env_flag as _component_flag
+
 # ──────────────────────────────────────────────────────────────────────────────
 # LLM configuration  (per pipeline stage)
 # ──────────────────────────────────────────────────────────────────────────────
@@ -391,9 +393,17 @@ TOOL_TOP_K            = 10   # fulltext search top-k per tool call
 #
 # RETRIEVAL_* — CyANCHOR's retrieval arms, independently toggleable (≥1 must be on).
 # Baselines keep their own FIXED retrieval (react = fuzzy) and IGNORE these switches.
-#   RETRIEVAL_FUZZY        BM25 / Lucene full-text        (default on)
+#   RETRIEVAL_FUZZY        per-token fuzzy match, Lucene full-text index, BM25-ranked (default on)
 #   RETRIEVAL_VECTOR       in-graph embedding kNN          (default off — needs embeddings)
 #   RETRIEVAL_LEVENSHTEIN  APOC normalized edit-distance   (default on)
+#
+# Paper names. The five components the paper ablates each have one switch here, and the
+# paper's name is accepted as an alias of it (component_names.py):
+#   RETRIEVAL_FUZZY = TOKEN_LEVEL_FUZZY_MATCH · RETRIEVAL_LEVENSHTEIN = LEVENSHTEIN_RETRIEVAL ·
+#   PLAN_EXEC_ESCALATE = ADAPTIVE_SEARCH_CONTROL · CYPHER_SEMANTIC_REPAIR = RESULT_AWARE_QUERY_REPAIR ·
+#   PLAN_EXEC_VALUE_SNAP = VALUE_EXISTENCE_GUARD
+# The eval_config panel is written with the paper names; eval_run hands the worker the switch
+# names, which are also what a run records. For the bare CLI either variable may be exported.
 #
 # TOOL_TYPE — ReAct baseline tool scope: node | node_rel (released: node, the same
 # node-property tools CyANCHOR routes on; CyANCHOR has its own CYANCHOR_TOOL_SCOPE).
@@ -423,9 +433,9 @@ TOOL_TYPE: str = os.getenv("TOOL_TYPE", "node").strip().lower()
 # under node_rel repeats the schema already in the prompt: no measurable effect when
 # ablated alone (report/ablation_table_gpt-5.6-terra.md).
 CYANCHOR_TOOL_SCOPE: str = os.getenv("CYANCHOR_TOOL_SCOPE", "node").strip().lower()
-RETRIEVAL_FUZZY       = os.getenv("RETRIEVAL_FUZZY",       "1").lower() in ("1", "true", "yes")
+RETRIEVAL_FUZZY       = _component_flag("RETRIEVAL_FUZZY",       "1")   # paper: Token Level Fuzzy Match
 RETRIEVAL_VECTOR      = os.getenv("RETRIEVAL_VECTOR",      "0").lower() in ("1", "true", "yes")
-RETRIEVAL_LEVENSHTEIN = os.getenv("RETRIEVAL_LEVENSHTEIN", "1").lower() in ("1", "true", "yes")
+RETRIEVAL_LEVENSHTEIN = _component_flag("RETRIEVAL_LEVENSHTEIN", "1")   # paper: Levenshtein Retrieval
 
 _METHODS    = ("no_val_link", "fcav", "react", "graphrag", "cyanchor")
 _TOOL_TYPES = ("node", "node_rel")
@@ -596,7 +606,7 @@ PLAN_EXEC_HYBRID_VECTOR_K = 5     # embedding (vector-index) candidates per tool
 # one judge call and no extra retrieval (avoids the candidate-noise penalty of
 # blanket top-K increases).
 # ⚙ eval receiver — edit in the eval_config panel, not here (literal = demo/CLI fallback).
-PLAN_EXEC_ESCALATE        = os.getenv("PLAN_EXEC_ESCALATE", "1").lower() in ("1", "true", "yes")
+PLAN_EXEC_ESCALATE        = _component_flag("PLAN_EXEC_ESCALATE", "1")          # paper: Adaptive Search Control
 PLAN_EXEC_MAX_ITER        = int(os.getenv("PLAN_EXEC_MAX_ITER", "3"))           # max escalation rounds per mention
 PLAN_EXEC_ESCALATE_BUDGET = tuple(int(x) for x in os.getenv("PLAN_EXEC_ESCALATE_BUDGET", "5,3,1").split(","))   # values added per successive round (deepen step)
 PLAN_EXEC_ROUTE_FETCH     = int(os.getenv("PLAN_EXEC_ROUTE_FETCH", "6"))           # tools FAISS-routed per mention (initial + escalation pool)
@@ -676,7 +686,7 @@ CYPHER_RETRY_MAX_ROUNDS = int(os.getenv("CYPHER_RETRY_MAX_ROUNDS", "2"))
 # executable attempt (so it can only match-or-beat the no-repair result, never
 # silently drift below it). Default on (finished optimizations ship default-on).
 # ⚙ eval receiver — edit in the eval_config panel, not here (literal = demo/CLI fallback).
-CYPHER_SEMANTIC_REPAIR  = os.getenv("CYPHER_SEMANTIC_REPAIR", "1").lower() in ("1", "true", "yes")
+CYPHER_SEMANTIC_REPAIR  = _component_flag("CYPHER_SEMANTIC_REPAIR", "1")   # paper: Result Aware Query Repair
 CYPHER_REPAIR_MAX_ROUNDS = int(os.getenv("CYPHER_REPAIR_MAX_ROUNDS", "4"))
 # Default OFF (2026-09): the empty-result trigger showed zero contribution in a
 # 4-graph paired ablation — with grounding front-loaded, residual empties are
@@ -708,7 +718,7 @@ CYPHER_EMPTY_IS_WRONG    = os.getenv("CYPHER_EMPTY_IS_WRONG", "0").lower() in ("
 # are intentional partials). plan_exec only; fires only on non-existent values,
 # so the extra LLM call is rare. Set to 0 to disable.
 # ⚙ eval receiver — edit in the eval_config panel, not here (literal = demo/CLI fallback).
-PLAN_EXEC_VALUE_SNAP = os.getenv("PLAN_EXEC_VALUE_SNAP", "1").lower() in ("1", "true", "yes")
+PLAN_EXEC_VALUE_SNAP = _component_flag("PLAN_EXEC_VALUE_SNAP", "1")   # paper: Value Existence Guard
 
 # Latency: skip the escalation loop for a mention that is ALREADY cleanly
 # grounded — i.e. a retrieved candidate exact/substring-matches the mention

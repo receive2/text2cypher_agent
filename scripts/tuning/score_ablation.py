@@ -18,14 +18,15 @@ questions whose text is verbatim in the current release (benchmarks/). Existing 
 (logs/ablation, logs/verify_cols, logs/dev_sweep) and filled cells (logs/ablation_fill)
 are picked up automatically; a missing cell prints as —.
 
-Rows are printed under the paper's component names (NAME below). Switches, cell names and
-run-dir tags keep their code names; docs/CYANCHOR_IMPLEMENTATION.md ("Component names")
-has the mapping.
+Rows are printed under the paper's component names (component_names.py). Switches, cell
+names and run-dir tags keep their code names; docs/CYANCHOR_IMPLEMENTATION.md ("Component
+names") has the mapping.
 """
 import json, math, collections, glob, os, sys
 from pathlib import Path
-REPO = Path(__file__).resolve().parent.parent.parent; os.chdir(REPO)
-MODEL = sys.argv[sys.argv.index("--model") + 1] if "--model" in sys.argv else "gpt-4.1"
+REPO = Path(__file__).resolve().parent.parent.parent; os.chdir(REPO); sys.path.insert(0, str(REPO))
+from component_names import PAPER_NAME  # noqa: E402
+MODEL =sys.argv[sys.argv.index("--model") + 1] if "--model" in sys.argv else "gpt-4.1"
 REFNAME = sys.argv[sys.argv.index("--ref") + 1] if "--ref" in sys.argv else ""        # judge-on | judge-off: released-reference cells
 POLE_FULL = "--pole-full" in sys.argv
 SCOPE = sys.argv[sys.argv.index("--scope") + 1] if "--scope" in sys.argv else "node"       # node | node_rel: tool scope of the reference cells
@@ -55,8 +56,8 @@ CELLS = {  # variant -> {graph: dir}
 }
 # Paper names of the five ablated components, keyed by variant. A row is named after the component its cell removes:
 # the fuzzy_only cell (RETRIEVAL_LEVENSHTEIN=0) removes Levenshtein Retrieval, lev_only (RETRIEVAL_FUZZY=0) removes Token Level Fuzzy Match.
-NAME = {"escalation": "Adaptive Search Control", "fuzzy_only": "Levenshtein Retrieval", "lev_only": "Token Level Fuzzy Match",
-        "semantic_repair": "Result Aware Query Repair", "value_snap": "Value Existence Guard"}
+NAME = {"escalation": PAPER_NAME["PLAN_EXEC_ESCALATE"], "fuzzy_only": PAPER_NAME["RETRIEVAL_LEVENSHTEIN"], "lev_only": PAPER_NAME["RETRIEVAL_FUZZY"],
+        "semantic_repair": PAPER_NAME["CYPHER_SEMANTIC_REPAIR"], "value_snap": PAPER_NAME["PLAN_EXEC_VALUE_SNAP"]}
 ROWS = [("escalation",f"− {NAME['escalation']}","PLAN_EXEC_ESCALATE=0"), ("select_judge","− select-or-abstain judge","PLAN_EXEC_SELECT_JUDGE=0"),
         ("semantic_repair",f"− {NAME['semantic_repair']}","CYPHER_SEMANTIC_REPAIR=0"), ("value_snap",f"− {NAME['value_snap']}","PLAN_EXEC_VALUE_SNAP=0"),
         ("relation_tools","− relation tools","TOOL_TYPE=node"), ("fuzzy_only",f"− {NAME['fuzzy_only']}","RETRIEVAL_LEVENSHTEIN=0"),

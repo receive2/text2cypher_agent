@@ -194,10 +194,19 @@ directly (env-overridable). You never set environment variables in the normal fl
 | axis | values |
 |---|---|
 | `METHOD` | `no_val_link` · `fcav` · `react` · `graphrag` · `cyanchor` |
-| `RETRIEVAL_FUZZY` / `RETRIEVAL_VECTOR` / `RETRIEVAL_LEVENSHTEIN` | `0`/`1` each — CyANCHOR's retrieval arms (≥1 on; defaults `1`/`0`/`1`) |
+| `TOKEN_LEVEL_FUZZY_MATCH` / `RETRIEVAL_VECTOR` / `LEVENSHTEIN_RETRIEVAL` | `0`/`1` each — CyANCHOR's retrieval arms (≥1 on; defaults `1`/`0`/`1`) |
 | `TOOL_TYPE` | `node` · `node_rel`  (ReAct baseline only; shipped `node` — the same node-property tools as CyANCHOR) |
 | `CYANCHOR_TOOL_SCOPE` | `node` · `node_rel`  (CyANCHOR routing scope; shipped `node` — relation tools off) |
-| `CYPHER_SEMANTIC_REPAIR` / `CYPHER_REPAIR_MAX_ROUNDS` / `CYPHER_EMPTY_IS_WRONG` | CyANCHOR-only result-level self-correction (shipped `1` / `4` / `0`: a 0-row result is judged by the evaluator like any other result, not treated as a defect by rule) |
+| `ADAPTIVE_SEARCH_CONTROL` / `VALUE_EXISTENCE_GUARD` | `0`/`1` each — CyANCHOR's corrective retrieval loop and its post-generation guard on query literals (shipped `1` / `1`) |
+| `RESULT_AWARE_QUERY_REPAIR` / `CYPHER_REPAIR_MAX_ROUNDS` / `CYPHER_EMPTY_IS_WRONG` | CyANCHOR-only result-level self-correction (shipped `1` / `4` / `0`: a 0-row result is judged by the evaluator like any other result, not treated as a defect by rule) |
+
+Five of these are the paper's names of the ablated components. Each is an alias of a switch,
+and either name can be set: `TOKEN_LEVEL_FUZZY_MATCH` = `RETRIEVAL_FUZZY`,
+`LEVENSHTEIN_RETRIEVAL` = `RETRIEVAL_LEVENSHTEIN`, `ADAPTIVE_SEARCH_CONTROL` = `PLAN_EXEC_ESCALATE`,
+`RESULT_AWARE_QUERY_REPAIR` = `CYPHER_SEMANTIC_REPAIR`, `VALUE_EXISTENCE_GUARD` = `PLAN_EXEC_VALUE_SNAP`.
+A run records the switch name in its `summary.json`, so runs made before and after the aliases
+existed read the same. The table is in [component_names.py](component_names.py) and at the top of
+[docs/CYANCHOR_IMPLEMENTATION.md](docs/CYANCHOR_IMPLEMENTATION.md).
 
 - **`no_val_link`** — grounding bypassed; only schema + question reach the Cypher LLM.
 - **`fcav`** — retrieve-then-generate RAG baseline (embed question → retrieve values
@@ -220,16 +229,15 @@ directly (env-overridable). You never set environment variables in the normal fl
   **grounding-aware regeneration** — the candidate grounding is kept and the semantic
   feedback + CoT are added (anti-oscillation: the final query is the first *accepted*
   attempt, else the first executable one, so repair can only match-or-beat the no-repair
-  result). Knobs: `CYPHER_SEMANTIC_REPAIR` / `CYPHER_REPAIR_MAX_ROUNDS` /
+  result). Knobs: `RESULT_AWARE_QUERY_REPAIR` / `CYPHER_REPAIR_MAX_ROUNDS` /
   `CYPHER_EMPTY_IS_WRONG` (off as shipped; when on, a 0-row result counts as a defect without
   asking the evaluator — unsafe on graphs whose correct answers are often empty). Retrieval is the **union of three independently-toggleable arms**:
-  `RETRIEVAL_FUZZY` (per-token fuzzy match on the Lucene full-text index, BM25-ranked), `RETRIEVAL_LEVENSHTEIN` (APOC normalized edit-distance — no
+  `TOKEN_LEVEL_FUZZY_MATCH` (per-token fuzzy match on the Lucene full-text index, BM25-ranked), `LEVENSHTEIN_RETRIEVAL` (APOC normalized edit-distance — no
   embeddings, high-ROI), `RETRIEVAL_VECTOR` (in-graph embeddings). Tool scope: `CYANCHOR_TOOL_SCOPE` = `node`
   (shipped — relation tools off; the ReAct baseline's `TOOL_TYPE` is `node` as well) | `node_rel`.
-  The paper names the ablated components Adaptive Search Control, Token Level Fuzzy Match,
-  Levenshtein Retrieval, Result Aware Query Repair and Value Existence Guard; the table that maps
-  them to these switches is at the top of
-  [docs/CYANCHOR_IMPLEMENTATION.md](docs/CYANCHOR_IMPLEMENTATION.md).
+  The paper's names of the five ablated components — Adaptive Search Control, Token Level Fuzzy
+  Match, Levenshtein Retrieval, Result Aware Query Repair, Value Existence Guard — are the names
+  of their switches in the panel (see the note under the table above).
 
 To run a given configuration, set it in `eval_config.py` and run `python eval_run.py`
 — e.g. `METHOD = "cyanchor"` with `RETRIEVAL_VECTOR = False`, `CYANCHOR_TOOL_SCOPE = "node"`
@@ -613,6 +621,7 @@ If you prefer to run each step individually or need to debug a specific stage:
 | `setup_project.py` | **One-click setup** — runs all 10 setup steps automatically |
 | `switch_embedding_backend.py` | **One-click backend swap** — re-embeds + rebuilds vector indexes after editing `EMBEDDING_BACKEND` in `vector_config.py`; does NOT regenerate tools / system prompt / FAISS |
 | `config.py` | **User-managed** runtime settings — LLM configs per stage, sampling/validation knobs, and the **resolver + shipped defaults** for the `METHOD` axis + CyANCHOR's `RETRIEVAL_FUZZY`/`RETRIEVAL_VECTOR`/`RETRIEVAL_LEVENSHTEIN`/`TOOL_TYPE`. **For eval runs these are set in `eval_config.py`** (the authoritative surface); `config.py` supplies the standalone-agent default. Not auto-generated; safe to edit by hand |
+| `component_names.py` | The paper's names of the five ablated CyANCHOR components, as aliases of their switches (panel, environment, ablation cells) and as the names the ablation reports print |
 | `orchestrate_sweep.py` | **Sweep driver** — one generator model over the 13 × 5 suite: resume, completeness verdict, reports, `--publish` (the runner's only interface; see `docs/EXPERIMENT_HANDOUT.md`) |
 | `eval_run.py` | Evaluates `eval_config.EVAL_PAIRS` with `eval_config.METHOD`, one worker per pair — called by the driver per cell; used directly only for development runs |
 | `eval_aggregate.py` | Development table over everything under `OUT_DIR` — never a deliverable |

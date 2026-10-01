@@ -50,6 +50,7 @@ import time
 from pathlib import Path
 from typing import List, Tuple
 
+import component_names
 import eval_config as cfg
 import eval_paths
 from eval.artifact_swap import archive_dir_for, swap_in, _setup_artifacts_root
@@ -89,6 +90,9 @@ def _resolve_test_path(dataset: str) -> str:
 # Run-config fields eval_config injects into the worker env — and, verbatim,
 # the knob set recorded into each run's summary.json ``run_config`` block
 # (module-level so _build_env and _stamp_summary stay in lockstep).
+# These are the switch names. Five of them have a paper name the eval_config panel is
+# written with (component_names.py); the paper name is an alias and is never recorded,
+# so a run's knobs read the same before and after the aliases existed.
 _STR  = ("METHOD", "TOOL_TYPE", "CYANCHOR_TOOL_SCOPE", "GENERATOR_LLM")
 _BOOL = ("RETRIEVAL_FUZZY", "RETRIEVAL_VECTOR", "RETRIEVAL_LEVENSHTEIN",
          "CYPHER_SEMANTIC_REPAIR", "CYPHER_EMPTY_IS_WRONG",
@@ -198,9 +202,10 @@ def _build_env(uri: str, user: str, password: str, database: str) -> dict[str, s
         if v is not None:
             env[name] = str(v)
     for name in _BOOL:
-        v = getattr(cfg, name, None)
+        v = component_names.panel_get(cfg, name)   # the switch, set under its own name or its paper name
         if v is not None:
             env[name] = "1" if v else "0"
+            env.pop(component_names.ALIAS_OF.get(name, ""), None)   # cfg wins over a shell export under either name
     for name in _INT:
         v = getattr(cfg, name, None)
         if v is not None:
@@ -209,6 +214,7 @@ def _build_env(uri: str, user: str, password: str, database: str) -> dict[str, s
         v = getattr(cfg, name, None)
         if v is not None:
             env[name] = ",".join(str(int(x)) for x in v)
+    component_names.normalize_env(env)   # a switch cfg leaves unset: a shell export of its paper name becomes the switch
     return env
 
 
