@@ -197,7 +197,7 @@ directly (env-overridable). You never set environment variables in the normal fl
 | `RETRIEVAL_FUZZY` / `RETRIEVAL_VECTOR` / `RETRIEVAL_LEVENSHTEIN` | `0`/`1` each — CyANCHOR's retrieval arms (≥1 on; defaults `1`/`0`/`1`) |
 | `TOOL_TYPE` | `node` · `node_rel`  (ReAct baseline only; shipped `node` — the same node-property tools as CyANCHOR) |
 | `CYANCHOR_TOOL_SCOPE` | `node` · `node_rel`  (CyANCHOR routing scope; shipped `node` — relation tools off) |
-| `CYPHER_SEMANTIC_REPAIR` / `CYPHER_REPAIR_MAX_ROUNDS` / `CYPHER_EMPTY_IS_WRONG` | CyANCHOR-only result-level self-correction (defaults `1` / `4` / `1`) |
+| `CYPHER_SEMANTIC_REPAIR` / `CYPHER_REPAIR_MAX_ROUNDS` / `CYPHER_EMPTY_IS_WRONG` | CyANCHOR-only result-level self-correction (shipped `1` / `4` / `0`: a 0-row result is judged by the evaluator like any other result, not treated as a defect by rule) |
 
 - **`no_val_link`** — grounding bypassed; only schema + question reach the Cypher LLM.
 - **`fcav`** — retrieve-then-generate RAG baseline (embed question → retrieve values
@@ -216,12 +216,13 @@ directly (env-overridable). You never set environment variables in the normal fl
   mention to a field → retrieve candidates with an LLM corrective loop → hand candidates
   to the Cypher LLM, which generates, executes, and **self-corrects** on the result: a DB
   error triggers a CoT error-repair, and a successfully-executed but semantically wrong
-  result (an LLM evaluator judges *incorrect / illogical / incomplete / empty*) triggers a
+  result (an LLM evaluator judges *incorrect / illogical / incomplete*) triggers a
   **grounding-aware regeneration** — the candidate grounding is kept and the semantic
   feedback + CoT are added (anti-oscillation: the final query is the first *accepted*
   attempt, else the first executable one, so repair can only match-or-beat the no-repair
   result). Knobs: `CYPHER_SEMANTIC_REPAIR` / `CYPHER_REPAIR_MAX_ROUNDS` /
-  `CYPHER_EMPTY_IS_WRONG`. Retrieval is the **union of three independently-toggleable arms**:
+  `CYPHER_EMPTY_IS_WRONG` (off as shipped; when on, a 0-row result counts as a defect without
+  asking the evaluator — unsafe on graphs whose correct answers are often empty). Retrieval is the **union of three independently-toggleable arms**:
   `RETRIEVAL_FUZZY` (BM25), `RETRIEVAL_LEVENSHTEIN` (APOC normalized edit-distance — no
   embeddings, high-ROI), `RETRIEVAL_VECTOR` (in-graph embeddings). Tool scope: `CYANCHOR_TOOL_SCOPE` = `node`
   (shipped — relation tools off; the ReAct baseline's `TOOL_TYPE` is `node` as well) | `node_rel`.
