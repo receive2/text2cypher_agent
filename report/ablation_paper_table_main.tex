@@ -9,14 +9,14 @@
 \midrule
 \method\ (full) & 86.3 & 70.1 & 35.8 & 78.5 & 62.9 \\
 \addlinespace[2pt]\multicolumn{6}{l}{\emph{Grounding loop}} \\
-\quad $-$ escalation loop & $-9.5^{\ddagger}$ & $+0.2$ & $-2.2$ & $-8.8^{\ddagger}$ & $-3.7^{\ddagger}$ \\
+\quad $-$ Adaptive Search Control & $-9.5^{\ddagger}$ & $+0.2$ & $-2.2$ & $-8.8^{\ddagger}$ & $-3.7^{\ddagger}$ \\
 \addlinespace[2pt]\multicolumn{6}{l}{\emph{Retrieval arms}} \\
-\quad $-$ Levenshtein arm & $-4.8$ & $-6.2^{\ddagger}$ & $-4.5^{\ddagger}$ & $-11.2^{\ddagger}$ & $-6.5^{\ddagger}$ \\
+\quad $-$ Levenshtein Retrieval & $-4.8$ & $-6.2^{\ddagger}$ & $-4.5^{\ddagger}$ & $-11.2^{\ddagger}$ & $-6.5^{\ddagger}$ \\
 \addlinespace[2pt]\multicolumn{6}{l}{\emph{Post-generation correction}} \\
-\quad $-$ semantic repair & $-3.6$ & $-2.6$ & $-4.5^{\ddagger}$ & $-4.4$ & $-3.7^{\ddagger}$ \\
-\quad $-$ value-snap guard & $-2.4$ & $-10.8^{\ddagger}$ & $-18.0^{\ddagger}$ & $-6.0^{\ddagger}$ & $-11.0^{\ddagger}$ \\
+\quad $-$ Result Aware Query Repair & $-3.6$ & $-2.6$ & $-4.5^{\ddagger}$ & $-4.4$ & $-3.7^{\ddagger}$ \\
+\quad $-$ Value Existence Guard & $-2.4$ & $-10.8^{\ddagger}$ & $-18.0^{\ddagger}$ & $-6.0^{\ddagger}$ & $-11.0^{\ddagger}$ \\
 \bottomrule
 \end{tabular}
-\caption{Component ablation of \method\ (gpt-5.6-terra): \ea\ (\%) of the full system and the change in points when one component is removed, on one graph per benchmark plus nba (the alias-richest \cypherbench\ graph); pole uses its first 400 questions. Pooled $=$ all 1{,}237 questions. Every cell is one run at temperature~0, paired per question with the full run; $^{\dagger}$/$^{\ddagger}$: two-sided sign test $p<0.05$/$p<0.01$. ``$-$ Levenshtein arm'' and ``$-$ fuzzy arm'' leave the other arm as the sole retrieval arm. The released default routes on node-property tools only (the $-$ relation tools row). Components without a measurable effect are in Table~\ref{tab:ablation-full}.}
+\caption{Component ablation of \method\ (gpt-5.6-terra): \ea\ (\%) of the full system and the change in points when one component is removed, on one graph per benchmark plus nba (the alias-richest \cypherbench\ graph); pole uses its first 400 questions. Pooled $=$ all 1{,}237 questions. Every cell is one run at temperature~0, paired per question with the full run; $^{\dagger}$/$^{\ddagger}$: two-sided sign test $p<0.05$/$p<0.01$. ``$-$ Levenshtein Retrieval'' and ``$-$ Token Level Fuzzy Match'' leave the other arm as the sole retrieval arm. The released default routes on node-property tools only (the $-$ relation tools row). Components without a measurable effect are in Table~\ref{tab:ablation-full}.}
 \label{tab:ablation-components}
 \end{table*}

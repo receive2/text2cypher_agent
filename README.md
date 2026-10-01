@@ -223,9 +223,13 @@ directly (env-overridable). You never set environment variables in the normal fl
   result). Knobs: `CYPHER_SEMANTIC_REPAIR` / `CYPHER_REPAIR_MAX_ROUNDS` /
   `CYPHER_EMPTY_IS_WRONG` (off as shipped; when on, a 0-row result counts as a defect without
   asking the evaluator — unsafe on graphs whose correct answers are often empty). Retrieval is the **union of three independently-toggleable arms**:
-  `RETRIEVAL_FUZZY` (BM25), `RETRIEVAL_LEVENSHTEIN` (APOC normalized edit-distance — no
+  `RETRIEVAL_FUZZY` (per-token fuzzy match on the Lucene full-text index, BM25-ranked), `RETRIEVAL_LEVENSHTEIN` (APOC normalized edit-distance — no
   embeddings, high-ROI), `RETRIEVAL_VECTOR` (in-graph embeddings). Tool scope: `CYANCHOR_TOOL_SCOPE` = `node`
   (shipped — relation tools off; the ReAct baseline's `TOOL_TYPE` is `node` as well) | `node_rel`.
+  The paper names the ablated components Adaptive Search Control, Token Level Fuzzy Match,
+  Levenshtein Retrieval, Result Aware Query Repair and Value Existence Guard; the table that maps
+  them to these switches is at the top of
+  [docs/CYANCHOR_IMPLEMENTATION.md](docs/CYANCHOR_IMPLEMENTATION.md).
 
 To run a given configuration, set it in `eval_config.py` and run `python eval_run.py`
 — e.g. `METHOD = "cyanchor"` with `RETRIEVAL_VECTOR = False`, `CYANCHOR_TOOL_SCOPE = "node"`

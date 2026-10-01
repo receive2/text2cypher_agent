@@ -7,11 +7,18 @@
 The reference cell is the released configuration: CyANCHOR routing on node-property tools
 (relation tools off), fuzzy + Levenshtein arms, escalation, select-or-abstain judge, semantic
 repair and value-snap on. --judge off / --scope node_rel give other references. Every other
-cell flips exactly one switch; the five default cells are no_value_snap, fuzzy_only,
-no_escalate, no_semantic_repair and lev_only. The judge cell (no_select_judge / select_judge)
-and the tool-scope cell (rel_tools / node_tools_only) are not run by default — neither has a
-measurable main effect and neither is a row of the paper table — but stay available through
---variants.
+cell flips exactly one switch. The five default cells, the switch each one turns off and the
+paper's name for the component it removes (the names score_ablation.py prints):
+
+    no_escalate          PLAN_EXEC_ESCALATE       Adaptive Search Control
+    fuzzy_only           RETRIEVAL_LEVENSHTEIN    Levenshtein Retrieval      (cell named after the arm that stays on)
+    lev_only             RETRIEVAL_FUZZY          Token Level Fuzzy Match    (cell named after the arm that stays on)
+    no_semantic_repair   CYPHER_SEMANTIC_REPAIR   Result Aware Query Repair
+    no_value_snap        PLAN_EXEC_VALUE_SNAP     Value Existence Guard
+
+The judge cell (no_select_judge / select_judge) and the tool-scope cell (rel_tools /
+node_tools_only) are not run by default — neither has a measurable main effect and neither
+is a row of the paper table — but stay available through --variants.
 Data = benchmarks/ (the release eval_config already points at). flight_accident, healthcare
 and nba run in full; pole runs its first 400 questions, or all of them with --pole-full
 (cells are then named pole_full__*).
@@ -37,7 +44,7 @@ ap.add_argument("--model", required=True)
 ap.add_argument("--judge", default="on", choices=("on", "off"), help="select-or-abstain judge in the reference configuration (released: on)")
 ap.add_argument("--scope", default="node", choices=("node", "node_rel"), help="CyANCHOR tool scope in the reference configuration (released: node)")
 ap.add_argument("--graphs", default="flight_accident,nba,healthcare,pole", help="also: geography (its first 240 questions, the judge-check prefix) — not in the default plan")
-ap.add_argument("--variants", default="", help="comma list; default = reference + the six single-switch cells")
+ap.add_argument("--variants", default="", help="comma list; default = reference + the five single-switch cells")
 ap.add_argument("--pole-full", action="store_true", help="run pole on all its questions instead of the first 400")
 ap.add_argument("--limit", type=int, default=0, help="smoke test: first N questions of every graph, separate output root")
 ap.add_argument("--with-joint", action="store_true", help="add the cell with every corrective stage off")

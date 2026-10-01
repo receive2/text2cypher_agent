@@ -17,6 +17,10 @@ Each variant cell is paired per question with its graph's reference run, restric
 questions whose text is verbatim in the current release (benchmarks/). Existing cells
 (logs/ablation, logs/verify_cols, logs/dev_sweep) and filled cells (logs/ablation_fill)
 are picked up automatically; a missing cell prints as —.
+
+Rows are printed under the paper's component names (NAME below). Switches, cell names and
+run-dir tags keep their code names; docs/CYANCHOR_IMPLEMENTATION.md ("Component names")
+has the mapping.
 """
 import json, math, collections, glob, os, sys
 from pathlib import Path
@@ -49,11 +53,15 @@ CELLS = {  # variant -> {graph: dir}
   "lev_only":        {g: f"logs/ablation_fill/{g}__lev_only__{'full' if g=='flight_accident' else 'v400'}" for g in ("flight_accident","healthcare","pole")},
   "no_correction":   {g: f"logs/ablation_fill/{g}__no_correction__{'full' if g=='flight_accident' else 'v400'}" for g in ("flight_accident","healthcare","pole")},
 }
-ROWS = [("escalation","− escalation loop","PLAN_EXEC_ESCALATE=0"), ("select_judge","− select-or-abstain judge","PLAN_EXEC_SELECT_JUDGE=0"),
-        ("semantic_repair","− semantic repair","CYPHER_SEMANTIC_REPAIR=0"), ("value_snap","− value-snap","PLAN_EXEC_VALUE_SNAP=0"),
-        ("relation_tools","− relation tools","TOOL_TYPE=node"), ("fuzzy_only","fuzzy arm only","RETRIEVAL_LEVENSHTEIN=0"),
-        ("lev_only","lev arm only","RETRIEVAL_FUZZY=0"), ("plus_vector","+ vector arm","RETRIEVAL_VECTOR=1"),
-        ("no_correction","− all correction (escalation, judge, repair, value-snap)","—")]
+# Paper names of the five ablated components, keyed by variant. A row is named after the component its cell removes:
+# the fuzzy_only cell (RETRIEVAL_LEVENSHTEIN=0) removes Levenshtein Retrieval, lev_only (RETRIEVAL_FUZZY=0) removes Token Level Fuzzy Match.
+NAME = {"escalation": "Adaptive Search Control", "fuzzy_only": "Levenshtein Retrieval", "lev_only": "Token Level Fuzzy Match",
+        "semantic_repair": "Result Aware Query Repair", "value_snap": "Value Existence Guard"}
+ROWS = [("escalation",f"− {NAME['escalation']}","PLAN_EXEC_ESCALATE=0"), ("select_judge","− select-or-abstain judge","PLAN_EXEC_SELECT_JUDGE=0"),
+        ("semantic_repair",f"− {NAME['semantic_repair']}","CYPHER_SEMANTIC_REPAIR=0"), ("value_snap",f"− {NAME['value_snap']}","PLAN_EXEC_VALUE_SNAP=0"),
+        ("relation_tools","− relation tools","TOOL_TYPE=node"), ("fuzzy_only",f"− {NAME['fuzzy_only']}","RETRIEVAL_LEVENSHTEIN=0"),
+        ("lev_only",f"− {NAME['lev_only']}","RETRIEVAL_FUZZY=0"), ("plus_vector","+ vector arm","RETRIEVAL_VECTOR=1"),
+        ("no_correction",f"− all correction ({NAME['escalation']}, judge, {NAME['semantic_repair']}, {NAME['value_snap']})","—")]
 GRAPHS = ["flight_accident", "healthcare", "pole", "terrorist_attack"]; CATS = ["casing","typo","partial","abbrev","alias"]
 if MODEL != "gpt-4.1":   # per-backbone tables: everything under logs/ablation_<model>/
     GRAPHS = ["flight_accident", "healthcare", "pole", "nba", "geography"]   # geography only when its cells exist (first 240 questions)
@@ -146,13 +154,13 @@ print("\n".join(L[3:16])); print(f"\n{len(missing)} cells missing")
 if "--paper" in sys.argv:
     PBASE = "report/ablation_paper_table" if LEGACY else f"report/ablation_paper_table_{MODEL}{SUFFIX}"
     PROWS = [  # variant key, component, group — rows in pipeline order
-        ("escalation",      "escalation loop",          "Grounding loop"),
+        ("escalation",      NAME["escalation"],         "Grounding loop"),
         ("select_judge",    "select-or-abstain judge",  "Grounding loop"),
         ("relation_tools",  "relation tools",           "Grounding loop"),
-        ("fuzzy_only",      "Levenshtein arm",          "Retrieval arms"),
-        ("lev_only",        "fuzzy arm",                "Retrieval arms"),
-        ("semantic_repair", "semantic repair",          "Post-generation correction"),
-        ("value_snap",      "value-snap guard",         "Post-generation correction"),
+        ("fuzzy_only",      NAME["fuzzy_only"],         "Retrieval arms"),
+        ("lev_only",        NAME["lev_only"],           "Retrieval arms"),
+        ("semantic_repair", NAME["semantic_repair"],    "Post-generation correction"),
+        ("value_snap",      NAME["value_snap"],         "Post-generation correction"),
     ]
     PROWS = [r for r in PROWS if any(r[0] in RES[g]["var"] for g in GRAPHS)]        # only rows that were run
     N = sum(RES[g]["n"] for g in GRAPHS)
@@ -172,12 +180,11 @@ if "--paper" in sys.argv:
     MAIN = [r for r in PROWS if P[r[0]] and P[r[0]]["p"] < 0.05]
     POLE = ("every graph runs in full" if POLE_FULL else "pole uses its first 400 questions in release order (the prefix has the category mix of the whole graph), the other graphs run in full") + ("; geography uses its first 240 questions" if "geography" in GRAPHS else "")
     TOOLS = "node + relation tools" if SCOPE_REF == "node_rel" else "node-property tools"
+    ALLON = f"{NAME['lev_only']}, {NAME['fuzzy_only']}, {NAME['escalation']}, {NAME['semantic_repair']} and {NAME['value_snap']} on"
     REFDESC = (("The full-system run has every component on (select-or-abstain judge on, node + relation tools); the released default routes on "
                 "node-property tools only, which is the `− relation tools` row.") if LEGACY else
-               (f"The full row is the released configuration: routing on {TOOLS}, fuzzy + Levenshtein arms, "
-                f"escalation loop, select-or-abstain judge, semantic repair and value-snap on.") if RELEASED else
-               (f"The full row is not the released configuration: routing on {TOOLS}, select-or-abstain judge "
-                f"{JUDGE_REF}, fuzzy + Levenshtein arms, escalation loop, semantic repair and value-snap on."))
+               (f"The full row is the released configuration: routing on {TOOLS}, select-or-abstain judge on, {ALLON}.") if RELEASED else
+               (f"The full row is not the released configuration: routing on {TOOLS}, select-or-abstain judge {JUDGE_REF}, {ALLON}."))
 
     def md_table(rows):
         T = ["| | " + " | ".join(hdr) + " |", "|---|" + "---:|" * len(hdr),
@@ -188,19 +195,19 @@ if "--paper" in sys.argv:
             T.append(f"| {sgn(v)} {name} | " + " | ".join(dcell(RES[g]["var"].get(v)) for g in GRAPHS) + f" | {dcell(P[v])} |")
         return T
     GLOSS = {
-      "escalation": "| escalation loop | For a mention that no candidate cleanly matches, an LLM judge inspects the evidence for up to 3 rounds and returns one action: *done*, *deepen* (fetch more values from the searched fields, budget 5/3/1) or *switch to* a not-yet-searched name-like field. Mentions that already pass the clean-grounding check skip the loop. | initial retrieval only, no corrective rounds (`PLAN_EXEC_ESCALATE=0`) | recovery of routing misses and shallow retrieval; pays off where the alias/abbreviation still shares tokens with the canonical value (flight_accident, nba), not where it does not (healthcare medical synonyms). |",
+      "escalation": f"| {NAME['escalation']} | For a mention that no candidate cleanly matches, an LLM judge inspects the evidence for up to 3 rounds and returns one action: *done*, *deepen* (fetch more values from the searched fields, budget 5/3/1) or *switch to* a not-yet-searched name-like field. Mentions that already pass the clean-grounding check skip the loop. | initial retrieval only, no corrective rounds (`PLAN_EXEC_ESCALATE=0`) | recovery of routing misses and shallow retrieval; pays off where the alias/abbreviation still shares tokens with the canonical value (flight_accident, nba), not where it does not (healthcare medical synonyms). |",
       "select_judge": "| select-or-abstain judge | One closed-list LLM call on mentions that fail the clean-grounding check: *select* the one candidate the mention denotes (evidence narrowed to it), *abstain* (evidence for that mention suppressed, generator writes the predicate unaided) or *keep* on a transient failure. It can only narrow or remove evidence, never add a value. | judge skipped, evidence passes through unchanged (`PLAN_EXEC_SELECT_JUDGE=0`) | filtering of long candidate lists in the abbreviation/alias region. |",
       "relation_tools": "| relation tools | Relationship-type tools in the routing index. In CyANCHOR a relation mention retrieves no values; it only contributes its traversal pattern `(:A)-[:rel]->(:B)` as a hint to the generator. | routing over node-property tools only, no pattern hint (`CYANCHOR_TOOL_SCOPE=node`) | value of the relation-pattern hint; the perturbed entities never live on relationship properties, and the hint repeats what the schema block already states. |",
-      "fuzzy_only": "| Levenshtein arm | Server-side normalized edit-distance scan over the field's full value set (top 10), array-valued alias lists unwound and matched element-wise. | fuzzy arm is the only retrieval arm (`RETRIEVAL_LEVENSHTEIN=0`) | character-level recall for dense typos and abbreviation-like codes that BM25 tokenization misses. |",
-      "lev_only": "| fuzzy arm | Lucene/BM25 full-text search on the routed (label, property) field (top 10); index-backed, so its cost does not grow with the field. | Levenshtein arm is the only retrieval arm (`RETRIEVAL_FUZZY=0`) | token-level recall for casing, mild typos and partial names; largely subsumed by the Levenshtein arm at these top-k. |",
-      "semantic_repair": "| semantic repair | After a query executes, an LLM evaluator classifies its result against the question; any non-accept verdict triggers regeneration that keeps the full evidence block and adds the evaluator's feedback (≤4 rounds, anti-oscillation: first accepted attempt, else first executable one). | error-message retry only (`CYPHER_SEMANTIC_REPAIR=0`) | correction of executable-but-wrong queries with the grounding evidence still in the prompt. |",
-      "value_snap": "| value-snap guard | Final guard on the generated query: (label, property, value) literals in `=` and property-map predicates that do not exist in the database are mapped, by one closed-list LLM call over a fresh retrieval on that field, to an existing value; the substitution is adopted only if the query still runs. Existing values are never touched. | generated literals left as written (`PLAN_EXEC_VALUE_SNAP=0`) | the residual failure where the generator retrieved the right value but copied the question's corrupted surface form into the predicate. |",
+      "fuzzy_only": f"| {NAME['fuzzy_only']} | Server-side normalized edit-distance scan over the field's full value set (top 10), array-valued alias lists unwound and matched element-wise. | {NAME['lev_only']} is the only retrieval arm (`RETRIEVAL_LEVENSHTEIN=0`) | character-level recall for dense typos and abbreviation-like codes that BM25 tokenization misses. |",
+      "lev_only": f"| {NAME['lev_only']} | The mention is split into word tokens and each token is matched, with a one-edit Lucene fuzzy operator, against the full-text index of the routed (label, property) field; a value matching any token is a hit, ranked by BM25 and re-ranked to the top 10. Index-backed, so its cost does not grow with the field. | {NAME['fuzzy_only']} is the only retrieval arm (`RETRIEVAL_FUZZY=0`) | token-level recall for casing, mild typos and partial names; largely subsumed by {NAME['fuzzy_only']} at these top-k. |",
+      "semantic_repair": f"| {NAME['semantic_repair']} | After a query executes, an LLM evaluator classifies its result against the question; any non-accept verdict triggers regeneration that keeps the full evidence block and adds the evaluator's feedback (≤4 rounds, anti-oscillation: first accepted attempt, else first executable one). | error-message retry only (`CYPHER_SEMANTIC_REPAIR=0`) | correction of executable-but-wrong queries with the grounding evidence still in the prompt. |",
+      "value_snap": f"| {NAME['value_snap']} | Final guard on the generated query: (label, property, value) literals in `=` and property-map predicates that do not exist in the database are mapped, by one closed-list LLM call over a fresh retrieval on that field, to an existing value; the substitution is adopted only if the query still runs. Existing values are never touched. | generated literals left as written (`PLAN_EXEC_VALUE_SNAP=0`) | the residual failure where the generator retrieved the right value but copied the question's corrupted surface form into the predicate. |",
     }
     M = [f"# Component ablation of CyANCHOR — paper tables ({MODEL})\n",
          "Execution accuracy (EA, %) of the full system, and the change in EA points when one component is removed"
          + (" (a row marked + adds the component to the reference instead)" if ADDED else "") + ". Each cell is a single run at temperature 0, "
          "paired per question with the full-system run on the same questions; † / ‡ = two-sided paired sign test p < 0.05 / p < 0.01. "
-         f"Pooled = all questions of the {len(GRAPHS)} graphs, paired the same way. `− Levenshtein arm` and `− fuzzy arm` leave the other arm as the only retrieval arm. "
+         f"Pooled = all questions of the {len(GRAPHS)} graphs, paired the same way. `− {NAME['fuzzy_only']}` and `− {NAME['lev_only']}` leave the other arm as the only retrieval arm. "
          + REFDESC + "\n",
          "## Main-text table\n", "Rows of the full table whose pooled effect is significant (p < 0.05).\n"]
     M += md_table(MAIN) if MAIN else ["No row reaches p < 0.05 on the pooled questions."]
@@ -250,7 +257,7 @@ if "--paper" in sys.argv:
     CAP = (r"of \method\ (" + esc(MODEL) + r"): \ea\ (\%) of the full system and the change in points when one component is removed, on one graph "
            r"per benchmark plus nba (the alias-richest \cypherbench\ graph); " + ("every graph runs in full" if POLE_FULL else "pole uses its first 400 questions") + ("; geography uses its first 240" if "geography" in GRAPHS else "")
            + r". Pooled $=$ all " + f"{N:,}".replace(",", "{,}") + r" questions. Every cell is one run at temperature~0, paired per question with the full run; "
-           r"$^{\dagger}$/$^{\ddagger}$: two-sided sign test $p<0.05$/$p<0.01$. ``$-$ Levenshtein arm'' and ``$-$ fuzzy arm'' leave the other arm as the sole retrieval arm. "
+           r"$^{\dagger}$/$^{\ddagger}$: two-sided sign test $p<0.05$/$p<0.01$. ``$-$ " + NAME["fuzzy_only"] + r"'' and ``$-$ " + NAME["lev_only"] + r"'' leave the other arm as the sole retrieval arm. "
            + (r"The released default routes on node-property tools only (the $-$ relation tools row)." if LEGACY else
               r"The full row is the released configuration." if RELEASED else
               r"The full row is not the released configuration (select-or-abstain judge " + JUDGE_REF + ", " + ("node + relation" if SCOPE_REF == "node_rel" else "node-property") + r" tools)."))

@@ -14,6 +14,29 @@ orchestrator that calls it).
 > it `plan_exec`. `mode` strings like `cyanchor_fl_node_rel` and the legacy
 > `plan_exec_*` both dispatch here ([ner_agent_auto.py:131](../ner_agent_auto.py#L131)).
 
+### Component names — paper ↔ code
+
+The paper names the five ablated components differently from the code. Switches,
+ablation cell names and run-directory tags keep their code names, and this document
+uses the code names; the ablation reports (`scripts/tuning/score_ablation.py`) print
+the paper names.
+
+| Paper name | Code name (this document) | Switch | Ablation cell that removes it | Section |
+|---|---|---|---|---|
+| Adaptive Search Control | corrective escalation loop | `PLAN_EXEC_ESCALATE` | `no_escalate` | §5c |
+| Token Level Fuzzy Match | fuzzy arm | `RETRIEVAL_FUZZY` | `lev_only` | §5b |
+| Levenshtein Retrieval | Levenshtein arm | `RETRIEVAL_LEVENSHTEIN` | `fuzzy_only` | §5b |
+| Result Aware Query Repair | semantic repair | `CYPHER_SEMANTIC_REPAIR` | `no_semantic_repair` | §7 |
+| Value Existence Guard | value-snap guard | `PLAN_EXEC_VALUE_SNAP` | `no_value_snap` | §8 |
+
+The two retrieval cells are named after the arm that stays on, not the one removed:
+`fuzzy_only` removes Levenshtein Retrieval, `lev_only` removes Token Level Fuzzy Match.
+
+Not rows of the ablation table: the select-or-abstain judge (`PLAN_EXEC_SELECT_JUDGE`,
+§5d; the paper's candidate selection and abstention step), on in the released
+configuration; relation tools (`CYANCHOR_TOOL_SCOPE = node_rel`) and the vector arm
+(`RETRIEVAL_VECTOR`), both off.
+
 ---
 
 ## 1. Where it lives
@@ -189,14 +212,19 @@ the tool docstring instead of retrieving values
 `_retrieve_values(mention, label, prop, hybrid)` ([plan_exec.py:278](../plan_exec.py#L278))
 unions the enabled arms per field, deduped, insertion-ordered:
 
-1. **Fuzzy** (`RETRIEVAL_FUZZY`) — `search_tool(…, mode="fuzzy")`, Neo4j
-   Lucene/BM25 full-text. Catches casing, mild typos, partial names. K =
+1. **Fuzzy** (`RETRIEVAL_FUZZY`; paper: Token Level Fuzzy Match) —
+   `search_tool(…, mode="fuzzy")` on the field's Neo4j Lucene full-text index.
+   The mention is split into word tokens and each token gets Lucene's one-edit
+   fuzzy operator (`"Tmo Hooper"` → `Tmo~1 Hooper~1`,
+   [neo4j_search.py:141](../neo4j_lib/neo4j_search.py#L141)); a value matching
+   any token is a hit, hits are ranked by BM25, over-fetched (max(2K, 20)) and
+   re-ranked to K. Catches casing, mild typos, partial names. K =
    `PLAN_EXEC_HYBRID_FUZZY_K` if the vector arm is on, else `PLAN_EXEC_VALUES_PER_TOOL`.
 2. **Vector** (`RETRIEVAL_VECTOR`, the `hybrid` flag) — `mode="vector"`,
    in-graph embedding kNN. The lever for **aliases that share no characters**
    with the canonical value. Top `PLAN_EXEC_HYBRID_VECTOR_K`. Failures are
    swallowed (only ever adds recall).
-3. **Levenshtein** (`RETRIEVAL_LEVENSHTEIN`) — `_levenshtein_fetch`
+3. **Levenshtein** (`RETRIEVAL_LEVENSHTEIN`; paper: Levenshtein Retrieval) — `_levenshtein_fetch`
    ([plan_exec.py:253](../plan_exec.py#L253)), a server-side
    `apoc.text.levenshteinSimilarity` scan over the full value set, best-first.
    Catches **char-level perturbations fuzzy misses** (abbrev codes, dense
@@ -209,6 +237,8 @@ deduped `OrderedDict`; array properties are flattened to plain strings
 (`_add`, [plan_exec.py:555](../plan_exec.py#L555)).
 
 ### 5c. Corrective escalation loop
+
+Paper name: **Adaptive Search Control**.
 
 If `escalate` is on, the mention is a node, candidates exist, and the mention
 is **not** already cheaply grounded, run up to `PLAN_EXEC_MAX_ITER` (=3) rounds
@@ -284,6 +314,8 @@ The block is injected into the shared Cypher system prompt as `{relevant_entitie
 
 ## 7. Stage ④ — Cypher generation, error retry, semantic repair
 
+Paper name of semantic repair: **Result Aware Query Repair**.
+
 `ask_auto` dispatches CyANCHOR (and `react`) through the **transparent manual**
 generate→execute path so the retry budget is the only variable
 ([ner_agent_auto.py:1645-1664](../ner_agent_auto.py#L1645)). The Cypher prompt is:
@@ -333,6 +365,8 @@ carries its retrieved candidates into every repair round.
 
 ## 8. Stage ⑤ — value-snap guard
 
+Paper name: **Value Existence Guard**.
+
 `snap_values_to_candidates` ([plan_exec.py:854](../plan_exec.py#L854), called at
 [ner_agent_auto.py:1697](../ner_agent_auto.py#L1697)) fixes the
 "retrieved-but-not-used" failure: the LLM copied the question's perturbed
@@ -376,15 +410,25 @@ candidate list. It is deliberately conservative:
 
 ## 10. Ablation axes (what the paper can toggle)
 
-| Axis | Off → On effect |
-|---|---|
-| `RETRIEVAL_FUZZY` / `_VECTOR` / `_LEVENSHTEIN` | which recall arms feed candidates |
-| `PLAN_EXEC_ESCALATE` | static initial retrieval vs. LLM-judge corrective loop |
-| `PLAN_EXEC_SELECT_JUDGE` (**on**) | suppress bad groundings vs. inject all candidates — alone no measurable main effect on EA (full pole graph, 1,283 paired questions: +0.6 pts, p = 0.46) or on the confident-wrong rate (`report/judge_failure_modes.md`); interacts with the escalation loop |
-| `CYPHER_SEMANTIC_REPAIR` | error-only retry vs. result-evaluate→regenerate |
-| `CYPHER_EMPTY_IS_WRONG` | whether 0 rows triggers repair |
-| `PLAN_EXEC_VALUE_SNAP` | post-generation snap guard on/off |
-| `CYANCHOR_TOOL_SCOPE` | `node` (shipped) vs. `node_rel` routing scope |
+| Axis | Paper name | Off → On effect |
+|---|---|---|
+| `RETRIEVAL_FUZZY` | Token Level Fuzzy Match | which recall arms feed candidates |
+| `RETRIEVAL_LEVENSHTEIN` | Levenshtein Retrieval | which recall arms feed candidates |
+| `RETRIEVAL_VECTOR` | — | which recall arms feed candidates (off as shipped; the archives carry no embeddings) |
+| `PLAN_EXEC_ESCALATE` | Adaptive Search Control | static initial retrieval vs. LLM-judge corrective loop |
+| `PLAN_EXEC_SELECT_JUDGE` (**on**) | — (not an ablation row) | suppress bad groundings vs. inject all candidates — alone no measurable main effect on EA (full pole graph, 1,283 paired questions: +0.6 pts, p = 0.46) or on the confident-wrong rate (`report/judge_failure_modes.md`); interacts with the escalation loop |
+| `CYPHER_SEMANTIC_REPAIR` | Result Aware Query Repair | error-only retry vs. result-evaluate→regenerate |
+| `CYPHER_EMPTY_IS_WRONG` | — | whether 0 rows triggers repair |
+| `PLAN_EXEC_VALUE_SNAP` | Value Existence Guard | post-generation snap guard on/off |
+| `CYANCHOR_TOOL_SCOPE` | — | `node` (shipped) vs. `node_rel` routing scope |
+
+The paper's component ablation removes one of the five named components at a time from
+the released configuration. `scripts/tuning/run_ablation_model.py --model <preset> [--pole-full]`
+writes one cell per (graph, variant) under `logs/ablation_<model>__judge-on-node/`;
+`scripts/tuning/score_ablation.py --model <preset> --ref judge-on [--pole-full] --paper`
+pairs every cell per question with its graph's reference cell (two-sided sign test) and
+writes the tables to `report/` under the paper names. The cell names are in the table
+at the top of this document.
 
 Example invocations:
 
