@@ -146,6 +146,38 @@ def _normalize(mat: np.ndarray) -> np.ndarray:
     return mat / norms
 
 
+# Values embedded per slice while an index is built = this many embedding requests
+# (vector_config.EMBEDDING_BATCH_SIZE values each), so the requests are the ones one
+# embed_texts(values) call would send.
+_BUILD_SLICE_REQUESTS = 10
+
+
+def _embed_normalized(values: List[str], scratch: Path) -> np.ndarray:
+    """L2-normalized float32 embeddings of *values*, one row each, in a matrix backed
+    by the file *scratch*.
+
+    The matrix is filled a slice of requests at a time. Keeping every vector as a
+    Python list until all of them are embedded costs about eight times the matrix —
+    39 GB for the 790k values of ``company``, 63 GB for ``politics`` — and backing it
+    with a file leaves the memory to the index that is built from it. Row for row the
+    result is ``_normalize(np.asarray(embed_texts(values), dtype="float32"))``."""
+    step = max(1, int(vc.EMBEDDING_BATCH_SIZE)) * _BUILD_SLICE_REQUESTS
+    mat: Optional[np.ndarray] = None
+    for start in range(0, len(values), step):
+        want = min(step, len(values) - start)
+        part = np.asarray(embed_texts(values[start:start + want]), dtype="float32")
+        if part.ndim != 2 or part.shape[0] != want or (mat is not None and part.shape[1] != mat.shape[1]):
+            raise RuntimeError(f"FCAV: embedding shape mismatch {part.shape} for the "
+                               f"{want} values at {start} of {len(values)}")
+        if mat is None:
+            mat = np.memmap(scratch, dtype="float32", mode="w+", shape=(len(values), part.shape[1]))
+        mat[start:start + want] = _normalize(part)
+        done = start + want
+        if done == len(values) or (done // step) % 20 == 0:
+            logger.info("FCAV: embedded %d / %d values", done, len(values))
+    return mat
+
+
 def build_fcav_index(
     driver,
     database: str,
@@ -181,28 +213,33 @@ def build_fcav_index(
     logger.info("FCAV: embedding %d distinct values (backend=%s, model=%s) ...",
                 len(values), vc.EMBEDDING_BACKEND, vc.EMBEDDING_MODEL_NAME)
 
-    vecs = np.asarray(embed_texts(values), dtype="float32")
-    if vecs.ndim != 2 or vecs.shape[0] != len(values):
-        raise RuntimeError(f"FCAV: embedding shape mismatch {vecs.shape} vs {len(values)} values")
-    dim = vecs.shape[1]
-    vecs = _normalize(vecs)
-
-    # Exact (IndexFlatIP) search is O(N) per query and stores full vectors; past
-    # FCAV_EXACT_MAX values that becomes impractical, so fall back to an
-    # approximate HNSW index (high recall, O(log N) query). Both use normalized
-    # inner product (= cosine).
-    n = vecs.shape[0]
-    if n > FCAV_EXACT_MAX:
-        index = faiss.IndexHNSWFlat(dim, FCAV_HNSW_M, faiss.METRIC_INNER_PRODUCT)
-        index.hnsw.efConstruction = FCAV_HNSW_EF_CONSTRUCTION
-        index_type = "hnsw"
-        logger.info("FCAV: %d > %d values → approximate HNSW index", n, FCAV_EXACT_MAX)
-    else:
-        index = faiss.IndexFlatIP(dim)
-        index_type = "flat"
-    index.add(vecs)
-
     out_dir.mkdir(parents=True, exist_ok=True)
+    scratch = out_dir / "vectors.tmp"     # the vectors until they are in the index; never part of it
+    vecs = None
+    try:
+        vecs = _embed_normalized(values, scratch)
+        n, dim = vecs.shape
+
+        # Exact (IndexFlatIP) search is O(N) per query and stores full vectors; past
+        # FCAV_EXACT_MAX values that becomes impractical, so fall back to an
+        # approximate HNSW index (high recall, O(log N) query). Both use normalized
+        # inner product (= cosine).
+        if n > FCAV_EXACT_MAX:
+            index = faiss.IndexHNSWFlat(dim, FCAV_HNSW_M, faiss.METRIC_INNER_PRODUCT)
+            index.hnsw.efConstruction = FCAV_HNSW_EF_CONSTRUCTION
+            index_type = "hnsw"
+            logger.info("FCAV: %d > %d values → approximate HNSW index", n, FCAV_EXACT_MAX)
+        else:
+            index = faiss.IndexFlatIP(dim)
+            index_type = "flat"
+        index.add(vecs)
+    finally:
+        vecs = None                       # let go of the mapping before its file is removed
+        try:
+            scratch.unlink()
+        except OSError:
+            pass
+
     faiss.write_index(index, str(out_dir / "index.faiss"))
     (out_dir / "meta.json").write_text(
         json.dumps(triples, ensure_ascii=False), encoding="utf-8"
