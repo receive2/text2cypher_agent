@@ -36,7 +36,7 @@ ap = argparse.ArgumentParser()
 ap.add_argument("--model", required=True)
 ap.add_argument("--judge", default="on", choices=("on", "off"), help="select-or-abstain judge in the reference configuration (released: on)")
 ap.add_argument("--scope", default="node", choices=("node", "node_rel"), help="CyANCHOR tool scope in the reference configuration (released: node)")
-ap.add_argument("--graphs", default="flight_accident,nba,healthcare,pole")
+ap.add_argument("--graphs", default="flight_accident,nba,healthcare,pole", help="also: geography (its first 240 questions, the judge-check prefix) — not in the default plan")
 ap.add_argument("--variants", default="", help="comma list; default = reference + the six single-switch cells")
 ap.add_argument("--pole-full", action="store_true", help="run pole on all its questions instead of the first 400")
 ap.add_argument("--limit", type=int, default=0, help="smoke test: first N questions of every graph, separate output root")
@@ -62,7 +62,10 @@ VARIANTS = {"reference": {},
 GRAPHS = {"flight_accident": ("cypherbench_augmented", "flight_accident", None, 15064),
           "healthcare":      ("mindthequery_augmented", "healthcare",     None, 15074),
           "pole":            ("zograscope_augmented",   "pole",           None if A.pole_full else 400, 15076),
-          "nba":             ("cypherbench_augmented",  "nba",            None, 15067)}
+          "nba":             ("cypherbench_augmented",  "nba",            None, 15067),
+          # geography: its reference is the judge-check ON arm (released configuration), which covers the
+          # first 240 questions in release order; the cells run on the same prefix. Not in the default plan.
+          "geography":       ("cypherbench_augmented",  "geography",      240,  15065)}
 CELL = lambda g: "pole_full" if (g == "pole" and A.pole_full) else g
 order = [v.strip() for v in A.variants.split(",") if v.strip()] or [v for v in VARIANTS if v not in (SCOPE_CELL[0], "no_correction", JUDGE_CELL[0])]
 order = [v for v in order if not (A.skip_ref and v == "reference")] + (["no_correction"] if A.with_joint and "no_correction" not in order else [])

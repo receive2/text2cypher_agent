@@ -56,7 +56,7 @@ ROWS = [("escalation","− escalation loop","PLAN_EXEC_ESCALATE=0"), ("select_ju
         ("no_correction","− all correction (escalation, judge, repair, value-snap)","—")]
 GRAPHS = ["flight_accident", "healthcare", "pole", "terrorist_attack"]; CATS = ["casing","typo","partial","abbrev","alias"]
 if MODEL != "gpt-4.1":   # per-backbone tables: everything under logs/ablation_<model>/
-    GRAPHS = ["flight_accident", "healthcare", "pole", "nba"]
+    GRAPHS = ["flight_accident", "healthcare", "pole", "nba", "geography"]   # geography only when its cells exist (first 240 questions)
     REF = {g: f"{ROOT}/{DIRKEY(g)}__reference" for g in GRAPHS}
     # dir names: runs made before 2026-09-28 removed judge / relation tools from an all-on reference
     # (no_select_judge, node_tools_only); later runs ADD them to the shipped defaults (select_judge, rel_tools).
@@ -104,7 +104,8 @@ def cell(g, v):
 L = [f"# CyANCHOR component ablation — {MODEL}\n",
      "Paired per question against the full-method reference on the same questions (runs restricted to questions verbatim in the current release; "
      + ("healthcare and pole use a fixed 400-question prefix). terrorist_attack is the CypherBench-train dev graph, not part of the release. " if MODEL == "gpt-4.1"
-        else ("every graph runs in full). " if POLE_FULL else "pole uses its first 400 questions). "))
+        else ("every graph runs in full). " if POLE_FULL else "pole uses its first 400 questions). ")
+        + ("geography uses its first 240 questions. " if "geography" in GRAPHS else ""))
      + "Cells: Δ EA in points; **bold** = two-sided sign test p < 0.05; — = not run.\n",
      "## Δ EA\n", "| variant | switch | " + " | ".join(GRAPHS) + " |", "|---|---|" + "---|" * len(GRAPHS),
      "| CyANCHOR full (EA) | — | " + " | ".join(f"{RES[g]['full']:.3f}" for g in GRAPHS) + " |"]
@@ -169,7 +170,7 @@ if "--paper" in sys.argv:
     hdr = [f"{g} (n={RES[g]['n']})" for g in GRAPHS] + [f"pooled (n={N:,})"]
     P = RES["_pooled"] = {v: pooled(v) for v, _, _ in PROWS}
     MAIN = [r for r in PROWS if P[r[0]] and P[r[0]]["p"] < 0.05]
-    POLE = "every graph runs in full" if POLE_FULL else "pole uses its first 400 questions in release order (the prefix has the category mix of the whole graph), the other graphs run in full"
+    POLE = ("every graph runs in full" if POLE_FULL else "pole uses its first 400 questions in release order (the prefix has the category mix of the whole graph), the other graphs run in full") + ("; geography uses its first 240 questions" if "geography" in GRAPHS else "")
     TOOLS = "node + relation tools" if SCOPE_REF == "node_rel" else "node-property tools"
     REFDESC = (("The full-system run has every component on (select-or-abstain judge on, node + relation tools); the released default routes on "
                 "node-property tools only, which is the `− relation tools` row.") if LEGACY else
@@ -247,7 +248,7 @@ if "--paper" in sys.argv:
             T.append(f"\\quad ${'+' if v in ADDED else '-'}$ {name} & " + " & ".join(lcell(RES[g]["var"].get(v)) for g in GRAPHS) + f" & {lcell(P[v])} \\\\")
         return T + [r"\bottomrule", r"\end{tabular}", r"\caption{" + caption + "}", r"\label{" + label + "}", r"\end{table*}"]
     CAP = (r"of \method\ (" + esc(MODEL) + r"): \ea\ (\%) of the full system and the change in points when one component is removed, on one graph "
-           r"per benchmark plus nba (the alias-richest \cypherbench\ graph); " + ("every graph runs in full" if POLE_FULL else "pole uses its first 400 questions")
+           r"per benchmark plus nba (the alias-richest \cypherbench\ graph); " + ("every graph runs in full" if POLE_FULL else "pole uses its first 400 questions") + ("; geography uses its first 240" if "geography" in GRAPHS else "")
            + r". Pooled $=$ all " + f"{N:,}".replace(",", "{,}") + r" questions. Every cell is one run at temperature~0, paired per question with the full run; "
            r"$^{\dagger}$/$^{\ddagger}$: two-sided sign test $p<0.05$/$p<0.01$. ``$-$ Levenshtein arm'' and ``$-$ fuzzy arm'' leave the other arm as the sole retrieval arm. "
            + (r"The released default routes on node-property tools only (the $-$ relation tools row)." if LEGACY else
