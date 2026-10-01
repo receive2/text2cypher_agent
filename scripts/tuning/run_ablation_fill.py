@@ -2,9 +2,10 @@
 """Fill the missing cells of the paper's component-ablation table (tab:ablation-components).
 
 Cells (all gpt-4.1, SHARDS=1, sequential, idempotent — rerun to resume):
-  healthcare, pole            : − escalation | − select-or-abstain judge | − semantic repair   (6)
-  flight_accident, healthcare, pole : fuzzy arm only | lev arm only                          (6)
+  healthcare, pole            : − Adaptive Search Control (no_escalate) | − select-or-abstain judge | − Result Aware Query Repair (no_semantic_repair)   (6)
+  flight_accident, healthcare, pole : − Levenshtein Retrieval (fuzzy_only) | − Token Level Fuzzy Match (lev_only)   (6)
   --with-joint                : − all correction (escalation+judge+repair+value-snap off)    (3, optional)
+  Row names = the paper's component names, as score_ablation.py prints them; cell names in parentheses.
   + vector arm is NOT here: the archives carry no embeddings (EMBEDDABLE_PROPERTIES=[]).
 
 Pairing: every cell must be scored per question against the EXISTING reference runs
