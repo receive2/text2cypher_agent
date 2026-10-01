@@ -61,6 +61,21 @@ also when the count cannot be read). `EVAL_WORKER_TIMEOUT_SEC` overrides. Until
 2026-09-29 a full-graph run had a flat 4 h, which cut pole (1,283 questions,
 4.3–4.6 h with CyANCHOR) before it finished.
 
+**A worker that dies or stalls is resumed, not restarted** (since 2026-09-30).
+The worker writes `records.jsonl` live. When it exits with an error — the
+per-question watchdog's last resort is `os._exit(3)` when a question cannot be
+interrupted — or is killed by the worker limit, or is alive but has recorded
+nothing for `EVAL_STALL_SEC` seconds (default *4 × (cap + 5 s) + 60 s*, at least
+300 s; the first record gets 300 s more), `eval_run` relaunches it on the
+questions not yet recorded, at most three times, and merges the segments into
+one `records.jsonl` + `summary.json` (`"resumed": k` in the summary). A resumed
+worker that dies again before recording anything has its first question written
+as `example stalled …` (an error, scored 0) and goes on from the next one, so one
+question that kills the worker every time costs that question, not the graph.
+On 2026-09-30 one hung question on geography (331 questions) cost the whole run
+under the old behaviour. Only JSON test sets with one id per row are resumable
+(the release sets are); anything else fails the pair as before.
+
 ## 3. Developer run on one pair (not the sweep)
 
 `eval_run.py` is the right tool for developing the agent: one graph, one

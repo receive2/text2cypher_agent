@@ -297,6 +297,10 @@ that errored. A cell is
   automatically (at most twice). The report also has an *Errors by kind*
   table so `116 errors` reads as `71 model + 45 timeouts`.
 
+**If a worker dies mid-graph** (a question that cannot be interrupted, a crash),
+the harness resumes it on the questions not yet recorded by itself; you will see
+`[eval_run] ↻ … resuming` in the log and the cell completes with every question.
+
 **If it stops** (laptop asleep, rate-limit storm, network): run the same
 command again. Completion is read from disk, so every ✓ cell is skipped and
 only ✗ and ⚠ cells run; a re-run writes a new time-stamped directory and the

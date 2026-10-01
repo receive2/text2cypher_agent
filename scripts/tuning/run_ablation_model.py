@@ -27,6 +27,10 @@ import argparse, json, os, shutil, socket, subprocess, sys, time
 from pathlib import Path
 REPO = Path(__file__).resolve().parent.parent.parent; sys.path.insert(0, str(REPO)); os.chdir(REPO)
 import eval_config as cfg, eval_run  # noqa: E402
+# The same per-question cap the sweep driver gives CyANCHOR (orchestrate_sweep.CYANCHOR_PER_EXAMPLE_TIMEOUT):
+# the slowest legitimate questions take 70-120 s. Cells before 2026-09-30 ran under the 60 s default,
+# which cost at most one question per graph (0 on nba, flight_accident, politics; 1 on movie).
+os.environ.setdefault("EVAL_PER_EXAMPLE_TIMEOUT", "900")
 
 ap = argparse.ArgumentParser()
 ap.add_argument("--model", required=True)

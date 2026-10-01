@@ -285,6 +285,242 @@ def _merge_shard_outputs(dataset: str, shard_recs: list[Path], shard_sums: list[
     return True, "ok"
 
 
+# ── Worker supervision: progress watchdog + resume after a worker death ──────
+# A worker can die with questions still to run: the in-process watchdog's last
+# resort (``os._exit(3)`` when a question cannot be interrupted, see
+# metrics_CypherBench), a crash, or the outer timeout. Until 2026-09-30 that
+# lost the whole graph (the pair failed and the driver started it over; on
+# geography one hung question cost a 331-question run). The worker writes
+# ``records.jsonl`` live, so the parent now relaunches it on the questions not
+# yet recorded and merges the segments. A worker that is alive but records
+# nothing for ``stall`` seconds is killed and treated the same way.
+_ID_KEYS_BY_DATASET = {   # the evaluators' own id columns, in their order (metrics_*.py)
+    "cypherbench":  ("qid", "id", "question_id", "gid"),
+    "mindthequery": ("unique_id", "id", "qid", "question_id", "original_index"),
+    "zograscope":   ("id", "qid", "question_id"),
+}
+_QUESTION_KEYS = ("nl", "question", "nl_question", "natural_language_question", "text")
+_GOLD_KEYS     = ("gold_cypher", "cypher", "target_cypher", "ground_truth_cypher", "query")
+_MAX_RESUMES   = 3
+
+
+def _row_id(row: dict, dataset: str) -> str | None:
+    for k in _ID_KEYS_BY_DATASET.get(dataset.replace("_augmented", ""), ("id",)):
+        v = row.get(k)
+        if v not in (None, ""):
+            return str(v)
+    return None
+
+
+def _first(row: dict, keys: tuple) -> str:
+    for k in keys:
+        v = row.get(k)
+        if v not in (None, ""):
+            return str(v)
+    return ""
+
+
+def _read_records(path: Path) -> list[dict]:
+    recs: list[dict] = []
+    try:
+        for l in path.read_text(encoding="utf-8").splitlines():
+            if l.strip():
+                try:
+                    recs.append(json.loads(l))
+                except Exception:  # noqa: BLE001 — a line cut by the kill
+                    pass
+    except FileNotFoundError:
+        pass
+    return recs
+
+
+def _remaining_rows(test_path, dataset: str, graph: str, done: set[str]) -> tuple[list[dict], object] | None:
+    """The rows of *graph* in the JSON test set whose id is not in *done*, in file order,
+    plus the file's top-level layout (list or dict). ``None`` when the set cannot be resumed:
+    not a JSON file, a row without an id, or ids that do not map one-to-one onto *done*."""
+    p = Path(test_path)
+    if p.suffix.lower() != ".json":
+        return None
+    try:
+        obj = json.loads(p.read_text(encoding="utf-8"))
+    except Exception:  # noqa: BLE001
+        return None
+    rows = obj.get("data") if isinstance(obj, dict) else obj
+    if not isinstance(rows, list):
+        return None
+    graph_rows = [r for r in rows if isinstance(r, dict) and r.get("graph") == graph]
+    ids = [_row_id(r, dataset) for r in graph_rows]
+    if any(i is None for i in ids) or len(set(ids)) != len(ids):
+        return None
+    if sum(1 for i in ids if i in done) != len(done):
+        return None
+    return [r for r, i in zip(graph_rows, ids) if i not in done], obj
+
+
+def _stalled_record(row: dict, dataset: str, graph: str, why: str) -> dict:
+    """The record of a question the worker could not get past twice: an error, scored 0,
+    shaped like the evaluators' error records so every report reads it."""
+    from eval.difficulty import classify, strategy_of
+    gold = _first(row, _GOLD_KEYS)
+    return {"qid": _row_id(row, dataset), "question": _first(row, _QUESTION_KEYS),
+            "ea": None, "em": None, "psjs": None, "pred_cypher": "", "gold_cypher": gold,
+            "graph": graph, "difficulty": classify(gold), "error": f"example stalled: {why}",
+            "strategy": strategy_of(row)}
+
+
+def _supervise_worker(argv_for, *, dataset: str, graph: str, test_path, out_records: Path,
+                      out_summary: Path, limit: int | None, env: dict, outer_timeout: float,
+                      stall_sec: float, startup_grace: float = 300.0, poll_sec: float = 5.0,
+                      max_resumes: int = _MAX_RESUMES) -> Tuple[bool, str]:
+    """Run the worker to completion, resuming it after a death or a stall.
+
+    *argv_for(test_path, out_records, out_summary, limit)* builds the worker command.
+    Attempt 0 writes ``out_records`` / ``out_summary`` directly, so a run that needs no
+    resume leaves exactly the files it always did. When an attempt ends without exit
+    code 0, its records are kept as a segment and the worker is relaunched on the rows
+    not yet recorded (same order, ``limit`` reduced by what is done), at most
+    *max_resumes* times. A resumed attempt that recorded nothing is relaunched once more
+    with its first question recorded as ``example stalled``, so one question that kills
+    the worker every time costs that question, not the graph; a worker that records
+    nothing twice in a row fails the pair. Segments are merged into
+    ``out_records`` and a recomputed ``out_summary`` at the end."""
+    pair_dir = out_records.parent
+    t_all = time.time()
+    segments: list[Path] = []
+    done: set[str] = set()
+    zero_progress = 0
+    attempt = 0
+    cur_test, cur_limit = test_path, limit
+    last_summary: Path | None = None
+    while True:
+        seg_rec = out_records if attempt == 0 else pair_dir / f"segment_{attempt}.records.jsonl"
+        seg_sum = out_summary if attempt == 0 else pair_dir / f"segment_{attempt}.summary.json"
+        cmd = argv_for(cur_test, seg_rec, seg_sum, cur_limit)
+        out_fh = open(pair_dir / f".worker_{attempt}.out", "w", encoding="utf-8")
+        err_fh = open(pair_dir / f".worker_{attempt}.err", "w", encoding="utf-8")
+        t0 = time.time()
+        proc = subprocess.Popen(cmd, env=env, stdout=out_fh, stderr=err_fh, text=True)
+        reason = ""
+        last_size, last_change = -1, t0
+        while True:
+            rc = proc.poll()
+            if rc is not None:
+                break
+            now = time.time()
+            if now - t0 > outer_timeout:
+                proc.kill(); proc.wait()
+                reason = f"worker timed out after {int(outer_timeout)}s"; rc = None
+                break
+            try:
+                size = seg_rec.stat().st_size
+            except FileNotFoundError:
+                size = -1
+            if size != last_size:
+                last_size, last_change = size, now
+            if now - last_change > stall_sec + (startup_grace if last_size <= 0 else 0.0):
+                proc.kill(); proc.wait()
+                reason = f"no new record for {int(now - last_change)}s (stall)"; rc = None
+                break
+            time.sleep(poll_sec)
+        out_fh.close(); err_fh.close()
+        out_txt = (pair_dir / f".worker_{attempt}.out").read_text(encoding="utf-8", errors="replace")
+        err_txt = (pair_dir / f".worker_{attempt}.err").read_text(encoding="utf-8", errors="replace")
+        (pair_dir / f".worker_{attempt}.out").unlink(missing_ok=True)
+        (pair_dir / f".worker_{attempt}.err").unlink(missing_ok=True)
+        if out_txt:
+            sys.stdout.write(out_txt)
+        if err_txt:
+            sys.stderr.write(err_txt)
+        recs = _read_records(seg_rec)
+        added = len(recs)
+        if rc == 0:
+            last_summary = seg_sum
+            break
+        if reason:
+            print(f"[eval_run] ⚠ {reason} on {dataset}__{graph}. Worker killed.", file=sys.stderr)
+        else:
+            reason = f"worker exited {rc}"
+        tail = "\n".join(err_txt.splitlines()[-20:])
+        if added == 0:
+            zero_progress += 1
+        else:
+            zero_progress = 0
+        # resume?  needs resumable rows, a budget, and progress (or one stalled question to skip)
+        if attempt >= max_resumes or zero_progress > 1:
+            if segments:
+                _merge_segments(dataset, segments + [seg_rec], last_summary, out_records, out_summary, time.time() - t_all, attempt)
+            return False, f"{reason}; stderr tail:\n{tail}"
+        done |= {str(r.get("qid")) for r in recs if r.get("qid") is not None}
+        rem = _remaining_rows(test_path, dataset, graph, done)
+        if rem is None:
+            if segments:
+                _merge_segments(dataset, segments + [seg_rec], last_summary, out_records, out_summary, time.time() - t_all, attempt)
+            return False, f"{reason} (not resumable: the test set is not a JSON file with one id per row); stderr tail:\n{tail}"
+        rest, layout = rem
+        if limit is not None:
+            rest = rest[:max(0, limit - len(done))]
+        if zero_progress == 1 and rest and done:
+            # a resumed worker died before recording anything: it could not get past the
+            # first remaining question twice — record that question, move on. (A worker that
+            # records nothing on its very first attempt is relaunched once without skipping:
+            # that is more likely a systematic failure than one bad question.)
+            head = rest.pop(0)
+            stalled = _stalled_record(head, dataset, graph, f"{reason}; skipped after two attempts")
+            with open(seg_rec, "a", encoding="utf-8") as fh:
+                fh.write(json.dumps(stalled, ensure_ascii=False) + "\n")
+            done.add(str(stalled["qid"]))
+            print(f"[eval_run] ↻ {dataset}__{graph}: question {stalled['qid']} recorded as stalled and skipped.", file=sys.stderr)
+        segments.append(seg_rec)
+        if not rest:
+            # everything is recorded; nothing left to run
+            _merge_segments(dataset, segments, last_summary, out_records, out_summary, time.time() - t_all, attempt)
+            return True, "ok"
+        attempt += 1
+        cur_test = pair_dir / f"segment_{attempt}.test.json"
+        cur_test.write_text(json.dumps(rest if isinstance(layout, list) else {**layout, "data": rest}, ensure_ascii=False), encoding="utf-8")
+        cur_limit = None
+        print(f"[eval_run] ↻ {dataset}__{graph}: resuming after '{reason}' — {len(done)} questions recorded, "
+              f"{len(rest)} to run (attempt {attempt}/{max_resumes}).", file=sys.stderr)
+    if segments:
+        _merge_segments(dataset, segments + [seg_rec], last_summary, out_records, out_summary, time.time() - t_all, attempt)
+    return True, "ok"
+
+
+def _merge_segments(dataset: str, seg_recs: list[Path], last_summary: Path | None,
+                    out_records: Path, out_summary: Path, elapsed: float, resumes: int) -> None:
+    """Concatenate the segments of a resumed run into ``out_records`` (file order = question
+    order) and write a recomputed ``out_summary``; the segment files are removed."""
+    lines: list[str] = []
+    for rp in seg_recs:
+        if rp.exists():
+            lines += [l for l in rp.read_text(encoding="utf-8").splitlines() if l.strip()]
+    run_meta: dict = {}
+    if last_summary is not None and last_summary.exists():
+        try:
+            run_meta = json.loads(last_summary.read_text(encoding="utf-8")).get("run_meta", {})
+        except Exception:  # noqa: BLE001
+            pass
+    recs = []
+    for l in lines:
+        try:
+            recs.append(json.loads(l))
+        except Exception:  # noqa: BLE001
+            pass
+    summary = _summarize_records(recs, dataset)
+    summary["elapsed_sec"] = round(elapsed, 2)
+    summary["resumed"]     = resumes
+    summary["run_meta"]    = run_meta
+    tmp = out_records.with_suffix(".jsonl.tmp")
+    tmp.write_text(("\n".join(lines) + "\n") if lines else "", encoding="utf-8")
+    tmp.replace(out_records)
+    out_summary.write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
+    for rp in seg_recs:
+        if rp != out_records:
+            rp.unlink(missing_ok=True)
+            rp.with_name(rp.name.replace(".records.jsonl", ".summary.json")).unlink(missing_ok=True)
+            rp.with_name(rp.name.replace(".records.jsonl", ".test.json")).unlink(missing_ok=True)
+
+
 _FLAT_OUTER_SEC = 4 * 60 * 60   # floor of a full-graph run; the ceiling when the graph's size is unknown
 
 
@@ -448,47 +684,25 @@ def _run_pair(
                                   per_example_sec=per_example_sec, explicit=explicit_outer)
 
     if shards <= 1:
-        # ── single-process path (original behaviour, byte-identical) ─────────
-        cmd: List[str] = [
-            sys.executable, "-m", "eval._worker",
-            dataset, graph, str(test_path), str(out_records), str(out_summary),
-        ]
-        if limit is not None:
-            cmd += ["--limit", str(limit)]
-        if verbose:
-            cmd += ["--verbose"]
+        # ── single-process path, supervised: progress watchdog + resume ─────
+        def _argv(tp, rec, summ, lim) -> List[str]:
+            c: List[str] = [sys.executable, "-m", "eval._worker", dataset, graph, str(tp), str(rec), str(summ)]
+            if lim is not None:
+                c += ["--limit", str(lim)]
+            if verbose:
+                c += ["--verbose"]
+            return c
         outer_timeout = _outer_timeout(n_total)
+        stall_sec = float(os.environ.get("EVAL_STALL_SEC", str(max(4 * per_example_sec + 60, 300))))
         print(
             f"\n[eval_run] ▶ {dataset}__{graph}  uri={conn.uri}  db={conn.database}  "
-            f"outer_timeout={int(outer_timeout)}s"
+            f"outer_timeout={int(outer_timeout)}s  stall={int(stall_sec)}s"
         )
-        try:
-            proc = subprocess.run(cmd, env=env, check=False, capture_output=True,
-                                  text=True, timeout=outer_timeout)
-        except subprocess.TimeoutExpired as exc:
-            partial_stdout = exc.stdout if isinstance(exc.stdout, str) else (
-                exc.stdout.decode("utf-8", errors="replace") if exc.stdout else "")
-            partial_stderr = exc.stderr if isinstance(exc.stderr, str) else (
-                exc.stderr.decode("utf-8", errors="replace") if exc.stderr else "")
-            if partial_stdout:
-                sys.stdout.write(partial_stdout)
-            if partial_stderr:
-                sys.stderr.write(partial_stderr)
-            print(
-                f"[eval_run] ⚠ TIMEOUT after {exc.timeout}s on "
-                f"{dataset}__{graph}. Worker killed; moving on to the next EVAL_PAIR.",
-                file=sys.stderr,
-            )
-            return False, (
-                f"worker timed out after {exc.timeout}s (dataset={dataset}, graph={graph})"
-            )
-        if proc.stdout:
-            sys.stdout.write(proc.stdout)
-        if proc.stderr:
-            sys.stderr.write(proc.stderr)
-        if proc.returncode != 0:
-            stderr_tail = "\n".join((proc.stderr or "").splitlines()[-20:])
-            return False, f"worker exited {proc.returncode}; stderr tail:\n{stderr_tail}"
+        ok, msg = _supervise_worker(_argv, dataset=dataset, graph=graph, test_path=test_path,
+                                    out_records=out_records, out_summary=out_summary, limit=limit,
+                                    env=env, outer_timeout=outer_timeout, stall_sec=stall_sec)
+        if not ok:
+            return False, msg
         _stamp_summary(out_summary, env, dataset=dataset, graph=graph,
                        method_seg=_tag, stamp=stamp, shards=1, limit=limit)
         return True, "ok"
