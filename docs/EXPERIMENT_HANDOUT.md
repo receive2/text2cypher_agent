@@ -172,8 +172,17 @@ cp .env.example .env                # then put the keys in (below)
   **Ask the coordinator for the lab key before creating your own** — the runs
   are billed centrally and each model has its own key so spend can be tracked.
   Never commit `.env`.
-- **Disk:** the `fcav` baseline's value index is ~4 GB per large graph (~40 GB
-  for the full suite); the driver builds it on first use (step 3).
+- **Disk:** the `fcav` baseline's value index is 4–8 GB per large graph (about
+  21 GB for the full suite: politics 8.2 GB, company 4.9, movie 4.0, geography
+  3.8); the driver builds it on first use (step 3).
+- **Memory:** building that index needs free RAM, and politics needs the most:
+  measured on 2026-10-02 (gpt-5.6-terra sweep, `main` f1235b8) the driver peaked
+  at about **12 GB** while building politics (1.28M values; the last ~10 minutes
+  also use every CPU core, so the fans spin up), 3–4 GB for company, movie and
+  geography; the `fcav` cell of politics then holds its 8 GB index in memory for
+  about half an hour. With 16 GB of RAM, close other large applications before
+  the run; with less, ask the coordinator for the pre-built indexes (§3) instead
+  of building them.
 
 ## 1. Verify the dataset — do this first, every time you pull
 
@@ -247,10 +256,10 @@ prompts and tools — that is what makes the seven models comparable — so
 `setup_artifacts/`**; the driver refuses to start on an archive that differs
 from the published set.
 
-The one large index (the `fcav` baseline's value index, 3–4 GB per large
+The one large index (the `fcav` baseline's value index, 4–8 GB per large
 graph) is not in git: the driver builds it for each graph on first use (OpenAI
 embeddings of the graph's values — cents per graph, minutes on the small
-graphs, a few hours on the large ones) and stores it under
+graphs, 30–70 minutes on the four large ones, up to 12 GB of RAM: see §0) and stores it under
 `setup_artifacts/<dataset>__<graph>/generated/fcav/`. If the coordinator has
 shared a pre-built bundle, unpack it there first and that step is skipped.
 
