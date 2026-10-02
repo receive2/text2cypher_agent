@@ -39,6 +39,10 @@ that verdict comes from the other checkout's history, not from these runs.
 console logs of the first-generation gpt-5.6-terra component ablation
 (2026-09-27/28). Its cells are on the branch
 `ablation/gpt-5.6-terra-judge-on-node` under `logs/ablation_gpt-5.6-terra/`.
+`logs/judge_failure_modes.log` is the console output of the select-or-abstain
+judge failure-mode measurement on those cells (2026-09-28): the per-graph
+counts, then a `KeyError` at the summary step; the complete table is
+`report/judge_failure_modes.{md,json}` on `main`.
 
 This branch is `main` @ 9e2c8bc plus these files. To copy the runs into
 another checkout without switching branches:

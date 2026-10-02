@@ -1,0 +1,17 @@
+flight_accident  reference  n=168  correct=145  wrong-empty=7  wrong-nonempty=16  error=0
+flight_accident  no_judge   n=168  correct=146  wrong-empty=6  wrong-nonempty=16  error=0
+healthcare       reference  n=418  correct=293  wrong-empty=58  wrong-nonempty=63  error=4
+healthcare       no_judge   n=418  correct=296  wrong-empty=54  wrong-nonempty=64  error=4
+pole             reference  n=400  correct=143  wrong-empty=59  wrong-nonempty=198  error=0
+pole             no_judge   n=400  correct=135  wrong-empty=59  wrong-nonempty=206  error=0
+nba              reference  n=251  correct=197  wrong-empty=11  wrong-nonempty=43  error=0
+nba              no_judge   n=251  correct=196  wrong-empty=12  wrong-nonempty=43  error=0
+
+=== confident-wrong (non-empty wrong) rate, % of questions ===
+graph                n  judge ON  judge OFF  Δ(OFF−ON)
+flight_accident    168      9.5%       9.5%      +0.0
+Traceback (most recent call last):
+  File "/Users/q0w01lh/Documents/repo/t2c/scripts/tuning/measure_failure_modes.py", line 64, in <module>
+    n = o["n"]; a = o["reference"].get("wrong-nonempty", 0); b = o["no_judge"].get("wrong-nonempty", 0)
+        ~^^^^^
+KeyError: 'n'
