@@ -43,6 +43,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -314,6 +315,10 @@ _ID_KEYS_BY_DATASET = {   # the evaluators' own id columns, in their order (metr
 _QUESTION_KEYS = ("nl", "question", "nl_question", "natural_language_question", "text")
 _GOLD_KEYS     = ("gold_cypher", "cypher", "target_cypher", "ground_truth_cypher", "query")
 _MAX_RESUMES   = 3
+# The line every evaluator prints, flushed, when it starts a question (metrics_CypherBench._heartbeat;
+# a worker's first question is always printed). A worker whose output has it got through start-up, so
+# when it then dies with nothing recorded it died on that question.
+_QUESTION_START = re.compile(r"\bstart\s+qid=(\S+)")
 
 
 def _row_id(row: dict, dataset: str) -> str | None:
@@ -393,14 +398,18 @@ def _supervise_worker(argv_for, *, dataset: str, graph: str, test_path, out_reco
     not yet recorded (same order, ``limit`` reduced by what is done), at most
     *max_resumes* times. A resumed attempt that recorded nothing is relaunched once more
     with its first question recorded as ``example stalled``, so one question that kills
-    the worker every time costs that question, not the graph; a worker that records
-    nothing twice in a row fails the pair. Segments are merged into
-    ``out_records`` and a recomputed ``out_summary`` at the end."""
+    the worker every time costs that question, not the graph. The first question of the
+    graph is treated the same way when the worker had started it both times (its output
+    shows the evaluator's start line for it): start-up worked, the question did not.
+    Otherwise a worker that records nothing twice in a row fails the pair — it never got
+    as far as a question, or it is dying on one question after another. Segments are
+    merged into ``out_records`` and a recomputed ``out_summary`` at the end."""
     pair_dir = out_records.parent
     t_all = time.time()
     segments: list[Path] = []
     done: set[str] = set()
     zero_progress = 0
+    stuck_on: list[str | None] = []      # the question each of the last attempts without a record had started
     attempt = 0
     cur_test, cur_limit = test_path, limit
     last_summary: Path | None = None
@@ -455,10 +464,13 @@ def _supervise_worker(argv_for, *, dataset: str, graph: str, test_path, out_reco
         tail = "\n".join(err_txt.splitlines()[-20:])
         if added == 0:
             zero_progress += 1
+            started = _QUESTION_START.search(out_txt)
+            stuck_on = (stuck_on + [started.group(1) if started else None])[-2:]
         else:
             zero_progress = 0
+            stuck_on = []
         # resume?  needs resumable rows, a budget, and progress (or one stalled question to skip)
-        if attempt >= max_resumes or zero_progress > 1:
+        if attempt >= max_resumes:
             if segments:
                 _merge_segments(dataset, segments + [seg_rec], last_summary, out_records, out_summary, time.time() - t_all, attempt)
             return False, f"{reason}; stderr tail:\n{tail}"
@@ -471,16 +483,26 @@ def _supervise_worker(argv_for, *, dataset: str, graph: str, test_path, out_reco
         rest, layout = rem
         if limit is not None:
             rest = rest[:max(0, limit - len(done))]
-        if zero_progress == 1 and rest and done:
-            # a resumed worker died before recording anything: it could not get past the
-            # first remaining question twice — record that question, move on. (A worker that
-            # records nothing on its very first attempt is relaunched once without skipping:
-            # that is more likely a systematic failure than one bad question.)
+        # The worker could not get past the first remaining question twice — record that question,
+        # move on. Either a resumed worker died before recording anything, or (nothing recorded yet
+        # at all) the worker had started the graph's first question on both attempts. A worker that
+        # records nothing on its very first attempt is relaunched once without skipping in both cases.
+        head_id = _row_id(rest[0], dataset) if rest else None
+        skip_head = bool(rest) and ((zero_progress == 1 and bool(done))
+                                    or (zero_progress == 2 and not done and stuck_on == [head_id, head_id]))
+        if zero_progress > 1 and not skip_head:
+            # twice in a row without a record and no single question to blame: never reached a
+            # question (start-up failure), or one question after another kills it.
+            if segments:
+                _merge_segments(dataset, segments + [seg_rec], last_summary, out_records, out_summary, time.time() - t_all, attempt)
+            return False, f"{reason}; stderr tail:\n{tail}"
+        if skip_head:
             head = rest.pop(0)
             stalled = _stalled_record(head, dataset, graph, f"{reason}; skipped after two attempts")
             with open(seg_rec, "a", encoding="utf-8") as fh:
                 fh.write(json.dumps(stalled, ensure_ascii=False) + "\n")
             done.add(str(stalled["qid"]))
+            zero_progress = 1                 # one question is blamed; another attempt without a record fails the pair
             print(f"[eval_run] ↻ {dataset}__{graph}: question {stalled['qid']} recorded as stalled and skipped.", file=sys.stderr)
         segments.append(seg_rec)
         if not rest:
