@@ -56,6 +56,16 @@ The matrix shows ✓ (clean), ✗ (missing/truncated) or ⚠ (infrastructure
 failures), and a "Flagged cells" section prints the breakdown, the most common
 error text and the exact command to re-run just that cell.
 
+Judging
+-------
+A gold query that returns a whole node is matched by a prediction that selects
+exactly those nodes, whichever property it returns (``eval/node_set_match.py``;
+518 pole and 5 bloom questions). A run made before that rule holds "wrong"
+verdicts it never checked: such a cell is marked ↻ and ``--publish`` refuses it
+until ``python scripts/rejudge_node_returns.py`` has judged its stored
+predictions again — no model is called and no question is re-run. ↻ is not ✗:
+the run loop never re-runs a cell for it.
+
 Resume
 ------
 Completion is read from disk, so re-running the same command skips every
@@ -125,6 +135,7 @@ load_dotenv(REPO / ".env")
 
 import eval_config as cfg   # noqa: E402
 import eval_paths           # noqa: E402
+from eval.node_set_match import stale_count, strict_value   # noqa: E402  (pure: no database, no agent)
 
 # (label, retrieval, METHOD value) in the order the reports list them.
 METHODS: List[Tuple[str, str, str]] = [
@@ -154,6 +165,7 @@ SUSPECT_OTHER_RATE      = 0.25   # unclassified errors: flag when lopsided vs th
 SUSPECT_OTHER_REF_RATE  = 0.05   #     other methods on the same graph (min ≤ this)
 SUSPECT_OTHER_ABS_RATE  = 0.50   #     ... or when more than half the cell errored
 SUSPECT_RERUN_MAX       = 2      # automatic re-runs of a ⚠ cell across invocations
+REJUDGE_CMD = "python scripts/rejudge_node_returns.py"   # judges stored predictions again; calls no model
 
 # A Cypher / Neo4j *statement* error is the query's fault (gold or agent) and
 # never infrastructure — even when its message contains a number that looks
@@ -283,6 +295,11 @@ def ea(records: List[dict]) -> Optional[float]:
     return (sum(1.0 for r in records if r.get("ea") is True) / len(records)) if records else None
 
 
+def ea_strict(records: List[dict]) -> Optional[float]:
+    """EA under the value comparison alone (``ea_strict`` where a record carries it, else ``ea``)."""
+    return (sum(1.0 for r in records if strict_value(r) is True) / len(records)) if records else None
+
+
 def psjs(records: List[dict]) -> Optional[float]:
     """PSJS over ALL rows: a numeric psjs counts, anything else (error / None) -> 0."""
     if not records:
@@ -339,7 +356,8 @@ def cell_status(dataset: str, graph: str, method: str, expected: int, out_dir: s
     return {"dir": str(d.relative_to(REPO)) if d else None, "n": len(recs), "err": n_err(recs),
             "expected": expected, "complete": bool(recs) and len(recs) == expected and rows_ok,
             "records": recs, "breakdown": bd, "suspect": False, "why": "",
-            "rows_ok": rows_ok, "rows_why": rows_why}
+            "rows_ok": rows_ok, "rows_why": rows_why,
+            "stale": stale_count(recs)}      # "wrong" verdicts never checked under the node-set rule
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -411,7 +429,8 @@ def build_status(pairs: List[Tuple[str, str]], methods: List[str], expected: Dic
     complete = all(c["complete"] and not c["suspect"] for c in cells.values())
     return {"model": model, "cells": cells, "complete": complete, "pairs": pairs, "methods": methods,
             "missing": [k for k, c in cells.items() if not c["complete"]],
-            "flagged": [k for k, c in cells.items() if c["suspect"]]}
+            "flagged": [k for k, c in cells.items() if c["suspect"]],
+            "stale":   [k for k, c in cells.items() if c.get("stale")]}
 
 
 def flag_suspects(cells: Dict[Tuple[str, str, str], dict]) -> None:
@@ -512,6 +531,12 @@ def render_status(status: dict) -> str:
                          "never really evaluated — see *Flagged cells* below")
         lines.append("**NOT CLEAN** — " + "; ".join(parts) + f". Re-run `{_cmd()}` "
                      "(it re-runs only these cells). Do not report these numbers.")
+    n_stale = len(status.get("stale", []))
+    if n_stale:
+        lines += ["", f"**RE-JUDGE NEEDED** — {n_stale} cell(s) marked ↻ were judged before the node-set rule: a gold query "
+                      "that returns a whole node counted every prediction returning a property of the right nodes as wrong. "
+                      f"Run `{REJUDGE_CMD}` (it judges the stored predictions again; no model is called, no question "
+                      f"is re-run), then `{_cmd('--status')}`. Do not report these numbers, and do not re-run the cells."]
     lines += ["", f"- generated: {time.strftime('%Y-%m-%d %H:%M')} · commit `{_git('rev-parse', '--short', 'HEAD')}` "
               f"· benchmarks `{_benchmarks_version()}` · artifacts set `{_artifact_set_id()}`",
               f"- run config: CYPHER_EMPTY_IS_WRONG={getattr(cfg, 'CYPHER_EMPTY_IS_WRONG', '?')} · "
@@ -530,7 +555,8 @@ def render_status(status: dict) -> str:
             c = cells[(ds, g, m)]
             mark = "⚠ " if c["suspect"] else ("✓ " if c["complete"] else "✗ ")
             row.append(mark + (f"{c['n']}/{c['err']}" if c["n"] else "missing")
-                       + ("" if c.get("rows_ok", True) else " ≠release"))
+                       + ("" if c.get("rows_ok", True) else " ≠release")
+                       + (" ↻" if c.get("stale") else ""))
         lines.append("| " + " | ".join(row) + " |")
     # ── flagged cells: what failed, why, and the one command that re-runs it ──
     flagged = [(k, cells[k]) for k in status.get("flagged", [])]
@@ -588,6 +614,18 @@ def render_status(status: dict) -> str:
         row += [_fmt(ea(all_recs)), _fmt(psjs(all_recs)), str(len(all_recs)), str(n_err(all_recs))]
         lines.append("| " + " | ".join(row) + " |")
     lines += ["", "`*` = one or more cells of that dataset are incomplete; the number is over the records present."]
+    # ── the same EA without the node-set rule (returned values compared as they are) ──
+    shown = [ds for ds in DATASET_INFO if any(p[0] == ds for p in pairs)]
+    lines += ["", "## EA under the value comparison alone", "",
+              "The headline EA accepts a prediction that selects exactly the gold nodes when the gold query returns "
+              "a whole node (`eval/node_set_match.py`). This table leaves that rule out: a property is never equal "
+              "to a node, so those questions count as wrong for every method.", "",
+              "| method | " + " | ".join(DATASET_INFO[ds][1] for ds in shown) + " | All |",
+              "|---|" + "---:|" * (len(shown) + 1)]
+    for m in methods:
+        per_ds = [[r for (d2, g2, m2), c in cells.items() if d2 == ds and m2 == m for r in c["records"]] for ds in shown]
+        lines.append("| " + " | ".join([labels[m]] + [_fmt(ea_strict(recs)) for recs in per_ds]
+                                       + [_fmt(ea_strict([r for recs in per_ds for r in recs]))]) + " |")
     # ── the breakdown tables the paper uses, per dataset and over everything ──
     scopes = [(DATASET_INFO[ds][1], ds) for ds in DATASET_INFO if any(p[0] == ds for p in pairs)]
     if len(scopes) > 1:
@@ -629,8 +667,10 @@ def verdict_line(status: dict, mode: str) -> str:
     missing, flagged = status.get("missing", []), status.get("flagged", [])
     bad = [f"✗ {_cell_label(k)}" for k in missing] + [f"⚠ {_cell_label(k)}" for k in flagged]
     cells = f" ({', '.join(bad)})" if 0 < len(bad) <= 8 else (" (see the matrix)" if bad else "")
+    stale = status.get("stale", [])
+    rejudge = f", {len(stale)} ↻ (run {REJUDGE_CMD})" if stale else ""
     return (f"=== {mode} {'COMPLETE' if status['complete'] else 'NOT CLEAN'} — "
-            f"{len(missing)} ✗, {len(flagged)} ⚠{cells} · driver {_git('rev-parse', '--short', 'HEAD')} ===")
+            f"{len(missing)} ✗, {len(flagged)} ⚠{rejudge}{cells} · driver {_git('rev-parse', '--short', 'HEAD')} ===")
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -770,6 +810,25 @@ def refresh_summary(dataset: str, graphs: List[str], model: str) -> None:
     log(f"  summary: {out}")
 
 
+def refresh_reports(pairs: List[Tuple[str, str]], model: str) -> None:
+    """Regenerate every per-graph and per-dataset table from the run dirs. The tables are
+    derived data: after records changed without a run (``scripts/rejudge_node_returns.py``)
+    they must be rebuilt before they are published."""
+    by_dataset: Dict[str, List[str]] = collections.OrderedDict()
+    for ds, g in pairs:
+        by_dataset.setdefault(ds, []).append(g)
+    for ds, graphs in by_dataset.items():
+        for g in graphs:
+            try:
+                refresh_graph_report(ds, g, model)
+            except Exception as exc:  # noqa: BLE001
+                log(f"  report generation failed for {ds}__{g}: {type(exc).__name__}: {exc}")
+        try:
+            refresh_summary(ds, graphs, model)
+        except Exception as exc:  # noqa: BLE001
+            log(f"  summary generation failed for {ds}: {type(exc).__name__}: {exc}")
+
+
 # ──────────────────────────────────────────────────────────────────────────────
 # Pre-flight, state, publish
 # ──────────────────────────────────────────────────────────────────────────────
@@ -902,6 +961,16 @@ def publish(status: dict, allow_incomplete: bool) -> int:
     branch = f"sweep/{model}"
     missing, flagged = status.get("missing", []), status.get("flagged", [])
     cells = status["cells"]
+
+    # ── 0. verdicts from before the node-set rule are never published ──────
+    stale = status.get("stale", [])
+    if stale:
+        log("✗ publish refused — these cells were judged before the node-set rule (eval/node_set_match.py):")
+        for k in stale:
+            log(f"    ↻ {_cell_label(k)}: {cells[k]['stale']} verdict(s) to judge again")
+        log(f"  Run `{REJUDGE_CMD}` — it judges the stored predictions again, calls no model and re-runs no")
+        log("  question — then --publish again. --allow-incomplete does not lift this.")
+        return 1
 
     # ── 1. verdict ──────────────────────────────────────────────────────────
     if (missing or flagged) and not allow_incomplete:
@@ -1038,6 +1107,8 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     if args.status or args.publish:
         status = build_status(scope_pairs, all_methods, expected, out_dir, model)
+        if args.publish and not args.smoke and not status.get("stale"):
+            refresh_reports(scope_pairs, model)      # publish the tables the records give now
         text = render_status(status)
         print(text)
         if not args.smoke:
@@ -1118,6 +1189,8 @@ def main(argv: Optional[List[str]] = None) -> int:
     out = write_status(status)
     log(verdict_line(status, "run"))
     log(f"report: {out.relative_to(REPO)}")
+    if status.get("stale"):
+        log(f"↻ cells: judged before the node-set rule — run `{REJUDGE_CMD}` before publishing (no model is called).")
     if status["complete"]:
         log(f"next: {_cmd('--publish')}")
     else:

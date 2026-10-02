@@ -95,6 +95,30 @@ How the harness works, every config knob and the pre-flight words: [`RUNNING_EXP
 > before, and runs made before and after can be pooled. There is nothing to do,
 > and — as with every line of that panel except the model in §2 — nothing to edit.
 
+> **Have `pole` or `bloom` runs made before your checkout had
+> `eval/node_set_match.py`?** Keep them — one command corrects them, nothing is
+> re-run. 518 of the 1,283 pole questions and 5 of the 24 bloom questions have
+> a gold query that returns a whole node (`RETURN x0`). Every method answers
+> such a question with a property of the node (a name, an id), and the scorer
+> used to count that as wrong for all of them, whatever the query selected. It
+> now also accepts a prediction that selects exactly the gold nodes
+> (README, *Metrics & normalisation*). Runs you start after `git pull` are
+> judged this way from the start. For runs you already have, after `git pull`:
+>
+> ```bash
+> python scripts/rejudge_node_returns.py --dry-run   # what would change; writes nothing
+> python scripts/rejudge_node_returns.py             # judge the stored predictions again
+> ```
+>
+> It reads the predictions in `records.jsonl`, asks the graph which nodes each
+> one selects, and rewrites `ea` where the rule accepts it (the old verdict
+> stays in `ea_strict`). No model is called, it takes a minute or two per pole
+> run, it skips a run that is still being written, and a second invocation
+> finds nothing to do. `python orchestrate_sweep.py --status` marks a cell
+> that still needs it ↻, and `--publish` refuses to publish such a cell. ↻ is
+> not ✗: do not delete or re-run those cells. CypherBench and the other
+> Mind-the-Query graphs have no such gold queries and are not touched.
+
 ---
 
 ## 0. Prerequisites
@@ -376,6 +400,11 @@ the ✗ / ⚠ cells and the exact commands to run next — follow them:
    `python orchestrate_sweep.py --publish --allow-incomplete`.
    The branch is labelled `PARTIAL` and lists the affected cells; nobody will
    mistake it for a finished sweep.
+
+If it prints **`✗ publish refused — these cells were judged before the node-set
+rule`**, some of your `pole` / `bloom` runs predate the scorer change described
+at the top of this page: run `python scripts/rejudge_node_returns.py` (no model
+is called, nothing is re-run) and then `--publish` again.
 
 If it prints **`✗ you cannot push to this repository`**, you do not have write
 access yet: ask the coordinator to add you as a collaborator on GitHub, accept

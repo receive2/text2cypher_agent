@@ -26,6 +26,7 @@ import json, math, collections, glob, os, sys
 from pathlib import Path
 REPO = Path(__file__).resolve().parent.parent.parent; os.chdir(REPO); sys.path.insert(0, str(REPO))
 from component_names import PAPER_NAME  # noqa: E402
+from eval.node_set_match import stale_count  # noqa: E402
 MODEL =sys.argv[sys.argv.index("--model") + 1] if "--model" in sys.argv else "gpt-4.1"
 REFNAME = sys.argv[sys.argv.index("--ref") + 1] if "--ref" in sys.argv else ""        # judge-on | judge-off: released-reference cells
 POLE_FULL = "--pole-full" in sys.argv
@@ -85,7 +86,12 @@ if MODEL != "gpt-4.1":   # per-backbone tables: everything under logs/ablation_<
 
 def load(d):
     p = Path(d) / "records.jsonl"
-    return {r["qid"]: r for l in open(p) if (r := json.loads(l))} if p.is_file() else None
+    if not p.is_file(): return None
+    recs = [json.loads(l) for l in open(p) if l.strip()]
+    if stale_count(recs):   # "wrong" verdicts on node-returning gold queries, never checked under the node-set rule
+        sys.exit(f"{d}: {stale_count(recs)} verdict(s) were judged before the node-set rule (eval/node_set_match.py). "
+                 f"Run `python scripts/rejudge_node_returns.py {Path(d).parent}` first — it calls no model — then score again.")
+    return {r["qid"]: r for r in recs}
 def p2(g, l):
     n = g + l; return 1.0 if n == 0 else min(1.0, 2 * sum(math.comb(n, k) for k in range(0, min(g, l) + 1)) / 2 ** n)
 

@@ -95,6 +95,12 @@ from .cypher_eval_normalize import (
     column_counts_match,
 )
 from .exact_match import exact_match as _literal_exact_match
+from .node_set_match import (
+    RULE as _EA_RULE,
+    capped_executor as _capped_executor,
+    judge as _node_set_judge,
+    strict_value as _strict_value,
+)
 from .psjs import compute_psjs as _compute_psjs
 from .difficulty import (
     classify as _classify_difficulty,
@@ -290,7 +296,7 @@ def evaluate_one(example: Dict[str, Any]) -> Dict[str, Any]:
     Returns
     -------
     dict
-        ``{"qid", "question", "ea", "em", "psjs", "pred_cypher",
+        ``{"qid", "question", "ea", "ea_strict", "em", "psjs", "pred_cypher",
            "gold_cypher", "graph", "difficulty", "error"}``.
 
         ``graph`` is the example's ``source_dataset`` (e.g. ``"bloom50"``,
@@ -307,6 +313,7 @@ def evaluate_one(example: Dict[str, Any]) -> Dict[str, Any]:
         "qid":         qid,
         "question":    question,
         "ea":          None,
+        "ea_strict":   None,
         "em":          None,
         "psjs":        None,
         "pred_cypher": "",
@@ -345,7 +352,11 @@ def evaluate_one(example: Dict[str, Any]) -> Dict[str, Any]:
 
     # ── Step 3: EA + PSJS ────────────────────────────────────────────────────
     try:
-        record["ea"] = _execution_accuracy(pred_rows, gold_rows, gold_cypher=gold_cypher)
+        # ``ea_strict`` is the value comparison alone; ``ea`` also accepts a prediction that
+        # selects exactly the gold nodes when the gold query returns a node (eval/node_set_match.py).
+        record["ea_strict"] = _execution_accuracy(pred_rows, gold_rows, gold_cypher=gold_cypher)
+        record["ea"] = _node_set_judge(record["ea_strict"], pred_cypher, gold_cypher, gold_rows,
+                                       _capped_executor(neo4j_graph))
     except Exception as exc:  # noqa: BLE001
         record["error"] = f"ea: {type(exc).__name__}: {exc}"
 
@@ -476,6 +487,7 @@ def evaluate_dataset(
                     "qid":         ex.get("qid", f"mtq_{i}"),
                     "question":    ex.get("question", ""),
                     "ea":          None,
+                    "ea_strict":   None,
                     "em":          None,
                     "psjs":        None,
                     "pred_cypher": "",
@@ -529,6 +541,8 @@ def evaluate_dataset(
         "n_scored":    all_cell["n_scored"],
         "n_errors":    all_cell["n_errors"],
         "ea":          all_cell["ea"]   if all_cell["ea"]   is not None else 0.0,
+        "ea_strict":   (sum(1.0 for r in records if _strict_value(r) is True) / len(records)) if records else 0.0,
+        "ea_rule":     _EA_RULE,
         "em":          all_cell["em"]   if all_cell["em"]   is not None else 0.0,
         "psjs":        all_cell["psjs"] if all_cell["psjs"] is not None else 0.0,
         "by_difficulty": by_difficulty,

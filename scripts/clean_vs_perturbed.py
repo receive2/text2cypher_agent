@@ -39,6 +39,7 @@ if str(REPO) not in sys.path:
 
 import eval_config as cfg   # noqa: E402
 import eval_paths           # noqa: E402
+from eval.node_set_match import stale_count   # noqa: E402
 
 METHODS = [("No Val Link", "no_val_link"), ("FCAV", "fcav"), ("ReAct", "react"),
            ("GraphRAG", "graphrag"), ("CyANCHOR", "cyanchor")]
@@ -63,6 +64,11 @@ def _records(run_dir: Optional[Path]) -> Dict[str, dict]:
             if line.strip():
                 r = json.loads(line)
                 out[str(r["qid"])] = r
+    stale = stale_count(list(out.values()))
+    if stale:   # "wrong" verdicts on node-returning gold queries, never checked under the node-set rule
+        raise SystemExit(f"{d.relative_to(REPO) if d.is_relative_to(REPO) else d}: {stale} verdict(s) were judged before the "
+                         "node-set rule (eval/node_set_match.py). Run `python scripts/rejudge_node_returns.py` first — it "
+                         "calls no model — then run this again.")
     return out
 
 

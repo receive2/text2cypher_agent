@@ -257,7 +257,8 @@ def main() -> int:
     parts: List[str] = []
     parts.append(f"# {spec['title']}\n")
     parts.append(
-        "**Metrics.** EA = execution accuracy (predicted Cypher's result set matches gold).\n"
+        "**Metrics.** EA = execution accuracy (predicted Cypher's result set matches gold; a gold query that "
+        "returns a whole node is matched by a prediction that selects exactly those nodes).\n"
         "PSJS = Provenance-Subgraph Jaccard Similarity (partial-credit subgraph overlap).\n"
         "Higher is better. Denominator = ALL examples; any failure (agent error, "
         "empty/wrong result, or a non-executing gold) scores 0.\n")

@@ -242,7 +242,7 @@ def _summarize_records(recs: list[dict], dataset: str) -> dict:
                 total += float(v)
         return total / len(recs)
 
-    return {
+    out = {
         "dataset":   dataset,
         "n":         len(recs),
         "n_scored":  {k: sum(1 for r in recs if r.get(k) is not None)
@@ -252,6 +252,12 @@ def _summarize_records(recs: list[dict], dataset: str) -> dict:
         "em":        _mean("em"),
         "psjs":      _mean("psjs"),
     }
+    if any("ea_strict" in r for r in recs):
+        # scorers with the node-set rule (eval/node_set_match.py) record the value-only verdict too
+        from eval.node_set_match import RULE, strict_value
+        out["ea_strict"] = sum(1.0 for r in recs if strict_value(r) is True) / len(recs)
+        out["ea_rule"] = RULE
+    return out
 
 
 def _merge_shard_outputs(dataset: str, shard_recs: list[Path], shard_sums: list[Path],
