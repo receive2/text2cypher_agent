@@ -44,7 +44,8 @@ Errors are not all alike, so every errored record is classified by its
 * ``gold``  — the benchmark's own gold Cypher failed (a data defect; identical
   for every method and model; never fixable by re-running);
 * ``agent`` — the model's generated Cypher failed (the model's result; scores 0);
-* ``infra`` — timeout / API timeout / rate limit / connection failure: the
+* ``infra`` — timeout / API timeout / rate limit / connection failure, or a
+  question the worker could not get past (``example stalled``, eval_run): the
   question was never really evaluated. These are the only errors a re-run can
   recover, and a cell with more than a handful of them is marked ⚠ and treated
   as NOT clean: the run loop re-runs it (at most SUSPECT_RERUN_MAX times) and
@@ -172,7 +173,7 @@ REJUDGE_CMD = "python scripts/rejudge_node_returns.py"   # judges stored predict
 # like an HTTP status ("line 1, column 536"). Checked before the infra patterns.
 _CYPHER_ERROR = re.compile(r"Cypher\w*Error|Neo\.ClientError\.", re.IGNORECASE)
 _INFRA_PATTERNS = re.compile(
-    r"example timeout|APITimeoutError|transaction timeout|timed out|"
+    r"example timeout|example stalled|APITimeoutError|transaction timeout|timed out|"
     r"(?:Read|Write|Connect)?TimeoutError|(?:Read|Write|Connect)Timeout|"
     r"RateLimit|rate limit|\b429\b|(?:error code|status(?: code)?|http)\W{0,3}5\d\d\b|"
     r"ServiceUnavailable|SessionExpired|DatabaseUnavailable|Neo\.TransientError\.|"

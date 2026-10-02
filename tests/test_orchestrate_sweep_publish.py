@@ -25,6 +25,9 @@ import orchestrate_sweep as osw  # noqa: E402
     ("agent: CypherSyntaxError: {code: Neo.ClientError.Statement.SyntaxError} {message: Variable", "agent"),
     ("agent: CypherTypeError: {code: Neo.ClientError.Statement.TypeError} {message: Ex", "agent"),
     ("example timeout: exceeded 900s", "infra"),
+    # a question the worker could not get past (eval_run._stalled_record): never evaluated either
+    ("example stalled: worker exited 3; skipped after two attempts", "infra"),
+    ("example stalled: no new record for 620s (stall); skipped after two attempts", "infra"),
     ("agent: APITimeoutError: Request timed out.", "infra"),        # infra wins over the agent prefix
     ("transaction timeout: query exceeded 60s", "infra"),
     ("RateLimitError: Error code: 429", "infra"),
