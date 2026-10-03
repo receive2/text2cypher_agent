@@ -53,3 +53,12 @@ another checkout without switching branches:
 
 The reset un-stages the copied files; `logs/` is ignored, so they stay out of
 later commits.
+
+**Re-judged 2026-10-01 (node-set rule, main 2bffefe):** the four pole and bloom run folders
+(`zograscope__pole__*`, `zograscope_augmented__pole__*`, `mindthequery__bloom50__*`,
+`mindthequery_augmented__bloom__*`) were re-scored with `scripts/rejudge_node_returns.py`; their
+records gained `ea_strict` (value comparison alone) and `ea` now also accepts a prediction that
+selects exactly the gold nodes when the gold query returns a node. Pooled No Val Link EA moved
+from 0.454 to 0.509 on the clean questions and from 0.117 to 0.120 on the perturbed ones
+(`report/gpt-5.6-terra/CLEAN_VS_PERTURBED.md` on this branch is regenerated accordingly).
+The other 22 folders are unchanged.

@@ -7,9 +7,9 @@
     "psjs": 2113
   },
   "n_errors": 4,
-  "ea": 0.2593292394898441,
+  "ea": 0.46480869154463866,
   "em": 0.0,
-  "psjs": 0.38813809660491516,
+  "psjs": 0.3881380966049144,
   "elapsed_sec": 4147.97,
   "shards": 4,
   "run_meta": {
@@ -88,5 +88,13 @@
     },
     "shards": 4,
     "limit": null
+  },
+  "ea_strict": 0.2593292394898441,
+  "ea_rule": "node-set-v1",
+  "rejudged": {
+    "rule": "node-set-v1",
+    "at": "2026-10-01 23:57:01",
+    "checked": 836,
+    "accepted": 435
   }
 }
