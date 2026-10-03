@@ -1,37 +1,31 @@
 # CyANCHOR component ablation — gpt-5.6-terra
 
-Paired per question against the full-method reference on the same questions (runs restricted to questions verbatim in the current release; pole uses its first 400 questions). Cells: Δ EA in points; **bold** = two-sided sign test p < 0.05; — = not run.
+Paired per question against the full-method reference on the same questions (runs restricted to questions verbatim in the current release; every graph runs in full). Cells: Δ EA in points; **bold** = two-sided sign test p < 0.05; — = not run.
 
 ## Δ EA
 
 | variant | switch | flight_accident | healthcare | pole | nba |
 |---|---|---|---|---|---|
-| CyANCHOR full (EA) | — | 0.863 | 0.701 | 0.357 | 0.785 |
-| − Adaptive Search Control | `PLAN_EXEC_ESCALATE=0` | **-9.5** | +0.2 | -2.2 | **-8.8** |
-| − select-or-abstain judge | `PLAN_EXEC_SELECT_JUDGE=0` | +0.6 | +0.7 | -2.0 | -0.4 |
-| − Result Aware Query Repair | `CYPHER_SEMANTIC_REPAIR=0` | -3.6 | -2.6 | **-4.5** | -4.4 |
-| − Value Existence Guard | `PLAN_EXEC_VALUE_SNAP=0` | -2.4 | **-10.8** | **-18.0** | **-6.0** |
-| − relation tools | `TOOL_TYPE=node` | +2.4 | +0.7 | -0.3 | -0.8 |
-| − Levenshtein Retrieval | `RETRIEVAL_LEVENSHTEIN=0` | -4.8 | **-6.2** | **-4.5** | **-11.2** |
-| − Token Level Fuzzy Match | `RETRIEVAL_FUZZY=0` | -0.6 | +0.0 | -1.7 | +0.0 |
-| + vector arm | `RETRIEVAL_VECTOR=1` | — | — | — | — |
-| − all correction (Adaptive Search Control, judge, Result Aware Query Repair, Value Existence Guard) | `—` | — | — | — | — |
+| CyANCHOR full (EA) | — | 0.887 | 0.708 | 0.568 | 0.777 |
+| − Adaptive Search Control | `PLAN_EXEC_ESCALATE=0` | **-8.9** | +0.7 | **-2.2** | -4.8 |
+| − select-or-abstain judge | `PLAN_EXEC_SELECT_JUDGE=0` | — | — | -0.6 | — |
+| − Result Aware Query Repair | `CYPHER_SEMANTIC_REPAIR=0` | -5.4 | **-3.1** | **-3.5** | -3.2 |
+| − Value Existence Guard | `PLAN_EXEC_VALUE_SNAP=0` | -5.4 | **-10.3** | **-21.6** | **-5.2** |
+| − Levenshtein Retrieval | `RETRIEVAL_LEVENSHTEIN=0` | -6.0 | -3.3 | **-3.6** | **-8.8** |
+| − Token Level Fuzzy Match | `RETRIEVAL_FUZZY=0` | **-8.3** | +1.4 | -0.6 | -2.4 |
 
-n: flight_accident 168 · healthcare 418 · pole 400 · nba 251
+n: flight_accident 168 · healthcare 418 · pole 1283 · nba 251
 
 ## Paired flips (gained / lost), sign-test p
 
 | variant | flight_accident | healthcare | pole | nba |
 |---|---|---|---|---|
-| − Adaptive Search Control | 2/18, p=0.0004 | 11/10, p=1 | 8/17, p=0.11 | 5/27, p=0.00011 |
-| − select-or-abstain judge | 6/5, p=1 | 20/17, p=0.74 | 13/21, p=0.23 | 13/14, p=1 |
-| − Result Aware Query Repair | 4/10, p=0.18 | 13/24, p=0.099 | 7/25, p=0.0021 | 10/21, p=0.071 |
-| − Value Existence Guard | 5/9, p=0.42 | 16/61, p=2.4e-07 | 4/76, p=2.8e-18 | 7/22, p=0.0081 |
-| − relation tools | 12/8, p=0.5 | 12/9, p=0.66 | 15/16, p=1 | 11/13, p=0.84 |
-| − Levenshtein Retrieval | 8/16, p=0.15 | 19/45, p=0.0016 | 6/24, p=0.0014 | 5/33, p=4.3e-06 |
-| − Token Level Fuzzy Match | 9/10, p=1 | 12/12, p=1 | 12/19, p=0.28 | 13/13, p=1 |
-| + vector arm | — | — | — | — |
-| − all correction (Adaptive Search Control, judge, Result Aware Query Repair, Value Existence Guard) | — | — | — | — |
+| − Adaptive Search Control | 6/21, p=0.0059 | 17/14, p=0.72 | 72/100, p=0.039 | 10/22, p=0.05 |
+| − select-or-abstain judge | — | — | 77/85, p=0.58 | — |
+| − Result Aware Query Repair | 7/16, p=0.093 | 12/25, p=0.047 | 59/104, p=0.00053 | 8/16, p=0.15 |
+| − Value Existence Guard | 6/15, p=0.078 | 18/61, p=1.3e-06 | 46/323, p=2.3e-52 | 5/18, p=0.011 |
+| − Levenshtein Retrieval | 10/20, p=0.099 | 23/37, p=0.092 | 77/123, p=0.0014 | 8/30, p=0.00047 |
+| − Token Level Fuzzy Match | 5/19, p=0.0066 | 19/13, p=0.38 | 73/81, p=0.57 | 10/16, p=0.33 |
 
 ## Per-category Δ EA (points)
 
@@ -39,62 +33,55 @@ n: flight_accident 168 · healthcare 418 · pole 400 · nba 251
 
 | variant | casing | typo | partial | abbrev | alias |
 |---|---|---|---|---|---|
-| CyANCHOR full (EA) | 1.000 | 1.000 | 0.889 | 0.831 | 0.833 |
-| − Adaptive Search Control | +0.0 | -20.0 | +5.6 | -13.5 | -8.3 |
-| − select-or-abstain judge | +0.0 | -10.0 | +5.6 | -1.1 | +5.6 |
-| − Result Aware Query Repair | +0.0 | -20.0 | +0.0 | -2.2 | -5.6 |
-| − Value Existence Guard | +0.0 | +0.0 | +0.0 | -1.1 | -8.3 |
-| − relation tools | +0.0 | +0.0 | +0.0 | +2.2 | +5.6 |
-| − Levenshtein Retrieval | +0.0 | -10.0 | +5.6 | -6.7 | -5.6 |
-| − Token Level Fuzzy Match | -13.3 | +0.0 | +5.6 | +1.1 | -2.8 |
+| CyANCHOR full (EA) | 1.000 | 1.000 | 0.889 | 0.854 | 0.889 |
+| − Adaptive Search Control | +0.0 | -10.0 | +0.0 | -9.0 | -16.7 |
+| − Result Aware Query Repair | +0.0 | -10.0 | -5.6 | -6.7 | -2.8 |
+| − Value Existence Guard | +0.0 | -10.0 | +11.1 | -6.7 | -11.1 |
+| − Levenshtein Retrieval | +0.0 | -10.0 | +11.1 | -9.0 | -8.3 |
+| − Token Level Fuzzy Match | +0.0 | -20.0 | +5.6 | -9.0 | -13.9 |
 
 **healthcare** — n per category: casing 44, typo 79, partial 42, abbrev 129, alias 124
 
 | variant | casing | typo | partial | abbrev | alias |
 |---|---|---|---|---|---|
-| CyANCHOR full (EA) | 0.773 | 0.759 | 0.952 | 0.690 | 0.565 |
-| − Adaptive Search Control | +2.3 | -2.5 | -4.8 | +3.1 | +0.0 |
-| − select-or-abstain judge | +0.0 | +3.8 | -7.1 | +0.0 | +2.4 |
-| − Result Aware Query Repair | -6.8 | -1.3 | -9.5 | +3.1 | -5.6 |
-| − Value Existence Guard | -4.5 | -22.8 | -21.4 | -7.0 | -5.6 |
-| − relation tools | +4.5 | +3.8 | -4.8 | +1.6 | -1.6 |
-| − Levenshtein Retrieval | +2.3 | +2.5 | -4.8 | -10.9 | -10.5 |
-| − Token Level Fuzzy Match | +4.5 | -2.5 | -2.4 | +2.3 | -1.6 |
+| CyANCHOR full (EA) | 0.818 | 0.797 | 0.905 | 0.705 | 0.548 |
+| − Adaptive Search Control | -2.3 | -1.3 | +2.4 | +3.9 | -0.8 |
+| − Result Aware Query Repair | -9.1 | -1.3 | -4.8 | -0.8 | -4.0 |
+| − Value Existence Guard | -2.3 | -21.5 | -16.7 | -9.3 | -4.8 |
+| − Levenshtein Retrieval | +0.0 | +2.5 | +2.4 | -7.0 | -6.5 |
+| − Token Level Fuzzy Match | +2.3 | +0.0 | +0.0 | +0.0 | +4.0 |
 
-**pole** — n per category: casing 44, typo 247, partial 75, abbrev 34, alias 0
+**pole** — n per category: casing 143, typo 793, partial 234, abbrev 113, alias 0
 
 | variant | casing | typo | partial | abbrev | alias |
 |---|---|---|---|---|---|
-| CyANCHOR full (EA) | 0.409 | 0.344 | 0.400 | 0.294 | — |
-| − Adaptive Search Control | -2.3 | -0.8 | -5.3 | -5.9 | — |
-| − select-or-abstain judge | -4.5 | -2.4 | -2.7 | +5.9 | — |
-| − Result Aware Query Repair | -6.8 | -2.4 | -5.3 | -14.7 | — |
-| − Value Existence Guard | -4.5 | -24.3 | -9.3 | -8.8 | — |
-| − relation tools | -6.8 | +1.2 | -4.0 | +5.9 | — |
-| − Levenshtein Retrieval | -2.3 | -2.0 | -5.3 | -23.5 | — |
-| − Token Level Fuzzy Match | -2.3 | -1.6 | -1.3 | -2.9 | — |
+| CyANCHOR full (EA) | 0.531 | 0.512 | 0.748 | 0.637 | — |
+| − Adaptive Search Control | +3.5 | -2.6 | -1.3 | -8.0 | — |
+| − select-or-abstain judge | +3.5 | -1.1 | +2.6 | -8.8 | — |
+| − Result Aware Query Repair | +2.1 | -2.1 | -5.6 | -15.9 | — |
+| − Value Existence Guard | -0.7 | -30.5 | -10.7 | -8.0 | — |
+| − Levenshtein Retrieval | +4.9 | +1.8 | -0.4 | -58.4 | — |
+| − Token Level Fuzzy Match | +3.5 | -0.4 | -0.4 | -8.0 | — |
 
 **nba** — n per category: casing 25, typo 7, partial 59, abbrev 65, alias 95
 
 | variant | casing | typo | partial | abbrev | alias |
 |---|---|---|---|---|---|
-| CyANCHOR full (EA) | 0.880 | 1.000 | 0.898 | 0.708 | 0.726 |
-| − Adaptive Search Control | -8.0 | -14.3 | -5.1 | -4.6 | -13.7 |
-| − select-or-abstain judge | +0.0 | +0.0 | +0.0 | -4.6 | +2.1 |
-| − Result Aware Query Repair | -4.0 | +0.0 | -5.1 | -12.3 | +1.1 |
-| − Value Existence Guard | +0.0 | +0.0 | -6.8 | -9.2 | -5.3 |
-| − relation tools | -8.0 | -14.3 | -1.7 | -1.5 | +3.2 |
-| − Levenshtein Retrieval | +0.0 | +0.0 | -1.7 | -30.8 | -7.4 |
-| − Token Level Fuzzy Match | -4.0 | +0.0 | -1.7 | -1.5 | +3.2 |
+| CyANCHOR full (EA) | 0.800 | 0.857 | 0.881 | 0.692 | 0.758 |
+| − Adaptive Search Control | +0.0 | +14.3 | -5.1 | -1.5 | -9.5 |
+| − Result Aware Query Repair | +0.0 | +0.0 | -1.7 | -1.5 | -6.3 |
+| − Value Existence Guard | +0.0 | +14.3 | -3.4 | -1.5 | -11.6 |
+| − Levenshtein Retrieval | +0.0 | +0.0 | +0.0 | -26.2 | -5.3 |
+| − Token Level Fuzzy Match | +0.0 | +14.3 | -3.4 | -1.5 | -4.2 |
 
-## Missing cells for the paper table (3 test graphs × 8 rows)
+## Missing cells (4 graphs × 6 rows)
 
-- + vector arm: flight_accident, healthcare, pole, nba
+- − select-or-abstain judge: flight_accident, healthcare, nba
 
-4 missing. `+ vector arm` needs per-graph embeddings first (archives have EMBEDDABLE_PROPERTIES=[]). Driver for the rest: `scripts/tuning/run_ablation_model.py --model gpt-5.6-terra` (add `--with-joint` for the all-correction row).
+3 missing. Rerun `python scripts/tuning/run_ablation_model.py --model gpt-5.6-terra --judge on --scope node --pole-full` to fill them.
 
 Detection floor (paired sign test, 80% power, observed 4–8% discordance): ~5–6 points at n=167, ~3.5 at n≈400, ~2.4 pooled over the three test graphs.
 
 ## Sources
 
-References: `logs/ablation_gpt-5.6-terra/flight_accident__reference`, `logs/ablation_gpt-5.6-terra/healthcare__reference`, `logs/ablation_gpt-5.6-terra/pole__reference`, `logs/ablation_gpt-5.6-terra/nba__reference`. Variants: `logs/ablation_gpt-5.6-terra`. Backbone gpt-5.6-terra, SHARDS=1, errors score 0.
+References: `logs/ablation_gpt-5.6-terra__judge-on-node/flight_accident__reference`, `logs/ablation_gpt-5.6-terra__judge-on-node/healthcare__reference`, `logs/ablation_gpt-5.6-terra__judge-on-node/pole_full__reference`, `logs/ablation_gpt-5.6-terra__judge-on-node/nba__reference`. Variants: `logs/ablation_gpt-5.6-terra__judge-on-node`. Backbone gpt-5.6-terra, SHARDS=1, errors score 0.
