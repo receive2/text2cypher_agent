@@ -1,0 +1,168 @@
+[2026-10-01 17:35:18] === sweep start: model=gpt-5.6-terra graphs=1 methods=['no_val_link', 'fcav', 'react', 'graphrag', 'cyanchor'] SMOKE ===
+[2026-10-01 17:35:18] pre-flight (archives vs live graphs, archives vs published set):
+[2026-10-01 17:35:18]   ✓ cypherbench_augmented__flight_accident: OK — ok (5 tool labels, all non-empty; min count=58) | artifacts OK
+[2026-10-01 17:35:18]   ▶ cypherbench_augmented__flight_accident__no_val_link  (try 1/3, SHARDS=1, limit=3)
+[2026-10-01 17:35:34]     rc=0 records=3/3 err=0 (15s)
+[2026-10-01 17:35:34]   fcav index missing for cypherbench_augmented__flight_accident: building it (OpenAI embeddings of the graph's values)
+[2026-10-01 17:35:50]   fcav index built: 5693 values
+[2026-10-01 17:35:50]   ▶ cypherbench_augmented__flight_accident__fcav  (try 1/3, SHARDS=1, limit=3)
+[2026-10-01 17:36:10]     rc=0 records=3/3 err=0 (20s)
+[2026-10-01 17:36:10]   ▶ cypherbench_augmented__flight_accident__react  (try 1/3, SHARDS=1, limit=3)
+[2026-10-01 17:36:36]     rc=0 records=3/3 err=0 (25s)
+[2026-10-01 17:36:36]   ▶ cypherbench_augmented__flight_accident__graphrag  (try 1/3, SHARDS=1, limit=3)
+[2026-10-01 17:37:11]     rc=0 records=3/3 err=0 (36s)
+[2026-10-01 17:37:11]   ▶ cypherbench_augmented__flight_accident__cyanchor  (try 1/3, SHARDS=1, limit=3)
+[2026-10-01 17:37:42]     rc=0 records=3/3 err=0 (30s)
+[2026-10-01 17:37:42] ✓ SMOKE OK — all 5 methods produced 3 records on flight_accident (a few errors are fine; a whole method erroring is not). Now run: python orchestrate_sweep.py
+[2026-10-01 17:37:52] === sweep start: model=gpt-5.6-terra graphs=7 methods=['no_val_link', 'fcav', 'react', 'graphrag', 'cyanchor'] FULL ===
+[2026-10-01 17:37:52] pre-flight (archives vs live graphs, archives vs published set):
+[2026-10-01 17:37:53]   ✓ cypherbench_augmented__company: OK — ok (4 tool labels, all non-empty; min count=217) | artifacts OK
+[2026-10-01 17:37:53]   ✓ cypherbench_augmented__flight_accident: OK — ok (5 tool labels, all non-empty; min count=58) | artifacts OK
+[2026-10-01 17:37:54]   ✓ cypherbench_augmented__geography: OK — ok (8 tool labels, all non-empty; min count=5) | artifacts OK
+[2026-10-01 17:37:54]   ✓ cypherbench_augmented__movie: OK — ok (7 tool labels, all non-empty; min count=205) | artifacts OK
+[2026-10-01 17:37:55]   ✓ cypherbench_augmented__nba: OK — ok (7 tool labels, all non-empty; min count=2) | artifacts OK
+[2026-10-01 17:37:55]   ✓ cypherbench_augmented__politics: OK — ok (6 tool labels, all non-empty; min count=217) | artifacts OK
+[2026-10-01 17:37:56]   ✓ mindthequery_augmented__healthcare: OK — ok (8 tool labels, all non-empty; min count=5) | artifacts OK
+[2026-10-01 17:37:56]   ▶ cypherbench_augmented__company__no_val_link  (try 1/3, SHARDS=1, limit=None)
+[2026-10-01 17:55:57]     rc=0 records=303/303 err=8 (1081s)
+[2026-10-01 17:55:57]   fcav index missing for cypherbench_augmented__company: building it (OpenAI embeddings of the graph's values)
+[2026-10-01 18:29:04]   fcav index built: 792468 values
+[2026-10-01 18:29:04]   ▶ cypherbench_augmented__company__fcav  (try 1/3, SHARDS=1, limit=None)
+[2026-10-01 18:55:02]     rc=0 records=303/303 err=15 (1558s)
+[2026-10-01 18:55:02]   ▶ cypherbench_augmented__company__react  (try 1/3, SHARDS=1, limit=None)
+[2026-10-01 19:35:56]     rc=0 records=303/303 err=0 (2454s)
+[2026-10-01 19:35:56]   ▶ cypherbench_augmented__company__graphrag  (try 1/3, SHARDS=1, limit=None)
+[2026-10-01 20:26:06]     rc=0 records=303/303 err=0 (3009s)
+[2026-10-01 20:26:06]   ▶ cypherbench_augmented__company__cyanchor  (try 1/3, SHARDS=1, limit=None)
+[2026-10-01 21:28:20]     rc=0 records=303/303 err=0 (3734s)
+[2026-10-01 21:28:20]   report: report/gpt-5.6-terra/CypherBench/company.md
+[2026-10-01 21:28:20]   ▶ cypherbench_augmented__flight_accident__no_val_link  (try 1/3, SHARDS=1, limit=None)
+[2026-10-01 21:35:36]     rc=0 records=168/168 err=2 (436s)
+[2026-10-01 21:35:36]   ▶ cypherbench_augmented__flight_accident__fcav  (try 1/3, SHARDS=1, limit=None)
+[2026-10-01 21:46:42]     rc=0 records=168/168 err=2 (666s)
+[2026-10-01 21:46:42]   ▶ cypherbench_augmented__flight_accident__react  (try 1/3, SHARDS=1, limit=None)
+[2026-10-01 22:04:33]     rc=0 records=168/168 err=0 (1072s)
+[2026-10-01 22:04:33]   ▶ cypherbench_augmented__flight_accident__graphrag  (try 1/3, SHARDS=1, limit=None)
+[2026-10-01 22:24:05]     rc=0 records=168/168 err=0 (1171s)
+[2026-10-01 22:24:05]   = cypherbench_augmented__flight_accident__cyanchor: clean (168 records, err=0) — skipped
+[2026-10-01 22:24:05]   report: report/gpt-5.6-terra/CypherBench/flight_accident.md
+[2026-10-01 22:24:05]   ▶ cypherbench_augmented__geography__no_val_link  (try 1/3, SHARDS=1, limit=None)
+[2026-10-01 22:47:37]     rc=0 records=331/331 err=6 (1412s)
+[2026-10-01 22:47:37]   fcav index missing for cypherbench_augmented__geography: building it (OpenAI embeddings of the graph's values)
+[2026-10-01 23:13:16]   fcav index built: 621508 values
+[2026-10-01 23:13:16]   ▶ cypherbench_augmented__geography__fcav  (try 1/3, SHARDS=1, limit=None)
+[2026-10-01 23:42:28]     rc=0 records=331/331 err=6 (1752s)
+[2026-10-01 23:42:28]   ▶ cypherbench_augmented__geography__react  (try 1/3, SHARDS=1, limit=None)
+[2026-10-02 00:28:21]     rc=0 records=331/331 err=1 (2753s)
+[2026-10-02 00:28:21]   ▶ cypherbench_augmented__geography__graphrag  (try 1/3, SHARDS=1, limit=None)
+[2026-10-02 00:34:32]     rc=2 records=0/331 err=0 (371s)
+[2026-10-02 00:34:32]   ▶ cypherbench_augmented__geography__graphrag  (try 2/3, SHARDS=1, limit=None)
+[2026-10-02 01:29:01]     rc=0 records=331/331 err=2 (3269s)
+[2026-10-02 01:29:01]   = cypherbench_augmented__geography__cyanchor: clean (331 records, err=0) — skipped
+[2026-10-02 01:29:02]   report: report/gpt-5.6-terra/CypherBench/geography.md
+[2026-10-02 01:29:02]   ▶ cypherbench_augmented__movie__no_val_link  (try 1/3, SHARDS=1, limit=None)
+[2026-10-02 01:49:28]     rc=0 records=359/359 err=11 (1227s)
+[2026-10-02 01:49:28]   fcav index missing for cypherbench_augmented__movie: building it (OpenAI embeddings of the graph's values)
+[2026-10-02 02:16:46]   fcav index built: 646857 values
+[2026-10-02 02:16:46]   ▶ cypherbench_augmented__movie__fcav  (try 1/3, SHARDS=1, limit=None)
+[2026-10-02 02:48:08]     rc=0 records=359/359 err=18 (1882s)
+[2026-10-02 02:48:08]   ▶ cypherbench_augmented__movie__react  (try 1/3, SHARDS=1, limit=None)
+[2026-10-02 03:31:01]     rc=0 records=359/359 err=0 (2573s)
+[2026-10-02 03:31:01]   ▶ cypherbench_augmented__movie__graphrag  (try 1/3, SHARDS=1, limit=None)
+[2026-10-02 04:21:51]     rc=0 records=359/359 err=0 (3050s)
+[2026-10-02 04:21:51]   = cypherbench_augmented__movie__cyanchor: clean (359 records, err=0) — skipped
+[2026-10-02 04:21:51]   report: report/gpt-5.6-terra/CypherBench/movie.md
+[2026-10-02 04:21:51]   ▶ cypherbench_augmented__nba__no_val_link  (try 1/3, SHARDS=1, limit=None)
+[2026-10-02 04:32:53]     rc=0 records=251/251 err=4 (662s)
+[2026-10-02 04:32:53]   fcav index missing for cypherbench_augmented__nba: building it (OpenAI embeddings of the graph's values)
+[2026-10-02 04:33:20]   fcav index built: 10475 values
+[2026-10-02 04:33:20]   ▶ cypherbench_augmented__nba__fcav  (try 1/3, SHARDS=1, limit=None)
+[2026-10-02 04:50:52]     rc=0 records=251/251 err=5 (1052s)
+[2026-10-02 04:50:52]   ▶ cypherbench_augmented__nba__react  (try 1/3, SHARDS=1, limit=None)
+[2026-10-02 08:58:56] === sweep start: model=gpt-5.6-terra graphs=7 methods=['no_val_link', 'fcav', 'react', 'graphrag', 'cyanchor'] FULL ===
+[2026-10-02 08:58:56] pre-flight (archives vs live graphs, archives vs published set):
+[2026-10-02 08:58:57]   ✓ cypherbench_augmented__company: OK — ok (4 tool labels, all non-empty; min count=217) | artifacts OK
+[2026-10-02 08:58:57]   ✓ cypherbench_augmented__flight_accident: OK — ok (5 tool labels, all non-empty; min count=58) | artifacts OK
+[2026-10-02 08:58:58]   ✓ cypherbench_augmented__geography: OK — ok (8 tool labels, all non-empty; min count=5) | artifacts OK
+[2026-10-02 08:58:58]   ✓ cypherbench_augmented__movie: OK — ok (7 tool labels, all non-empty; min count=205) | artifacts OK
+[2026-10-02 08:58:59]   ✓ cypherbench_augmented__nba: OK — ok (7 tool labels, all non-empty; min count=2) | artifacts OK
+[2026-10-02 08:58:59]   ✓ cypherbench_augmented__politics: OK — ok (6 tool labels, all non-empty; min count=217) | artifacts OK
+[2026-10-02 08:59:00]   ✓ mindthequery_augmented__healthcare: OK — ok (8 tool labels, all non-empty; min count=5) | artifacts OK
+[2026-10-02 08:59:00]   = cypherbench_augmented__company__no_val_link: clean (303 records, err=8) — skipped
+[2026-10-02 08:59:00]   = cypherbench_augmented__company__fcav: clean (303 records, err=15) — skipped
+[2026-10-02 08:59:00]   = cypherbench_augmented__company__react: clean (303 records, err=0) — skipped
+[2026-10-02 08:59:00]   = cypherbench_augmented__company__graphrag: clean (303 records, err=0) — skipped
+[2026-10-02 08:59:00]   = cypherbench_augmented__company__cyanchor: clean (303 records, err=0) — skipped
+[2026-10-02 08:59:00]   report: report/gpt-5.6-terra/CypherBench/company.md
+[2026-10-02 08:59:00]   = cypherbench_augmented__flight_accident__no_val_link: clean (168 records, err=2) — skipped
+[2026-10-02 08:59:00]   = cypherbench_augmented__flight_accident__fcav: clean (168 records, err=2) — skipped
+[2026-10-02 08:59:00]   = cypherbench_augmented__flight_accident__react: clean (168 records, err=0) — skipped
+[2026-10-02 08:59:00]   = cypherbench_augmented__flight_accident__graphrag: clean (168 records, err=0) — skipped
+[2026-10-02 08:59:00]   = cypherbench_augmented__flight_accident__cyanchor: clean (168 records, err=0) — skipped
+[2026-10-02 08:59:00]   report: report/gpt-5.6-terra/CypherBench/flight_accident.md
+[2026-10-02 08:59:00]   = cypherbench_augmented__geography__no_val_link: clean (331 records, err=6) — skipped
+[2026-10-02 08:59:00]   = cypherbench_augmented__geography__fcav: clean (331 records, err=6) — skipped
+[2026-10-02 08:59:00]   = cypherbench_augmented__geography__react: clean (331 records, err=1) — skipped
+[2026-10-02 08:59:00]   = cypherbench_augmented__geography__graphrag: clean (331 records, err=2) — skipped
+[2026-10-02 08:59:00]   = cypherbench_augmented__geography__cyanchor: clean (331 records, err=0) — skipped
+[2026-10-02 08:59:00]   report: report/gpt-5.6-terra/CypherBench/geography.md
+[2026-10-02 08:59:00]   = cypherbench_augmented__movie__no_val_link: clean (359 records, err=11) — skipped
+[2026-10-02 08:59:00]   = cypherbench_augmented__movie__fcav: clean (359 records, err=18) — skipped
+[2026-10-02 08:59:00]   = cypherbench_augmented__movie__react: clean (359 records, err=0) — skipped
+[2026-10-02 08:59:00]   = cypherbench_augmented__movie__graphrag: clean (359 records, err=0) — skipped
+[2026-10-02 08:59:00]   = cypherbench_augmented__movie__cyanchor: clean (359 records, err=0) — skipped
+[2026-10-02 08:59:00]   report: report/gpt-5.6-terra/CypherBench/movie.md
+[2026-10-02 08:59:00]   = cypherbench_augmented__nba__no_val_link: clean (251 records, err=4) — skipped
+[2026-10-02 08:59:00]   = cypherbench_augmented__nba__fcav: clean (251 records, err=5) — skipped
+[2026-10-02 08:59:00]   ▶ cypherbench_augmented__nba__react  (try 1/3, SHARDS=1, limit=None)
+[2026-10-02 09:28:38]     rc=0 records=251/251 err=0 (1778s)
+[2026-10-02 09:28:38]   ▶ cypherbench_augmented__nba__graphrag  (try 1/3, SHARDS=1, limit=None)
+[2026-10-02 10:01:11]     rc=0 records=251/251 err=0 (1953s)
+[2026-10-02 10:01:11]   = cypherbench_augmented__nba__cyanchor: clean (251 records, err=0) — skipped
+[2026-10-02 10:01:11]   report: report/gpt-5.6-terra/CypherBench/nba.md
+[2026-10-02 10:01:11]   ▶ cypherbench_augmented__politics__no_val_link  (try 1/3, SHARDS=1, limit=None)
+[2026-10-02 10:24:28]     rc=0 records=356/356 err=4 (1397s)
+[2026-10-02 10:24:28]   fcav index missing for cypherbench_augmented__politics: building it (OpenAI embeddings of the graph's values)
+[2026-10-02 11:30:36]   fcav index built: 1281632 values
+[2026-10-02 11:30:36]   ▶ cypherbench_augmented__politics__fcav  (try 1/3, SHARDS=1, limit=None)
+[2026-10-02 12:02:59]     rc=0 records=356/356 err=5 (1943s)
+[2026-10-02 12:02:59]   ▶ cypherbench_augmented__politics__react  (try 1/3, SHARDS=1, limit=None)
+[2026-10-02 12:51:43]     rc=0 records=356/356 err=0 (2924s)
+[2026-10-02 12:51:43]   ▶ cypherbench_augmented__politics__graphrag  (try 1/3, SHARDS=1, limit=None)
+[2026-10-02 13:54:24]     rc=0 records=356/356 err=0 (3761s)
+[2026-10-02 13:54:24]   = cypherbench_augmented__politics__cyanchor: clean (356 records, err=0) — skipped
+[2026-10-02 13:54:24]   report: report/gpt-5.6-terra/CypherBench/politics.md
+[2026-10-02 13:54:24]   summary: report/gpt-5.6-terra/CypherBench/_summary.md
+[2026-10-02 13:54:24]   = mindthequery_augmented__healthcare__no_val_link: clean (418 records, err=10) — skipped
+[2026-10-02 13:54:24]   = mindthequery_augmented__healthcare__fcav: clean (418 records, err=18) — skipped
+[2026-10-02 13:54:24]   = mindthequery_augmented__healthcare__react: clean (418 records, err=4) — skipped
+[2026-10-02 13:54:24]   = mindthequery_augmented__healthcare__graphrag: clean (418 records, err=4) — skipped
+[2026-10-02 13:54:24]   = mindthequery_augmented__healthcare__cyanchor: clean (418 records, err=4) — skipped
+[2026-10-02 13:54:24]   report: report/gpt-5.6-terra/MindTheQuery/healthcare.md
+[2026-10-02 13:54:24]   summary: report/gpt-5.6-terra/MindTheQuery/_summary.md
+[2026-10-02 13:54:25] === run NOT CLEAN — 29 ✗, 0 ⚠, 1 ↻ (run python scripts/rejudge_node_returns.py) (see the matrix) · driver f1235b8 ===
+[2026-10-02 13:54:25] report: report/gpt-5.6-terra/SWEEP.md
+[2026-10-02 13:54:25] ↻ cells: judged before the node-set rule — run `python scripts/rejudge_node_returns.py` before publishing (no model is called).
+[2026-10-02 13:54:25] next: python orchestrate_sweep.py              # re-runs only the ✗ / ⚠ cells
+[2026-10-02 13:54:25]       python orchestrate_sweep.py --publish    # when every cell shows ✓
+[2026-10-02 13:54:25]       (a cell that still shows ✗ or ⚠ after that: python orchestrate_sweep.py --publish --allow-incomplete, and send the matrix + 'Flagged cells' section to the coordinator)
+[2026-10-02 18:17:57] === status COMPLETE — 0 ✗, 0 ⚠ · driver 108f499 ===
+[2026-10-02 18:17:57] report: report/gpt-5.6-terra/SWEEP.md
+[2026-10-02 21:03:51]   report: report/gpt-5.6-terra/CypherBench/company.md
+[2026-10-02 21:03:51]   report: report/gpt-5.6-terra/CypherBench/fictional_character.md
+[2026-10-02 21:03:51]   report: report/gpt-5.6-terra/CypherBench/flight_accident.md
+[2026-10-02 21:03:51]   report: report/gpt-5.6-terra/CypherBench/geography.md
+[2026-10-02 21:03:51]   report: report/gpt-5.6-terra/CypherBench/movie.md
+[2026-10-02 21:03:51]   report: report/gpt-5.6-terra/CypherBench/nba.md
+[2026-10-02 21:03:51]   report: report/gpt-5.6-terra/CypherBench/politics.md
+[2026-10-02 21:03:51]   summary: report/gpt-5.6-terra/CypherBench/_summary.md
+[2026-10-02 21:03:51]   report: report/gpt-5.6-terra/MindTheQuery/bloom.md
+[2026-10-02 21:03:51]   report: report/gpt-5.6-terra/MindTheQuery/covid.md
+[2026-10-02 21:03:51]   report: report/gpt-5.6-terra/MindTheQuery/er.md
+[2026-10-02 21:03:51]   report: report/gpt-5.6-terra/MindTheQuery/healthcare.md
+[2026-10-02 21:03:51]   report: report/gpt-5.6-terra/MindTheQuery/wwc.md
+[2026-10-02 21:03:51]   summary: report/gpt-5.6-terra/MindTheQuery/_summary.md
+[2026-10-02 21:03:51]   report: report/gpt-5.6-terra/ZOGRASCOPE/pole.md
+[2026-10-02 21:03:51]   summary: report/gpt-5.6-terra/ZOGRASCOPE/_summary.md
+[2026-10-02 21:03:51] === publish COMPLETE — 0 ✗, 0 ⚠ · driver 108f499 ===
+[2026-10-02 21:03:51] report: report/gpt-5.6-terra/SWEEP.md

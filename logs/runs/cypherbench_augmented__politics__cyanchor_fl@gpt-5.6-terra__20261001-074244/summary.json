@@ -1,0 +1,102 @@
+{
+  "dataset": "cypherbench_augmented",
+  "n": 356,
+  "n_scored": {
+    "ea": 356,
+    "em": 356,
+    "psjs": 356
+  },
+  "n_errors": 0,
+  "ea": 0.6348314606741573,
+  "em": 0.0,
+  "psjs": 0.7248336240791609,
+  "elapsed_sec": 4942.11,
+  "run_config": {
+    "stamp": "20261001-074244",
+    "dataset": "cypherbench_augmented",
+    "graph": "politics",
+    "method": "cyanchor_fl@gpt-5.6-terra",
+    "llm": {
+      "generator_llm": "gpt-5.6-terra",
+      "ner": {
+        "provider": "openai",
+        "model": "gpt-5.6-terra"
+      },
+      "cypher": {
+        "provider": "openai",
+        "model": "gpt-5.6-terra"
+      },
+      "qa": {
+        "provider": "openai",
+        "model": "gpt-5.6-terra"
+      }
+    },
+    "embedding": {
+      "backend": "openai",
+      "model": "text-embedding-3-small"
+    },
+    "knobs": {
+      "METHOD": "cyanchor",
+      "TOOL_TYPE": "node",
+      "CYANCHOR_TOOL_SCOPE": "node",
+      "GENERATOR_LLM": "gpt-5.6-terra",
+      "RETRIEVAL_FUZZY": "1",
+      "RETRIEVAL_VECTOR": "0",
+      "RETRIEVAL_LEVENSHTEIN": "1",
+      "CYPHER_SEMANTIC_REPAIR": "1",
+      "CYPHER_EMPTY_IS_WRONG": "0",
+      "PLAN_EXEC_ESCALATE": "1",
+      "PLAN_EXEC_VALUE_SNAP": "1",
+      "PLAN_EXEC_SKIP_GROUNDED": "1",
+      "PLAN_EXEC_SELECT_JUDGE": "1",
+      "PLAN_EXEC_PARALLEL_MENTIONS": "1",
+      "GRAPHRAG_EMPTY_IS_WRONG": "1",
+      "GRAPHRAG_LLM_EVALUATOR": "1",
+      "CYPHER_REPAIR_MAX_ROUNDS": "4",
+      "CYPHER_RETRY_MAX_ROUNDS": "2",
+      "RETRIEVAL_LEVENSHTEIN_K": "10"
+    },
+    "shards": 1,
+    "limit": null
+  },
+  "run_meta": {
+    "generated_at": "2026-09-30T19:20:02-05:00",
+    "ner_mode": "cyanchor_fl_node_only",
+    "method": "cyanchor",
+    "label": "CyANCHOR [fuzzy+lev] (Node)",
+    "tool_type": "node",
+    "retrieval": "fuzzy+lev",
+    "generator_llm": "gpt-5.6-terra",
+    "ner_llm": "gpt-5.6-terra",
+    "cypher_llm": "gpt-5.6-terra",
+    "qa_llm": "gpt-5.6-terra",
+    "tool_select_top_k": 15,
+    "values_per_tool": 10,
+    "plan_exec_tools_per_entity": 2,
+    "plan_exec_values_per_tool": 10,
+    "plan_exec_escalate": true,
+    "plan_exec_max_iter": 3,
+    "retrieval_levenshtein_k": 10,
+    "cypher_semantic_repair": true,
+    "cypher_repair_max_rounds": 4,
+    "cypher_empty_is_wrong": false,
+    "cypher_retry_max_rounds": 2,
+    "plan_exec_value_snap": true,
+    "plan_exec_skip_grounded": true,
+    "plan_exec_parallel_mentions": true,
+    "graphrag_empty_is_wrong": true,
+    "graphrag_llm_evaluator": true,
+    "tool_retrieval_mode": "fuzzy",
+    "hybrid_strategy": "cascade"
+  },
+  "assembled_from": {
+    "chunks": [
+      "logs/judge_big/politics__judge_on/chunk_1",
+      "logs/judge_big/politics__judge_on/chunk_2",
+      "logs/judge_big/politics__judge_on/chunk_3"
+    ],
+    "note": "judge-check ON arm = released configuration (judge on, node-property tools, empty rule off); chunks concatenated in release order",
+    "per_example_timeout": "60 s for the questions that finished under it (identical to a 900 s run); the questions that hit 60 s were re-run at 900 s, the cap the sweep gives CyANCHOR, so the cell equals a 900 s run",
+    "assembled_on": "20261001-074244"
+  }
+}

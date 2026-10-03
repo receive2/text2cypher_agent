@@ -1,0 +1,235 @@
+{
+  "model": "gpt-5.6-terra",
+  "smoke": false,
+  "started": "2026-10-01 17:37:56",
+  "cells": {
+    "cypherbench_augmented__company__no_val_link": {
+      "tries": 1,
+      "status": "done",
+      "n": 303,
+      "err": 8,
+      "dir": "logs/runs/cypherbench_augmented__company__no_val_link@gpt-5.6-terra__20261001-173756",
+      "finished_at": "2026-10-01 17:55:57"
+    },
+    "cypherbench_augmented__company__fcav": {
+      "tries": 1,
+      "status": "done",
+      "n": 303,
+      "err": 15,
+      "dir": "logs/runs/cypherbench_augmented__company__fcav@gpt-5.6-terra__20261001-182905",
+      "finished_at": "2026-10-01 18:55:02"
+    },
+    "cypherbench_augmented__company__react": {
+      "tries": 1,
+      "status": "done",
+      "n": 303,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__company__react@gpt-5.6-terra__20261001-185503",
+      "finished_at": "2026-10-01 19:35:56"
+    },
+    "cypherbench_augmented__company__graphrag": {
+      "tries": 1,
+      "status": "done",
+      "n": 303,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__company__graphrag@gpt-5.6-terra__20261001-193557",
+      "finished_at": "2026-10-01 20:26:06"
+    },
+    "cypherbench_augmented__company__cyanchor": {
+      "tries": 1,
+      "status": "done",
+      "n": 303,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__company__cyanchor_fl@gpt-5.6-terra__20261001-202606",
+      "finished_at": "2026-10-01 21:28:20"
+    },
+    "cypherbench_augmented__flight_accident__no_val_link": {
+      "tries": 1,
+      "status": "done",
+      "n": 168,
+      "err": 2,
+      "dir": "logs/runs/cypherbench_augmented__flight_accident__no_val_link@gpt-5.6-terra__20261001-212820",
+      "finished_at": "2026-10-01 21:35:36"
+    },
+    "cypherbench_augmented__flight_accident__fcav": {
+      "tries": 1,
+      "status": "done",
+      "n": 168,
+      "err": 2,
+      "dir": "logs/runs/cypherbench_augmented__flight_accident__fcav@gpt-5.6-terra__20261001-213536",
+      "finished_at": "2026-10-01 21:46:42"
+    },
+    "cypherbench_augmented__flight_accident__react": {
+      "tries": 1,
+      "status": "done",
+      "n": 168,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__flight_accident__react@gpt-5.6-terra__20261001-214642",
+      "finished_at": "2026-10-01 22:04:33"
+    },
+    "cypherbench_augmented__flight_accident__graphrag": {
+      "tries": 1,
+      "status": "done",
+      "n": 168,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__flight_accident__graphrag@gpt-5.6-terra__20261001-220434",
+      "finished_at": "2026-10-01 22:24:05"
+    },
+    "cypherbench_augmented__flight_accident__cyanchor": {
+      "tries": 0
+    },
+    "cypherbench_augmented__geography__no_val_link": {
+      "tries": 1,
+      "status": "done",
+      "n": 331,
+      "err": 6,
+      "dir": "logs/runs/cypherbench_augmented__geography__no_val_link@gpt-5.6-terra__20261001-222406",
+      "finished_at": "2026-10-01 22:47:37"
+    },
+    "cypherbench_augmented__geography__fcav": {
+      "tries": 1,
+      "status": "done",
+      "n": 331,
+      "err": 6,
+      "dir": "logs/runs/cypherbench_augmented__geography__fcav@gpt-5.6-terra__20261001-231316",
+      "finished_at": "2026-10-01 23:42:28"
+    },
+    "cypherbench_augmented__geography__react": {
+      "tries": 1,
+      "status": "done",
+      "n": 331,
+      "err": 1,
+      "dir": "logs/runs/cypherbench_augmented__geography__react@gpt-5.6-terra__20261001-234229",
+      "finished_at": "2026-10-02 00:28:21"
+    },
+    "cypherbench_augmented__geography__graphrag": {
+      "tries": 2,
+      "last_error": "rc=2, records=0/331",
+      "status": "done",
+      "n": 331,
+      "err": 2,
+      "dir": "logs/runs/cypherbench_augmented__geography__graphrag@gpt-5.6-terra__20261002-003433",
+      "finished_at": "2026-10-02 01:29:01"
+    },
+    "cypherbench_augmented__geography__cyanchor": {
+      "tries": 0
+    },
+    "cypherbench_augmented__movie__no_val_link": {
+      "tries": 1,
+      "status": "done",
+      "n": 359,
+      "err": 11,
+      "dir": "logs/runs/cypherbench_augmented__movie__no_val_link@gpt-5.6-terra__20261002-012902",
+      "finished_at": "2026-10-02 01:49:28"
+    },
+    "cypherbench_augmented__movie__fcav": {
+      "tries": 1,
+      "status": "done",
+      "n": 359,
+      "err": 18,
+      "dir": "logs/runs/cypherbench_augmented__movie__fcav@gpt-5.6-terra__20261002-021647",
+      "finished_at": "2026-10-02 02:48:08"
+    },
+    "cypherbench_augmented__movie__react": {
+      "tries": 1,
+      "status": "done",
+      "n": 359,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__movie__react@gpt-5.6-terra__20261002-024809",
+      "finished_at": "2026-10-02 03:31:01"
+    },
+    "cypherbench_augmented__movie__graphrag": {
+      "tries": 1,
+      "status": "done",
+      "n": 359,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__movie__graphrag@gpt-5.6-terra__20261002-033101",
+      "finished_at": "2026-10-02 04:21:51"
+    },
+    "cypherbench_augmented__movie__cyanchor": {
+      "tries": 0
+    },
+    "cypherbench_augmented__nba__no_val_link": {
+      "tries": 1,
+      "status": "done",
+      "n": 251,
+      "err": 4,
+      "dir": "logs/runs/cypherbench_augmented__nba__no_val_link@gpt-5.6-terra__20261002-042152",
+      "finished_at": "2026-10-02 04:32:53"
+    },
+    "cypherbench_augmented__nba__fcav": {
+      "tries": 1,
+      "status": "done",
+      "n": 251,
+      "err": 5,
+      "dir": "logs/runs/cypherbench_augmented__nba__fcav@gpt-5.6-terra__20261002-043320",
+      "finished_at": "2026-10-02 04:50:52"
+    },
+    "cypherbench_augmented__nba__react": {
+      "tries": 1,
+      "status": "done",
+      "n": 251,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__nba__react@gpt-5.6-terra__20261002-085901",
+      "finished_at": "2026-10-02 09:28:38"
+    },
+    "cypherbench_augmented__nba__graphrag": {
+      "tries": 1,
+      "status": "done",
+      "n": 251,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__nba__graphrag@gpt-5.6-terra__20261002-092839",
+      "finished_at": "2026-10-02 10:01:11"
+    },
+    "cypherbench_augmented__nba__cyanchor": {
+      "tries": 0
+    },
+    "cypherbench_augmented__politics__no_val_link": {
+      "tries": 1,
+      "status": "done",
+      "n": 356,
+      "err": 4,
+      "dir": "logs/runs/cypherbench_augmented__politics__no_val_link@gpt-5.6-terra__20261002-100112",
+      "finished_at": "2026-10-02 10:24:28"
+    },
+    "cypherbench_augmented__politics__fcav": {
+      "tries": 1,
+      "status": "done",
+      "n": 356,
+      "err": 5,
+      "dir": "logs/runs/cypherbench_augmented__politics__fcav@gpt-5.6-terra__20261002-113037",
+      "finished_at": "2026-10-02 12:02:59"
+    },
+    "cypherbench_augmented__politics__react": {
+      "tries": 1,
+      "status": "done",
+      "n": 356,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__politics__react@gpt-5.6-terra__20261002-120300",
+      "finished_at": "2026-10-02 12:51:43"
+    },
+    "cypherbench_augmented__politics__graphrag": {
+      "tries": 1,
+      "status": "done",
+      "n": 356,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__politics__graphrag@gpt-5.6-terra__20261002-125144",
+      "finished_at": "2026-10-02 13:54:24"
+    }
+  },
+  "expected": {
+    "cypherbench_augmented__nba": 251,
+    "cypherbench_augmented__flight_accident": 168,
+    "cypherbench_augmented__fictional_character": 322,
+    "cypherbench_augmented__company": 303,
+    "cypherbench_augmented__geography": 331,
+    "cypherbench_augmented__movie": 359,
+    "cypherbench_augmented__politics": 356,
+    "mindthequery_augmented__bloom": 24,
+    "mindthequery_augmented__covid": 326,
+    "mindthequery_augmented__er": 184,
+    "mindthequery_augmented__healthcare": 418,
+    "mindthequery_augmented__wwc": 265,
+    "zograscope_augmented__pole": 1283
+  }
+}
