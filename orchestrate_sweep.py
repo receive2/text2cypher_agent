@@ -175,6 +175,7 @@ SUSPECT_OTHER_ABS_RATE  = 0.50   #     ... or when more than half the cell error
 SUSPECT_RERUN_MAX       = 2      # automatic re-runs of a ⚠ cell across invocations
 REJUDGE_CMD = "python scripts/rejudge_node_returns.py"   # judges stored predictions again; calls no model
 REJUDGE_ROWS_CMD = "python scripts/rejudge_full_rows.py"  # scores chain runs on their full results; calls no model
+REJUDGE_ROWS_PARALLEL = 4                                  # graphs re-scored at the same time (database work only)
 
 # A Cypher / Neo4j *statement* error is the query's fault (gold or agent) and
 # never infrastructure — even when its message contains a number that looks
@@ -559,12 +560,12 @@ def render_status(status: dict) -> str:
                       f"is re-run), then `{_cmd('--status')}`. Do not report these numbers, and do not re-run the cells."]
     n_rows = len(status.get("stale_rows", []))
     if n_rows:
-        lines += ["", f"**RE-JUDGE NEEDED** — {n_rows} cell(s) marked ↻ were scored on at most 10 rows: No Val Link and "
+        lines += ["", f"**RE-SCORING PENDING** — {n_rows} cell(s) marked ↻ were scored on at most 10 rows: No Val Link and "
                       "FCAV end in GraphCypherQAChain, which keeps 10 rows of a result, and runs made before the fix "
                       "scored those, so a correct query with a larger result counted as wrong. "
-                      f"Run `{REJUDGE_ROWS_CMD}` (it scores the stored predictions on their full results; no model is "
-                      f"called, no question is re-run), then `{_cmd('--status')}`. Do not report these numbers, and do "
-                      "not re-run the cells."]
+                      f"`{_cmd('--publish')}` re-scores them automatically before publishing (database work only, no model "
+                      f"is called, no question is re-run; `{REJUDGE_ROWS_CMD}` does the same on its own). Do not report "
+                      "these numbers, and do not re-run the cells."]
     lines += ["", f"- generated: {time.strftime('%Y-%m-%d %H:%M')} · commit `{_git('rev-parse', '--short', 'HEAD')}` "
               f"· benchmarks `{_benchmarks_version()}` · artifacts set `{_artifact_set_id()}`",
               f"- run config: CYPHER_EMPTY_IS_WRONG={getattr(cfg, 'CYPHER_EMPTY_IS_WRONG', '?')} · "
@@ -697,7 +698,7 @@ def verdict_line(status: dict, mode: str) -> str:
     cells = f" ({', '.join(bad)})" if 0 < len(bad) <= 8 else (" (see the matrix)" if bad else "")
     stale, stale_rows = status.get("stale", []), status.get("stale_rows", [])
     rejudge = (f", {len(stale)} ↻ (run {REJUDGE_CMD})" if stale else "") + \
-              (f", {len(stale_rows)} ↻ (run {REJUDGE_ROWS_CMD})" if stale_rows else "")
+              (f", {len(stale_rows)} ↻ (--publish re-scores them)" if stale_rows else "")
     return (f"=== {mode} {'COMPLETE' if status['complete'] else 'NOT CLEAN'} — "
             f"{len(missing)} ✗, {len(flagged)} ⚠{rejudge}{cells} · driver {_git('rev-parse', '--short', 'HEAD')} ===")
 
@@ -837,6 +838,51 @@ def refresh_summary(dataset: str, graphs: List[str], model: str) -> None:
     subprocess.run([sys.executable, "gen_pooled_report.py", out, label, f"Report — {label} (all graphs pooled)",
                     dataset, *have], check=True, cwd=REPO)
     log(f"  summary: {out}")
+
+
+def _rejudge_rows_runner(dirs: List[str]) -> Tuple[int, List[str]]:
+    """Run scripts/rejudge_full_rows.py on *dirs* in a child process; (exit code, its output lines)."""
+    r = subprocess.run([sys.executable, "scripts/rejudge_full_rows.py", *dirs], cwd=REPO, text=True,
+                       capture_output=True)
+    return r.returncode, [l for l in (r.stdout + r.stderr).splitlines() if l.strip()]
+
+
+def rejudge_capped_cells(status: dict) -> bool:
+    """Score the ↻ No Val Link / FCAV cells of *status* on the full results of their
+    stored queries (eval/full_rows.py), graph by graph, up to REJUDGE_ROWS_PARALLEL
+    graphs at a time. No model is called and no question is re-run; the records are
+    rewritten in place and the caller rebuilds the status. True when every graph was
+    re-scored; a graph whose database did not answer is reported and left as it was."""
+    import concurrent.futures
+    cells = status["cells"]
+    by_graph: Dict[Tuple[str, str], List[str]] = collections.OrderedDict()
+    for k in status.get("stale_rows", []):
+        if cells[k].get("dir"):
+            by_graph.setdefault((k[0], k[1]), []).append(str(REPO / cells[k]["dir"]))
+    if not by_graph:
+        return True
+    n_cells = sum(len(v) for v in by_graph.values())
+    log(f"↻ re-scoring {n_cells} No Val Link / FCAV cell(s) on the full results of their queries "
+        f"(eval/full_rows.py): database work only, no model is called, roughly 2-4 minutes per cell, "
+        f"{min(REJUDGE_ROWS_PARALLEL, len(by_graph))} graphs at a time — leave it running")
+    ok = True
+    with concurrent.futures.ThreadPoolExecutor(max_workers=REJUDGE_ROWS_PARALLEL) as pool:
+        futures = {pool.submit(_rejudge_rows_runner, dirs): pair for pair, dirs in by_graph.items()}
+        for fut in concurrent.futures.as_completed(futures):
+            ds, g = futures[fut]
+            try:
+                code, lines = fut.result()
+            except Exception as exc:  # noqa: BLE001
+                code, lines = 1, [f"{type(exc).__name__}: {exc}"]
+            for line in lines:
+                if line.startswith(("  rejudged", "  !", "  -")) or "Traceback" in line or "Error" in line:
+                    log(f"    {line.strip()[:220]}")
+            if code != 0:
+                ok = False
+                log(f"  ✗ {ds}__{g}: not re-scored (its database did not answer, or a stored query failed) — "
+                    f"run `{_cmd('--publish')}` again later, or `{REJUDGE_ROWS_CMD}` by hand")
+    log("  re-scoring done" if ok else "  re-scoring incomplete — see the lines above")
+    return ok
 
 
 def refresh_reports(pairs: List[Tuple[str, str]], model: str) -> None:
@@ -1002,11 +1048,12 @@ def publish(status: dict, allow_incomplete: bool) -> int:
         return 1
     stale_rows = status.get("stale_rows", [])
     if stale_rows:
-        log("✗ publish refused — these cells were scored on at most 10 rows (eval/full_rows.py):")
+        log("✗ publish refused — these cells are still scored on at most 10 rows (eval/full_rows.py); the automatic")
+        log("  re-scoring could not finish, usually because a graph's database did not answer:")
         for k in stale_rows:
             log(f"    ↻ {_cell_label(k)}: {cells[k]['stale_rows']} verdict(s) to score again on the full result")
-        log(f"  Run `{REJUDGE_ROWS_CMD}` — it scores the stored predictions on their full results, calls no model and")
-        log("  re-runs no question — then --publish again. --allow-incomplete does not lift this.")
+        log(f"  Run `{_cmd('--publish')}` again when the graphs answer (`nc -zv 34.9.85.21 15066` must succeed), or")
+        log(f"  `{REJUDGE_ROWS_CMD}` by hand. Nothing was published. --allow-incomplete does not lift this.")
         return 1
 
     # ── 1. verdict ──────────────────────────────────────────────────────────
@@ -1144,6 +1191,9 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     if args.status or args.publish:
         status = build_status(scope_pairs, all_methods, expected, out_dir, model)
+        if args.publish and not args.smoke and status.get("stale_rows"):
+            rejudge_capped_cells(status)             # No Val Link / FCAV cells scored on 10 rows: fix them first
+            status = build_status(scope_pairs, all_methods, expected, out_dir, model)
         if args.publish and not args.smoke and not status.get("stale") and not status.get("stale_rows"):
             refresh_reports(scope_pairs, model)      # publish the tables the records give now
         text = render_status(status)
@@ -1204,6 +1254,10 @@ def main(argv: Optional[List[str]] = None) -> int:
                 log(f"  summary generation failed for {ds}: {type(exc).__name__}: {exc}")
 
     status = build_status(scope_pairs, all_methods, expected, out_dir, model)
+    if not args.smoke and status.get("stale_rows"):
+        if rejudge_capped_cells(status):
+            status = build_status(scope_pairs, all_methods, expected, out_dir, model)
+            refresh_reports(scope_pairs, model)      # the per-graph tables were written from the capped records
     print(); print(render_status(status))
     if args.smoke:
         # A method whose every example errored is a systematic rejection (bad
@@ -1229,7 +1283,8 @@ def main(argv: Optional[List[str]] = None) -> int:
     if status.get("stale"):
         log(f"↻ cells: judged before the node-set rule — run `{REJUDGE_CMD}` before publishing (no model is called).")
     if status.get("stale_rows"):
-        log(f"↻ cells: scored on at most 10 rows — run `{REJUDGE_ROWS_CMD}` before publishing (no model is called).")
+        log(f"↻ cells: still scored on at most 10 rows (a graph did not answer?) — `{_cmd('--publish')}` re-scores them "
+            "automatically (no model is called).")
     if status["complete"]:
         log(f"next: {_cmd('--publish')}")
     else:

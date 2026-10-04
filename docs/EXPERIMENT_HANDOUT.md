@@ -96,28 +96,18 @@ How the harness works, every config knob and the pre-flight words: [`RUNNING_EXP
 > and — as with every line of that panel except the model in §2 — nothing to edit.
 
 > **Have No Val Link or FCAV runs made before your checkout had
-> `eval/full_rows.py`?** Keep them too — one command corrects them, nothing is
-> re-run. These two methods end in LangChain's `GraphCypherQAChain`, which keeps
-> only the first 10 rows of a query's result (enough for its answer prompt),
-> and the evaluators used to score those 10 rows: a correct query whose result
-> has more than ten rows counted as wrong. Every method is now scored on all
-> the rows its query returns (README, *Metrics & normalisation*); ReAct,
-> CyANCHOR and MA GraphRAG always were, and their runs need nothing. Runs you
-> start after `git pull` are scored this way from the start. For No Val Link
-> and FCAV runs you already have, after `git pull`:
->
-> ```bash
-> python scripts/rejudge_full_rows.py --dry-run   # what would change; writes nothing
-> python scripts/rejudge_full_rows.py             # score the stored predictions again
-> ```
->
-> It executes each stored prediction again, uncapped, compares it with the gold
-> result exactly as the evaluator does, and rewrites `ea` (the old verdict stays
-> in `ea_capped`). No model is called, it takes a few minutes per run, it skips
-> a run that is still being written, and a second invocation finds nothing to
-> do. It needs the run's graph to answer: a run whose graph is down is reported
-> and left exactly as it was. `python orchestrate_sweep.py --status` marks a
-> cell that still needs it ↻, and `--publish` refuses to publish such a cell.
+> `eval/full_rows.py`?** Nothing to do. These two methods end in LangChain's
+> `GraphCypherQAChain`, which keeps only the first 10 rows of a query's result,
+> and the evaluators used to score those 10 rows, so a correct query whose
+> result has more than ten rows counted as wrong. Every method is now scored on
+> all the rows its query returns (README, *Metrics & normalisation*); ReAct,
+> CyANCHOR and MA GraphRAG always were. `--status` marks a No Val Link / FCAV
+> cell scored the old way ↻, and **`--publish` re-scores such cells itself
+> before publishing** (so does the end of a run): database work only, no model
+> is called, nothing is re-run, roughly 2–4 minutes per cell with four graphs
+> at a time — leave it running. The old verdict stays in each record as
+> `ea_capped`. To do it earlier, `python scripts/rejudge_full_rows.py` does the
+> same on its own. Do not delete or re-run those cells.
 
 > **Have `pole` or `bloom` runs made before your checkout had
 > `eval/node_set_match.py`?** Keep them — one command corrects them, nothing is
@@ -439,10 +429,10 @@ rule`**, some of your `pole` / `bloom` runs predate the scorer change described
 at the top of this page: run `python scripts/rejudge_node_returns.py` (no model
 is called, nothing is re-run) and then `--publish` again.
 
-If it prints **`✗ publish refused — these cells were scored on at most 10
-rows`**, some of your No Val Link / FCAV runs predate the scoring fix described
-at the top of this page: run `python scripts/rejudge_full_rows.py` (no model is
-called, nothing is re-run) and then `--publish` again.
+If it prints **`✗ publish refused — these cells are still scored on at most 10
+rows`**, the automatic re-scoring of your No Val Link / FCAV runs (top of this
+page) could not finish — almost always because a graph's database did not
+answer: check `nc -zv 34.9.85.21 15066`, then run `--publish` again.
 
 If it prints **`✗ you cannot push to this repository`**, you do not have write
 access yet: ask the coordinator to add you as a collaborator on GitHub, accept

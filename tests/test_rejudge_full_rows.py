@@ -164,11 +164,54 @@ def test_status_marks_capped_cells_and_publish_refuses_them(tmp_path, monkeypatc
     st = osw.build_status([pair], ["no_val_link", "react", "fcav"], {pair: 2}, "logs/x", "m1")
     assert st["complete"] and st["stale_rows"] == [(*pair, "no_val_link")]   # ↻ is not ✗; react and the stamped fcav are fine
     text = osw.render_status(st)
-    assert "scored on at most 10 rows" in text and osw.REJUDGE_ROWS_CMD in text and "✓ 2/0 ↻" in text
+    assert "scored on at most 10 rows" in text and "--publish" in text and "✓ 2/0 ↻" in text
     monkeypatch.setattr(osw, "_git", lambda *a: "abc1234")
-    assert f"1 ↻ (run {osw.REJUDGE_ROWS_CMD})" in osw.verdict_line(st, "status")
-    assert osw.publish(st, allow_incomplete=True) == 1
+    assert "1 ↻ (--publish re-scores them)" in osw.verdict_line(st, "status")
+    assert osw.publish(st, allow_incomplete=True) == 1                   # the fallback: still capped -> refused
     assert any("publish refused" in line for line in logged) and any(osw.REJUDGE_ROWS_CMD in line for line in logged)
+
+
+def test_publish_path_rescores_capped_cells_graph_by_graph(tmp_path, monkeypatch):
+    monkeypatch.setattr(osw, "REPO", tmp_path)
+    monkeypatch.setattr(osw, "rows_match_release", lambda ds, g, recs: (True, ""))
+    logged = []
+    monkeypatch.setattr(osw, "log", logged.append)
+    root = tmp_path / "logs" / "x"
+    capped = [{"qid": "a", "ea": False, "psjs": 1.0, "gold_cypher": GOLD1}, {"qid": "b", "ea": True, "psjs": 1.0, "gold_cypher": GOLD1}]
+    for g in ("movie", "nba"):
+        for method in ("no_val_link", "fcav", "react"):
+            d = root / f"cypherbench_augmented__{g}__{osw.method_seg(method)}@m1__20261001-000000"
+            d.mkdir(parents=True)
+            (d / "records.jsonl").write_text("".join(json.dumps(r) + "\n" for r in capped), encoding="utf-8")
+    pairs = [("cypherbench_augmented", "movie"), ("cypherbench_augmented", "nba")]
+    expected = {p: 2 for p in pairs}
+    st = osw.build_status(pairs, ["no_val_link", "fcav", "react"], expected, "logs/x", "m1")
+    assert len(st["stale_rows"]) == 4                                     # two chain methods on two graphs; react never
+
+    calls = []
+    def fake_runner(dirs):                                                # stands in for scripts/rejudge_full_rows.py
+        calls.append(sorted(Path(d).name for d in dirs))
+        for d in dirs:                                                    # the script stamps every scored record
+            f = Path(d) / "records.jsonl"
+            recs = [json.loads(l) for l in f.read_text().splitlines()]
+            for r in recs:
+                if r.get("ea") is not None:
+                    r["ea_capped"], r["rows_rule"] = r["ea"], fr.RULE
+            f.write_text("".join(json.dumps(r) + "\n" for r in recs), encoding="utf-8")
+        return 0, [f"  rejudged {Path(d).name}: 0 of 2 verdicts changed" for d in dirs]
+    monkeypatch.setattr(osw, "_rejudge_rows_runner", fake_runner)
+    assert osw.rejudge_capped_cells(st) is True
+    assert len(calls) == 2 and all(len(c) == 2 and all("react" not in n for n in c) for c in calls)   # one call per graph, chain cells only
+    after = osw.build_status(pairs, ["no_val_link", "fcav", "react"], expected, "logs/x", "m1")
+    assert after["stale_rows"] == [] and after["complete"]
+    assert any("re-scoring 4 No Val Link / FCAV cell(s)" in line for line in logged)
+
+    # a graph whose database does not answer: reported, nothing else changes, the gate stays shut
+    monkeypatch.setattr(osw, "_rejudge_rows_runner", lambda dirs: (1, ["  ! x: not changed — ServiceUnavailable"]))
+    broken = osw.build_status(pairs, ["no_val_link"], expected, "logs/x", "m1")
+    broken["stale_rows"] = [(*pairs[0], "no_val_link")]                 # pretend one cell is still capped
+    assert osw.rejudge_capped_cells(broken) is False
+    assert any("not re-scored" in line for line in logged)
 
 
 def test_report_scripts_refuse_a_capped_chain_run(tmp_path):
