@@ -88,5 +88,14 @@
     },
     "shards": 4,
     "limit": null
+  },
+  "ea_strict": 0.2972972972972973,
+  "rows_rejudged": {
+    "rule": "full-rows-v1",
+    "at": "2026-10-03 20:23:21",
+    "checked": 178,
+    "changed": 0,
+    "to_error": 0,
+    "kept_writes": 0
   }
 }

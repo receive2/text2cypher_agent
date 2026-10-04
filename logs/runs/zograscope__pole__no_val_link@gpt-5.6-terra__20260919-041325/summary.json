@@ -89,12 +89,20 @@
     "shards": 4,
     "limit": null
   },
-  "ea_strict": 0.2593292394898441,
+  "ea_strict": 0.25980160604629193,
   "ea_rule": "node-set-v1",
   "rejudged": {
     "rule": "node-set-v1",
     "at": "2026-10-01 23:57:01",
     "checked": 836,
     "accepted": 435
+  },
+  "rows_rejudged": {
+    "rule": "full-rows-v1",
+    "at": "2026-10-03 20:39:07",
+    "checked": 2113,
+    "changed": 0,
+    "to_error": 0,
+    "kept_writes": 0
   }
 }

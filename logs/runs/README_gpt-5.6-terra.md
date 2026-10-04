@@ -62,3 +62,15 @@ selects exactly the gold nodes when the gold query returns a node. Pooled No Val
 from 0.454 to 0.509 on the clean questions and from 0.117 to 0.120 on the perturbed ones
 (`report/gpt-5.6-terra/CLEAN_VS_PERTURBED.md` on this branch is regenerated accordingly).
 The other 22 folders are unchanged.
+
+**Re-judged 2026-10-03 (full result rows, main 088039b):** all 26 run folders were re-scored with
+`scripts/rejudge_full_rows.py`. The `no_val_link` method ends in LangChain's `GraphCypherQAChain`, which
+keeps only the first 10 rows of a query's result; these runs were scored on those 10 rows, so a correct
+query whose result has more than ten rows counted as wrong. Every record is now scored on the full
+result of its stored query (`rows_rule = full-rows-v1`; the old verdict stays in `ea_capped`). Pooled
+No Val Link EA moved from 0.509 to 0.629 on the clean questions and from 0.120 to 0.130 on the perturbed
+ones (CypherBench clean 0.608 -> 0.737, perturbed 0.094 -> 0.110; Mind-the-Query clean 0.385 -> 0.617,
+perturbed 0.246 -> 0.254; ZOGRASCOPE unchanged). One clean covid prediction no longer runs within the
+evaluation executor's 30 s timeout and is now recorded as an execution error (it was scored wrong
+before). `report/gpt-5.6-terra/CLEAN_VS_PERTURBED.md` on this branch is regenerated accordingly.
+

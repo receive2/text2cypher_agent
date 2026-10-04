@@ -7,9 +7,9 @@
     "psjs": 406
   },
   "n_errors": 13,
-  "ea": 0.47255369928400953,
+  "ea": 0.4892601431980907,
   "em": 0.0,
-  "psjs": 0.494461650666508,
+  "psjs": 0.49446165066650805,
   "elapsed_sec": 286.27,
   "shards": 4,
   "run_meta": {
@@ -88,5 +88,14 @@
     },
     "shards": 4,
     "limit": null
+  },
+  "ea_strict": 0.4892601431980907,
+  "rows_rejudged": {
+    "rule": "full-rows-v1",
+    "at": "2026-10-03 20:25:47",
+    "checked": 406,
+    "changed": 7,
+    "to_error": 0,
+    "kept_writes": 0
   }
 }

@@ -7,7 +7,7 @@
     "psjs": 56
   },
   "n_errors": 2,
-  "ea": 0.5172413793103449,
+  "ea": 0.8275862068965517,
   "em": 0.0,
   "psjs": 0.7564185829392543,
   "elapsed_sec": 58.73,
@@ -89,12 +89,20 @@
     "shards": 4,
     "limit": null
   },
-  "ea_strict": 0.43103448275862066,
+  "ea_strict": 0.7413793103448276,
   "ea_rule": "node-set-v1",
   "rejudged": {
     "rule": "node-set-v1",
     "at": "2026-10-01 23:53:10",
     "checked": 5,
     "accepted": 5
+  },
+  "rows_rejudged": {
+    "rule": "full-rows-v1",
+    "at": "2026-10-03 20:08:16",
+    "checked": 56,
+    "changed": 18,
+    "to_error": 0,
+    "kept_writes": 0
   }
 }

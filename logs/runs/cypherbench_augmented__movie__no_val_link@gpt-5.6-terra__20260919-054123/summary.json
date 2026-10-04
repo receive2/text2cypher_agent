@@ -7,7 +7,7 @@
     "psjs": 352
   },
   "n_errors": 8,
-  "ea": 0.05,
+  "ea": 0.06388888888888888,
   "em": 0.0,
   "psjs": 0.12849504264621783,
   "elapsed_sec": 360.67,
@@ -88,5 +88,13 @@
     },
     "shards": 4,
     "limit": null
+  },
+  "rows_rejudged": {
+    "rule": "full-rows-v1",
+    "at": "2026-10-03 20:34:34",
+    "checked": 352,
+    "changed": 5,
+    "to_error": 0,
+    "kept_writes": 0
   }
 }
