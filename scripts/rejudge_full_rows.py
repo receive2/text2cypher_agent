@@ -111,8 +111,10 @@ def load_scorers(conn: Any) -> Dict[str, Scorer]:
 
 
 def _is_timeout(err: str) -> bool:
+    """The evaluation executor's transaction timeout (Neo4j: TransactionTimedOut...,
+    'has not completed within the specified timeout'). Anything else is raised."""
     e = err.lower()
-    return any(s in e for s in ("timeout", "timed out", "timedout", "terminated"))
+    return any(s in e for s in ("timeout", "timed out", "timedout"))
 
 
 def _is_write(err: str) -> bool:
@@ -220,6 +222,10 @@ def main(argv: Optional[List[str]] = None) -> int:
     ap.add_argument("--dry-run", action="store_true", help="report what would change; write nothing")
     ap.add_argument("--force", action="store_true", help="also touch runs that look unfinished (never while one is running)")
     args = ap.parse_args(argv)
+    try:
+        sys.stdout.reconfigure(line_buffering=True)   # one line per run, as it finishes, also into a log file
+    except Exception:  # noqa: BLE001
+        pass
 
     roots = [Path(p) for p in args.paths] or [REPO / eval_paths.RUNS_ROOT]
     files = find_record_files([p if p.is_absolute() else Path.cwd() / p for p in roots])

@@ -84,3 +84,26 @@ def is_stale(record: Dict[str, Any]) -> bool:
 def stale_count(records: List[Dict[str, Any]], chain: bool) -> int:
     """Records of a run to score again (0 for a run that did not use the chain)."""
     return sum(1 for r in records if is_stale(r)) if chain else 0
+
+
+REJUDGE_CMD = "python scripts/rejudge_full_rows.py"
+
+
+def refusal(run_dir, records: List[Dict[str, Any]], summary: Optional[Dict[str, Any]] = None) -> str:
+    """Why a report must not be built from this run, or ``""``: the run used the chain
+    and holds records scored on at most ten rows. *summary* is read from the run
+    directory when not given. Pure apart from that one file read."""
+    import json as _json
+    from pathlib import Path as _Path
+    d = _Path(run_dir)
+    if summary is None:
+        try:
+            summary = _json.loads((d / "summary.json").read_text(encoding="utf-8"))
+        except Exception:  # noqa: BLE001
+            summary = {}
+    n = stale_count(records, uses_chain(summary, d.name))
+    if not n:
+        return ""
+    return (f"{d}: {n} verdict(s) were scored on at most 10 rows (GraphCypherQAChain's top_k; eval/full_rows.py). "
+            f"Run `{REJUDGE_CMD} {d}` first — it calls no model — then run this again.")
+

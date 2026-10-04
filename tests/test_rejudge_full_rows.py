@@ -169,3 +169,13 @@ def test_status_marks_capped_cells_and_publish_refuses_them(tmp_path, monkeypatc
     assert f"1 ↻ (run {osw.REJUDGE_ROWS_CMD})" in osw.verdict_line(st, "status")
     assert osw.publish(st, allow_incomplete=True) == 1
     assert any("publish refused" in line for line in logged) and any(osw.REJUDGE_ROWS_CMD in line for line in logged)
+
+
+def test_report_scripts_refuse_a_capped_chain_run(tmp_path):
+    capped = [{"qid": "a", "ea": False, "psjs": 1.0, "gold_cypher": GOLD1}, {"qid": "b", "ea": None, "psjs": None, "error": "x"}]
+    d = _run_dir(tmp_path / "x", capped)                                    # no_val_link, scored before the fix
+    msg = fr.refusal(d, capped)
+    assert "1 verdict(s)" in msg and fr.REJUDGE_CMD in msg
+    assert fr.refusal(d, [{**r, "rows_rule": fr.RULE} for r in capped]) == ""   # stamped: nothing to refuse
+    other = _run_dir(tmp_path / "y", capped, method="cyanchor")             # never used the chain
+    assert fr.refusal(other, capped) == ""

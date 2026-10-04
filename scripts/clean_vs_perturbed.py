@@ -40,6 +40,7 @@ if str(REPO) not in sys.path:
 import eval_config as cfg   # noqa: E402
 import eval_paths           # noqa: E402
 from eval.node_set_match import stale_count   # noqa: E402
+from eval import full_rows                     # noqa: E402
 
 METHODS = [("No Val Link", "no_val_link"), ("FCAV", "fcav"), ("ReAct", "react"),
            ("GraphRAG", "graphrag"), ("CyANCHOR", "cyanchor")]
@@ -69,6 +70,9 @@ def _records(run_dir: Optional[Path]) -> Dict[str, dict]:
         raise SystemExit(f"{d.relative_to(REPO) if d.is_relative_to(REPO) else d}: {stale} verdict(s) were judged before the "
                          "node-set rule (eval/node_set_match.py). Run `python scripts/rejudge_node_returns.py` first — it "
                          "calls no model — then run this again.")
+    capped = full_rows.refusal(d, list(out.values()))   # a No Val Link / FCAV run scored on the chain's 10 rows
+    if capped:
+        raise SystemExit(capped)
     return out
 
 
