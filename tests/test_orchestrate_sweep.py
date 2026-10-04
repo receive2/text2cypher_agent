@@ -11,6 +11,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import orchestrate_sweep as osw  # noqa: E402
+from eval.full_rows import RULE as ROWS  # noqa: E402
 
 
 def test_pooled_metrics_score_errors_as_zero():
@@ -36,12 +37,13 @@ def world(tmp_path, monkeypatch):
     expected = {("cypherbench_augmented", "movie"): 3, ("zograscope_augmented", "pole"): 2}
     # movie: no_val_link complete (3 rows, one error), react truncated (2 rows); pole: nothing
     _write_run(tmp_path, "cypherbench_augmented", "movie", "no_val_link", "m1", "20260101-000000",
-               [{"ea": True, "psjs": 1.0}, {"ea": False, "psjs": 0.0}, {"ea": None, "psjs": None, "error": "x"}])
+               [{"ea": True, "psjs": 1.0, "rows_rule": ROWS}, {"ea": False, "psjs": 0.0, "rows_rule": ROWS},
+                {"ea": None, "psjs": None, "error": "x"}])
     _write_run(tmp_path, "cypherbench_augmented", "movie", "react", "m1", "20260101-000000",
                [{"ea": True, "psjs": 1.0}, {"ea": True, "psjs": 1.0}])
     # a newer no_val_link run must win over the older one
     _write_run(tmp_path, "cypherbench_augmented", "movie", "no_val_link", "m1", "20260102-000000",
-               [{"ea": True, "psjs": 1.0}, {"ea": True, "psjs": 1.0}, {"ea": True, "psjs": 1.0}])
+               [{"ea": True, "psjs": 1.0, "rows_rule": ROWS}] * 3)
     return pairs, expected
 
 

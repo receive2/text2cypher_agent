@@ -93,6 +93,7 @@ from .cypher_eval_normalize import (
 )
 from .exact_match import exact_match as _literal_exact_match
 from .psjs import compute_psjs as _compute_psjs
+from .full_rows import RULE as _ROWS_RULE
 from .difficulty import (
     classify as _classify_difficulty,
     aggregate_by_difficulty,
@@ -692,6 +693,7 @@ def evaluate_one(example: Dict[str, Any]) -> Dict[str, Any]:
         "graph":       graph_name,
         "difficulty":  _classify_difficulty(gold_cypher),
         "error":       None,
+        "rows_rule":   _ROWS_RULE,   # scored on every row the prediction returns (eval/full_rows.py)
         # ── Per-stage timing (seconds). All four fields are always present so
         #    downstream grep / pandas filtering never needs `.get()` guards. ──
         "elapsed_agent_sec": 0.0,   # ask_auto end-to-end (NER + cypher gen + pred-exec + QA)

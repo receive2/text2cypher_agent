@@ -67,6 +67,12 @@ until ``python scripts/rejudge_node_returns.py`` has judged its stored
 predictions again — no model is called and no question is re-run. ↻ is not ✗:
 the run loop never re-runs a cell for it.
 
+No Val Link and FCAV end in LangChain's GraphCypherQAChain, which keeps 10 rows
+of a result; runs made before ``eval/full_rows.py`` scored those 10 rows, so a
+correct query with a larger result counted as wrong. Their cells are marked ↻
+the same way until ``python scripts/rejudge_full_rows.py`` has scored the
+stored predictions on their full results.
+
 Resume
 ------
 Completion is read from disk, so re-running the same command skips every
@@ -137,6 +143,7 @@ load_dotenv(REPO / ".env")
 import eval_config as cfg   # noqa: E402
 import eval_paths           # noqa: E402
 from eval.node_set_match import stale_count, strict_value   # noqa: E402  (pure: no database, no agent)
+from eval import full_rows                                   # noqa: E402  (pure as well)
 
 # (label, retrieval, METHOD value) in the order the reports list them.
 METHODS: List[Tuple[str, str, str]] = [
@@ -167,6 +174,7 @@ SUSPECT_OTHER_REF_RATE  = 0.05   #     other methods on the same graph (min ≤ 
 SUSPECT_OTHER_ABS_RATE  = 0.50   #     ... or when more than half the cell errored
 SUSPECT_RERUN_MAX       = 2      # automatic re-runs of a ⚠ cell across invocations
 REJUDGE_CMD = "python scripts/rejudge_node_returns.py"   # judges stored predictions again; calls no model
+REJUDGE_ROWS_CMD = "python scripts/rejudge_full_rows.py"  # scores chain runs on their full results; calls no model
 
 # A Cypher / Neo4j *statement* error is the query's fault (gold or agent) and
 # never infrastructure — even when its message contains a number that looks
@@ -291,6 +299,14 @@ def read_records(run_dir: Optional[Path]) -> List[dict]:
         return [json.loads(line) for line in fh if line.strip()]
 
 
+def _read_summary(run_dir: Optional[Path]) -> dict:
+    """A run's ``summary.json`` (its run_config says which method ran), or {}."""
+    try:
+        return json.loads((Path(run_dir) / "summary.json").read_text(encoding="utf-8")) if run_dir else {}
+    except Exception:  # noqa: BLE001
+        return {}
+
+
 def ea(records: List[dict]) -> Optional[float]:
     """EA over ALL rows: True -> 1, everything else (False / error / None) -> 0."""
     return (sum(1.0 for r in records if r.get("ea") is True) / len(records)) if records else None
@@ -354,11 +370,13 @@ def cell_status(dataset: str, graph: str, method: str, expected: int, out_dir: s
     recs = eval_paths.drop_retired(dataset, graph, read_records(d))   # rows removed since the run was made
     bd = error_breakdown(recs)
     rows_ok, rows_why = rows_match_release(dataset, graph, recs)
+    chain = full_rows.uses_chain(_read_summary(d), d.name) if d else method in full_rows.CHAIN_METHODS
     return {"dir": str(d.relative_to(REPO)) if d else None, "n": len(recs), "err": n_err(recs),
             "expected": expected, "complete": bool(recs) and len(recs) == expected and rows_ok,
             "records": recs, "breakdown": bd, "suspect": False, "why": "",
             "rows_ok": rows_ok, "rows_why": rows_why,
-            "stale": stale_count(recs)}      # "wrong" verdicts never checked under the node-set rule
+            "stale": stale_count(recs),      # "wrong" verdicts never checked under the node-set rule
+            "stale_rows": full_rows.stale_count(recs, chain)}   # verdicts scored on at most 10 rows
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -431,7 +449,8 @@ def build_status(pairs: List[Tuple[str, str]], methods: List[str], expected: Dic
     return {"model": model, "cells": cells, "complete": complete, "pairs": pairs, "methods": methods,
             "missing": [k for k, c in cells.items() if not c["complete"]],
             "flagged": [k for k, c in cells.items() if c["suspect"]],
-            "stale":   [k for k, c in cells.items() if c.get("stale")]}
+            "stale":   [k for k, c in cells.items() if c.get("stale")],
+            "stale_rows": [k for k, c in cells.items() if c.get("stale_rows")]}
 
 
 def flag_suspects(cells: Dict[Tuple[str, str, str], dict]) -> None:
@@ -538,6 +557,14 @@ def render_status(status: dict) -> str:
                       "that returns a whole node counted every prediction returning a property of the right nodes as wrong. "
                       f"Run `{REJUDGE_CMD}` (it judges the stored predictions again; no model is called, no question "
                       f"is re-run), then `{_cmd('--status')}`. Do not report these numbers, and do not re-run the cells."]
+    n_rows = len(status.get("stale_rows", []))
+    if n_rows:
+        lines += ["", f"**RE-JUDGE NEEDED** — {n_rows} cell(s) marked ↻ were scored on at most 10 rows: No Val Link and "
+                      "FCAV end in GraphCypherQAChain, which keeps 10 rows of a result, and runs made before the fix "
+                      "scored those, so a correct query with a larger result counted as wrong. "
+                      f"Run `{REJUDGE_ROWS_CMD}` (it scores the stored predictions on their full results; no model is "
+                      f"called, no question is re-run), then `{_cmd('--status')}`. Do not report these numbers, and do "
+                      "not re-run the cells."]
     lines += ["", f"- generated: {time.strftime('%Y-%m-%d %H:%M')} · commit `{_git('rev-parse', '--short', 'HEAD')}` "
               f"· benchmarks `{_benchmarks_version()}` · artifacts set `{_artifact_set_id()}`",
               f"- run config: CYPHER_EMPTY_IS_WRONG={getattr(cfg, 'CYPHER_EMPTY_IS_WRONG', '?')} · "
@@ -557,7 +584,7 @@ def render_status(status: dict) -> str:
             mark = "⚠ " if c["suspect"] else ("✓ " if c["complete"] else "✗ ")
             row.append(mark + (f"{c['n']}/{c['err']}" if c["n"] else "missing")
                        + ("" if c.get("rows_ok", True) else " ≠release")
-                       + (" ↻" if c.get("stale") else ""))
+                       + (" ↻" if c.get("stale") or c.get("stale_rows") else ""))
         lines.append("| " + " | ".join(row) + " |")
     # ── flagged cells: what failed, why, and the one command that re-runs it ──
     flagged = [(k, cells[k]) for k in status.get("flagged", [])]
@@ -668,8 +695,9 @@ def verdict_line(status: dict, mode: str) -> str:
     missing, flagged = status.get("missing", []), status.get("flagged", [])
     bad = [f"✗ {_cell_label(k)}" for k in missing] + [f"⚠ {_cell_label(k)}" for k in flagged]
     cells = f" ({', '.join(bad)})" if 0 < len(bad) <= 8 else (" (see the matrix)" if bad else "")
-    stale = status.get("stale", [])
-    rejudge = f", {len(stale)} ↻ (run {REJUDGE_CMD})" if stale else ""
+    stale, stale_rows = status.get("stale", []), status.get("stale_rows", [])
+    rejudge = (f", {len(stale)} ↻ (run {REJUDGE_CMD})" if stale else "") + \
+              (f", {len(stale_rows)} ↻ (run {REJUDGE_ROWS_CMD})" if stale_rows else "")
     return (f"=== {mode} {'COMPLETE' if status['complete'] else 'NOT CLEAN'} — "
             f"{len(missing)} ✗, {len(flagged)} ⚠{rejudge}{cells} · driver {_git('rev-parse', '--short', 'HEAD')} ===")
 
@@ -972,6 +1000,14 @@ def publish(status: dict, allow_incomplete: bool) -> int:
         log(f"  Run `{REJUDGE_CMD}` — it judges the stored predictions again, calls no model and re-runs no")
         log("  question — then --publish again. --allow-incomplete does not lift this.")
         return 1
+    stale_rows = status.get("stale_rows", [])
+    if stale_rows:
+        log("✗ publish refused — these cells were scored on at most 10 rows (eval/full_rows.py):")
+        for k in stale_rows:
+            log(f"    ↻ {_cell_label(k)}: {cells[k]['stale_rows']} verdict(s) to score again on the full result")
+        log(f"  Run `{REJUDGE_ROWS_CMD}` — it scores the stored predictions on their full results, calls no model and")
+        log("  re-runs no question — then --publish again. --allow-incomplete does not lift this.")
+        return 1
 
     # ── 1. verdict ──────────────────────────────────────────────────────────
     if (missing or flagged) and not allow_incomplete:
@@ -1108,7 +1144,7 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     if args.status or args.publish:
         status = build_status(scope_pairs, all_methods, expected, out_dir, model)
-        if args.publish and not args.smoke and not status.get("stale"):
+        if args.publish and not args.smoke and not status.get("stale") and not status.get("stale_rows"):
             refresh_reports(scope_pairs, model)      # publish the tables the records give now
         text = render_status(status)
         print(text)
@@ -1192,6 +1228,8 @@ def main(argv: Optional[List[str]] = None) -> int:
     log(f"report: {out.relative_to(REPO)}")
     if status.get("stale"):
         log(f"↻ cells: judged before the node-set rule — run `{REJUDGE_CMD}` before publishing (no model is called).")
+    if status.get("stale_rows"):
+        log(f"↻ cells: scored on at most 10 rows — run `{REJUDGE_ROWS_CMD}` before publishing (no model is called).")
     if status["complete"]:
         log(f"next: {_cmd('--publish')}")
     else:

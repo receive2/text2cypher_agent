@@ -95,6 +95,30 @@ How the harness works, every config knob and the pre-flight words: [`RUNNING_EXP
 > before, and runs made before and after can be pooled. There is nothing to do,
 > and — as with every line of that panel except the model in §2 — nothing to edit.
 
+> **Have No Val Link or FCAV runs made before your checkout had
+> `eval/full_rows.py`?** Keep them too — one command corrects them, nothing is
+> re-run. These two methods end in LangChain's `GraphCypherQAChain`, which keeps
+> only the first 10 rows of a query's result (enough for its answer prompt),
+> and the evaluators used to score those 10 rows: a correct query whose result
+> has more than ten rows counted as wrong. Every method is now scored on all
+> the rows its query returns (README, *Metrics & normalisation*); ReAct,
+> CyANCHOR and MA GraphRAG always were, and their runs need nothing. Runs you
+> start after `git pull` are scored this way from the start. For No Val Link
+> and FCAV runs you already have, after `git pull`:
+>
+> ```bash
+> python scripts/rejudge_full_rows.py --dry-run   # what would change; writes nothing
+> python scripts/rejudge_full_rows.py             # score the stored predictions again
+> ```
+>
+> It executes each stored prediction again, uncapped, compares it with the gold
+> result exactly as the evaluator does, and rewrites `ea` (the old verdict stays
+> in `ea_capped`). No model is called, it takes a few minutes per run, it skips
+> a run that is still being written, and a second invocation finds nothing to
+> do. It needs the run's graph to answer: a run whose graph is down is reported
+> and left exactly as it was. `python orchestrate_sweep.py --status` marks a
+> cell that still needs it ↻, and `--publish` refuses to publish such a cell.
+
 > **Have `pole` or `bloom` runs made before your checkout had
 > `eval/node_set_match.py`?** Keep them — one command corrects them, nothing is
 > re-run. 518 of the 1,283 pole questions and 5 of the 24 bloom questions have
@@ -414,6 +438,11 @@ If it prints **`✗ publish refused — these cells were judged before the node-
 rule`**, some of your `pole` / `bloom` runs predate the scorer change described
 at the top of this page: run `python scripts/rejudge_node_returns.py` (no model
 is called, nothing is re-run) and then `--publish` again.
+
+If it prints **`✗ publish refused — these cells were scored on at most 10
+rows`**, some of your No Val Link / FCAV runs predate the scoring fix described
+at the top of this page: run `python scripts/rejudge_full_rows.py` (no model is
+called, nothing is re-run) and then `--publish` again.
 
 If it prints **`✗ you cannot push to this repository`**, you do not have write
 access yet: ask the coordinator to add you as a collaborator on GitHub, accept

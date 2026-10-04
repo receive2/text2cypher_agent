@@ -111,6 +111,7 @@ from .node_set_match import (
     strict_value as _strict_value,
 )
 from .psjs import compute_psjs as _compute_psjs
+from .full_rows import RULE as _ROWS_RULE
 from .difficulty import (
     classify as _classify_difficulty,
     aggregate_by_difficulty,
@@ -343,6 +344,7 @@ def evaluate_one(example: Dict[str, Any]) -> Dict[str, Any]:
         "graph":       "pole",
         "difficulty":  _classify_difficulty(gold_cypher),
         "error":       None,
+        "rows_rule":   _ROWS_RULE,   # scored on every row the prediction returns (eval/full_rows.py)
     }
 
     # ── Step 1: agent prediction ────────────────────────────────────────────

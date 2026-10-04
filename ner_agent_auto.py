@@ -1691,6 +1691,20 @@ def ask_auto(
 
         result = str(response.get("result", "")).strip()
 
+        # GraphCypherQAChain keeps only the first ``top_k`` rows (10 by default) of
+        # what the query returns: enough for the answer prompt above, but ``context``
+        # is also what the evaluators score, and a correct query with more rows would
+        # be judged against a truncated result. Run the query once more, uncapped,
+        # through the executor the other paths use, so ``context`` is the complete
+        # result. A failure here is a failure to execute the prediction, as on the
+        # other paths (see eval/full_rows.py).
+        if cypher_query:
+            from eval.metrics_CypherBench import execute_cypher
+            full_rows, exec_err = execute_cypher(cypher_query)
+            if exec_err is not None:
+                raise RuntimeError(f"the generated Cypher did not run to completion: {exec_err}")
+            context = full_rows
+
     # ── Value-snap (plan_exec only): fix the "retrieved-but-not-used" grounding
     # error. Existence-gated — only non-existent WHERE values are considered, so
     # correct/normal queries are never touched. See plan_exec.snap_values_to_candidates.
