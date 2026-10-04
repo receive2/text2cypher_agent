@@ -30,8 +30,8 @@ CyANCHOR knobs: retrieval `fuzzy+lev` · tool `node` · escalate `on` (≤3) · 
 
 | method      | retrieval |    EA |  PSJS |   n | err | gold err |
 | ----------- | --------- | ----: | ----: | --: | --: | -------: |
-| No Val Link | —         | 0.179 | 0.190 | 168 |   2 |        0 |
-| FCAV        | vector    | 0.667 | 0.724 | 168 |   2 |        0 |
+| No Val Link | —         | 0.190 | 0.190 | 168 |   2 |        0 |
+| FCAV        | vector    | 0.679 | 0.724 | 168 |   2 |        0 |
 | ReAct       | fuzzy     | 0.464 | 0.466 | 168 |   0 |        0 |
 | GraphRAG    | norm-Lev  | 0.637 | 0.637 | 168 |   0 |        0 |
 | CyANCHOR    | fuzzy+lev | 0.887 | 0.910 | 168 |   0 |        0 |
@@ -40,8 +40,8 @@ CyANCHOR knobs: retrieval `fuzzy+lev` · tool `node` · escalate `on` (≤3) · 
 
 | method      | casing |  typo | partial | abbrev | alias |
 | ----------- | -----: | ----: | ------: | -----: | ----: |
-| No Val Link |  0.267 | 0.100 |   0.056 |  0.236 | 0.083 |
-| FCAV        |  0.800 | 0.800 |   0.833 |  0.573 | 0.722 |
+| No Val Link |  0.333 | 0.100 |   0.056 |  0.247 | 0.083 |
+| FCAV        |  0.867 | 0.800 |   0.833 |  0.584 | 0.722 |
 | ReAct       |  0.667 | 0.600 |   0.722 |  0.393 | 0.389 |
 | GraphRAG    |  0.800 | 0.900 |   0.889 |  0.573 | 0.528 |
 | CyANCHOR    |  1.000 | 1.000 |   0.889 |  0.854 | 0.889 |
@@ -50,8 +50,8 @@ CyANCHOR knobs: retrieval `fuzzy+lev` · tool `node` · escalate `on` (≤3) · 
 
 | method      |  easy | medium |  hard |
 | ----------- | ----: | -----: | ----: |
-| No Val Link | 0.118 |  0.111 | 0.356 |
-| FCAV        | 0.843 |  0.472 | 0.778 |
+| No Val Link | 0.118 |  0.125 | 0.378 |
+| FCAV        | 0.843 |  0.486 | 0.800 |
 | ReAct       | 0.490 |  0.347 | 0.622 |
 | GraphRAG    | 0.706 |  0.556 | 0.689 |
 | CyANCHOR    | 0.941 |  0.861 | 0.867 |

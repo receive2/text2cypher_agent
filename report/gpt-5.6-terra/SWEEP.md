@@ -1,8 +1,8 @@
-# Sweep — `gpt-5.6-terra` — 2026-10-02 21:03
+# Sweep — `gpt-5.6-terra` — 2026-10-03 20:50
 
 **COMPLETE** — every graph x method cell holds one record per question, and no cell is dominated by infrastructure failures.
 
-- generated: 2026-10-02 21:03 · commit `108f499` · benchmarks `v2.3-verified-2026-09-22` · artifacts set `31db179b1d24`
+- generated: 2026-10-03 20:50 · commit `4f32513` · benchmarks `v2.3-verified-2026-09-22` · artifacts set `31db179b1d24`
 - run config: CYPHER_EMPTY_IS_WRONG=False · CYPHER_SEMANTIC_REPAIR=True · RETRIEVAL fuzzy/vector/lev=1/0/1 · SHARDS=1 (cyanchor always 1)
 
 ## Completeness (n / err per cell; n must equal the question count)
@@ -39,8 +39,8 @@
 
 | method | CypherBench EA | CypherBench PSJS | MindTheQuery EA | MindTheQuery PSJS | ZOGRASCOPE EA | ZOGRASCOPE PSJS | All EA | All PSJS | n | err |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| No Val Link | 0.097 | 0.141 | 0.248 | 0.268 | 0.048 | 0.027 | 0.123 | 0.143 | 4590 | 216 |
-| FCAV | 0.426 | 0.577 | 0.282 | 0.443 | 0.175 | 0.147 | 0.318 | 0.421 | 4590 | 239 |
+| No Val Link | 0.112 | 0.141 | 0.258 | 0.268 | 0.048 | 0.027 | 0.133 | 0.143 | 4590 | 216 |
+| FCAV | 0.507 | 0.577 | 0.383 | 0.443 | 0.175 | 0.147 | 0.381 | 0.421 | 4590 | 239 |
 | ReAct | 0.366 | 0.414 | 0.501 | 0.567 | 0.373 | 0.283 | 0.404 | 0.418 | 4590 | 72 |
 | GraphRAG | 0.485 | 0.570 | 0.600 | 0.700 | 0.436 | 0.338 | 0.502 | 0.540 | 4590 | 73 |
 | CyANCHOR | 0.706 | 0.788 | 0.615 | 0.713 | 0.568 | 0.436 | 0.644 | 0.670 | 4590 | 71 |
@@ -53,8 +53,8 @@ The headline EA accepts a prediction that selects exactly the gold nodes when th
 
 | method | CypherBench | MindTheQuery | ZOGRASCOPE | All |
 |---|---:|---:|---:|---:|
-| No Val Link | 0.097 | 0.248 | 0.033 | 0.119 |
-| FCAV | 0.426 | 0.282 | 0.107 | 0.298 |
+| No Val Link | 0.112 | 0.258 | 0.033 | 0.129 |
+| FCAV | 0.507 | 0.383 | 0.107 | 0.362 |
 | ReAct | 0.366 | 0.501 | 0.215 | 0.360 |
 | GraphRAG | 0.485 | 0.597 | 0.193 | 0.433 |
 | CyANCHOR | 0.706 | 0.612 | 0.341 | 0.579 |
@@ -65,8 +65,8 @@ EA
 
 | method | casing | typo | partial | abbrev | alias | all |
 |---|---:|---:|---:|---:|---:|---:|
-| No Val Link | 0.297 | 0.087 | 0.096 | 0.091 | 0.046 | 0.097 |
-| FCAV | 0.609 | 0.449 | 0.488 | 0.282 | 0.463 | 0.426 |
+| No Val Link | 0.339 | 0.094 | 0.101 | 0.113 | 0.057 | 0.112 |
+| FCAV | 0.688 | 0.513 | 0.540 | 0.371 | 0.561 | 0.507 |
 | ReAct | 0.625 | 0.525 | 0.506 | 0.225 | 0.272 | 0.366 |
 | GraphRAG | 0.740 | 0.694 | 0.566 | 0.381 | 0.370 | 0.485 |
 | CyANCHOR | 0.880 | 0.864 | 0.811 | 0.571 | 0.655 | 0.706 |
@@ -89,8 +89,8 @@ EA
 
 | method | easy | medium | hard | all |
 |---|---:|---:|---:|---:|
-| No Val Link | 0.089 | 0.057 | 0.169 | 0.097 |
-| FCAV | 0.626 | 0.373 | 0.411 | 0.426 |
+| No Val Link | 0.104 | 0.066 | 0.197 | 0.112 |
+| FCAV | 0.674 | 0.445 | 0.525 | 0.507 |
 | ReAct | 0.448 | 0.320 | 0.402 | 0.366 |
 | GraphRAG | 0.605 | 0.469 | 0.449 | 0.485 |
 | CyANCHOR | 0.786 | 0.683 | 0.705 | 0.706 |
@@ -113,8 +113,8 @@ EA
 
 | method | casing | typo | partial | abbrev | alias | all |
 |---|---:|---:|---:|---:|---:|---:|
-| No Val Link | 0.273 | 0.176 | 0.278 | 0.244 | 0.341 | 0.248 |
-| FCAV | 0.266 | 0.236 | 0.320 | 0.284 | 0.336 | 0.282 |
+| No Val Link | 0.305 | 0.176 | 0.278 | 0.271 | 0.341 | 0.258 |
+| FCAV | 0.391 | 0.349 | 0.479 | 0.389 | 0.341 | 0.383 |
 | ReAct | 0.602 | 0.598 | 0.613 | 0.333 | 0.403 | 0.501 |
 | GraphRAG | 0.656 | 0.596 | 0.696 | 0.587 | 0.502 | 0.600 |
 | CyANCHOR | 0.648 | 0.617 | 0.706 | 0.617 | 0.507 | 0.615 |
@@ -137,8 +137,8 @@ EA
 
 | method | easy | medium | hard | all |
 |---|---:|---:|---:|---:|
-| No Val Link | 0.169 | 0.307 | 0.149 | 0.248 |
-| FCAV | 0.221 | 0.348 | 0.165 | 0.282 |
+| No Val Link | 0.195 | 0.316 | 0.157 | 0.258 |
+| FCAV | 0.662 | 0.451 | 0.196 | 0.383 |
 | ReAct | 0.571 | 0.535 | 0.423 | 0.501 |
 | GraphRAG | 0.727 | 0.660 | 0.459 | 0.600 |
 | CyANCHOR | 0.727 | 0.661 | 0.505 | 0.615 |
@@ -209,8 +209,8 @@ EA
 
 | method | casing | typo | partial | abbrev | alias | all |
 |---|---:|---:|---:|---:|---:|---:|
-| No Val Link | 0.244 | 0.086 | 0.118 | 0.128 | 0.120 | 0.123 |
-| FCAV | 0.436 | 0.260 | 0.315 | 0.255 | 0.431 | 0.318 |
+| No Val Link | 0.270 | 0.088 | 0.120 | 0.149 | 0.129 | 0.133 |
+| FCAV | 0.503 | 0.302 | 0.378 | 0.339 | 0.506 | 0.381 |
 | ReAct | 0.577 | 0.457 | 0.515 | 0.245 | 0.305 | 0.404 |
 | GraphRAG | 0.631 | 0.504 | 0.600 | 0.443 | 0.404 | 0.502 |
 | CyANCHOR | 0.708 | 0.605 | 0.768 | 0.591 | 0.618 | 0.644 |
@@ -233,8 +233,8 @@ EA
 
 | method | easy | medium | hard | all |
 |---|---:|---:|---:|---:|
-| No Val Link | 0.101 | 0.120 | 0.139 | 0.123 |
-| FCAV | 0.509 | 0.298 | 0.287 | 0.318 |
+| No Val Link | 0.115 | 0.126 | 0.155 | 0.133 |
+| FCAV | 0.610 | 0.353 | 0.354 | 0.381 |
 | ReAct | 0.493 | 0.390 | 0.398 | 0.404 |
 | GraphRAG | 0.648 | 0.493 | 0.463 | 0.502 |
 | CyANCHOR | 0.762 | 0.628 | 0.632 | 0.644 |

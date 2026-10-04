@@ -7,7 +7,7 @@ Higher is better. Denominator = ALL examples; any failure (agent error, empty/wr
 **Setup.** CypherBench `all graphs pooled`, 2090 entity-perturbed test questions
 (strategies: casing · typo · partial · abbrev · alias).
 
-**Run config.** Generated 2026-10-02. LLMs: NER `gpt-5.6-terra` · Cypher `gpt-5.6-terra` · QA `gpt-5.6-terra`.
+**Run config.** Generated 2026-10-03. LLMs: NER `gpt-5.6-terra` · Cypher `gpt-5.6-terra` · QA `gpt-5.6-terra`.
 
 **Methods.**
 - **No Val Link** — grounding bypassed (the perturbed surface form is used as-is).
@@ -29,8 +29,8 @@ Higher is better. Denominator = ALL examples; any failure (agent error, empty/wr
 
 | method      | retrieval |    EA |  PSJS |    n | err | gold err |
 | ----------- | --------- | ----: | ----: | ---: | --: | -------: |
-| No Val Link | —         | 0.097 | 0.141 | 2090 |  35 |        0 |
-| FCAV        | vector    | 0.426 | 0.577 | 2090 |  51 |        0 |
+| No Val Link | —         | 0.112 | 0.141 | 2090 |  35 |        0 |
+| FCAV        | vector    | 0.507 | 0.577 | 2090 |  51 |        0 |
 | ReAct       | fuzzy     | 0.366 | 0.414 | 2090 |   1 |        0 |
 | GraphRAG    | norm-Lev  | 0.485 | 0.570 | 2090 |   2 |        0 |
 | CyANCHOR    | fuzzy+lev | 0.706 | 0.788 | 2090 |   0 |        0 |
@@ -39,8 +39,8 @@ Higher is better. Denominator = ALL examples; any failure (agent error, empty/wr
 
 | method      | casing |  typo | partial | abbrev | alias |
 | ----------- | -----: | ----: | ------: | -----: | ----: |
-| No Val Link |  0.297 | 0.087 |   0.096 |  0.091 | 0.046 |
-| FCAV        |  0.609 | 0.449 |   0.488 |  0.282 | 0.463 |
+| No Val Link |  0.339 | 0.094 |   0.101 |  0.113 | 0.057 |
+| FCAV        |  0.688 | 0.513 |   0.540 |  0.371 | 0.561 |
 | ReAct       |  0.625 | 0.525 |   0.506 |  0.225 | 0.272 |
 | GraphRAG    |  0.740 | 0.694 |   0.566 |  0.381 | 0.370 |
 | CyANCHOR    |  0.880 | 0.864 |   0.811 |  0.571 | 0.655 |
@@ -49,8 +49,8 @@ Higher is better. Denominator = ALL examples; any failure (agent error, empty/wr
 
 | method      |  easy | medium |  hard |
 | ----------- | ----: | -----: | ----: |
-| No Val Link | 0.089 |  0.057 | 0.169 |
-| FCAV        | 0.626 |  0.373 | 0.411 |
+| No Val Link | 0.104 |  0.066 | 0.197 |
+| FCAV        | 0.674 |  0.445 | 0.525 |
 | ReAct       | 0.448 |  0.320 | 0.402 |
 | GraphRAG    | 0.605 |  0.469 | 0.449 |
 | CyANCHOR    | 0.786 |  0.683 | 0.705 |

@@ -166,3 +166,31 @@
 [2026-10-02 21:03:51]   summary: report/gpt-5.6-terra/ZOGRASCOPE/_summary.md
 [2026-10-02 21:03:51] === publish COMPLETE — 0 ✗, 0 ⚠ · driver 108f499 ===
 [2026-10-02 21:03:51] report: report/gpt-5.6-terra/SWEEP.md
+[2026-10-02 21:03:56] ✓ published branch sweep/gpt-5.6-terra @ 8755c6a (65/65 clean cells, 65 run dirs). Your branch and working tree were not touched.
+[2026-10-02 21:03:56] 
+[2026-10-02 21:03:56]   Send the coordinator exactly this:
+[2026-10-02 21:03:56]     model:   gpt-5.6-terra
+[2026-10-02 21:03:56]     branch:  sweep/gpt-5.6-terra
+[2026-10-02 21:03:56]     report:  https://github.com/receive2/text2cypher_agent/blob/sweep/gpt-5.6-terra/report/gpt-5.6-terra/SWEEP.md
+[2026-10-03 20:12:21] === status COMPLETE — 0 ✗, 0 ⚠ · driver 088039b ===
+[2026-10-03 20:12:21] report: report/gpt-5.6-terra/SWEEP.md
+[2026-10-03 20:50:12] === status COMPLETE — 0 ✗, 0 ⚠ · driver 4f32513 ===
+[2026-10-03 20:50:12] report: report/gpt-5.6-terra/SWEEP.md
+[2026-10-03 20:50:27]   report: report/gpt-5.6-terra/CypherBench/company.md
+[2026-10-03 20:50:27]   report: report/gpt-5.6-terra/CypherBench/fictional_character.md
+[2026-10-03 20:50:27]   report: report/gpt-5.6-terra/CypherBench/flight_accident.md
+[2026-10-03 20:50:27]   report: report/gpt-5.6-terra/CypherBench/geography.md
+[2026-10-03 20:50:27]   report: report/gpt-5.6-terra/CypherBench/movie.md
+[2026-10-03 20:50:27]   report: report/gpt-5.6-terra/CypherBench/nba.md
+[2026-10-03 20:50:27]   report: report/gpt-5.6-terra/CypherBench/politics.md
+[2026-10-03 20:50:28]   summary: report/gpt-5.6-terra/CypherBench/_summary.md
+[2026-10-03 20:50:28]   report: report/gpt-5.6-terra/MindTheQuery/bloom.md
+[2026-10-03 20:50:28]   report: report/gpt-5.6-terra/MindTheQuery/covid.md
+[2026-10-03 20:50:28]   report: report/gpt-5.6-terra/MindTheQuery/er.md
+[2026-10-03 20:50:28]   report: report/gpt-5.6-terra/MindTheQuery/healthcare.md
+[2026-10-03 20:50:28]   report: report/gpt-5.6-terra/MindTheQuery/wwc.md
+[2026-10-03 20:50:28]   summary: report/gpt-5.6-terra/MindTheQuery/_summary.md
+[2026-10-03 20:50:28]   report: report/gpt-5.6-terra/ZOGRASCOPE/pole.md
+[2026-10-03 20:50:28]   summary: report/gpt-5.6-terra/ZOGRASCOPE/_summary.md
+[2026-10-03 20:50:28] === publish COMPLETE — 0 ✗, 0 ⚠ · driver 4f32513 ===
+[2026-10-03 20:50:28] report: report/gpt-5.6-terra/SWEEP.md

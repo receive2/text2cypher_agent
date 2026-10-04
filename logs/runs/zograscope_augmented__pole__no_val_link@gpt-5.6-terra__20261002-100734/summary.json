@@ -2,16 +2,16 @@
   "dataset": "zograscope_augmented",
   "n": 1283,
   "n_scored": {
-    "ea": 1283,
+    "ea": 1281,
     "em": 1283,
-    "psjs": 1283
+    "psjs": 1281
   },
   "n_errors": 2,
   "ea": 0.048324240062353856,
   "ea_strict": 0.03273577552611068,
   "ea_rule": "node-set-v1",
   "em": 0.0,
-  "psjs": 0.027023400682240354,
+  "psjs": 0.027023400682240357,
   "by_difficulty": {
     "all": {
       "ea": 0.048324240062353856,
@@ -140,5 +140,13 @@
     },
     "shards": 1,
     "limit": null
+  },
+  "rows_rejudged": {
+    "rule": "full-rows-v1",
+    "at": "2026-10-03 20:09:21",
+    "checked": 1281,
+    "changed": 0,
+    "to_error": 0,
+    "kept_writes": 0
   }
 }

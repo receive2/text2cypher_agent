@@ -2,9 +2,9 @@
   "dataset": "mindthequery_augmented",
   "n": 184,
   "n_scored": {
-    "ea": 184,
+    "ea": 178,
     "em": 184,
-    "psjs": 184
+    "psjs": 178
   },
   "n_errors": 6,
   "ea": 0.29891304347826086,
@@ -138,5 +138,14 @@
     },
     "shards": 1,
     "limit": null
+  },
+  "ea_strict": 0.29891304347826086,
+  "rows_rejudged": {
+    "rule": "full-rows-v1",
+    "at": "2026-10-03 20:00:32",
+    "checked": 178,
+    "changed": 0,
+    "to_error": 0,
+    "kept_writes": 0
   }
 }

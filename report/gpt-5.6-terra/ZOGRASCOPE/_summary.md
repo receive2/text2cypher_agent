@@ -7,7 +7,7 @@ Higher is better. Denominator = ALL examples; any failure (agent error, empty/wr
 **Setup.** ZOGRASCOPE `all graphs pooled`, 1283 entity-perturbed test questions
 (strategies: casing · typo · partial · abbrev).
 
-**Run config.** Generated 2026-10-02. LLMs: NER `gpt-5.6-terra` · Cypher `gpt-5.6-terra` · QA `gpt-5.6-terra`.
+**Run config.** Generated 2026-10-03. LLMs: NER `gpt-5.6-terra` · Cypher `gpt-5.6-terra` · QA `gpt-5.6-terra`.
 
 **Methods.**
 - **No Val Link** — grounding bypassed (the perturbed surface form is used as-is).

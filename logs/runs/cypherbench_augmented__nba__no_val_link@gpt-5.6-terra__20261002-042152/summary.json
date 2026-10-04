@@ -2,14 +2,14 @@
   "dataset": "cypherbench_augmented",
   "n": 251,
   "n_scored": {
-    "ea": 251,
-    "em": 251,
-    "psjs": 251
+    "ea": 247,
+    "em": 247,
+    "psjs": 247
   },
   "n_errors": 4,
   "ea": 0.09163346613545817,
   "em": 0.0,
-  "psjs": 0.12743256250084842,
+  "psjs": 0.1274325625008484,
   "by_difficulty": {
     "all": {
       "ea": 0.09163346613545817,
@@ -138,5 +138,13 @@
     },
     "shards": 1,
     "limit": null
+  },
+  "rows_rejudged": {
+    "rule": "full-rows-v1",
+    "at": "2026-10-03 20:03:30",
+    "checked": 247,
+    "changed": 0,
+    "to_error": 0,
+    "kept_writes": 0
   }
 }

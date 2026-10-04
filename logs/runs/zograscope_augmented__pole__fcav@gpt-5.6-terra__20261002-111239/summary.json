@@ -11,7 +11,7 @@
   "ea_strict": 0.10678098207326578,
   "ea_rule": "node-set-v1",
   "em": 0.0,
-  "psjs": 0.1473934589454506,
+  "psjs": 0.14739345894545075,
   "by_difficulty": {
     "all": {
       "ea": 0.17537022603273578,
@@ -140,5 +140,13 @@
     },
     "shards": 1,
     "limit": null
+  },
+  "rows_rejudged": {
+    "rule": "full-rows-v1",
+    "at": "2026-10-03 20:03:54",
+    "checked": 1283,
+    "changed": 0,
+    "to_error": 0,
+    "kept_writes": 0
   }
 }

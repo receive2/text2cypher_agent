@@ -2,14 +2,14 @@
   "dataset": "mindthequery_augmented",
   "n": 326,
   "n_scored": {
-    "ea": 326,
+    "ea": 179,
     "em": 326,
-    "psjs": 326
+    "psjs": 179
   },
   "n_errors": 147,
   "ea": 0.024539877300613498,
   "em": 0.0,
-  "psjs": 0.08292831703997183,
+  "psjs": 0.08292831703997182,
   "by_difficulty": {
     "all": {
       "ea": 0.024539877300613498,
@@ -138,5 +138,14 @@
     },
     "shards": 1,
     "limit": null
+  },
+  "ea_strict": 0.024539877300613498,
+  "rows_rejudged": {
+    "rule": "full-rows-v1",
+    "at": "2026-10-03 19:59:00",
+    "checked": 179,
+    "changed": 0,
+    "to_error": 0,
+    "kept_writes": 0
   }
 }

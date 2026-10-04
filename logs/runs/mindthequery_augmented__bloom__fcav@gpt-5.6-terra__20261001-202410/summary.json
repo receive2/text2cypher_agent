@@ -146,5 +146,13 @@
     "at": "2026-10-02 18:15:07",
     "checked": 4,
     "accepted": 0
+  },
+  "rows_rejudged": {
+    "rule": "full-rows-v1",
+    "at": "2026-10-03 19:56:43",
+    "checked": 24,
+    "changed": 0,
+    "to_error": 0,
+    "kept_writes": 0
   }
 }
