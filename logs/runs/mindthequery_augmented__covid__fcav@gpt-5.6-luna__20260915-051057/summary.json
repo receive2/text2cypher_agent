@@ -1,0 +1,150 @@
+{
+  "dataset": "mindthequery_augmented",
+  "n": 327,
+  "n_scored": {
+    "ea": 185,
+    "em": 327,
+    "psjs": 185
+  },
+  "n_errors": 142,
+  "ea": 0.03363914373088685,
+  "em": 0.0,
+  "psjs": 0.08891902035554199,
+  "by_difficulty": {
+    "all": {
+      "ea": 0.03363914373088685,
+      "em": 0.0,
+      "psjs": 0.08891902035554199,
+      "n": 327,
+      "n_scored": {
+        "ea": 327,
+        "em": 327,
+        "psjs": 327
+      },
+      "n_errors": 142
+    },
+    "easy": {
+      "ea": null,
+      "em": null,
+      "psjs": null,
+      "n": 0,
+      "n_scored": {
+        "ea": 0,
+        "em": 0,
+        "psjs": 0
+      },
+      "n_errors": 0
+    },
+    "medium": {
+      "ea": 0.06716417910447761,
+      "em": 0.0,
+      "psjs": 0.09380763021383234,
+      "n": 134,
+      "n_scored": {
+        "ea": 134,
+        "em": 134,
+        "psjs": 134
+      },
+      "n_errors": 37
+    },
+    "hard": {
+      "ea": 0.010362694300518135,
+      "em": 0.0,
+      "psjs": 0.08552485599797252,
+      "n": 193,
+      "n_scored": {
+        "ea": 193,
+        "em": 193,
+        "psjs": 193
+      },
+      "n_errors": 105
+    }
+  },
+  "elapsed_sec": 1482.89,
+  "run_meta": {
+    "generated_at": "2026-09-15T05:35:45-07:00",
+    "ner_mode": "fcav",
+    "method": "fcav",
+    "label": "FCAV",
+    "tool_type": null,
+    "retrieval": "vector",
+    "generator_llm": "gpt-5.6-luna",
+    "ner_llm": "gpt-5.6-luna",
+    "cypher_llm": "gpt-5.6-luna",
+    "qa_llm": "gpt-5.6-luna",
+    "tool_select_top_k": 15,
+    "values_per_tool": 10,
+    "plan_exec_tools_per_entity": 2,
+    "plan_exec_values_per_tool": 10,
+    "plan_exec_escalate": true,
+    "plan_exec_max_iter": 3,
+    "retrieval_levenshtein_k": 10,
+    "cypher_semantic_repair": true,
+    "cypher_repair_max_rounds": 4,
+    "cypher_empty_is_wrong": false,
+    "cypher_retry_max_rounds": 2,
+    "plan_exec_value_snap": true,
+    "plan_exec_skip_grounded": true,
+    "plan_exec_parallel_mentions": true,
+    "graphrag_empty_is_wrong": true,
+    "graphrag_llm_evaluator": true,
+    "tool_retrieval_mode": "fuzzy",
+    "hybrid_strategy": "cascade"
+  },
+  "run_config": {
+    "stamp": "20260915-051057",
+    "dataset": "mindthequery_augmented",
+    "graph": "covid",
+    "method": "fcav@gpt-5.6-luna",
+    "llm": {
+      "generator_llm": "gpt-5.6-luna",
+      "ner": {
+        "provider": "openai",
+        "model": "gpt-5.6-luna"
+      },
+      "cypher": {
+        "provider": "openai",
+        "model": "gpt-5.6-luna"
+      },
+      "qa": {
+        "provider": "openai",
+        "model": "gpt-5.6-luna"
+      }
+    },
+    "embedding": {
+      "backend": "openai",
+      "model": "text-embedding-3-small"
+    },
+    "knobs": {
+      "METHOD": "fcav",
+      "TOOL_TYPE": "node_rel",
+      "GENERATOR_LLM": "gpt-5.6-luna",
+      "RETRIEVAL_FUZZY": "1",
+      "RETRIEVAL_VECTOR": "0",
+      "RETRIEVAL_LEVENSHTEIN": "1",
+      "CYPHER_SEMANTIC_REPAIR": "1",
+      "CYPHER_EMPTY_IS_WRONG": "0",
+      "PLAN_EXEC_ESCALATE": "1",
+      "PLAN_EXEC_VALUE_SNAP": "1",
+      "PLAN_EXEC_SKIP_GROUNDED": "1",
+      "PLAN_EXEC_SELECT_JUDGE": "1",
+      "PLAN_EXEC_PARALLEL_MENTIONS": "1",
+      "GRAPHRAG_EMPTY_IS_WRONG": "1",
+      "GRAPHRAG_LLM_EVALUATOR": "1",
+      "CYPHER_REPAIR_MAX_ROUNDS": "4",
+      "CYPHER_RETRY_MAX_ROUNDS": "2",
+      "RETRIEVAL_LEVENSHTEIN_K": "10"
+    },
+    "shards": 1,
+    "limit": null
+  },
+  "ea_strict": 0.03363914373088685,
+  "rows_rejudged": {
+    "rule": "full-rows-v1",
+    "at": "2026-10-04 11:43:02",
+    "checked": 185,
+    "changed": 5,
+    "to_error": 0,
+    "kept_writes": 0
+  }
+}

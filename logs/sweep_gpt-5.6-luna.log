@@ -1,0 +1,876 @@
+[2026-09-13 11:42:41] === sweep start: model=gpt-5.6-luna graphs=1 methods=['no_val_link', 'fcav', 'react', 'graphrag', 'cyanchor'] SMOKE ===
+[2026-09-13 11:42:41] pre-flight (archives vs live graphs, archives vs published set):
+[2026-09-13 11:42:42]   ✓ cypherbench_augmented__flight_accident: OK — ok (5 tool labels, all non-empty; min count=58) | artifacts OK
+[2026-09-13 11:42:42]   ▶ cypherbench_augmented__flight_accident__no_val_link  (try 1/3, SHARDS=1, limit=3)
+[2026-09-13 11:42:52]     rc=0 records=3/3 err=3 (10s)
+[2026-09-13 11:42:52]   fcav index missing for cypherbench_augmented__flight_accident: building it (OpenAI embeddings of the graph's values)
+[2026-09-13 11:42:54]   ✗ cypherbench_augmented__flight_accident__fcav: could not build the fcav index: AuthenticationError: Error code: 401 - {'error': {'message': 'OpenAI-Organization header should match organization for API key', 'type': 'invalid_request_error', 'code': 'mismatched_organization', 'param': None}, 'status': 401}
+[2026-09-13 11:42:54]   ▶ cypherbench_augmented__flight_accident__react  (try 1/3, SHARDS=1, limit=3)
+[2026-09-13 11:43:01]     rc=0 records=3/3 err=3 (6s)
+[2026-09-13 11:43:01]   ▶ cypherbench_augmented__flight_accident__graphrag  (try 1/3, SHARDS=1, limit=3)
+[2026-09-13 11:43:08]     rc=0 records=3/3 err=3 (7s)
+[2026-09-13 11:43:08]   ▶ cypherbench_augmented__flight_accident__cyanchor  (try 1/3, SHARDS=1, limit=3)
+[2026-09-13 11:43:14]     rc=0 records=3/3 err=3 (6s)
+[2026-09-13 11:43:14] ✗ SMOKE FAILED:
+  no_val_link: every example errored — agent: AuthenticationError: Error code: 401 - {'error': {'message': 'OpenAI-Organization header should match organization for API key', 'type': 'invalid_request_error', 'code': 'mismatched_organization', 'param': None}, 'status': 401}
+  fcav: 0/3 records — the run did not finish — fcav index: AuthenticationError: Error code: 401 - {'error': {'message': 'OpenAI-Organization header should match organization for API key', 'type': 'invalid_request_error', 'code': 'mismatched_organization', 'param': None}, 'status': 401}
+  react: every example errored — agent: AuthenticationError: Error code: 401 - {'error': {'message': 'OpenAI-Organization header should match organization for API key', 'type': 'invalid_request_error', 'code': 'mismatched_organization', 'param': None}, 'status': 401}
+  graphrag: every example errored — agent: AuthenticationError: Error code: 401 - {'error': {'message': 'OpenAI-Organization header should match organization for API key', 'type': 'invalid_request_error', 'code': 'mismatched_organization', 'param': None}, 'status': 401}
+  cyanchor: every example errored — agent: AuthenticationError: Error code: 401 - {'error': {'message': 'OpenAI-Organization header should match organization for API key', 'type': 'invalid_request_error', 'code': 'mismatched_organization', 'param': None}, 'status': 401}
+  Send these lines to the coordinator.
+[2026-09-13 11:50:32] === sweep start: model=gpt-5.6-luna graphs=1 methods=['no_val_link', 'fcav', 'react', 'graphrag', 'cyanchor'] SMOKE ===
+[2026-09-13 11:50:32] pre-flight (archives vs live graphs, archives vs published set):
+[2026-09-13 11:50:35]   ✓ cypherbench_augmented__flight_accident: OK — ok (5 tool labels, all non-empty; min count=58) | artifacts OK
+[2026-09-13 11:50:35]   ▶ cypherbench_augmented__flight_accident__no_val_link  (try 1/3, SHARDS=1, limit=3)
+[2026-09-13 11:51:04]     rc=0 records=3/3 err=0 (28s)
+[2026-09-13 11:51:04]   fcav index missing for cypherbench_augmented__flight_accident: building it (OpenAI embeddings of the graph's values)
+[2026-09-13 11:51:29]   fcav index built: 5693 values
+[2026-09-13 11:51:29]   ▶ cypherbench_augmented__flight_accident__fcav  (try 1/3, SHARDS=1, limit=3)
+[2026-09-13 11:51:50]     rc=0 records=3/3 err=0 (21s)
+[2026-09-13 11:51:50]   ▶ cypherbench_augmented__flight_accident__react  (try 1/3, SHARDS=1, limit=3)
+[2026-09-13 11:52:24]     rc=0 records=3/3 err=0 (34s)
+[2026-09-13 11:52:24]   ▶ cypherbench_augmented__flight_accident__graphrag  (try 1/3, SHARDS=1, limit=3)
+[2026-09-13 11:53:07]     rc=0 records=3/3 err=0 (43s)
+[2026-09-13 11:53:07]   ▶ cypherbench_augmented__flight_accident__cyanchor  (try 1/3, SHARDS=1, limit=3)
+[2026-09-13 11:53:43]     rc=0 records=3/3 err=0 (36s)
+[2026-09-13 11:53:43] ✓ SMOKE OK — all 5 methods produced 3 records on flight_accident (a few errors are fine; a whole method erroring is not). Now run: python orchestrate_sweep.py
+[2026-09-13 12:24:20] status written: report/gpt-5.6-luna/SWEEP_20260913-122420.md
+[2026-09-13 12:29:00] === sweep start: model=gpt-5.6-luna graphs=13 methods=['no_val_link', 'fcav', 'react', 'graphrag', 'cyanchor'] FULL ===
+[2026-09-13 12:29:00] pre-flight (archives vs live graphs, archives vs published set):
+[2026-09-13 12:29:01]   ✓ cypherbench_augmented__company: OK — ok (4 tool labels, all non-empty; min count=217) | artifacts OK
+[2026-09-13 12:29:01]   ✓ cypherbench_augmented__fictional_character: OK — ok (4 tool labels, all non-empty; min count=594) | artifacts OK
+[2026-09-13 12:29:02]   ✓ cypherbench_augmented__flight_accident: OK — ok (5 tool labels, all non-empty; min count=58) | artifacts OK
+[2026-09-13 12:29:03]   ✓ cypherbench_augmented__geography: OK — ok (8 tool labels, all non-empty; min count=5) | artifacts OK
+[2026-09-13 12:29:03]   ✓ cypherbench_augmented__movie: OK — ok (7 tool labels, all non-empty; min count=205) | artifacts OK
+[2026-09-13 12:29:04]   ✓ cypherbench_augmented__nba: OK — ok (7 tool labels, all non-empty; min count=2) | artifacts OK
+[2026-09-13 12:29:05]   ✓ cypherbench_augmented__politics: OK — ok (6 tool labels, all non-empty; min count=217) | artifacts OK
+[2026-09-13 12:29:06]   ✓ mindthequery_augmented__bloom: OK — ok (17 tool labels, all non-empty; min count=2) | artifacts OK
+[2026-09-13 12:29:06]   ✓ mindthequery_augmented__covid: OK — ok (7 tool labels, all non-empty; min count=1) | artifacts OK
+[2026-09-13 12:29:07]   ✓ mindthequery_augmented__er: OK — ok (4 tool labels, all non-empty; min count=10) | artifacts OK
+[2026-09-13 12:29:08]   ✓ mindthequery_augmented__healthcare: OK — ok (8 tool labels, all non-empty; min count=5) | artifacts OK
+[2026-09-13 12:29:08]   ✓ mindthequery_augmented__wwc: OK — ok (5 tool labels, all non-empty; min count=8) | artifacts OK
+[2026-09-13 12:29:09]   ✓ zograscope_augmented__pole: OK — ok (11 tool labels, all non-empty; min count=7) | artifacts OK
+[2026-09-13 12:29:09]   ▶ cypherbench_augmented__company__no_val_link  (try 1/3, SHARDS=1, limit=None)
+[2026-09-13 12:49:58]     rc=0 records=305/305 err=5 (1249s)
+[2026-09-13 12:49:58]   fcav index missing for cypherbench_augmented__company: building it (OpenAI embeddings of the graph's values)
+[2026-09-13 13:51:15]   fcav index built: 792468 values
+[2026-09-13 13:51:15]   ▶ cypherbench_augmented__company__fcav  (try 1/3, SHARDS=1, limit=None)
+[2026-09-13 14:20:45]     rc=0 records=305/305 err=7 (1770s)
+[2026-09-13 14:20:45]   ▶ cypherbench_augmented__company__react  (try 1/3, SHARDS=1, limit=None)
+[2026-09-13 15:16:14]     rc=0 records=305/305 err=0 (3329s)
+[2026-09-13 15:16:14]   ▶ cypherbench_augmented__company__graphrag  (try 1/3, SHARDS=1, limit=None)
+[2026-09-13 16:15:49]     rc=0 records=305/305 err=0 (3575s)
+[2026-09-13 16:15:49]   ▶ cypherbench_augmented__company__cyanchor  (try 1/3, SHARDS=1, limit=None)
+[2026-09-13 17:26:44]     rc=0 records=305/305 err=0 (4255s)
+[2026-09-13 17:26:45]   report: report/gpt-5.6-luna/CypherBench/company.md
+[2026-09-13 17:26:45]   ▶ cypherbench_augmented__fictional_character__no_val_link  (try 1/3, SHARDS=1, limit=None)
+[2026-09-13 17:45:16]     rc=0 records=324/324 err=5 (1111s)
+[2026-09-13 17:45:16]   fcav index missing for cypherbench_augmented__fictional_character: building it (OpenAI embeddings of the graph's values)
+[2026-09-13 17:47:44]   fcav index built: 45516 values
+[2026-09-13 17:47:44]   ▶ cypherbench_augmented__fictional_character__fcav  (try 1/3, SHARDS=1, limit=None)
+[2026-09-13 18:14:52]     rc=0 records=324/324 err=6 (1629s)
+[2026-09-13 18:14:52]   ▶ cypherbench_augmented__fictional_character__react  (try 1/3, SHARDS=1, limit=None)
+[2026-09-13 19:10:40]     rc=0 records=324/324 err=0 (3347s)
+[2026-09-13 19:10:40]   ▶ cypherbench_augmented__fictional_character__graphrag  (try 1/3, SHARDS=1, limit=None)
+[2026-09-13 20:04:09]     rc=0 records=324/324 err=0 (3210s)
+[2026-09-13 20:04:09]   ▶ cypherbench_augmented__fictional_character__cyanchor  (try 1/3, SHARDS=1, limit=None)
+[2026-09-13 21:16:56]     rc=0 records=324/324 err=0 (4366s)
+[2026-09-13 21:16:56]   report: report/gpt-5.6-luna/CypherBench/fictional_character.md
+[2026-09-13 21:16:56]   ▶ cypherbench_augmented__flight_accident__no_val_link  (try 1/3, SHARDS=1, limit=None)
+[2026-09-13 21:26:15]     rc=0 records=168/168 err=0 (559s)
+[2026-09-13 21:26:15]   ▶ cypherbench_augmented__flight_accident__fcav  (try 1/3, SHARDS=1, limit=None)
+[2026-09-13 21:39:09]     rc=0 records=168/168 err=1 (774s)
+[2026-09-13 21:39:09]   ▶ cypherbench_augmented__flight_accident__react  (try 1/3, SHARDS=1, limit=None)
+[2026-09-13 22:06:52]     rc=0 records=168/168 err=0 (1662s)
+[2026-09-13 22:06:52]   ▶ cypherbench_augmented__flight_accident__graphrag  (try 1/3, SHARDS=1, limit=None)
+[2026-09-13 22:35:56]     rc=0 records=168/168 err=0 (1744s)
+[2026-09-13 22:35:56]   ▶ cypherbench_augmented__flight_accident__cyanchor  (try 1/3, SHARDS=1, limit=None)
+[2026-09-13 23:10:52]     rc=0 records=168/168 err=0 (2096s)
+[2026-09-13 23:10:52]   report: report/gpt-5.6-luna/CypherBench/flight_accident.md
+[2026-09-13 23:10:52]   ▶ cypherbench_augmented__geography__no_val_link  (try 1/3, SHARDS=1, limit=None)
+[2026-09-13 23:48:07]     rc=0 records=331/331 err=18 (2235s)
+[2026-09-13 23:48:07]   fcav index missing for cypherbench_augmented__geography: building it (OpenAI embeddings of the graph's values)
+[2026-09-14 00:32:03]   fcav index built: 621508 values
+[2026-09-14 00:32:03]   ▶ cypherbench_augmented__geography__fcav  (try 1/3, SHARDS=1, limit=None)
+[2026-09-14 01:14:31]     rc=0 records=331/331 err=8 (2548s)
+[2026-09-14 01:14:31]   ▶ cypherbench_augmented__geography__react  (try 1/3, SHARDS=1, limit=None)
+[2026-09-14 02:20:12]     rc=0 records=331/331 err=1 (3941s)
+[2026-09-14 02:20:12]   ▶ cypherbench_augmented__geography__graphrag  (try 1/3, SHARDS=1, limit=None)
+[2026-09-14 02:23:44]     rc=2 records=0/331 err=0 (212s)
+[2026-09-14 02:23:44]   ▶ cypherbench_augmented__geography__graphrag  (try 2/3, SHARDS=1, limit=None)
+[2026-09-14 02:26:50]     rc=2 records=0/331 err=0 (186s)
+[2026-09-14 02:26:50]   ▶ cypherbench_augmented__geography__graphrag  (try 3/3, SHARDS=1, limit=None)
+[2026-09-14 02:29:56]     rc=2 records=0/331 err=0 (186s)
+[2026-09-14 02:29:56]   ✗ cypherbench_augmented__geography__graphrag: not complete after 3 attempts — continuing with the next cell
+[2026-09-14 02:29:56]   ▶ cypherbench_augmented__geography__cyanchor  (try 1/3, SHARDS=1, limit=None)
+[2026-09-14 03:52:19]     rc=0 records=331/331 err=0 (4943s)
+[2026-09-14 03:52:19]   report: report/gpt-5.6-luna/CypherBench/geography.md
+[2026-09-14 03:52:19]   ▶ cypherbench_augmented__movie__no_val_link  (try 1/3, SHARDS=1, limit=None)
+[2026-09-14 04:25:00]     rc=0 records=360/360 err=10 (1961s)
+[2026-09-14 04:25:00]   fcav index missing for cypherbench_augmented__movie: building it (OpenAI embeddings of the graph's values)
+[2026-09-14 05:05:15]   fcav index built: 646857 values
+[2026-09-14 05:05:15]   ▶ cypherbench_augmented__movie__fcav  (try 1/3, SHARDS=1, limit=None)
+[2026-09-14 05:42:37]     rc=0 records=360/360 err=3 (2242s)
+[2026-09-14 05:42:37]   ▶ cypherbench_augmented__movie__react  (try 1/3, SHARDS=1, limit=None)
+[2026-09-14 06:49:14]     rc=0 records=360/360 err=3 (3997s)
+[2026-09-14 06:49:14]   ▶ cypherbench_augmented__movie__graphrag  (try 1/3, SHARDS=1, limit=None)
+[2026-09-14 07:58:45]     rc=0 records=360/360 err=0 (4171s)
+[2026-09-14 07:58:45]   ▶ cypherbench_augmented__movie__cyanchor  (try 1/3, SHARDS=1, limit=None)
+[2026-09-14 09:27:49]     rc=0 records=360/360 err=0 (5344s)
+[2026-09-14 09:27:49]   report: report/gpt-5.6-luna/CypherBench/movie.md
+[2026-09-14 09:27:49]   ▶ cypherbench_augmented__nba__no_val_link  (try 1/3, SHARDS=1, limit=None)
+[2026-09-14 09:43:04]     rc=0 records=251/251 err=4 (915s)
+[2026-09-14 09:43:04]   fcav index missing for cypherbench_augmented__nba: building it (OpenAI embeddings of the graph's values)
+[2026-09-14 09:44:31]   fcav index built: 10475 values
+[2026-09-14 09:44:31]   ▶ cypherbench_augmented__nba__fcav  (try 1/3, SHARDS=1, limit=None)
+[2026-09-14 10:08:04]     rc=0 records=251/251 err=2 (1413s)
+[2026-09-14 10:08:04]   ▶ cypherbench_augmented__nba__react  (try 1/3, SHARDS=1, limit=None)
+[2026-09-14 10:48:22]     rc=0 records=251/251 err=0 (2418s)
+[2026-09-14 10:48:22]   ▶ cypherbench_augmented__nba__graphrag  (try 1/3, SHARDS=1, limit=None)
+[2026-09-14 11:32:34]     rc=0 records=251/251 err=0 (2652s)
+[2026-09-14 11:32:34]   ▶ cypherbench_augmented__nba__cyanchor  (try 1/3, SHARDS=1, limit=None)
+[2026-09-14 12:25:57]     rc=0 records=251/251 err=0 (3202s)
+[2026-09-14 12:25:57]   report: report/gpt-5.6-luna/CypherBench/nba.md
+[2026-09-14 12:25:57]   ▶ cypherbench_augmented__politics__no_val_link  (try 1/3, SHARDS=1, limit=None)
+[2026-09-14 12:59:15]     rc=0 records=360/360 err=9 (1998s)
+[2026-09-14 12:59:15]   fcav index missing for cypherbench_augmented__politics: building it (OpenAI embeddings of the graph's values)
+[2026-09-14 14:03:43]   ✗ cypherbench_augmented__politics__fcav: could not build the fcav index: APIConnectionError: Connection error.
+[2026-09-14 14:03:43]   ▶ cypherbench_augmented__politics__react  (try 1/3, SHARDS=1, limit=None)
+[2026-09-14 14:04:14]     rc=2 records=0/360 err=0 (30s)
+[2026-09-14 14:04:14]   ▶ cypherbench_augmented__politics__react  (try 2/3, SHARDS=1, limit=None)
+[2026-09-14 14:04:44]     rc=2 records=0/360 err=0 (30s)
+[2026-09-14 14:04:44]   ▶ cypherbench_augmented__politics__react  (try 3/3, SHARDS=1, limit=None)
+[2026-09-14 14:05:14]     rc=2 records=0/360 err=0 (30s)
+[2026-09-14 14:05:14]   ✗ cypherbench_augmented__politics__react: not complete after 3 attempts — continuing with the next cell
+[2026-09-14 14:05:14]   ▶ cypherbench_augmented__politics__graphrag  (try 1/3, SHARDS=1, limit=None)
+[2026-09-14 14:05:44]     rc=2 records=0/360 err=0 (30s)
+[2026-09-14 14:05:44]   ▶ cypherbench_augmented__politics__graphrag  (try 2/3, SHARDS=1, limit=None)
+[2026-09-14 14:06:14]     rc=2 records=0/360 err=0 (30s)
+[2026-09-14 14:06:14]   ▶ cypherbench_augmented__politics__graphrag  (try 3/3, SHARDS=1, limit=None)
+[2026-09-14 14:06:44]     rc=2 records=0/360 err=0 (30s)
+[2026-09-14 14:08:09] === sweep start: model=gpt-5.6-luna graphs=13 methods=['no_val_link', 'fcav', 'react', 'graphrag', 'cyanchor'] FULL ===
+[2026-09-14 14:08:09] pre-flight (archives vs live graphs, archives vs published set):
+[2026-09-14 14:08:43]   ✗ cypherbench_augmented__company: UNREACH — ServiceUnavailable: Couldn't connect to 34.9.85.21:15062 (resolved to ('34.9.85.21:15062',)):
+Timed out trying to establish connection to ResolvedIPv4Address(('34.9.85.21', 15062)) | artifacts OK
+[2026-09-14 14:09:13]   ✗ cypherbench_augmented__fictional_character: UNREACH — ServiceUnavailable: Couldn't connect to 34.9.85.21:15063 (resolved to ('34.9.85.21:15063',)):
+Timed out trying to establish connection to ResolvedIPv4Address(('34.9.85.21', 15063)) | artifacts OK
+[2026-09-14 14:09:43]   ✗ cypherbench_augmented__flight_accident: UNREACH — ServiceUnavailable: Couldn't connect to 34.9.85.21:15064 (resolved to ('34.9.85.21:15064',)):
+Timed out trying to establish connection to ResolvedIPv4Address(('34.9.85.21', 15064)) | artifacts OK
+[2026-09-14 14:10:14]   ✗ cypherbench_augmented__geography: UNREACH — ServiceUnavailable: Couldn't connect to 34.9.85.21:15065 (resolved to ('34.9.85.21:15065',)):
+Timed out trying to establish connection to ResolvedIPv4Address(('34.9.85.21', 15065)) | artifacts OK
+[2026-09-14 14:15:46] === sweep start: model=gpt-5.6-luna graphs=13 methods=['no_val_link', 'fcav', 'react', 'graphrag', 'cyanchor'] FULL ===
+[2026-09-14 14:15:46] pre-flight (archives vs live graphs, archives vs published set):
+[2026-09-14 14:16:18]   ✗ cypherbench_augmented__company: UNREACH — ServiceUnavailable: Couldn't connect to 34.9.85.21:15062 (resolved to ('34.9.85.21:15062',)):
+Timed out trying to establish connection to ResolvedIPv4Address(('34.9.85.21', 15062)) | artifacts OK
+[2026-09-14 14:16:48]   ✗ cypherbench_augmented__fictional_character: UNREACH — ServiceUnavailable: Couldn't connect to 34.9.85.21:15063 (resolved to ('34.9.85.21:15063',)):
+Timed out trying to establish connection to ResolvedIPv4Address(('34.9.85.21', 15063)) | artifacts OK
+[2026-09-14 14:17:18]   ✗ cypherbench_augmented__flight_accident: UNREACH — ServiceUnavailable: Couldn't connect to 34.9.85.21:15064 (resolved to ('34.9.85.21:15064',)):
+Timed out trying to establish connection to ResolvedIPv4Address(('34.9.85.21', 15064)) | artifacts OK
+[2026-09-14 14:17:49]   ✗ cypherbench_augmented__geography: UNREACH — ServiceUnavailable: Couldn't connect to 34.9.85.21:15065 (resolved to ('34.9.85.21:15065',)):
+Timed out trying to establish connection to ResolvedIPv4Address(('34.9.85.21', 15065)) | artifacts OK
+[2026-09-14 14:18:19]   ✗ cypherbench_augmented__movie: UNREACH — ServiceUnavailable: Couldn't connect to 34.9.85.21:15066 (resolved to ('34.9.85.21:15066',)):
+Timed out trying to establish connection to ResolvedIPv4Address(('34.9.85.21', 15066)) | artifacts OK
+[2026-09-14 14:18:49]   ✗ cypherbench_augmented__nba: UNREACH — ServiceUnavailable: Couldn't connect to 34.9.85.21:15067 (resolved to ('34.9.85.21:15067',)):
+Timed out trying to establish connection to ResolvedIPv4Address(('34.9.85.21', 15067)) | artifacts OK
+[2026-09-14 14:19:29] status written: report/gpt-5.6-luna/SWEEP_20260914-141929.md
+[2026-09-14 14:19:30] status written: report/gpt-5.6-luna/SWEEP_20260914-141930.md
+[2026-09-14 21:40:03] status written: report/gpt-5.6-luna/SWEEP_20260914-214003.md
+[2026-09-14 21:40:03] === sweep start: model=gpt-5.6-luna graphs=13 methods=['no_val_link', 'fcav', 'react', 'graphrag', 'cyanchor'] FULL ===
+[2026-09-14 21:40:03] pre-flight (archives vs live graphs, archives vs published set):
+[2026-09-14 21:40:08]   ✓ cypherbench_augmented__company: OK — ok (4 tool labels, all non-empty; min count=217) | artifacts OK
+[2026-09-14 21:40:08]   ✓ cypherbench_augmented__fictional_character: OK — ok (4 tool labels, all non-empty; min count=594) | artifacts OK
+[2026-09-14 21:40:09]   ✓ cypherbench_augmented__flight_accident: OK — ok (5 tool labels, all non-empty; min count=58) | artifacts OK
+[2026-09-14 21:40:10]   ✓ cypherbench_augmented__geography: OK — ok (8 tool labels, all non-empty; min count=5) | artifacts OK
+[2026-09-14 21:40:10]   ✓ cypherbench_augmented__movie: OK — ok (7 tool labels, all non-empty; min count=205) | artifacts OK
+[2026-09-14 21:40:11]   ✓ cypherbench_augmented__nba: OK — ok (7 tool labels, all non-empty; min count=2) | artifacts OK
+[2026-09-14 21:40:12]   ✓ cypherbench_augmented__politics: OK — ok (6 tool labels, all non-empty; min count=217) | artifacts OK
+[2026-09-14 21:40:13]   ✓ mindthequery_augmented__bloom: OK — ok (17 tool labels, all non-empty; min count=2) | artifacts OK
+[2026-09-14 21:40:14]   ✓ mindthequery_augmented__covid: OK — ok (7 tool labels, all non-empty; min count=1) | artifacts OK
+[2026-09-14 21:40:14]   ✓ mindthequery_augmented__er: OK — ok (4 tool labels, all non-empty; min count=10) | artifacts OK
+[2026-09-14 21:40:15]   ✓ mindthequery_augmented__healthcare: OK — ok (8 tool labels, all non-empty; min count=5) | artifacts OK
+[2026-09-14 21:40:16]   ✓ mindthequery_augmented__wwc: OK — ok (5 tool labels, all non-empty; min count=8) | artifacts OK
+[2026-09-14 21:40:17]   ✓ zograscope_augmented__pole: OK — ok (11 tool labels, all non-empty; min count=7) | artifacts OK
+[2026-09-14 21:40:17]   = cypherbench_augmented__company__no_val_link: complete (305 records, err=5) — skipped
+[2026-09-14 21:40:17]   = cypherbench_augmented__company__fcav: complete (305 records, err=7) — skipped
+[2026-09-14 21:40:17]   = cypherbench_augmented__company__react: complete (305 records, err=0) — skipped
+[2026-09-14 21:40:17]   = cypherbench_augmented__company__graphrag: complete (305 records, err=0) — skipped
+[2026-09-14 21:40:17]   = cypherbench_augmented__company__cyanchor: complete (305 records, err=0) — skipped
+[2026-09-14 21:40:17]   report: report/gpt-5.6-luna/CypherBench/company.md
+[2026-09-14 21:40:17]   = cypherbench_augmented__fictional_character__no_val_link: complete (324 records, err=5) — skipped
+[2026-09-14 21:40:17]   = cypherbench_augmented__fictional_character__fcav: complete (324 records, err=6) — skipped
+[2026-09-14 21:40:17]   = cypherbench_augmented__fictional_character__react: complete (324 records, err=0) — skipped
+[2026-09-14 21:40:17]   = cypherbench_augmented__fictional_character__graphrag: complete (324 records, err=0) — skipped
+[2026-09-14 21:40:17]   = cypherbench_augmented__fictional_character__cyanchor: complete (324 records, err=0) — skipped
+[2026-09-14 21:40:17]   report: report/gpt-5.6-luna/CypherBench/fictional_character.md
+[2026-09-14 21:40:17]   = cypherbench_augmented__flight_accident__no_val_link: complete (168 records, err=0) — skipped
+[2026-09-14 21:40:17]   = cypherbench_augmented__flight_accident__fcav: complete (168 records, err=1) — skipped
+[2026-09-14 21:40:17]   = cypherbench_augmented__flight_accident__react: complete (168 records, err=0) — skipped
+[2026-09-14 21:40:17]   = cypherbench_augmented__flight_accident__graphrag: complete (168 records, err=0) — skipped
+[2026-09-14 21:40:17]   = cypherbench_augmented__flight_accident__cyanchor: complete (168 records, err=0) — skipped
+[2026-09-14 21:40:17]   report: report/gpt-5.6-luna/CypherBench/flight_accident.md
+[2026-09-14 21:40:17]   = cypherbench_augmented__geography__no_val_link: complete (331 records, err=18) — skipped
+[2026-09-14 21:40:17]   = cypherbench_augmented__geography__fcav: complete (331 records, err=8) — skipped
+[2026-09-14 21:40:17]   = cypherbench_augmented__geography__react: complete (331 records, err=1) — skipped
+[2026-09-14 21:40:17]   ▶ cypherbench_augmented__geography__graphrag  (try 1/3, SHARDS=1, limit=None)
+[2026-09-14 21:43:47]     rc=2 records=0/331 err=0 (209s)
+[2026-09-14 21:43:47]   ▶ cypherbench_augmented__geography__graphrag  (try 2/3, SHARDS=1, limit=None)
+[2026-09-14 21:46:53]     rc=2 records=0/331 err=0 (186s)
+[2026-09-14 21:46:53]   ▶ cypherbench_augmented__geography__graphrag  (try 3/3, SHARDS=1, limit=None)
+[2026-09-14 22:00:34] === sweep start: model=gpt-5.6-luna graphs=7 methods=['no_val_link', 'fcav', 'react', 'graphrag', 'cyanchor'] FULL ===
+[2026-09-14 22:00:34] pre-flight (archives vs live graphs, archives vs published set):
+[2026-09-14 22:00:36]   ✓ cypherbench_augmented__politics: OK — ok (6 tool labels, all non-empty; min count=217) | artifacts OK
+[2026-09-14 22:00:37]   ✓ mindthequery_augmented__bloom: OK — ok (17 tool labels, all non-empty; min count=2) | artifacts OK
+[2026-09-14 22:00:37]   ✓ mindthequery_augmented__covid: OK — ok (7 tool labels, all non-empty; min count=1) | artifacts OK
+[2026-09-14 22:00:38]   ✓ mindthequery_augmented__er: OK — ok (4 tool labels, all non-empty; min count=10) | artifacts OK
+[2026-09-14 22:00:39]   ✓ mindthequery_augmented__healthcare: OK — ok (8 tool labels, all non-empty; min count=5) | artifacts OK
+[2026-09-14 22:00:39]   ✓ mindthequery_augmented__wwc: OK — ok (5 tool labels, all non-empty; min count=8) | artifacts OK
+[2026-09-14 22:00:40]   ✓ zograscope_augmented__pole: OK — ok (11 tool labels, all non-empty; min count=7) | artifacts OK
+[2026-09-14 22:00:40]   = cypherbench_augmented__politics__no_val_link: complete (360 records, err=9) — skipped
+[2026-09-14 22:00:40]   fcav index missing for cypherbench_augmented__politics: building it (OpenAI embeddings of the graph's values)
+[2026-09-14 23:56:38]   fcav index built: 1281632 values
+[2026-09-14 23:56:38]   ▶ cypherbench_augmented__politics__fcav  (try 1/3, SHARDS=1, limit=None)
+[2026-09-15 00:34:20]     rc=0 records=360/360 err=9 (2262s)
+[2026-09-15 00:34:20]   ▶ cypherbench_augmented__politics__react  (try 1/3, SHARDS=1, limit=None)
+[2026-09-15 01:42:26]     rc=0 records=360/360 err=0 (4086s)
+[2026-09-15 01:42:26]   ▶ cypherbench_augmented__politics__graphrag  (try 1/3, SHARDS=1, limit=None)
+[2026-09-15 02:58:48]     rc=0 records=360/360 err=0 (4583s)
+[2026-09-15 02:58:48]   ▶ cypherbench_augmented__politics__cyanchor  (try 1/3, SHARDS=1, limit=None)
+[2026-09-15 04:32:15]     rc=0 records=360/360 err=0 (5606s)
+[2026-09-15 04:32:15]   report: report/gpt-5.6-luna/CypherBench/politics.md
+[2026-09-15 04:32:16]   summary: report/gpt-5.6-luna/CypherBench/_summary.md
+[2026-09-15 04:32:16]   ▶ mindthequery_augmented__bloom__no_val_link  (try 1/3, SHARDS=1, limit=None)
+[2026-09-15 04:34:05]     rc=0 records=24/24 err=0 (109s)
+[2026-09-15 04:34:05]   fcav index missing for mindthequery_augmented__bloom: building it (OpenAI embeddings of the graph's values)
+[2026-09-15 04:36:34]   fcav index built: 22088 values
+[2026-09-15 04:36:34]   ▶ mindthequery_augmented__bloom__fcav  (try 1/3, SHARDS=1, limit=None)
+[2026-09-15 04:38:30]     rc=0 records=24/24 err=1 (116s)
+[2026-09-15 04:38:30]   ▶ mindthequery_augmented__bloom__react  (try 1/3, SHARDS=1, limit=None)
+[2026-09-15 04:42:19]     rc=0 records=24/24 err=0 (230s)
+[2026-09-15 04:42:19]   ▶ mindthequery_augmented__bloom__graphrag  (try 1/3, SHARDS=1, limit=None)
+[2026-09-15 04:46:47]     rc=0 records=24/24 err=0 (267s)
+[2026-09-15 04:46:47]   ▶ mindthequery_augmented__bloom__cyanchor  (try 1/3, SHARDS=1, limit=None)
+[2026-09-15 04:54:31]     rc=0 records=24/24 err=0 (464s)
+[2026-09-15 04:54:31]   report: report/gpt-5.6-luna/MindTheQuery/bloom.md
+[2026-09-15 04:54:32]   ▶ mindthequery_augmented__covid__no_val_link  (try 1/3, SHARDS=1, limit=None)
+[2026-09-15 05:10:53]     rc=0 records=327/327 err=144 (982s)
+[2026-09-15 05:10:53]   fcav index missing for mindthequery_augmented__covid: building it (OpenAI embeddings of the graph's values)
+[2026-09-15 05:10:56]   fcav index built: 606 values
+[2026-09-15 05:10:56]   ▶ mindthequery_augmented__covid__fcav  (try 1/3, SHARDS=1, limit=None)
+[2026-09-15 05:35:45]     rc=0 records=327/327 err=142 (1489s)
+[2026-09-15 05:35:45]   ▶ mindthequery_augmented__covid__react  (try 1/3, SHARDS=1, limit=None)
+[2026-09-15 06:32:03]     rc=0 records=327/327 err=52 (3378s)
+[2026-09-15 06:32:03]   ▶ mindthequery_augmented__covid__graphrag  (try 1/3, SHARDS=1, limit=None)
+[2026-09-15 07:52:05]     rc=0 records=327/327 err=52 (4801s)
+[2026-09-15 07:52:05]   ▶ mindthequery_augmented__covid__cyanchor  (try 1/3, SHARDS=1, limit=None)
+[2026-09-15 09:16:32] status written: report/gpt-5.6-luna/SWEEP_20260915-091632.md
+[2026-09-15 16:10:21] status written: report/gpt-5.6-luna/SWEEP_20260915-161021.md
+[2026-09-15 16:10:25] status written: report/gpt-5.6-luna/SWEEP_20260915-161025.md
+[2026-09-15 21:44:36] === sweep start: model=gpt-5.6-luna graphs=4 methods=['no_val_link', 'fcav', 'react', 'graphrag', 'cyanchor'] FULL ===
+[2026-09-15 21:44:36] pre-flight (archives vs live graphs, archives vs published set):
+[2026-09-15 21:44:45]   ✓ mindthequery_augmented__er: OK — ok (4 tool labels, all non-empty; min count=10) | artifacts OK
+[2026-09-15 21:44:46]   ✓ mindthequery_augmented__healthcare: OK — ok (8 tool labels, all non-empty; min count=5) | artifacts OK
+[2026-09-15 21:44:48]   ✓ mindthequery_augmented__wwc: OK — ok (5 tool labels, all non-empty; min count=8) | artifacts OK
+[2026-09-15 21:44:49]   ✓ zograscope_augmented__pole: OK — ok (11 tool labels, all non-empty; min count=7) | artifacts OK
+[2026-09-15 21:44:49]   ▶ mindthequery_augmented__er__no_val_link  (try 1/3, SHARDS=1, limit=None)
+[2026-09-15 21:54:34]     rc=0 records=185/185 err=6 (585s)
+[2026-09-15 21:54:34]   fcav index missing for mindthequery_augmented__er: building it (OpenAI embeddings of the graph's values)
+[2026-09-15 21:54:42]   fcav index built: 1164 values
+[2026-09-15 21:54:42]   ▶ mindthequery_augmented__er__fcav  (try 1/3, SHARDS=1, limit=None)
+[2026-09-15 22:08:13]     rc=0 records=185/185 err=5 (811s)
+[2026-09-15 22:08:13]   ▶ mindthequery_augmented__er__react  (try 1/3, SHARDS=1, limit=None)
+[2026-09-15 22:33:15]     rc=0 records=185/185 err=3 (1503s)
+[2026-09-15 22:33:16]   ▶ mindthequery_augmented__er__graphrag  (try 1/3, SHARDS=1, limit=None)
+[2026-09-15 23:07:23]     rc=0 records=185/185 err=3 (2048s)
+[2026-09-15 23:07:23]   ▶ mindthequery_augmented__er__cyanchor  (try 1/3, SHARDS=1, limit=None)
+[2026-09-15 23:53:08]     rc=0 records=185/185 err=3 (2745s)
+[2026-09-15 23:53:09]   report: report/gpt-5.6-luna/MindTheQuery/er.md
+[2026-09-15 23:53:09]   ▶ mindthequery_augmented__healthcare__no_val_link  (try 1/3, SHARDS=1, limit=None)
+[2026-09-16 00:16:00]     rc=0 records=419/419 err=9 (1372s)
+[2026-09-16 00:16:00]   fcav index missing for mindthequery_augmented__healthcare: building it (OpenAI embeddings of the graph's values)
+[2026-09-16 00:16:11]   fcav index built: 2641 values
+[2026-09-16 00:16:11]   ▶ mindthequery_augmented__healthcare__fcav  (try 1/3, SHARDS=1, limit=None)
+[2026-09-16 00:47:43]     rc=0 records=419/419 err=10 (1891s)
+[2026-09-16 00:47:43]   ▶ mindthequery_augmented__healthcare__react  (try 1/3, SHARDS=1, limit=None)
+[2026-09-16 01:47:57]     rc=0 records=419/419 err=4 (3614s)
+[2026-09-16 01:47:57]   ▶ mindthequery_augmented__healthcare__graphrag  (try 1/3, SHARDS=1, limit=None)
+[2026-09-16 03:11:19]     rc=0 records=419/419 err=4 (5002s)
+[2026-09-16 03:11:19]   ▶ mindthequery_augmented__healthcare__cyanchor  (try 1/3, SHARDS=1, limit=None)
+[2026-09-16 05:03:44]     rc=0 records=419/419 err=4 (6745s)
+[2026-09-16 05:03:44]   report: report/gpt-5.6-luna/MindTheQuery/healthcare.md
+[2026-09-16 05:03:44]   ▶ mindthequery_augmented__wwc__no_val_link  (try 1/3, SHARDS=1, limit=None)
+[2026-09-16 05:18:47]     rc=0 records=267/267 err=23 (903s)
+[2026-09-16 05:18:47]   fcav index missing for mindthequery_augmented__wwc: building it (OpenAI embeddings of the graph's values)
+[2026-09-16 05:18:56]   fcav index built: 2060 values
+[2026-09-16 05:18:56]   ▶ mindthequery_augmented__wwc__fcav  (try 1/3, SHARDS=1, limit=None)
+[2026-09-16 05:42:34]     rc=0 records=267/267 err=15 (1418s)
+[2026-09-16 05:42:34]   ▶ mindthequery_augmented__wwc__react  (try 1/3, SHARDS=1, limit=None)
+[2026-09-16 06:32:27]     rc=0 records=267/267 err=12 (2993s)
+[2026-09-16 06:32:27]   ▶ mindthequery_augmented__wwc__graphrag  (try 1/3, SHARDS=1, limit=None)
+[2026-09-16 07:35:25]     rc=0 records=267/267 err=12 (3777s)
+[2026-09-16 07:35:25]   ▶ mindthequery_augmented__wwc__cyanchor  (try 1/3, SHARDS=1, limit=None)
+[2026-09-16 08:54:53]     rc=0 records=267/267 err=19 (4768s)
+[2026-09-16 08:54:53]   report: report/gpt-5.6-luna/MindTheQuery/wwc.md
+[2026-09-16 08:54:53]   summary: report/gpt-5.6-luna/MindTheQuery/_summary.md
+[2026-09-16 08:54:53]   ▶ zograscope_augmented__pole__no_val_link  (try 1/3, SHARDS=1, limit=None)
+[2026-09-16 17:21:37] === sweep start: model=gpt-5.6-luna graphs=1 methods=['no_val_link', 'fcav', 'react', 'graphrag', 'cyanchor'] FULL ===
+[2026-09-16 17:21:37] pre-flight (archives vs live graphs, archives vs published set):
+[2026-09-16 17:21:41]   ✓ zograscope_augmented__pole: OK — ok (11 tool labels, all non-empty; min count=7) | artifacts OK
+[2026-09-16 17:21:41]   ▶ zograscope_augmented__pole__no_val_link  (try 1/3, SHARDS=1, limit=None)
+[2026-09-16 18:42:15]     rc=0 records=1290/1290 err=3 (4834s)
+[2026-09-16 18:42:15]   fcav index missing for zograscope_augmented__pole: building it (OpenAI embeddings of the graph's values)
+[2026-09-16 18:43:03]   fcav index built: 2286 values
+[2026-09-16 18:43:03]   ▶ zograscope_augmented__pole__fcav  (try 1/3, SHARDS=1, limit=None)
+[2026-09-16 20:39:02]     rc=0 records=1290/1290 err=9 (6959s)
+[2026-09-16 20:39:02]   ▶ zograscope_augmented__pole__react  (try 1/3, SHARDS=1, limit=None)
+[2026-09-16 23:26:59] === sweep start: model=gpt-5.6-luna graphs=1 methods=['no_val_link', 'fcav', 'react', 'graphrag', 'cyanchor'] FULL ===
+[2026-09-16 23:26:59] pre-flight (archives vs live graphs, archives vs published set):
+[2026-09-16 23:27:04]   ✓ zograscope_augmented__pole: OK — ok (11 tool labels, all non-empty; min count=7) | artifacts OK
+[2026-09-16 23:27:04]   = zograscope_augmented__pole__no_val_link: complete (1290 records, err=3) — skipped
+[2026-09-16 23:27:04]   = zograscope_augmented__pole__fcav: complete (1290 records, err=9) — skipped
+[2026-09-16 23:27:04]   = zograscope_augmented__pole__react: complete (1290 records, err=383) — skipped
+[2026-09-16 23:27:04]   ▶ zograscope_augmented__pole__graphrag  (try 1/3, SHARDS=1, limit=None)
+[2026-09-17 03:27:05]     rc=2 records=1032/1290 err=0 (14401s)
+[2026-09-17 03:27:05]   ▶ zograscope_augmented__pole__graphrag  (try 2/3, SHARDS=1, limit=None)
+[2026-09-18 07:09:26] === sweep start: model=gpt-5.6-luna graphs=1 methods=['no_val_link', 'fcav', 'react', 'graphrag', 'cyanchor'] FULL ===
+[2026-09-18 07:09:26] pre-flight (archives vs live graphs, archives vs published set):
+[2026-09-18 07:09:32]   ✓ zograscope_augmented__pole: OK — ok (11 tool labels, all non-empty; min count=7) | artifacts OK
+[2026-09-18 07:09:32]   = zograscope_augmented__pole__no_val_link: complete (1290 records, err=3) — skipped
+[2026-09-18 07:09:32]   = zograscope_augmented__pole__fcav: complete (1290 records, err=9) — skipped
+[2026-09-18 07:09:32]   = zograscope_augmented__pole__react: complete (1290 records, err=383) — skipped
+[2026-09-18 07:09:32]   = zograscope_augmented__pole__graphrag: complete (1290 records, err=10) — skipped
+[2026-09-18 07:09:32]   ▶ zograscope_augmented__pole__cyanchor  (try 1/3, SHARDS=1, limit=None)
+[2026-09-18 19:49:47] === sweep start: model=gpt-5.6-luna graphs=4 methods=['no_val_link', 'fcav', 'react', 'graphrag', 'cyanchor'] FULL ===
+[2026-09-18 19:49:47] pre-flight (archives vs live graphs, archives vs published set):
+[2026-09-18 19:50:20]   ✗ mindthequery_augmented__er: UNREACH — ServiceUnavailable: Couldn't connect to 34.9.85.21:15073 (resolved to ('34.9.85.21:15073',)):
+Timed out trying to establish connection to ResolvedIPv4Address(('34.9.85.21', 15073)) | artifacts OK
+[2026-09-18 19:50:50]   ✗ mindthequery_augmented__healthcare: UNREACH — ServiceUnavailable: Couldn't connect to 34.9.85.21:15074 (resolved to ('34.9.85.21:15074',)):
+Timed out trying to establish connection to ResolvedIPv4Address(('34.9.85.21', 15074)) | artifacts OK
+[2026-09-18 19:51:20]   ✗ mindthequery_augmented__wwc: UNREACH — ServiceUnavailable: Couldn't connect to 34.9.85.21:15075 (resolved to ('34.9.85.21:15075',)):
+Timed out trying to establish connection to ResolvedIPv4Address(('34.9.85.21', 15075)) | artifacts OK
+[2026-09-18 19:51:50]   ✗ zograscope_augmented__pole: UNREACH — ServiceUnavailable: Couldn't connect to 34.9.85.21:15076 (resolved to ('34.9.85.21:15076',)):
+Timed out trying to establish connection to ResolvedIPv4Address(('34.9.85.21', 15076)) | artifacts OK
+[2026-09-18 19:51:50] ✗ pre-flight failed — fix the red lines (see docs/EXPERIMENT_HANDOUT.md §4) before running
+[2026-09-18 19:52:51] === sweep start: model=gpt-5.6-luna graphs=4 methods=['no_val_link', 'fcav', 'react', 'graphrag', 'cyanchor'] FULL ===
+[2026-09-18 19:52:51] pre-flight (archives vs live graphs, archives vs published set):
+[2026-09-18 19:53:21]   ✗ mindthequery_augmented__er: UNREACH — ServiceUnavailable: Couldn't connect to 34.9.85.21:15073 (resolved to ('34.9.85.21:15073',)):
+Timed out trying to establish connection to ResolvedIPv4Address(('34.9.85.21', 15073)) | artifacts OK
+[2026-09-18 19:53:23]   ✓ mindthequery_augmented__healthcare: OK — ok (8 tool labels, all non-empty; min count=5) | artifacts OK
+[2026-09-18 19:53:24]   ✓ mindthequery_augmented__wwc: OK — ok (5 tool labels, all non-empty; min count=8) | artifacts OK
+[2026-09-18 19:53:26]   ✓ zograscope_augmented__pole: OK — ok (11 tool labels, all non-empty; min count=7) | artifacts OK
+[2026-09-18 19:53:26] ✗ pre-flight failed — fix the red lines (see docs/EXPERIMENT_HANDOUT.md §4) before running
+[2026-09-18 19:54:26] === sweep start: model=gpt-5.6-luna graphs=4 methods=['no_val_link', 'fcav', 'react', 'graphrag', 'cyanchor'] FULL ===
+[2026-09-18 19:54:26] pre-flight (archives vs live graphs, archives vs published set):
+[2026-09-18 19:54:27]   ✓ mindthequery_augmented__er: OK — ok (4 tool labels, all non-empty; min count=10) | artifacts OK
+[2026-09-18 19:54:27]   ✓ mindthequery_augmented__healthcare: OK — ok (8 tool labels, all non-empty; min count=5) | artifacts OK
+[2026-09-18 19:54:28]   ✓ mindthequery_augmented__wwc: OK — ok (5 tool labels, all non-empty; min count=8) | artifacts OK
+[2026-09-18 19:54:29]   ✓ zograscope_augmented__pole: OK — ok (11 tool labels, all non-empty; min count=7) | artifacts OK
+[2026-09-18 19:54:29]   = mindthequery_augmented__er__no_val_link: complete (185 records, err=6) — skipped
+[2026-09-18 19:54:29]   = mindthequery_augmented__er__fcav: complete (185 records, err=5) — skipped
+[2026-09-18 19:54:29]   = mindthequery_augmented__er__react: complete (185 records, err=3) — skipped
+[2026-09-18 19:54:29]   = mindthequery_augmented__er__graphrag: complete (185 records, err=3) — skipped
+[2026-09-18 19:54:29]   = mindthequery_augmented__er__cyanchor: complete (185 records, err=3) — skipped
+[2026-09-18 19:54:29]   report: report/gpt-5.6-luna/MindTheQuery/er.md
+[2026-09-18 19:54:29]   = mindthequery_augmented__healthcare__no_val_link: complete (419 records, err=9) — skipped
+[2026-09-18 19:54:29]   = mindthequery_augmented__healthcare__fcav: complete (419 records, err=10) — skipped
+[2026-09-18 19:54:29]   = mindthequery_augmented__healthcare__react: complete (419 records, err=4) — skipped
+[2026-09-18 19:54:29]   = mindthequery_augmented__healthcare__graphrag: complete (419 records, err=4) — skipped
+[2026-09-18 19:54:29]   = mindthequery_augmented__healthcare__cyanchor: complete (419 records, err=4) — skipped
+[2026-09-18 19:54:29]   report: report/gpt-5.6-luna/MindTheQuery/healthcare.md
+[2026-09-18 19:54:29]   = mindthequery_augmented__wwc__no_val_link: complete (267 records, err=23) — skipped
+[2026-09-18 19:54:29]   = mindthequery_augmented__wwc__fcav: complete (267 records, err=15) — skipped
+[2026-09-18 19:54:29]   = mindthequery_augmented__wwc__react: complete (267 records, err=12) — skipped
+[2026-09-18 19:54:29]   = mindthequery_augmented__wwc__graphrag: complete (267 records, err=12) — skipped
+[2026-09-18 19:54:29]   = mindthequery_augmented__wwc__cyanchor: complete (267 records, err=19) — skipped
+[2026-09-18 19:54:29]   report: report/gpt-5.6-luna/MindTheQuery/wwc.md
+[2026-09-18 19:54:29]   summary: report/gpt-5.6-luna/MindTheQuery/_summary.md
+[2026-09-18 19:54:29]   = zograscope_augmented__pole__no_val_link: complete (1290 records, err=3) — skipped
+[2026-09-18 19:54:29]   = zograscope_augmented__pole__fcav: complete (1290 records, err=9) — skipped
+[2026-09-18 19:54:29]   = zograscope_augmented__pole__react: complete (1290 records, err=383) — skipped
+[2026-09-18 19:54:29]   = zograscope_augmented__pole__graphrag: complete (1290 records, err=10) — skipped
+[2026-09-18 19:54:29]   = zograscope_augmented__pole__cyanchor: complete (1290 records, err=861) — skipped
+[2026-09-18 19:54:30]   report: report/gpt-5.6-luna/ZOGRASCOPE/pole.md
+[2026-09-18 19:54:30]   summary: report/gpt-5.6-luna/ZOGRASCOPE/_summary.md
+[2026-09-18 19:54:30] === sweep COMPLETE: report/gpt-5.6-luna/SWEEP_20260918-195430.md ===
+[2026-10-02 20:11:06] === sweep start: model=gpt-5.6-luna graphs=1 methods=['no_val_link', 'fcav', 'react', 'graphrag', 'cyanchor'] SMOKE ===
+[2026-10-02 20:11:06] pre-flight (archives vs live graphs, archives vs published set):
+[2026-10-02 20:13:53] === sweep start: model=gpt-5.6-luna graphs=1 methods=['no_val_link', 'fcav', 'react', 'graphrag', 'cyanchor'] SMOKE ===
+[2026-10-02 20:13:53] pre-flight (archives vs live graphs, archives vs published set):
+[2026-10-02 20:13:54]   ✓ cypherbench_augmented__flight_accident: OK — ok (5 tool labels, all non-empty; min count=58) | artifacts OK
+[2026-10-02 20:13:54]   ▶ cypherbench_augmented__flight_accident__no_val_link  (try 1/3, SHARDS=1, limit=3)
+[2026-10-02 20:14:40]     rc=0 records=3/3 err=0 (46s)
+[2026-10-02 20:14:40]   ▶ cypherbench_augmented__flight_accident__fcav  (try 1/3, SHARDS=1, limit=3)
+[2026-10-02 20:15:01]     rc=0 records=3/3 err=0 (21s)
+[2026-10-02 20:15:01]   ▶ cypherbench_augmented__flight_accident__react  (try 1/3, SHARDS=1, limit=3)
+[2026-10-02 20:15:41]     rc=0 records=3/3 err=0 (41s)
+[2026-10-02 20:15:41]   ▶ cypherbench_augmented__flight_accident__graphrag  (try 1/3, SHARDS=1, limit=3)
+[2026-10-02 20:16:27]     rc=0 records=3/3 err=0 (46s)
+[2026-10-02 20:16:27]   ▶ cypherbench_augmented__flight_accident__cyanchor  (try 1/3, SHARDS=1, limit=3)
+[2026-10-02 20:17:18]     rc=0 records=3/3 err=0 (51s)
+[2026-10-02 20:17:18] ✓ SMOKE OK — all 5 methods produced 3 records on flight_accident (a few errors are fine; a whole method erroring is not). Now run: python orchestrate_sweep.py
+[2026-10-03 17:35:09] === sweep start: model=gpt-5.6-luna graphs=13 methods=['no_val_link', 'fcav', 'react', 'graphrag', 'cyanchor'] FULL ===
+[2026-10-03 17:35:09] pre-flight (archives vs live graphs, archives vs published set):
+[2026-10-03 17:35:13]   ✓ cypherbench_augmented__company: OK — ok (4 tool labels, all non-empty; min count=217) | artifacts OK
+[2026-10-03 17:35:14]   ✗ cypherbench_augmented__fictional_character: UNREACH — ServiceUnavailable: Couldn't connect to 34.9.85.21:15063 (resolved to ('34.9.85.21:15063',)):
+Failed to establish connection to ResolvedIPv4Address(('34.9.85.21', 15063)) (reason [Errno 61] Connection refused) | artifacts OK
+[2026-10-03 17:35:14]   ✓ cypherbench_augmented__flight_accident: OK — ok (5 tool labels, all non-empty; min count=58) | artifacts OK
+[2026-10-03 17:35:15]   ✓ cypherbench_augmented__geography: OK — ok (8 tool labels, all non-empty; min count=5) | artifacts OK
+[2026-10-03 17:35:16]   ✓ cypherbench_augmented__movie: OK — ok (7 tool labels, all non-empty; min count=205) | artifacts OK
+[2026-10-03 17:35:17]   ✓ cypherbench_augmented__nba: OK — ok (7 tool labels, all non-empty; min count=2) | artifacts OK
+[2026-10-03 17:35:17]   ✓ cypherbench_augmented__politics: OK — ok (6 tool labels, all non-empty; min count=217) | artifacts OK
+[2026-10-03 17:35:20]   ✓ mindthequery_augmented__bloom: OK — ok (17 tool labels, all non-empty; min count=2) | artifacts OK
+[2026-10-03 17:35:22]   ✓ mindthequery_augmented__covid: OK — ok (7 tool labels, all non-empty; min count=1) | artifacts OK
+[2026-10-03 17:35:23]   ✓ mindthequery_augmented__er: OK — ok (4 tool labels, all non-empty; min count=10) | artifacts OK
+[2026-10-03 17:35:25]   ✓ mindthequery_augmented__healthcare: OK — ok (8 tool labels, all non-empty; min count=5) | artifacts OK
+[2026-10-03 17:35:26]   ✓ mindthequery_augmented__wwc: OK — ok (5 tool labels, all non-empty; min count=8) | artifacts OK
+[2026-10-03 17:35:28]   ✓ zograscope_augmented__pole: OK — ok (11 tool labels, all non-empty; min count=7) | artifacts OK
+[2026-10-03 17:35:28] ✗ pre-flight failed — fix the red lines (see docs/EXPERIMENT_HANDOUT.md §4) before running
+[2026-10-03 17:41:47] === sweep start: model=gpt-5.6-luna graphs=13 methods=['no_val_link', 'fcav', 'react', 'graphrag', 'cyanchor'] FULL ===
+[2026-10-03 17:41:47] pre-flight (archives vs live graphs, archives vs published set):
+[2026-10-03 17:41:50]   ✓ cypherbench_augmented__company: OK — ok (4 tool labels, all non-empty; min count=217) | artifacts OK
+[2026-10-03 17:41:50]   ✗ cypherbench_augmented__fictional_character: UNREACH — ServiceUnavailable: Couldn't connect to 34.9.85.21:15063 (resolved to ('34.9.85.21:15063',)):
+Failed to establish connection to ResolvedIPv4Address(('34.9.85.21', 15063)) (reason [Errno 61] Connection refused) | artifacts OK
+[2026-10-03 17:41:51]   ✓ cypherbench_augmented__flight_accident: OK — ok (5 tool labels, all non-empty; min count=58) | artifacts OK
+[2026-10-03 17:41:51]   ✓ cypherbench_augmented__geography: OK — ok (8 tool labels, all non-empty; min count=5) | artifacts OK
+[2026-10-03 17:41:52]   ✓ cypherbench_augmented__movie: OK — ok (7 tool labels, all non-empty; min count=205) | artifacts OK
+[2026-10-03 17:41:53]   ✓ cypherbench_augmented__nba: OK — ok (7 tool labels, all non-empty; min count=2) | artifacts OK
+[2026-10-03 17:41:54]   ✓ cypherbench_augmented__politics: OK — ok (6 tool labels, all non-empty; min count=217) | artifacts OK
+[2026-10-03 17:41:55]   ✓ mindthequery_augmented__bloom: OK — ok (17 tool labels, all non-empty; min count=2) | artifacts OK
+[2026-10-03 17:41:56]   ✓ mindthequery_augmented__covid: OK — ok (7 tool labels, all non-empty; min count=1) | artifacts OK
+[2026-10-03 17:41:57]   ✓ mindthequery_augmented__er: OK — ok (4 tool labels, all non-empty; min count=10) | artifacts OK
+[2026-10-03 17:41:57]   ✓ mindthequery_augmented__healthcare: OK — ok (8 tool labels, all non-empty; min count=5) | artifacts OK
+[2026-10-03 17:41:58]   ✓ mindthequery_augmented__wwc: OK — ok (5 tool labels, all non-empty; min count=8) | artifacts OK
+[2026-10-03 17:41:59]   ✓ zograscope_augmented__pole: OK — ok (11 tool labels, all non-empty; min count=7) | artifacts OK
+[2026-10-03 17:41:59] ✗ pre-flight failed — fix the red lines (see docs/EXPERIMENT_HANDOUT.md §4) before running
+[2026-10-03 17:51:09] === sweep start: model=gpt-5.6-luna graphs=13 methods=['no_val_link', 'fcav', 'react', 'graphrag', 'cyanchor'] FULL ===
+[2026-10-03 17:51:09] pre-flight (archives vs live graphs, archives vs published set):
+[2026-10-03 17:51:14]   ✓ cypherbench_augmented__company: OK — ok (4 tool labels, all non-empty; min count=217) | artifacts OK
+[2026-10-03 17:51:15]   ✓ cypherbench_augmented__fictional_character: OK — ok (4 tool labels, all non-empty; min count=594) | artifacts OK
+[2026-10-03 17:51:16]   ✓ cypherbench_augmented__flight_accident: OK — ok (5 tool labels, all non-empty; min count=58) | artifacts OK
+[2026-10-03 17:51:17]   ✓ cypherbench_augmented__geography: OK — ok (8 tool labels, all non-empty; min count=5) | artifacts OK
+[2026-10-03 17:51:18]   ✓ cypherbench_augmented__movie: OK — ok (7 tool labels, all non-empty; min count=205) | artifacts OK
+[2026-10-03 17:51:19]   ✓ cypherbench_augmented__nba: OK — ok (7 tool labels, all non-empty; min count=2) | artifacts OK
+[2026-10-03 17:51:20]   ✓ cypherbench_augmented__politics: OK — ok (6 tool labels, all non-empty; min count=217) | artifacts OK
+[2026-10-03 17:51:22]   ✓ mindthequery_augmented__bloom: OK — ok (17 tool labels, all non-empty; min count=2) | artifacts OK
+[2026-10-03 17:51:23]   ✓ mindthequery_augmented__covid: OK — ok (7 tool labels, all non-empty; min count=1) | artifacts OK
+[2026-10-03 17:51:23]   ✓ mindthequery_augmented__er: OK — ok (4 tool labels, all non-empty; min count=10) | artifacts OK
+[2026-10-03 17:51:24]   ✓ mindthequery_augmented__healthcare: OK — ok (8 tool labels, all non-empty; min count=5) | artifacts OK
+[2026-10-03 17:51:25]   ✓ mindthequery_augmented__wwc: OK — ok (5 tool labels, all non-empty; min count=8) | artifacts OK
+[2026-10-03 17:51:26]   ✓ zograscope_augmented__pole: OK — ok (11 tool labels, all non-empty; min count=7) | artifacts OK
+[2026-10-03 17:51:27]   = cypherbench_augmented__company__no_val_link: clean (303 records, err=5) — skipped
+[2026-10-03 17:51:27]   = cypherbench_augmented__company__fcav: clean (303 records, err=7) — skipped
+[2026-10-03 17:51:27]   = cypherbench_augmented__company__react: clean (303 records, err=0) — skipped
+[2026-10-03 17:51:27]   = cypherbench_augmented__company__graphrag: clean (303 records, err=0) — skipped
+[2026-10-03 17:51:27]   = cypherbench_augmented__company__cyanchor: clean (303 records, err=0) — skipped
+[2026-10-03 17:51:28]   report: report/gpt-5.6-luna/CypherBench/company.md
+[2026-10-03 17:51:28]   = cypherbench_augmented__fictional_character__no_val_link: clean (322 records, err=5) — skipped
+[2026-10-03 17:51:28]   = cypherbench_augmented__fictional_character__fcav: clean (322 records, err=6) — skipped
+[2026-10-03 17:51:28]   = cypherbench_augmented__fictional_character__react: clean (322 records, err=0) — skipped
+[2026-10-03 17:51:28]   = cypherbench_augmented__fictional_character__graphrag: clean (322 records, err=0) — skipped
+[2026-10-03 17:51:28]   = cypherbench_augmented__fictional_character__cyanchor: clean (322 records, err=0) — skipped
+[2026-10-03 17:51:28]   report: report/gpt-5.6-luna/CypherBench/fictional_character.md
+[2026-10-03 17:51:28]   = cypherbench_augmented__flight_accident__no_val_link: clean (168 records, err=0) — skipped
+[2026-10-03 17:51:28]   = cypherbench_augmented__flight_accident__fcav: clean (168 records, err=1) — skipped
+[2026-10-03 17:51:28]   = cypherbench_augmented__flight_accident__react: clean (168 records, err=0) — skipped
+[2026-10-03 17:51:28]   = cypherbench_augmented__flight_accident__graphrag: clean (168 records, err=0) — skipped
+[2026-10-03 17:51:28]   = cypherbench_augmented__flight_accident__cyanchor: clean (168 records, err=0) — skipped
+[2026-10-03 17:51:29]   report: report/gpt-5.6-luna/CypherBench/flight_accident.md
+[2026-10-03 17:51:29]   ⚠ cypherbench_augmented__geography__no_val_link: 10 of 331 questions failed on infrastructure (timeout / API / rate limit) — never evaluated — re-running automatically (attempt 1/2)
+[2026-10-03 17:51:29]   ▶ cypherbench_augmented__geography__no_val_link  (try 1/3, SHARDS=1, limit=None)
+[2026-10-03 18:09:01] === status NOT CLEAN — 1 ✗, 5 ⚠, 10 ↻ (run python scripts/rejudge_node_returns.py) (✗ CypherBench · geography · no_val_link, ⚠ MindTheQuery · covid · cyanchor, ⚠ MindTheQuery · wwc · cyanchor, ⚠ ZOGRASCOPE · pole · react, ⚠ ZOGRASCOPE · pole · graphrag, ⚠ ZOGRASCOPE · pole · cyanchor) · driver 108f499 ===
+[2026-10-03 18:09:01] report: report/gpt-5.6-luna/SWEEP.md
+[2026-10-03 18:10:35] === status NOT CLEAN — 1 ✗, 5 ⚠, 10 ↻ (run python scripts/rejudge_node_returns.py) (✗ CypherBench · geography · no_val_link, ⚠ MindTheQuery · covid · cyanchor, ⚠ MindTheQuery · wwc · cyanchor, ⚠ ZOGRASCOPE · pole · react, ⚠ ZOGRASCOPE · pole · graphrag, ⚠ ZOGRASCOPE · pole · cyanchor) · driver 108f499 ===
+[2026-10-03 18:10:35] report: report/gpt-5.6-luna/SWEEP.md
+[2026-10-03 18:35:26] === sweep start: model=gpt-5.6-luna graphs=13 methods=['no_val_link', 'fcav', 'react', 'graphrag', 'cyanchor'] FULL ===
+[2026-10-03 18:35:26] pre-flight (archives vs live graphs, archives vs published set):
+[2026-10-03 18:35:29]   ✓ cypherbench_augmented__company: OK — ok (4 tool labels, all non-empty; min count=217) | artifacts OK
+[2026-10-03 18:35:30]   ✓ cypherbench_augmented__fictional_character: OK — ok (4 tool labels, all non-empty; min count=594) | artifacts OK
+[2026-10-03 18:35:30]   ✓ cypherbench_augmented__flight_accident: OK — ok (5 tool labels, all non-empty; min count=58) | artifacts OK
+[2026-10-03 18:35:31]   ✓ cypherbench_augmented__geography: OK — ok (8 tool labels, all non-empty; min count=5) | artifacts OK
+[2026-10-03 18:35:32]   ✓ cypherbench_augmented__movie: OK — ok (7 tool labels, all non-empty; min count=205) | artifacts OK
+[2026-10-03 18:35:33]   ✓ cypherbench_augmented__nba: OK — ok (7 tool labels, all non-empty; min count=2) | artifacts OK
+[2026-10-03 18:35:34]   ✓ cypherbench_augmented__politics: OK — ok (6 tool labels, all non-empty; min count=217) | artifacts OK
+[2026-10-03 18:35:35]   ✓ mindthequery_augmented__bloom: OK — ok (17 tool labels, all non-empty; min count=2) | artifacts OK
+[2026-10-03 18:35:36]   ✓ mindthequery_augmented__covid: OK — ok (7 tool labels, all non-empty; min count=1) | artifacts OK
+[2026-10-03 18:35:37]   ✓ mindthequery_augmented__er: OK — ok (4 tool labels, all non-empty; min count=10) | artifacts OK
+[2026-10-03 18:35:37]   ✓ mindthequery_augmented__healthcare: OK — ok (8 tool labels, all non-empty; min count=5) | artifacts OK
+[2026-10-03 18:35:38]   ✓ mindthequery_augmented__wwc: OK — ok (5 tool labels, all non-empty; min count=8) | artifacts OK
+[2026-10-03 18:35:39]   ✓ zograscope_augmented__pole: OK — ok (11 tool labels, all non-empty; min count=7) | artifacts OK
+[2026-10-03 18:35:39]   = cypherbench_augmented__company__no_val_link: clean (303 records, err=5) — skipped
+[2026-10-03 18:35:39]   = cypherbench_augmented__company__fcav: clean (303 records, err=7) — skipped
+[2026-10-03 18:35:39]   = cypherbench_augmented__company__react: clean (303 records, err=0) — skipped
+[2026-10-03 18:35:40]   = cypherbench_augmented__company__graphrag: clean (303 records, err=0) — skipped
+[2026-10-03 18:35:40]   = cypherbench_augmented__company__cyanchor: clean (303 records, err=0) — skipped
+[2026-10-03 18:35:40]   report: report/gpt-5.6-luna/CypherBench/company.md
+[2026-10-03 18:35:40]   = cypherbench_augmented__fictional_character__no_val_link: clean (322 records, err=5) — skipped
+[2026-10-03 18:35:40]   = cypherbench_augmented__fictional_character__fcav: clean (322 records, err=6) — skipped
+[2026-10-03 18:35:40]   = cypherbench_augmented__fictional_character__react: clean (322 records, err=0) — skipped
+[2026-10-03 18:35:40]   = cypherbench_augmented__fictional_character__graphrag: clean (322 records, err=0) — skipped
+[2026-10-03 18:35:40]   = cypherbench_augmented__fictional_character__cyanchor: clean (322 records, err=0) — skipped
+[2026-10-03 18:35:40]   report: report/gpt-5.6-luna/CypherBench/fictional_character.md
+[2026-10-03 18:35:40]   = cypherbench_augmented__flight_accident__no_val_link: clean (168 records, err=0) — skipped
+[2026-10-03 18:35:40]   = cypherbench_augmented__flight_accident__fcav: clean (168 records, err=1) — skipped
+[2026-10-03 18:35:40]   = cypherbench_augmented__flight_accident__react: clean (168 records, err=0) — skipped
+[2026-10-03 18:35:40]   = cypherbench_augmented__flight_accident__graphrag: clean (168 records, err=0) — skipped
+[2026-10-03 18:35:40]   = cypherbench_augmented__flight_accident__cyanchor: clean (168 records, err=0) — skipped
+[2026-10-03 18:35:40]   report: report/gpt-5.6-luna/CypherBench/flight_accident.md
+[2026-10-03 18:35:41]   ▶ cypherbench_augmented__geography__no_val_link  (try 1/3, SHARDS=1, limit=None)
+[2026-10-03 18:36:34] === status NOT CLEAN — 1 ✗, 5 ⚠, 10 ↻ (run python scripts/rejudge_node_returns.py) (✗ CypherBench · geography · no_val_link, ⚠ MindTheQuery · covid · cyanchor, ⚠ MindTheQuery · wwc · cyanchor, ⚠ ZOGRASCOPE · pole · react, ⚠ ZOGRASCOPE · pole · graphrag, ⚠ ZOGRASCOPE · pole · cyanchor) · driver 108f499 ===
+[2026-10-03 18:36:34] report: report/gpt-5.6-luna/SWEEP.md
+[2026-10-03 18:37:33] === status NOT CLEAN — 1 ✗, 5 ⚠, 10 ↻ (run python scripts/rejudge_node_returns.py) (✗ CypherBench · geography · no_val_link, ⚠ MindTheQuery · covid · cyanchor, ⚠ MindTheQuery · wwc · cyanchor, ⚠ ZOGRASCOPE · pole · react, ⚠ ZOGRASCOPE · pole · graphrag, ⚠ ZOGRASCOPE · pole · cyanchor) · driver 108f499 ===
+[2026-10-03 18:37:33] report: report/gpt-5.6-luna/SWEEP.md
+[2026-10-03 18:38:11] === status NOT CLEAN — 1 ✗, 5 ⚠, 10 ↻ (run python scripts/rejudge_node_returns.py) (✗ CypherBench · geography · no_val_link, ⚠ MindTheQuery · covid · cyanchor, ⚠ MindTheQuery · wwc · cyanchor, ⚠ ZOGRASCOPE · pole · react, ⚠ ZOGRASCOPE · pole · graphrag, ⚠ ZOGRASCOPE · pole · cyanchor) · driver 108f499 ===
+[2026-10-03 18:38:11] report: report/gpt-5.6-luna/SWEEP.md
+[2026-10-03 19:16:55]     rc=0 records=331/331 err=16 (2474s)
+[2026-10-03 19:16:55]   = cypherbench_augmented__geography__fcav: clean (331 records, err=8) — skipped
+[2026-10-03 19:16:55]   = cypherbench_augmented__geography__react: clean (331 records, err=1) — skipped
+[2026-10-03 19:16:55]   = cypherbench_augmented__geography__graphrag: clean (331 records, err=2) — skipped
+[2026-10-03 19:16:55]   = cypherbench_augmented__geography__cyanchor: clean (331 records, err=0) — skipped
+[2026-10-03 19:16:55]   report: report/gpt-5.6-luna/CypherBench/geography.md
+[2026-10-03 19:16:55]   = cypherbench_augmented__movie__no_val_link: clean (359 records, err=10) — skipped
+[2026-10-03 19:16:55]   = cypherbench_augmented__movie__fcav: clean (359 records, err=3) — skipped
+[2026-10-03 19:16:56]   = cypherbench_augmented__movie__react: clean (359 records, err=3) — skipped
+[2026-10-03 19:16:56]   = cypherbench_augmented__movie__graphrag: clean (359 records, err=0) — skipped
+[2026-10-03 19:16:56]   = cypherbench_augmented__movie__cyanchor: clean (359 records, err=0) — skipped
+[2026-10-03 19:16:56]   report: report/gpt-5.6-luna/CypherBench/movie.md
+[2026-10-03 19:16:56]   = cypherbench_augmented__nba__no_val_link: clean (251 records, err=4) — skipped
+[2026-10-03 19:16:56]   = cypherbench_augmented__nba__fcav: clean (251 records, err=2) — skipped
+[2026-10-03 19:16:56]   = cypherbench_augmented__nba__react: clean (251 records, err=0) — skipped
+[2026-10-03 19:16:56]   = cypherbench_augmented__nba__graphrag: clean (251 records, err=0) — skipped
+[2026-10-03 19:16:56]   = cypherbench_augmented__nba__cyanchor: clean (251 records, err=0) — skipped
+[2026-10-03 19:16:56]   report: report/gpt-5.6-luna/CypherBench/nba.md
+[2026-10-03 19:16:56]   = cypherbench_augmented__politics__no_val_link: clean (356 records, err=9) — skipped
+[2026-10-03 19:16:56]   = cypherbench_augmented__politics__fcav: clean (356 records, err=9) — skipped
+[2026-10-03 19:16:56]   = cypherbench_augmented__politics__react: clean (356 records, err=0) — skipped
+[2026-10-03 19:16:56]   = cypherbench_augmented__politics__graphrag: clean (356 records, err=0) — skipped
+[2026-10-03 19:16:56]   = cypherbench_augmented__politics__cyanchor: clean (356 records, err=0) — skipped
+[2026-10-03 19:16:57]   report: report/gpt-5.6-luna/CypherBench/politics.md
+[2026-10-03 19:16:57]   summary: report/gpt-5.6-luna/CypherBench/_summary.md
+[2026-10-03 19:16:57]   = mindthequery_augmented__bloom__no_val_link: clean (24 records, err=0) — skipped
+[2026-10-03 19:16:57]   = mindthequery_augmented__bloom__fcav: clean (24 records, err=1) — skipped
+[2026-10-03 19:16:57]   = mindthequery_augmented__bloom__react: clean (24 records, err=0) — skipped
+[2026-10-03 19:16:57]   = mindthequery_augmented__bloom__graphrag: clean (24 records, err=0) — skipped
+[2026-10-03 19:16:58]   = mindthequery_augmented__bloom__cyanchor: clean (24 records, err=0) — skipped
+[2026-10-03 19:16:58]   report: report/gpt-5.6-luna/MindTheQuery/bloom.md
+[2026-10-03 19:16:58]   = mindthequery_augmented__covid__no_val_link: clean (326 records, err=144) — skipped
+[2026-10-03 19:16:58]   = mindthequery_augmented__covid__fcav: clean (326 records, err=142) — skipped
+[2026-10-03 19:16:58]   = mindthequery_augmented__covid__react: clean (326 records, err=52) — skipped
+[2026-10-03 19:16:58]   = mindthequery_augmented__covid__graphrag: clean (326 records, err=52) — skipped
+[2026-10-03 19:16:58]   ⚠ mindthequery_augmented__covid__cyanchor: 47 of 326 questions failed on infrastructure (timeout / API / rate limit) — never evaluated — re-running automatically (attempt 1/2)
+[2026-10-03 19:16:58]   ▶ mindthequery_augmented__covid__cyanchor  (try 1/3, SHARDS=1, limit=None)
+[2026-10-03 20:49:37]     rc=0 records=326/326 err=52 (5559s)
+[2026-10-03 20:49:37]   report: report/gpt-5.6-luna/MindTheQuery/covid.md
+[2026-10-03 20:49:37]   = mindthequery_augmented__er__no_val_link: clean (184 records, err=6) — skipped
+[2026-10-03 20:49:37]   = mindthequery_augmented__er__fcav: clean (184 records, err=5) — skipped
+[2026-10-03 20:49:37]   = mindthequery_augmented__er__react: clean (184 records, err=3) — skipped
+[2026-10-03 20:49:37]   = mindthequery_augmented__er__graphrag: clean (184 records, err=3) — skipped
+[2026-10-03 20:49:38]   = mindthequery_augmented__er__cyanchor: clean (184 records, err=3) — skipped
+[2026-10-03 20:49:38]   report: report/gpt-5.6-luna/MindTheQuery/er.md
+[2026-10-03 20:49:38]   = mindthequery_augmented__healthcare__no_val_link: clean (418 records, err=9) — skipped
+[2026-10-03 20:49:38]   = mindthequery_augmented__healthcare__fcav: clean (418 records, err=10) — skipped
+[2026-10-03 20:49:38]   = mindthequery_augmented__healthcare__react: clean (418 records, err=4) — skipped
+[2026-10-03 20:49:38]   = mindthequery_augmented__healthcare__graphrag: clean (418 records, err=4) — skipped
+[2026-10-03 20:49:38]   = mindthequery_augmented__healthcare__cyanchor: clean (418 records, err=4) — skipped
+[2026-10-03 20:49:38]   report: report/gpt-5.6-luna/MindTheQuery/healthcare.md
+[2026-10-03 20:49:38]   = mindthequery_augmented__wwc__no_val_link: clean (265 records, err=23) — skipped
+[2026-10-03 20:49:38]   = mindthequery_augmented__wwc__fcav: clean (265 records, err=15) — skipped
+[2026-10-03 20:49:38]   = mindthequery_augmented__wwc__react: clean (265 records, err=12) — skipped
+[2026-10-03 20:49:38]   = mindthequery_augmented__wwc__graphrag: clean (265 records, err=12) — skipped
+[2026-10-03 20:49:38]   ⚠ mindthequery_augmented__wwc__cyanchor: 7 of 265 questions failed on infrastructure (timeout / API / rate limit) — never evaluated — re-running automatically (attempt 1/2)
+[2026-10-03 20:49:38]   ▶ mindthequery_augmented__wwc__cyanchor  (try 1/3, SHARDS=1, limit=None)
+[2026-10-03 21:59:50]     rc=0 records=265/265 err=12 (4212s)
+[2026-10-03 21:59:51]   report: report/gpt-5.6-luna/MindTheQuery/wwc.md
+[2026-10-03 21:59:51]   summary: report/gpt-5.6-luna/MindTheQuery/_summary.md
+[2026-10-03 21:59:51]   = zograscope_augmented__pole__no_val_link: clean (1283 records, err=3) — skipped
+[2026-10-03 21:59:52]   = zograscope_augmented__pole__fcav: clean (1283 records, err=9) — skipped
+[2026-10-03 21:59:52]   ⚠ zograscope_augmented__pole__react: 381 of 1283 questions failed on infrastructure (timeout / API / rate limit) — never evaluated — re-running automatically (attempt 1/2)
+[2026-10-03 21:59:52]   ▶ zograscope_augmented__pole__react  (try 1/3, SHARDS=1, limit=None)
+[2026-10-04 00:58:18]     rc=0 records=1283/1283 err=0 (10706s)
+[2026-10-04 00:58:18]   ⚠ zograscope_augmented__pole__graphrag: 10 of 1283 questions failed on infrastructure (timeout / API / rate limit) — never evaluated — re-running automatically (attempt 1/2)
+[2026-10-04 00:58:18]   ▶ zograscope_augmented__pole__graphrag  (try 1/3, SHARDS=1, limit=None)
+[2026-10-04 04:22:17]     rc=0 records=1283/1283 err=0 (12239s)
+[2026-10-04 04:22:17]   ⚠ zograscope_augmented__pole__cyanchor: 854 of 1283 questions failed on infrastructure (timeout / API / rate limit) — never evaluated — re-running automatically (attempt 1/2)
+[2026-10-04 04:22:17]   ▶ zograscope_augmented__pole__cyanchor  (try 1/3, SHARDS=1, limit=None)
+[2026-10-04 10:03:08]     rc=0 records=1283/1283 err=0 (20451s)
+[2026-10-04 10:03:08]   report: report/gpt-5.6-luna/ZOGRASCOPE/pole.md
+[2026-10-04 10:03:09]   summary: report/gpt-5.6-luna/ZOGRASCOPE/_summary.md
+[2026-10-04 10:03:10] === run NOT CLEAN — 0 ✗, 1 ⚠, 7 ↻ (run python scripts/rejudge_node_returns.py) (⚠ CypherBench · geography · no_val_link) · driver 108f499 ===
+[2026-10-04 10:03:10] report: report/gpt-5.6-luna/SWEEP.md
+[2026-10-04 10:03:10] ↻ cells: judged before the node-set rule — run `python scripts/rejudge_node_returns.py` before publishing (no model is called).
+[2026-10-04 10:03:10] ⚠ cells: the report's 'Flagged cells' section has the error text and the re-run command for each.
+[2026-10-04 10:03:10] next: python orchestrate_sweep.py              # re-runs only the ✗ / ⚠ cells
+[2026-10-04 10:03:10]       python orchestrate_sweep.py --publish    # when every cell shows ✓
+[2026-10-04 10:03:10]       (a cell that still shows ✗ or ⚠ after that: python orchestrate_sweep.py --publish --allow-incomplete, and send the matrix + 'Flagged cells' section to the coordinator)
+[2026-10-04 10:17:44] === sweep start: model=gpt-5.6-luna graphs=13 methods=['no_val_link', 'fcav', 'react', 'graphrag', 'cyanchor'] FULL ===
+[2026-10-04 10:17:44] pre-flight (archives vs live graphs, archives vs published set):
+[2026-10-04 10:17:45]   ✓ cypherbench_augmented__company: OK — ok (4 tool labels, all non-empty; min count=217) | artifacts OK
+[2026-10-04 10:17:45]   ✓ cypherbench_augmented__fictional_character: OK — ok (4 tool labels, all non-empty; min count=594) | artifacts OK
+[2026-10-04 10:17:46]   ✓ cypherbench_augmented__flight_accident: OK — ok (5 tool labels, all non-empty; min count=58) | artifacts OK
+[2026-10-04 10:17:47]   ✓ cypherbench_augmented__geography: OK — ok (8 tool labels, all non-empty; min count=5) | artifacts OK
+[2026-10-04 10:17:48]   ✓ cypherbench_augmented__movie: OK — ok (7 tool labels, all non-empty; min count=205) | artifacts OK
+[2026-10-04 10:17:49]   ✓ cypherbench_augmented__nba: OK — ok (7 tool labels, all non-empty; min count=2) | artifacts OK
+[2026-10-04 10:17:49]   ✓ cypherbench_augmented__politics: OK — ok (6 tool labels, all non-empty; min count=217) | artifacts OK
+[2026-10-04 10:17:51]   ✓ mindthequery_augmented__bloom: OK — ok (17 tool labels, all non-empty; min count=2) | artifacts OK
+[2026-10-04 10:17:52]   ✓ mindthequery_augmented__covid: OK — ok (7 tool labels, all non-empty; min count=1) | artifacts OK
+[2026-10-04 10:17:52]   ✓ mindthequery_augmented__er: OK — ok (4 tool labels, all non-empty; min count=10) | artifacts OK
+[2026-10-04 10:17:53]   ✓ mindthequery_augmented__healthcare: OK — ok (8 tool labels, all non-empty; min count=5) | artifacts OK
+[2026-10-04 10:17:54]   ✓ mindthequery_augmented__wwc: OK — ok (5 tool labels, all non-empty; min count=8) | artifacts OK
+[2026-10-04 10:17:55]   ✓ zograscope_augmented__pole: OK — ok (11 tool labels, all non-empty; min count=7) | artifacts OK
+[2026-10-04 10:17:55]   = cypherbench_augmented__company__no_val_link: clean (303 records, err=5) — skipped
+[2026-10-04 10:17:55]   = cypherbench_augmented__company__fcav: clean (303 records, err=7) — skipped
+[2026-10-04 10:17:55]   = cypherbench_augmented__company__react: clean (303 records, err=0) — skipped
+[2026-10-04 10:17:55]   = cypherbench_augmented__company__graphrag: clean (303 records, err=0) — skipped
+[2026-10-04 10:17:55]   = cypherbench_augmented__company__cyanchor: clean (303 records, err=0) — skipped
+[2026-10-04 10:17:55]   report: report/gpt-5.6-luna/CypherBench/company.md
+[2026-10-04 10:17:55]   = cypherbench_augmented__fictional_character__no_val_link: clean (322 records, err=5) — skipped
+[2026-10-04 10:17:55]   = cypherbench_augmented__fictional_character__fcav: clean (322 records, err=6) — skipped
+[2026-10-04 10:17:55]   = cypherbench_augmented__fictional_character__react: clean (322 records, err=0) — skipped
+[2026-10-04 10:17:55]   = cypherbench_augmented__fictional_character__graphrag: clean (322 records, err=0) — skipped
+[2026-10-04 10:17:56]   = cypherbench_augmented__fictional_character__cyanchor: clean (322 records, err=0) — skipped
+[2026-10-04 10:17:56]   report: report/gpt-5.6-luna/CypherBench/fictional_character.md
+[2026-10-04 10:17:56]   = cypherbench_augmented__flight_accident__no_val_link: clean (168 records, err=0) — skipped
+[2026-10-04 10:17:56]   = cypherbench_augmented__flight_accident__fcav: clean (168 records, err=1) — skipped
+[2026-10-04 10:17:56]   = cypherbench_augmented__flight_accident__react: clean (168 records, err=0) — skipped
+[2026-10-04 10:17:56]   = cypherbench_augmented__flight_accident__graphrag: clean (168 records, err=0) — skipped
+[2026-10-04 10:17:56]   = cypherbench_augmented__flight_accident__cyanchor: clean (168 records, err=0) — skipped
+[2026-10-04 10:17:56]   report: report/gpt-5.6-luna/CypherBench/flight_accident.md
+[2026-10-04 10:17:56]   ⚠ cypherbench_augmented__geography__no_val_link: 9 of 331 questions failed on infrastructure (timeout / API / rate limit) — never evaluated — re-running automatically (attempt 2/2)
+[2026-10-04 10:17:56]   ▶ cypherbench_augmented__geography__no_val_link  (try 1/3, SHARDS=1, limit=None)
+[2026-10-04 10:48:09] === sweep start: model=gpt-5.6-luna graphs=13 methods=['no_val_link', 'fcav', 'react', 'graphrag', 'cyanchor'] FULL ===
+[2026-10-04 10:48:09] pre-flight (archives vs live graphs, archives vs published set):
+[2026-10-04 10:48:12]   ✓ cypherbench_augmented__company: OK — ok (4 tool labels, all non-empty; min count=217) | artifacts OK
+[2026-10-04 10:48:13]   ✓ cypherbench_augmented__fictional_character: OK — ok (4 tool labels, all non-empty; min count=594) | artifacts OK
+[2026-10-04 10:48:13]   ✓ cypherbench_augmented__flight_accident: OK — ok (5 tool labels, all non-empty; min count=58) | artifacts OK
+[2026-10-04 10:48:14]   ✓ cypherbench_augmented__geography: OK — ok (8 tool labels, all non-empty; min count=5) | artifacts OK
+[2026-10-04 10:48:15]   ✓ cypherbench_augmented__movie: OK — ok (7 tool labels, all non-empty; min count=205) | artifacts OK
+[2026-10-04 10:48:16]   ✓ cypherbench_augmented__nba: OK — ok (7 tool labels, all non-empty; min count=2) | artifacts OK
+[2026-10-04 10:48:17]   ✓ cypherbench_augmented__politics: OK — ok (6 tool labels, all non-empty; min count=217) | artifacts OK
+[2026-10-04 10:48:19]   ✓ mindthequery_augmented__bloom: OK — ok (17 tool labels, all non-empty; min count=2) | artifacts OK
+[2026-10-04 10:48:21]   ✓ mindthequery_augmented__covid: OK — ok (7 tool labels, all non-empty; min count=1) | artifacts OK
+[2026-10-04 10:48:22]   ✓ mindthequery_augmented__er: OK — ok (4 tool labels, all non-empty; min count=10) | artifacts OK
+[2026-10-04 10:48:24]   ✓ mindthequery_augmented__healthcare: OK — ok (8 tool labels, all non-empty; min count=5) | artifacts OK
+[2026-10-04 10:48:25]   ✓ mindthequery_augmented__wwc: OK — ok (5 tool labels, all non-empty; min count=8) | artifacts OK
+[2026-10-04 10:48:27]   ✓ zograscope_augmented__pole: OK — ok (11 tool labels, all non-empty; min count=7) | artifacts OK
+[2026-10-04 10:48:27]   = cypherbench_augmented__company__no_val_link: clean (303 records, err=5) — skipped
+[2026-10-04 10:48:28]   = cypherbench_augmented__company__fcav: clean (303 records, err=7) — skipped
+[2026-10-04 10:48:28]   = cypherbench_augmented__company__react: clean (303 records, err=0) — skipped
+[2026-10-04 10:48:28]   = cypherbench_augmented__company__graphrag: clean (303 records, err=0) — skipped
+[2026-10-04 10:48:28]   = cypherbench_augmented__company__cyanchor: clean (303 records, err=0) — skipped
+[2026-10-04 10:48:28]   report: report/gpt-5.6-luna/CypherBench/company.md
+[2026-10-04 10:48:28]   = cypherbench_augmented__fictional_character__no_val_link: clean (322 records, err=5) — skipped
+[2026-10-04 10:48:28]   = cypherbench_augmented__fictional_character__fcav: clean (322 records, err=6) — skipped
+[2026-10-04 10:48:28]   = cypherbench_augmented__fictional_character__react: clean (322 records, err=0) — skipped
+[2026-10-04 10:48:28]   = cypherbench_augmented__fictional_character__graphrag: clean (322 records, err=0) — skipped
+[2026-10-04 10:48:28]   = cypherbench_augmented__fictional_character__cyanchor: clean (322 records, err=0) — skipped
+[2026-10-04 10:48:28]   report: report/gpt-5.6-luna/CypherBench/fictional_character.md
+[2026-10-04 10:48:28]   = cypherbench_augmented__flight_accident__no_val_link: clean (168 records, err=0) — skipped
+[2026-10-04 10:48:28]   = cypherbench_augmented__flight_accident__fcav: clean (168 records, err=1) — skipped
+[2026-10-04 10:48:28]   = cypherbench_augmented__flight_accident__react: clean (168 records, err=0) — skipped
+[2026-10-04 10:48:28]   = cypherbench_augmented__flight_accident__graphrag: clean (168 records, err=0) — skipped
+[2026-10-04 10:48:29]   = cypherbench_augmented__flight_accident__cyanchor: clean (168 records, err=0) — skipped
+[2026-10-04 10:48:29]   report: report/gpt-5.6-luna/CypherBench/flight_accident.md
+[2026-10-04 10:48:29]   ▶ cypherbench_augmented__geography__no_val_link  (try 1/3, SHARDS=1, limit=None)
+[2026-10-04 11:32:28]     rc=0 records=331/331 err=18 (2640s)
+[2026-10-04 11:32:29]   = cypherbench_augmented__geography__fcav: clean (331 records, err=8) — skipped
+[2026-10-04 11:32:29]   = cypherbench_augmented__geography__react: clean (331 records, err=1) — skipped
+[2026-10-04 11:32:29]   = cypherbench_augmented__geography__graphrag: clean (331 records, err=2) — skipped
+[2026-10-04 11:32:29]   = cypherbench_augmented__geography__cyanchor: clean (331 records, err=0) — skipped
+[2026-10-04 11:32:29]   report: report/gpt-5.6-luna/CypherBench/geography.md
+[2026-10-04 11:32:29]   = cypherbench_augmented__movie__no_val_link: clean (359 records, err=10) — skipped
+[2026-10-04 11:32:29]   = cypherbench_augmented__movie__fcav: clean (359 records, err=3) — skipped
+[2026-10-04 11:32:29]   = cypherbench_augmented__movie__react: clean (359 records, err=3) — skipped
+[2026-10-04 11:32:29]   = cypherbench_augmented__movie__graphrag: clean (359 records, err=0) — skipped
+[2026-10-04 11:32:29]   = cypherbench_augmented__movie__cyanchor: clean (359 records, err=0) — skipped
+[2026-10-04 11:32:29]   report: report/gpt-5.6-luna/CypherBench/movie.md
+[2026-10-04 11:32:29]   = cypherbench_augmented__nba__no_val_link: clean (251 records, err=4) — skipped
+[2026-10-04 11:32:30]   = cypherbench_augmented__nba__fcav: clean (251 records, err=2) — skipped
+[2026-10-04 11:32:30]   = cypherbench_augmented__nba__react: clean (251 records, err=0) — skipped
+[2026-10-04 11:32:30]   = cypherbench_augmented__nba__graphrag: clean (251 records, err=0) — skipped
+[2026-10-04 11:32:30]   = cypherbench_augmented__nba__cyanchor: clean (251 records, err=0) — skipped
+[2026-10-04 11:32:30]   report: report/gpt-5.6-luna/CypherBench/nba.md
+[2026-10-04 11:32:30]   = cypherbench_augmented__politics__no_val_link: clean (356 records, err=9) — skipped
+[2026-10-04 11:32:30]   = cypherbench_augmented__politics__fcav: clean (356 records, err=9) — skipped
+[2026-10-04 11:32:30]   = cypherbench_augmented__politics__react: clean (356 records, err=0) — skipped
+[2026-10-04 11:32:30]   = cypherbench_augmented__politics__graphrag: clean (356 records, err=0) — skipped
+[2026-10-04 11:32:30]   = cypherbench_augmented__politics__cyanchor: clean (356 records, err=0) — skipped
+[2026-10-04 11:32:30]   report: report/gpt-5.6-luna/CypherBench/politics.md
+[2026-10-04 11:32:31]   summary: report/gpt-5.6-luna/CypherBench/_summary.md
+[2026-10-04 11:32:31]   = mindthequery_augmented__bloom__no_val_link: clean (24 records, err=0) — skipped
+[2026-10-04 11:32:31]   = mindthequery_augmented__bloom__fcav: clean (24 records, err=1) — skipped
+[2026-10-04 11:32:31]   = mindthequery_augmented__bloom__react: clean (24 records, err=0) — skipped
+[2026-10-04 11:32:31]   = mindthequery_augmented__bloom__graphrag: clean (24 records, err=0) — skipped
+[2026-10-04 11:32:31]   = mindthequery_augmented__bloom__cyanchor: clean (24 records, err=0) — skipped
+[2026-10-04 11:32:31]   report: report/gpt-5.6-luna/MindTheQuery/bloom.md
+[2026-10-04 11:32:31]   = mindthequery_augmented__covid__no_val_link: clean (326 records, err=144) — skipped
+[2026-10-04 11:32:31]   = mindthequery_augmented__covid__fcav: clean (326 records, err=142) — skipped
+[2026-10-04 11:32:31]   = mindthequery_augmented__covid__react: clean (326 records, err=52) — skipped
+[2026-10-04 11:32:31]   = mindthequery_augmented__covid__graphrag: clean (326 records, err=52) — skipped
+[2026-10-04 11:32:32]   = mindthequery_augmented__covid__cyanchor: clean (326 records, err=52) — skipped
+[2026-10-04 11:32:32]   report: report/gpt-5.6-luna/MindTheQuery/covid.md
+[2026-10-04 11:32:32]   = mindthequery_augmented__er__no_val_link: clean (184 records, err=6) — skipped
+[2026-10-04 11:32:32]   = mindthequery_augmented__er__fcav: clean (184 records, err=5) — skipped
+[2026-10-04 11:32:32]   = mindthequery_augmented__er__react: clean (184 records, err=3) — skipped
+[2026-10-04 11:32:32]   = mindthequery_augmented__er__graphrag: clean (184 records, err=3) — skipped
+[2026-10-04 11:32:32]   = mindthequery_augmented__er__cyanchor: clean (184 records, err=3) — skipped
+[2026-10-04 11:32:32]   report: report/gpt-5.6-luna/MindTheQuery/er.md
+[2026-10-04 11:32:32]   = mindthequery_augmented__healthcare__no_val_link: clean (418 records, err=9) — skipped
+[2026-10-04 11:32:32]   = mindthequery_augmented__healthcare__fcav: clean (418 records, err=10) — skipped
+[2026-10-04 11:32:32]   = mindthequery_augmented__healthcare__react: clean (418 records, err=4) — skipped
+[2026-10-04 11:32:32]   = mindthequery_augmented__healthcare__graphrag: clean (418 records, err=4) — skipped
+[2026-10-04 11:32:32]   = mindthequery_augmented__healthcare__cyanchor: clean (418 records, err=4) — skipped
+[2026-10-04 11:32:33]   report: report/gpt-5.6-luna/MindTheQuery/healthcare.md
+[2026-10-04 11:32:33]   = mindthequery_augmented__wwc__no_val_link: clean (265 records, err=23) — skipped
+[2026-10-04 11:32:33]   = mindthequery_augmented__wwc__fcav: clean (265 records, err=15) — skipped
+[2026-10-04 11:32:33]   = mindthequery_augmented__wwc__react: clean (265 records, err=12) — skipped
+[2026-10-04 11:32:33]   = mindthequery_augmented__wwc__graphrag: clean (265 records, err=12) — skipped
+[2026-10-04 11:32:33]   = mindthequery_augmented__wwc__cyanchor: clean (265 records, err=12) — skipped
+[2026-10-04 11:32:33]   report: report/gpt-5.6-luna/MindTheQuery/wwc.md
+[2026-10-04 11:32:33]   summary: report/gpt-5.6-luna/MindTheQuery/_summary.md
+[2026-10-04 11:32:34]   = zograscope_augmented__pole__no_val_link: clean (1283 records, err=3) — skipped
+[2026-10-04 11:32:34]   = zograscope_augmented__pole__fcav: clean (1283 records, err=9) — skipped
+[2026-10-04 11:32:34]   = zograscope_augmented__pole__react: clean (1283 records, err=0) — skipped
+[2026-10-04 11:32:34]   = zograscope_augmented__pole__graphrag: clean (1283 records, err=0) — skipped
+[2026-10-04 11:32:34]   = zograscope_augmented__pole__cyanchor: clean (1283 records, err=0) — skipped
+[2026-10-04 11:32:34]   report: report/gpt-5.6-luna/ZOGRASCOPE/pole.md
+[2026-10-04 11:32:34]   summary: report/gpt-5.6-luna/ZOGRASCOPE/_summary.md
+[2026-10-04 11:32:35] ↻ re-scoring 25 No Val Link / FCAV cell(s) on the full results of their queries (eval/full_rows.py): database work only, no model is called, roughly 2-4 minutes per cell, 4 graphs at a time — leave it running
+[2026-10-04 11:34:49]     rejudged logs/runs/cypherbench_augmented__flight_accident__no_val_link@gpt-5.6-luna__20260913-211657: 2 of 168 verdicts changed; EA 0.143 -> 0.155 (n=168)
+[2026-10-04 11:34:49]     rejudged logs/runs/cypherbench_augmented__flight_accident__fcav@gpt-5.6-luna__20260913-212615: 1 of 167 verdicts changed; EA 0.524 -> 0.530 (n=168)
+[2026-10-04 11:37:21]     rejudged logs/runs/cypherbench_augmented__fictional_character__no_val_link@gpt-5.6-luna__20260913-172646: 3 of 319 verdicts changed; EA 0.071 -> 0.080 (n=324)
+[2026-10-04 11:37:21]     rejudged logs/runs/cypherbench_augmented__fictional_character__fcav@gpt-5.6-luna__20260913-174744: 7 of 318 verdicts changed; EA 0.225 -> 0.247 (n=324)
+[2026-10-04 11:38:53]     rejudged logs/runs/cypherbench_augmented__geography__fcav@gpt-5.6-luna__20260914-003204: 16 of 323 verdicts changed; EA 0.278 -> 0.326 (n=331)
+[2026-10-04 11:39:36]     rejudged logs/runs/cypherbench_augmented__company__no_val_link@gpt-5.6-luna__20260913-122909: 6 of 300 verdicts changed; EA 0.082 -> 0.102 (n=305)
+[2026-10-04 11:39:36]     rejudged logs/runs/cypherbench_augmented__company__fcav@gpt-5.6-luna__20260913-135115: 18 of 298 verdicts changed; EA 0.282 -> 0.341 (n=305)
+[2026-10-04 11:40:01]     rejudged logs/runs/mindthequery_augmented__bloom__no_val_link@gpt-5.6-luna__20260915-043217: 0 of 24 verdicts changed; EA 0.208 -> 0.208 (n=24)
+[2026-10-04 11:40:01]     rejudged logs/runs/mindthequery_augmented__bloom__fcav@gpt-5.6-luna__20260915-043635: 0 of 23 verdicts changed; EA 0.375 -> 0.375 (n=24)
+[2026-10-04 11:40:38]     rejudged logs/runs/cypherbench_augmented__nba__no_val_link@gpt-5.6-luna__20260914-092750: 1 of 247 verdicts changed; EA 0.060 -> 0.064 (n=251)
+[2026-10-04 11:40:38]     rejudged logs/runs/cypherbench_augmented__nba__fcav@gpt-5.6-luna__20260914-094431: 24 of 249 verdicts changed; EA 0.482 -> 0.578 (n=251)
+[2026-10-04 11:41:25]     rejudged logs/runs/cypherbench_augmented__movie__no_val_link@gpt-5.6-luna__20260914-035220: 5 of 350 verdicts changed; EA 0.028 -> 0.042 (n=360)
+[2026-10-04 11:41:25]     rejudged logs/runs/cypherbench_augmented__movie__fcav@gpt-5.6-luna__20260914-050516: 55 of 357 verdicts changed; EA 0.303 -> 0.456 (n=360)
+[2026-10-04 11:42:48]     rejudged logs/runs/mindthequery_augmented__er__no_val_link@gpt-5.6-luna__20260915-214449: 0 of 179 verdicts changed; EA 0.319 -> 0.319 (n=185)
+[2026-10-04 11:42:48]     rejudged logs/runs/mindthequery_augmented__er__fcav@gpt-5.6-luna__20260915-215443: 6 of 180 verdicts changed; EA 0.384 -> 0.416 (n=185)
+[2026-10-04 11:43:02]     rejudged logs/runs/mindthequery_augmented__covid__no_val_link@gpt-5.6-luna__20260915-045432: 3 of 183 verdicts changed; EA 0.021 -> 0.031 (n=327)
+[2026-10-04 11:43:02]     rejudged logs/runs/mindthequery_augmented__covid__fcav@gpt-5.6-luna__20260915-051057: 5 of 185 verdicts changed; EA 0.018 -> 0.034 (n=327)
+[2026-10-04 11:46:19]     rejudged logs/runs/mindthequery_augmented__wwc__no_val_link@gpt-5.6-luna__20260916-050345: 0 of 244 verdicts changed; EA 0.116 -> 0.116 (n=267)
+[2026-10-04 11:46:19]     rejudged logs/runs/mindthequery_augmented__wwc__fcav@gpt-5.6-luna__20260916-051857: 54 of 252 verdicts changed; EA 0.154 -> 0.356 (n=267)
+[2026-10-04 11:46:27]     rejudged logs/runs/mindthequery_augmented__healthcare__no_val_link@gpt-5.6-luna__20260915-235309: 0 of 410 verdicts changed; EA 0.470 -> 0.470 (n=419)
+[2026-10-04 11:46:27]     rejudged logs/runs/mindthequery_augmented__healthcare__fcav@gpt-5.6-luna__20260916-001612: 11 of 409 verdicts changed; EA 0.530 -> 0.556 (n=419)
+[2026-10-04 11:47:27]     rejudged logs/runs/cypherbench_augmented__politics__no_val_link@gpt-5.6-luna__20260914-122558: 8 of 351 verdicts changed; EA 0.086 -> 0.108 (n=360)
+[2026-10-04 11:47:27]     rejudged logs/runs/cypherbench_augmented__politics__fcav@gpt-5.6-luna__20260914-235638: 23 of 351 verdicts changed; EA 0.278 -> 0.342 (n=360)
+[2026-10-04 11:59:51]     rejudged logs/runs/zograscope_augmented__pole__no_val_link@gpt-5.6-luna__20260916-172142: 0 of 1287 verdicts changed; EA 0.043 -> 0.043 (n=1290)
+[2026-10-04 11:59:51]     rejudged logs/runs/zograscope_augmented__pole__fcav@gpt-5.6-luna__20260916-184304: 0 of 1281 verdicts changed; EA 0.115 -> 0.115 (n=1290)
+[2026-10-04 11:59:51]   re-scoring done
+[2026-10-04 11:59:52]   report: report/gpt-5.6-luna/CypherBench/company.md
+[2026-10-04 11:59:52]   report: report/gpt-5.6-luna/CypherBench/fictional_character.md
+[2026-10-04 11:59:52]   report: report/gpt-5.6-luna/CypherBench/flight_accident.md
+[2026-10-04 11:59:52]   report: report/gpt-5.6-luna/CypherBench/geography.md
+[2026-10-04 11:59:52]   report: report/gpt-5.6-luna/CypherBench/movie.md
+[2026-10-04 11:59:52]   report: report/gpt-5.6-luna/CypherBench/nba.md
+[2026-10-04 11:59:52]   report: report/gpt-5.6-luna/CypherBench/politics.md
+[2026-10-04 11:59:52]   summary: report/gpt-5.6-luna/CypherBench/_summary.md
+[2026-10-04 11:59:53]   report: report/gpt-5.6-luna/MindTheQuery/bloom.md
+[2026-10-04 11:59:53]   report: report/gpt-5.6-luna/MindTheQuery/covid.md
+[2026-10-04 11:59:53]   report: report/gpt-5.6-luna/MindTheQuery/er.md
+[2026-10-04 11:59:53]   report: report/gpt-5.6-luna/MindTheQuery/healthcare.md
+[2026-10-04 11:59:53]   report: report/gpt-5.6-luna/MindTheQuery/wwc.md
+[2026-10-04 11:59:53]   summary: report/gpt-5.6-luna/MindTheQuery/_summary.md
+[2026-10-04 11:59:53]   report: report/gpt-5.6-luna/ZOGRASCOPE/pole.md
+[2026-10-04 11:59:54]   summary: report/gpt-5.6-luna/ZOGRASCOPE/_summary.md
+[2026-10-04 11:59:54] === run NOT CLEAN — 0 ✗, 1 ⚠ (⚠ CypherBench · geography · no_val_link) · driver 192e59c ===
+[2026-10-04 11:59:54] report: report/gpt-5.6-luna/SWEEP.md
+[2026-10-04 11:59:54] ⚠ cells: the report's 'Flagged cells' section has the error text and the re-run command for each.
+[2026-10-04 11:59:54] next: python orchestrate_sweep.py              # re-runs only the ✗ / ⚠ cells
+[2026-10-04 11:59:54]       python orchestrate_sweep.py --publish    # when every cell shows ✓
+[2026-10-04 11:59:54]       (a cell that still shows ✗ or ⚠ after that: python orchestrate_sweep.py --publish --allow-incomplete, and send the matrix + 'Flagged cells' section to the coordinator)
+[2026-10-04 16:45:17] === status NOT CLEAN — 0 ✗, 1 ⚠ (⚠ CypherBench · geography · no_val_link) · driver 192e59c ===
+[2026-10-04 16:45:17] report: report/gpt-5.6-luna/SWEEP.md
+[2026-10-04 21:35:40] === sweep start: model=gpt-5.6-luna graphs=1 methods=['no_val_link'] FULL ===
+[2026-10-04 21:35:40] pre-flight (archives vs live graphs, archives vs published set):
+[2026-10-04 21:35:48]   ✓ cypherbench_augmented__geography: OK — ok (8 tool labels, all non-empty; min count=5) | artifacts OK
+[2026-10-04 21:35:48]   ⚠ cypherbench_augmented__geography__no_val_link: 12 of 331 questions failed on infrastructure (timeout / API / rate limit) — never evaluated — re-running on request (--graphs/--methods); automatic re-runs so far: 2
+[2026-10-04 21:35:48]   ▶ cypherbench_augmented__geography__no_val_link  (try 1/3, SHARDS=1, limit=None)
+[2026-10-04 22:16:18]     rc=0 records=331/331 err=13 (2430s)
+[2026-10-04 22:16:18]   report: report/gpt-5.6-luna/CypherBench/geography.md
+[2026-10-04 22:16:18]   summary: report/gpt-5.6-luna/CypherBench/_summary.md
+[2026-10-04 22:16:20] === run NOT CLEAN — 0 ✗, 1 ⚠ (⚠ CypherBench · geography · no_val_link) · driver 192e59c ===
+[2026-10-04 22:16:20] report: report/gpt-5.6-luna/SWEEP.md
+[2026-10-04 22:16:20] ⚠ cells: the report's 'Flagged cells' section has the error text and the re-run command for each.
+[2026-10-04 22:16:20] next: python orchestrate_sweep.py              # re-runs only the ✗ / ⚠ cells
+[2026-10-04 22:16:20]       python orchestrate_sweep.py --publish    # when every cell shows ✓
+[2026-10-04 22:16:20]       (a cell that still shows ✗ or ⚠ after that: python orchestrate_sweep.py --publish --allow-incomplete, and send the matrix + 'Flagged cells' section to the coordinator)
+[2026-10-04 22:26:25]   report: report/gpt-5.6-luna/CypherBench/company.md
+[2026-10-04 22:26:25]   report: report/gpt-5.6-luna/CypherBench/fictional_character.md
+[2026-10-04 22:26:25]   report: report/gpt-5.6-luna/CypherBench/flight_accident.md
+[2026-10-04 22:26:26]   report: report/gpt-5.6-luna/CypherBench/geography.md
+[2026-10-04 22:26:26]   report: report/gpt-5.6-luna/CypherBench/movie.md
+[2026-10-04 22:26:26]   report: report/gpt-5.6-luna/CypherBench/nba.md
+[2026-10-04 22:26:26]   report: report/gpt-5.6-luna/CypherBench/politics.md
+[2026-10-04 22:26:26]   summary: report/gpt-5.6-luna/CypherBench/_summary.md
+[2026-10-04 22:26:26]   report: report/gpt-5.6-luna/MindTheQuery/bloom.md
+[2026-10-04 22:26:26]   report: report/gpt-5.6-luna/MindTheQuery/covid.md
+[2026-10-04 22:26:27]   report: report/gpt-5.6-luna/MindTheQuery/er.md
+[2026-10-04 22:26:27]   report: report/gpt-5.6-luna/MindTheQuery/healthcare.md
+[2026-10-04 22:26:27]   report: report/gpt-5.6-luna/MindTheQuery/wwc.md
+[2026-10-04 22:26:27]   summary: report/gpt-5.6-luna/MindTheQuery/_summary.md
+[2026-10-04 22:26:28]   report: report/gpt-5.6-luna/ZOGRASCOPE/pole.md
+[2026-10-04 22:26:29]   summary: report/gpt-5.6-luna/ZOGRASCOPE/_summary.md
+[2026-10-04 22:26:29] === publish NOT CLEAN — 0 ✗, 1 ⚠ (⚠ CypherBench · geography · no_val_link) · driver 192e59c ===
+[2026-10-04 22:26:29] report: report/gpt-5.6-luna/SWEEP.md
+[2026-10-04 22:26:33] ✗ git failed during publish. Nothing was changed on your branch or working tree.
+[2026-10-04 22:26:33]   Author identity unknown
+
+*** Please tell me who you are.
+
+Run
+
+  git config --global user.email "you@example.com"
+  git config --global user.name "Your Name"
+
+to set your account's default identity.
+Omit --global to set the identity only in this repository.
+
+fatal: unable to auto-detect email address (got 'p0p08ua@m-KRHXYKWQ4W.(none)')
+[2026-10-05 08:53:33]   report: report/gpt-5.6-luna/CypherBench/company.md
+[2026-10-05 08:53:33]   report: report/gpt-5.6-luna/CypherBench/fictional_character.md
+[2026-10-05 08:53:33]   report: report/gpt-5.6-luna/CypherBench/flight_accident.md
+[2026-10-05 08:53:33]   report: report/gpt-5.6-luna/CypherBench/geography.md
+[2026-10-05 08:53:33]   report: report/gpt-5.6-luna/CypherBench/movie.md
+[2026-10-05 08:53:33]   report: report/gpt-5.6-luna/CypherBench/nba.md
+[2026-10-05 08:53:33]   report: report/gpt-5.6-luna/CypherBench/politics.md
+[2026-10-05 08:53:34]   summary: report/gpt-5.6-luna/CypherBench/_summary.md
+[2026-10-05 08:53:34]   report: report/gpt-5.6-luna/MindTheQuery/bloom.md
+[2026-10-05 08:53:34]   report: report/gpt-5.6-luna/MindTheQuery/covid.md
+[2026-10-05 08:53:34]   report: report/gpt-5.6-luna/MindTheQuery/er.md
+[2026-10-05 08:53:34]   report: report/gpt-5.6-luna/MindTheQuery/healthcare.md
+[2026-10-05 08:53:34]   report: report/gpt-5.6-luna/MindTheQuery/wwc.md
+[2026-10-05 08:53:34]   summary: report/gpt-5.6-luna/MindTheQuery/_summary.md
+[2026-10-05 08:53:34]   report: report/gpt-5.6-luna/ZOGRASCOPE/pole.md
+[2026-10-05 08:53:35]   summary: report/gpt-5.6-luna/ZOGRASCOPE/_summary.md
+[2026-10-05 08:53:35] === publish NOT CLEAN — 0 ✗, 1 ⚠ (⚠ CypherBench · geography · no_val_link) · driver 192e59c ===
+[2026-10-05 08:53:35] report: report/gpt-5.6-luna/SWEEP.md
+[2026-10-05 08:53:35] ✗ publish refused — the sweep is not clean:
+[2026-10-05 08:53:35]     ⚠ CypherBench · geography · no_val_link: 9 of 331 questions failed on infrastructure (timeout / API / rate limit) — never evaluated
+[2026-10-05 08:53:35]   Next:
+[2026-10-05 08:53:35]     1. python orchestrate_sweep.py              # re-runs only the ✗ and ⚠ cells; everything else is kept
+[2026-10-05 08:53:35]     2. python orchestrate_sweep.py --status     # confirm every cell shows ✓
+[2026-10-05 08:53:35]     3. if a cell still shows ✗ or ⚠ after step 1 (it was retried and keeps failing), publish anyway so
+[2026-10-05 08:53:35]        the finished records reach the repository, and paste the matrix + 'Flagged cells' to the coordinator:
+[2026-10-05 08:53:35]        python orchestrate_sweep.py --publish --allow-incomplete
+[2026-10-05 08:53:35]   Do not send report files by email or chat — the per-question records only exist on the branch.
+[2026-10-05 08:54:09]   report: report/gpt-5.6-luna/CypherBench/company.md
+[2026-10-05 08:54:09]   report: report/gpt-5.6-luna/CypherBench/fictional_character.md
+[2026-10-05 08:54:09]   report: report/gpt-5.6-luna/CypherBench/flight_accident.md
+[2026-10-05 08:54:09]   report: report/gpt-5.6-luna/CypherBench/geography.md
+[2026-10-05 08:54:09]   report: report/gpt-5.6-luna/CypherBench/movie.md
+[2026-10-05 08:54:09]   report: report/gpt-5.6-luna/CypherBench/nba.md
+[2026-10-05 08:54:09]   report: report/gpt-5.6-luna/CypherBench/politics.md
+[2026-10-05 08:54:10]   summary: report/gpt-5.6-luna/CypherBench/_summary.md
+[2026-10-05 08:54:10]   report: report/gpt-5.6-luna/MindTheQuery/bloom.md
+[2026-10-05 08:54:10]   report: report/gpt-5.6-luna/MindTheQuery/covid.md
+[2026-10-05 08:54:10]   report: report/gpt-5.6-luna/MindTheQuery/er.md
+[2026-10-05 08:54:10]   report: report/gpt-5.6-luna/MindTheQuery/healthcare.md
+[2026-10-05 08:54:10]   report: report/gpt-5.6-luna/MindTheQuery/wwc.md
+[2026-10-05 08:54:10]   summary: report/gpt-5.6-luna/MindTheQuery/_summary.md
+[2026-10-05 08:54:11]   report: report/gpt-5.6-luna/ZOGRASCOPE/pole.md
+[2026-10-05 08:54:11]   summary: report/gpt-5.6-luna/ZOGRASCOPE/_summary.md
+[2026-10-05 08:54:11] === publish NOT CLEAN — 0 ✗, 1 ⚠ (⚠ CypherBench · geography · no_val_link) · driver 192e59c ===
+[2026-10-05 08:54:11] report: report/gpt-5.6-luna/SWEEP.md

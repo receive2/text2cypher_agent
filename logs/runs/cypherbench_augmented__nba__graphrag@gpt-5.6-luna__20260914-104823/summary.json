@@ -1,0 +1,141 @@
+{
+  "dataset": "cypherbench_augmented",
+  "n": 251,
+  "n_scored": {
+    "ea": 251,
+    "em": 251,
+    "psjs": 251
+  },
+  "n_errors": 0,
+  "ea": 0.6095617529880478,
+  "em": 0.0,
+  "psjs": 0.7245933140324304,
+  "by_difficulty": {
+    "all": {
+      "ea": 0.6095617529880478,
+      "em": 0.0,
+      "psjs": 0.7245933140324304,
+      "n": 251,
+      "n_scored": {
+        "ea": 251,
+        "em": 251,
+        "psjs": 251
+      },
+      "n_errors": 0
+    },
+    "easy": {
+      "ea": 0.7777777777777778,
+      "em": 0.0,
+      "psjs": 0.8111246811051404,
+      "n": 36,
+      "n_scored": {
+        "ea": 36,
+        "em": 36,
+        "psjs": 36
+      },
+      "n_errors": 0
+    },
+    "medium": {
+      "ea": 0.5942028985507246,
+      "em": 0.0,
+      "psjs": 0.7009505370120529,
+      "n": 138,
+      "n_scored": {
+        "ea": 138,
+        "em": 138,
+        "psjs": 138
+      },
+      "n_errors": 0
+    },
+    "hard": {
+      "ea": 0.5584415584415584,
+      "em": 0.0,
+      "psjs": 0.7265098596713208,
+      "n": 77,
+      "n_scored": {
+        "ea": 77,
+        "em": 77,
+        "psjs": 77
+      },
+      "n_errors": 0
+    }
+  },
+  "elapsed_sec": 2621.72,
+  "run_meta": {
+    "generated_at": "2026-09-14T11:32:34-07:00",
+    "ner_mode": "graphrag",
+    "method": "graphrag",
+    "label": "GraphRAG",
+    "tool_type": null,
+    "retrieval": "norm-Lev",
+    "generator_llm": "gpt-5.6-luna",
+    "ner_llm": "gpt-5.6-luna",
+    "cypher_llm": "gpt-5.6-luna",
+    "qa_llm": "gpt-5.6-luna",
+    "tool_select_top_k": 15,
+    "values_per_tool": 10,
+    "plan_exec_tools_per_entity": 2,
+    "plan_exec_values_per_tool": 10,
+    "plan_exec_escalate": true,
+    "plan_exec_max_iter": 3,
+    "retrieval_levenshtein_k": 10,
+    "cypher_semantic_repair": true,
+    "cypher_repair_max_rounds": 4,
+    "cypher_empty_is_wrong": false,
+    "cypher_retry_max_rounds": 2,
+    "plan_exec_value_snap": true,
+    "plan_exec_skip_grounded": true,
+    "plan_exec_parallel_mentions": true,
+    "graphrag_empty_is_wrong": true,
+    "graphrag_llm_evaluator": true,
+    "tool_retrieval_mode": "fuzzy",
+    "hybrid_strategy": "cascade"
+  },
+  "run_config": {
+    "stamp": "20260914-104823",
+    "dataset": "cypherbench_augmented",
+    "graph": "nba",
+    "method": "graphrag@gpt-5.6-luna",
+    "llm": {
+      "generator_llm": "gpt-5.6-luna",
+      "ner": {
+        "provider": "openai",
+        "model": "gpt-5.6-luna"
+      },
+      "cypher": {
+        "provider": "openai",
+        "model": "gpt-5.6-luna"
+      },
+      "qa": {
+        "provider": "openai",
+        "model": "gpt-5.6-luna"
+      }
+    },
+    "embedding": {
+      "backend": "openai",
+      "model": "text-embedding-3-small"
+    },
+    "knobs": {
+      "METHOD": "graphrag",
+      "TOOL_TYPE": "node_rel",
+      "GENERATOR_LLM": "gpt-5.6-luna",
+      "RETRIEVAL_FUZZY": "1",
+      "RETRIEVAL_VECTOR": "0",
+      "RETRIEVAL_LEVENSHTEIN": "1",
+      "CYPHER_SEMANTIC_REPAIR": "1",
+      "CYPHER_EMPTY_IS_WRONG": "0",
+      "PLAN_EXEC_ESCALATE": "1",
+      "PLAN_EXEC_VALUE_SNAP": "1",
+      "PLAN_EXEC_SKIP_GROUNDED": "1",
+      "PLAN_EXEC_SELECT_JUDGE": "1",
+      "PLAN_EXEC_PARALLEL_MENTIONS": "1",
+      "GRAPHRAG_EMPTY_IS_WRONG": "1",
+      "GRAPHRAG_LLM_EVALUATOR": "1",
+      "CYPHER_REPAIR_MAX_ROUNDS": "4",
+      "CYPHER_RETRY_MAX_ROUNDS": "2",
+      "RETRIEVAL_LEVENSHTEIN_K": "10"
+    },
+    "shards": 1,
+    "limit": null
+  }
+}
