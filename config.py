@@ -261,7 +261,10 @@ MODEL_PRESETS: dict = {
                             "params": {"extra_body": {"thinking": {"type": "disabled"}}}},
     "llama-3.3-70b":    {"provider": "hf_compatible", "model": "llama-3.3-70b-deepinfra"},
     "qwen3-32b":        {"provider": "hf_compatible", "model": "qwen3-32b-deepinfra",     # open-weights small tier
-                         "params": {"extra_body": {"chat_template_kwargs": {"enable_thinking": False}}}},
+                         # max_tokens: DeepInfra otherwise asks for the model's whole 40,960-token context as output and
+                         # rejects every call (smoke test 2026-10-06); 4096 is the cap the Anthropic path already uses.
+                         "params": {"max_tokens": 4096,
+                                    "extra_body": {"chat_template_kwargs": {"enable_thinking": False}}}},
 }
 
 # ⚙ eval receiver — edit GENERATOR_LLM in the eval_config panel, not here.
