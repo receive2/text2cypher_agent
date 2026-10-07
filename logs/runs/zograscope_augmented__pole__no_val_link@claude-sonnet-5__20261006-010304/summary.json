@@ -1,0 +1,144 @@
+{
+  "dataset": "zograscope_augmented",
+  "n": 1283,
+  "n_scored": {
+    "ea": 1283,
+    "em": 1283,
+    "psjs": 1283
+  },
+  "n_errors": 8,
+  "ea": 0.1122369446609509,
+  "ea_strict": 0.06157443491816056,
+  "ea_rule": "node-set-v1",
+  "em": 0.0,
+  "psjs": 0.08248723270312677,
+  "by_difficulty": {
+    "all": {
+      "ea": 0.1122369446609509,
+      "em": 0.0,
+      "psjs": 0.08248723270312677,
+      "n": 1283,
+      "n_scored": {
+        "ea": 1283,
+        "em": 1283,
+        "psjs": 1283
+      },
+      "n_errors": 8
+    },
+    "easy": {
+      "ea": 0.2962962962962963,
+      "em": 0.0,
+      "psjs": 0.22541216164404568,
+      "n": 81,
+      "n_scored": {
+        "ea": 81,
+        "em": 81,
+        "psjs": 81
+      },
+      "n_errors": 0
+    },
+    "medium": {
+      "ea": 0.09119496855345911,
+      "em": 0.0,
+      "psjs": 0.05693657834624105,
+      "n": 954,
+      "n_scored": {
+        "ea": 954,
+        "em": 954,
+        "psjs": 954
+      },
+      "n_errors": 7
+    },
+    "hard": {
+      "ea": 0.13306451612903225,
+      "em": 0.0,
+      "psjs": 0.13409370452673397,
+      "n": 248,
+      "n_scored": {
+        "ea": 248,
+        "em": 248,
+        "psjs": 248
+      },
+      "n_errors": 1
+    }
+  },
+  "elapsed_sec": 4643.62,
+  "run_meta": {
+    "generated_at": "2026-10-06T02:20:29-07:00",
+    "ner_mode": "no_ner",
+    "method": "no_val_link",
+    "label": "No Val Link",
+    "tool_type": null,
+    "retrieval": null,
+    "generator_llm": "claude-sonnet-5",
+    "ner_llm": "claude-sonnet-5",
+    "cypher_llm": "claude-sonnet-5",
+    "qa_llm": "claude-sonnet-5",
+    "tool_select_top_k": 15,
+    "values_per_tool": 10,
+    "plan_exec_tools_per_entity": 2,
+    "plan_exec_values_per_tool": 10,
+    "plan_exec_escalate": true,
+    "plan_exec_max_iter": 3,
+    "retrieval_levenshtein_k": 10,
+    "cypher_semantic_repair": true,
+    "cypher_repair_max_rounds": 4,
+    "cypher_empty_is_wrong": false,
+    "cypher_retry_max_rounds": 2,
+    "plan_exec_value_snap": true,
+    "plan_exec_skip_grounded": true,
+    "plan_exec_parallel_mentions": true,
+    "graphrag_empty_is_wrong": true,
+    "graphrag_llm_evaluator": true,
+    "tool_retrieval_mode": "fuzzy",
+    "hybrid_strategy": "cascade"
+  },
+  "run_config": {
+    "stamp": "20261006-010304",
+    "dataset": "zograscope_augmented",
+    "graph": "pole",
+    "method": "no_val_link@claude-sonnet-5",
+    "llm": {
+      "generator_llm": "claude-sonnet-5",
+      "ner": {
+        "provider": "anthropic",
+        "model": "claude-sonnet-5"
+      },
+      "cypher": {
+        "provider": "anthropic",
+        "model": "claude-sonnet-5"
+      },
+      "qa": {
+        "provider": "anthropic",
+        "model": "claude-sonnet-5"
+      }
+    },
+    "embedding": {
+      "backend": "openai",
+      "model": "text-embedding-3-small"
+    },
+    "knobs": {
+      "METHOD": "no_val_link",
+      "TOOL_TYPE": "node",
+      "CYANCHOR_TOOL_SCOPE": "node",
+      "GENERATOR_LLM": "claude-sonnet-5",
+      "RETRIEVAL_FUZZY": "1",
+      "RETRIEVAL_VECTOR": "0",
+      "RETRIEVAL_LEVENSHTEIN": "1",
+      "CYPHER_SEMANTIC_REPAIR": "1",
+      "CYPHER_EMPTY_IS_WRONG": "0",
+      "PLAN_EXEC_ESCALATE": "1",
+      "PLAN_EXEC_VALUE_SNAP": "1",
+      "PLAN_EXEC_SKIP_GROUNDED": "1",
+      "PLAN_EXEC_SELECT_JUDGE": "1",
+      "PLAN_EXEC_PARALLEL_MENTIONS": "1",
+      "GRAPHRAG_EMPTY_IS_WRONG": "1",
+      "GRAPHRAG_LLM_EVALUATOR": "1",
+      "CYPHER_REPAIR_MAX_ROUNDS": "4",
+      "CYPHER_RETRY_MAX_ROUNDS": "2",
+      "RETRIEVAL_LEVENSHTEIN_K": "10"
+    },
+    "shards": 1,
+    "limit": null
+  }
+}

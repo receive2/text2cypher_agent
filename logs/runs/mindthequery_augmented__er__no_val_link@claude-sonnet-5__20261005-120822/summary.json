@@ -1,0 +1,144 @@
+{
+  "dataset": "mindthequery_augmented",
+  "n": 184,
+  "n_scored": {
+    "ea": 184,
+    "em": 184,
+    "psjs": 184
+  },
+  "n_errors": 6,
+  "ea": 0.29891304347826086,
+  "ea_strict": 0.29891304347826086,
+  "ea_rule": "node-set-v1",
+  "em": 0.0,
+  "psjs": 0.24456521739130435,
+  "by_difficulty": {
+    "all": {
+      "ea": 0.29891304347826086,
+      "em": 0.0,
+      "psjs": 0.24456521739130435,
+      "n": 184,
+      "n_scored": {
+        "ea": 184,
+        "em": 184,
+        "psjs": 184
+      },
+      "n_errors": 6
+    },
+    "easy": {
+      "ea": 0.5,
+      "em": 0.0,
+      "psjs": 0.0,
+      "n": 2,
+      "n_scored": {
+        "ea": 2,
+        "em": 2,
+        "psjs": 2
+      },
+      "n_errors": 0
+    },
+    "medium": {
+      "ea": 0.31125827814569534,
+      "em": 0.0,
+      "psjs": 0.2781456953642384,
+      "n": 151,
+      "n_scored": {
+        "ea": 151,
+        "em": 151,
+        "psjs": 151
+      },
+      "n_errors": 5
+    },
+    "hard": {
+      "ea": 0.22580645161290322,
+      "em": 0.0,
+      "psjs": 0.0967741935483871,
+      "n": 31,
+      "n_scored": {
+        "ea": 31,
+        "em": 31,
+        "psjs": 31
+      },
+      "n_errors": 1
+    }
+  },
+  "elapsed_sec": 623.02,
+  "run_meta": {
+    "generated_at": "2026-10-05T12:18:46-07:00",
+    "ner_mode": "no_ner",
+    "method": "no_val_link",
+    "label": "No Val Link",
+    "tool_type": null,
+    "retrieval": null,
+    "generator_llm": "claude-sonnet-5",
+    "ner_llm": "claude-sonnet-5",
+    "cypher_llm": "claude-sonnet-5",
+    "qa_llm": "claude-sonnet-5",
+    "tool_select_top_k": 15,
+    "values_per_tool": 10,
+    "plan_exec_tools_per_entity": 2,
+    "plan_exec_values_per_tool": 10,
+    "plan_exec_escalate": true,
+    "plan_exec_max_iter": 3,
+    "retrieval_levenshtein_k": 10,
+    "cypher_semantic_repair": true,
+    "cypher_repair_max_rounds": 4,
+    "cypher_empty_is_wrong": false,
+    "cypher_retry_max_rounds": 2,
+    "plan_exec_value_snap": true,
+    "plan_exec_skip_grounded": true,
+    "plan_exec_parallel_mentions": true,
+    "graphrag_empty_is_wrong": true,
+    "graphrag_llm_evaluator": true,
+    "tool_retrieval_mode": "fuzzy",
+    "hybrid_strategy": "cascade"
+  },
+  "run_config": {
+    "stamp": "20261005-120822",
+    "dataset": "mindthequery_augmented",
+    "graph": "er",
+    "method": "no_val_link@claude-sonnet-5",
+    "llm": {
+      "generator_llm": "claude-sonnet-5",
+      "ner": {
+        "provider": "anthropic",
+        "model": "claude-sonnet-5"
+      },
+      "cypher": {
+        "provider": "anthropic",
+        "model": "claude-sonnet-5"
+      },
+      "qa": {
+        "provider": "anthropic",
+        "model": "claude-sonnet-5"
+      }
+    },
+    "embedding": {
+      "backend": "openai",
+      "model": "text-embedding-3-small"
+    },
+    "knobs": {
+      "METHOD": "no_val_link",
+      "TOOL_TYPE": "node",
+      "CYANCHOR_TOOL_SCOPE": "node",
+      "GENERATOR_LLM": "claude-sonnet-5",
+      "RETRIEVAL_FUZZY": "1",
+      "RETRIEVAL_VECTOR": "0",
+      "RETRIEVAL_LEVENSHTEIN": "1",
+      "CYPHER_SEMANTIC_REPAIR": "1",
+      "CYPHER_EMPTY_IS_WRONG": "0",
+      "PLAN_EXEC_ESCALATE": "1",
+      "PLAN_EXEC_VALUE_SNAP": "1",
+      "PLAN_EXEC_SKIP_GROUNDED": "1",
+      "PLAN_EXEC_SELECT_JUDGE": "1",
+      "PLAN_EXEC_PARALLEL_MENTIONS": "1",
+      "GRAPHRAG_EMPTY_IS_WRONG": "1",
+      "GRAPHRAG_LLM_EVALUATOR": "1",
+      "CYPHER_REPAIR_MAX_ROUNDS": "4",
+      "CYPHER_RETRY_MAX_ROUNDS": "2",
+      "RETRIEVAL_LEVENSHTEIN_K": "10"
+    },
+    "shards": 1,
+    "limit": null
+  }
+}

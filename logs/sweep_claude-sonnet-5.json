@@ -1,0 +1,542 @@
+{
+  "model": "claude-sonnet-5",
+  "smoke": false,
+  "started": "2026-10-03 22:07:46",
+  "cells": {
+    "cypherbench_augmented__company__no_val_link": {
+      "tries": 1,
+      "status": "done",
+      "n": 303,
+      "err": 5,
+      "dir": "logs/runs/cypherbench_augmented__company__no_val_link@claude-sonnet-5__20261003-220746",
+      "finished_at": "2026-10-03 22:27:56"
+    },
+    "cypherbench_augmented__company__fcav": {
+      "tries": 1,
+      "status": "done",
+      "n": 303,
+      "err": 6,
+      "dir": "logs/runs/cypherbench_augmented__company__fcav@claude-sonnet-5__20261003-230629",
+      "finished_at": "2026-10-03 23:35:39"
+    },
+    "cypherbench_augmented__company__react": {
+      "tries": 1,
+      "status": "done",
+      "n": 303,
+      "err": 1,
+      "dir": "logs/runs/cypherbench_augmented__company__react@claude-sonnet-5__20261003-233540",
+      "finished_at": "2026-10-04 00:28:40"
+    },
+    "cypherbench_augmented__company__graphrag": {
+      "tries": 1,
+      "status": "done",
+      "n": 303,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__company__graphrag@claude-sonnet-5__20261004-002840",
+      "finished_at": "2026-10-04 01:35:00"
+    },
+    "cypherbench_augmented__company__cyanchor": {
+      "tries": 1,
+      "status": "done",
+      "n": 303,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__company__cyanchor_fl@claude-sonnet-5__20261004-013501",
+      "finished_at": "2026-10-04 03:09:41"
+    },
+    "cypherbench_augmented__fictional_character__no_val_link": {
+      "tries": 1,
+      "status": "done",
+      "n": 322,
+      "err": 11,
+      "dir": "logs/runs/cypherbench_augmented__fictional_character__no_val_link@claude-sonnet-5__20261004-030942",
+      "finished_at": "2026-10-04 03:26:37"
+    },
+    "cypherbench_augmented__fictional_character__fcav": {
+      "tries": 1,
+      "status": "done",
+      "n": 322,
+      "err": 6,
+      "dir": "logs/runs/cypherbench_augmented__fictional_character__fcav@claude-sonnet-5__20261004-032838",
+      "finished_at": "2026-10-04 03:54:33"
+    },
+    "cypherbench_augmented__fictional_character__react": {
+      "tries": 1,
+      "status": "done",
+      "n": 322,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__fictional_character__react@claude-sonnet-5__20261004-035434",
+      "finished_at": "2026-10-04 04:45:49"
+    },
+    "cypherbench_augmented__fictional_character__graphrag": {
+      "tries": 1,
+      "status": "done",
+      "n": 322,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__fictional_character__graphrag@claude-sonnet-5__20261004-044549",
+      "finished_at": "2026-10-04 05:42:34"
+    },
+    "cypherbench_augmented__fictional_character__cyanchor": {
+      "tries": 1,
+      "status": "done",
+      "n": 322,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__fictional_character__cyanchor_fl@claude-sonnet-5__20261004-054235",
+      "finished_at": "2026-10-04 07:04:05"
+    },
+    "cypherbench_augmented__flight_accident__no_val_link": {
+      "tries": 1,
+      "status": "done",
+      "n": 168,
+      "err": 1,
+      "dir": "logs/runs/cypherbench_augmented__flight_accident__no_val_link@claude-sonnet-5__20261004-070406",
+      "finished_at": "2026-10-04 07:13:46"
+    },
+    "cypherbench_augmented__flight_accident__fcav": {
+      "tries": 1,
+      "status": "done",
+      "n": 168,
+      "err": 3,
+      "dir": "logs/runs/cypherbench_augmented__flight_accident__fcav@claude-sonnet-5__20261004-071346",
+      "finished_at": "2026-10-04 07:27:11"
+    },
+    "cypherbench_augmented__flight_accident__react": {
+      "tries": 1,
+      "status": "done",
+      "n": 168,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__flight_accident__react@claude-sonnet-5__20261004-072712",
+      "finished_at": "2026-10-04 07:58:27"
+    },
+    "cypherbench_augmented__flight_accident__graphrag": {
+      "tries": 1,
+      "status": "done",
+      "n": 168,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__flight_accident__graphrag@claude-sonnet-5__20261004-075827",
+      "finished_at": "2026-10-04 08:26:07"
+    },
+    "cypherbench_augmented__flight_accident__cyanchor": {
+      "tries": 1,
+      "status": "done",
+      "n": 168,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__flight_accident__cyanchor_fl@claude-sonnet-5__20261004-082608",
+      "finished_at": "2026-10-04 09:01:13"
+    },
+    "cypherbench_augmented__geography__no_val_link": {
+      "tries": 1,
+      "status": "done",
+      "n": 331,
+      "err": 4,
+      "dir": "logs/runs/cypherbench_augmented__geography__no_val_link@claude-sonnet-5__20261004-090114",
+      "finished_at": "2026-10-04 09:30:39"
+    },
+    "cypherbench_augmented__geography__fcav": {
+      "tries": 1,
+      "status": "done",
+      "n": 331,
+      "err": 6,
+      "dir": "logs/runs/cypherbench_augmented__geography__fcav@claude-sonnet-5__20261004-100143",
+      "finished_at": "2026-10-04 10:37:23"
+    },
+    "cypherbench_augmented__geography__react": {
+      "tries": 1,
+      "status": "done",
+      "n": 331,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__geography__react@claude-sonnet-5__20261004-103723",
+      "finished_at": "2026-10-04 11:40:54"
+    },
+    "cypherbench_augmented__geography__graphrag": {
+      "tries": 1,
+      "status": "done",
+      "n": 331,
+      "err": 2,
+      "dir": "logs/runs/cypherbench_augmented__geography__graphrag@claude-sonnet-5__20261004-114054",
+      "finished_at": "2026-10-04 12:57:45"
+    },
+    "cypherbench_augmented__geography__cyanchor": {
+      "tries": 1,
+      "status": "done",
+      "n": 331,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__geography__cyanchor_fl@claude-sonnet-5__20261004-125745",
+      "finished_at": "2026-10-04 14:32:56"
+    },
+    "cypherbench_augmented__movie__no_val_link": {
+      "tries": 1,
+      "status": "done",
+      "n": 359,
+      "err": 5,
+      "dir": "logs/runs/cypherbench_augmented__movie__no_val_link@claude-sonnet-5__20261004-143256",
+      "finished_at": "2026-10-04 14:55:06"
+    },
+    "cypherbench_augmented__movie__fcav": {
+      "tries": 1,
+      "status": "done",
+      "n": 359,
+      "err": 7,
+      "dir": "logs/runs/cypherbench_augmented__movie__fcav@claude-sonnet-5__20261004-152535",
+      "finished_at": "2026-10-04 15:58:30"
+    },
+    "cypherbench_augmented__movie__react": {
+      "tries": 1,
+      "status": "done",
+      "n": 359,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__movie__react@claude-sonnet-5__20261004-155830",
+      "finished_at": "2026-10-04 16:58:20"
+    },
+    "cypherbench_augmented__movie__graphrag": {
+      "tries": 1,
+      "status": "done",
+      "n": 359,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__movie__graphrag@claude-sonnet-5__20261004-165821",
+      "finished_at": "2026-10-04 18:00:16"
+    },
+    "cypherbench_augmented__movie__cyanchor": {
+      "tries": 1,
+      "status": "done",
+      "n": 359,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__movie__cyanchor_fl@claude-sonnet-5__20261004-180017",
+      "finished_at": "2026-10-04 19:34:57"
+    },
+    "cypherbench_augmented__nba__no_val_link": {
+      "tries": 1,
+      "status": "done",
+      "n": 251,
+      "err": 5,
+      "dir": "logs/runs/cypherbench_augmented__nba__no_val_link@claude-sonnet-5__20261004-193458",
+      "finished_at": "2026-10-04 19:48:58"
+    },
+    "cypherbench_augmented__nba__fcav": {
+      "tries": 1,
+      "status": "done",
+      "n": 251,
+      "err": 3,
+      "dir": "logs/runs/cypherbench_augmented__nba__fcav@claude-sonnet-5__20261004-194931",
+      "finished_at": "2026-10-04 20:09:56"
+    },
+    "cypherbench_augmented__nba__react": {
+      "tries": 1,
+      "status": "done",
+      "n": 251,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__nba__react@claude-sonnet-5__20261004-200957",
+      "finished_at": "2026-10-04 20:52:47"
+    },
+    "cypherbench_augmented__nba__graphrag": {
+      "tries": 1,
+      "status": "done",
+      "n": 251,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__nba__graphrag@claude-sonnet-5__20261004-205248",
+      "finished_at": "2026-10-04 21:43:43"
+    },
+    "cypherbench_augmented__nba__cyanchor": {
+      "tries": 1,
+      "status": "done",
+      "n": 251,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__nba__cyanchor_fl@claude-sonnet-5__20261004-214343",
+      "finished_at": "2026-10-04 22:51:34"
+    },
+    "cypherbench_augmented__politics__no_val_link": {
+      "tries": 1,
+      "status": "done",
+      "n": 356,
+      "err": 6,
+      "dir": "logs/runs/cypherbench_augmented__politics__no_val_link@claude-sonnet-5__20261004-225134",
+      "finished_at": "2026-10-04 23:22:14"
+    },
+    "cypherbench_augmented__politics__fcav": {
+      "tries": 1,
+      "status": "done",
+      "n": 356,
+      "err": 2,
+      "dir": "logs/runs/cypherbench_augmented__politics__fcav@claude-sonnet-5__20261005-003605",
+      "finished_at": "2026-10-05 01:16:51"
+    },
+    "cypherbench_augmented__politics__react": {
+      "tries": 1,
+      "status": "done",
+      "n": 356,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__politics__react@claude-sonnet-5__20261005-011651",
+      "finished_at": "2026-10-05 02:31:21"
+    },
+    "cypherbench_augmented__politics__graphrag": {
+      "tries": 1,
+      "status": "done",
+      "n": 356,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__politics__graphrag@claude-sonnet-5__20261005-023122",
+      "finished_at": "2026-10-05 03:59:07"
+    },
+    "cypherbench_augmented__politics__cyanchor": {
+      "tries": 1,
+      "status": "done",
+      "n": 356,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__politics__cyanchor_fl@claude-sonnet-5__20261005-035908",
+      "finished_at": "2026-10-05 05:52:28"
+    },
+    "mindthequery_augmented__bloom__no_val_link": {
+      "tries": 1,
+      "status": "done",
+      "n": 24,
+      "err": 0,
+      "dir": "logs/runs/mindthequery_augmented__bloom__no_val_link@claude-sonnet-5__20261005-055230",
+      "finished_at": "2026-10-05 05:54:00"
+    },
+    "mindthequery_augmented__bloom__fcav": {
+      "tries": 1,
+      "status": "done",
+      "n": 24,
+      "err": 0,
+      "dir": "logs/runs/mindthequery_augmented__bloom__fcav@claude-sonnet-5__20261005-055510",
+      "finished_at": "2026-10-05 05:57:25"
+    },
+    "mindthequery_augmented__bloom__react": {
+      "tries": 1,
+      "status": "done",
+      "n": 24,
+      "err": 0,
+      "dir": "logs/runs/mindthequery_augmented__bloom__react@claude-sonnet-5__20261005-055726",
+      "finished_at": "2026-10-05 06:03:01"
+    },
+    "mindthequery_augmented__bloom__graphrag": {
+      "tries": 1,
+      "status": "done",
+      "n": 24,
+      "err": 0,
+      "dir": "logs/runs/mindthequery_augmented__bloom__graphrag@claude-sonnet-5__20261005-060302",
+      "finished_at": "2026-10-05 06:09:32"
+    },
+    "mindthequery_augmented__bloom__cyanchor": {
+      "tries": 1,
+      "status": "done",
+      "n": 24,
+      "err": 0,
+      "dir": "logs/runs/mindthequery_augmented__bloom__cyanchor_fl@claude-sonnet-5__20261005-060934",
+      "finished_at": "2026-10-05 06:20:34"
+    },
+    "mindthequery_augmented__covid__no_val_link": {
+      "tries": 1,
+      "status": "done",
+      "n": 326,
+      "err": 84,
+      "dir": "logs/runs/mindthequery_augmented__covid__no_val_link@claude-sonnet-5__20261005-062034",
+      "finished_at": "2026-10-05 06:45:09"
+    },
+    "mindthequery_augmented__covid__fcav": {
+      "tries": 1,
+      "status": "done",
+      "n": 326,
+      "err": 84,
+      "dir": "logs/runs/mindthequery_augmented__covid__fcav@claude-sonnet-5__20261005-064514",
+      "finished_at": "2026-10-05 07:19:14"
+    },
+    "mindthequery_augmented__covid__react": {
+      "tries": 1,
+      "status": "done",
+      "n": 326,
+      "err": 52,
+      "dir": "logs/runs/mindthequery_augmented__covid__react@claude-sonnet-5__20261005-071914",
+      "finished_at": "2026-10-05 08:29:24"
+    },
+    "mindthequery_augmented__covid__graphrag": {
+      "tries": 1,
+      "status": "done",
+      "n": 326,
+      "err": 52,
+      "dir": "logs/runs/mindthequery_augmented__covid__graphrag@claude-sonnet-5__20261005-082925",
+      "finished_at": "2026-10-05 10:05:50"
+    },
+    "mindthequery_augmented__covid__cyanchor": {
+      "tries": 1,
+      "status": "done",
+      "n": 326,
+      "err": 52,
+      "dir": "logs/runs/mindthequery_augmented__covid__cyanchor_fl@claude-sonnet-5__20261005-100551",
+      "finished_at": "2026-10-05 12:08:21"
+    },
+    "mindthequery_augmented__er__no_val_link": {
+      "tries": 1,
+      "status": "done",
+      "n": 184,
+      "err": 6,
+      "dir": "logs/runs/mindthequery_augmented__er__no_val_link@claude-sonnet-5__20261005-120822",
+      "finished_at": "2026-10-05 12:18:47"
+    },
+    "mindthequery_augmented__er__fcav": {
+      "tries": 1,
+      "status": "done",
+      "n": 184,
+      "err": 4,
+      "dir": "logs/runs/mindthequery_augmented__er__fcav@claude-sonnet-5__20261005-121851",
+      "finished_at": "2026-10-05 12:33:16"
+    },
+    "mindthequery_augmented__er__react": {
+      "tries": 1,
+      "status": "done",
+      "n": 184,
+      "err": 3,
+      "dir": "logs/runs/mindthequery_augmented__er__react@claude-sonnet-5__20261005-123317",
+      "finished_at": "2026-10-05 13:02:12"
+    },
+    "mindthequery_augmented__er__graphrag": {
+      "tries": 1,
+      "status": "done",
+      "n": 184,
+      "err": 3,
+      "dir": "logs/runs/mindthequery_augmented__er__graphrag@claude-sonnet-5__20261005-130212",
+      "finished_at": "2026-10-05 13:43:17"
+    },
+    "mindthequery_augmented__er__cyanchor": {
+      "tries": 1,
+      "status": "done",
+      "n": 184,
+      "err": 3,
+      "dir": "logs/runs/mindthequery_augmented__er__cyanchor_fl@claude-sonnet-5__20261005-134317",
+      "finished_at": "2026-10-05 14:38:43"
+    },
+    "mindthequery_augmented__healthcare__no_val_link": {
+      "tries": 1,
+      "status": "done",
+      "n": 418,
+      "err": 5,
+      "dir": "logs/runs/mindthequery_augmented__healthcare__no_val_link@claude-sonnet-5__20261005-143843",
+      "finished_at": "2026-10-05 15:03:18"
+    },
+    "mindthequery_augmented__healthcare__fcav": {
+      "tries": 1,
+      "status": "done",
+      "n": 418,
+      "err": 10,
+      "dir": "logs/runs/mindthequery_augmented__healthcare__fcav@claude-sonnet-5__20261005-150329",
+      "finished_at": "2026-10-05 15:36:34"
+    },
+    "mindthequery_augmented__healthcare__react": {
+      "tries": 1,
+      "status": "done",
+      "n": 418,
+      "err": 4,
+      "dir": "logs/runs/mindthequery_augmented__healthcare__react@claude-sonnet-5__20261005-153634",
+      "finished_at": "2026-10-05 16:50:30"
+    },
+    "mindthequery_augmented__healthcare__graphrag": {
+      "tries": 1,
+      "status": "done",
+      "n": 418,
+      "err": 4,
+      "dir": "logs/runs/mindthequery_augmented__healthcare__graphrag@claude-sonnet-5__20261005-165030",
+      "finished_at": "2026-10-05 18:19:00"
+    },
+    "mindthequery_augmented__healthcare__cyanchor": {
+      "tries": 1,
+      "status": "done",
+      "n": 418,
+      "err": 4,
+      "dir": "logs/runs/mindthequery_augmented__healthcare__cyanchor_fl@claude-sonnet-5__20261005-181901",
+      "finished_at": "2026-10-05 20:40:01"
+    },
+    "mindthequery_augmented__wwc__no_val_link": {
+      "tries": 1,
+      "status": "done",
+      "n": 265,
+      "err": 20,
+      "dir": "logs/runs/mindthequery_augmented__wwc__no_val_link@claude-sonnet-5__20261005-204002",
+      "finished_at": "2026-10-05 20:55:17"
+    },
+    "mindthequery_augmented__wwc__fcav": {
+      "tries": 1,
+      "status": "done",
+      "n": 265,
+      "err": 20,
+      "dir": "logs/runs/mindthequery_augmented__wwc__fcav@claude-sonnet-5__20261005-205526",
+      "finished_at": "2026-10-05 21:24:11"
+    },
+    "mindthequery_augmented__wwc__react": {
+      "tries": 1,
+      "status": "done",
+      "n": 265,
+      "err": 12,
+      "dir": "logs/runs/mindthequery_augmented__wwc__react@claude-sonnet-5__20261005-212411",
+      "finished_at": "2026-10-05 22:13:16"
+    },
+    "mindthequery_augmented__wwc__graphrag": {
+      "tries": 1,
+      "status": "done",
+      "n": 265,
+      "err": 12,
+      "dir": "logs/runs/mindthequery_augmented__wwc__graphrag@claude-sonnet-5__20261005-221317",
+      "finished_at": "2026-10-05 23:23:37"
+    },
+    "mindthequery_augmented__wwc__cyanchor": {
+      "tries": 1,
+      "status": "done",
+      "n": 265,
+      "err": 12,
+      "dir": "logs/runs/mindthequery_augmented__wwc__cyanchor_fl@claude-sonnet-5__20261005-232337",
+      "finished_at": "2026-10-06 01:03:03"
+    },
+    "zograscope_augmented__pole__no_val_link": {
+      "tries": 1,
+      "status": "done",
+      "n": 1283,
+      "err": 8,
+      "dir": "logs/runs/zograscope_augmented__pole__no_val_link@claude-sonnet-5__20261006-010304",
+      "finished_at": "2026-10-06 02:20:34"
+    },
+    "zograscope_augmented__pole__fcav": {
+      "tries": 1,
+      "status": "done",
+      "n": 1283,
+      "err": 7,
+      "dir": "logs/runs/zograscope_augmented__pole__fcav@claude-sonnet-5__20261006-022043",
+      "finished_at": "2026-10-06 04:06:33"
+    },
+    "zograscope_augmented__pole__react": {
+      "tries": 1,
+      "status": "done",
+      "n": 1283,
+      "err": 0,
+      "dir": "logs/runs/zograscope_augmented__pole__react@claude-sonnet-5__20261006-040634",
+      "finished_at": "2026-10-06 07:33:20"
+    },
+    "zograscope_augmented__pole__graphrag": {
+      "tries": 1,
+      "status": "done",
+      "n": 1283,
+      "err": 0,
+      "dir": "logs/runs/zograscope_augmented__pole__graphrag@claude-sonnet-5__20261006-073320",
+      "finished_at": "2026-10-06 11:55:06"
+    },
+    "zograscope_augmented__pole__cyanchor": {
+      "tries": 1,
+      "status": "done",
+      "n": 1283,
+      "err": 0,
+      "dir": "logs/runs/zograscope_augmented__pole__cyanchor_fl@claude-sonnet-5__20261006-115507",
+      "finished_at": "2026-10-06 18:00:02"
+    }
+  },
+  "expected": {
+    "cypherbench_augmented__nba": 251,
+    "cypherbench_augmented__flight_accident": 168,
+    "cypherbench_augmented__fictional_character": 322,
+    "cypherbench_augmented__company": 303,
+    "cypherbench_augmented__geography": 331,
+    "cypherbench_augmented__movie": 359,
+    "cypherbench_augmented__politics": 356,
+    "mindthequery_augmented__bloom": 24,
+    "mindthequery_augmented__covid": 326,
+    "mindthequery_augmented__er": 184,
+    "mindthequery_augmented__healthcare": 418,
+    "mindthequery_augmented__wwc": 265,
+    "zograscope_augmented__pole": 1283
+  }
+}
