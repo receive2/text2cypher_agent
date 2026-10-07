@@ -7,7 +7,7 @@ Higher is better. Denominator = ALL examples; any failure (agent error, empty/wr
 **Setup.** MindTheQuery `all graphs pooled`, 1217 entity-perturbed test questions
 (strategies: casing · typo · partial · abbrev · alias).
 
-**Run config.** Generated 2026-10-05. LLMs: NER `gpt-5.6-luna` · Cypher `gpt-5.6-luna` · QA `gpt-5.6-luna`.
+**Run config.** Generated 2026-10-06. LLMs: NER `gpt-5.6-luna` · Cypher `gpt-5.6-luna` · QA `gpt-5.6-luna`.
 
 **Methods.**
 - **No Val Link** — grounding bypassed (the perturbed surface form is used as-is).

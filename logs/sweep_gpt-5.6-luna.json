@@ -124,12 +124,12 @@
       "finished_at": "2026-09-13 21:16:56"
     },
     "cypherbench_augmented__geography__no_val_link": {
-      "tries": 4,
+      "tries": 5,
       "status": "done",
       "n": 331,
-      "err": 13,
-      "dir": "logs/runs/cypherbench_augmented__geography__no_val_link@gpt-5.6-luna__20261004-213550",
-      "finished_at": "2026-10-04 22:16:18",
+      "err": 12,
+      "dir": "logs/runs/cypherbench_augmented__geography__no_val_link@gpt-5.6-luna__20261006-211743",
+      "finished_at": "2026-10-06 21:56:50",
       "suspect_reruns": 2
     },
     "cypherbench_augmented__geography__fcav": {

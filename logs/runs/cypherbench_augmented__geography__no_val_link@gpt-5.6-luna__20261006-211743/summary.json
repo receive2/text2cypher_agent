@@ -6,27 +6,27 @@
     "em": 331,
     "psjs": 331
   },
-  "n_errors": 13,
+  "n_errors": 12,
   "ea": 0.08761329305135952,
   "em": 0.0,
-  "psjs": 0.09788257147715017,
+  "psjs": 0.10795091210487219,
   "by_difficulty": {
     "all": {
       "ea": 0.08761329305135952,
       "em": 0.0,
-      "psjs": 0.09788257147715017,
+      "psjs": 0.10795091210487219,
       "n": 331,
       "n_scored": {
         "ea": 331,
         "em": 331,
         "psjs": 331
       },
-      "n_errors": 13
+      "n_errors": 12
     },
     "easy": {
-      "ea": 0.09090909090909091,
+      "ea": 0.12727272727272726,
       "em": 0.0,
-      "psjs": 0.09091333225624322,
+      "psjs": 0.14550453200401717,
       "n": 55,
       "n_scored": {
         "ea": 55,
@@ -38,19 +38,19 @@
     "medium": {
       "ea": 0.029585798816568046,
       "em": 0.0,
-      "psjs": 0.038673620788050894,
+      "psjs": 0.04768662422282115,
       "n": 169,
       "n_scored": {
         "ea": 169,
         "em": 169,
         "psjs": 169
       },
-      "n_errors": 7
+      "n_errors": 6
     },
     "hard": {
-      "ea": 0.17757009345794392,
+      "ea": 0.1588785046728972,
       "em": 0.0,
-      "psjs": 0.1949818315108666,
+      "psjs": 0.1838314313349062,
       "n": 107,
       "n_scored": {
         "ea": 107,
@@ -60,9 +60,9 @@
       "n_errors": 6
     }
   },
-  "elapsed_sec": 2401.2,
+  "elapsed_sec": 2340.12,
   "run_meta": {
-    "generated_at": "2026-10-04T22:16:17-07:00",
+    "generated_at": "2026-10-06T21:56:47-05:00",
     "ner_mode": "no_ner",
     "method": "no_val_link",
     "label": "No Val Link",
@@ -92,7 +92,7 @@
     "hybrid_strategy": "cascade"
   },
   "run_config": {
-    "stamp": "20261004-213550",
+    "stamp": "20261006-211743",
     "dataset": "cypherbench_augmented",
     "graph": "geography",
     "method": "no_val_link@gpt-5.6-luna",

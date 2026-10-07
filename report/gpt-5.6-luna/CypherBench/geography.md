@@ -7,7 +7,7 @@ Higher is better. Denominator = ALL examples; any failure (agent error, empty/wr
 **Setup.** CypherBench `geography`, 331 entity-perturbed test questions
 (strategies: casing · typo · partial · abbrev · alias).
 
-**Run config.** Generated 2026-10-04T22:16:17-07:00. LLMs: NER `gpt-5.6-luna` · Cypher `gpt-5.6-luna` · QA `gpt-5.6-luna`.
+**Run config.** Generated 2026-10-06T21:56:47-05:00. LLMs: NER `gpt-5.6-luna` · Cypher `gpt-5.6-luna` · QA `gpt-5.6-luna`.
 CyANCHOR knobs: retrieval `fuzzy+lev` · tool `node_rel` · escalate `on` (≤3) · semantic_repair `on` (≤4) · empty_is_wrong `off` · value_snap `on`.
 
 **Methods.**
@@ -30,7 +30,7 @@ CyANCHOR knobs: retrieval `fuzzy+lev` · tool `node_rel` · escalate `on` (≤3)
 
 | method      | retrieval |    EA |  PSJS |   n | err | gold err |
 | ----------- | --------- | ----: | ----: | --: | --: | -------: |
-| No Val Link | —         | 0.088 | 0.098 | 331 |  13 |        0 |
+| No Val Link | —         | 0.088 | 0.108 | 331 |  12 |        0 |
 | FCAV        | vector    | 0.326 | 0.367 | 331 |   8 |        0 |
 | ReAct       | fuzzy     | 0.317 | 0.360 | 331 |   1 |        0 |
 | GraphRAG    | norm-Lev  | 0.423 | 0.472 | 331 |   2 |        0 |
@@ -40,7 +40,7 @@ CyANCHOR knobs: retrieval `fuzzy+lev` · tool `node_rel` · escalate `on` (≤3)
 
 | method      | casing |  typo | partial | abbrev | alias |
 | ----------- | -----: | ----: | ------: | -----: | ----: |
-| No Val Link |  0.139 | 0.042 |   0.127 |  0.101 | 0.062 |
+| No Val Link |  0.167 | 0.021 |   0.127 |  0.089 | 0.071 |
 | FCAV        |  0.444 | 0.271 |   0.291 |  0.241 | 0.389 |
 | ReAct       |  0.500 | 0.396 |   0.291 |  0.190 | 0.327 |
 | GraphRAG    |  0.611 | 0.562 |   0.327 |  0.380 | 0.381 |
@@ -50,7 +50,7 @@ CyANCHOR knobs: retrieval `fuzzy+lev` · tool `node_rel` · escalate `on` (≤3)
 
 | method      |  easy | medium |  hard |
 | ----------- | ----: | -----: | ----: |
-| No Val Link | 0.091 |  0.030 | 0.178 |
+| No Val Link | 0.127 |  0.030 | 0.159 |
 | FCAV        | 0.418 |  0.290 | 0.336 |
 | ReAct       | 0.273 |  0.290 | 0.383 |
 | GraphRAG    | 0.564 |  0.373 | 0.430 |
@@ -60,7 +60,7 @@ CyANCHOR knobs: retrieval `fuzzy+lev` · tool `node_rel` · escalate `on` (≤3)
 
 | method      | casing |  typo | partial | abbrev | alias |
 | ----------- | -----: | ----: | ------: | -----: | ----: |
-| No Val Link |  0.155 | 0.055 |   0.104 |  0.147 | 0.061 |
+| No Val Link |  0.183 | 0.046 |   0.111 |  0.165 | 0.069 |
 | FCAV        |  0.475 | 0.255 |   0.265 |  0.306 | 0.474 |
 | ReAct       |  0.539 | 0.426 |   0.315 |  0.261 | 0.365 |
 | GraphRAG    |  0.632 | 0.552 |   0.321 |  0.540 | 0.412 |
@@ -70,7 +70,7 @@ CyANCHOR knobs: retrieval `fuzzy+lev` · tool `node_rel` · escalate `on` (≤3)
 
 | method      |  easy | medium |  hard |
 | ----------- | ----: | -----: | ----: |
-| No Val Link | 0.091 |  0.039 | 0.195 |
+| No Val Link | 0.146 |  0.048 | 0.184 |
 | FCAV        | 0.479 |  0.324 | 0.378 |
 | ReAct       | 0.291 |  0.314 | 0.469 |
 | GraphRAG    | 0.573 |  0.423 | 0.497 |

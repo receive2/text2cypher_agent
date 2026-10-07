@@ -7,7 +7,7 @@ Higher is better. Denominator = ALL examples; any failure (agent error, empty/wr
 **Setup.** CypherBench `all graphs pooled`, 2090 entity-perturbed test questions
 (strategies: casing · typo · partial · abbrev · alias).
 
-**Run config.** Generated 2026-10-05. LLMs: NER `gpt-5.6-luna` · Cypher `gpt-5.6-luna` · QA `gpt-5.6-luna`.
+**Run config.** Generated 2026-10-06. LLMs: NER `gpt-5.6-luna` · Cypher `gpt-5.6-luna` · QA `gpt-5.6-luna`.
 
 **Methods.**
 - **No Val Link** — grounding bypassed (the perturbed surface form is used as-is).
@@ -29,7 +29,7 @@ Higher is better. Denominator = ALL examples; any failure (agent error, empty/wr
 
 | method      | retrieval |    EA |  PSJS |    n | err | gold err |
 | ----------- | --------- | ----: | ----: | ---: | --: | -------: |
-| No Val Link | —         | 0.087 | 0.113 | 2090 |  46 |        0 |
+| No Val Link | —         | 0.087 | 0.115 | 2090 |  45 |        0 |
 | FCAV        | vector    | 0.388 | 0.451 | 2090 |  36 |        0 |
 | ReAct       | fuzzy     | 0.292 | 0.341 | 2090 |   4 |        0 |
 | GraphRAG    | norm-Lev  | 0.455 | 0.516 | 2090 |   2 |        0 |
@@ -39,7 +39,7 @@ Higher is better. Denominator = ALL examples; any failure (agent error, empty/wr
 
 | method      | casing |  typo | partial | abbrev | alias |
 | ----------- | -----: | ----: | ------: | -----: | ----: |
-| No Val Link |  0.266 | 0.075 |   0.075 |  0.083 | 0.048 |
+| No Val Link |  0.271 | 0.072 |   0.075 |  0.081 | 0.049 |
 | FCAV        |  0.573 | 0.370 |   0.388 |  0.316 | 0.410 |
 | ReAct       |  0.500 | 0.374 |   0.393 |  0.175 | 0.246 |
 | GraphRAG    |  0.693 | 0.679 |   0.509 |  0.374 | 0.334 |
@@ -49,7 +49,7 @@ Higher is better. Denominator = ALL examples; any failure (agent error, empty/wr
 
 | method      |  easy | medium |  hard |
 | ----------- | ----: | -----: | ----: |
-| No Val Link | 0.062 |  0.041 | 0.179 |
+| No Val Link | 0.068 |  0.041 | 0.175 |
 | FCAV        | 0.421 |  0.337 | 0.458 |
 | ReAct       | 0.285 |  0.250 | 0.368 |
 | GraphRAG    | 0.549 |  0.435 | 0.441 |
@@ -59,7 +59,7 @@ Higher is better. Denominator = ALL examples; any failure (agent error, empty/wr
 
 | method      | casing |  typo | partial | abbrev | alias |
 | ----------- | -----: | ----: | ------: | -----: | ----: |
-| No Val Link |  0.288 | 0.089 |   0.100 |  0.128 | 0.064 |
+| No Val Link |  0.293 | 0.088 |   0.101 |  0.130 | 0.066 |
 | FCAV        |  0.603 | 0.398 |   0.426 |  0.398 | 0.494 |
 | ReAct       |  0.533 | 0.434 |   0.431 |  0.240 | 0.288 |
 | GraphRAG    |  0.745 | 0.690 |   0.548 |  0.472 | 0.396 |
@@ -69,7 +69,7 @@ Higher is better. Denominator = ALL examples; any failure (agent error, empty/wr
 
 | method      |  easy | medium |  hard |
 | ----------- | ----: | -----: | ----: |
-| No Val Link | 0.072 |  0.058 | 0.230 |
+| No Val Link | 0.081 |  0.060 | 0.228 |
 | FCAV        | 0.436 |  0.409 | 0.530 |
 | ReAct       | 0.299 |  0.292 | 0.450 |
 | GraphRAG    | 0.574 |  0.490 | 0.530 |

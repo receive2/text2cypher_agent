@@ -1,8 +1,8 @@
-# Sweep — `gpt-5.6-luna` — 2026-10-05 08:54
+# Sweep — `gpt-5.6-luna` — 2026-10-06 23:45
 
 **NOT CLEAN** — 1 cell(s) marked ⚠ failed on infrastructure (timeouts / API) and were never really evaluated — see *Flagged cells* below. Re-run `python orchestrate_sweep.py` (it re-runs only these cells). Do not report these numbers.
 
-- generated: 2026-10-05 08:54 · commit `192e59c` · benchmarks `v2.3-verified-2026-09-22` · artifacts set `31db179b1d24`
+- generated: 2026-10-06 23:45 · commit `3d6deeb` · benchmarks `v2.3-verified-2026-09-22` · artifacts set `31db179b1d24`
 - run config: CYPHER_EMPTY_IS_WRONG=False · CYPHER_SEMANTIC_REPAIR=True · RETRIEVAL fuzzy/vector/lev=1/0/1 · SHARDS=1 (cyanchor always 1)
 
 ## Completeness (n / err per cell; n must equal the question count)
@@ -12,7 +12,7 @@
 | CypherBench | company | 303 | ✓ 303/5 | ✓ 303/7 | ✓ 303/0 | ✓ 303/0 | ✓ 303/0 |
 | CypherBench | fictional_character | 322 | ✓ 322/5 | ✓ 322/6 | ✓ 322/0 | ✓ 322/0 | ✓ 322/0 |
 | CypherBench | flight_accident | 168 | ✓ 168/0 | ✓ 168/1 | ✓ 168/0 | ✓ 168/0 | ✓ 168/0 |
-| CypherBench | geography | 331 | ⚠ 331/13 | ✓ 331/8 | ✓ 331/1 | ✓ 331/2 | ✓ 331/0 |
+| CypherBench | geography | 331 | ⚠ 331/12 | ✓ 331/8 | ✓ 331/1 | ✓ 331/2 | ✓ 331/0 |
 | CypherBench | movie | 359 | ✓ 359/10 | ✓ 359/3 | ✓ 359/3 | ✓ 359/0 | ✓ 359/0 |
 | CypherBench | nba | 251 | ✓ 251/4 | ✓ 251/2 | ✓ 251/0 | ✓ 251/0 | ✓ 251/0 |
 | CypherBench | politics | 356 | ✓ 356/9 | ✓ 356/9 | ✓ 356/0 | ✓ 356/0 | ✓ 356/0 |
@@ -27,8 +27,8 @@
 
 These cells hold one record per question but a large share of those records are timeouts or API failures: the model never answered them and they score 0 for the wrong reason. `python orchestrate_sweep.py` re-runs them automatically (up to 2 times); to re-run one by hand use the command shown.
 
-- **CypherBench · geography · No Val Link** — 9 of 331 questions failed on infrastructure (timeout / API / rate limit) — never evaluated.
-  errors: infra 9 · gold 0 · agent 4 · other 0
+- **CypherBench · geography · No Val Link** — 10 of 331 questions failed on infrastructure (timeout / API / rate limit) — never evaluated.
+  errors: infra 10 · gold 0 · agent 2 · other 0
   most common: `example timeout: exceeded Ns`
   re-run: `python orchestrate_sweep.py --graphs geography --methods no_val_link`
 
@@ -38,7 +38,7 @@ These cells hold one record per question but a large share of those records are 
 
 | method | CypherBench | MindTheQuery | ZOGRASCOPE | All |
 |---|---|---|---|---|
-| No Val Link | 20 / 0 / 26 / 0 | 0 / 49 / 133 / 0 | 0 / 0 / 3 / 0 | 20 / 49 / 162 / 0 |
+| No Val Link | 21 / 0 / 24 / 0 | 0 / 49 / 133 / 0 | 0 / 0 / 3 / 0 | 21 / 49 / 160 / 0 |
 | FCAV | 5 / 0 / 31 / 0 | 0 / 52 / 121 / 0 | 0 / 0 / 9 / 0 | 5 / 52 / 161 / 0 |
 | ReAct | 4 / 0 / 0 / 0 | 0 / 71 / 0 / 0 | 0 / 0 / 0 / 0 | 4 / 71 / 0 / 0 |
 | GraphRAG | 2 / 0 / 0 / 0 | 0 / 71 / 0 / 0 | 0 / 0 / 0 / 0 | 2 / 71 / 0 / 0 |
@@ -48,7 +48,7 @@ These cells hold one record per question but a large share of those records are 
 
 | method | CypherBench EA | CypherBench PSJS | MindTheQuery EA | MindTheQuery PSJS | ZOGRASCOPE EA | ZOGRASCOPE PSJS | All EA | All PSJS | n | err |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| No Val Link | 0.087 | 0.113 | 0.247 | 0.260 | 0.043 | 0.028 | 0.117 | 0.128 | 4590 | 231 |
+| No Val Link | 0.087 | 0.115 | 0.247 | 0.260 | 0.043 | 0.028 | 0.117 | 0.129 | 4590 | 230 |
 | FCAV | 0.388 | 0.451 | 0.348 | 0.406 | 0.115 | 0.103 | 0.301 | 0.342 | 4590 | 218 |
 | ReAct | 0.292 | 0.341 | 0.403 | 0.486 | 0.281 | 0.216 | 0.318 | 0.345 | 4590 | 75 |
 | GraphRAG | 0.455 | 0.516 | 0.513 | 0.643 | 0.301 | 0.240 | 0.427 | 0.473 | 4590 | 73 |
@@ -74,7 +74,7 @@ EA
 
 | method | casing | typo | partial | abbrev | alias | all |
 |---|---:|---:|---:|---:|---:|---:|
-| No Val Link | 0.266 | 0.075 | 0.075 | 0.083 | 0.048 | 0.087 |
+| No Val Link | 0.271 | 0.072 | 0.075 | 0.081 | 0.049 | 0.087 |
 | FCAV | 0.573 | 0.370 | 0.388 | 0.316 | 0.410 | 0.388 |
 | ReAct | 0.500 | 0.374 | 0.393 | 0.175 | 0.246 | 0.292 |
 | GraphRAG | 0.693 | 0.679 | 0.509 | 0.374 | 0.334 | 0.455 |
@@ -85,7 +85,7 @@ PSJS
 
 | method | casing | typo | partial | abbrev | alias | all |
 |---|---:|---:|---:|---:|---:|---:|
-| No Val Link | 0.288 | 0.089 | 0.100 | 0.128 | 0.064 | 0.113 |
+| No Val Link | 0.293 | 0.088 | 0.101 | 0.130 | 0.066 | 0.115 |
 | FCAV | 0.603 | 0.398 | 0.426 | 0.398 | 0.494 | 0.451 |
 | ReAct | 0.533 | 0.434 | 0.431 | 0.240 | 0.288 | 0.341 |
 | GraphRAG | 0.745 | 0.690 | 0.548 | 0.472 | 0.396 | 0.516 |
@@ -98,7 +98,7 @@ EA
 
 | method | easy | medium | hard | all |
 |---|---:|---:|---:|---:|
-| No Val Link | 0.062 | 0.041 | 0.179 | 0.087 |
+| No Val Link | 0.068 | 0.041 | 0.175 | 0.087 |
 | FCAV | 0.421 | 0.337 | 0.458 | 0.388 |
 | ReAct | 0.285 | 0.250 | 0.368 | 0.292 |
 | GraphRAG | 0.549 | 0.435 | 0.441 | 0.455 |
@@ -109,7 +109,7 @@ PSJS
 
 | method | easy | medium | hard | all |
 |---|---:|---:|---:|---:|
-| No Val Link | 0.072 | 0.058 | 0.230 | 0.113 |
+| No Val Link | 0.081 | 0.060 | 0.228 | 0.115 |
 | FCAV | 0.436 | 0.409 | 0.530 | 0.451 |
 | ReAct | 0.299 | 0.292 | 0.450 | 0.341 |
 | GraphRAG | 0.574 | 0.490 | 0.530 | 0.516 |
@@ -218,7 +218,7 @@ EA
 
 | method | casing | typo | partial | abbrev | alias | all |
 |---|---:|---:|---:|---:|---:|---:|
-| No Val Link | 0.220 | 0.082 | 0.107 | 0.125 | 0.119 | 0.117 |
+| No Val Link | 0.222 | 0.081 | 0.107 | 0.124 | 0.120 | 0.117 |
 | FCAV | 0.400 | 0.225 | 0.292 | 0.296 | 0.392 | 0.301 |
 | ReAct | 0.428 | 0.329 | 0.399 | 0.227 | 0.274 | 0.318 |
 | GraphRAG | 0.533 | 0.397 | 0.521 | 0.406 | 0.356 | 0.427 |
@@ -229,7 +229,7 @@ PSJS
 
 | method | casing | typo | partial | abbrev | alias | all |
 |---|---:|---:|---:|---:|---:|---:|
-| No Val Link | 0.234 | 0.082 | 0.109 | 0.151 | 0.140 | 0.128 |
+| No Val Link | 0.236 | 0.082 | 0.110 | 0.153 | 0.141 | 0.129 |
 | FCAV | 0.441 | 0.239 | 0.327 | 0.348 | 0.469 | 0.342 |
 | ReAct | 0.466 | 0.335 | 0.413 | 0.273 | 0.316 | 0.345 |
 | GraphRAG | 0.583 | 0.411 | 0.540 | 0.497 | 0.423 | 0.473 |
@@ -242,7 +242,7 @@ EA
 
 | method | easy | medium | hard | all |
 |---|---:|---:|---:|---:|
-| No Val Link | 0.077 | 0.113 | 0.141 | 0.117 |
+| No Val Link | 0.081 | 0.113 | 0.139 | 0.117 |
 | FCAV | 0.380 | 0.282 | 0.312 | 0.301 |
 | ReAct | 0.347 | 0.313 | 0.318 | 0.318 |
 | GraphRAG | 0.549 | 0.417 | 0.403 | 0.427 |
@@ -253,7 +253,7 @@ PSJS
 
 | method | easy | medium | hard | all |
 |---|---:|---:|---:|---:|
-| No Val Link | 0.081 | 0.114 | 0.177 | 0.128 |
+| No Val Link | 0.087 | 0.115 | 0.176 | 0.129 |
 | FCAV | 0.410 | 0.317 | 0.369 | 0.342 |
 | ReAct | 0.366 | 0.324 | 0.384 | 0.345 |
 | GraphRAG | 0.580 | 0.446 | 0.490 | 0.473 |
