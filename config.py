@@ -257,8 +257,12 @@ MODEL_PRESETS: dict = {
     # ── open-weights, served by DeepInfra (one key for both; Together entries
     #    exist in MODEL_REGISTRY as alternates) ──
     "deepseek-v3.1":    {"provider": "hf_compatible", "model": "deepseek-v3.1-deepinfra"},   # sweep: open-weights strong tier (DeepInfra key)
-    "deepseek-v4.1-flash": {"provider": "hf_compatible", "model": "deepseek-v4.1-flash",   # extra — needs its own DEEPSEEK_API_KEY
-                            "params": {"extra_body": {"thinking": {"type": "disabled"}}}},
+    # sweep: open-weights strong tier since 2026-10-06 (replaces deepseek-v3.1, whose DeepInfra endpoint took ~7 s per
+    # 8k-token call and pushed the baselines past their 60 s cap; V4.1 Flash takes 1.5-2.5 s on the same host and key).
+    # Served by DeepInfra (DEEPINFRA_API_KEY); the official-API entry "deepseek-v4.1-flash" in MODEL_REGISTRY remains an
+    # alternate. max_tokens as for qwen3-32b (DeepInfra rejects a request whose default output budget is the whole context).
+    "deepseek-v4.1-flash": {"provider": "hf_compatible", "model": "deepseek-v4.1-flash-deepinfra",
+                            "params": {"max_tokens": 4096, "extra_body": {"thinking": {"type": "disabled"}}}},
     "llama-3.3-70b":    {"provider": "hf_compatible", "model": "llama-3.3-70b-deepinfra"},
     "qwen3-32b":        {"provider": "hf_compatible", "model": "qwen3-32b-deepinfra",     # open-weights small tier
                          # max_tokens: DeepInfra otherwise asks for the model's whole 40,960-token context as output and
