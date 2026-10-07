@@ -142,8 +142,8 @@ def test_preset_switches_every_stage(monkeypatch):
 
 def test_preset_covers_the_whole_sweep(monkeypatch):
     import config
-    for name in ("gpt-4.1", "gpt-5.6-terra", "gpt-5.6-luna", "claude-opus-5",
-                 "claude-haiku-4.5", "deepseek-v3.1", "llama-3.3-70b"):
+    for name in ("gpt-4.1", "gpt-5.6-terra", "gpt-5.6-luna", "claude-sonnet-5", "claude-opus-5",
+                 "claude-haiku-4.5", "deepseek-v4.1-flash", "deepseek-v3.1", "llama-3.3-70b", "qwen3-32b"):
         spec = config.resolve_preset(name)
         assert spec["provider"] in ("openai", "anthropic", "hf_compatible")
         if spec["provider"] == "hf_compatible":

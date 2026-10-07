@@ -65,8 +65,8 @@ GENERATOR_LLM: str = "gpt-4.1"  # preset name from config.MODEL_PRESETS — sele
                                 #   ALL stages (NER / Cypher / QA) and tags the run dir
                                 #   (cyanchor_fl@<name>). Presets: gpt-4.1 | gpt-5.6-terra |
                                 #   gpt-5.6-luna | claude-sonnet-5 | claude-haiku-4.5 |
-                                #   deepseek-v3.1 | llama-3.3-70b | qwen3-32b |
-                                #   claude-opus-5, deepseek-v4.1-flash (extras)
+                                #   deepseek-v4.1-flash | llama-3.3-70b | qwen3-32b |
+                                #   claude-opus-5, deepseek-v3.1 (extras)
 METHOD:    str = "cyanchor"     # no_val_link | fcav | react | graphrag | cyanchor
 TOOL_TYPE: str = "node"         # node | node_rel   (ReAct baseline tool scope; released = node, relation tools off:
                                 #   the same node-property tools CyANCHOR routes on, so the two tool-using methods
