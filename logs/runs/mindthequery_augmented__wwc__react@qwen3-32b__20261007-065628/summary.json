@@ -1,0 +1,144 @@
+{
+  "dataset": "mindthequery_augmented",
+  "n": 265,
+  "n_scored": {
+    "ea": 265,
+    "em": 265,
+    "psjs": 265
+  },
+  "n_errors": 13,
+  "ea": 0.2792452830188679,
+  "ea_strict": 0.2792452830188679,
+  "ea_rule": "node-set-v1",
+  "em": 0.0,
+  "psjs": 0.4687689254913497,
+  "by_difficulty": {
+    "all": {
+      "ea": 0.2792452830188679,
+      "em": 0.0,
+      "psjs": 0.4687689254913497,
+      "n": 265,
+      "n_scored": {
+        "ea": 265,
+        "em": 265,
+        "psjs": 265
+      },
+      "n_errors": 13
+    },
+    "easy": {
+      "ea": 0.3055555555555556,
+      "em": 0.0,
+      "psjs": 0.6193916359255565,
+      "n": 72,
+      "n_scored": {
+        "ea": 72,
+        "em": 72,
+        "psjs": 72
+      },
+      "n_errors": 0
+    },
+    "medium": {
+      "ea": 0.359375,
+      "em": 0.0,
+      "psjs": 0.4898547354742529,
+      "n": 128,
+      "n_scored": {
+        "ea": 128,
+        "em": 128,
+        "psjs": 128
+      },
+      "n_errors": 2
+    },
+    "hard": {
+      "ea": 0.09230769230769231,
+      "em": 0.0,
+      "psjs": 0.2604024819671264,
+      "n": 65,
+      "n_scored": {
+        "ea": 65,
+        "em": 65,
+        "psjs": 65
+      },
+      "n_errors": 11
+    }
+  },
+  "elapsed_sec": 6083.27,
+  "run_meta": {
+    "generated_at": "2026-10-07T08:37:54-05:00",
+    "ner_mode": "react_node_only",
+    "method": "react",
+    "label": "ReAct",
+    "tool_type": "node",
+    "retrieval": "fuzzy",
+    "generator_llm": "qwen3-32b",
+    "ner_llm": "qwen3-32b-deepinfra",
+    "cypher_llm": "qwen3-32b-deepinfra",
+    "qa_llm": "qwen3-32b-deepinfra",
+    "tool_select_top_k": 15,
+    "values_per_tool": 10,
+    "plan_exec_tools_per_entity": 2,
+    "plan_exec_values_per_tool": 10,
+    "plan_exec_escalate": true,
+    "plan_exec_max_iter": 3,
+    "retrieval_levenshtein_k": 10,
+    "cypher_semantic_repair": true,
+    "cypher_repair_max_rounds": 4,
+    "cypher_empty_is_wrong": false,
+    "cypher_retry_max_rounds": 2,
+    "plan_exec_value_snap": true,
+    "plan_exec_skip_grounded": true,
+    "plan_exec_parallel_mentions": true,
+    "graphrag_empty_is_wrong": true,
+    "graphrag_llm_evaluator": true,
+    "tool_retrieval_mode": "fuzzy",
+    "hybrid_strategy": "cascade"
+  },
+  "run_config": {
+    "stamp": "20261007-065628",
+    "dataset": "mindthequery_augmented",
+    "graph": "wwc",
+    "method": "react@qwen3-32b",
+    "llm": {
+      "generator_llm": "qwen3-32b",
+      "ner": {
+        "provider": "hf_compatible",
+        "model": "qwen3-32b-deepinfra"
+      },
+      "cypher": {
+        "provider": "hf_compatible",
+        "model": "qwen3-32b-deepinfra"
+      },
+      "qa": {
+        "provider": "hf_compatible",
+        "model": "qwen3-32b-deepinfra"
+      }
+    },
+    "embedding": {
+      "backend": "openai",
+      "model": "text-embedding-3-small"
+    },
+    "knobs": {
+      "METHOD": "react",
+      "TOOL_TYPE": "node",
+      "CYANCHOR_TOOL_SCOPE": "node",
+      "GENERATOR_LLM": "qwen3-32b",
+      "RETRIEVAL_FUZZY": "1",
+      "RETRIEVAL_VECTOR": "0",
+      "RETRIEVAL_LEVENSHTEIN": "1",
+      "CYPHER_SEMANTIC_REPAIR": "1",
+      "CYPHER_EMPTY_IS_WRONG": "0",
+      "PLAN_EXEC_ESCALATE": "1",
+      "PLAN_EXEC_VALUE_SNAP": "1",
+      "PLAN_EXEC_SKIP_GROUNDED": "1",
+      "PLAN_EXEC_SELECT_JUDGE": "1",
+      "PLAN_EXEC_PARALLEL_MENTIONS": "1",
+      "GRAPHRAG_EMPTY_IS_WRONG": "1",
+      "GRAPHRAG_LLM_EVALUATOR": "1",
+      "CYPHER_REPAIR_MAX_ROUNDS": "4",
+      "CYPHER_RETRY_MAX_ROUNDS": "2",
+      "RETRIEVAL_LEVENSHTEIN_K": "10"
+    },
+    "shards": 1,
+    "limit": null
+  }
+}

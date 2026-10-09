@@ -1,0 +1,200 @@
+[2026-10-06 12:32:51] === sweep start: model=qwen3-32b graphs=1 methods=['no_val_link', 'fcav', 'react', 'graphrag', 'cyanchor'] SMOKE ===
+[2026-10-06 12:32:51] pre-flight (archives vs live graphs, archives vs published set):
+[2026-10-06 12:32:51]   ✓ cypherbench_augmented__flight_accident: OK — ok (5 tool labels, all non-empty; min count=58) | artifacts OK
+[2026-10-06 12:32:51]   ▶ cypherbench_augmented__flight_accident__no_val_link  (try 1/3, SHARDS=1, limit=3)
+[2026-10-06 12:32:57]     rc=0 records=3/3 err=3 (6s)
+[2026-10-06 12:32:57]   ▶ cypherbench_augmented__flight_accident__fcav  (try 1/3, SHARDS=1, limit=3)
+[2026-10-06 12:33:02]     rc=0 records=3/3 err=3 (5s)
+[2026-10-06 12:33:02]   ▶ cypherbench_augmented__flight_accident__react  (try 1/3, SHARDS=1, limit=3)
+[2026-10-06 12:33:13]     rc=0 records=3/3 err=3 (10s)
+[2026-10-06 12:33:13]   ▶ cypherbench_augmented__flight_accident__graphrag  (try 1/3, SHARDS=1, limit=3)
+[2026-10-06 12:33:18]     rc=0 records=3/3 err=3 (5s)
+[2026-10-06 12:33:18]   ▶ cypherbench_augmented__flight_accident__cyanchor  (try 1/3, SHARDS=1, limit=3)
+[2026-10-06 12:33:24]     rc=0 records=3/3 err=3 (5s)
+[2026-10-06 12:33:24] ✗ SMOKE FAILED:
+  no_val_link: every example errored — agent: BadRequestError: Error code: 400 - {'error': {'message': "This model's maximum context length is 40960 tokens. However, you requested 40960 output tokens and your prompt contains 14073 characters (more than 0 characters, which is the upper bound for 0 input tokens). Please reduce the length o
+  fcav: every example errored — agent: BadRequestError: Error code: 400 - {'error': {'message': "This model's maximum context length is 40960 tokens. However, you requested 40960 output tokens and your prompt contains 14073 characters (more than 0 characters, which is the upper bound for 0 input tokens). Please reduce the length o
+  react: every example errored — agent: BadRequestError: Error code: 400 - {'error': {'message': "This model's maximum context length is 40960 tokens. However, you requested 40960 output tokens and your prompt contains 15097 characters (more than 0 characters, which is the upper bound for 0 input tokens). Please reduce the length o
+  graphrag: every example errored — agent: BadRequestError: Error code: 400 - {'error': {'message': "This model's maximum context length is 40960 tokens. However, you requested 40960 output tokens and your prompt contains 14074 characters (more than 0 characters, which is the upper bound for 0 input tokens). Please reduce the length o
+  cyanchor: every example errored — agent: BadRequestError: Error code: 400 - {'error': {'message': "This model's maximum context length is 40960 tokens. However, you requested 40960 output tokens and your prompt contains 14073 characters (more than 0 characters, which is the upper bound for 0 input tokens). Please reduce the length o
+  Send these lines to the coordinator.
+[2026-10-06 12:34:35] === sweep start: model=qwen3-32b graphs=1 methods=['no_val_link', 'fcav', 'react', 'graphrag', 'cyanchor'] SMOKE ===
+[2026-10-06 12:34:35] pre-flight (archives vs live graphs, archives vs published set):
+[2026-10-06 12:34:36]   ✓ cypherbench_augmented__flight_accident: OK — ok (5 tool labels, all non-empty; min count=58) | artifacts OK
+[2026-10-06 12:34:36]   ▶ cypherbench_augmented__flight_accident__no_val_link  (try 1/3, SHARDS=1, limit=3)
+[2026-10-06 12:34:56]     rc=0 records=3/3 err=0 (21s)
+[2026-10-06 12:34:56]   ▶ cypherbench_augmented__flight_accident__fcav  (try 1/3, SHARDS=1, limit=3)
+[2026-10-06 12:35:22]     rc=0 records=3/3 err=0 (25s)
+[2026-10-06 12:35:22]   ▶ cypherbench_augmented__flight_accident__react  (try 1/3, SHARDS=1, limit=3)
+[2026-10-06 12:35:57]     rc=0 records=3/3 err=0 (35s)
+[2026-10-06 12:35:57]   ▶ cypherbench_augmented__flight_accident__graphrag  (try 1/3, SHARDS=1, limit=3)
+[2026-10-06 12:37:03]     rc=0 records=3/3 err=0 (66s)
+[2026-10-06 12:37:03]   ▶ cypherbench_augmented__flight_accident__cyanchor  (try 1/3, SHARDS=1, limit=3)
+[2026-10-06 12:38:13]     rc=0 records=3/3 err=0 (70s)
+[2026-10-06 12:38:13] ✓ SMOKE OK — all 5 methods produced 3 records on flight_accident (a few errors are fine; a whole method erroring is not). Now run: python orchestrate_sweep.py
+[2026-10-06 12:39:37] === sweep start: model=qwen3-32b graphs=5 methods=['no_val_link', 'fcav', 'react', 'graphrag', 'cyanchor'] FULL ===
+[2026-10-06 12:39:37] pre-flight (archives vs live graphs, archives vs published set):
+[2026-10-06 12:39:38]   ✓ cypherbench_augmented__company: OK — ok (4 tool labels, all non-empty; min count=217) | artifacts OK
+[2026-10-06 12:39:38]   ✓ cypherbench_augmented__flight_accident: OK — ok (5 tool labels, all non-empty; min count=58) | artifacts OK
+[2026-10-06 12:39:38]   ✓ cypherbench_augmented__geography: OK — ok (8 tool labels, all non-empty; min count=5) | artifacts OK
+[2026-10-06 12:39:39]   ✓ cypherbench_augmented__movie: OK — ok (7 tool labels, all non-empty; min count=205) | artifacts OK
+[2026-10-06 12:39:40]   ✓ cypherbench_augmented__nba: OK — ok (7 tool labels, all non-empty; min count=2) | artifacts OK
+[2026-10-06 12:39:40]   ▶ cypherbench_augmented__company__no_val_link  (try 1/3, SHARDS=1, limit=None)
+[2026-10-06 13:03:55]     rc=0 records=303/303 err=20 (1455s)
+[2026-10-06 13:03:55]   ▶ cypherbench_augmented__company__fcav  (try 1/3, SHARDS=1, limit=None)
+[2026-10-06 13:44:23]     rc=0 records=303/303 err=31 (2429s)
+[2026-10-06 13:44:23]   ▶ cypherbench_augmented__company__react  (try 1/3, SHARDS=1, limit=None)
+[2026-10-06 14:36:19]     rc=0 records=303/303 err=2 (3115s)
+[2026-10-06 14:36:19]   ▶ cypherbench_augmented__company__graphrag  (try 1/3, SHARDS=1, limit=None)
+[2026-10-06 16:06:43]     rc=0 records=303/303 err=1 (5424s)
+[2026-10-06 16:06:43]   ▶ cypherbench_augmented__company__cyanchor  (try 1/3, SHARDS=1, limit=None)
+[2026-10-06 18:20:56]     rc=0 records=303/303 err=0 (8053s)
+[2026-10-06 18:20:56]   report: report/qwen3-32b/CypherBench/company.md
+[2026-10-06 18:20:56]   ▶ cypherbench_augmented__flight_accident__no_val_link  (try 1/3, SHARDS=1, limit=None)
+[2026-10-06 18:29:37]     rc=0 records=168/168 err=3 (521s)
+[2026-10-06 18:29:37]   ▶ cypherbench_augmented__flight_accident__fcav  (try 1/3, SHARDS=1, limit=None)
+[2026-10-06 18:53:29]     rc=0 records=168/168 err=9 (1432s)
+[2026-10-06 18:53:29]   ▶ cypherbench_augmented__flight_accident__react  (try 1/3, SHARDS=1, limit=None)
+[2026-10-06 19:18:52]     rc=0 records=168/168 err=0 (1523s)
+[2026-10-06 19:18:52]   ▶ cypherbench_augmented__flight_accident__graphrag  (try 1/3, SHARDS=1, limit=None)
+[2026-10-06 19:56:55]     rc=0 records=168/168 err=0 (2283s)
+[2026-10-06 19:56:55]   ▶ cypherbench_augmented__flight_accident__cyanchor  (try 1/3, SHARDS=1, limit=None)
+[2026-10-06 20:50:40]     rc=0 records=168/168 err=0 (3225s)
+[2026-10-06 20:50:40]   report: report/qwen3-32b/CypherBench/flight_accident.md
+[2026-10-06 20:50:40]   ▶ cypherbench_augmented__geography__no_val_link  (try 1/3, SHARDS=1, limit=None)
+[2026-10-06 21:17:50]     rc=0 records=331/331 err=31 (1630s)
+[2026-10-06 21:17:50]   ▶ cypherbench_augmented__geography__fcav  (try 1/3, SHARDS=1, limit=None)
+[2026-10-06 22:03:09]     rc=0 records=331/331 err=35 (2718s)
+[2026-10-06 22:03:09]   ▶ cypherbench_augmented__geography__react  (try 1/3, SHARDS=1, limit=None)
+[2026-10-06 23:06:40]     rc=0 records=331/331 err=1 (3812s)
+[2026-10-06 23:06:40]   ▶ cypherbench_augmented__geography__graphrag  (try 1/3, SHARDS=1, limit=None)
+[2026-10-07 00:56:56]     rc=0 records=331/331 err=16 (6616s)
+[2026-10-07 00:56:56]   ▶ cypherbench_augmented__geography__cyanchor  (try 1/3, SHARDS=1, limit=None)
+[2026-10-07 03:20:45]     rc=0 records=331/331 err=0 (8629s)
+[2026-10-07 03:20:45]   report: report/qwen3-32b/CypherBench/geography.md
+[2026-10-07 03:20:45]   ▶ cypherbench_augmented__movie__no_val_link  (try 1/3, SHARDS=1, limit=None)
+[2026-10-07 03:52:31]     rc=0 records=359/359 err=35 (1906s)
+[2026-10-07 03:52:31]   ▶ cypherbench_augmented__movie__fcav  (try 1/3, SHARDS=1, limit=None)
+[2026-10-07 04:47:42]     rc=0 records=359/359 err=46 (3311s)
+[2026-10-07 04:47:42]   ▶ cypherbench_augmented__movie__react  (try 1/3, SHARDS=1, limit=None)
+[2026-10-07 05:43:13]     rc=0 records=359/359 err=0 (3331s)
+[2026-10-07 05:43:13]   ▶ cypherbench_augmented__movie__graphrag  (try 1/3, SHARDS=1, limit=None)
+[2026-10-07 07:09:36]     rc=0 records=359/359 err=0 (5184s)
+[2026-10-07 07:09:37]   ▶ cypherbench_augmented__movie__cyanchor  (try 1/3, SHARDS=1, limit=None)
+[2026-10-07 10:20:10]     rc=0 records=359/359 err=0 (11433s)
+[2026-10-07 10:20:10]   report: report/qwen3-32b/CypherBench/movie.md
+[2026-10-07 10:20:10]   ▶ cypherbench_augmented__nba__no_val_link  (try 1/3, SHARDS=1, limit=None)
+[2026-10-07 10:35:47]     rc=0 records=251/251 err=28 (937s)
+[2026-10-07 10:35:47]   ▶ cypherbench_augmented__nba__fcav  (try 1/3, SHARDS=1, limit=None)
+[2026-10-07 11:04:30]     rc=0 records=251/251 err=35 (1723s)
+[2026-10-07 11:04:30]   ▶ cypherbench_augmented__nba__react  (try 1/3, SHARDS=1, limit=None)
+[2026-10-07 11:47:34]     rc=0 records=251/251 err=1 (2585s)
+[2026-10-07 11:47:34]   ▶ cypherbench_augmented__nba__graphrag  (try 1/3, SHARDS=1, limit=None)
+[2026-10-07 12:52:16]     rc=0 records=251/251 err=0 (3881s)
+[2026-10-07 12:52:16]   ▶ cypherbench_augmented__nba__cyanchor  (try 1/3, SHARDS=1, limit=None)
+[2026-10-07 14:39:36]     rc=0 records=251/251 err=0 (6440s)
+[2026-10-07 14:39:36]   report: report/qwen3-32b/CypherBench/nba.md
+[2026-10-07 14:39:36]   summary: report/qwen3-32b/CypherBench/_summary.md
+[2026-10-07 14:39:37] === run NOT CLEAN — 40 ✗, 1 ⚠ (see the matrix) · driver c6411e5 ===
+[2026-10-07 14:39:37] report: report/qwen3-32b/SWEEP.md
+[2026-10-07 14:39:37] ⚠ cells: the report's 'Flagged cells' section has the error text and the re-run command for each.
+[2026-10-07 14:39:37] next: python orchestrate_sweep.py              # re-runs only the ✗ / ⚠ cells
+[2026-10-07 14:39:37]       python orchestrate_sweep.py --publish    # when every cell shows ✓
+[2026-10-07 14:39:37]       (a cell that still shows ✗ or ⚠ after that: python orchestrate_sweep.py --publish --allow-incomplete, and send the matrix + 'Flagged cells' section to the coordinator)
+[2026-10-07 14:40:16] === sweep start: model=qwen3-32b graphs=2 methods=['no_val_link', 'react', 'graphrag', 'cyanchor'] FULL ===
+[2026-10-07 14:40:16] pre-flight (archives vs live graphs, archives vs published set):
+[2026-10-07 14:40:17]   ✓ cypherbench_augmented__politics: OK — ok (6 tool labels, all non-empty; min count=217) | artifacts OK
+[2026-10-07 14:40:18]   ✓ mindthequery_augmented__healthcare: OK — ok (8 tool labels, all non-empty; min count=5) | artifacts OK
+[2026-10-07 14:40:18]   ▶ cypherbench_augmented__politics__no_val_link  (try 1/3, SHARDS=1, limit=None)
+[2026-10-07 15:13:56]     rc=0 records=356/356 err=42 (2018s)
+[2026-10-07 15:13:56]   ▶ cypherbench_augmented__politics__react  (try 1/3, SHARDS=1, limit=None)
+[2026-10-07 16:30:57]     rc=0 records=356/356 err=1 (4622s)
+[2026-10-07 16:30:58]   ▶ cypherbench_augmented__politics__graphrag  (try 1/3, SHARDS=1, limit=None)
+[2026-10-07 18:13:05]     rc=0 records=356/356 err=0 (6127s)
+[2026-10-07 18:13:05]   ▶ cypherbench_augmented__politics__cyanchor  (try 1/3, SHARDS=1, limit=None)
+[2026-10-07 21:20:12]     rc=0 records=356/356 err=0 (11227s)
+[2026-10-07 21:20:12]   report: report/qwen3-32b/CypherBench/politics.md
+[2026-10-07 21:20:12]   summary: report/qwen3-32b/CypherBench/_summary.md
+[2026-10-07 21:20:12]   ▶ mindthequery_augmented__healthcare__no_val_link  (try 1/3, SHARDS=1, limit=None)
+[2026-10-07 21:51:45]     rc=0 records=418/418 err=74 (1893s)
+[2026-10-07 21:51:45]   ▶ mindthequery_augmented__healthcare__react  (try 1/3, SHARDS=1, limit=None)
+[2026-10-07 23:07:10]     rc=0 records=418/418 err=5 (4525s)
+[2026-10-07 23:07:10]   ▶ mindthequery_augmented__healthcare__graphrag  (try 1/3, SHARDS=1, limit=None)
+[2026-10-08 01:05:09]     rc=0 records=418/418 err=5 (7079s)
+[2026-10-08 01:05:09]   ▶ mindthequery_augmented__healthcare__cyanchor  (try 1/3, SHARDS=1, limit=None)
+[2026-10-08 03:58:46]     rc=0 records=418/418 err=4 (10417s)
+[2026-10-08 03:58:46]   report: report/qwen3-32b/MindTheQuery/healthcare.md
+[2026-10-08 03:58:46]   summary: report/qwen3-32b/MindTheQuery/_summary.md
+[2026-10-08 03:58:47] === run NOT CLEAN — 32 ✗, 1 ⚠ (see the matrix) · driver c6411e5 ===
+[2026-10-08 03:58:47] report: report/qwen3-32b/SWEEP.md
+[2026-10-08 03:58:47] ⚠ cells: the report's 'Flagged cells' section has the error text and the re-run command for each.
+[2026-10-08 03:58:47] next: python orchestrate_sweep.py              # re-runs only the ✗ / ⚠ cells
+[2026-10-08 03:58:47]       python orchestrate_sweep.py --publish    # when every cell shows ✓
+[2026-10-08 03:58:47]       (a cell that still shows ✗ or ⚠ after that: python orchestrate_sweep.py --publish --allow-incomplete, and send the matrix + 'Flagged cells' section to the coordinator)
+[2026-10-08 03:58:47] === sweep start: model=qwen3-32b graphs=1 methods=['fcav'] FULL ===
+[2026-10-08 03:58:47] pre-flight (archives vs live graphs, archives vs published set):
+[2026-10-08 03:58:48]   ✓ mindthequery_augmented__healthcare: OK — ok (8 tool labels, all non-empty; min count=5) | artifacts OK
+[2026-10-08 03:58:48]   ▶ mindthequery_augmented__healthcare__fcav  (try 1/3, SHARDS=1, limit=None)
+[2026-10-08 04:44:33]     rc=0 records=418/418 err=75 (2745s)
+[2026-10-08 04:44:33]   report: report/qwen3-32b/MindTheQuery/healthcare.md
+[2026-10-08 04:44:33]   summary: report/qwen3-32b/MindTheQuery/_summary.md
+[2026-10-08 04:44:33] === run NOT CLEAN — 31 ✗, 1 ⚠ (see the matrix) · driver c6411e5 ===
+[2026-10-08 04:44:33] report: report/qwen3-32b/SWEEP.md
+[2026-10-08 04:44:33] ⚠ cells: the report's 'Flagged cells' section has the error text and the re-run command for each.
+[2026-10-08 04:44:33] next: python orchestrate_sweep.py              # re-runs only the ✗ / ⚠ cells
+[2026-10-08 04:44:33]       python orchestrate_sweep.py --publish    # when every cell shows ✓
+[2026-10-08 04:44:33]       (a cell that still shows ✗ or ⚠ after that: python orchestrate_sweep.py --publish --allow-incomplete, and send the matrix + 'Flagged cells' section to the coordinator)
+[2026-10-08 04:44:33] === sweep start: model=qwen3-32b graphs=1 methods=['fcav'] FULL ===
+[2026-10-08 04:44:33] pre-flight (archives vs live graphs, archives vs published set):
+[2026-10-08 04:44:34]   ✓ cypherbench_augmented__politics: OK — ok (6 tool labels, all non-empty; min count=217) | artifacts OK
+[2026-10-08 04:44:34]   ▶ cypherbench_augmented__politics__fcav  (try 1/3, SHARDS=1, limit=None)
+[2026-10-08 05:52:50]     rc=0 records=356/356 err=53 (4096s)
+[2026-10-08 05:52:50]   report: report/qwen3-32b/CypherBench/politics.md
+[2026-10-08 05:52:51]   summary: report/qwen3-32b/CypherBench/_summary.md
+[2026-10-08 05:52:51] === run NOT CLEAN — 30 ✗, 1 ⚠ (see the matrix) · driver c6411e5 ===
+[2026-10-08 05:52:51] report: report/qwen3-32b/SWEEP.md
+[2026-10-08 05:52:51] ⚠ cells: the report's 'Flagged cells' section has the error text and the re-run command for each.
+[2026-10-08 05:52:51] next: python orchestrate_sweep.py              # re-runs only the ✗ / ⚠ cells
+[2026-10-08 05:52:51]       python orchestrate_sweep.py --publish    # when every cell shows ✓
+[2026-10-08 05:52:51]       (a cell that still shows ✗ or ⚠ after that: python orchestrate_sweep.py --publish --allow-incomplete, and send the matrix + 'Flagged cells' section to the coordinator)
+[2026-10-08 05:52:51] === status NOT CLEAN — 30 ✗, 1 ⚠ (see the matrix) · driver c6411e5 ===
+[2026-10-08 05:52:51] report: report/qwen3-32b/SWEEP.md
+[2026-10-08 05:54:27] === sweep start: model=qwen3-32b graphs=1 methods=['graphrag'] FULL ===
+[2026-10-08 05:54:27] pre-flight (archives vs live graphs, archives vs published set):
+[2026-10-08 05:54:27]   ✓ cypherbench_augmented__geography: OK — ok (8 tool labels, all non-empty; min count=5) | artifacts OK
+[2026-10-08 05:54:27]   ⚠ cypherbench_augmented__geography__graphrag: 15 of 331 questions failed on infrastructure (timeout / API / rate limit) — never evaluated — re-running on request (--graphs/--methods); automatic re-runs so far: 0
+[2026-10-08 05:54:27]   ▶ cypherbench_augmented__geography__graphrag  (try 1/3, SHARDS=1, limit=None)
+[2026-10-08 07:29:19]     rc=0 records=331/331 err=6 (5692s)
+[2026-10-08 07:29:19]   report: report/qwen3-32b/CypherBench/geography.md
+[2026-10-08 07:29:19]   summary: report/qwen3-32b/CypherBench/_summary.md
+[2026-10-08 07:29:20] === run NOT CLEAN — 30 ✗, 0 ⚠ (see the matrix) · driver c6411e5 ===
+[2026-10-08 07:29:20] report: report/qwen3-32b/SWEEP.md
+[2026-10-08 07:29:20] next: python orchestrate_sweep.py              # re-runs only the ✗ / ⚠ cells
+[2026-10-08 07:29:20]       python orchestrate_sweep.py --publish    # when every cell shows ✓
+[2026-10-08 07:29:20]       (a cell that still shows ✗ or ⚠ after that: python orchestrate_sweep.py --publish --allow-incomplete, and send the matrix + 'Flagged cells' section to the coordinator)
+[2026-10-08 07:29:20] === status NOT CLEAN — 30 ✗, 0 ⚠ (see the matrix) · driver c6411e5 ===
+[2026-10-08 07:29:20] report: report/qwen3-32b/SWEEP.md
+[2026-10-08 14:39:35] === status NOT CLEAN — 0 ✗, 1 ⚠ (⚠ ZOGRASCOPE · pole · cyanchor) · driver c6411e5 ===
+[2026-10-08 14:39:35] report: report/qwen3-32b/SWEEP.md
+[2026-10-08 15:55:03] === status NOT CLEAN — 0 ✗, 1 ⚠ (⚠ ZOGRASCOPE · pole · cyanchor) · driver c6411e5 ===
+[2026-10-08 15:55:03] report: report/qwen3-32b/SWEEP.md
+[2026-10-08 20:47:51] === status COMPLETE — 0 ✗, 0 ⚠ · driver c6411e5 ===
+[2026-10-08 20:47:51] report: report/qwen3-32b/SWEEP.md
+[2026-10-08 20:49:05]   report: report/qwen3-32b/CypherBench/company.md
+[2026-10-08 20:49:05]   report: report/qwen3-32b/CypherBench/fictional_character.md
+[2026-10-08 20:49:05]   report: report/qwen3-32b/CypherBench/flight_accident.md
+[2026-10-08 20:49:05]   report: report/qwen3-32b/CypherBench/geography.md
+[2026-10-08 20:49:05]   report: report/qwen3-32b/CypherBench/movie.md
+[2026-10-08 20:49:05]   report: report/qwen3-32b/CypherBench/nba.md
+[2026-10-08 20:49:05]   report: report/qwen3-32b/CypherBench/politics.md
+[2026-10-08 20:49:05]   summary: report/qwen3-32b/CypherBench/_summary.md
+[2026-10-08 20:49:05]   report: report/qwen3-32b/MindTheQuery/bloom.md
+[2026-10-08 20:49:05]   report: report/qwen3-32b/MindTheQuery/covid.md
+[2026-10-08 20:49:05]   report: report/qwen3-32b/MindTheQuery/er.md
+[2026-10-08 20:49:05]   report: report/qwen3-32b/MindTheQuery/healthcare.md
+[2026-10-08 20:49:05]   report: report/qwen3-32b/MindTheQuery/wwc.md
+[2026-10-08 20:49:05]   summary: report/qwen3-32b/MindTheQuery/_summary.md
+[2026-10-08 20:49:05]   report: report/qwen3-32b/ZOGRASCOPE/pole.md
+[2026-10-08 20:49:06]   summary: report/qwen3-32b/ZOGRASCOPE/_summary.md
+[2026-10-08 20:49:06] === publish COMPLETE — 0 ✗, 0 ⚠ · driver c6411e5 ===
+[2026-10-08 20:49:06] report: report/qwen3-32b/SWEEP.md

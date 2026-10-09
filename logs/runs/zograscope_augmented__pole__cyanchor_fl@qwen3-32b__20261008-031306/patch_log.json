@@ -1,0 +1,162 @@
+{
+  "at": "20261008-201933",
+  "rerun": [
+    {
+      "qid": "4009",
+      "old_error": "agent: APIConnectionError: Connection error.",
+      "new_error": null,
+      "new_ea": true
+    },
+    {
+      "qid": "2775",
+      "old_error": "agent: APIConnectionError: Connection error.",
+      "new_error": null,
+      "new_ea": false
+    },
+    {
+      "qid": "1945",
+      "old_error": "agent: APIConnectionError: Connection error.",
+      "new_error": null,
+      "new_ea": false
+    },
+    {
+      "qid": "2759",
+      "old_error": "agent: APIConnectionError: Connection error.",
+      "new_error": null,
+      "new_ea": false
+    },
+    {
+      "qid": "3709",
+      "old_error": "agent: APIConnectionError: Connection error.",
+      "new_error": null,
+      "new_ea": false
+    },
+    {
+      "qid": "2400",
+      "old_error": "agent: APIConnectionError: Connection error.",
+      "new_error": null,
+      "new_ea": false
+    },
+    {
+      "qid": "2369",
+      "old_error": "agent: APIConnectionError: Connection error.",
+      "new_error": null,
+      "new_ea": false
+    },
+    {
+      "qid": "442",
+      "old_error": "agent: APIConnectionError: Connection error.",
+      "new_error": null,
+      "new_ea": true
+    },
+    {
+      "qid": "4246",
+      "old_error": "agent: APIConnectionError: Connection error.",
+      "new_error": null,
+      "new_ea": false
+    },
+    {
+      "qid": "4096",
+      "old_error": "agent: APIConnectionError: Connection error.",
+      "new_error": null,
+      "new_ea": false
+    },
+    {
+      "qid": "913",
+      "old_error": "agent: APIConnectionError: Connection error.",
+      "new_error": null,
+      "new_ea": false
+    },
+    {
+      "qid": "455",
+      "old_error": "agent: APIConnectionError: Connection error.",
+      "new_error": null,
+      "new_ea": false
+    },
+    {
+      "qid": "1947",
+      "old_error": "agent: APIConnectionError: Connection error.",
+      "new_error": null,
+      "new_ea": false
+    },
+    {
+      "qid": "4078",
+      "old_error": "agent: APIConnectionError: Connection error.",
+      "new_error": null,
+      "new_ea": false
+    },
+    {
+      "qid": "1155",
+      "old_error": "agent: APIConnectionError: Connection error.",
+      "new_error": null,
+      "new_ea": true
+    },
+    {
+      "qid": "2562",
+      "old_error": "agent: APIConnectionError: Connection error.",
+      "new_error": null,
+      "new_ea": false
+    },
+    {
+      "qid": "1270",
+      "old_error": "agent: APIConnectionError: Connection error.",
+      "new_error": null,
+      "new_ea": false
+    },
+    {
+      "qid": "1988",
+      "old_error": "agent: APIConnectionError: Connection error.",
+      "new_error": null,
+      "new_ea": false
+    },
+    {
+      "qid": "514",
+      "old_error": "agent: APIConnectionError: Connection error.",
+      "new_error": null,
+      "new_ea": true
+    },
+    {
+      "qid": "744",
+      "old_error": "agent: APIConnectionError: Connection error.",
+      "new_error": null,
+      "new_ea": true
+    },
+    {
+      "qid": "2205",
+      "old_error": "agent: APIConnectionError: Connection error.",
+      "new_error": null,
+      "new_ea": true
+    },
+    {
+      "qid": "2261",
+      "old_error": "agent: APIConnectionError: Connection error.",
+      "new_error": null,
+      "new_ea": false
+    },
+    {
+      "qid": "3013",
+      "old_error": "agent: APIConnectionError: Connection error.",
+      "new_error": null,
+      "new_ea": true
+    },
+    {
+      "qid": "300",
+      "old_error": "agent: APIConnectionError: Connection error.",
+      "new_error": null,
+      "new_ea": true
+    },
+    {
+      "qid": "1747",
+      "old_error": "agent: APIConnectionError: Connection error.",
+      "new_error": null,
+      "new_ea": true
+    },
+    {
+      "qid": "4239",
+      "old_error": "agent: APITimeoutError: Request timed out.",
+      "new_error": null,
+      "new_ea": false
+    }
+  ],
+  "mini_run_dir": "logs/_patch/zograscope_augmented__pole__cyanchor_fl@qwen3-32b__20261008-031306__20261008-201933/zograscope_augmented__pole__cyanchor_fl@qwen3-32b__20261008-201934"
+}

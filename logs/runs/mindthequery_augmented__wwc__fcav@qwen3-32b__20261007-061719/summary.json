@@ -1,0 +1,144 @@
+{
+  "dataset": "mindthequery_augmented",
+  "n": 265,
+  "n_scored": {
+    "ea": 265,
+    "em": 265,
+    "psjs": 265
+  },
+  "n_errors": 61,
+  "ea": 0.2528301886792453,
+  "ea_strict": 0.2528301886792453,
+  "ea_rule": "node-set-v1",
+  "em": 0.0,
+  "psjs": 0.41908135070948865,
+  "by_difficulty": {
+    "all": {
+      "ea": 0.2528301886792453,
+      "em": 0.0,
+      "psjs": 0.41908135070948865,
+      "n": 265,
+      "n_scored": {
+        "ea": 265,
+        "em": 265,
+        "psjs": 265
+      },
+      "n_errors": 61
+    },
+    "easy": {
+      "ea": 0.2916666666666667,
+      "em": 0.0,
+      "psjs": 0.5526732175337544,
+      "n": 72,
+      "n_scored": {
+        "ea": 72,
+        "em": 72,
+        "psjs": 72
+      },
+      "n_errors": 10
+    },
+    "medium": {
+      "ea": 0.3203125,
+      "em": 0.0,
+      "psjs": 0.4620860263515393,
+      "n": 128,
+      "n_scored": {
+        "ea": 128,
+        "em": 128,
+        "psjs": 128
+      },
+      "n_errors": 20
+    },
+    "hard": {
+      "ea": 0.07692307692307693,
+      "em": 0.0,
+      "psjs": 0.18641653696287888,
+      "n": 65,
+      "n_scored": {
+        "ea": 65,
+        "em": 65,
+        "psjs": 65
+      },
+      "n_errors": 31
+    }
+  },
+  "elapsed_sec": 2344.7,
+  "run_meta": {
+    "generated_at": "2026-10-07T06:56:26-05:00",
+    "ner_mode": "fcav",
+    "method": "fcav",
+    "label": "FCAV",
+    "tool_type": null,
+    "retrieval": "vector",
+    "generator_llm": "qwen3-32b",
+    "ner_llm": "qwen3-32b-deepinfra",
+    "cypher_llm": "qwen3-32b-deepinfra",
+    "qa_llm": "qwen3-32b-deepinfra",
+    "tool_select_top_k": 15,
+    "values_per_tool": 10,
+    "plan_exec_tools_per_entity": 2,
+    "plan_exec_values_per_tool": 10,
+    "plan_exec_escalate": true,
+    "plan_exec_max_iter": 3,
+    "retrieval_levenshtein_k": 10,
+    "cypher_semantic_repair": true,
+    "cypher_repair_max_rounds": 4,
+    "cypher_empty_is_wrong": false,
+    "cypher_retry_max_rounds": 2,
+    "plan_exec_value_snap": true,
+    "plan_exec_skip_grounded": true,
+    "plan_exec_parallel_mentions": true,
+    "graphrag_empty_is_wrong": true,
+    "graphrag_llm_evaluator": true,
+    "tool_retrieval_mode": "fuzzy",
+    "hybrid_strategy": "cascade"
+  },
+  "run_config": {
+    "stamp": "20261007-061719",
+    "dataset": "mindthequery_augmented",
+    "graph": "wwc",
+    "method": "fcav@qwen3-32b",
+    "llm": {
+      "generator_llm": "qwen3-32b",
+      "ner": {
+        "provider": "hf_compatible",
+        "model": "qwen3-32b-deepinfra"
+      },
+      "cypher": {
+        "provider": "hf_compatible",
+        "model": "qwen3-32b-deepinfra"
+      },
+      "qa": {
+        "provider": "hf_compatible",
+        "model": "qwen3-32b-deepinfra"
+      }
+    },
+    "embedding": {
+      "backend": "openai",
+      "model": "text-embedding-3-small"
+    },
+    "knobs": {
+      "METHOD": "fcav",
+      "TOOL_TYPE": "node",
+      "CYANCHOR_TOOL_SCOPE": "node",
+      "GENERATOR_LLM": "qwen3-32b",
+      "RETRIEVAL_FUZZY": "1",
+      "RETRIEVAL_VECTOR": "0",
+      "RETRIEVAL_LEVENSHTEIN": "1",
+      "CYPHER_SEMANTIC_REPAIR": "1",
+      "CYPHER_EMPTY_IS_WRONG": "0",
+      "PLAN_EXEC_ESCALATE": "1",
+      "PLAN_EXEC_VALUE_SNAP": "1",
+      "PLAN_EXEC_SKIP_GROUNDED": "1",
+      "PLAN_EXEC_SELECT_JUDGE": "1",
+      "PLAN_EXEC_PARALLEL_MENTIONS": "1",
+      "GRAPHRAG_EMPTY_IS_WRONG": "1",
+      "GRAPHRAG_LLM_EVALUATOR": "1",
+      "CYPHER_REPAIR_MAX_ROUNDS": "4",
+      "CYPHER_RETRY_MAX_ROUNDS": "2",
+      "RETRIEVAL_LEVENSHTEIN_K": "10"
+    },
+    "shards": 1,
+    "limit": null
+  }
+}
