@@ -1,0 +1,144 @@
+{
+  "dataset": "zograscope_augmented",
+  "n": 1283,
+  "n_scored": {
+    "ea": 1283,
+    "em": 1283,
+    "psjs": 1283
+  },
+  "n_errors": 0,
+  "ea": 0.5370226032735775,
+  "ea_strict": 0.32424006235385816,
+  "ea_rule": "node-set-v1",
+  "em": 0.0,
+  "psjs": 0.41005345145685157,
+  "by_difficulty": {
+    "all": {
+      "ea": 0.5370226032735775,
+      "em": 0.0,
+      "psjs": 0.41005345145685157,
+      "n": 1283,
+      "n_scored": {
+        "ea": 1283,
+        "em": 1283,
+        "psjs": 1283
+      },
+      "n_errors": 0
+    },
+    "easy": {
+      "ea": 0.5679012345679012,
+      "em": 0.0,
+      "psjs": 0.43824132431112384,
+      "n": 81,
+      "n_scored": {
+        "ea": 81,
+        "em": 81,
+        "psjs": 81
+      },
+      "n_errors": 0
+    },
+    "medium": {
+      "ea": 0.5115303983228512,
+      "em": 0.0,
+      "psjs": 0.37068043524519007,
+      "n": 954,
+      "n_scored": {
+        "ea": 954,
+        "em": 954,
+        "psjs": 954
+      },
+      "n_errors": 0
+    },
+    "hard": {
+      "ea": 0.625,
+      "em": 0.0,
+      "psjs": 0.5523060311533359,
+      "n": 248,
+      "n_scored": {
+        "ea": 248,
+        "em": 248,
+        "psjs": 248
+      },
+      "n_errors": 0
+    }
+  },
+  "elapsed_sec": 26929.95,
+  "run_meta": {
+    "generated_at": "2026-10-08T21:02:00-05:00",
+    "ner_mode": "cyanchor_fl_node_only",
+    "method": "cyanchor",
+    "label": "CyANCHOR [fuzzy+lev] (Node)",
+    "tool_type": "node",
+    "retrieval": "fuzzy+lev",
+    "generator_llm": "deepseek-v4.1-flash",
+    "ner_llm": "deepseek-v4.1-flash-deepinfra",
+    "cypher_llm": "deepseek-v4.1-flash-deepinfra",
+    "qa_llm": "deepseek-v4.1-flash-deepinfra",
+    "tool_select_top_k": 15,
+    "values_per_tool": 10,
+    "plan_exec_tools_per_entity": 2,
+    "plan_exec_values_per_tool": 10,
+    "plan_exec_escalate": true,
+    "plan_exec_max_iter": 3,
+    "retrieval_levenshtein_k": 10,
+    "cypher_semantic_repair": true,
+    "cypher_repair_max_rounds": 4,
+    "cypher_empty_is_wrong": false,
+    "cypher_retry_max_rounds": 2,
+    "plan_exec_value_snap": true,
+    "plan_exec_skip_grounded": true,
+    "plan_exec_parallel_mentions": true,
+    "graphrag_empty_is_wrong": true,
+    "graphrag_llm_evaluator": true,
+    "tool_retrieval_mode": "fuzzy",
+    "hybrid_strategy": "cascade"
+  },
+  "run_config": {
+    "stamp": "20261008-133308",
+    "dataset": "zograscope_augmented",
+    "graph": "pole",
+    "method": "cyanchor_fl@deepseek-v4.1-flash",
+    "llm": {
+      "generator_llm": "deepseek-v4.1-flash",
+      "ner": {
+        "provider": "hf_compatible",
+        "model": "deepseek-v4.1-flash-deepinfra"
+      },
+      "cypher": {
+        "provider": "hf_compatible",
+        "model": "deepseek-v4.1-flash-deepinfra"
+      },
+      "qa": {
+        "provider": "hf_compatible",
+        "model": "deepseek-v4.1-flash-deepinfra"
+      }
+    },
+    "embedding": {
+      "backend": "openai",
+      "model": "text-embedding-3-small"
+    },
+    "knobs": {
+      "METHOD": "cyanchor",
+      "TOOL_TYPE": "node",
+      "CYANCHOR_TOOL_SCOPE": "node",
+      "GENERATOR_LLM": "deepseek-v4.1-flash",
+      "RETRIEVAL_FUZZY": "1",
+      "RETRIEVAL_VECTOR": "0",
+      "RETRIEVAL_LEVENSHTEIN": "1",
+      "CYPHER_SEMANTIC_REPAIR": "1",
+      "CYPHER_EMPTY_IS_WRONG": "0",
+      "PLAN_EXEC_ESCALATE": "1",
+      "PLAN_EXEC_VALUE_SNAP": "1",
+      "PLAN_EXEC_SKIP_GROUNDED": "1",
+      "PLAN_EXEC_SELECT_JUDGE": "1",
+      "PLAN_EXEC_PARALLEL_MENTIONS": "1",
+      "GRAPHRAG_EMPTY_IS_WRONG": "1",
+      "GRAPHRAG_LLM_EVALUATOR": "1",
+      "CYPHER_REPAIR_MAX_ROUNDS": "4",
+      "CYPHER_RETRY_MAX_ROUNDS": "2",
+      "RETRIEVAL_LEVENSHTEIN_K": "10"
+    },
+    "shards": 1,
+    "limit": null
+  }
+}

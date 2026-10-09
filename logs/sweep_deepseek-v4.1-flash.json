@@ -1,0 +1,382 @@
+{
+  "model": "deepseek-v4.1-flash",
+  "smoke": false,
+  "started": "2026-10-06 23:49:23",
+  "cells": {
+    "cypherbench_augmented__company__no_val_link": {
+      "tries": 1,
+      "status": "done",
+      "n": 303,
+      "err": 3,
+      "dir": "logs/runs/cypherbench_augmented__company__no_val_link@deepseek-v4.1-flash__20261006-234925",
+      "finished_at": "2026-10-07 00:11:47"
+    },
+    "cypherbench_augmented__company__fcav": {
+      "tries": 1,
+      "status": "done",
+      "n": 303,
+      "err": 3,
+      "dir": "logs/runs/cypherbench_augmented__company__fcav@deepseek-v4.1-flash__20261007-001148",
+      "finished_at": "2026-10-07 00:43:36"
+    },
+    "cypherbench_augmented__company__react": {
+      "tries": 1,
+      "status": "done",
+      "n": 303,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__company__react@deepseek-v4.1-flash__20261007-004336",
+      "finished_at": "2026-10-07 01:21:15"
+    },
+    "cypherbench_augmented__company__graphrag": {
+      "tries": 1,
+      "status": "done",
+      "n": 303,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__company__graphrag@deepseek-v4.1-flash__20261007-012115",
+      "finished_at": "2026-10-07 02:12:30"
+    },
+    "cypherbench_augmented__company__cyanchor": {
+      "tries": 1,
+      "status": "done",
+      "n": 303,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__company__cyanchor_fl@deepseek-v4.1-flash__20261007-021230",
+      "finished_at": "2026-10-07 03:48:44"
+    },
+    "cypherbench_augmented__fictional_character__no_val_link": {
+      "tries": 1,
+      "status": "done",
+      "n": 322,
+      "err": 2,
+      "dir": "logs/runs/cypherbench_augmented__fictional_character__no_val_link@deepseek-v4.1-flash__20261007-034845",
+      "finished_at": "2026-10-07 04:10:17"
+    },
+    "cypherbench_augmented__fictional_character__fcav": {
+      "tries": 1,
+      "status": "done",
+      "n": 322,
+      "err": 3,
+      "dir": "logs/runs/cypherbench_augmented__fictional_character__fcav@deepseek-v4.1-flash__20261007-041017",
+      "finished_at": "2026-10-07 04:44:41"
+    },
+    "cypherbench_augmented__fictional_character__react": {
+      "tries": 1,
+      "status": "done",
+      "n": 322,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__fictional_character__react@deepseek-v4.1-flash__20261007-044441",
+      "finished_at": "2026-10-07 05:29:21"
+    },
+    "cypherbench_augmented__fictional_character__graphrag": {
+      "tries": 1,
+      "status": "done",
+      "n": 322,
+      "err": 1,
+      "dir": "logs/runs/cypherbench_augmented__fictional_character__graphrag@deepseek-v4.1-flash__20261007-052921",
+      "finished_at": "2026-10-07 06:45:33"
+    },
+    "cypherbench_augmented__fictional_character__cyanchor": {
+      "tries": 1,
+      "status": "done",
+      "n": 322,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__fictional_character__cyanchor_fl@deepseek-v4.1-flash__20261007-064534",
+      "finished_at": "2026-10-07 08:25:28"
+    },
+    "cypherbench_augmented__flight_accident__no_val_link": {
+      "tries": 1,
+      "status": "done",
+      "n": 168,
+      "err": 2,
+      "dir": "logs/runs/cypherbench_augmented__flight_accident__no_val_link@deepseek-v4.1-flash__20261007-082528",
+      "finished_at": "2026-10-07 08:38:40"
+    },
+    "cypherbench_augmented__flight_accident__fcav": {
+      "tries": 1,
+      "status": "done",
+      "n": 168,
+      "err": 1,
+      "dir": "logs/runs/cypherbench_augmented__flight_accident__fcav@deepseek-v4.1-flash__20261007-083840",
+      "finished_at": "2026-10-07 08:52:42"
+    },
+    "cypherbench_augmented__flight_accident__react": {
+      "tries": 1,
+      "status": "done",
+      "n": 168,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__flight_accident__react@deepseek-v4.1-flash__20261007-085242",
+      "finished_at": "2026-10-07 09:11:04"
+    },
+    "cypherbench_augmented__flight_accident__graphrag": {
+      "tries": 1,
+      "status": "done",
+      "n": 168,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__flight_accident__graphrag@deepseek-v4.1-flash__20261007-091104",
+      "finished_at": "2026-10-07 09:34:07"
+    },
+    "cypherbench_augmented__flight_accident__cyanchor": {
+      "tries": 1,
+      "status": "done",
+      "n": 168,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__flight_accident__cyanchor_fl@deepseek-v4.1-flash__20261007-093407",
+      "finished_at": "2026-10-07 10:04:50"
+    },
+    "cypherbench_augmented__geography__no_val_link": {
+      "tries": 1,
+      "status": "done",
+      "n": 331,
+      "err": 5,
+      "dir": "logs/runs/cypherbench_augmented__geography__no_val_link@deepseek-v4.1-flash__20261007-100453",
+      "finished_at": "2026-10-07 10:30:40"
+    },
+    "cypherbench_augmented__geography__fcav": {
+      "tries": 1,
+      "status": "done",
+      "n": 331,
+      "err": 5,
+      "dir": "logs/runs/cypherbench_augmented__geography__fcav@deepseek-v4.1-flash__20261007-103041",
+      "finished_at": "2026-10-07 11:02:03"
+    },
+    "cypherbench_augmented__geography__react": {
+      "tries": 1,
+      "status": "done",
+      "n": 331,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__geography__react@deepseek-v4.1-flash__20261007-110204",
+      "finished_at": "2026-10-07 11:46:18"
+    },
+    "cypherbench_augmented__geography__graphrag": {
+      "tries": 1,
+      "status": "done",
+      "n": 331,
+      "err": 1,
+      "dir": "logs/runs/cypherbench_augmented__geography__graphrag@deepseek-v4.1-flash__20261007-114619",
+      "finished_at": "2026-10-07 12:51:14"
+    },
+    "cypherbench_augmented__geography__cyanchor": {
+      "tries": 1,
+      "status": "done",
+      "n": 331,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__geography__cyanchor_fl@deepseek-v4.1-flash__20261007-125115",
+      "finished_at": "2026-10-07 14:18:38"
+    },
+    "cypherbench_augmented__movie__no_val_link": {
+      "tries": 1,
+      "status": "done",
+      "n": 359,
+      "err": 1,
+      "dir": "logs/runs/cypherbench_augmented__movie__no_val_link@deepseek-v4.1-flash__20261007-141841",
+      "finished_at": "2026-10-07 14:37:18"
+    },
+    "cypherbench_augmented__movie__fcav": {
+      "tries": 1,
+      "status": "done",
+      "n": 359,
+      "err": 3,
+      "dir": "logs/runs/cypherbench_augmented__movie__fcav@deepseek-v4.1-flash__20261007-143719",
+      "finished_at": "2026-10-07 15:03:31"
+    },
+    "cypherbench_augmented__movie__react": {
+      "tries": 1,
+      "status": "done",
+      "n": 359,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__movie__react@deepseek-v4.1-flash__20261007-150332",
+      "finished_at": "2026-10-07 15:36:49"
+    },
+    "cypherbench_augmented__movie__graphrag": {
+      "tries": 1,
+      "status": "done",
+      "n": 359,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__movie__graphrag@deepseek-v4.1-flash__20261007-153650",
+      "finished_at": "2026-10-07 16:18:48"
+    },
+    "cypherbench_augmented__movie__cyanchor": {
+      "tries": 1,
+      "status": "done",
+      "n": 359,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__movie__cyanchor_fl@deepseek-v4.1-flash__20261007-161849",
+      "finished_at": "2026-10-07 17:49:55"
+    },
+    "cypherbench_augmented__nba__no_val_link": {
+      "tries": 1,
+      "status": "done",
+      "n": 251,
+      "err": 1,
+      "dir": "logs/runs/cypherbench_augmented__nba__no_val_link@deepseek-v4.1-flash__20261007-174956",
+      "finished_at": "2026-10-07 18:01:47"
+    },
+    "cypherbench_augmented__nba__fcav": {
+      "tries": 1,
+      "status": "done",
+      "n": 251,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__nba__fcav@deepseek-v4.1-flash__20261007-180147",
+      "finished_at": "2026-10-07 18:21:13"
+    },
+    "cypherbench_augmented__nba__react": {
+      "tries": 1,
+      "status": "done",
+      "n": 251,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__nba__react@deepseek-v4.1-flash__20261007-182114",
+      "finished_at": "2026-10-07 18:46:46"
+    },
+    "cypherbench_augmented__nba__graphrag": {
+      "tries": 1,
+      "status": "done",
+      "n": 251,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__nba__graphrag@deepseek-v4.1-flash__20261007-184646",
+      "finished_at": "2026-10-07 19:15:08"
+    },
+    "cypherbench_augmented__nba__cyanchor": {
+      "tries": 1,
+      "status": "done",
+      "n": 251,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__nba__cyanchor_fl@deepseek-v4.1-flash__20261007-191508",
+      "finished_at": "2026-10-07 20:14:22"
+    },
+    "mindthequery_augmented__bloom__no_val_link": {
+      "tries": 1,
+      "status": "done",
+      "n": 24,
+      "err": 0,
+      "dir": "logs/runs/mindthequery_augmented__bloom__no_val_link@deepseek-v4.1-flash__20261007-201423",
+      "finished_at": "2026-10-07 20:15:28"
+    },
+    "mindthequery_augmented__bloom__fcav": {
+      "tries": 1,
+      "status": "done",
+      "n": 24,
+      "err": 0,
+      "dir": "logs/runs/mindthequery_augmented__bloom__fcav@deepseek-v4.1-flash__20261007-201529",
+      "finished_at": "2026-10-07 20:17:05"
+    },
+    "mindthequery_augmented__bloom__react": {
+      "tries": 1,
+      "status": "done",
+      "n": 24,
+      "err": 0,
+      "dir": "logs/runs/mindthequery_augmented__bloom__react@deepseek-v4.1-flash__20261007-201706",
+      "finished_at": "2026-10-07 20:19:31"
+    },
+    "mindthequery_augmented__bloom__graphrag": {
+      "tries": 1,
+      "status": "done",
+      "n": 24,
+      "err": 0,
+      "dir": "logs/runs/mindthequery_augmented__bloom__graphrag@deepseek-v4.1-flash__20261007-201932",
+      "finished_at": "2026-10-07 20:24:07"
+    },
+    "mindthequery_augmented__bloom__cyanchor": {
+      "tries": 1,
+      "status": "done",
+      "n": 24,
+      "err": 0,
+      "dir": "logs/runs/mindthequery_augmented__bloom__cyanchor_fl@deepseek-v4.1-flash__20261007-202408",
+      "finished_at": "2026-10-07 20:31:59"
+    },
+    "cypherbench_augmented__politics__no_val_link": {
+      "tries": 1,
+      "status": "done",
+      "n": 356,
+      "err": 4,
+      "dir": "logs/runs/cypherbench_augmented__politics__no_val_link@deepseek-v4.1-flash__20261007-203230",
+      "finished_at": "2026-10-07 20:58:06"
+    },
+    "cypherbench_augmented__politics__react": {
+      "tries": 1,
+      "status": "done",
+      "n": 356,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__politics__react@deepseek-v4.1-flash__20261007-205807",
+      "finished_at": "2026-10-07 21:41:50"
+    },
+    "cypherbench_augmented__politics__graphrag": {
+      "tries": 1,
+      "status": "done",
+      "n": 356,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__politics__graphrag@deepseek-v4.1-flash__20261007-214150",
+      "finished_at": "2026-10-07 23:04:55"
+    },
+    "cypherbench_augmented__politics__cyanchor": {
+      "tries": 1,
+      "status": "done",
+      "n": 356,
+      "err": 0,
+      "dir": "logs/runs/cypherbench_augmented__politics__cyanchor_fl@deepseek-v4.1-flash__20261007-230456",
+      "finished_at": "2026-10-08 01:38:41"
+    },
+    "mindthequery_augmented__healthcare__no_val_link": {
+      "tries": 1,
+      "status": "done",
+      "n": 418,
+      "err": 4,
+      "dir": "logs/runs/mindthequery_augmented__healthcare__no_val_link@deepseek-v4.1-flash__20261008-013842",
+      "finished_at": "2026-10-08 02:22:05"
+    },
+    "mindthequery_augmented__healthcare__react": {
+      "tries": 2,
+      "status": "done",
+      "n": 418,
+      "err": 4,
+      "dir": "logs/runs/mindthequery_augmented__healthcare__react@deepseek-v4.1-flash__20261008-133305",
+      "finished_at": "2026-10-08 14:31:44"
+    },
+    "mindthequery_augmented__healthcare__graphrag": {
+      "tries": 1,
+      "status": "done",
+      "n": 418,
+      "err": 4,
+      "dir": "logs/runs/mindthequery_augmented__healthcare__graphrag@deepseek-v4.1-flash__20261008-032817",
+      "finished_at": "2026-10-08 05:08:26"
+    },
+    "mindthequery_augmented__healthcare__cyanchor": {
+      "tries": 2,
+      "status": "done",
+      "n": 418,
+      "err": 4,
+      "dir": "logs/runs/mindthequery_augmented__healthcare__cyanchor_fl@deepseek-v4.1-flash__20261008-143145",
+      "finished_at": "2026-10-08 17:28:29"
+    },
+    "mindthequery_augmented__healthcare__fcav": {
+      "tries": 1,
+      "status": "done",
+      "n": 418,
+      "err": 5,
+      "dir": "logs/runs/mindthequery_augmented__healthcare__fcav@deepseek-v4.1-flash__20261008-081857",
+      "finished_at": "2026-10-08 09:04:51"
+    },
+    "cypherbench_augmented__politics__fcav": {
+      "tries": 1,
+      "status": "done",
+      "n": 356,
+      "err": 5,
+      "dir": "logs/runs/cypherbench_augmented__politics__fcav@deepseek-v4.1-flash__20261008-090457",
+      "finished_at": "2026-10-08 09:57:17"
+    }
+  },
+  "expected": {
+    "cypherbench_augmented__nba": 251,
+    "cypherbench_augmented__flight_accident": 168,
+    "cypherbench_augmented__fictional_character": 322,
+    "cypherbench_augmented__company": 303,
+    "cypherbench_augmented__geography": 331,
+    "cypherbench_augmented__movie": 359,
+    "cypherbench_augmented__politics": 356,
+    "mindthequery_augmented__bloom": 24,
+    "mindthequery_augmented__covid": 326,
+    "mindthequery_augmented__er": 184,
+    "mindthequery_augmented__healthcare": 418,
+    "mindthequery_augmented__wwc": 265,
+    "zograscope_augmented__pole": 1283
+  }
+}
