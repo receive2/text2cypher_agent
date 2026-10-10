@@ -199,14 +199,6 @@ MODEL_REGISTRY: dict = {
         "api_key_env": "DEEPINFRA_API_KEY",
         "model":       "Qwen/Qwen3-32B",
     },
-    "qwen3-next-80b-deepinfra": {
-        # Qwen3-Next-80B-A3B-Instruct (MoE, 3B active): a non-thinking instruct checkpoint, so no
-        # chat_template_kwargs are needed. DeepInfra 2026-10-09: $0.09 / $1.10 per M tokens, ~95 tok/s
-        # (the fastest Qwen on the host; Qwen3-235B-A22B-Instruct-2507 ran at 18 tok/s the same evening).
-        "base_url":    "https://api.deepinfra.com/v1/openai",
-        "api_key_env": "DEEPINFRA_API_KEY",
-        "model":       "Qwen/Qwen3-Next-80B-A3B-Instruct",
-    },
     "llama-3.3-70b-deepinfra": {
         "base_url":    "https://api.deepinfra.com/v1/openai",
         "api_key_env": "DEEPINFRA_API_KEY",
@@ -277,10 +269,6 @@ MODEL_PRESETS: dict = {
                          # rejects every call (smoke test 2026-10-06); 4096 is the cap the Anthropic path already uses.
                          "params": {"max_tokens": 4096,
                                     "extra_body": {"chat_template_kwargs": {"enable_thinking": False}}}},
-    # 2026-10-09: candidate replacement for the open-weights small tier, trialled on MindTheQuery first.
-    # max_tokens as for qwen3-32b (DeepInfra rejects a request whose default output budget is the whole context).
-    "qwen3-next-80b":   {"provider": "hf_compatible", "model": "qwen3-next-80b-deepinfra",
-                         "params": {"max_tokens": 4096}},
 }
 
 # ⚙ eval receiver — edit GENERATOR_LLM in the eval_config panel, not here.
