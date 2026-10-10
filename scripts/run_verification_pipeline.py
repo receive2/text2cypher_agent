@@ -29,7 +29,7 @@ Usage
 
 Architecture
 ------------
-  scripts/walmart_llm.py            : Generic OpenAI-compatible LLM client
+  scripts/llm_client.py            : Generic OpenAI-compatible LLM client
   scripts/auto_verify.py            : DDG search + LLM + checkpoint + Excel
   scripts/run_verification_pipeline : THIS FILE - orchestrates the above
 
@@ -110,7 +110,7 @@ def _preflight() -> None:
         print(f"  OK  Input files found for {len(DATASETS)} datasets")
 
     # Helper scripts
-    for s in ("walmart_llm.py", "auto_verify.py"):
+    for s in ("llm_client.py", "auto_verify.py"):
         if not (SCRIPTS / s).exists():
             errors.append(f"Missing helper: scripts/{s}")
         else:

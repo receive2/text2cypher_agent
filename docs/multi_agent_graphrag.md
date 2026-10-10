@@ -107,7 +107,7 @@ for alias/abbrev. The retrievers are complementary, not ranked.
 
 ## Smoke results (faithful baseline)
 
-20-example smoke batch on `cypherbench_augmented / movie` (port 15066), GPT-4.1 in
+20-example smoke batch on `cypherbench_augmented / movie` (port 15066), one generator in
 all slots, faithful baseline: **EA 8/20 = 0.40, PSJS avg 0.587, 0 execution
 errors, ~12 s/example.** By perturbation strategy (EA): casing 2/2, typo 3/6,
 partial 2/4, alias 1/5, **abbrev 0/3**. The profile matches the retrieval

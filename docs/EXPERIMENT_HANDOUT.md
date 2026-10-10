@@ -50,10 +50,7 @@ How the harness works, every config knob and the pre-flight words: [`RUNNING_EXP
 >    python scripts/audit_runs.py --discard-all --model gpt-5.6-terra
 >    python scripts/audit_runs.py --discard-all --model gpt-5.6-luna
 >    python scripts/audit_runs.py --discard-all --model claude-sonnet-5
->    python scripts/audit_runs.py --discard-all --model claude-haiku-4.5
 >    python scripts/audit_runs.py --discard-all --model deepseek-v4.1-flash
->    python scripts/audit_runs.py --discard-all --model llama-3.3-70b
->    python scripts/audit_runs.py --discard-all --model qwen3-32b
 >    ```
 >
 >    It lists every run directory of that model plus the driver's state files,
@@ -146,12 +143,12 @@ cp .env.example .env                # then put the keys in (below)
 ```
 
 - **Neo4j access.** The graphs live on a shared VM whose connection details are
-  committed in `eval_config.py`. If your machine is on a corporate VPN the VM
+  committed in `eval_config.py`. If your machine is on a VPN the VM
   is usually unreachable — **disconnect the VPN** before running. `UNREACH` in
   the pre-flight means a network problem, not a broken setup. Quick probe:
   `nc -zv 34.9.85.21 15066` must say *succeeded*; if it does not, tell the
   coordinator (the VM firewall may need your IP).
-  The same kind of corporate proxy also blocks `pip` wheel downloads
+  The same kind of proxy also blocks `pip` wheel downloads
   (`403 MediaTypeBlocked`) — do the `pip install` off-VPN as well.
 - **Push access.** The deliverable is a branch pushed to this repository
   (§6), so you need **write access**. Ask the coordinator to add you as a
@@ -180,8 +177,8 @@ cp .env.example .env                # then put the keys in (below)
 | your model (`GENERATOR_LLM`) | provider | key in `.env` | where a key comes from |
 |---|---|---|---|
 | everyone (embeddings), and `gpt-5.6-terra` / `gpt-5.6-luna` | OpenAI | `OPENAI_API_KEY` | platform.openai.com → API keys |
-| `claude-sonnet-5`, `claude-haiku-4.5` | Anthropic | `ANTHROPIC_API_KEY` | console.anthropic.com → API Keys |
-| `deepseek-v4.1-flash`, `llama-3.3-70b`, `qwen3-32b` | DeepInfra | `DEEPINFRA_API_KEY` | deepinfra.com → Dashboard → API Keys |
+| `claude-sonnet-5` | Anthropic | `ANTHROPIC_API_KEY` | console.anthropic.com → API Keys |
+| `deepseek-v4.1-flash` | DeepInfra | `DEEPINFRA_API_KEY` | deepinfra.com → Dashboard → API Keys |
 
   **Ask the coordinator for the lab key before creating your own** — the runs
   are billed centrally and each model has its own key so spend can be tracked.
@@ -239,21 +236,15 @@ the committed value, so a skipped step 2 — or a `git checkout eval_config.py`
 after a pull — is caught before anything runs.
 
 **The model presets** (`config.MODEL_PRESETS`; the name is what you type and
-what appears in every run directory). The seven in the sweep:
+what appears in every run directory). The four in the sweep:
 
 | preset | what it is | key |
 |---|---|---|
 | `gpt-5.6-terra` | GPT workhorse (primary model) | `OPENAI_API_KEY` |
 | `gpt-5.6-luna` | cheap tier | `OPENAI_API_KEY` |
 | `claude-sonnet-5` | Claude strong tier, same price point as Terra (thinking switched off by the harness) | `ANTHROPIC_API_KEY` |
-| `claude-haiku-4.5` | cheap tier | `ANTHROPIC_API_KEY` |
-| `deepseek-v4.1-flash` | open-weights, strong tier (DeepInfra; thinking switched off by the harness). Replaced `deepseek-v3.1` on 2026-10-06: V3.1's endpoint took ~7 s per call and pushed the baselines past their 60 s per-question cap | `DEEPINFRA_API_KEY` |
-| `llama-3.3-70b` | open-weights baseline (DeepInfra) | `DEEPINFRA_API_KEY` |
-| `qwen3-32b` | open-weights small tier (DeepInfra; thinking switched off by the harness) | `DEEPINFRA_API_KEY` |
+| `deepseek-v4.1-flash` | open-weights strong tier (DeepInfra; thinking switched off by the harness) | `DEEPINFRA_API_KEY` |
 
-Three more exist but are **not** part of the sweep — do not run them unless
-asked: `gpt-4.1` (the baseline the reference runs used), `claude-opus-5`, and
-`deepseek-v3.1` (the former strong tier, retired for speed).
 
 One name switches every stage of the pipeline (entity extraction, Cypher
 generation, answer formatting). A wrong name fails immediately with the list
@@ -452,10 +443,7 @@ same command; it adds a commit on top of the existing branch. Do **not** delete
 | `gpt-5.6-terra` | | `sweep/gpt-5.6-terra` |
 | `gpt-5.6-luna` | | `sweep/gpt-5.6-luna` |
 | `claude-sonnet-5` | | `sweep/claude-sonnet-5` |
-| `claude-haiku-4.5` | | `sweep/claude-haiku-4.5` |
 | `deepseek-v4.1-flash` | | `sweep/deepseek-v4.1-flash` |
-| `llama-3.3-70b` | | `sweep/llama-3.3-70b` |
-| `qwen3-32b` | | `sweep/qwen3-32b` |
 
 Question counts (v2.3), so you know what `n` must be:
 

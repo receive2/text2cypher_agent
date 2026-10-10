@@ -8,12 +8,12 @@ rows of one (dataset, graph) against the LIVE graph DB, and print the realized
 strategy distribution, drop reasons, and sample edits — WITHOUT writing any
 dataset.  This is the Phase-3 preview used to eyeball quality before scaling.
 
-Requires the corporate VPN DISCONNECTED to reach the VM (see env-vpn-proxy).
+Requires the VPN disconnected to reach the VM.
 
 Usage::
 
     python -m scripts.stage_augment cypherbench nba --limit 200
-    python -m scripts.stage_augment cypherbench nba --limit 200 --llm   # enable gpt-4.1 proposer
+    python -m scripts.stage_augment cypherbench nba --limit 200 --llm   # enable the LLM proposer
 """
 
 from __future__ import annotations
@@ -64,7 +64,7 @@ def main() -> int:
     ap.add_argument("dataset")
     ap.add_argument("graph")
     ap.add_argument("--limit", type=int, default=200)
-    ap.add_argument("--llm", action="store_true", help="enable the gpt-4.1 proposer")
+    ap.add_argument("--llm", action="store_true", help="enable the LLM proposer (data_augmentation/config.py)")
     ap.add_argument("--seed", type=int, default=C.DEFAULT_SEED)
     ap.add_argument("--samples", type=int, default=12)
     args = ap.parse_args()

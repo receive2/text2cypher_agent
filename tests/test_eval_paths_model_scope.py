@@ -22,7 +22,7 @@ import pytest
 import eval_paths
 
 
-GPT, CLAUDE = "gpt-4.1", "claude-opus-5"
+GPT, CLAUDE = "gpt-5.6-terra", "claude-sonnet-5"
 
 
 def _mk(root: Path, dataset: str, graph: str, seg: str, stamp: str,
@@ -48,7 +48,7 @@ def test_method_tag_appends_model():
 
 def test_model_segment_never_breaks_the_component_split():
     # A model id with slashes/underscores must not introduce "__" or a path level.
-    seg = eval_paths.method_tag("graphrag", model="meta-llama/Llama-3.3__70B")
+    seg = eval_paths.method_tag("graphrag", model="vendor/Model-3.3__70B")
     name = f"ds__graph__{seg}__20260909-101500"
     assert "/" not in seg
     assert len(name.split("__")) == 4
@@ -142,8 +142,7 @@ def test_preset_switches_every_stage(monkeypatch):
 
 def test_preset_covers_the_whole_sweep(monkeypatch):
     import config
-    for name in ("gpt-4.1", "gpt-5.6-terra", "gpt-5.6-luna", "claude-sonnet-5", "claude-opus-5",
-                 "claude-haiku-4.5", "deepseek-v4.1-flash", "deepseek-v3.1", "llama-3.3-70b", "qwen3-32b"):
+    for name in ("gpt-5.6-terra", "gpt-5.6-luna", "claude-sonnet-5", "deepseek-v4.1-flash"):
         spec = config.resolve_preset(name)
         assert spec["provider"] in ("openai", "anthropic", "hf_compatible")
         if spec["provider"] == "hf_compatible":
@@ -163,7 +162,7 @@ def test_unknown_preset_fails_loudly(monkeypatch):
 
 def test_no_receiver_resolves_to_the_baseline_preset(monkeypatch):
     cfg = _reload_config(monkeypatch, None)
-    assert cfg.active_generator_model() == "gpt-4.1"
+    assert cfg.active_generator_model() == "gpt-5.6-terra"
     assert cfg.CYPHER_LLM_CONFIG["provider"] == "openai"
 
 

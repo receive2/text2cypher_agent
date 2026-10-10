@@ -6,7 +6,7 @@ Factory that builds the live validity + alias providers for a
 DB (``eval_config.GRAPH_CONNS``) and the attested-alias sources.
 
 Used by the staging runner and (later) ``run_data_augmentation.py``.  Reaching
-the VM requires the corporate VPN disconnected (see env-vpn-proxy memory).
+the VM may require a VPN to be disconnected.
 """
 
 from __future__ import annotations

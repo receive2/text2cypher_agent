@@ -42,7 +42,7 @@ User question
 The method is selected by the `METHOD` axis — `no_val_link` · `fcav` · `react` ·
 `graphrag` · `cyanchor` (see [Methods](#value-linking-modes)). The shipped method is
 **CyANCHOR** (`cyanchor`); `No Val Link`, `FCAV`, `ReAct`, and `GraphRAG` are the
-baselines. Ablation: [report/gpt-4.1/CypherBench/flight_accident.md](report/gpt-4.1/CypherBench/flight_accident.md).
+baselines. Ablation: [report/ablation_paper_table.md](report/ablation_paper_table.md).
 
 ---
 
@@ -52,7 +52,7 @@ baselines. Ablation: [report/gpt-4.1/CypherBench/flight_accident.md](report/gpt-
 |---|---|
 | Python | 3.10 – 3.12 |
 | Neo4j | **5.18+** (native vector indexes required for hybrid retrieval; fulltext-only fallback works on 4.4+ if you `--skip-embeddings`) |
-| API keys | `OPENAI_API_KEY` for the default `gpt-4.1` generator and the `text-embedding-3-small` embedding backend; `ANTHROPIC_API_KEY` / `DEEPINFRA_API_KEY` only for those presets (`config.MODEL_PRESETS`) |
+| API keys | `OPENAI_API_KEY` for the default `gpt-5.6-terra` generator and the `text-embedding-3-small` embedding backend; `ANTHROPIC_API_KEY` / `DEEPINFRA_API_KEY` only for those presets (`config.MODEL_PRESETS`) |
 
 ---
 
@@ -89,9 +89,9 @@ NEO4J_PASSWORD=your-password
 NEO4J_DATABASE=neo4j                # the database name inside Neo4j
 
 # ── LLM API keys (keys only — the model is chosen in eval_config.py / config.py) ──
-OPENAI_API_KEY=sk-...               # always needed: setup + embeddings use OpenAI; generators gpt-4.1, gpt-5.6-terra, gpt-5.6-luna
-ANTHROPIC_API_KEY=                  # claude-sonnet-5, claude-haiku-4.5 (only if you run them)
-DEEPINFRA_API_KEY=                  # deepseek-v4.1-flash, llama-3.3-70b, qwen3-32b (only if you run them)
+OPENAI_API_KEY=sk-...               # always needed: setup + embeddings use OpenAI; generators gpt-5.6-terra, gpt-5.6-luna
+ANTHROPIC_API_KEY=                  # claude-sonnet-5 (only if you run it)
+DEEPINFRA_API_KEY=                  # deepseek-v4.1-flash (only if you run it)
 
 # ── Azure OpenAI (optional — replaces OpenAI when all three are set) ──────────
 AZURE_OPENAI_ENDPOINT=
@@ -249,7 +249,7 @@ baseline. The sweep driver (`orchestrate_sweep.py`) sweeps methods by setting
 > resolve in `config.py` (`val_link`+`plan_exec` → `cyanchor`, `hybrid` → `+vector`).
 
 Method writeup: [docs/multi_agent_graphrag.md](docs/multi_agent_graphrag.md) ·
-results: [report/gpt-4.1/CypherBench/flight_accident.md](report/gpt-4.1/CypherBench/flight_accident.md).
+results: the per-model reports under `report/<model>/` on the `sweep/<model>` branches.
 
 ---
 

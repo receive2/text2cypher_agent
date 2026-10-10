@@ -20,7 +20,7 @@ Released data artifacts: `benchmarks/` (questions, manifest, hashes) and
 |---|---|
 | [CYANCHOR_IMPLEMENTATION.md](CYANCHOR_IMPLEMENTATION.md) | The method reference for CyANCHOR, every stage traced to code. |
 | [multi_agent_graphrag.md](multi_agent_graphrag.md) | The Multi-Agent GraphRAG baseline. |
-| [../report/](../report/) | Results, one folder per generator model; `report/gpt-4.1/` is the committed reference. |
+| [../report/](../report/) | Results: one folder per generator model written by `orchestrate_sweep.py --publish`; `report/ablation_paper_table.*` are the ablation tables of the paper. |
 
 ## Running experiments
 

@@ -77,16 +77,16 @@ load_dotenv(".env", override=False)
 #   4. Public OpenAI   — fallback
 #
 # Examples:
-#   llm_gpt    = build_llm(provider="openai",        model="gpt-4.1")
-#   llm_opus   = build_llm(provider="anthropic",     model="claude-opus-4-20250514")
+#   llm_gpt    = build_llm(provider="openai",        model="gpt-5.6-terra")
+#   llm_claude = build_llm(provider="anthropic",     model="claude-sonnet-5")
 #   llm_azure  = build_llm(provider="azure")          # uses AZURE_OPENAI_DEPLOYMENT
-#   llm_llama  = build_llm(provider="hf_compatible", model="llama-8b-hf")
+#   llm_open   = build_llm(provider="hf_compatible", model="deepseek-v4.1-flash-deepinfra")
 #                # ↑ ``model`` is a key into config.MODEL_REGISTRY
 #
 # About the ``hf_compatible`` provider
 # ────────────────────────────────────
-# All targets (HF serverless router, HF Inference Endpoints with TGI, Groq,
-# Together, Fireworks, …) expose an OpenAI-compatible
+# Hosted inference providers and self-hosted servers (vLLM, TGI, …) all
+# expose an OpenAI-compatible
 # ``/v1/chat/completions`` endpoint, so a single OpenAI SDK client works for
 # every one of them — only ``base_url``, ``api_key``, and ``model`` change.
 # ``ChatOpenAI`` from ``langchain-openai`` IS that openai-SDK-backed client
@@ -97,7 +97,7 @@ load_dotenv(".env", override=False)
 # ─────────────────────────────────────────────────────────────────────────────
 
 # Default Anthropic model — overridable via the ANTHROPIC_MODEL env var.
-DEFAULT_ANTHROPIC_MODEL = "claude-opus-5"
+DEFAULT_ANTHROPIC_MODEL = "claude-sonnet-5"
 
 
 def _build_http_client() -> httpx.Client:
@@ -137,7 +137,7 @@ def _build_openai_llm(
     http_client: httpx.Client,
     **extra: Any,
 ) -> ChatOpenAI:
-    model = model or os.getenv("OPENAI_MODEL", "gpt-4.1")
+    model = model or os.getenv("OPENAI_MODEL", "gpt-5.6-terra")
     return _cache_mixin(ChatOpenAI, anthropic=False)(
         model=model,
         api_key=os.getenv("OPENAI_API_KEY"),
@@ -181,7 +181,7 @@ def _openai_generation_kwargs(model: str, temperature: Optional[float]) -> dict:
             kw["model_kwargs"] = {"reasoning_effort": effort}
         # In non-reasoning mode ("none") gpt-5.1+/gpt-6 accept sampling
         # parameters again (verified live on gpt-5.6-terra/luna, 2026-09-12), so
-        # they run at the same temperature as gpt-4.1 — without it the API
+        # they run at temperature 0 like the other generators — without it the API
         # samples at its default and the same question flips between runs.
         if effort == "none" and temperature is not None:
             kw["temperature"] = temperature
@@ -291,13 +291,12 @@ def _build_anthropic_llm(
     )
 
 
-# Claude 4.6+ / 5 (and Fable / Mythos) reject sampling parameters outright and
-# think by default; the older 4.x / Haiku 4.5 line accepts temperature and
-# does not think unless asked. The benchmark compares *generators*, so every
+# Claude 4.6+ / 5 reject sampling parameters outright and think by default;
+# the older 4.x line accepts temperature and does not think unless asked. The benchmark compares *generators*, so every
 # model runs as a plain deterministic text generator: no sampling knobs where
 # they are refused, thinking switched off where it is on by default.
 _NO_SAMPLING_PARAMS = re.compile(
-    r"^claude-(?:opus|sonnet)-(?:5|4-[6-9])(?:-|$)|^claude-(?:fable|mythos)-")
+    r"^claude-(?:opus|sonnet)-(?:5|4-[6-9])(?:-|$)")
 
 
 def _anthropic_generation_kwargs(model: str, temperature: Optional[float]) -> dict:
@@ -320,11 +319,11 @@ def _build_hf_compatible_llm(
 ) -> BaseChatModel:
     """
     Build a chat client for any OpenAI-compatible HTTP endpoint declared in
-    ``config.MODEL_REGISTRY`` — HF serverless router, HF Inference Endpoints
-    (TGI), Groq, Together, Fireworks, etc.
+    ``config.MODEL_REGISTRY`` — a hosted inference provider or a self-hosted
+    server (vLLM, TGI, …).
 
-    The ``model`` argument is a *registry key* (e.g. ``"llama-8b-hf"`` or
-    ``"my-svl-cypher-lora-v1"``) — NOT a raw model id.  We look the key up in
+    The ``model`` argument is a *registry key* (e.g.
+    ``"deepseek-v4.1-flash-deepinfra"``) — NOT a raw model id.  We look the key up in
     MODEL_REGISTRY to get the actual ``base_url`` / ``api_key_env`` / ``model``
     triple, then instantiate ``ChatOpenAI`` (LangChain's wrapper around the
     openai SDK) pointed at that endpoint.
@@ -340,19 +339,13 @@ def _build_hf_compatible_llm(
         client = OpenAI(base_url="https://router.huggingface.co/v1",
                         api_key="hf_xxx")
 
-    Notes on the ``model`` field that gets sent in the request body:
-      * HF Inference Endpoints (TGI):  the URL itself pins the model, so the
-        registry's ``model`` is just ``"tgi"`` — TGI ignores the field but
-        the OpenAI request schema requires it.
-      * HF serverless router: ``model`` MUST be the full Hub repo id, e.g.
-        ``meta-llama/Llama-3.1-8B-Instruct`` (the router uses it for routing).
-      * Other providers (Groq, Together, …): use whatever id the provider
-        documents.
+    The ``model`` field sent in the request body is whatever id the endpoint
+    documents (a dedicated TGI endpoint ignores it and expects ``"tgi"``).
     """
     if not model:
         raise ValueError(
             "provider='hf_compatible' requires a model key (a key into "
-            "config.MODEL_REGISTRY), e.g. model='llama-8b-hf'."
+            "config.MODEL_REGISTRY), e.g. model='deepseek-v4.1-flash-deepinfra'."
         )
 
     entry = MODEL_REGISTRY.get(model)
@@ -404,8 +397,7 @@ def build_llm(
         Which provider to instantiate.  ``"auto"`` (default) picks one based
         on env vars — see the priority list at the top of this section.
         ``"hf_compatible"`` routes through ``config.MODEL_REGISTRY`` and
-        works with any OpenAI-compatible server (HF router, HF Inference
-        Endpoints/TGI, Groq, Together, Fireworks, …).
+        works with any OpenAI-compatible server.
     model : Optional[str]
         Model name / deployment override.  When ``None``, falls back to the
         provider-specific env var (``OPENAI_MODEL``, ``AZURE_OPENAI_DEPLOYMENT``,
@@ -710,7 +702,7 @@ def create_agent(
           old ``model: str`` signature).
         - If ``None``, fall back to ``llm_obj`` or the module-level ``llm``.
     llm_obj : BaseChatModel | None
-        Explicit chat-model override (e.g. an Anthropic Claude Opus model).
+        Explicit chat-model override (e.g. an Anthropic Claude model).
         Useful when you want to keep ``model`` as a name string.
     """
     tools = _load_generated_tools()
@@ -840,7 +832,7 @@ def get_ner(
     """
     Run the NER agent on `prompt` and return a canonical JSON string.
 
-    Pass ``llm_obj`` to swap in a non-default chat model (e.g. Claude Opus
+    Pass ``llm_obj`` to swap in a non-default chat model (e.g. a Claude model
     via ``build_llm(provider='anthropic')``) without touching the module-level
     default.
     """

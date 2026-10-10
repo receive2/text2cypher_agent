@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Score the component ablation and write report/ablation_table*.md.
 
-    python scripts/tuning/score_ablation.py                                   # gpt-4.1 cells
+    python scripts/tuning/score_ablation.py                                   # default: gpt-5.6-terra cells
     python scripts/tuning/score_ablation.py --model gpt-5.6-terra [--paper]   # 2026-09 cells: all-on reference (judge on, node+rel tools);
                                                                               # the released configuration is its "− relation tools" row
     python scripts/tuning/score_ablation.py --model gpt-5.6-terra --ref judge-on [--scope node] [--pole-full] [--paper]
@@ -28,7 +28,7 @@ REPO = Path(__file__).resolve().parent.parent.parent; os.chdir(REPO); sys.path.i
 from component_names import PAPER_NAME  # noqa: E402
 from eval.node_set_match import stale_count  # noqa: E402
 from eval import full_rows  # noqa: E402
-MODEL =sys.argv[sys.argv.index("--model") + 1] if "--model" in sys.argv else "gpt-4.1"
+MODEL =sys.argv[sys.argv.index("--model") + 1] if "--model" in sys.argv else "gpt-5.6-terra"
 REFNAME = sys.argv[sys.argv.index("--ref") + 1] if "--ref" in sys.argv else ""        # judge-on | judge-off: released-reference cells
 POLE_FULL = "--pole-full" in sys.argv
 SCOPE = sys.argv[sys.argv.index("--scope") + 1] if "--scope" in sys.argv else "node"       # node | node_rel: tool scope of the reference cells
@@ -66,7 +66,7 @@ ROWS = [("escalation",f"− {NAME['escalation']}","PLAN_EXEC_ESCALATE=0"), ("sel
         ("lev_only",f"− {NAME['lev_only']}","RETRIEVAL_FUZZY=0"), ("plus_vector","+ vector arm","RETRIEVAL_VECTOR=1"),
         ("no_correction",f"− all correction ({NAME['escalation']}, judge, {NAME['semantic_repair']}, {NAME['value_snap']})","—")]
 GRAPHS = ["flight_accident", "healthcare", "pole", "terrorist_attack"]; CATS = ["casing","typo","partial","abbrev","alias"]
-if MODEL != "gpt-4.1":   # per-backbone tables: everything under logs/ablation_<model>/
+if MODEL != "legacy":   # per-backbone tables: everything under logs/ablation_<model>/
     GRAPHS = ["flight_accident", "healthcare", "pole", "nba", "geography"]   # geography only when its cells exist (first 240 questions)
     REF = {g: f"{ROOT}/{DIRKEY(g)}__reference" for g in GRAPHS}
     # dir names: runs made before 2026-09-28 removed judge / relation tools from an all-on reference
@@ -121,7 +121,7 @@ def cell(g, v):
     return f"**{s}**" if x and x["p"] < 0.05 else s
 L = [f"# CyANCHOR component ablation — {MODEL}\n",
      "Paired per question against the full-method reference on the same questions (runs restricted to questions verbatim in the current release; "
-     + ("healthcare and pole use a fixed 400-question prefix). terrorist_attack is the CypherBench-train dev graph, not part of the release. " if MODEL == "gpt-4.1"
+     + ("healthcare and pole use a fixed 400-question prefix). terrorist_attack is the CypherBench-train dev graph, not part of the release. " if MODEL == "legacy"
         else ("every graph runs in full). " if POLE_FULL else "pole uses its first 400 questions). ")
         + ("geography uses its first 240 questions. " if "geography" in GRAPHS else ""))
      + "Cells: Δ EA in points; **bold** = two-sided sign test p < 0.05; — = not run.\n",
@@ -142,13 +142,13 @@ for g in GRAPHS:
         if x: L.append(f"| {name} | " + " | ".join(f"{100*x['cat_d'][c]:+.1f}" if c in x["cat_d"] else "—" for c in CATS) + " |")
     L.append("")
 LEGACY = ROOT == f"logs/ablation_{MODEL}"
-missing = [(name, g) for v, name, _ in ROWS if v != "no_correction" for g in (GRAPHS[:3] if MODEL == "gpt-4.1" else GRAPHS) if v not in RES[g]["var"]]
+missing = [(name, g) for v, name, _ in ROWS if v != "no_correction" for g in (GRAPHS[:3] if MODEL == "legacy" else GRAPHS) if v not in RES[g]["var"]]
 JUDGE_REF = "off" if "judge-off" in ROOT else "on"
 SCOPE_REF = "node_rel" if (LEGACY or ROOT.endswith("node_rel") or "node_rel__" in ROOT) else "node"
 RELEASED = JUDGE_REF == "on" and SCOPE_REF == "node"          # released: select-or-abstain judge on, node-property tools only
 if LEGACY:
     L += ["## Missing cells for the paper table (3 test graphs × 8 rows)\n"]
-    DRV = "`scripts/tuning/run_ablation_fill.py` (add `--with-joint` for the all-correction row)" if MODEL == "gpt-4.1" else f"`scripts/tuning/run_ablation_model.py --model {MODEL}` (add `--with-joint` for the all-correction row)"
+    DRV = "`scripts/tuning/run_ablation_fill.py` (add `--with-joint` for the all-correction row)" if MODEL == "legacy" else f"`scripts/tuning/run_ablation_model.py --model {MODEL}` (add `--with-joint` for the all-correction row)"
     NOTE = f"{len(missing)} missing. `+ vector arm` needs per-graph embeddings first (archives have EMBEDDABLE_PROPERTIES=[]). Driver for the rest: {DRV}.\n"
 else:
     L += [f"## Missing cells ({len(GRAPHS)} graphs × {len(ROWS)} rows)\n"]
@@ -156,8 +156,8 @@ else:
 L += [f"- {name}: " + ", ".join(g for n2, g in missing if n2 == name) for name in dict.fromkeys(n for n, _ in missing)]
 L += ["", NOTE,
       "Detection floor (paired sign test, 80% power, observed 4–8% discordance): ~5–6 points at n=167, ~3.5 at n≈400, ~2.4 pooled over the three test graphs.\n",
-      "## Sources\n", "References: " + ", ".join(f"`{REF[g]}`" for g in GRAPHS) + ". Variants: " + ("`logs/ablation`, `logs/verify_cols`, `logs/dev_sweep`, `logs/ablation_fill`" if MODEL == "gpt-4.1" else f"`{ROOT}`") + f". Backbone {MODEL}, SHARDS=1, errors score 0."]
-Path("report/ablation_table.md" if MODEL == "gpt-4.1" else f"report/ablation_table_{MODEL}{SUFFIX}.md").write_text("\n".join(L) + "\n", encoding="utf-8")
+      "## Sources\n", "References: " + ", ".join(f"`{REF[g]}`" for g in GRAPHS) + ". Variants: " + ("`logs/ablation`, `logs/verify_cols`, `logs/dev_sweep`, `logs/ablation_fill`" if MODEL == "legacy" else f"`{ROOT}`") + f". Backbone {MODEL}, SHARDS=1, errors score 0."]
+Path("report/ablation_table.md" if MODEL == "legacy" else f"report/ablation_table_{MODEL}{SUFFIX}.md").write_text("\n".join(L) + "\n", encoding="utf-8")
 print("\n".join(L[3:16])); print(f"\n{len(missing)} cells missing")
 
 # ── --paper: ACL-style tables (Markdown + LaTeX) from the same cells ────────────

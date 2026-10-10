@@ -61,12 +61,10 @@ import component_names
 # ╚══════════════════════════════════════════════════════════════════════════╝
 
 # ── Method ────────────────────────────────────────────────────────────────────
-GENERATOR_LLM: str = "gpt-4.1"  # preset name from config.MODEL_PRESETS — selects the LLM for
+GENERATOR_LLM: str = "gpt-5.6-terra"  # preset name from config.MODEL_PRESETS — selects the LLM for
                                 #   ALL stages (NER / Cypher / QA) and tags the run dir
-                                #   (cyanchor_fl@<name>). Presets: gpt-4.1 | gpt-5.6-terra |
-                                #   gpt-5.6-luna | claude-sonnet-5 | claude-haiku-4.5 |
-                                #   deepseek-v4.1-flash | llama-3.3-70b | qwen3-32b |
-                                #   claude-opus-5, deepseek-v3.1 (extras)
+                                #   (cyanchor_fl@<name>). Presets: gpt-5.6-terra |
+                                #   gpt-5.6-luna | claude-sonnet-5 | deepseek-v4.1-flash
 METHOD:    str = "cyanchor"     # no_val_link | fcav | react | graphrag | cyanchor
 TOOL_TYPE: str = "node"         # node | node_rel   (ReAct baseline tool scope; released = node, relation tools off:
                                 #   the same node-property tools CyANCHOR routes on, so the two tool-using methods
@@ -92,7 +90,7 @@ RESULT_AWARE_QUERY_REPAIR: bool = True  # switch CYPHER_SEMANTIC_REPAIR — resu
 CYPHER_REPAIR_MAX_ROUNDS: int  = 4      # max repair rounds
 CYPHER_EMPTY_IS_WRONG:    bool = False  # treat a 0-row result as a defect — OFF by default since 2026-09:
                                         #   zero contribution on 4 graphs / 3 benchmark families (paired ablation,
-                                        #   Δ within ±1pt, flips even); see report/tuning_summary.md
+                                        #   Δ within ±1pt, flips even)
 
 # ── CyANCHOR ablation toggles  (default ON = the shipped method) ─────────────
 ADAPTIVE_SEARCH_CONTROL:     bool = True   # switch PLAN_EXEC_ESCALATE — corrective LLM-judge retrieval loop
@@ -155,8 +153,7 @@ class GraphConn:
 # reviewers can reproduce (this is a throwaway eval VM, not a secret store).
 # The VM's external IP is ephemeral (it drifts on every stop/start). Override
 # without editing this file via:  export EVAL_NEO4J_HOST=<current-ip>
-# (Reaching this VM requires the corporate VPN DISCONNECTED — see the
-# env-vpn-proxy memory.)  Reserve a static IP to stop the drift.
+# Reserve a static IP to stop the drift.
 _NEO4J_HOST     = os.environ.get("EVAL_NEO4J_HOST", "34.9.85.21")
 _NEO4J_USER     = "neo4j"
 _NEO4J_PASSWORD = "37fhWZ746X9QCwxPUoU5"  # TODO: paste the shared neo4j password here

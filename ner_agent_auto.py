@@ -816,8 +816,8 @@ def create_agent_auto(
                            When *None*, the module-level default ``llm``
                            (auto-resolved by ``agent_helper.build_llm``) is
                            used.  Pass e.g.
-                           ``build_llm(provider="anthropic", model="claude-opus-4-20250514")``
-                           to run the NER agent on Claude Opus instead of GPT.
+                           ``build_llm(provider="anthropic", model="claude-sonnet-5")``
+                           to run the NER agent on Claude instead of GPT.
 
     Returns
     -------
@@ -1460,7 +1460,7 @@ def ask_auto(
        Neo4j graph and formats the rows into a natural-language answer.
 
     The pipeline uses **three independent LLM slots** so experiments can mix
-    providers freely (e.g. GPT for NER, Claude Opus for Cypher):
+    providers freely (e.g. GPT for NER, Claude for Cypher):
 
     ============ ========================================================
     Slot          Role
@@ -1515,12 +1515,12 @@ def ask_auto(
     >>> out = ask_auto("How many movies were released before 2000?")
 
     >>> # One-off override: keep config.py defaults for NER + QA, but try
-    >>> # Claude Opus for Cypher generation only.
+    >>> # Claude for Cypher generation only.
     >>> from agent_helper import build_llm
-    >>> opus = build_llm(provider="anthropic", model="claude-opus-4-20250514")
+    >>> claude = build_llm(provider="anthropic", model="claude-sonnet-5")
     >>> out  = ask_auto(
     ...     "How many movies were released before 2000?",
-    ...     cypher_llm = opus,
+    ...     cypher_llm = claude,
     ... )
     """
     # ── Resolve LLM slots ─────────────────────────────────────────────────────

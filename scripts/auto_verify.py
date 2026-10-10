@@ -4,7 +4,7 @@ auto_verify.py
 ==============
 Automatically assess each needs-verification row by:
   1. Running a DuckDuckGo search for the from→to pair
-  2. Asking GPT-4.1 to assign low/medium/high confidence + a reason
+  2. Asking an LLM to assign low/medium/high confidence + a reason
 
 Checkpoints every row to benchmarks/verification_progress.jsonl so the run
 is fully resume-safe.  After all rows are processed, writes the final
@@ -52,7 +52,7 @@ DATASETS = [
 # ── Import LLM helper ─────────────────────────────────────────────────────────
 import sys
 sys.path.insert(0, str(REPO_ROOT / "scripts"))
-from walmart_llm import ask_llm  # noqa: E402
+from llm_client import ask_llm  # noqa: E402
 
 
 # ── DuckDuckGo HTML search ────────────────────────────────────────────────────

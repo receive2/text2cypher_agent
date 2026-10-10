@@ -21,7 +21,7 @@ the graph(s) being evaluated.
 
 Usage
 -----
-    python run_fcav.py [--cypher-llm gpt-4.1]
+    python run_fcav.py [--cypher-llm gpt-5.6-terra]
                        [--cypher-provider openai|anthropic|hf_compatible]
                        [--out-dir logs/eval_fcav]
 """
@@ -36,8 +36,8 @@ import sys
 def main() -> int:
     ap = argparse.ArgumentParser(description="Run the FCAV baseline evaluation.")
     ap.add_argument("--cypher-llm", default=None,
-                    help="override the Cypher-generation model (e.g. gpt-4.1, "
-                         "claude-opus-4-20250514, or a MODEL_REGISTRY key)")
+                    help="override the Cypher-generation model (e.g. gpt-5.6-terra, "
+                         "claude-sonnet-5, or a MODEL_REGISTRY key)")
     ap.add_argument("--cypher-provider", default=None,
                     help="override the Cypher-generation provider "
                          "(openai | anthropic | hf_compatible)")

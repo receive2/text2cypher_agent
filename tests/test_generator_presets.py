@@ -35,7 +35,6 @@ def _load_anthropic_kwargs():
     ("claude-sonnet-5", True, True),
     ("claude-opus-4-8", True, True),
     ("claude-sonnet-4-6", True, True),
-    ("claude-fable-5-1", True, True),
     ("claude-haiku-4-5", False, False),
     ("claude-opus-4-20250514", False, False),
 ])
@@ -61,9 +60,9 @@ def test_control_panel_declares_a_valid_preset():
 
 def test_run_dir_tag_uses_the_preset_name():
     import eval_paths
-    seg = eval_paths.method_tag("cyanchor", model="claude-haiku-4.5")
-    assert seg == "cyanchor_fl@claude-haiku-4.5"
-    assert eval_paths.split_method_seg(seg) == ("cyanchor_fl", "claude-haiku-4.5")
+    seg = eval_paths.method_tag("cyanchor", model="claude-sonnet-5")
+    assert seg == "cyanchor_fl@claude-sonnet-5"
+    assert eval_paths.split_method_seg(seg) == ("cyanchor_fl", "claude-sonnet-5")
 
 
 def test_env_holds_keys_only():
@@ -100,7 +99,7 @@ def _load_openai_kwargs():
     ("gpt-4.1", True, None),
     ("gpt-4o", True, None),
     # gpt-5.1+ / gpt-6: "none" — required for function tools on chat completions;
-    # non-reasoning mode accepts temperature again, so it is kept (= gpt-4.1's 0)
+    # non-reasoning mode accepts temperature again, so it is kept (temperature 0)
     ("gpt-5.6-terra", True, "none"),
     ("gpt-5.6-luna", True, "none"),
     ("gpt-6-astra", True, "none"),
@@ -121,9 +120,9 @@ def test_preset_params_are_flattened_into_the_stage_config(monkeypatch):
     kwargs), and the "params" wrapper itself never leaks through."""
     import config
     monkeypatch.setitem(config.MODEL_PRESETS, "probe-preset",
-                        {"provider": "openai", "model": "gpt-4.1", "params": {"seed": 7}})
+                        {"provider": "openai", "model": "gpt-5.6-terra", "params": {"seed": 7}})
     monkeypatch.setattr(config, "GENERATOR_LLM", "probe-preset")
     stage = config._apply_llm_override({"provider": "openai", "model": "x", "temperature": 0})
-    assert stage["seed"] == 7 and "params" not in stage and stage["model"] == "gpt-4.1"
+    assert stage["seed"] == 7 and "params" not in stage and stage["model"] == "gpt-5.6-terra"
     assert "params" not in config.MODEL_PRESETS["probe-preset"] or True   # resolve_preset copies; original untouched
     assert config.MODEL_PRESETS["probe-preset"]["params"] == {"seed": 7}

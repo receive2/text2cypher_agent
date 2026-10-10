@@ -32,8 +32,7 @@ Exit status
     0  every checked pair is OK
     1  at least one pair failed (contaminated / unreachable / missing)
 
-Reaching the graphs requires the corporate VPN DISCONNECTED (see the
-env-vpn-proxy note); a connection error is reported per-pair, not a crash.
+Reaching the graphs may require a VPN to be disconnected; a connection error is reported per-pair, not a crash.
 """
 
 from __future__ import annotations

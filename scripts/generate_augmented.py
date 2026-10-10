@@ -9,7 +9,7 @@ per-graph report + a human-verification queue.  Does NOT touch the live
 output can be reviewed before any swap.
 
 Generation only READS the graph DB (distinct value sets for validity); it never
-writes to the VM.  Requires the corporate VPN OFF (DB reachable) and, with
+writes to the VM.  Requires the VPN off (DB reachable) and, with
 ``--llm``, proxy-bypass for OpenAI::
 
     export OPENAI_API_KEY=$(grep '^OPENAI_API_KEY=' .env | cut -d= -f2- | tr -d '"')

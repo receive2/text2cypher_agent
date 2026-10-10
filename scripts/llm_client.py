@@ -1,6 +1,6 @@
 """
-walmart_llm.py
-==============
+llm_client.py
+=============
 Generic OpenAI-compatible LLM client for the text2cypher verification pipeline.
 
 Configuration (via environment variables or a .env file)
@@ -18,7 +18,7 @@ Azure OpenAI (all four must be set to activate Azure mode)
 
 Usage
 -----
-  from scripts.walmart_llm import ask_llm
+  from scripts.llm_client import ask_llm
   reply = ask_llm("Summarise this in one sentence.", system="You are concise.")
 """
 

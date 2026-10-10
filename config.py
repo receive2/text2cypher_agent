@@ -27,7 +27,7 @@ from component_names import env_flag as _component_flag
 # LLM configuration  (per pipeline stage)
 # ──────────────────────────────────────────────────────────────────────────────
 # Each pipeline stage has its own LLM "slot" so experiments can mix providers
-# (e.g. GPT for NER, Claude Opus for Cypher generation) without code changes.
+# (e.g. one provider for NER, another for Cypher generation) without code changes.
 #
 # Schema for every entry:
 #   {
@@ -49,186 +49,40 @@ from component_names import env_flag as _component_flag
 #
 # Examples
 # --------
-#   NER_LLM_CONFIG    = {"provider": "openai",        "model": "gpt-4.1"}
-#   CYPHER_LLM_CONFIG = {"provider": "anthropic",     "model": "claude-opus-4-20250514"}
-#   QA_LLM_CONFIG     = {"provider": "openai",        "model": "gpt-4o-mini"}
-#   NER_LLM_CONFIG    = {"provider": "hf_compatible", "model": "llama-8b-hf"}
+#   NER_LLM_CONFIG    = {"provider": "openai",        "model": "gpt-5.6-terra"}
+#   CYPHER_LLM_CONFIG = {"provider": "anthropic",     "model": "claude-sonnet-5"}
+#   QA_LLM_CONFIG     = {"provider": "hf_compatible", "model": "deepseek-v4.1-flash-deepinfra"}
 # ──────────────────────────────────────────────────────────────────────────────
 
 # ──────────────────────────────────────────────────────────────────────────────
-# MODEL_REGISTRY — open-source / fine-tuned model endpoints
+# MODEL_REGISTRY — OpenAI-compatible endpoints for open-weights models
 # ──────────────────────────────────────────────────────────────────────────────
-# Every entry describes a single OpenAI-compatible HTTP endpoint.  The factory
-# in ``agent_helper`` instantiates an ``openai``-SDK-compatible chat client
-# (LangChain's ``ChatOpenAI`` is just a thin wrapper around the openai SDK)
-# pointed at ``base_url`` with credentials from ``os.environ[api_key_env]`` and
-# uses ``model`` as the value to send in the request body's ``model`` field.
+# Every entry describes one OpenAI-compatible HTTP endpoint.  The factory in
+# ``agent_helper`` instantiates an openai-SDK-compatible chat client
+# (LangChain's ``ChatOpenAI``) pointed at ``base_url`` with credentials from
+# ``os.environ[api_key_env]`` and sends ``model`` in the request body.
+# Hosted inference providers and self-hosted servers (vLLM, TGI, …) all expose
+# the same ``/v1/chat/completions`` interface, so one ``hf_compatible``
+# provider covers them; only ``base_url``, the key and the model id differ.
 #
-# ── Why a single ``hf_compatible`` provider for all of these? ────────────────
-# The Hugging Face serverless router, HF Inference Endpoints, Groq, Together,
-# Fireworks, Anyscale, etc. ALL expose an OpenAI-compatible
-# ``/v1/chat/completions`` endpoint.  That means the same openai SDK works for
-# every one of them — only ``base_url``, ``api_key``, and ``model`` change.
-# We funnel them through one provider name and let the registry encode the
-# differences.
-#
-# ── HF Inference Endpoints + TGI ─────────────────────────────────────────────
-# HF Inference Endpoints use TGI (Text Generation Inference) as the default
-# inference engine.  TGI exposes an OpenAI-compatible
-# ``/v1/chat/completions`` endpoint, which is why we can use the openai SDK
-# to call it.  For HF Inference Endpoint registry entries:
-#
-#   * ``base_url`` is the *unique* endpoint URL HF gives you per-deployment.
-#     The URL itself identifies which model is being served.
-#   * ``model`` should be set to the literal string ``"tgi"``.  The OpenAI
-#     request schema requires a ``model`` field, but TGI ignores it because
-#     the URL already pins the model — convention is to fill it with "tgi".
-#
-# Recommendation: when deploying your own fine-tuned models, use HF Inference
-# Endpoints with TGI.  You get a stable URL, an OpenAI-compatible API, and
-# zero engine-config work — just push the merged model to the Hub and click
-# "Deploy ▸ Inference Endpoints".
-#
-# ── HF serverless router ─────────────────────────────────────────────────────
-# For ``https://router.huggingface.co/v1`` the ``model`` field must be the
-# full HF Hub repo id (e.g. ``meta-llama/Llama-3.1-8B-Instruct``), NOT
-# ``"tgi"``.  The router uses ``model`` to route between many models behind
-# one URL.
-#
-# ── Other OpenAI-compatible providers ────────────────────────────────────────
-# For Groq, Together, Fireworks, etc. use whatever model id the provider
-# documents (e.g. Groq's ``llama-3.1-8b-instant``).
-#
-# ── Adding a new fine-tuned model ────────────────────────────────────────────
-# 1. Deploy the merged model to an HF Inference Endpoint.
-# 2. Add a new entry below: a unique key, the endpoint URL as ``base_url``,
-#    ``"HUGGINGFACE_TOKEN"`` for ``api_key_env`` (this is the variable name
-#    used by .env / .env.example in this repo — point it at whatever env var
-#    actually holds the HF token), and ``"tgi"`` for ``model``.
-# 3. Reference the new key from any of NER_LLM_CONFIG / QA_LLM_CONFIG /
-#    CYPHER_LLM_CONFIG (with ``provider="hf_compatible"``).
+# To add an endpoint: add an entry below (a unique key, the endpoint URL,
+# the name of the env var holding its key, and the model id the endpoint
+# expects) and reference the key from a preset or a stage config with
+# ``provider="hf_compatible"``.
 # ──────────────────────────────────────────────────────────────────────────────
 
 MODEL_REGISTRY: dict = {
-    # ── HF serverless router (multiplexes many open-source models) ──────────
-    # ``model`` must be the full HF Hub repo id; the router uses it to pick
-    # which backend to forward the request to.
-    "llama-8b-hf": {
-        "base_url":    "https://router.huggingface.co/v1",
-        "api_key_env": "HUGGINGFACE_TOKEN",
-        "model":       "meta-llama/Llama-3.1-8B-Instruct",
-    },
-    "qwen-7b-hf": {
-        "base_url":    "https://router.huggingface.co/v1",
-        "api_key_env": "HUGGINGFACE_TOKEN",
-        "model":       "Qwen/Qwen2.5-7B-Instruct",
-    },
-
-    # ── Groq (other OpenAI-compatible provider, kept for flexibility) ───────
-    # Use Groq's documented model id (NOT a HF Hub repo id, NOT "tgi").
-    "llama-8b-groq": {
-        "base_url":    "https://api.groq.com/openai/v1",
-        "api_key_env": "GROQ_API_KEY",
-        "model":       "llama-3.1-8b-instant",
-    },
-
-    # ── Dedicated HF Inference Endpoint (per fine-tuned model) ──────────────
-    # Each fine-tuned model gets its own URL.  The URL pins the model, so
-    # ``model`` is just ``"tgi"`` (TGI ignores the field but the OpenAI
-    # request schema requires it).  Replace the placeholder URL below with
-    # the real endpoint URL after deploying.
-    "my-svl-cypher-lora-v1": {
-        "base_url":    "https://abc123.us-east-1.aws.endpoints.huggingface.cloud/v1/",
-        "api_key_env": "HUGGINGFACE_TOKEN",
-        "model":       "tgi",  # TGI: URL identifies the model, "tgi" is a placeholder
-    },
-    # Add more fine-tuned model endpoints here as you deploy them.
-    # "my-ner-lora-v2": {
-    #     "base_url":    "https://xyz789.us-east-1.aws.endpoints.huggingface.cloud/v1/",
-    #     "api_key_env": "HUGGINGFACE_TOKEN",
-    #     "model":       "tgi",
-    # },
-
-    "qwen-coder-7b-hf": {
-        "base_url": "https://router.huggingface.co/v1",
-        "api_key_env": "HUGGINGFACE_TOKEN",
-        "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
-    },
-    "qwen-coder-32b-hf": {
-        "base_url": "https://router.huggingface.co/v1",
-        "api_key_env": "HUGGINGFACE_TOKEN",
-        "model": "Qwen/Qwen2.5-Coder-32B-Instruct",
-    },
-    "qwen-coder-32b-groq": {
-        "base_url": "https://api.groq.com/openai/v1",
-        "api_key_env": "GROQ_API_KEY",
-        "model": "qwen-2.5-coder-32b",
-    },
-
-    # ── DeepInfra (OpenAI-compatible; one key serves both open-weights models
-    #    of the generator sweep — see MODEL_PRESETS) ─────────────────────────
-    "deepseek-v3.1-deepinfra": {
-        "base_url":    "https://api.deepinfra.com/v1/openai",
-        "api_key_env": "DEEPINFRA_API_KEY",
-        "model":       "deepseek-ai/DeepSeek-V3.1",
-    },
-    # DeepSeek V4.1 Flash (released 2026-09-10, MIT weights): registered as an
-    # EXTRA (not in the sweep — it needs a separate key). The official API documents
-    # the non-thinking switch (`thinking: {"type": "disabled"}`) and tool calling,
-    # and caches repeated prefixes automatically ($0.30/$1.20 per M peak,
-    # $0.15/$0.60 off-peak, cache hits ~$0.006). DeepInfra hosts it too
-    # ($0.20/$0.60, no caching) — the alternate entry below — but whether it
-    # honours the thinking switch is unverified.
-    "deepseek-v4.1-flash": {
-        "base_url":    "https://api.deepseek.com/v1",
-        "api_key_env": "DEEPSEEK_API_KEY",
-        "model":       "deepseek-flash",
-    },
+    # DeepSeek V4.1 Flash (MIT weights) served by DeepInfra; the preset below
+    # switches its thinking mode off and caps the output at 4,096 tokens.
     "deepseek-v4.1-flash-deepinfra": {
         "base_url":    "https://api.deepinfra.com/v1/openai",
         "api_key_env": "DEEPINFRA_API_KEY",
         "model":       "deepseek-ai/DeepSeek-V4.1-Flash",
     },
-    "qwen3-32b-deepinfra": {
-        # Hybrid thinking model: the preset passes chat_template_kwargs.enable_thinking=false
-        # (vLLM convention on DeepInfra) so it runs as a plain text model. If the endpoint
-        # rejects that field, switch to the non-thinking checkpoint
-        # "Qwen/Qwen3-30B-A3B-Instruct-2507" and drop the params. Id/price unverified until
-        # the first smoke test (registered without network access).
-        "base_url":    "https://api.deepinfra.com/v1/openai",
-        "api_key_env": "DEEPINFRA_API_KEY",
-        "model":       "Qwen/Qwen3-32B",
-    },
-    "llama-3.3-70b-deepinfra": {
-        "base_url":    "https://api.deepinfra.com/v1/openai",
-        "api_key_env": "DEEPINFRA_API_KEY",
-        "model":       "meta-llama/Llama-3.3-70B-Instruct-Turbo",
-    },
-    # ── Together (alternate host for the same two models) ────────────────────
-    "deepseek-v3.1-together": {
-        "base_url":    "https://api.together.xyz/v1",
-        "api_key_env": "TOGETHER_API_KEY",
-        "model":       "deepseek-ai/DeepSeek-V3.1",
-    },
-    "llama-3.3-70b-together": {
-        "base_url":    "https://api.together.xyz/v1",
-        "api_key_env": "TOGETHER_API_KEY",
-        "model":       "meta-llama/Llama-3.3-70B-Instruct-Turbo",
-    },
 }
 
 
-# NER_LLM_CONFIG: dict = {
-#     "provider":    "anthropic",
-#     "model":       "claude-opus-4-7",
-#     "temperature": 0,
-# }
 
-# NER_LLM_CONFIG: dict = {
-#     "provider":    "anthropic",
-#     "model":       "claude-sonnet-4-5",
-#     "temperature": 0,
-# }
 
 # ── Generator LLM: presets + the eval receiver ───────────────────────────────
 # One name selects the generator LLM for all three stages (NER / Cypher / QA).
@@ -244,31 +98,17 @@ MODEL_REGISTRY: dict = {
 # (e.g. {"reasoning_effort": "medium"}); the builders already choose safe
 # defaults per model family, so most presets need none.
 MODEL_PRESETS: dict = {
-    # ── the gpt-4.1 baseline every existing run was made with ──
-    "gpt-4.1":          {"provider": "openai",        "model": "gpt-4.1"},
-    # ── GPT family ──
-    "gpt-5.6-terra":    {"provider": "openai",        "model": "gpt-5.6-terra"},   # workhorse (primary)
-    "gpt-5.6-luna":     {"provider": "openai",        "model": "gpt-5.6-luna"},    # cheap tier / smoke tests
-    # ── Claude family (temperature is rejected and thinking is switched off
-    #    for the 4.6+/5 generation — see agent_helper._anthropic_generation_kwargs) ──
-    "claude-sonnet-5":  {"provider": "anthropic",     "model": "claude-sonnet-5"},   # sweep: Claude strong tier
-    "claude-opus-5":    {"provider": "anthropic",     "model": "claude-opus-5"},     # extra — not in the sweep (~2.5x Sonnet)
-    "claude-haiku-4.5": {"provider": "anthropic",     "model": "claude-haiku-4-5"},
-    # ── open-weights, served by DeepInfra (one key for both; Together entries
-    #    exist in MODEL_REGISTRY as alternates) ──
-    "deepseek-v3.1":    {"provider": "hf_compatible", "model": "deepseek-v3.1-deepinfra"},   # sweep: open-weights strong tier (DeepInfra key)
-    # sweep: open-weights strong tier since 2026-10-06 (replaces deepseek-v3.1, whose DeepInfra endpoint took ~7 s per
-    # 8k-token call and pushed the baselines past their 60 s cap; V4.1 Flash takes 1.5-2.5 s on the same host and key).
-    # Served by DeepInfra (DEEPINFRA_API_KEY); the official-API entry "deepseek-v4.1-flash" in MODEL_REGISTRY remains an
-    # alternate. max_tokens as for qwen3-32b (DeepInfra rejects a request whose default output budget is the whole context).
+    # ── GPT family (OpenAI API; reasoning effort "none" — see agent_helper) ──
+    "gpt-5.6-terra":    {"provider": "openai",        "model": "gpt-5.6-terra"},   # primary backbone
+    "gpt-5.6-luna":     {"provider": "openai",        "model": "gpt-5.6-luna"},    # cheaper tier
+    # ── Claude (Anthropic API; temperature is rejected and thinking is switched
+    #    off for this generation — see agent_helper._anthropic_generation_kwargs) ──
+    "claude-sonnet-5":  {"provider": "anthropic",     "model": "claude-sonnet-5"},
+    # ── open weights (DeepInfra, OpenAI-compatible). max_tokens is set because the
+    #    host otherwise reserves the model's whole context as the output budget and
+    #    rejects the request; the thinking switch keeps the model a plain generator. ──
     "deepseek-v4.1-flash": {"provider": "hf_compatible", "model": "deepseek-v4.1-flash-deepinfra",
                             "params": {"max_tokens": 4096, "extra_body": {"thinking": {"type": "disabled"}}}},
-    "llama-3.3-70b":    {"provider": "hf_compatible", "model": "llama-3.3-70b-deepinfra"},
-    "qwen3-32b":        {"provider": "hf_compatible", "model": "qwen3-32b-deepinfra",     # open-weights small tier
-                         # max_tokens: DeepInfra otherwise asks for the model's whole 40,960-token context as output and
-                         # rejects every call (smoke test 2026-10-06); 4096 is the cap the Anthropic path already uses.
-                         "params": {"max_tokens": 4096,
-                                    "extra_body": {"chat_template_kwargs": {"enable_thinking": False}}}},
 }
 
 # ⚙ eval receiver — edit GENERATOR_LLM in the eval_config panel, not here.
@@ -298,56 +138,36 @@ def _apply_llm_override(cfg: dict) -> dict:
 
 NER_LLM_CONFIG: dict = {
    "provider":    "openai",
-   "model":       "gpt-4.1",
+   "model":       "gpt-5.6-terra",
    "temperature": 0,
 }
 
-# NER_LLM_CONFIG: dict = {
-#     "provider":    "hf_compatible",
-#     "model":       "llama-8b-hf",   # MODEL_REGISTRY key
-#     "temperature": 0,
-#     "max_tokens":  512,
-# }
 
 
 QA_LLM_CONFIG: dict = {
     "provider":    "openai",
-    "model":       "gpt-4.1",
+    "model":       "gpt-5.6-terra",
     "temperature": 0,
 }
 
 
 
-# CYPHER_LLM_CONFIG: dict = {
-#     "provider":    "hf_compatible",
-#     "model":       "qwen-coder-32b-hf",   # MODEL_REGISTRY key
-#     "temperature": 0,
-# }
 
 
 CYPHER_LLM_CONFIG: dict = {
    "provider":    "openai",
-   "model":       "gpt-4.1",
+   "model":       "gpt-5.6-terra",
    "temperature": 0,
 }
 
-# CYPHER_LLM_CONFIG: dict = {
-#     "provider":    "hf_compatible",
-#     "model":       "llama-8b-hf",   # MODEL_REGISTRY key
-#     "temperature": 0,
-#     "max_tokens":  512,
-# }
 
-# Example: route the Cypher generator at an open-source / fine-tuned model
-# served behind an OpenAI-compatible endpoint (HF router, HF Inference
-# Endpoint, Groq, etc.).  The ``model`` field is a key into MODEL_REGISTRY.
-# Uncomment to switch — no other code change needed.
+# Example: route one stage at an open-weights model behind an OpenAI-compatible
+# endpoint.  The ``model`` field is a key into MODEL_REGISTRY.
 #
 # CYPHER_LLM_CONFIG: dict = {
 #     "provider":    "hf_compatible",
-#     "model":       "my-svl-cypher-lora-v1",   # ← MODEL_REGISTRY key
+#     "model":       "deepseek-v4.1-flash-deepinfra",
 #     "temperature": 0,
-#     "max_tokens":  512,
 # }
 
 # ── Apply the generator-LLM sweep override ───────────────────────────────────

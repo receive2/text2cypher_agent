@@ -32,7 +32,7 @@ Driven by a JSON spec (path as argv[1])::
       "dataset": "CypherBench",
       "n_questions": 200,
       "generated": "2026-06-21",
-      "llm": "gpt-4.1",
+      "llm": "gpt-5.6-terra",
       "strategies_note": "casing · typo · partial · abbrev · alias",
       "methods": [
         {"label": "No Val Link", "retrieval": "—", "dir": "logs/mv2_no_val_link"},
@@ -212,7 +212,7 @@ def main() -> int:
     g = spec["graph"]
     ds = spec.get("dataset", "CypherBench")
     gen = spec.get("generated", "")
-    llm = spec.get("llm", "gpt-4.1")
+    llm = spec.get("llm", "gpt-5.6-terra")
     snote = spec.get("strategies_note", " · ".join(strategies))
 
     # Resolve real provenance from the harness-captured run_meta; fall back to the

@@ -129,7 +129,7 @@ def _stamp_summary(out_summary: Path, env: dict, *, dataset: str, graph: str,
         # Resolve the generator preset from the SAME env that tags the run dir
         # (GENERATOR_LLM injected by _build_env). The parent process never has
         # that env var itself, so reading config.*_LLM_CONFIG here would record
-        # the static literals (gpt-4.1) for a run that actually used the preset.
+        # the static literals for a run that actually used the preset.
         preset = env.get("GENERATOR_LLM") or None
         overlay: dict = {}
         if preset:

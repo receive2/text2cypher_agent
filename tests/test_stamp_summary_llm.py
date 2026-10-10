@@ -25,7 +25,7 @@ def _stamp(tmp_path, env):
 
 
 def test_stamp_records_preset_model_not_static_literal(tmp_path):
-    preset = next(k for k in _config.MODEL_PRESETS if k != "gpt-4.1")
+    preset = next(k for k, v in _config.MODEL_PRESETS.items() if v["model"] != _config.CYPHER_LLM_CONFIG["model"])
     want = _config.MODEL_PRESETS[preset]["model"]
     llm = _stamp(tmp_path, {"GENERATOR_LLM": preset})
     assert llm["generator_llm"] == preset

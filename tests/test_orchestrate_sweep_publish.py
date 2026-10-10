@@ -2,7 +2,7 @@
 """Tests for the parts of orchestrate_sweep.py that a runner depends on but that
 never run the model: error classification, ⚠ flagging, and the worktree-based
 publish. The flagging cases are the real numbers from the first returned sweep
-(gpt-5.6-luna, 2026-09-18) and the committed gpt-4.1 reference tables."""
+(gpt-5.6-luna, 2026-09-18) and the committed reference tables."""
 from __future__ import annotations
 
 import os
@@ -86,7 +86,7 @@ def test_zog_cyanchor_861_timeouts_is_flagged_and_peers_are_not():
 
 
 def test_mtq_data_and_model_errors_never_flag():
-    """MindTheQuery in the gpt-4.1 reference: 79 gold-side failures shared by
+    """MindTheQuery in the reference run: 79 gold-side failures shared by
     every method plus model-side syntax errors — no infrastructure. Nothing
     may be flagged, even at 19% for no_val_link."""
     cells = {
@@ -236,10 +236,10 @@ def test_classify_push_failure(stderr, kind):
 
 
 @pytest.mark.parametrize("url, expect", [
-    ("https://github.com/receive2/text2cypher_agent.git", "https://github.com/receive2/text2cypher_agent"),
-    ("https://github.com/receive2/text2cypher_agent", "https://github.com/receive2/text2cypher_agent"),
-    ("git@github.com:receive2/text2cypher_agent.git", "https://github.com/receive2/text2cypher_agent"),
-    ("ssh://git@github.com/receive2/text2cypher_agent.git", "https://github.com/receive2/text2cypher_agent"),
+    ("https://github.com/example-org/text2cypher.git", "https://github.com/example-org/text2cypher"),
+    ("https://github.com/example-org/text2cypher", "https://github.com/example-org/text2cypher"),
+    ("git@github.com:example-org/text2cypher.git", "https://github.com/example-org/text2cypher"),
+    ("ssh://git@github.com/example-org/text2cypher.git", "https://github.com/example-org/text2cypher"),
 ])
 def test_remote_https_url(monkeypatch, url, expect):
     monkeypatch.setattr(osw, "_git", lambda *a: url)
@@ -372,7 +372,7 @@ def test_committed_model_is_read_from_git_head():
 
 
 def test_unchosen_model_text():
-    assert osw.unchosen_model("gpt-5.6-terra", False) is None                       # a different model was chosen
+    assert osw.unchosen_model("gpt-5.6-luna", False) is None                        # a different model was chosen
     committed = osw.committed_model()
     assert committed and "still the committed value" in osw.unchosen_model(committed, False)
     assert osw.unchosen_model(committed, True) is None                              # coordinator override

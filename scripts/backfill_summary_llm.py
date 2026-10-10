@@ -2,7 +2,7 @@
 """Backfill run_config.llm in summary.json from the run dir's @<preset> tag.
 
 Runs stamped before eval_run learned to resolve the generator preset recorded
-config.py's static literals (gpt-4.1) even for @gpt-5.6-luna dirs. The dir tag
+config.py's static literals even for @<preset> dirs. The dir tag
 is the value the worker actually received, so it is the source of truth.
 Dry-run by default; --apply rewrites. Idempotent.
 

@@ -103,7 +103,7 @@ After each graph, ``report/<Dataset>/<graph>.md`` is regenerated from the five
 run dirs (``gen_ablation_report.py``); after each dataset, its pooled
 ``_summary.md`` (``gen_pooled_report.py``). Pooling is over all questions
 (each question weighs one; an errored question scores 0) — the same arithmetic
-as the committed gpt-4.1 tables. Everything a model produces lives under
+as the committed reference tables. Everything a model produces lives under
 ``report/<model>/``: ``<Dataset>/<graph>.md``, ``<Dataset>/_summary.md`` and
 ``SWEEP.md`` — the completeness matrix plus every table the paper needs (per
 dataset and overall; by perturbation strategy; by query difficulty). All of
@@ -804,7 +804,7 @@ def run_cell(dataset: str, graph: str, method: str, *, limit: Optional[int], out
 
 
 # ──────────────────────────────────────────────────────────────────────────────
-# Reports (same tooling as the committed gpt-4.1 tables)
+# Reports (same tooling as the committed reference tables)
 # ──────────────────────────────────────────────────────────────────────────────
 
 def refresh_graph_report(dataset: str, graph: str, model: str) -> None:

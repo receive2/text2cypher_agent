@@ -189,4 +189,4 @@ def test_every_model_in_the_handout_is_a_preset():
     import re, config
     text = (Path(__file__).resolve().parent.parent / "docs" / "EXPERIMENT_HANDOUT.md").read_text(encoding="utf-8")
     listed = re.findall(r"audit_runs\.py --discard-all --model (\S+)", text)
-    assert len(listed) == 7 and all(m in config.MODEL_PRESETS for m in listed), listed
+    assert len(listed) == 4 and all(m in config.MODEL_PRESETS for m in listed), listed

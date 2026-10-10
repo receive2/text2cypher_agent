@@ -229,7 +229,7 @@ model's Cypher failed), `infra` (timeout / API / rate limit — never evaluated)
 automatically at most twice, and blocks `--publish` unless
 `--allow-incomplete` (details: the driver's module docstring).
 
-`report/gpt-4.1/` holds the committed reference tables.
+`report/<model>/` holds the tables written by `--publish`; `report/ablation_paper_table.md` the ablation of the paper.
 
 Clean vs perturbed for one model:
 
@@ -265,7 +265,7 @@ in `GRAPH_CONNS`; `--live` checks the live tree instead of the archives. The dri
 
 | word | meaning | do |
 |---|---|---|
-| `UNREACH` | the graph's Neo4j is not reachable (usually a corporate VPN) | disconnect the VPN; `nc -zv 34.9.85.21 15066` must succeed |
+| `UNREACH` | the graph's Neo4j is not reachable (usually a VPN) | disconnect the VPN; `nc -zv 34.9.85.21 15066` must succeed |
 | `CONTAM` | the archive's node tools search labels that have no nodes in this graph | runner: `git checkout setup_artifacts/ && git pull`; coordinator: §4 |
 | artifacts `MISMATCH` | your copy of the archive differs from `MANIFEST.json` | `git checkout setup_artifacts/` |
 | artifacts `MISSING` | the archive is not on disk | `git pull` |
