@@ -132,6 +132,7 @@ def test_react_run_under_another_tool_scope_is_deleted(world):
     assert v[e.name]["verdict"] == "keep"
 
 
+@pytest.mark.skipif(osw.committed_model() is None, reason="needs the git history of the checkout")
 def test_guard_since_on_this_repo():
     when, note = ar.guard_since()
     assert when is not None and "published artifact set since" in note

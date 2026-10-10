@@ -366,11 +366,13 @@ def test_rerun_that_produces_no_run_dir_is_not_reported_done(tmp_path, monkeypat
 
 # ── nobody has chosen a model: the committed GENERATOR_LLM is refused ────────
 
+@pytest.mark.skipif(osw.committed_model() is None, reason="needs the git history of the checkout")
 def test_committed_model_is_read_from_git_head():
     import config
     assert osw.committed_model() in config.MODEL_PRESETS
 
 
+@pytest.mark.skipif(osw.committed_model() is None, reason="needs the git history of the checkout")
 def test_unchosen_model_text():
     assert osw.unchosen_model("gpt-5.6-luna", False) is None                        # a different model was chosen
     committed = osw.committed_model()
